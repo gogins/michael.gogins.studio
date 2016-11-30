@@ -61,11 +61,11 @@ the non-real-time kind, because I have used it heavily in the past and plan to
 use it again in the future.
 
 It is possible to produce the visuals and the music independently and them to 
-assemble them, but that is not my concern. I wish to use the same computer 
+assemble them, but that is not my goal. I wish to use the same computer 
 program to generate both the visuals and the music. It 
 would still be possible to generate the visuals and the music independently and 
-to use program logic to assemble them, but that is still not my concern. My 
-basic approach is to generate the visuals, and then to map and filter them to 
+to use program logic to assemble them, but that is still not my goal. My 
+basic goal is to generate the visuals, and then to map and filter them to 
 produce some music. This offers many possibilities, yet is fairly simple to 
 implement.
 
@@ -157,8 +157,8 @@ to fit into a harmony.
 Mapping visual \emph{objects} to music is complex, and must be considered case 
 by case. Such a mapping amounts to using the visuals as a sort of 
 three-dimensional piano roll score for the music. A minimal set of dimensions 
-for visual objects might be the following, with other dimensions computed 
-specially, or even attached invisibly to the object. In the following tables, 
+for visual objects might be the following. or even attached invisibly to the 
+object. In the following tables, 
 we use lower-case letters for visual attributes and upper-case letters for 
 musical attributes.
 
@@ -171,7 +171,11 @@ $z$ & Depthwise Cartesian coordinate & Real & Arbitrary units\\
 \end{tabular}
 \end{center}
 
-\noindent Mapping visual pixels is much more straightforward, as there is the 
+\noindent For mapping visual objects to musical events, of course special 
+musical attributes can be computed from, or even attached to, the objects in 
+the scene, thus reinforcing its double role as a score.
+
+Mapping visual pixels is much more straightforward, as there is the 
 following fixed set of dimensions:
 
 \begin{center}
@@ -287,7 +291,19 @@ then moved from the on set to the sounding set. The off set is then matched to
 the sounding set, and any matching off events are dispatched; then the 
 matching sounding and off events are removed from their sets.
 
+Alternatively, the on events could simply be triggered with durations, which 
+could be constant, or mapped from the visuals (saturation?).
 
+Tough sledding here, I have mostly implemented this algorithm in JavaScript 
+and so far (a) it is too slow, and (b) there are no custom comparators for Set.
+
+Wait a minute, I am earning how to write efficient JavaScript and I have 
+vastly speeded up the color conversion, at least.
+
+Still not sure this is going to work, performance is starting to lag, notes 
+are still too thick and I'm not clear on how best to thin them. At least I'm 
+learning what the real parameters of the problem are. I suppose I could stride 
+through the pixel arrays -- downsample them.
 
 
 

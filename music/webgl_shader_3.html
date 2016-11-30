@@ -41,8 +41,962 @@
 		<script src='silencio/js/helpers.js'></script>
 		<script src="silencio/js/codemirror.js"></script>
 		<script src="silencio/js/glsl.js"></script>
-	</head>
-	<body>
+		<script src="silencio/js/tinycolor.js"></script>
+		<script src="silencio/js/Silencio.js"></script>
+		<script src="silencio/js/sprintf.js"></script>
+        </head>
+        <body>
+            <textarea class="code" id="orc" hidden rows=24 cols=80>
+sr = 88200
+ksmps = 200
+nchnls = 2
+0dbfs = 1500000
+
+connect "FM_Clang", "outleft", "ReverbLeft", "inleft"
+connect "FM_Clang", "outright", "ReverbRight", "inright"
+connect "Blower", "outleft", "ReverbLeft", "inleft"
+connect "Blower", "outright", "ReverbRight", "inright"
+connect "Bower", "outleft", "ReverbLeft", "inleft"
+connect "Bower", "outright", "ReverbRight", "inright"
+connect "Buzzer", "outleft", "ReverbLeft", "inleft"
+connect "Buzzer", "outright", "ReverbRight", "inright"
+connect "Droner", "outleft", "ReverbLeft", "inleft"
+connect "Droner", "outright", "ReverbRight", "inright"
+connect "Harpsichord", "outleft", "Reverb2Left", "inleft"
+connect "Harpsichord", "outright", "Reverb2Right", "inright"
+connect "Phaser", "outleft", "ReverbLeft", "inleft"
+connect "Phaser", "outright", "ReverbRight", "inright"
+connect "PianoOut", "outleft", "MasterOutput", "inleft"
+connect "PianoOut", "outright", "MasterOutput", "inright"
+connect "PianoOut", "outleft", "Reverb2Left", "inleft"
+connect "PianoOut", "outright", "Reverb2Right", "inright"
+connect "Sweeper", "outleft", "ReverbLeft", "inleft"
+connect "Sweeper", "outright", "ReverbRight", "inright"
+connect "Shiner", "outleft", "ReverbLeft", "inleft"
+connect "Shiner", "outright", "ReverbRight", "inright"
+connect "YiString", "outleft", "ReverbLeft", "inleft"
+connect "YiString", "outright", "ReverbRight", "inright"
+connect "YiString", "chorusleft", "SolinaChorus", "inleft"
+connect "YiString", "chorusright", "SolinaChorus", "inright"
+connect "SolinaChorus", "outleft", "ReverbLeft", "inleft"
+connect "SolinaChorus", "outright", "ReverbRight", "inright"
+connect "ReverbLeft", "outleft", "MasterOutput", "inleft"
+connect "ReverbRight", "outright", "MasterOutput", "inright"
+connect "Reverb2Left", "outleft", "MasterOutput", "inleft"
+connect "Reverb2Right", "outright", "MasterOutput", "inright"
+
+alwayson "FM_Clang_controls"
+alwayson "Controls"
+alwayson "PianoOut"
+alwayson "SolinaChorus"
+alwayson "ReverbLeft"
+alwayson "ReverbRight"
+alwayson "Reverb2Left"
+alwayson "Reverb2Right"
+alwayson "FM_Clang_preset"
+alwayson "ParametricEQ"
+alwayson "MasterOutput"
+
+gk_overlap init .25
+
+gaSendM,gaSendL,gaSendR init 0
+gi_FM_Clang_sine ftgen 0,0,4096,10,1 ;A SINE WAVE. USED BY THE LFOs.
+gi_FM_Clang_detuning ftgen 0,0,128,21,1,1 ; random array used for fixing unique detune values for each note
+gi_FM_Clang_DryMap ftgen 0,0,4096,7,1,2048,1,2048,0 ; dry mixer control mapping
+gi_FM_Clang_WetMap ftgen 0,0,4096,7,0,2048,1,2048,1 ; wet mixer control mapping
+gaSendL,gaSendR init 0 ; initialise variable used for sending audio between instruments
+gi_FM_Clang_Imp ftgen 0,0,4097,9,0.5,1,0 ; shape for the hammer inpulse
+gi_FM_Clang_stereo ftgen 0,0,256,21,1,1 ; random array used for fixing unique stereo values for each note
+gi_FM_Clang_detune ftgen 0,0,256,21,1,1 ; random array used for fixing unique detune values for each note
+gi_FM_Clang_scale ftgen 0,0,128,-7,-1,128,1
+
+instr FM_Clang_controls ; Read in widgets
+iporttime = 0.05
+gk_FM_Clang_mod chnget "mod"
+gk_FM_Clang_mod port gk_FM_Clang_mod,iporttime
+gk_FM_Clang_NdxVel chnget "NdxVel"
+gk_FM_Clang_Dur chnget "Dur"
+gk_FM_Clang_FiltFund chnget "FiltFund"
+gk_FM_Clang_NdxCurve chnget "NdxCurve"
+gk_FM_Clang_LPF chnget "LPF"
+gk_FM_Clang_ModDep chnget "ModDep"
+gk_FM_Clang_ModRte chnget "ModRte"
+gk_FM_Clang_ModRteKyb chnget "ModRteKyb"
+gk_FM_Clang_ModMix chnget "ModMix"
+gk_FM_Clang_Sustain chnget "Sustain"
+gk_FM_Clang_CarKyb chnget "CarKyb"
+gk_FM_Clang_StWidth chnget "StWidth"
+gk_FM_Clang_StWidth init 0.01
+gk_FM_Clang_StMix chnget "StMix"
+gk_FM_Clang_DryWet chnget "RvbDryWet"
+gk_FM_Clang_Dry table gk_FM_Clang_DryWet,gi_FM_Clang_DryMap,1 ; map dry/wet control
+gk_FM_Clang_Wet table gk_FM_Clang_DryWet,gi_FM_Clang_WetMap,1 ;
+gk_FM_Clang_RvbSize chnget "RvbSize"
+gk_FM_Clang_Detune chnget "Detune"
+gk_FM_Clang_DtnMix chnget "DtnMix"
+gk_FM_Clang_Amp chnget "Amp"
+gk_FM_Clang_level chnget "gk_FM_Clang_level"
+gk_FM_Clang_Amp port gk_FM_Clang_Amp,iporttime
+gk_FM_Clang_AttTim chnget "AttTim"
+gk_FM_Clang_AttVel chnget "AttVel"
+gk_FM_Clang_NseAmp chnget "NseAmp"
+gk_FM_Clang_NseBW chnget "NseBW"
+gk_FM_Clang_NseFllw chnget "NseFllw"
+endin
+
+gi_OS_Windows init 1
+giPianoteq init 0
+giFluidsynth init 0
+giFluidSteinway init 0
+
+instr PianoNote
+i_instrument = p1
+i_time = p2
+i_duration = p3
+i_midikey = p4
+i_midivelocity = p5
+i_phase = p6
+i_pan = p7
+i_depth = p8
+i_height = p9
+i_pitchclassset = p10
+i_homogeneity = p11
+; Use channel assigned in fluidLoad.
+ichannel = 0
+;;;;;;;;;;;;;;;;;;;;i
+prints "FlSteinway  i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+fluidNote giFluidsynth, ichannel, i_midikey, i_midivelocity
+endin
+
+gk_Harpsichord_level init .25
+gk_Harpsichord_pick init .75
+gk_Harpsichord_reflection init .5
+gk_Harpsichord_pluck init .75
+instr Harpsichord
+insno 		 = p1
+itime 		 = p2
+iduration 		 = p3
+ikey 		 = p4
+ivelocity = p5
+iphase = p6
+ipan = p7
+idepth = p8
+iheight = p9
+ipcs = p10
+ihomogeneity = p11
+gk_Harpsichord_pan = .5
+iattack = .005
+isustain = p3
+irelease = .3
+p3 = iattack + isustain + irelease
+iHz = cpsmidinn(ikey)
+kHz = k(iHz)
+iamplitude = ampdb(ivelocity) * 10
+aenvelope 	 transeg 1.0, 20.0, -10.0, 0.05
+;apluck 	 pluck 1, kHz, iHz, 0, 1
+;apluck 	 pluck 1, kHz, iHz, 0, 6
+k_amplitude = 1
+apluck wgpluck2 i(gk_Harpsichord_pluck), k_amplitude, iHz, gk_Harpsichord_pick, gk_Harpsichord_reflection
+iharptable 	 ftgenonce 0, 0, 65536, 7, -1, 1024, 1, 1024, -1
+aharp 	 poscil 1, kHz, iharptable
+aharp2 	 balance apluck, aharp
+asignal	= (apluck + aharp2) * iamplitude * aenvelope * gk_Harpsichord_level
+adeclick linsegr 0, iattack, 1, isustain, 1, irelease, 0
+asignal = asignal * adeclick
+aleft, aright pan2 asignal, ipan
+kgain = ampdb(gk_Harpsichord_level)
+outleta "outleft", aleft * kgain
+outleta "outright", aright * kgain
+;;;;;;;;;;;;;;;;;;;;i
+prints "Harpsichord i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+endin
+
+gk_Bower_level init 0.5
+gk_Bower_pressure init 0.25
+instr Bower
+insno = p1
+istart = p2
+iduration = p3
+ikey = p4
+ivelocity = p5
+iphase = p6
+ipan = p7
+iamp = ampdb(ivelocity) * 100
+iattack = i(gk_overlap)
+idecay = i(gk_overlap)
+isustain = p3 - i(gk_overlap)
+p3 = iattack + isustain + idecay
+kenvelope transeg 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
+ihertz = cpsmidinn(ikey)
+kamp = kenvelope
+kfreq = ihertz
+kpres = 0.25
+krat rspline 0.006,0.988,1,4
+kvibf = 4.5
+kvibamp = 0
+iminfreq = 30
+isine ftgenonce 0,0,65536,10,1
+aSig wgbow kamp,kfreq,gk_Bower_pressure,krat,kvibf,kvibamp,isine,iminfreq
+aleft, aright pan2 aSig / 7, ipan
+adamping linseg 0, 0.03, 1, p3 - 0.1, 1, 0.07, 0
+aleft = adamping * aleft
+aright = adamping * aright
+kgain = ampdb(gk_Bower_level)
+outleta "outleft", aleft * kgain
+outleta "outright", aright * kgain
+;;;;;;;;;;;;;;;;;;;;i
+prints "Bower       i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+endin
+
+gk_Phaser_ratio1 init 1
+gk_Phaser_ratio2 init 1/3
+gk_Phaser_index1 init 1
+gk_Phaser_index2 init 0.0125
+gk_Phaser_level init 0.5
+instr Phaser
+insno = p1
+istart = p2
+iduration = p3
+ikey = p4
+ivelocity = p5
+iphase = p6
+ipan = p7
+iamp = ampdb(ivelocity) * 8
+iattack = i(gk_overlap)
+idecay = i(gk_overlap)
+isustain = p3 - i(gk_overlap)
+p3 = iattack + isustain + idecay
+kenvelope transeg 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
+ihertz = cpsmidinn(ikey)
+isine ftgenonce 0,0,65536,10,1
+khertz = ihertz
+ifunction1 = isine
+ifunction2 = isine
+a1,a2 crosspm gk_Phaser_ratio1, gk_Phaser_ratio2, gk_Phaser_index1, gk_Phaser_index2, khertz, ifunction1, ifunction2
+aleft, aright pan2 a1+a2, ipan
+adamping linseg 0, 0.03, 1, p3 - 0.1, 1, 0.07, 0
+aleft = adamping * aleft * kenvelope
+aright = adamping * aright * kenvelope
+kgain = ampdb(gk_Phaser_level)
+outleta "outleft", aleft * kgain
+outleta "outright", aright * kgain
+;;;;;;;;;;;;;;;;;;;;i
+prints "Phaser      i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+endin
+
+gk_YiString_level init 1
+gk_YiString_reverb_send init .5
+gk_YiString_chorus_send init .5
+instr YiString
+ //////////////////////////////////////////////
+ // Original by Steven Yi.
+ // Adapted by Michael Gogins.
+ //////////////////////////////////////////////
+insno = p1
+istart = p2
+iduration = p3
+ikey = p4
+ivelocity = p5
+iphase = p6
+ipan = p7
+iamp = ampdb(ivelocity) *16
+iattack = i(gk_overlap)
+idecay = i(gk_overlap)
+isustain = p3 - i(gk_overlap)
+p3 = iattack + isustain + idecay
+aenvelope transeg 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
+ihertz = cpsmidinn(ikey)
+;ampenv = madsr:a(1, 0.1, 0.95, 0.5)
+asignal = vco2(1, ihertz)
+asignal = moogladder(asignal, 6000, 0.1)
+asignal *= aenvelope
+aleft, aright pan2 asignal, ipan
+kgain = ampdb(gk_YiString_level)
+outleta "outleft", aleft * kgain * gk_YiString_reverb_send
+outleta "outright", aright * kgain * gk_YiString_reverb_send
+outleta "chorusleft", aleft * kgain * gk_YiString_chorus_send
+outleta "chorusright", aright * kgain * gk_YiString_chorus_send
+;;;;;;;;;;;;;;;;;;;;i
+prints "YiString    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+endin
+
+gk_Droner_partial1 init .1
+gk_Droner_partial2 init .1
+gk_Droner_partial3 init .1
+gk_Droner_partial4 init .1
+gk_Droner_partial5 init .1
+gk_Droner_level init 0.5
+instr Droner
+insno = p1
+istart = p2
+iduration = p3
+ikey = p4
+ivelocity = p5
+iphase = p6
+ipan = p7
+k1 init .5
+k2 init .05
+k3 init .1
+k4 init .2
+k5 init .1
+k6 init .05
+k7 init .1
+k8 init 0
+k9 init 0
+k10 init 0
+k3 = gk_Droner_partial1
+k4 = gk_Droner_partial2
+k5 = gk_Droner_partial3
+k6 = gk_Droner_partial4
+k7 = gk_Droner_partial5
+kwaveform init 0
+iamp = ampdb(ivelocity)
+iattack = i(gk_overlap)
+idecay = i(gk_overlap)
+isustain = p3 - i(gk_overlap)
+p3 = iattack + isustain + idecay
+kenvelope transeg 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
+ihertz = cpsmidinn(ikey)
+isine ftgenonce 0, 0, 65536, 10, 1, 0, .02
+if kwaveform == 0 then
+asignal poscil3 1, ihertz, isine
+endif
+if kwaveform == 1 then
+asignal vco2 1, ihertz, 8 ; integrated saw
+endif
+if kwaveform == 2 then
+asignal vco2 1, ihertz, 12 ; triangle
+endif
+asignal chebyshevpoly asignal, 0, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10
+asignal = asignal * kenvelope * 10
+aleft, aright pan2 asignal, ipan
+adamping linseg 0, 0.03, 1, p3 - 0.1, 1, 0.07, 0
+aleft = adamping * aleft
+aright = adamping * aright
+kgain = ampdb(gk_Droner_level)
+outleta "outleft", aleft * kgain
+outleta "outright", aright * kgain
+;;;;;;;;;;;;;;;;;;;;i
+prints "Droner      i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+endin
+
+gk_Sweeper_britel init 0
+gk_Sweeper_briteh init 2.9
+gk_Sweeper_britels init .2 / 3
+gk_Sweeper_britehs init 2.5 / 2
+gk_Sweeper_level init 0.5
+instr Sweeper
+//////////////////////////////////////////////
+// Original by Iain McCurdy.
+// Adapted by Michael Gogins.
+//////////////////////////////////////////////
+insno = p1
+istart = p2
+iduration = p3
+ikey = p4
+ivelocity = p5
+iphase = p6
+ipan = p7
+iamp = ampdb(ivelocity)
+gisine ftgenonce 0, 0, 65536, 10, 1
+gioctfn ftgenonce 0, 0, 65536, -19, 1, 0.5, 270, 0.5
+iattack = i(gk_overlap)
+idecay = i(gk_overlap)
+isustain = p3 - i(gk_overlap)
+p3 = iattack + isustain + idecay
+kenvelope transeg 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
+ihertz = cpsmidinn(ikey)
+icps = ihertz
+kamp expseg 0.001,0.02,0.2,p3-0.01,0.001
+ktonemoddep jspline 0.01,0.05,0.2
+ktonemodrte jspline 6,0.1,0.2
+ktone poscil3 ktonemoddep, ktonemodrte, gisine
+kbrite rspline gk_Sweeper_britel, gk_Sweeper_briteh, gk_Sweeper_britels, gk_Sweeper_britehs
+ibasfreq init icps
+ioctcnt init 3
+iphs init 0
+a1 hsboscil kenvelope, ktone, kbrite, ibasfreq, gisine, gioctfn, ioctcnt, iphs
+amod poscil3 0.25, ibasfreq*(1/3), gisine
+arm = a1*amod
+kmix expseg 0.001, 0.01, rnd(1), rnd(3)+0.3, 0.001
+kmix=.25
+a1 ntrpol a1, arm, kmix
+;a1 pareq a1/10, 400, 15, .707
+;a1 tone a1, 500
+kpanrte jspline 5, 0.05, 0.1
+kpandep jspline 0.9, 0.2, 0.4
+kpan poscil3 kpandep, kpanrte, gisine
+a1,a2 pan2 a1, kpan
+a1 delay a1, rnd(0.1)
+a2 delay a2, rnd(0.11)
+kenv linsegr 1, 1, 0
+kenv = kenvelope
+aleft = a1*kenv*.02
+aright = a2*kenv*.02
+adamping linseg 0, 0.03, 1, p3 - 0.1, 1, 0.07, 0
+aleft = adamping * aleft
+aright = adamping * aright
+kgain = ampdb(gk_Sweeper_level)
+outleta "outleft", aleft * kgain
+outleta "outright", aright * kgain
+;;;;;;;;;;;;;;;;;;;;i
+prints "Sweeper     i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+endin
+
+gk_Buzzer_Harmonics init 15
+gk_Buzzer_level init .5
+instr Buzzer
+insno = p1
+istart = p2
+iduration = p3
+ikey = p4
+ivelocity = p5
+iphase = p6
+ipan = p7
+iamp = ampdb(ivelocity) * 4
+iattack = i(gk_overlap)
+idecay = i(gk_overlap)
+isustain = p3 - i(gk_overlap)
+p3 = iattack + isustain + idecay
+kenvelope transeg 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
+ihertz = cpsmidinn(ikey)
+;asignal gbuzz kenvelope, ihertz, 3, gk_FirstHarmonic, gk_DistortFactor, gisine
+isine ftgenonce 0, 0, 65536, 10, 1
+gk_Harmonics = gk_Buzzer_Harmonics
+asignal buzz kenvelope, ihertz, gk_Harmonics, isine
+asignal = asignal * 3
+;asignal vco2 kenvelope, ihertz, 12
+;asignal poscil3 kenvelope, ihertz, giharmonics
+;asignal distort asignal, gk_DistortFactor * .4, giwaveshaping
+aleft, aright pan2 asignal, ipan
+adamping linseg 0, 0.03, 1, p3 - 0.1, 1, 0.07, 0
+aleft = adamping * aleft
+aright = adamping * aright
+kgain = ampdb(gk_Buzzer_level)
+outleta "outleft", aleft * kgain
+outleta "outright", aright * kgain
+;;;;;;;;;;;;;;;;;;;;i
+prints "Buzzer      i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+endin
+
+gk_Shiner_level init 0.5
+instr Shiner
+insno = p1
+istart = p2
+iduration = p3
+ikey = p4
+ivelocity = p5
+iphase = p6
+ipan = p7
+iamp = ampdb(ivelocity) * 4
+iattack = i(gk_overlap)
+idecay = i(gk_overlap)
+isustain = p3 - i(gk_overlap)
+p3 = iattack + isustain + idecay
+kenvelope transeg 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
+ihertz = cpsmidinn(ikey)
+gk_Harmonics = 1 * 20
+asignal vco2 kenvelope * 4, ihertz, 12
+aleft, aright pan2 asignal, ipan
+adamping linseg 0, 0.03, 1, p3 - 0.1, 1, 0.07, 0
+aleft = adamping * aleft
+aright = adamping * aright
+kgain = ampdb(gk_Shiner_level)
+;printks2 "master gain:", kgain
+outleta "outleft", aleft * kgain
+outleta "outright", aright * kgain
+;;;;;;;;;;;;;;;;;;;;i
+prints "Shiner      i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+endin
+
+gk_Blower_grainDensity init 150
+gk_Blower_grainDuration init 0.2
+gk_Blower_grainAmplitudeRange init 100
+gk_Blower_grainFrequencyRange init .033
+gk_Blower_level init 0.5
+instr Blower
+ //////////////////////////////////////////////
+ // Original by Hans Mikelson.
+ // Adapted by Michael Gogins.
+ //////////////////////////////////////////////
+i_time = p2
+i_duration = p3
+i_midikey = p4
+i_midivelocity = p5
+i_phase = p6
+i_pan = p6
+i_depth = p8
+i_height = p9
+i_pitchclassset = p10
+i_homogeneity = p11
+ifrequency = cpsmidinn(i_midikey)
+iamplitude = ampdb(i_midivelocity) / 200
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ ; f1 0 65536 1 "hahaha.aif" 0 4 0
+ ; f2 0 1024 7 0 224 1 800 0
+ ; f3 0 8192 7 1 8192 -1
+ ; f4 0 1024 7 0 512 1 512 0
+ ; f5 0 1024 10 1 .3 .1 0 .2 .02 0 .1 .04
+ ; f6 0 1024 10 1 0 .5 0 .33 0 .25 0 .2 0 .167
+ ; a0 14 50
+ ; p1 p2 p3 p4 p5 p6 p7 p8 p9 p10
+ ; Start Dur Amp Freq GrTab WinTab FqcRng Dens Fade
+ ; i1 0.0 6.5 700 9.00 5 4 .210 200 1.8
+ ; i1 3.2 3.5 800 7.08 . 4 .042 100 0.8
+ ; i1 5.1 5.2 600 7.10 . 4 .0320 100 0.9
+ ; i1 7.2 6.6 900 8.03 . 4 .021 150 1.6
+ ; i1 21.3 4.5 1000 9.00 . 4 .031 150 1.2
+ ; i1 26.5 13.5 1100 6.09 . 4 .121 150 1.5
+ ; i1 30.7 9.3 900 8.05 . 4 .014 150 2.5
+ ; i1 34.2 8.8 700 10.02 . 4 .14 150 1.6
+igrtab ftgenonce 0, 0, 65536, 10, 1, .3, .1, 0, .2, .02, 0, .1, .04
+iwintab ftgenonce 0, 0, 65536, 10, 1, 0, .5, 0, .33, 0, .25, 0, .2, 0, .167
+iHz = ifrequency
+ihertz = iHz
+ip4 = iamplitude
+ip5 = iHz
+ip6 = igrtab
+ip7 = iwintab
+ip8 = 0.033
+ip8 = .002
+ip9 = 150
+ip9 = 100
+ip10 = 1.6
+ip10 = 3
+idur = p3
+iamp = iamplitude ; p4
+ifqc = iHz ; cpspch(p5)
+igrtab = ip6
+iwintab = ip7
+ifrng = ip8
+idens = ip9
+ifade = ip10
+igdur = 0.2
+iattack = i(gk_overlap) * 2
+idecay = i(gk_overlap) * 2
+isustain = p3 - i(gk_overlap) * 2
+p3 = iattack + isustain + idecay
+kenvelope transeg 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
+; kamp linseg 0, ifade, 1, idur - 2 * ifade, 1, ifade, 0
+kamp = kenvelope
+; Amp Fqc Dense AmpOff PitchOff GrDur GrTable WinTable MaxGrDur
+aoutl grain ip4, ifqc, gk_Blower_grainDensity, gk_Blower_grainAmplitudeRange,  gk_Blower_grainFrequencyRange, gk_Blower_grainDuration, igrtab, iwintab, 5
+aoutr grain ip4, ifqc, gk_Blower_grainDensity, gk_Blower_grainAmplitudeRange, gk_Blower_grainFrequencyRange, gk_Blower_grainDuration, igrtab, iwintab, 5
+aleft = aoutl * kamp * iamplitude
+aright = aoutr * kamp * iamplitude
+adamping linseg 0, 0.03, 1, p3 - 0.1, 1, 0.07, 0
+aleft = adamping * aleft
+aright = adamping * aright
+kgain = ampdb(gk_Blower_level)
+outleta "outleft", aleft * kgain
+outleta "outright", aright * kgain
+;;;;;;;;;;;;;;;;;;;;i
+prints "Blower      i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+endin
+
+opcode FM_Clang_veloc, i, iii
+; *p->r = *p->ilo + csound->curip->m_veloc*(*p->ihi - *p->ilo) * dv127;
+ivel, ilow, ihigh xin
+xout ilow + ivel * (ihigh - ilow) * 0.007874
+endop
+
+instr FM_Clang ; Sound producing instrument. Triggered by MIDI notes or score notes.
+//////////////////////////////////////////////
+// Original by Iain McCurdy.
+// Adapted by Michael Gogins.
+//////////////////////////////////////////////
+kgain init 1
+insno = p1
+itime = p2
+iduration = p3
+ikey = p4
+ivelocity = p5
+iphase = p6
+ipan = p7
+idepth = p8
+iheight = p9
+ipcs = p10
+ihomogeneity = p11
+icps = cpsmidinn(ikey)
+inum = ikey
+iamplitude = ampdb(ivelocity)
+; icps cpsmidi
+; inum notnum
+iKybdScl table inum,gi_FM_Clang_scale ; Keyboard scaling value. Note '0' maps to a value of -1, note 64 maps to a value of zero and note 127 maps to a value of 1.
+; Amplitude Envelope
+idur = i(gk_FM_Clang_Dur)
+iAmpCurve = -8
+iRelTim = (i(gk_FM_Clang_Sustain)==1?idur:0.1)
+;iAttVel veloc i(gk_FM_Clang_AttVel)*0.05,0
+iAttVel FM_Clang_veloc ivelocity, i(gk_FM_Clang_AttVel)*0.05,0
+iAttTim = iAttVel + i(gk_FM_Clang_AttTim)
+if iAttTim==0 then
+aAEnv transegr 1,idur,iAmpCurve,0, iRelTim,iAmpCurve,0
+else
+aAEnv transegr 0,iAttTim,iAmpCurve, 1,idur,iAmpCurve,0, iRelTim,iAmpCurve,0
+endif
+; Key velocity to amplitude
+;iAVel veloc 0,0.1
+iAVel FM_Clang_veloc ivelocity, 0, 0.1
+; FM index
+iNdx veloc 0,i(gk_FM_Clang_NdxVel) ; Key velocity to FM index
+iNdx FM_Clang_veloc ivelocity, 0,i(gk_FM_Clang_NdxVel) ; Key velocity to FM index
+kIEnv transeg iNdx*octave(-iKybdScl*4),idur,-i(gk_FM_Clang_NdxCurve),0 ; Index envelope. Amplitude influenced by 'Index' widget control and keyboard scaling (index reduced for higher notes, increased for lower notes)
+; Carrier frequency keyboard scaling
+icar = 1 * octave(iKybdScl*i(gk_FM_Clang_CarKyb))
+; Carrier ratio modulation
+iModRte table inum,gi_FM_Clang_scale
+iModRte = octave(iModRte*i(gk_FM_Clang_ModRteKyb))
+kDepEnv transeg 1,idur,-4,0
+amod lfo gk_FM_Clang_ModDep*0.1*kDepEnv, gk_FM_Clang_ModRte * iModRte, 0
+; Noise bandpass filter cutoff as it respond to the 'Carrier Follow' switch
+kcf = gk_FM_Clang_NseFllw==1?icps*gk_FM_Clang_mod:icps
+; Noise amplitude keyboard following
+kNseAmp = octave(iKybdScl*-4)*gk_FM_Clang_NseAmp
+; Main FM algorithm
+if gk_FM_Clang_NseAmp>0 then ; If noise amplitude is greater than zero...
+aNse gauss kNseAmp ; ... generate some gaussian noise
+aNse butbp aNse,kcf,kcf*gk_FM_Clang_NseBW ; bandpass filter the noise
+aNse butbp aNse,kcf,kcf*gk_FM_Clang_NseBW ; and again
+else
+aNse = 0 ; Otherwise no noise signal!
+endif
+idetune table inum,gi_FM_Clang_detune ; Read a detuning value from a random table
+asig foscil iAVel, icps*cent(-gk_FM_Clang_Detune*idetune), icar +aNse, gk_FM_Clang_mod, kIEnv, gi_FM_Clang_sine ; FM pair
+aModSig foscil iAVel, icps*cent(-gk_FM_Clang_Detune*idetune), icar+amod+aNse, gk_FM_Clang_mod, kIEnv, gi_FM_Clang_sine ; FM pair with modulation
+asig = asig + (aModSig * gk_FM_Clang_ModMix) ; Mix the two FM pairs.
+; Auxilliary FM algorithm (used for detuning)
+if gk_FM_Clang_DtnMix>0&&gk_FM_Clang_Detune>0 then
+if gk_FM_Clang_NseAmp>0 then
+aNse gauss kNseAmp
+aNse butbp aNse,kcf,kcf*gk_FM_Clang_NseBW
+aNse butbp aNse,kcf,kcf*gk_FM_Clang_NseBW
+else
+aNse = 0
+endif
+idetune table inum+128,gi_FM_Clang_detune ; Read a detuning value from a random table
+asig2 foscil iAVel, icps*cent(gk_FM_Clang_Detune*idetune), icar +aNse, gk_FM_Clang_mod, kIEnv, gi_FM_Clang_sine ; Detuning applied to fundemental
+aModSig2 foscil iAVel, icps*cent(gk_FM_Clang_Detune*idetune), icar+amod+aNse, gk_FM_Clang_mod, kIEnv, gi_FM_Clang_sine
+asig2 = asig2 + (aModSig2 * gk_FM_Clang_ModMix)
+asig = asig + asig2*gk_FM_Clang_DtnMix
+endif
+; Filter Fundemental
+if i(gk_FM_Clang_FiltFund)==1 then ; If filter fundemental switch is active
+asig butbr asig,icps*icar,icps*icar*0.3 ; Filter out fundemental
+asig butbr asig,icps*icar,icps*icar*0.3 ; and again to make sure it is all gone
+endif
+; Lowpass Filter
+if i(gk_FM_Clang_LPF)<32 then ; If lowpass filter is less than maximum...
+kCF limit icps*gk_FM_Clang_LPF,20,20000 ; ...create the cutoff value in CPS based on fundemental and LPF ratio control. Limit to prevent out of range values.
+asig clfilt asig,kCF,0,2 ; Butterworth lowpass filter
+endif
+; Amplitude Envelope
+kgain = ampdb(gk_FM_Clang_level)
+asig = asig * aAEnv * gk_FM_Clang_Amp * kgain; Apply amplitude envelope
+; Stereo Effect
+iDlyTimL table inum,gi_FM_Clang_stereo ; Read a delay time value from a random table based on note played
+iDlyTimR table inum+128,gi_FM_Clang_stereo ; Read a different delay time value from a random table based on note played
+if gk_FM_Clang_StWidth>0&&gk_FM_Clang_StMix>0 then ; If 'width' is above zero and 'mix' is above zero...
+aL vdelay asig, iDlyTimL*gk_FM_Clang_StWidth*1000, 0.2*1000 ; ...left channel delay
+aR vdelay asig, iDlyTimR*gk_FM_Clang_StWidth*1000, 0.2*1000 ; right channel delay
+aL ntrpol asig, aL, gk_FM_Clang_StMix ; Mix delayed and dry signal
+aR ntrpol asig, aR, gk_FM_Clang_StMix ;
+aleft = aL;*gk_FM_Clang_Dry
+aright = aR;*gk_FM_Clang_Dry
+gaSendL = gaSendL + aL ; Send to reverb
+gaSendR = gaSendR + aR
+else
+aleft = asig;*gk_FM_Clang_Dry
+aright = asig;*gk_FM_Clang_Dry
+gaSendL = gaSendL + asig ; Send to reverb
+gaSendR = gaSendR + asig
+endif
+aleft1 = aleft * ampdb(ivelocity)
+aright1 = aright * ampdb(ivelocity)
+asignal = (aleft1 + aright1) *100
+aleft2, aright2 pan2 asignal, ipan
+outleta "outleft", aleft2
+outleta "outright", aright2
+prints "FM_Clang    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+endin
+
+gk_FM_Clang_preset init 1
+instr FM_Clang_preset
+gk_FM_Clang_preset chnget "gk_FM_Clang_preset"
+gk_FM_Clang_preset_ int gk_FM_Clang_preset
+ktrig changed gk_FM_Clang_preset_
+#define SET_PRESET(N'Amp'AttTim'AttVel'Dur'Sustain'mod'NdxVel'NdxCurve'CarKyb'DtnMix'Detune'LPF'FiltFund'NseAmp'NseBW'NseFllw'ModMix'ModDep'ModRte'ModRteKyb'StMix'StWidth'RvbDryWet'RvbSize)
+#
+if i(gk_FM_Clang_preset_)==$N then
+printks2 "Setting preset %d\n", $N
+chnset $Amp ,"Amp"
+chnset $AttTim ,"AttTim"
+chnset $AttVel ,"AttVel"
+chnset $Dur ,"Dur"
+chnset $Sustain ,"Sustain"
+chnset $mod ,"mod"
+chnset $NdxVel ,"NdxVel"
+chnset $NdxCurve ,"NdxCurve"
+chnset $CarKyb ,"CarKyb"
+chnset $DtnMix ,"DtnMix"
+chnset $Detune ,"Detune"
+chnset $LPF ,"LPF"
+chnset $FiltFund ,"FiltFund"
+chnset $NseAmp ,"NseAmp"
+chnset $NseBW ,"NseBW"
+chnset $NseFllw ,"NseFllw"
+chnset $ModMix ,"ModMix"
+chnset $ModDep ,"ModDep"
+chnset $ModRte ,"ModRte"
+chnset $ModRteKyb,"ModRteKyb"
+chnset $StMix ,"StMix"
+chnset $StWidth ,"StWidth"
+chnset $RvbDryWet,"RvbDryWet"
+chnset $RvbSize ,"RvbSize"
+endif
+#
+if ktrig==1 then
+reinit SEND_PRESET
+endif
+SEND_PRESET:
+; N'Amp'AttTim'AttVel'Dur'Sustain'mod 'NdxVel'NdxCurve'CarKyb'DtnMix'Detune'LPF'FiltFund'NseAmp'NseBW'NseFllw'ModMix'ModDep'ModRte'ModRteKyb'StMix'StWidth'RvbDryWet'RvbSize)
+$SET_PRESET(1'0.5'0 '0 '12 '1 '2.29'1 '16 '0 '1 '1.5 '16 '1 '1000 '0.001'0 '1 '0.1 '3 '0 '0.5 '0.01 '0.3 '0.55 )
+$SET_PRESET(2'0.8'0 '0 '1.7'1 '5.04'0.55 '100 '0 '0 '0 '3.8'0 '0 '0.001'0 '0 '0.1 '3 '0 '0.5 '0.01 '0.1 '0.55 )
+$SET_PRESET(3'0.5'0.1 '0.5 '3.8'1 '1.00'2 '28 '0 '1 '15 '16 '0 '500 '0.0077'1 '1 '0.1 '3 '0 '0.5 '0.01 '0.3 '0.55 )
+$SET_PRESET(4'0.5'0 '0.006 '24 '1 '3.19'1 '15 '0 '0.47 '2.5 '16 '1 '0 '0.001'0 '1 '0.1 '0.33 '1.7 '0.5 '0.01 '0.3 '0.55 )
+$SET_PRESET(5'0.8'0 '1 '6.6'0 '1.12'1 '13 '-2.68 '1 '25 '3.8'0 '0 '0.001'0 '0 '0.1 '3 '0 '1 '0.02 '0.172 '0.21 )
+$SET_PRESET(6'3.25'0.1 '1 '1.28'0 '2.55'0.55 '35 '-2.3 '0 '1.5 '16 '1 '2000 '0.0025'0 '0 '0.1 '3 '0 '0.5 '0.01 '0.68 '0.93 )
+$SET_PRESET(7'4 '0.1 '1 '2.39'1 '2.55'0.55 '35 '-2.3 '0 '1.5 '16 '1 '16 '0.1262'0 '0 '0.1 '3 '0 '0 '0.01 '1.00 '0 )
+$SET_PRESET(8'1 '0 '0 '14.25'1 '6.97'0.55 '35 '-2.3 '0.13 '1.5 '4.78'1 '16 '0.0326'0 '1 '0.1 '3 '0 '0 '0.01 '0.6 '0 )
+$SET_PRESET(9'1.65'0 '0 '1.7'1 '1.20'0.55 '100 '0 '0 '0 '3.8'0 '0 '0.001'0 '0 '0.1 '3 '0 '0.5 '0.01 '0.1 '0.55 )
+$SET_PRESET(10'2' 0 '0 '1 '1 '2.15'0.55 '100 '0 '0.21 '12 '3.8'0 '0 '0.001'0 '0 '0.1 '3 '0 '0.5 '0.01 '0.35 '0.37 )
+$SET_PRESET(11'2 '0.1 '1 '3.44'1 '3.75'0.55 '100 '0 '0.21 '25 '16 '0 '0 '0.001'1 '0 '0.1 '3 '0 '0.5 '0.05 '0 '0.37 )
+$SET_PRESET(12'2 '0.1 '1 '1.45'1 '2.66'1.00 '16 '0 '0.21 '25 '16 '0 '0 '0.001'1 '0 '0.1 '3 '0 '0.5 '0.05 '0.6 '0.37 )
+$SET_PRESET(13'1.9'0 '0 '24 '1 '2.29'1.00 '23.25 '-4 '1 '1.5 '16 '1 '151 '0.0178'1 '1 '0.1 '3 '0 '0.5 '0.01 '0.3 '0.55 )
+endin
+
+gk_Piano_level init .25
+instr PianoOut
+kgain = ampdb(gk_Piano_level)
+giFluidsynth fluidEngine 0, 0
+giFluidSteinway fluidLoad "Piano Steinway Grand Model C (21,738KB).sf2", giFluidsynth, 1
+fluidProgramSelect giFluidsynth, 0, giFluidSteinway, 0, 1
+i_instrument = p1
+i_time = p2
+i_duration = p3
+i_midikey = p4
+i_midivelocity = p5
+aoutleft, aoutright fluidOut giFluidsynth
+aoutleft = aoutleft * 5000000
+aoutright = aoutright * 5000000
+;printks "fluidOut: %9.4f %9.4f\n", 0.5, aoutleft, aoutright
+outleta "outleft", aoutleft * kgain
+outleta "outright", aoutright * kgain
+;;;;;;;;;;;;;;;;;;;;i
+prints "PianoOut    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+endin
+
+/**
+ * Solina Chorus, based on Solina String Ensemble Chorus Module
+
+   J. Haible: Triple Chorus
+   http://jhaible.com/legacy/triple_chorus/triple_chorus.html
+
+   Hugo Portillo: Solina-V String Ensemble
+   http://www.native-instruments.com/en/reaktor-community/reaktor-user-library/entry/show/4525/
+
+   Parabola tabled shape borrowed from Iain McCurdy delayStereoChorus.csd:
+   http://iainmccurdy.org/CsoundRealtimeExamples/Delays/delayStereoChorus.csd
+
+   Author: Steven Yi
+   Date: 2016.05.22
+   Adapted by Michael Gogins
+*/
+gi_solina_parabola ftgen 0, 0, 65537, 19, 0.5, 1, 180, 1
+; 3 sine wave LFOs, 120 degrees out of phase
+opcode sol_lfo_3, aaa, kk
+kfreq, kamp xin
+aphs phasor kfreq
+; Funny: Function syntax does not work in this context.
+a0   tablei aphs, gi_solina_parabola, 1, 0, 1
+a120 tablei aphs, gi_solina_parabola, 1, 0.333, 1
+a240 tablei aphs, gi_solina_parabola, 1, -0.333, 1
+xout (a0 * kamp), (a120 * kamp), (a240 * kamp)
+endop
+
+opcode solina_chorus, a, akkkk
+aLeft, klfo_freq1, klfo_amp1, klfo_freq2, klfo_amp2 xin
+imax = 100
+;; slow lfo
+as1, as2, as3 sol_lfo_3 klfo_freq1, klfo_amp1
+;; fast lfo
+af1, af2, af3  sol_lfo_3 klfo_freq2, klfo_amp2
+at1 = limit(as1 + af1 + 5, 0.0, imax)
+at2 = limit(as2 + af2 + 5, 0.0, imax)
+at3 = limit(as3 + af3 + 5, 0.0, imax)
+a1 vdelay3 aLeft, at1, imax
+a2 vdelay3 aLeft, at2, imax
+a3 vdelay3 aLeft, at2, imax
+xout (a1 + a2 + a3) / 3
+endop
+
+gk_SolinaChorus_chorus_lfo1_hz init .18
+gk_SolinaChorus_chorus_lfo1_amp init .6
+gk_SolinaChorus_chorus_lfo2_hz init 6
+gk_SolinaChorus_chorus_lfo2_amp init .2
+instr SolinaChorus
+aleft inleta "inleft"
+aright inleta "inright"
+aleft solina_chorus aleft, gk_SolinaChorus_chorus_lfo1_hz, gk_SolinaChorus_chorus_lfo1_amp, gk_SolinaChorus_chorus_lfo2_hz, gk_SolinaChorus_chorus_lfo2_amp
+aright solina_chorus aright, gk_SolinaChorus_chorus_lfo1_hz, gk_SolinaChorus_chorus_lfo1_amp, gk_SolinaChorus_chorus_lfo2_hz, gk_SolinaChorus_chorus_lfo2_amp
+outleta "outleft", aleft
+outleta "outright", aright
+endin
+
+gk_Reverb_Feedback init 0.975
+gk_Delay_Modulation init 0.875
+
+instr ReverbLeft
+aleft init 0
+azero init 0
+aleft inleta "inleft"
+aleft, aright reverbsc aleft, azero, gk_Reverb_Feedback, 15000.
+outleta "outleft", aleft
+;;;;;;;;;;;;;;;;;;;;i
+prints "ReverbLeft  i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+endin
+
+instr ReverbRight
+aleft init 0
+azero init 0
+aright inleta "inright"
+aleft, aright reverbsc azero, aright, gk_Reverb_Feedback, 15000.0
+outleta "outright", aright
+;;;;;;;;;;;;;;;;;;;;i
+prints "ReverbRight i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+endin
+
+gk_Reverb2_Feedback init 0.975
+gk_Delay2_Modulation init 0.875
+
+instr Reverb2Left
+aleft init 0
+azero init 0
+aleft inleta "inleft"
+aleft, aright reverbsc aleft, azero, gk_Reverb2_Feedback, 15000.
+outleta "outleft", aleft
+;;;;;;;;;;;;;;;;;;;;i
+prints "Reverb2Left i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+endin
+
+instr Reverb2Right
+aleft init 0
+azero init 0
+aright inleta "inright"
+aleft, aright reverbsc azero, aright, gk_Reverb2_Feedback, 15000.0
+outleta "outright", aright
+;;;;;;;;;;;;;;;;;;;;i
+prints "Reverb2Righ i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+endin
+
+gk_CenterHz init 200
+gk_Gain init 1
+gk_Q init 0.7071067 ; sqrt(.5)
+instr ParametricEQ
+aleft inleta "inleft"
+aright inleta "inright"
+aleft pareq aleft, gk_CenterHz, ampdb(gk_Gain), gk_Q, 0
+aright pareq aright, gk_CenterHz, ampdb(gk_Gain), gk_Q, 0
+outleta "outleft", aleft
+outleta "outright", aright
+;;;;;;;;;;;;;;;;;;;;i
+prints "ParametrcEQ i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+endin
+
+gk_MasterOutput_level init .5
+instr MasterOutput
+aleft inleta "inleft"
+aright inleta "inright"
+kgain = ampdb(gk_MasterOutput_level)
+; printks2 "Master gain: %f\n", kgain
+iamp init 1
+iattack init .01
+idecay init 10
+isustain = 2400 - (iattack + idecay)
+aenvelope transeg 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
+aright butterlp aright, 16000
+aleft butterlp aleft, 16000
+outs aleft * kgain * aenvelope, aright * kgain * aenvelope
+idate date
+itim     date
+Stim     dates     itim
+Syear    strsub    Stim, 20, 24
+Smonth   strsub    Stim, 4, 7
+Sday     strsub    Stim, 8, 10
+iday     strtod    Sday
+Shor     strsub    Stim, 11, 13
+Smin     strsub    Stim, 14, 16
+Ssec     strsub    Stim, 17, 19
+Sfilename sprintf  "Parametric Lindenmayer System Study 2-%s_%s_%02d_%s_%s_%s.wav", Syear, Smonth, iday, Shor, Smin, Ssec
+prints sprintf("Output filename: %s\n", Sfilename)
+fout Sfilename, 16, aleft, aright
+;;;;;;;;;;;;;;;;;;;;i
+prints "MasterOutpt i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+endin
+
+instr Controls
+    gk_Bower_level chnget "gk_Bower_level"
+    gk_Bower_pressure chnget "gk_Bower_pressure"
+    gk_Blower_grainDensity chnget "gk_Blower_grainDensity"
+    gk_Blower_grainDuration chnget "gk_Blower_grainDuration"
+    gk_Blower_grainAmplitudeRange chnget "gk_Blower_grainAmplitudeRange"
+    gk_Blower_grainFrequencyRange chnget "gk_Blower_grainFrequencyRange"
+    gk_Blower_level chnget "gk_Blower_level"
+    gk_Buzzer_harmonics chnget "gk_Buzzer_harmonics"
+    gk_Buzzer_level chnget "gk_Buzzer_level"
+    gk_Droner_partial1 chnget "gk_Droner_partial1"
+    gk_Droner_partial2 chnget "gk_Droner_partial2"
+    gk_Droner_partial3 chnget "gk_Droner_partial3"
+    gk_Droner_partial4 chnget "gk_Droner_partial4"
+    gk_Droner_partial5 chnget "gk_Droner_partial5"
+    gk_Droner_level chnget "gk_Droner_level"
+    gk_Harpsichord_level chnget "gk_Harpsichord_level"
+    gk_Harpsichord_pick chnget "gk_Harpsichord_pick"
+    gk_Harpsichord_reflection chnget "gk_Harpsichord_reflection"
+    gk_Harpsichord_pluck chnget "gk_Harpsichord_pluck"
+    gk_MasterOutput_level chnget "gk_MasterOutput_level"
+    gk_Phaser_ratio1 chnget "gk_Phaser_ratio1"
+    gk_Phaser_ratio2 chnget "gk_Phaser_ratio2"
+    gk_Phaser_index1 chnget "gk_Phaser_index1"
+    gk_Phaser_index2 chnget "gk_Phaser_index2"
+    gk_Phaser_level chnget "gk_Phaser_level"
+    gk_Piano_level chnget "gk_Piano_level"
+    gk_Shiner_level chnget "gk_Shiner_level"
+    gk_Sweeper_britel chnget "gk_Sweeper_britel"
+    gk_Sweeper_briteh chnget "gk_Sweeper_briteh"
+    gk_Sweeper_britels chnget "gk_Sweeper_britels"
+    gk_Sweeper_britehs chnget "gk_Sweeper_britehs"
+    gk_Sweeper_level chnget "gk_Sweeper_level"
+    gk_YiString_reverb_send chnget "gk_YiString_reverb_send"
+    gk_YiString_cbhorus_send chnget "gk_YiString_cbhorus_send"
+    gk_YiString_level chnget "gk_YiString_level"
+    ;gk_SolinaChorus_chorus_lfo1_hz init .18
+    ;gk_SolinaChorus_chorus_lfo1_amp init .6
+    ;gk_SolinaChorus_chorus_lfo2_hz init 6
+    ;gk_SolinaChorus_chorus_lfo2_amp init .2
+    gk_Reverb_Feedback chnget "gk_Reverb_Feedback"
+    gk_Reverb2_Feedback chnget "gk_Reverb2_Feedback"
+    gk_overlap chnget "gk_overlap"
+;;;;;;;;;;;;;;;;;;;;i
+prints "Controls    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+endin
+
+instr 999
+;;;;;;;;;;;;;;;;;;;;i
+prints "StopPerform i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+exitnow
+endin
+              </textarea>
 		<script id="example" type="x-shader/x-fragment">
 precision mediump float;
 uniform float time;
@@ -58,7 +1012,7 @@ void main(){
     vec2 uv = gl_FragCoord.xy / resolution.xy;
     uv = uv * 2. - 1.;
     uv.x *= resolution.x / resolution.y;
-    float e = time * .125;
+    float e = time * .0125;
     float d = 128.*mouse.x / resolution.x + 8.5;
     float zoom = 16.;
     vec2 g = uv * zoom;
@@ -75,24 +1029,24 @@ void main(){
 }        
         </script>
              <script id="fragmentShader" type="x-shader/x-fragment">
-                        #ifdef GL_ES
-                        precision mediump float;
-                        #endif
+#ifdef GL_ES
+precision mediump float;
+#endif
 
-                        uniform vec2 resolution;
-                        uniform sampler2D texture;
+uniform vec2 resolution;
+uniform sampler2D texture;
 
-                        void main(){
-                            vec2 uv = gl_FragCoord.xy / resolution.xy;
-                            gl_FragColor = texture2D(texture, uv);
-                        }
-            </script>
+void main(){
+    vec2 uv = gl_FragCoord.xy / resolution.xy;
+    gl_FragColor = texture2D(texture, uv);
+}
+        </script>
             <script id="vertexShader" type="x-shader/x-vertex">
-                        attribute vec3 position;
+                    attribute vec3 position;
 
-                        void main(){
-                            gl_Position = vec4(position, 1.0);
-                        }
+                    void main(){
+                        gl_Position = vec4(position, 1.0);
+                    }
             </script>
             <script id="surfaceVertexShader" type="x-shader/x-vertex">
                         attribute vec3 position;
@@ -105,6 +1059,21 @@ void main(){
                         }
         </script>
             <script>
+            try {
+                var csound = require('csound.node');
+                console.log('csound:', csound);
+                //var fs = require('fs');
+                var nwgui = require('nw.gui');
+                var nw_window = nwgui.Window.get();
+                nw_window.on('close', function() {
+                    console.log('Closing down...');
+                    process.exit(0);
+                });
+                nw_window.showDevTools();                  
+            } catch (err) {
+                alert(err);
+                console.log(err.message);
+            }
             initialize_helper();
             var compressor=initialize_compressor();
             if (!window.requestAnimationFrame){
@@ -128,7 +1097,7 @@ void main(){
             // Greetings to Iq/RGBA! ;)
             var quality = 2, quality_levels = [0.5, 1, 2, 4, 8];
             var toolbar, compileButton, fullscreenButton, compileTimer, errorLines = [];
-            var code, canvas, gl, buffer, currentProgram, vertexPosition, screenVertexPosition, panButton,
+            var csd, code, canvas, gl, buffer, currentProgram, vertexPosition, screenVertexPosition, panButton,
             parameters = { startTime: Date.now(), time: 0, mouseX: 0.5, mouseY: 0.5, screenWidth: 0, screenHeight: 0 },
             surface = { centerX: 0, centerY: 0, width: 1, height: 1, isPanning: false, isZooming: false, lastX: 0, lastY: 0 },
             frontTarget, backTarget, screenProgram, getWebGL, resizer = {}, compileOnChangeCode = true;
@@ -138,6 +1107,14 @@ void main(){
             }
 
             function init(){
+                var orc = document.getElementById('orc').value;
+                csound.compileOrc(orc);
+                csound.setOption('-m0');
+                //csound.setOption('-j3');
+                csound.setOption('--nodisplays');
+                csound.setOption('-odac');
+                ///gui.revert();
+                csound.perform();
                 canvas = document.createElement('canvas');
                 canvas.style.display = 'block';
                 document.body.appendChild(canvas);
@@ -173,7 +1150,7 @@ void main(){
 //~                 button.href = '/';
 //~                 rightside.appendChild(button);
                 var button = document.createElement('button');
-                button.textContent = 'hide fragment';
+                button.textContent = 'show fragment';
                 button.addEventListener('click', function (event){
                     if (isCodeVisible()){
                         button.textContent = 'show fragment';
@@ -183,7 +1160,7 @@ void main(){
                         set_parent_button('hidden');
                         stopHideUI();
                     } else {
-                        button.textContent = 'hide code';
+                        button.textContent = 'hide fragment';
                         code.getWrapperElement().style.display = '';
                         compileButton.style.visibility = 'visible';
                         set_save_button('visible');
@@ -379,6 +1356,7 @@ void main(){
                 }
                 startHideUITimer();
             }
+            
             function computeSurfaceCorners(){
                 if (gl){
                     surface.width = surface.height * parameters.screenWidth / parameters.screenHeight;
@@ -393,6 +1371,7 @@ void main(){
                         surface.centerX - halfWidth, surface.centerY + halfHeight]), gl.STATIC_DRAW);
                 }
             }
+            
             function resetSurface(){
                 surface.centerX = surface.centerY = 0;
                 surface.height = 1;
@@ -607,91 +1586,151 @@ void main(){
                 }
             }
             
-            // A note is an array of floats: [T, I, K, V, P], where 
-            // T = time, I = instrument, K = MIDI key, V = MIDI velocity, P = stereo pan.
-            
-            function event_comparator(a, b, compare_time) {
-                if (typeof compare_time === 'undefined') {
-                    compare_time = false;
-                }
-                if (compare_time) {
-                    if (a[0] < b[0]) {
-                        return -1;
-                    }
-                    if (a[0] > b[0]) {
-                        return 1;
-                    }
-                }
-                if (a[2] < b[2]) {
-                    return -1;
-                }
-                if (a[2] > b[2]) {
-                    return 1;
-                }
-                if (a[3] < b[3]) {
-                    return -1;
-                }
-                if (a[3] > b[3]) {
-                    return 1;
-                }
-                if (a[1] < b[1]) {
-                    return -1;
-                }
-                if (a[1] > b[1]) {
-                    return 1;
-                }
-                // Equality.
-                return 0;
-            }
-
             function animate(){
                 requestAnimationFrame(animate);
                 render();
             }
-                   
-            var old_pixels = new Uint8Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4);
-            var new_pixels = new Uint8Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4);
-            var note_on_events = new Set();
-            var current_events = new Set();
-            var note_off_events = new Set();
             
-            // Indexing for pixel data:
-            // i = 4 * ((x * width) + y * height))
-            // r = i + 0
-            // g = i + 1
-            // b = i + 2
-            // alpha = i + 3
+            // A note is an array of floats: 
+            // [time, instrument, MIDI key, MIDI velocity, stereo pan].
+            // But for creating triggers, we omit time and pan.
+            
+            var make_trigger_key = function(event) {
+                var key = sprintf('%12.5f %12.5f %12.5f', event[2], event[3], event[1]);
+                return key;
+            }
+                   
+            var old_pixels = null;
+            var new_pixels = new Uint8Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4);
+            var note_on_events = new Silencio.ValueSet(make_trigger_key);
+            var current_events = new Silencio.ValueSet(make_trigger_key);
+            var note_off_events = new Silencio.ValueSet(make_trigger_key);
+            
+            // https://www.opengl.org/sdk/docs/man/html/glReadPixels.xhtml
+            // glReadPixels and glReadnPixels return values from each pixel 
+            // with lower left corner at (x+i,y+j) for 0<=i<width and 
+            // 0<=j<height. This pixel is said to be the ith column in the 
+            // jth row. Pixels are returned in row order from the lowest to 
+            // the highest row, left to right in each row.
             
             var maximum_event_count = 12;
-            var value_threshold = .9;
+            var value_threshold = 1;
+            var instrument_count = 8;
+            var range = 72;
+            var bass = 24;
+            var dynamic_range = 20;
+            var softest = 40;
+            var maximum_value = 0;
+            var stride = 20;
             
-            function create_event(x, y, color) {
+            /**
+             * Converts an RGB color value to HSV. Conversion formula
+             * adapted from http://en.wikipedia.org/wiki/HSV_color_space.
+             * Assumes r, g, and b are contained in the set [0, 255] and
+             * returns h, s, and v in the set [0, 1].
+             *
+             * @param   Number  r       The red color value
+             * @param   Number  g       The green color value
+             * @param   Number  b       The blue color value
+             * @return  Array           The HSV representation
+             */
+            function rgb_to_hsv(r, g, b){
+                r = r/255, g = g/255, b = b/255;
+                var max = Math.max(r, g, b);
+                var min = Math.min(r, g, b);
+                var h, s, v = max;
+                var d = max - min;
+                s = max == 0 ? 0 : d / max;
+                if (max == min){
+                    h = 0; 
+                } else {
+                    // More efficient than switch?
+                    if        (max == r) {
+                        h = (g - b) / d + (g < b ? 6 : 0);                     
+                    } else if (max == g) {
+                        h = (b - r) / d + 2;                    
+                    } else if (max == b) {
+                        h = (r - g) / d + 4;
+                    }
+                    h /= 6;
+                }
+                return [h, s, v];
+            }
+            
+            function create_event(x, y, h, v) {
                 var event = []
-                event.push(time);
+                event.push(parameters.time / 1000);
+                event.push(Math.floor((x / gl.drawingBufferWidth) * instrument_count + 1));
+                event.push(Math.floor((y / gl.drawingBufferHeight) * range + bass));
+                event.push(Math.floor(v * dynamic_range + softest));
+                event.push(h * 2 - 1);
+                return event;
             }
 
             function get_events() {
-                note_on_events.size = 0;
-                note_off_events.size = 0;
-                for (var x = 0; x < gl.drawingBufferWidth; x++) {
-                    for (var y = 0; y < gl.drawingBufferHeight; y++) {
-                        var i = 4 * ((x * gl.drawingBufferWidth) + y * gl.drawingBufferHeight);
-                        var old_color = tinycolor({r: old_pixels[i + 0], g: old_pixels[i + 1], b: old_pixels[i + 2], a: old_pixels[i + 3]});
-                        old_value = old_color.getValue();
-                        var new_color = tinycolor({r: new_pixels[i + 0], g: new_pixels[i + 1], b: new_pixels[i + 2], a: new_pixels[i + 3]});
-                        new_value = new_color.getValue();
-                        // Possible on event.
-                        if (old_value !== new_value && new_value >= value_threshold) {
-                            
-                        } 
-                        // Possible off event.
-                        if (old_value !== new value && new_value < value_threshold) {
-                        }
+                note_on_events.set_size(0);
+                note_off_events.set_size(0);
+                maximum_value = 0;
+                var old_hsv;
+                var new_hsv;
+                // By row from bottom (0) to top (height - 1).
+                for (var row_index = 0; row_index < gl.drawingBufferHeight; row_index += stride) {
+                    // By column from left (0) to right (width - 1).
+                    for (var column_index = 0; column_index < gl.drawingBufferWidth; column_index += stride) {
+                        var i = 4 * (row_index * gl.drawingBufferHeight + column_index);
+                            old_hsv = rgb_to_hsv(old_pixels[i + 0], old_pixels[i + 1], old_pixels[i + 2], old_pixels[i + 3]);
+                            new_hsv = rgb_to_hsv(new_pixels[i + 0], new_pixels[i + 1], new_pixels[i + 2], new_pixels[i + 3]);
+                            if (new_hsv[2] > maximum_value) {
+                                maximum_value = new_hsv[2];
+                            }
+                            if (isNaN(new_hsv[2]) || isNaN(old_hsv[2])) {
+                                // We should only come here if indexing is wrong.
+                                alert('isNaN for:' + new_hsv + ' or ' + old_hsv); 
+                            }
+                            // Possible on event.
+                            if ((old_hsv[2] < value_threshold) && (new_hsv[2] >= value_threshold)) {
+                                note_on_events.add(create_event(column_index, row_index, new_hsv[0], new_hsv[2]));
+                            } 
+                            // Possible off event.
+                            if ((old_hsv[2] >= value_threshold) && (old_hsv[2] < value_threshold)) {
+                            }
                     }
                 }
             }
+
+            // [0_time, 1_instrument, 2_MIDI=key, 3_MIDI_velocity, 4_stereo_pan].
+
+            var salience_comparator = function(a, b) {
+                if (a[3] < b[3]) return -1;
+                if (a[3] > b[3]) return 1;
+                if (a[2] < b[2]) return -1;
+                if (a[2] > b[2]) return 1;
+                if (a[1] < b[1]) return -1;
+                if (a[1] > b[1]) return 1;
+                if (a[4] < b[4]) return -1;
+                if (a[4] > b[4]) return 1;
+                return 0;
+            }
+            
+            function on_events_to_score(events) {
+                sco = '';
+                var n = Math.min(maximum_event_count, events.length);
+                for (var i = 0; i < n; i++) {
+                    var event = events[i];
+                    var i_statement = sprintf('i %12.5f %12.5f %12.5f %12.5f %12.5f %12.5f\n', event[1], 0, 2, event[2], event[3], event[4]);
+                    sco = sco.concat(i_statement);
+                }
+                return sco;
+            }
             
             function dispatch_events() {
+                var sorted = Array.from(note_on_events.values()).sort(salience_comparator);
+                var score = on_events_to_score(sorted);
+                var eighths = Math.floor(parameters.time * 8);
+                if (eighths % 300 == 0) {
+                    csound.readScore(score);
+                    console.log('Sent ' + sorted.length + ' events to Csound at ' + parameters.time);
+                }
             }
             
             function render(){
@@ -727,7 +1766,7 @@ void main(){
                 gl.bindFramebuffer(gl.FRAMEBUFFER, null);
                 gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
                 gl.drawArrays(gl.TRIANGLES, 0, 6);
-                old_pixels = new_pixels;
+                old_pixels = new_pixels.slice();
                 gl.readPixels(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight, gl.RGBA, gl.UNSIGNED_BYTE, new_pixels);
                 // Swap buffers.
                 var tmp = frontTarget;
