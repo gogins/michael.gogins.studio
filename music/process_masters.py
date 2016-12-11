@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 '''
-Attempts to build all required metadata of listed works.
+P R O C E S S   M A S T E R S
+Author: Michael Gogins
 
+Attempts to process masters for all works listed in a tab-delimited text
+database. Processing produces normalized, cd-audio, mp3, and wmv files
+with metadata and sortable, self-explanatory filenames in a single directory.
 '''
 
 import datetime
@@ -17,8 +21,16 @@ output = r'sifting.m3u'
 sox_path = r'C:\Program_Files_x86\sox-14-4-2'
 sndfile_path = r'C:\Program_Files\Mega-Nerd\libsndfile\bin'
 lame_path = r'C:\Program_Files_x86\"Lame For Audacity"'
+bwfmetaedit_path = r'''C:\Program Files\BWF_MetaEdit_CLI_1.3.1_Windows_x64'''
+# YouTube accepts MOV, MP4 (MPEG4), AVI, WMV, FLV, 3GP, MPEGPS, WebM
+# To use FFmpeg see https://bbs.archlinux.org/viewtopic.php?id=168433 and https://www.virag.si/2015/06/encoding-videos-for-youtube-with-ffmpeg/
+# ffmpeg -loop 1 -framerate 2 -i input.png -i audio.ogg -c:v libx264 -preset medium -tune stillimage -crf 18 -c:a copy -shortest -pix_fmt yuv420p output.mkv
+# ffmpeg -i <input file> -codec:v libx264 -crf 21 -bf 2 -flags +cgop -pix_fmt yuv420p -codec:a aac -strict -2 -b:a 384k -r:a 48000 -movflags faststart <output_name>.mp4
+ffmpeg_program = r'''C:\Program_Files\ffmpeg-3.2-win64-shared\bin\ffmpeg.exe'''
+# ffmpeg tags are documented here: http://jonhall.info/how_to/create_id3_tags_using_ffmpeg
 
-database = r'''Michael Gogins	2001	Garden of Algorithms	01:08	1	Cloud Strata	10:01.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\01-Cloud Strata.wav	01/14/14 03:03 AM		Publish	0.00		Registered		Published by CDBaby			Published
+cd_had_titles_in_reverse_order = r'''
+Michael Gogins	2001	Garden of Algorithms	01:08	1	Cloud Strata	10:01.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\01-Cloud Strata.wav	01/14/14 03:03 AM		Publish	0.00		Registered		Published by CDBaby			Published
 Michael Gogins	2001	Garden of Algorithms		2	Triptych	03:32.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\02-Triptych.wav	01/14/14 03:04 AM		Publish	0.00		Registered		Published by CDBaby			Published
 Michael Gogins	2001	Garden of Algorithms		3	Dark Tower	05:13.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\03-Dark Tower.wav	01/14/14 03:04 AM		Publish	0.00		Registered		Published by CDBaby			Published
 Michael Gogins	2001	Garden of Algorithms		4	Bending Arches	02:43.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\04-Bending Arches.wav	01/14/14 03:04 AM		Publish	0.00		Registered		Published by CDBaby			Published
@@ -30,6 +42,22 @@ Michael Gogins	2001	Garden of Algorithms		9	Hex	08:02.00	d:\Dropbox\Michael Gogi
 Michael Gogins	2001	Garden of Algorithms		10	MC3	05:02.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\10-MC 3.wav	01/14/14 03:06 AM		Publish	0.00		Registered		Published by CDBaby			Published
 Michael Gogins	2001	Garden of Algorithms		11	Piano Fall	07:27.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\11-Piano Fall.wav	01/14/14 03:06 AM		Publish	0.00		Registered		Published by CDBaby			Published
 Michael Gogins	2001	Garden of Algorithms		12	Three Trees	05:15.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\12-Three Trees.wav	01/14/14 03:07 AM		Publish	0.00		Registered		Published by CDBaby			Published
+'''
+database = r'''
+Michael Gogins	2001	Garden of Algorithms	01:08	1	Three Trees	10:01.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\01-Cloud Strata.wav	01/14/14 03:03 AM		Publish	0.00		Registered		Published by CDBaby			Published
+Michael Gogins	2001	Garden of Algorithms		2	Piano Fall	03:32.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\02-Triptych.wav	01/14/14 03:04 AM		Publish	0.00		Registered		Published by CDBaby			Published
+Michael Gogins	2001	Garden of Algorithms		3	MC3	05:13.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\03-Dark Tower.wav	01/14/14 03:04 AM		Publish	0.00		Registered		Published by CDBaby			Published
+Michael Gogins	2001	Garden of Algorithms		4	Hex	02:43.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\04-Bending Arches.wav	01/14/14 03:04 AM		Publish	0.00		Registered		Published by CDBaby			Published
+Michael Gogins	2001	Garden of Algorithms		5	Linmuse 21	06:48.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\05-Broken Differential.wav	01/14/14 03:04 AM		Publish	0.00		Registered		Published by CDBaby			Published
+Michael Gogins	2001	Garden of Algorithms		6	Chaotic Squares	03:58.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\06-970104e.wav	01/14/14 03:05 AM		Publish	0.00		Registered		Published by CDBaby			Published
+Michael Gogins	2001	Garden of Algorithms		7	970104e	04:05.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\07-Chaotic Squares.wav	01/14/14 03:05 AM		Publish	0.00		Registered		Published by CDBaby			Published
+Michael Gogins	2001	Garden of Algorithms		8	Broken Differential	06:10.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\08-LinMuse21.wav	01/14/14 03:05 AM		Publish	0.00		Registered		Published by CDBaby			Published
+Michael Gogins	2001	Garden of Algorithms		9	Bending Arches	08:02.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\09-Hex.wav	01/14/14 03:06 AM		Publish	0.00		Registered		Published by CDBaby			Published
+Michael Gogins	2001	Garden of Algorithms		10	Dark Tower	05:02.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\10-MC 3.wav	01/14/14 03:06 AM		Publish	0.00		Registered		Published by CDBaby			Published
+Michael Gogins	2001	Garden of Algorithms		11	Triptych	07:27.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\11-Piano Fall.wav	01/14/14 03:06 AM		Publish	0.00		Registered		Published by CDBaby			Published
+Michael Gogins	2001	Garden of Algorithms		12	Cloud Strata	05:15.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\12-Three Trees.wav	01/14/14 03:07 AM		Publish	0.00		Registered		Published by CDBaby			Published
+'''
+x = '''
 Michael Gogins	2006	Semblance	00:54	1	19991216a	04:02.00	d:\Dropbox\Michael Gogins\Semblance\01-19991216a.wav	08/03/10 01:18 AM		Publish	0.00			Accepted as composite	Published by CDBaby			Published
 Michael Gogins	2006	Semblance		2	20000611B-b	07:33.00	d:\Dropbox\Michael Gogins\Semblance\02-20000611B-b.wav	08/03/10 01:18 AM		Publish	0.00			Accepted as composite	Published by CDBaby			Published
 Michael Gogins	2006	Semblance		3	csound-2004-06-11-17.43.24.py	06:41.00	d:\Dropbox\Michael Gogins\Semblance\03-csound-2004-06-11-17.43.24.py.wav	01/14/14 02:53 AM		Publish	0.00				Published by CDBaby			Published
@@ -75,11 +103,15 @@ Michael Gogins	2016	Summertrees		6	drone.py.wav	09:50.00	d:\Dropbox\Michael Gogi
 Michael Gogins	2016	Summertrees		7	Attractor1.mml-b	04:08.00	d:\Dropbox\Michael Gogins\Summertrees\07-Various _ 07_Attractor1.mml-b.master.wav	01/14/14 03:15 AM		Publish	1.00			Accepted as composite
 Michael Gogins	2016	Summertrees		8	csound[2005-04-16][15.29.17]-a.py	05:09.00	d:\Dropbox\Michael Gogins\Summertrees\08-Various _ 08_csound[2005-04-16][15.29.17]-a.py.master.wav	01/14/14 03:15 AM		Publish	1.00			Accepted as composite
 '''
-# Test:
-database = '''
-Michael Gogins	2016	Garden of the Hesperides		3	Telamon - Copy	08:02.00	d:\Dropbox\\2015-06-22 NYCEMF\Telamon - Copy.wav	02/08/15 12:24 PM		Publish	0.00						Published
-'''
+# Test database:
+#database = '''
+#Michael Gogins	2016	Garden of the Hesperides		3	Telamon - Copy	08:02.00	d:\Dropbox\\2015-06-22 NYCEMF\Telamon - Copy.wav	02/08/15 12:24 PM		Publish	0.00						#Published
+#'''
+
+notes = 'Electroacoustic Music'
 lines = database.split('\n')
+cwd = os.getcwd()
+print 'cwd:                    ', cwd
 filecount = 0
 for line in lines:
     line = line.replace('\\', '/');
@@ -98,7 +130,7 @@ for line in lines:
         spectrogram_filename = '%s.png' % label
         cd_quality_filename = '%s.cd.wav' % label
         mp3_filename = '%s.mp3' % label
-        wmv_filename = '%s.wmv' % label
+        mp4_filename = '%s.mp4' % label
         print 'Original file:          ', filepath
         print 'Basename:               ', basename
         print 'Rootname:               ', rootname
@@ -107,19 +139,62 @@ for line in lines:
         print 'Spectrogram filename:   ', spectrogram_filename
         print 'CD quality filename:    ', cd_quality_filename
         print 'MP3 filename:           ', mp3_filename
-        print 'WMV filename:           ', wmv_filename
-        sox_normalize_command = '''%s\\sox -S "%s" "%s" gain -n -3''' % (sox_path, filepath, master_filename)
+        print 'MP4 filename:           ', mp4_filename
+        bext_description       = notes
+        bext_originator        = 'Michael Gogins'
+        bext_orig_ref          = basename
+        #bext_umid              = xxx
+        #bext_orig_date         = xxx
+        #bext_orig_time         = xxx
+        #bext_coding_hist       = xxx
+        #bext_time_ref          = xxx
+        str_comment            = notes
+        str_title              = title
+        str_copyright          = 'Copyright (C) %s by Michael Gogins' % year
+        str_artist             = 'Michael Gogins'
+        str_date               = year
+        str_album              = album
+        str_license            = 'ASCAP'
+        sox_normalize_command = '''%s\\sox -S "%s" "%s" gain -n -3''' % (sox_path, filepath, master_filename + 'untagged.wav')
         print 'sox_normalize command:  ', sox_normalize_command
         os.system(sox_normalize_command)
-        sox_spectrogram_command = '''%s\\sox -S "%s" -n spectrogram -t"%s" -c"Copyright (C) %s by Michael Gogins (http://michaelgogins.tumblr.com), Irreducible Productions (ASCAP)" -o"%s"''' % (sox_path, master_filename, label, year, spectrogram_filename)
+        tag_wav_command = '''%s\\sndfile-metadata-set "%s" --bext-description "%s" --bext-originator "%s" --bext-orig-ref "%s" --str-comment "%s" --str-title "%s" --str-copyright "%s" --str-artist  "%s" --str-date "%s" --str-album "%s" --str-license "%s" "%s"''' % (sndfile_path, master_filename + 'untagged.wav', bext_description, bext_originator, bext_orig_ref, str_comment, str_title, str_copyright, str_artist, str_date, str_album, str_license, master_filename)
+        print 'tag_wav_command:        ', tag_wav_command
+        os.system(tag_wav_command)
+        sox_spectrogram_command = '''%s\\sox -S "%s" -n spectrogram -o "%s" -t"%s" -c"%s"''' % (sox_path, master_filename, spectrogram_filename, label, str_copyright + ' (Irreducible Productions, ASCAP)')
         print 'sox_spectrogram_command:', sox_spectrogram_command
         os.system(sox_spectrogram_command)
-        sox_cd_command = '''%s\\sox -S "%s" -b 16 -r 44100 "%s"''' % (sox_path, master_filename, cd_quality_filename)
+        sox_cd_command = '''%s\\sox -S "%s" -b 16 -r 44100 "%s"''' % (sox_path, master_filename, cd_quality_filename + 'untagged.wav')
         print 'sox_cd_command:         ', sox_cd_command
         os.system(sox_cd_command)
-        print
+        tag_wav_command = '''%s\\sndfile-metadata-set "%s" --bext-description "%s" --bext-originator "%s" --bext-orig-ref "%s" --str-comment "%s" --str-title "%s" --str-copyright "%s" --str-artist  "%s" --str-date "%s" --str-album "%s" --str-license "%s" "%s"''' % (sndfile_path, cd_quality_filename + 'untagged.wav', bext_description, bext_originator, bext_orig_ref, str_comment, str_title, str_copyright, str_artist, str_date, str_album, str_license, cd_quality_filename)
+        print 'tag_wav_command:        ', tag_wav_command
+        os.system(tag_wav_command)
+        mp3_command = '''%s\\lame.exe --add-id3v2 --tt "%s" --ta "%s" --tl "%s" --ty "%s" --tc "%s" --tn "%s" --tg "%s"  "%s" "%s"''' % (lame_path, title, "Michael Gogins", album, year, notes, track, "Electroacoustic", master_filename, mp3_filename)
+        print 'mp3_command:            ', mp3_command
+        os.system(mp3_command)
+        mp4_command = '''"%s" -r 1 -i "%s" -i "%s" -codec:a aac -strict -2 -b:a 384k -r:a 48000 -c:v libx264 -b:v 500k "%s"''' % (ffmpeg_program, os.path.join(cwd, spectrogram_filename), os.path.join(cwd, master_filename), os.path.join(cwd, mp4_filename))
+        mp4_metadata =  '-metadata title="%s" ' % title
+        mp4_metadata += '-metadata album="%s" ' % album
+        mp4_metadata += '-metadata date="%s" ' % year
+        mp4_metadata += '-metadata track="%s" ' % track
+        mp4_metadata += '-metadata genre="%s" ' % "Electroacoustic Music"
+        mp4_metadata += '-metadata publisher="%s" ' % 'Irreducible Productions, ASCAP'
+        mp4_metadata += '-metadata copyright="%s" ' % str_copyright
+        mp4_metadata += '-metadata composer="%s" ' % 'Michael Gogins'
+        mp4_metadata += '-metadata composer="%s" ' % 'Michael Gogins'
+        mp4_metadata += '-metadata artist="%s" ' % 'Michael Gogins'
+        mp4_command = '''"%s" -y -loop 1 -framerate 2 -i "%s" -i "%s" -c:v libx264 -preset medium -tune stillimage -crf 18 -codec:a aac -strict -2 -b:a 384k -r:a 48000 -shortest -pix_fmt yuv420p -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" %s "%s"''' % (ffmpeg_program, os.path.join(cwd, spectrogram_filename), os.path.join(cwd, master_filename), mp4_metadata, os.path.join(cwd, mp4_filename))
+        mp4_command = mp4_command.replace('\\', '/')
+        print 'mp4_command:            ', mp4_command
+        # Limited length for os.system command, so...
+        with open('temp.bat', 'w') as f:
+            f.write(mp4_command)
+            f.write('\n')
+            f.close()
+        os.system('temp.bat')
         filecount = filecount + 1
+        os.system('del *wavuntagged.wav')
         print
-
 print 'Finished with', filecount, 'files.'
 

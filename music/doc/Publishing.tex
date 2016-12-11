@@ -82,14 +82,20 @@ I have sifted through the works and ended up with 3.4 hours worth of ``publishab
 
 \subsubsection{2016 December 9}
 
-I've finished the spreadsheet including adding times, grouping works into albums, detecting and removing redundant works, and so on. There are still 3.4 hours. I will do \emph{\textbf{Summertrees}} and \emph{\textbf{Sevier}} as albums on CDBaby and maybe also \emph{\textbf{Sound Fractals}}. \emph{\textbf{Blue and Yellow Leaves}} and \emph{\textbf{The Garden of the Hesperides}} will have to go directly to YouTube.
+I've finished the spreadsheet including adding times, grouping works into albums, detecting and removing redundant works, and so on. There are still 3.4 hours. I will do \emph{\textbf{Summertrees}} and \emph{\textbf{Sevier}} as albums on CDBaby and maybe also \emph{\textbf{Sound Fractals}}. \emph{\textbf{Blue and Yellow Leaves}} and \emph{\textbf{The Garden of the Hesperides}} will have to go directly to YouTube. The \emph{\textbf{Garden of Algorithms}} CD ended up with titles in reverse order with respect to the actual tracks. I will reverse that here but I'm not sure what to do about that with CDBaby.
 
-I must still tag, normalize, and video-ize works. Note that CDBaby distributes only CD quality audio and prefers that format. MP3s can be 128 to 320 kpbs. Windows Live Movie maker seems to encode only at 128 kpbs. So the workflow, which I can automate based on my spreadsheet, is:
+\subsubsection*{2016 December 10}
+
+I must still tag, normalize, and video-ize works. Note that CDBaby distributes only CD quality audio and prefers that format. MP3s can be 128 to 320 kpbs. Google takes MOV, MP4 (MPEG4), AVI, WMV, FLV, 3GP, MPEGPS, and WebM and prefers AAC audio encoding. So the workflow, which I can automate based on my spreadsheet, is:
 
 \begin{itemize}
-	\item Create CD quality WAV soundfile, normalized and tagged, for CDBaby. If the file already is CD quality, do nothing.
-	\item Create 128 kpbs MP3, tagged, for copyright and ASCAP.
-	\item Create WMV file from master for YouTube.
+	\item Create a normalized master soundfile from the original output soundfile.
+	\item Create a CD quality WAV soundfile from the master soundfile, normalized and tagged, for CDBaby. 
+	\item Create a 128 kpbs MP3 from the master soundfile, tagged, for copyright and ASCAP.
+	\item Create a spectrogram with metadata in labels from the master soundfile, for YouTube.
+	\item Create an MP4 file with an image from the master soundfile and the spectrogram, tagged, for YouTube.
 \end{itemize}
+
+\noindent I have created a \texttt{process\_masters.py} script to automate the above steps, taking a text database of works and producing all files in one directory.
 
 \end{document} 
