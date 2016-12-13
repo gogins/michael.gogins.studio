@@ -47,7 +47,7 @@ I have produced a number of works that deserve to be published. These include al
 The major issue is that I have published two albums with CDBaby and plan to publish more, but there is some conflict between CDBaby which requires to be the exclusive digital distributor, and my other channels for publication such as SoundCloud, Tumblr, and YouTube. These are the steps:
 
 \begin{enumerate}
-\item I have verified my accounts with the United States Copyright Office, ASCAP, YouTube, and AdSense. I still need to register with AdRev.
+\item I have verified my accounts with the United States Copyright Office, ASCAP, YouTube, and AdSense. I still need to register with AdRev (update: I have now done so).
 \item Of course, identify which works I wish to publish and ensure they are finished! I have written a Python script \texttt{create\_complete\_playlist.py} that searches my hard disk for soundfiles and compiles both a Windows playlist and a tab-delimited table of pieces.
 \item Make sure the finished works are, where possible, tagged with name, title, copyright notice, and other data. If possible, I will create a script for this. My earlier approach of doing this at the time of rendering is no longer feasible because I now have too many ways of rendering works.
 \item Register those works with the United States Copyright Office at: \url{https://eco.copyright.gov/eService_enu/}. I should copyright  the ``phonorecord'' as registration type SR as well as, at the same time, registering for composition and arrangement copyrights. It is not necessary to deposit a score, the phonorecord suffices. Copyright is \$65 per registration for single works with hard copies. Online it is cheaper. Grouped into albums it is cheaper. Obviously I can only afford the latter.
@@ -82,20 +82,37 @@ I have sifted through the works and ended up with 3.4 hours worth of ``publishab
 
 \subsubsection{2016 December 9}
 
-I've finished the spreadsheet including adding times, grouping works into albums, detecting and removing redundant works, and so on. There are still 3.4 hours. I will do \emph{\textbf{Summertrees}} and \emph{\textbf{Sevier}} as albums on CDBaby and maybe also \emph{\textbf{Sound Fractals}}. \emph{\textbf{Blue and Yellow Leaves}} and \emph{\textbf{The Garden of the Hesperides}} will have to go directly to YouTube. The \emph{\textbf{Garden of Algorithms}} CD ended up with titles in reverse order with respect to the actual tracks. I will reverse that here but I'm not sure what to do about that with CDBaby.
+I've finished the spreadsheet including adding times, grouping works into albums, detecting and removing redundant works, and so on. There are still 3.4 hours. I will publish \emph{\textbf{Summertrees}} and \emph{\textbf{Sound Fractals}} as albums on CDBaby. \emph{\textbf{Blue and Yellow Leaves}}, \emph{\textbf{Sevier}}, and \emph{\textbf{The Garden of the Hesperides}} will have to be published directly on YouTube. The \emph{\textbf{Garden of Algorithms}} CD ended up with titles in reverse order with respect to the actual tracks. I will reverse that here, but I'm not sure what to do about that with CDBaby.
 
 \subsubsection*{2016 December 10}
 
 I must still tag, normalize, and video-ize works. Note that CDBaby distributes only CD quality audio and prefers that format. MP3s can be 128 to 320 kpbs. Google takes MOV, MP4 (MPEG4), AVI, WMV, FLV, 3GP, MPEGPS, and WebM and prefers AAC audio encoding. So the workflow, which I can automate based on my spreadsheet, is:
 
 \begin{itemize}
-	\item Create a normalized master soundfile from the original output soundfile.
+	\item Create a normalized master soundfile from the original output soundfile, with the original resolution.
 	\item Create a CD quality WAV soundfile from the master soundfile, normalized and tagged, for CDBaby. 
 	\item Create a 128 kpbs MP3 from the master soundfile, tagged, for copyright and ASCAP.
 	\item Create a spectrogram with metadata in labels from the master soundfile, for YouTube.
-	\item Create an MP4 file with an image from the master soundfile and the spectrogram, tagged, for YouTube.
+	\item Create an MP4 file at the highest permissible resolution with an image from the master soundfile and the spectrogram, tagged, for YouTube.
 \end{itemize}
 
 \noindent I have created a \texttt{process\_masters.py} script to automate the above steps, taking a text database of works and producing all files in one directory.
+
+\subsubsection*{2016 December 11}
+
+I have registered all outstanding works with ASCAP, applied for copyright for \emph{\textbf{Semblance}}, and uploaded all non-CDBaby works to YouTube and AdRev for monetization with some minor variations in types of ads. The processing script took two days to write, but ended up saving me just oodles of work.
+
+I now need to submit \emph{\textbf{Summertrees}} and \emph{\textbf{Sound Fractals}} as albums on CDBaby. I will then be completely caught up with the publication side of things.
+
+\subsubsection*{2016 December 12}
+
+I have (almost but not quite) finished uploading and registering all outstanding non-CDBaby works. There is a question about CDBaby registering some works with ASCAP, which I must investigate.
+
+I am researching how to publish CDs on CDBaby, if it is possible simply to upload the tracks, or if I need an ISO and a cover, or if I need to send physical CDs. Update: I have decided to upload albums for digital distribution only. I may do differently next time, but this will get me caught up.
+
+Then I just need to edit all my links on Tumblr.
+
+It seems I can't embed my entire channel, but it's easy to embed individual videos of my works.
+
 
 \end{document} 
