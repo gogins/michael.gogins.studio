@@ -1105,7 +1105,7 @@ endin
                 scaleX: 0,
                 scaleY: 0
             }
-            // Initialize data points
+             // Initialize data points
             for (var i = 0; i < NUM_SUBSETS; i++){
                 var subsetPoints = [];
                 for (var j = 0; j < NUM_POINTS_SUBSET; j++){
@@ -1125,6 +1125,7 @@ endin
             var Scene_speed = 2;///parseFloat(document.getElementById('Scene_speed').value);
             var rotationSpeed = 0;
             var randomization = 0;
+            var score_plane_bounding_box = null;
             init();
             animate();
             function init() {
@@ -1140,7 +1141,7 @@ endin
                 for (var s = 0; s < NUM_SUBSETS; s++) {
                     hueValues[s] = Math.random();
                 }
-                // Create particle systems
+               // Create particle systems
                 for (var k = 0; k < NUM_LEVELS; k++){
                     for (var s = 0; s < NUM_SUBSETS; s++){
                         var geometry = new THREE.Geometry();
@@ -1185,19 +1186,31 @@ endin
                     if (camera.position.y >  CAMERA_BOUND) camera.position.y = CAMERA_BOUND;
                 }
                 camera.lookAt( scene.position );
-                for( i = 0; i < scene.children.length; i++ ) {
-                    scene.children[i].position.z +=  Scene_speed;
-                    scene.children[i].rotation.z += rotationSpeed * .1;
-                    if (scene.children[i].position.z > camera.position.z){
-                        scene.children[i].position.z = - (NUM_LEVELS -1) * LEVEL_DEPTH;
-                        if (scene.children[i].needsUpdate == 1){
-                            scene.children[i].geometry.verticesNeedUpdate = true;
-                            if (typeof scene.children[i].myMaterial !== 'undefined') {
-                                scene.children[i].myMaterial.color.setHSL( hueValues[scene.children[i].mySubset], DEF_SATURATION, DEF_BRIGHTNESS);
+                for(var i = 1; i < scene.children.length; i++ ) {
+                    var child = scene.children[i];
+                    child.position.z +=  Scene_speed;
+                    child.rotation.z += rotationSpeed * .1;
+                    if (child.position.z > camera.position.z){
+                        child.position.z = - (NUM_LEVELS -1) * LEVEL_DEPTH;
+                        if (child.needsUpdate == 1){
+                            child.geometry.verticesNeedUpdate = true;
+                            if (typeof child.myMaterial !== 'undefined') {
+                                child.myMaterial.color.setHSL( hueValues[child.mySubset], DEF_SATURATION, DEF_BRIGHTNESS);
                             }
-                            scene.children[i].needsUpdate = 0;
+                            child.needsUpdate = 0;
                         }
                     }
+                    //~ var contained_count = 0;
+                    //~ for (var j = 0; j < child.geometry.vertices.length; j++) {
+                        //~ var particle = child.geometry.vertices[j];
+                        //~ if (score_plane_bounding_box.containsPoint(particle)) {
+                            //~ contained_count +=1 ;
+                            //~ child.myMaterial.color.setHSL(50, DEF_SATURATION, DEF_BRIGHTNESS);
+                        //~ }
+                    //~ }
+                    //~ if (contained_count > 1) {
+                        //~ logMessage({data: 'contained: ' + contained_count + '\n'});
+                    //~ }
                 }
                 renderer.render(scene, camera);
                 if (typeof csound !== 'undefined') {
@@ -1535,11 +1548,16 @@ endin
                 },
             };
             var gui = null;
+            var a_slider = null;
+            var b_slider = null;
+            var c_slider = null;
+            var d_slider = null;
+            var e_slider = null;
             window.onload = function() {
                 gui = new dat.GUI({width: 300});
                 gui.remember(parameters);
-                gui.add(parameters, 'Play').name('Play');
-                gui.add(parameters, 'Stop').name('Stop');
+                gui.add(parameters, 'Play').name('Play [Ctrl-P]');
+                gui.add(parameters, 'Stop').name('Stop [Ctrl-S]');
                 gui.add(parameters, 'Developer_tools').name('Debugger');
                 gui.add(parameters, 'Close').name('Close');
                 var Master = gui.addFolder('Master effects');
@@ -1590,22 +1608,22 @@ endin
                 add_slider(Sweeper, 'gk_Sweeper_level', -40, 40);
                 add_slider(Sweeper, 'gk_Sweeper_level', -40, 40);
                 var Hopalong = gui.addFolder('Hopalong fractal');
-                add_slider(Hopalong, 'A', -30, 30);
-                add_slider(Hopalong, 'B', .2, 1.8);
-                add_slider(Hopalong, 'C', 5, 17);
-                add_slider(Hopalong, 'D', 0, 10);
-                add_slider(Hopalong, 'E', 5, 12);
+                a_slider = add_slider(Hopalong, 'A', -30, 30).name('E [Alt-A]');
+                b_slider = add_slider(Hopalong, 'B', .2, 1.8).name('B [Alt-B]');
+                c_slider = add_slider(Hopalong, 'C', 5, 17).name('C [Alt-C]');
+                d_slider = add_slider(Hopalong, 'D', 0, 10).name('D [Alt-D]');
+                e_slider = add_slider(Hopalong, 'E', 5, 12).name('E [Alt-E]');
                 var Chords = gui.addFolder('Chords and transformations')
                 Chords.add(parameters, 'Bb7');
                 Chords.add(parameters, 'FM9');
-                Chords.add(parameters, 'K').name('K()');
+                Chords.add(parameters, 'K').name('K() [Ctrl-K]');
                 Chords.add(parameters, 'Q2').name('Q(2)');
-                Chords.add(parameters, 'Q3').name('Q(3)');
+                Chords.add(parameters, 'Q3').name('Q(3) [Ctrl-Q]');
                 Chords.add(parameters, 'Q5').name('Q(5)');
                 Chords.add(parameters, 'J2_2').name('J(2,2)');
                 Chords.add(parameters, 'J2_3').name('J(2,3)');
                 Chords.add(parameters, 'J3_1').name('J(3,1)');
-                Chords.add(parameters, 'T5').name('D()');
+                Chords.add(parameters, 'T5').name('D() [Ctrl-D]');
                 var Generate = gui.addFolder('Note generation')
                 add_slider(Generate, 'Scene_speed', .5, 20).name('Scene speed');
                 add_slider(Generate, 'Scene_randomization', 0, 1).name('Scene randomization');
@@ -1658,40 +1676,81 @@ endin
                 slider.onChange(on_parameter_change);
                 return slider;
             };
-            function handleMessage(message) {
+            function logMessage(message) {
                 console.log(message);
                 var messages_textarea = document.getElementById("console");
                 var existing = messages_textarea.value;
                 messages_textarea.value = existing + message.data;
                 messages_textarea.scrollTop = messages_textarea.scrollHeight;
             }
-            $(document).on("keypress", function (e) {
-                console.log('e.which:' + e.which);
+            // Used to find out what actually happens when a key is pressed.
+            function printKey(e) {
+              e = e || event
+              //if (document.forms.keyform[e.type + 'Ignore'].checked) return
+              var evt = e.type
+              while (evt.length < 10) evt += ' ';
+              var data = evt +
+                ' keyCode=' + e.keyCode +
+                ' which=' + e.which +
+                ' charCode=' + e.charCode +
+                ' char=' + String.fromCharCode(e.keyCode || e.charCode) +
+                (e.shiftKey ? ' +shift' : '') +
+                (e.ctrlKey ? ' +ctrl' : '') +
+                (e.altKey ? ' +alt' : '') +
+                (e.metaKey ? ' +meta' : '') + '\n';
+
+              var message = {data: data};
+              //if (document.forms.keyform[e.type + 'Stop'].checked) {
+              //  e.preventDefault ? e.preventDefault() : (e.returnValue = false)
+              //}
+              logMessage(message);
+            }
+            // The 'keydown' event is used for key bindings.
+            $(document).on("keydown", function (e) {
+                //printKey(e);
+                var e_char = String.fromCharCode(e.keyCode || e.charCode);
                 if (e.ctrlKey === true) {
-                    if        (e.which === 19) {
+                    if        (e_char === 'H') {
                         $("#statistics").toggle();
-                    } else if (e.which === 10) {
-                        $("#messages").toggle();
-                    } else if (e.which === 11) {
+                        gui.toggle();
+                    } else if (e_char === 'K') {
                         parameters.K();
-                    } else if (e.which === 17) {
+                    } else if (e_char === 'Q') {
                         parameters.Q3();
-                    } else if (e.which === 4) {
+                    } else if (e_char === 'D') {
                         parameters.T5();
-                    } else if (e.which === 20) {
+                    } else if (e_char === 'T') {
                         chord = chord.T(2);
+                    } else if (e_char === 'P') {
+                        parameters.Play();
+                    } else if (e_char === 'S') {
+                        parameters.Stop();
                     }
+
+                } else if (e.altKey === true) {
+                    var sign = -1;
+                    if (e.shiftKey === true) {
+                        sign = 1;
+                    }
+                    if        (e_char === 'A') {
+                        parameters.A += a_slider.__impliedStep * sign;
+                        a_slider.updateDisplay();
+                    } else if (e_char === 'B') {
+                        parameters.B += b_slider.__impliedStep * sign;
+                        b_slider.updateDisplay();
+                    } else if (e_char === 'C') {
+                        parameters.C += c_slider.__impliedStep * sign;
+                        c_slider.updateDisplay();
+                    } else if (e_char === 'D') {
+                        parameters.D += d_slider.__impliedStep * sign;
+                        d_slider.updateDisplay();
+                    } else if (e_char === 'E') {
+                        parameters.E += e_slider.__impliedStep * sign;
+                        e_slider.updateDisplay();
+                  }
                 }
+                return false;
              });
        </script>
-        <!--
-        TODO:
-
-        Key bindings for performance controls:
-            Chord operations: K [Ctrl-k], Q3 [Ctrl-q], D [Ctrl-d], T2 [Ctrl-t]
-            Hopalong parameters: a, b, c, d, e, shift is up, no shift is down.
-            Show/mide statistics [Ctrl-s], messages [Ctrl-m], menu [Ctrl-h].
-        Better styling of statistics, Csound messages.
-        -->
-    </body>
+     </body>
 </html>
