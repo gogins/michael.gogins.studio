@@ -1387,21 +1387,19 @@ endin
                 var score_text = score.toString();
                 // Protect against trying to call an undefined Csound.
                 if (typeof csound !== 'undefined') {
-                    ///if (csound.isPlaying()) {
-                        score.sendToCsound(csound);
-                        var Chord_cell = document.getElementById('Chord_cell');
-                        Chord_cell.innerHTML = chord.name();
-                        var Notes_cell = document.getElementById('Notes_cell');
-                        Notes_cell.innerHTML = note_count;
-                        var Subset_cell  = document.getElementById('Subset_cell');
-                        Subset_cell.innerHTML = subset_index;
-                        var Point_cell  = document.getElementById('Point_cell');
-                        Point_cell.innerHTML = subset_point_index;
-                        var X_cell  = document.getElementById('X_cell');
-                        X_cell.innerHTML = sprintf("%011.4f", point.x);
-                        var Y_cell  = document.getElementById('Y_cell');
-                        Y_cell.innerHTML = sprintf("%011.4f", point.y);
-                    ///}
+                    score.sendToCsound(csound);
+                    var Chord_cell = document.getElementById('Chord_cell');
+                    Chord_cell.innerHTML = chord.name();
+                    var Notes_cell = document.getElementById('Notes_cell');
+                    Notes_cell.innerHTML = note_count;
+                    var Subset_cell  = document.getElementById('Subset_cell');
+                    Subset_cell.innerHTML = subset_index;
+                    var Point_cell  = document.getElementById('Point_cell');
+                    Point_cell.innerHTML = subset_point_index;
+                    var X_cell  = document.getElementById('X_cell');
+                    X_cell.innerHTML = sprintf("%011.4f", point.x);
+                    var Y_cell  = document.getElementById('Y_cell');
+                    Y_cell.innerHTML = sprintf("%011.4f", point.y);
                 }
                 score.clear();
                 note_count = note_count + 1;
@@ -1559,7 +1557,7 @@ endin
                 gui.add(parameters, 'Play').name('Play [Ctrl-P]');
                 gui.add(parameters, 'Stop').name('Stop [Ctrl-S]');
                 gui.add(parameters, 'Developer_tools').name('Debugger');
-                gui.add(parameters, 'Close').name('Close');
+                gui.add(parameters, 'Close').name('Close').name('Exit [Ctrl-X]');
                 var Master = gui.addFolder('Master effects');
                 add_slider(Master, 'gk_overlap', 0, 20);
                 add_slider(Master, 'gk_Reverb_Feedback', 0, 1);
@@ -1725,6 +1723,8 @@ endin
                         parameters.Play();
                     } else if (e_char === 'S') {
                         parameters.Stop();
+                    } else if (e_char === 'X') {
+                        parameters.Close();
                     }
 
                 } else if (e.altKey === true) {
