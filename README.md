@@ -11,7 +11,7 @@ This is my private Git repository, intended to serve as my creative studio for c
 
 My open source toolkit code and other resources for computer music, including some example pieces, may be found at https://github.com/gogins/gogins.github.io. In general, pieces that use Silencio from gogins.github.io should be created in a subdirectory of studio with a symbolic link to gogins.github.io/csound/silencio. Alternatively, just copy the silencio directory of gogins.github.io to the working directory.
 
-To try to keep the size of this repository down run this periodically:
+To try to keep the size of this repository down, run this periodically:
 
 ```
 git count-objects -v --human-readable
@@ -19,6 +19,8 @@ git reflog expire --all --expire=now
 git gc --prune=now --aggressive
 git count-objects -v --human-readable
 ```
+
+Also, try to avoid versioning media files such as photographs, fix them up before committing them.
 
 ## Guiding Principles
 
