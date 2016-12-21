@@ -1033,13 +1033,14 @@ endin
             lsys = new ParametricLindenmayer.PLSystem();
             // Move(i,t,d,k,v,p)
             lsys.set_axiom('T(0);Push();Note(1,1,1,1,1,1);Pop();Note(2,3,1,9,1,1);');
-            lsys.add_rule('Note(i+.9,t=.001,d,k,v,p);', 'true', 'Note(i,t*.5-1,d*.5,k*.5,v,p);Note(i-1,t*.495,d*.5,k*.5+1,v,p);Note(i,t*.5+1,d*.5,k*.5,v,p);');
+            lsys.add_rule('Note(i,t,d,k,v,p);', 'true', 'Note(i,t*.5-1,d*.5,k*.5,v,p);A();Note(i-1,t*.495,d*.5,k*.5+1,v,p);Note(i,t*.5+1,d*.5,k*.5,v,p);');
+            lsys.add_rule('A();', 'true', 'Note(i,t*.5-1,d*.5,k*.5,v,p);Note(i+1,t*.495,d*.5,k*.5-1,v,p);Note(i,t*.5+1,d*.5,k*.5,v,p);');
             var chord = ChordSpace.chordForName('F#9');;
             console.log(chord.information());
             var t = new ParametricLindenmayer.Turtle(new Silencio.Event(), chord, chord);
             //t.note.duration = .01;
             lsys.set_turtle(t);
-            lsys.generate(7);
+            lsys.generate(4);
             lsys.score.findScales();
             csound.message('lsys:' + lsys + '\n');
             csound.message(lsys.score.getDuration().toString() + '\n');
