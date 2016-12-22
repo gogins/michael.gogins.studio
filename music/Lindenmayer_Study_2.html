@@ -14,6 +14,24 @@
         <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
         <meta http-equiv="Pragma" content="no-cache" />
         <meta http-equiv="Expires" content="0" />
+       <style>
+            ::-webkit-scrollbar
+            {
+            width:10px;
+            }
+            ::-webkit-scrollbar-track-piece
+            {
+            background-color:transparent;
+            }
+            ::-webkit-scrollbar-corner
+            {
+            background-color:transparent;
+            }
+        .dg {
+            font-family: Monaco, sans-serif;
+            font-size:8pt;
+            }
+        </style>
         <script>
         try {
             var csound = require('csound.node');
@@ -32,21 +50,11 @@
     </script>
     </head>
     <body style="background:black;">
-    <style>
-            ::-webkit-scrollbar
-        {
-            width:10px;
-        }
-        ::-webkit-scrollbar-track-piece
-        {
-            background-coor:transparent;
-        }
-    </style>
-          <canvas id = 'graphics_canvas' class='canvas' style="width:98vw;height:98vh;"></canvas>
+    <canvas id = 'graphics_canvas' class='canvas' style="width:98vw;height:98vh;"></canvas>
     <table id = 'statistics' style="position: absolute;left:1vw;color:#eee;top:1vw;font-family:Monaco, sans-serif;font-size:8pt">
-        <col>
-        <col>
-            <tr style="color:gold;font-size:18px;">
+        <col width=450>
+        <col width=200>
+            <tr style="color:gold;">
             <!-- Copyright (C) 2016 by Michael Gogins -->
             <td style="font-weight:bold;"><b><i>Parametric Lindenmayer System Study 2</b></i>, for csound.node</td>
             <td style="color:gold;text-align:right;">Michael Gogins</td>
@@ -55,14 +63,12 @@
             </tr>
 
         </tr>
-            <tr style="font-size:14px;">
-            <td>Time:</td>
+             <td>Time:</td>
             <td id="Time_cell" style="text-align:right;color:LawnGreen;font-weight:bold;">0</td>
             </tr>
-        <tr>
-            <!-- or: http://stackoverflow.com/questions/35509360/how-to-make-the-content-of-the-following-table-cell-scrollable -->
-            <td colspan=2><textarea id="Log_cell" style="color:SkyBlue;background-color:transparent;border:none;text-align:left;font-size:10px;height:200px;width:550px;overflow:auto;"></textarea></td>
-        </tr>
+            <tr id='messages'>
+                <td colspan="2"><textarea id="Log_cell" style="width:100%;color:SkyBlue;background-color:transparent;border:none;text-align:left;height:200px;overflow:auto;padding:0;margin:0;border-collapse:collapse;"></textarea></td>
+            </tr>
     </table>
     <textarea class="code" id="orc" hidden rows=24 cols=80>
 
@@ -1021,7 +1027,7 @@ endin
           csound.message(text + '\n' + url + '\n' + line + '\n');
           console.trace();
         }
-        var title = 'Sevier';
+        var title = 'Lindenmayer Study 2';
         var context = null;
         var lsys = null;
         var startTime = 0;
@@ -1032,29 +1038,32 @@ endin
             var canvas = document.getElementById('graphics_canvas');
             lsys = new ParametricLindenmayer.PLSystem();
             // Move(i,t,d,k,v,p)
-            lsys.set_axiom('T(0);Push();Note(1,1,1,1,1,1);Pop();Note(2,3,1,9,1,1);');
-            lsys.add_rule('Note(i,t,d,k,v,p);', 'true', 'Note(i,t*.5-1,d*.5,k*.5,v,p);A();Note(i-1,t*.495,d*.5,k*.5+1,v,p);Note(i,t*.5+1,d*.5,k*.5,v,p);');
-            lsys.add_rule('A();', 'true', 'Note(i,t*.5-1,d*.5,k*.5,v,p);Note(i+1,t*.495,d*.5,k*.5-1,v,p);Note(i,t*.5+1,d*.5,k*.5,v,p);');
-            var chord = ChordSpace.chordForName('F#9');;
+            lsys.set_axiom('T(0);Push();Note(1,1,1.99,1,1,1);Pop();Note(2,1,1,9,1,1);');
+            //lsys.add_rule('Note(i,t,d,k,v,p);', '(iteration % 2 === 0)', 'Note(i-1.01,t*.500+1.000, d*.50,k*.5+1,v*1.01,p);K();Q(3);Note(i-1,t*.495+2,d*.5,k*.6,v,p);Note(i,t*.5+3,d*.5,k*.6+1,v,p);');
+            lsys.add_rule('Note(i,t,d,k,v,p);', '(iteration % 2 === 0)', 'Note(i-1.02,t*.500+1.000, d*.50,k*.5+1,v*1.01,p);Q(3);Note(i-1,t*.495+2,d*.5,k*.6,v,p);Note(i,t*.5+3,d*.45,k*.6+1,v,p);');
+            lsys.add_rule('Note(i,t,d,k,v,p);', '(iteration % 2 === 1)', 'Note(i+1,   t*.501+1.005, d*.4,k*.5,  v*0.99,p);T(5);Note(i-1,t*.495+2,d*.5,k*.5+1,v,p);Note(i,t*.5+3,d*.5,k*.5,v*1.08,p);');
+            lsys.add_rule('Qx(x)',  '(iteration === 4)', 'Q(3);');
+            lsys.add_rule('Tx(x);', '(iteration === 3)', 'T(5);');
+            var chord = ChordSpace.chordForName('FM');;
             console.log(chord.information());
             var t = new ParametricLindenmayer.Turtle(new Silencio.Event(), chord, chord);
             //t.note.duration = .01;
             lsys.set_turtle(t);
-            lsys.generate(4);
+            lsys.generate(6);
             lsys.score.findScales();
             csound.message('lsys:' + lsys + '\n');
             csound.message(lsys.score.getDuration().toString() + '\n');
             lsys.score.sort();
-            //lsys.score.setScale(1, .01, 0);
+            lsys.score.setScale(1, .1, 0);
             lsys.score.setScale(3, 2, 9.9);
             lsys.score.setScale(4, 24, 72);
             lsys.score.temper(12);
-            lsys.score.setScale(5, 60, 10);
+            lsys.score.setScale(5, 60, 14);
             lsys.score.setScale(6, .4, .6);
             lsys.score.setScale(7, .4, .6);
             lsys.score.tieOverlaps(true);
             lsys.conformToChords();
-            lsys.score.setDuration(530);
+            lsys.score.setDuration(9 * 60 + 5);
             //console.log(lsys.score.toString());
             console.log('After conforming to chord:');
             console.log(lsys.score.toString());
@@ -1072,26 +1081,28 @@ endin
                         event.key = event.key - 12;
             }
                 }
+                if (false) {
                 // Close up gaps in the score.
-                //~ for (j = i + 1; j < lsys.score.data.length - 1; j++) {
-                    //~ var gap_event = lsys.score.data[j];
-                    //~ var gap = gap_event.time - event.end;
-                    //~ if (gap <= 0) {
-                        //~ minimum_gap = 0;
-                        //~ minimum_gap_event = null;
-                        //~ break;
-                    //~ }
-                    //~ if (minimum_gap == null) {
-                        //~ minimum_gap = gap;
-                        //~ minimum_gap_event = gap_event;
-                    //~ }
-                    //~ if (gap < minimum_gap) {
-                        //~ minimum_gap = gap;
-                    //~ }
-                //~ }
-                //~ if (minimum_gap_event !== null && minimum_gap > 0) {
-                    //~ event.end = minimum_gap_event.time;
-                //~ }
+                for (j = i + 1; j < lsys.score.data.length - 1; j++) {
+                    var gap_event = lsys.score.data[j];
+                    var gap = gap_event.time - event.end;
+                    if (gap <= 0) {
+                        minimum_gap = 0;
+                        minimum_gap_event = null;
+                        break;
+                    }
+                    if (minimum_gap == null) {
+                        minimum_gap = gap;
+                        minimum_gap_event = gap_event;
+                    }
+                    if (gap < minimum_gap) {
+                        minimum_gap = gap;
+                    }
+                }
+                if (minimum_gap_event !== null && minimum_gap > 0) {
+                    event.end = minimum_gap_event.time;
+                }
+                }
             }
             // Pianoteq misbehaves if we start right at time 0.
             for (var i = 0; i < lsys.score.data.length; i++) {
@@ -1133,7 +1144,7 @@ endin
             csound.message(lsys.score.ranges.toString());
             csound.message('Generated ' + lsys.score.data.length + ' notes.\n');
             context = lsys.score.draw3D(canvas);
-            lsys.score.add(540, 1, 144, 999);
+            lsys.score.add(9 * 60 + 5, 1, 144, 999);
             lsys.score.sendToCsound(csound);
            } catch(err) {
             var error_message = err.name + ': ' + err.message + ' line: ' + err.line + '\n' + err.stack + '\n';
@@ -1253,16 +1264,15 @@ endin
             //var gui = new dat.GUI({load: json, width: 300});
             gui = new dat.GUI({width: 300, load: json});
             gui.remember(parameters);
-            gui.add(parameters, 'Play').name('Play');
-            gui.add(parameters, 'Stop').name('Stop');
+            gui.add(parameters, 'Play').name('Play [Ctrl-P]');
+            gui.add(parameters, 'Stop').name('Stop [Ctrl-S]');
             gui.add(parameters, 'Developer_tools').name('Debugger');
-            gui.add(parameters, 'Close').name('Close');
+            gui.add(parameters, 'Close').name('Close').name('Exit [Ctrl-X]');
             var Master = gui.addFolder('Master effects');
             add_slider(Master, 'gk_overlap', 0, 20);
             add_slider(Master, 'gk_Reverb_Feedback', 0, 1);
             add_slider(Master, 'gk_Reverb2_Feedback', 0, 1);
             add_slider(Master, 'gk_MasterOutput_level', -40, 40);
-
             var intruments = gui.addFolder('Instruments');
             var fmclang = intruments.addFolder('FM Clang');
             add_slider(fmclang, 'gk_FM_Clang_preset', 1, 13);
@@ -1328,6 +1338,24 @@ endin
             slider.onChange(on_parameter_change);
             return slider;
         };
+        // The 'keydown' event is used for key bindings.
+        $(document).on("keydown", function (e) {
+            var e_char = String.fromCharCode(e.keyCode || e.charCode);
+            if (e.ctrlKey === true) {
+                if        (e_char === 'H') {
+                    $("#statistics").toggle();
+                    gui.toggle();
+                } else if (e_char === 'P') {
+                    parameters.Play();
+                } else if (e_char === 'S') {
+                    parameters.Stop();
+                } else if (e_char === 'X') {
+                    parameters.Close();
+                }
+
+            }
+            return false;
+         });
        </script>
     </body>
 </html>

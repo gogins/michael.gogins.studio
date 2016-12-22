@@ -20,7 +20,7 @@ git gc --prune=now --aggressive
 git count-objects -v --human-readable
 ```
 
-Also, try to avoid versioning media files such as photographs, fix them up before committing them.
+Also, try to avoid versioning media files such as photographs; fix them up before committing them.
 
 ## Guiding Principles
 
