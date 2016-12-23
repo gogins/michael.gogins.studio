@@ -1040,9 +1040,9 @@ endin
             // Move(i,t,d,k,v,p)
             lsys.set_axiom('T(0);Push();Note(1,1,1.01,1,1,1);Pop();Note(2,1,1,9,1,1);');
             //lsys.add_rule('Note(i,t,d,k,v,p);', '(iteration % 2 === 0)', 'Note(i-1.01,t*.500+1.000, d*.50,k*.5+1,v*1.01,p);K();Q(3);Note(i-1,t*.495+2,d*.5,k*.6,v,p);Note(i,t*.5+3,d*.5,k*.6+1,v,p);');
-            lsys.add_rule('Note(i,t,d,k,v,p);', '((iteration % 2 === 0) && (iteration > 4))', 'Note(i-1.005,t*.500+1.000, d*.50,k*.5+1,v*1.03,p);Q(3);Note(i-1,t*.495+2,d*.35,k*.6,v,p);Note(i,t*.5+3,d*.45,k*.6+1,v,p);Note(i-1.02,t*.500+1.000, d*.50,k*.5+1,v*1.03,p);Q(3);Note(i-1,t*.495+2,d*.35,k*.6,v,p);Note(i,t*.5+3,d*.45,k*.6+1,v,p);');
-            lsys.add_rule('Note(i,t,d,k,v,p);', '((iteration % 2 === 0) && (iteration <= 4))', 'Note(i-1.02,t*.500+1.000, d*.50,k*.5+1,v*1.03,p);Q(3);Note(i-1,t*.495+2,d*.35,k*.6,v,p);Note(i,t*.5+3,d*.45,k*.6+1,v,p);');
-            lsys.add_rule('Note(i,t,d,k,v,p);', '(iteration % 2 === 1)', 'Note(i+1,   t*.501+1.005, d*.4,k*.5,  v*0.99,p);T(5);Note(i-1,t*.495+2,d*.5,k*.5+1,v,p);Note(i,t*.5+3,d*.85,k*.5,v*1.05,p);');
+            lsys.add_rule('Note(i,t,d,k,v,p);', '((iteration % 2 === 0) && (iteration > 4))',  'Note(i-1.005,t*.500+1.000, d*.50,k*.5+1,v*1.03,p);Q(3);Note(i-1,t*.495+2,d*.35,k*.6,  v,p);Note(i,t*.5+3.05,d*.45,k*.6+1,v,     p);Note(i-1.02,t*.500+1.000, d*.50,k*.5+1,v*1.03,p);K();Note(i-1,t*.495+2,d*.35,k*.6+.01,v,p);Note(i,t*.5+3,d*.45,k*.6+1,v,p);');
+            lsys.add_rule('Note(i,t,d,k,v,p);', '((iteration % 2 === 0) && (iteration <= 4))', 'Note(i-1.01, t*.500+1.000, d*.50,k*.5+1,v*1.03,p);Q(3);Note(i-1,t*.500+2,d*.35,k*.6,  v,p);Note(i,t*.5+3,   d*.45,k*.6+1,v,     p);');
+            lsys.add_rule('Note(i,t,d,k,v,p);', ' (iteration % 2 === 1)',                    'Note(i+1,    t*.501+1.005, d*.40,k*.4,  v*0.99,p);T(5);Note(i-1,t*.495+2,d*.5, k*.5+1,v,p);Note(i,t*.5+3,   d*.65,k*.5,  v*1.05,p);');
             lsys.add_rule('Qx(x)',  '(iteration === 4)', 'Q(4);');
             lsys.add_rule('Tx(x);', '(iteration === 3)', 'T(5);');
             var chord = ChordSpace.chordForName('FM');;
@@ -1260,11 +1260,127 @@ endin
             }
         };
         var gui = null;
-        var json = {};
+        var default_json = {
+  "remembered": {
+    "undefined": {
+      "0": {
+        "gk_overlap": 2.8396989919068556,
+        "gk_Reverb_Feedback": 0.8962799943206012,
+        "gk_Reverb2_Feedback": 0.8519096975720566,
+        "gk_MasterOutput_level": 0.4,
+        "gk_FM_Clang_preset": 1,
+        "gk_FM_Clang_level": 0,
+        "gk_Blower_grainDensity": 0.15,
+        "gk_Blower_grainDuration": 0.2,
+        "gk_Blower_grainAmplitudeRange": 0.1,
+        "gk_Blower_grainFrequencyRange": 0.033,
+        "gk_Blower_level": 0.5,
+        "gk_Bower_pressure": 0.25,
+        "gk_Bower_level": 0.5,
+        "gk_Buzzer_Harmonics": 15,
+        "gk_Buzzer_level": 0.5,
+        "gk_Droner_partial1": 0.5127594700264622,
+        "gk_Droner_partial2": 0.2746925732284619,
+        "gk_Droner_partial3": 0.5493851464569238,
+        "gk_Droner_partial4": 0.1,
+        "gk_Droner_partial5": 0.2563797350132311,
+        "gk_Droner_level": 2.485784659335444,
+        "gk_Harpsichord_pick": 0.2563797350132311,
+        "gk_Harpsichord_reflection": 0.8149206707351692,
+        "gk_Harpsichord_pluck": 0.75,
+        "gk_Harpsichord_level": 2.485784659335444,
+        "gk_Phaser_ratio1": 1,
+        "gk_Phaser_ratio2": 0.5040504050405045,
+        "gk_Phaser_index1": 1,
+        "gk_Phaser_index2": 0.30603060306030627,
+        "gk_Phaser_level": 0.3240324032403592,
+        "gk_Piano_level": -4.839350626756875,
+        "gk_Shiner_level": 3.2043204320432395,
+        "gk_Sweeper_britel": 1.2452729986356939,
+        "gk_Sweeper_briteh": 0.5860108228873854,
+        "gk_Sweeper_britels": 2.4905459972713877,
+        "gk_Sweeper_britehs": 1.25,
+        "gk_Sweeper_level": 1.0207576021169729,
+        "gk_YiString_reverb_send": 0.5,
+        "gk_YiString_chorus_send": 0.5,
+        "gk_YiString_level": 0.5
+      }
+    }
+  },
+  "closed": false,
+  "folders": {
+    "Master effects": {
+      "preset": "Default",
+      "closed": false,
+      "folders": {}
+    },
+    "Instruments": {
+      "preset": "Default",
+      "closed": false,
+      "folders": {
+        "FM Clang": {
+          "preset": "Default",
+          "closed": true,
+          "folders": {}
+        },
+        "Blower": {
+          "preset": "Default",
+          "closed": true,
+          "folders": {}
+        },
+        "Bower": {
+          "preset": "Default",
+          "closed": true,
+          "folders": {}
+        },
+        "Buzzer": {
+          "preset": "Default",
+          "closed": true,
+          "folders": {}
+        },
+        "Droner": {
+          "preset": "Default",
+          "closed": true,
+          "folders": {}
+        },
+        "Harpsichord": {
+          "preset": "Default",
+          "closed": false,
+          "folders": {}
+        },
+        "Phaser": {
+          "preset": "Default",
+          "closed": false,
+          "folders": {}
+        },
+        "Piano": {
+          "preset": "Default",
+          "closed": false,
+          "folders": {}
+        },
+        "Shiner": {
+          "preset": "Default",
+          "closed": false,
+          "folders": {}
+        },
+        "Sweeper": {
+          "preset": "Default",
+          "closed": false,
+          "folders": {}
+        },
+        "YiString": {
+          "preset": "Default",
+          "closed": true,
+          "folders": {}
+        }
+      }
+    }
+  }
+};
         window.onload = function() {
             //csound.message('platform: ' + navigator.platform + '\n');
             //var gui = new dat.GUI({load: json, width: 300});
-            gui = new dat.GUI({width: 300, load: json});
+            gui = new dat.GUI({width: 300, load: default_json});
             gui.remember(parameters);
             gui.add(parameters, 'Play').name('Play [Ctrl-P]');
             gui.add(parameters, 'Stop').name('Stop [Ctrl-S]');
