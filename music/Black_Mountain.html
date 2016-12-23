@@ -1027,7 +1027,7 @@ endin
           csound.message(text + '\n' + url + '\n' + line + '\n');
           console.trace();
         }
-        var title = 'Lindenmayer Study 2';
+        var title = 'Black Mountain';
         var context = null;
         var lsys = null;
         var startTime = 0;
@@ -1038,11 +1038,12 @@ endin
             var canvas = document.getElementById('graphics_canvas');
             lsys = new ParametricLindenmayer.PLSystem();
             // Move(i,t,d,k,v,p)
-            lsys.set_axiom('T(0);Push();Note(1,1,1.99,1,1,1);Pop();Note(2,1,1,9,1,1);');
+            lsys.set_axiom('T(0);Push();Note(1,1,.5,1,1,1);Pop();Note(2,1,1,9,1,1);');
             //lsys.add_rule('Note(i,t,d,k,v,p);', '(iteration % 2 === 0)', 'Note(i-1.01,t*.500+1.000, d*.50,k*.5+1,v*1.01,p);K();Q(3);Note(i-1,t*.495+2,d*.5,k*.6,v,p);Note(i,t*.5+3,d*.5,k*.6+1,v,p);');
-            lsys.add_rule('Note(i,t,d,k,v,p);', '(iteration % 2 === 0)', 'Note(i-1.02,t*.500+1.000, d*.50,k*.5+1,v*1.01,p);Q(3);Note(i-1,t*.495+2,d*.35,k*.6,v,p);Note(i,t*.5+3,d*.45,k*.6+1,v,p);');
-            lsys.add_rule('Note(i,t,d,k,v,p);', '(iteration % 2 === 1)', 'Note(i+1,   t*.501+1.005, d*.4,k*.5,  v*0.99,p);T(5);Note(i-1,t*.495+2,d*.5,k*.5+1,v,p);Note(i,t*.5+3,d*.5,k*.5,v*1.08,p);');
-            lsys.add_rule('Qx(x)',  '(iteration === 4)', 'Q(3);');
+            lsys.add_rule('Note(i,t,d,k,v,p);', '((iteration % 2 === 0) && (iteration > 4))', 'Note(i-1.02,t*.2500+1.000, d*.50,k*.5+1,v*1.03,p);K();Note(i-1,t*.2495+2,d*.35,k*.6,v,p);Note(i,t*.25+3,d*.45,k*.6+1,v,p);Note(i-1.02,t*.2500+1.000, d*.50,k*.5+1,v*1.03,p);Q(3);Note(i-1,t*.2495+2,d*.35,k*.6,v,p);Note(i,t*.25+3,d*.45,k*.6+1,v,p);');
+            lsys.add_rule('Note(i,t,d,k,v,p);', '((iteration % 2 === 0) && (iteration <= 4))', 'Note(i-1.02,t*.500+1.000, d*.50,k*.5+1,v*1.03,p);Q(3);Note(i-1,t*.495+2,d*.35,k*.6,v,p);Note(i,t*.5+3,d*.45,k*.6+1,v,p);');
+            lsys.add_rule('Note(i,t,d,k,v,p);', '(iteration % 2 === 1)', 'Note(i+1,   t*.501+1.005, d*.4,k*.5,  v*0.99,p);T(5);Note(i-1,t*.495+2,d*.5,k*.5+1,v,p);Note(i,t*.5+3,d*.85,k*.5,v*1.05,p);');
+            lsys.add_rule('Qx(x)',  '(iteration === 4)', 'Q(4);');
             lsys.add_rule('Tx(x);', '(iteration === 3)', 'T(5);');
             var chord = ChordSpace.chordForName('FM');;
             console.log(chord.information());
@@ -1054,11 +1055,10 @@ endin
             csound.message('lsys:' + lsys + '\n');
             csound.message(lsys.score.getDuration().toString() + '\n');
             lsys.score.sort();
-            lsys.score.setScale(1, .1, 0);
-            lsys.score.setScale(3, 2, 9.9);
+            lsys.score.setScale(3, 2, 4.9);
             lsys.score.setScale(4, 24, 72);
             lsys.score.temper(12);
-            lsys.score.setScale(5, 60, 14);
+            lsys.score.setScale(5, 60, 13);
             lsys.score.setScale(6, .4, .6);
             lsys.score.setScale(7, .4, .6);
             lsys.score.tieOverlaps(true);
@@ -1079,29 +1079,29 @@ endin
                 if (Math.floor(event.channel) === 3) {
                     while (event.key > 67) {
                         event.key = event.key - 12;
-            }
+                    }
                 }
                 if (false) {
-                // Close up gaps in the score.
-                for (j = i + 1; j < lsys.score.data.length - 1; j++) {
-                    var gap_event = lsys.score.data[j];
-                    var gap = gap_event.time - event.end;
-                    if (gap <= 0) {
-                        minimum_gap = 0;
-                        minimum_gap_event = null;
-                        break;
+                    // Close up gaps in the score.
+                    for (j = i + 1; j < lsys.score.data.length - 1; j++) {
+                        var gap_event = lsys.score.data[j];
+                        var gap = gap_event.time - event.end;
+                        if (gap <= 0) {
+                            minimum_gap = 0;
+                            minimum_gap_event = null;
+                            break;
+                        }
+                        if (minimum_gap == null) {
+                            minimum_gap = gap;
+                            minimum_gap_event = gap_event;
+                        }
+                        if (gap < minimum_gap) {
+                            minimum_gap = gap;
+                        }
                     }
-                    if (minimum_gap == null) {
-                        minimum_gap = gap;
-                        minimum_gap_event = gap_event;
+                    if (minimum_gap_event !== null && minimum_gap > 0) {
+                        event.end = minimum_gap_event.time;
                     }
-                    if (gap < minimum_gap) {
-                        minimum_gap = gap;
-                    }
-                }
-                if (minimum_gap_event !== null && minimum_gap > 0) {
-                    event.end = minimum_gap_event.time;
-                }
                 }
             }
             // Pianoteq misbehaves if we start right at time 0.
@@ -1109,31 +1109,33 @@ endin
                 var event = lsys.score.data[i];
                 event.time = event.time + 1;
             }
-            // Also if keys overlap.
-            for (var i = 0; i < lsys.score.data.length; i++) {
-                var event = lsys.score.data[i];
-                console.log(event.toIStatement() + ' e: ' + event.end);
-                var channel = Math.floor(event.channel);
-                var key = event.key;
-                for (var j = i + 1; j < lsys.score.data.length; j++) {
-                    var overlap = lsys.score.data[j];
-                    var overlap_channel = Math.floor(overlap.channel);
-                    var overlap_key = overlap.key;
-                    if (key === overlap_key && channel === overlap_channel && channel === 2) {
-                        if (event.end > overlap.time) {
-                            var the_end = Math.max(event.end, overlap.end);
-                            console.log('Correcting overlap for:');
-                            console.log('  ' + event.toIStatement() + ' e: ' + event.end);
-                            console.log('  ' + overlap.toIStatement() + ' e: ' + overlap.end);
-                            event.end = the_end;
-                            overlap.end = the_end;
-                            console.log('to:');
-                            console.log('  ' + event.toIStatement() + ' e: ' + event.end);
-                            console.log('  ' + overlap.toIStatement() + ' e: ' + overlap.end + '\n');
-                         }
+            if (false) {
+                // Also if keys overlap.
+                for (var i = 0; i < lsys.score.data.length; i++) {
+                    var event = lsys.score.data[i];
+                    console.log(event.toIStatement() + ' e: ' + event.end);
+                    var channel = Math.floor(event.channel);
+                    var key = event.key;
+                    for (var j = i + 1; j < lsys.score.data.length; j++) {
+                        var overlap = lsys.score.data[j];
+                        var overlap_channel = Math.floor(overlap.channel);
+                        var overlap_key = overlap.key;
+                        if (key === overlap_key && channel === overlap_channel && channel === 2) {
+                            if (event.end > overlap.time) {
+                                var the_end = Math.max(event.end, overlap.end);
+                                console.log('Correcting overlap for:');
+                                console.log('  ' + event.toIStatement() + ' e: ' + event.end);
+                                console.log('  ' + overlap.toIStatement() + ' e: ' + overlap.end);
+                                event.end = the_end;
+                                overlap.end = the_end;
+                                console.log('to:');
+                                console.log('  ' + event.toIStatement() + ' e: ' + event.end);
+                                console.log('  ' + overlap.toIStatement() + ' e: ' + overlap.end + '\n');
+                             }
+                        }
                     }
                 }
-             }
+            }
             var panskip = .05;
             var leftpan = panskip / 2;
             var panrange = 1 - panskip;
