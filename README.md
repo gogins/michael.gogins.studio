@@ -22,6 +22,8 @@ git count-objects -v --human-readable
 
 Also, try to avoid versioning media files such as photographs; fix them up before committing them.
 
+It is possible to delete objects and their histories using https://rtyley.github.io/bfg-repo-cleaner/.
+
 ## Guiding Principles
 
 Now, to head off my recurrent distraction from composing by taking on programming projects, I am renewing my focus on the following principles:

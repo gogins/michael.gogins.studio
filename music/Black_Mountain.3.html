@@ -345,6 +345,132 @@ outleta "chorusright", aright * kgain * gk_YiString_chorus_send
 prints "YiString    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
 endin
 
+opcode FM_Clang_veloc, i, iii
+; *p->r = *p->ilo + csound->curip->m_veloc*(*p->ihi - *p->ilo) * dv127;
+ivel, ilow, ihigh xin
+xout ilow + ivel * (ihigh - ilow) * 0.007874
+endop
+
+instr FM_Clang ; Sound producing instrument. Triggered by MIDI notes or score notes.
+//////////////////////////////////////////////
+// Original by Iain McCurdy.
+// Adapted by Michael Gogins.
+//////////////////////////////////////////////
+kgain init 1
+insno = p1
+itime = p2
+iduration = p3
+ikey = p4
+ivelocity = p5
+iphase = p6
+ipan = p7
+idepth = p8
+iheight = p9
+ipcs = p10
+ihomogeneity = p11
+icps = cpsmidinn(ikey)
+inum = ikey
+iamplitude = ampdb(ivelocity)
+; icps cpsmidi
+; inum notnum
+iKybdScl table inum,gi_FM_Clang_scale ; Keyboard scaling value. Note '0' maps to a value of -1, note 64 maps to a value of zero and note 127 maps to a value of 1.
+; Amplitude Envelope
+idur = i(gk_FM_Clang_Dur)
+iAmpCurve = -8
+iRelTim = (i(gk_FM_Clang_Sustain)==1?idur:0.1)
+;iAttVel veloc i(gk_FM_Clang_AttVel)*0.05,0
+iAttVel FM_Clang_veloc ivelocity, i(gk_FM_Clang_AttVel)*0.05,0
+iAttTim = iAttVel + i(gk_FM_Clang_AttTim)
+if iAttTim==0 then
+aAEnv transegr 1,idur,iAmpCurve,0, iRelTim,iAmpCurve,0
+else
+aAEnv transegr 0,iAttTim,iAmpCurve, 1,idur,iAmpCurve,0, iRelTim,iAmpCurve,0
+endif
+; Key velocity to amplitude
+;iAVel veloc 0,0.1
+iAVel FM_Clang_veloc ivelocity, 0, 0.1
+; FM index
+iNdx veloc 0,i(gk_FM_Clang_NdxVel) ; Key velocity to FM index
+iNdx FM_Clang_veloc ivelocity, 0,i(gk_FM_Clang_NdxVel) ; Key velocity to FM index
+kIEnv transeg iNdx*octave(-iKybdScl*4),idur,-i(gk_FM_Clang_NdxCurve),0 ; Index envelope. Amplitude influenced by 'Index' widget control and keyboard scaling (index reduced for higher notes, increased for lower notes)
+; Carrier frequency keyboard scaling
+icar = 1 * octave(iKybdScl*i(gk_FM_Clang_CarKyb))
+; Carrier ratio modulation
+iModRte table inum,gi_FM_Clang_scale
+iModRte = octave(iModRte*i(gk_FM_Clang_ModRteKyb))
+kDepEnv transeg 1,idur,-4,0
+amod lfo gk_FM_Clang_ModDep*0.1*kDepEnv, gk_FM_Clang_ModRte * iModRte, 0
+; Noise bandpass filter cutoff as it respond to the 'Carrier Follow' switch
+kcf = gk_FM_Clang_NseFllw==1?icps*gk_FM_Clang_mod:icps
+; Noise amplitude keyboard following
+kNseAmp = octave(iKybdScl*-4)*gk_FM_Clang_NseAmp
+; Main FM algorithm
+if gk_FM_Clang_NseAmp>0 then ; If noise amplitude is greater than zero...
+aNse gauss kNseAmp ; ... generate some gaussian noise
+aNse butbp aNse,kcf,kcf*gk_FM_Clang_NseBW ; bandpass filter the noise
+aNse butbp aNse,kcf,kcf*gk_FM_Clang_NseBW ; and again
+else
+aNse = 0 ; Otherwise no noise signal!
+endif
+idetune table inum,gi_FM_Clang_detune ; Read a detuning value from a random table
+asig foscil iAVel, icps*cent(-gk_FM_Clang_Detune*idetune), icar +aNse, gk_FM_Clang_mod, kIEnv, gi_FM_Clang_sine ; FM pair
+aModSig foscil iAVel, icps*cent(-gk_FM_Clang_Detune*idetune), icar+amod+aNse, gk_FM_Clang_mod, kIEnv, gi_FM_Clang_sine ; FM pair with modulation
+asig = asig + (aModSig * gk_FM_Clang_ModMix) ; Mix the two FM pairs.
+; Auxilliary FM algorithm (used for detuning)
+if gk_FM_Clang_DtnMix>0&&gk_FM_Clang_Detune>0 then
+if gk_FM_Clang_NseAmp>0 then
+aNse gauss kNseAmp
+aNse butbp aNse,kcf,kcf*gk_FM_Clang_NseBW
+aNse butbp aNse,kcf,kcf*gk_FM_Clang_NseBW
+else
+aNse = 0
+endif
+idetune table inum+128,gi_FM_Clang_detune ; Read a detuning value from a random table
+asig2 foscil iAVel, icps*cent(gk_FM_Clang_Detune*idetune), icar +aNse, gk_FM_Clang_mod, kIEnv, gi_FM_Clang_sine ; Detuning applied to fundemental
+aModSig2 foscil iAVel, icps*cent(gk_FM_Clang_Detune*idetune), icar+amod+aNse, gk_FM_Clang_mod, kIEnv, gi_FM_Clang_sine
+asig2 = asig2 + (aModSig2 * gk_FM_Clang_ModMix)
+asig = asig + asig2*gk_FM_Clang_DtnMix
+endif
+; Filter Fundemental
+if i(gk_FM_Clang_FiltFund)==1 then ; If filter fundemental switch is active
+asig butbr asig,icps*icar,icps*icar*0.3 ; Filter out fundemental
+asig butbr asig,icps*icar,icps*icar*0.3 ; and again to make sure it is all gone
+endif
+; Lowpass Filter
+if i(gk_FM_Clang_LPF)<32 then ; If lowpass filter is less than maximum...
+kCF limit icps*gk_FM_Clang_LPF,20,20000 ; ...create the cutoff value in CPS based on fundemental and LPF ratio control. Limit to prevent out of range values.
+asig clfilt asig,kCF,0,2 ; Butterworth lowpass filter
+endif
+; Amplitude Envelope
+kgain = ampdb(gk_FM_Clang_level)
+asig = asig * aAEnv * gk_FM_Clang_Amp * kgain; Apply amplitude envelope
+; Stereo Effect
+iDlyTimL table inum,gi_FM_Clang_stereo ; Read a delay time value from a random table based on note played
+iDlyTimR table inum+128,gi_FM_Clang_stereo ; Read a different delay time value from a random table based on note played
+if gk_FM_Clang_StWidth>0&&gk_FM_Clang_StMix>0 then ; If 'width' is above zero and 'mix' is above zero...
+aL vdelay asig, iDlyTimL*gk_FM_Clang_StWidth*1000, 0.2*1000 ; ...left channel delay
+aR vdelay asig, iDlyTimR*gk_FM_Clang_StWidth*1000, 0.2*1000 ; right channel delay
+aL ntrpol asig, aL, gk_FM_Clang_StMix ; Mix delayed and dry signal
+aR ntrpol asig, aR, gk_FM_Clang_StMix ;
+aleft = aL;*gk_FM_Clang_Dry
+aright = aR;*gk_FM_Clang_Dry
+gaSendL = gaSendL + aL ; Send to reverb
+gaSendR = gaSendR + aR
+else
+aleft = asig;*gk_FM_Clang_Dry
+aright = asig;*gk_FM_Clang_Dry
+gaSendL = gaSendL + asig ; Send to reverb
+gaSendR = gaSendR + asig
+endif
+aleft1 = aleft * ampdb(ivelocity)
+aright1 = aright * ampdb(ivelocity)
+asignal = (aleft1 + aright1) *100
+aleft2, aright2 pan2 asignal, ipan
+outleta "outleft", aleft2
+outleta "outright", aright2
+prints "FM_Clang    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+endin
+
 gk_Droner_partial1 init .1
 gk_Droner_partial2 init .1
 gk_Droner_partial3 init .1
@@ -617,132 +743,6 @@ outleta "outleft", aleft * kgain
 outleta "outright", aright * kgain
 ;;;;;;;;;;;;;;;;;;;;i
 prints "Blower      i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-endin
-
-opcode FM_Clang_veloc, i, iii
-; *p->r = *p->ilo + csound->curip->m_veloc*(*p->ihi - *p->ilo) * dv127;
-ivel, ilow, ihigh xin
-xout ilow + ivel * (ihigh - ilow) * 0.007874
-endop
-
-instr FM_Clang ; Sound producing instrument. Triggered by MIDI notes or score notes.
-//////////////////////////////////////////////
-// Original by Iain McCurdy.
-// Adapted by Michael Gogins.
-//////////////////////////////////////////////
-kgain init 1
-insno = p1
-itime = p2
-iduration = p3
-ikey = p4
-ivelocity = p5
-iphase = p6
-ipan = p7
-idepth = p8
-iheight = p9
-ipcs = p10
-ihomogeneity = p11
-icps = cpsmidinn(ikey)
-inum = ikey
-iamplitude = ampdb(ivelocity)
-; icps cpsmidi
-; inum notnum
-iKybdScl table inum,gi_FM_Clang_scale ; Keyboard scaling value. Note '0' maps to a value of -1, note 64 maps to a value of zero and note 127 maps to a value of 1.
-; Amplitude Envelope
-idur = i(gk_FM_Clang_Dur)
-iAmpCurve = -8
-iRelTim = (i(gk_FM_Clang_Sustain)==1?idur:0.1)
-;iAttVel veloc i(gk_FM_Clang_AttVel)*0.05,0
-iAttVel FM_Clang_veloc ivelocity, i(gk_FM_Clang_AttVel)*0.05,0
-iAttTim = iAttVel + i(gk_FM_Clang_AttTim)
-if iAttTim==0 then
-aAEnv transegr 1,idur,iAmpCurve,0, iRelTim,iAmpCurve,0
-else
-aAEnv transegr 0,iAttTim,iAmpCurve, 1,idur,iAmpCurve,0, iRelTim,iAmpCurve,0
-endif
-; Key velocity to amplitude
-;iAVel veloc 0,0.1
-iAVel FM_Clang_veloc ivelocity, 0, 0.1
-; FM index
-iNdx veloc 0,i(gk_FM_Clang_NdxVel) ; Key velocity to FM index
-iNdx FM_Clang_veloc ivelocity, 0,i(gk_FM_Clang_NdxVel) ; Key velocity to FM index
-kIEnv transeg iNdx*octave(-iKybdScl*4),idur,-i(gk_FM_Clang_NdxCurve),0 ; Index envelope. Amplitude influenced by 'Index' widget control and keyboard scaling (index reduced for higher notes, increased for lower notes)
-; Carrier frequency keyboard scaling
-icar = 1 * octave(iKybdScl*i(gk_FM_Clang_CarKyb))
-; Carrier ratio modulation
-iModRte table inum,gi_FM_Clang_scale
-iModRte = octave(iModRte*i(gk_FM_Clang_ModRteKyb))
-kDepEnv transeg 1,idur,-4,0
-amod lfo gk_FM_Clang_ModDep*0.1*kDepEnv, gk_FM_Clang_ModRte * iModRte, 0
-; Noise bandpass filter cutoff as it respond to the 'Carrier Follow' switch
-kcf = gk_FM_Clang_NseFllw==1?icps*gk_FM_Clang_mod:icps
-; Noise amplitude keyboard following
-kNseAmp = octave(iKybdScl*-4)*gk_FM_Clang_NseAmp
-; Main FM algorithm
-if gk_FM_Clang_NseAmp>0 then ; If noise amplitude is greater than zero...
-aNse gauss kNseAmp ; ... generate some gaussian noise
-aNse butbp aNse,kcf,kcf*gk_FM_Clang_NseBW ; bandpass filter the noise
-aNse butbp aNse,kcf,kcf*gk_FM_Clang_NseBW ; and again
-else
-aNse = 0 ; Otherwise no noise signal!
-endif
-idetune table inum,gi_FM_Clang_detune ; Read a detuning value from a random table
-asig foscil iAVel, icps*cent(-gk_FM_Clang_Detune*idetune), icar +aNse, gk_FM_Clang_mod, kIEnv, gi_FM_Clang_sine ; FM pair
-aModSig foscil iAVel, icps*cent(-gk_FM_Clang_Detune*idetune), icar+amod+aNse, gk_FM_Clang_mod, kIEnv, gi_FM_Clang_sine ; FM pair with modulation
-asig = asig + (aModSig * gk_FM_Clang_ModMix) ; Mix the two FM pairs.
-; Auxilliary FM algorithm (used for detuning)
-if gk_FM_Clang_DtnMix>0&&gk_FM_Clang_Detune>0 then
-if gk_FM_Clang_NseAmp>0 then
-aNse gauss kNseAmp
-aNse butbp aNse,kcf,kcf*gk_FM_Clang_NseBW
-aNse butbp aNse,kcf,kcf*gk_FM_Clang_NseBW
-else
-aNse = 0
-endif
-idetune table inum+128,gi_FM_Clang_detune ; Read a detuning value from a random table
-asig2 foscil iAVel, icps*cent(gk_FM_Clang_Detune*idetune), icar +aNse, gk_FM_Clang_mod, kIEnv, gi_FM_Clang_sine ; Detuning applied to fundemental
-aModSig2 foscil iAVel, icps*cent(gk_FM_Clang_Detune*idetune), icar+amod+aNse, gk_FM_Clang_mod, kIEnv, gi_FM_Clang_sine
-asig2 = asig2 + (aModSig2 * gk_FM_Clang_ModMix)
-asig = asig + asig2*gk_FM_Clang_DtnMix
-endif
-; Filter Fundemental
-if i(gk_FM_Clang_FiltFund)==1 then ; If filter fundemental switch is active
-asig butbr asig,icps*icar,icps*icar*0.3 ; Filter out fundemental
-asig butbr asig,icps*icar,icps*icar*0.3 ; and again to make sure it is all gone
-endif
-; Lowpass Filter
-if i(gk_FM_Clang_LPF)<32 then ; If lowpass filter is less than maximum...
-kCF limit icps*gk_FM_Clang_LPF,20,20000 ; ...create the cutoff value in CPS based on fundemental and LPF ratio control. Limit to prevent out of range values.
-asig clfilt asig,kCF,0,2 ; Butterworth lowpass filter
-endif
-; Amplitude Envelope
-kgain = ampdb(gk_FM_Clang_level)
-asig = asig * aAEnv * gk_FM_Clang_Amp * kgain; Apply amplitude envelope
-; Stereo Effect
-iDlyTimL table inum,gi_FM_Clang_stereo ; Read a delay time value from a random table based on note played
-iDlyTimR table inum+128,gi_FM_Clang_stereo ; Read a different delay time value from a random table based on note played
-if gk_FM_Clang_StWidth>0&&gk_FM_Clang_StMix>0 then ; If 'width' is above zero and 'mix' is above zero...
-aL vdelay asig, iDlyTimL*gk_FM_Clang_StWidth*1000, 0.2*1000 ; ...left channel delay
-aR vdelay asig, iDlyTimR*gk_FM_Clang_StWidth*1000, 0.2*1000 ; right channel delay
-aL ntrpol asig, aL, gk_FM_Clang_StMix ; Mix delayed and dry signal
-aR ntrpol asig, aR, gk_FM_Clang_StMix ;
-aleft = aL;*gk_FM_Clang_Dry
-aright = aR;*gk_FM_Clang_Dry
-gaSendL = gaSendL + aL ; Send to reverb
-gaSendR = gaSendR + aR
-else
-aleft = asig;*gk_FM_Clang_Dry
-aright = asig;*gk_FM_Clang_Dry
-gaSendL = gaSendL + asig ; Send to reverb
-gaSendR = gaSendR + asig
-endif
-aleft1 = aleft * ampdb(ivelocity)
-aright1 = aright * ampdb(ivelocity)
-asignal = (aleft1 + aright1) *100
-aleft2, aright2 pan2 asignal, ipan
-outleta "outleft", aleft2
-outleta "outright", aright2
-prints "FM_Clang    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
 endin
 
 gk_FM_Clang_preset init 1
@@ -1038,9 +1038,9 @@ endin
             var canvas = document.getElementById('graphics_canvas');
             lsys = new ParametricLindenmayer.PLSystem();
             // Move(i,t,d,k,v,p)
-            lsys.set_axiom('T(0);Push();Note(1,1,1.01,1,1,1);Pop();Note(2,1,1,9,1,1);');
+            lsys.set_axiom('T(0);Push();Note(1,1,1,1,1,1);Pop();Note(2,1,1,9,1,1);');
             //lsys.add_rule('Note(i,t,d,k,v,p);', '(iteration % 2 === 0)', 'Note(i-1.01,t*.500+1.000, d*.50,k*.5+1,v*1.01,p);K();Q(3);Note(i-1,t*.495+2,d*.5,k*.6,v,p);Note(i,t*.5+3,d*.5,k*.6+1,v,p);');
-            lsys.add_rule('Note(i,t,d,k,v,p);', '((iteration % 2 === 0) && (iteration > 4))',  'Note(i-1.005,t*.500+1.000, d*.50,k*.5+1,v*1.03,p);Q(3);Note(i-1,t*.495+2,d*.35,k*.6,  v,p);Note(i,t*.5+3.05,d*.45,k*.6+1,v,     p);Note(i-1.02,t*.500+1.000, d*.50,k*.5+1,v*1.03,p);K();Note(i-1,t*.495+2,d*.35,k*.6+.01,v,p);Note(i,t*.5+3,d*.45,k*.6+1,v,p);');
+            lsys.add_rule('Note(i,t,d,k,v,p);', '((iteration % 2 === 0) && (iteration > 4))',  'Note(i-1.1,t*.500+1.000, d*.50,k*.5+1,v*1.03,p);K();Note(i-1,t*.495+2,d*.35,k*.6,  v,p);Note(i,t*.5+3.05,d*.45,k*.6+1,v,     p);Note(i-1.02,t*.500+1.000, d*.50,k*.5+1,v*1.03,p);K();Note(i-1,t*.495+2,d*.35,k*.6+.01,v,p);Note(i,t*.5+3,d*.45,k*.6+1,v,p);');
             lsys.add_rule('Note(i,t,d,k,v,p);', '((iteration % 2 === 0) && (iteration <= 4))', 'Note(i-1.01, t*.500+1.000, d*.50,k*.5+1,v*1.03,p);Q(3);Note(i-1,t*.500+2,d*.35,k*.6,  v,p);Note(i,t*.5+3,   d*.45,k*.6+1,v,     p);');
             lsys.add_rule('Note(i,t,d,k,v,p);', ' (iteration % 2 === 1)',                    'Note(i+1,    t*.501+1.005, d*.40,k*.4,  v*0.99,p);T(5);Note(i-1,t*.495+2,d*.5, k*.5+1,v,p);Note(i,t*.5+3,   d*.65,k*.5,  v*1.05,p);');
             lsys.add_rule('Qx(x)',  '(iteration === 4)', 'Q(4);');
@@ -1267,9 +1267,9 @@ endin
         "gk_overlap": 2.8396989919068556,
         "gk_Reverb_Feedback": 0.8962799943206012,
         "gk_Reverb2_Feedback": 0.8519096975720566,
-        "gk_MasterOutput_level": 0.4,
-        "gk_FM_Clang_preset": 1,
-        "gk_FM_Clang_level": 0,
+        "gk_MasterOutput_level": 16.32429797719947,
+        "gk_FM_Clang_preset": 10.7,
+        "gk_FM_Clang_level": 20.066109345957003,
         "gk_Blower_grainDensity": 0.15,
         "gk_Blower_grainDuration": 0.2,
         "gk_Blower_grainAmplitudeRange": 0.1,
@@ -1288,13 +1288,13 @@ endin
         "gk_Harpsichord_pick": 0.2563797350132311,
         "gk_Harpsichord_reflection": 0.8149206707351692,
         "gk_Harpsichord_pluck": 0.75,
-        "gk_Harpsichord_level": 2.485784659335444,
+        "gk_Harpsichord_level": -4.106837098147643,
         "gk_Phaser_ratio1": 1,
         "gk_Phaser_ratio2": 0.5040504050405045,
         "gk_Phaser_index1": 1,
         "gk_Phaser_index2": 0.30603060306030627,
         "gk_Phaser_level": 0.3240324032403592,
-        "gk_Piano_level": -4.839350626756875,
+        "gk_Piano_level": -9.234431798412267,
         "gk_Shiner_level": 3.2043204320432395,
         "gk_Sweeper_britel": 1.2452729986356939,
         "gk_Sweeper_briteh": 0.5860108228873854,
@@ -1320,7 +1320,7 @@ endin
       "folders": {
         "FM Clang": {
           "preset": "Default",
-          "closed": true,
+          "closed": false,
           "folders": {}
         },
         "Blower": {
@@ -1376,7 +1376,7 @@ endin
       }
     }
   }
-};
+  };
         window.onload = function() {
             //csound.message('platform: ' + navigator.platform + '\n');
             //var gui = new dat.GUI({load: json, width: 300});
