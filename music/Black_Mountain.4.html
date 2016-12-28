@@ -1038,12 +1038,13 @@ endin
             lsys.add_rule('Note(t, d, s, c, k, v, x);', '((iteration % 2 === 0) && (iteration > 4))',  'G();Note(t*.500+1.000, d*.50, s, c-1.1,  k*.5+1, v*1.03, x);K();     Note(t*.495+2, d*.35, s, c-1, k*.6,  v*1.04,x);Note(t*.5+3.05, d*.45, s, c, k*.6+1, v,      x);');//Note(i-1.02,t*.500+1.000, d*.50,k*.5+1,v*1.03,p);K();Note(i-1,t*.495+2,d*.35,k*.6+.01,v,p);Note(i,t*.5+3,d*.45,k*.6+1,v,p);');
             lsys.add_rule('Note(t, d, s, c, k, v, x);', '((iteration % 2 === 0) && (iteration <= 4))', '    Note(t*.500+1.000, d*.50, s, c-1.01, k*.5+1, v*1.03, x);Q(3);    Note(t*.500+2, d*.35, s, c-1, k*.6,  v,     x);Note(t*.5+3,    d*.45, s, c, k*.6+1, v,      x);');
             lsys.add_rule('Note(t, d, s, c, k, v, x);', ' (iteration % 2 === 1)',                    '    Note(t*.501+1.005, d*.40, s, c+1,    k*.4,   v*0.99, x);T(5);G();Note(t*.495+2, d*.5,  s, c-1, k*.5+1,v,     x);Note(t*.5+3,    d*.65, s, c, k*.5,   v*1.05, x);');
-            lsys.add_rule('Qx(x)',  '(iteration === 3)', 'Q(4);');
+            lsys.add_rule('Qx(x)',  '(iteration === 3)', 'T(2);');
             lsys.add_rule('Tx(x);', '(iteration === 2)', 'T(5);');
             //lsys.add_rule('G();',   '((iteration >= 1) && (iteration < 6))', 'Push();Assign(3,-3);Move(4,.5);Move(0,-.3333335);Note();Move(0,.25);Move(4,.5);G();Note();Move(0,-.1725);Note();G();Pop();');
             //lsys.add_rule('G();',   '((iteration >= 1) && (iteration < 6))', 'Push();Assign(3,-3);Move(4,.5);Move(0,-.3333335);Note();Move(0,.25);Move(4,.15);G();Note();Move(0,-.1725);Note();G();Pop();');
-            lsys.add_rule('G();',   '((iteration >= 1) && (iteration < 6))', 'Push();Assign(3,-3);Move(4,.5);Move(0,-.3333335);Note();Move(5,.98);G();Move(0,.25);Move(4,.15);G();Note();Move(0,-.1725);Note();G();Pop();');
-            var chord = ChordSpace.chordForName('FM');
+            lsys.add_rule('G();',    '(iteration >= 1)', 'Push();Assign(3,-3);Move(4,.5);GG();Move(0,-.375);GG();Note();Move(5,-.05);G();Move(0,.25);Move(4,.15);G();Note();Move(0,-.625);Note();G();Pop();');
+            lsys.add_rule('GG();',    '(iteration >= 1)', 'GG();Move(4,-.125);G();Move(0,-.05);Note();Move(5,-.05);G();Move(0,.125);Move(4,.0125);G();Note();Move(0,-.25);Note();G();');
+            var chord = ChordSpace.chordForName('FM9');
             console.log(chord.information());
             var t = new ParametricLindenmayer.Turtle(new Silencio.Event(), chord, chord);
             //t.note.duration = .01;
@@ -1273,7 +1274,7 @@ endin
         "gk_Blower_grainAmplitudeRange": 0.1,
         "gk_Blower_grainFrequencyRange": 0.033,
         "gk_Blower_level": 0.5,
-        "gk_Bower_pressure": 0.3,
+        "gk_Bower_pressure": 0.2,
         "gk_Bower_level": -2,
         "gk_Buzzer_Harmonics": 15,
         "gk_Buzzer_level": 0.5,
