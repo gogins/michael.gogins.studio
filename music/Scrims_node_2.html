@@ -1464,19 +1464,20 @@ endin
                 Notes_per_second: 8,
                 Stride: 100,
                 Play: function() {
-                    csound.stop();
+                    //csound.stop();
                     try {
                         csound.setMessageCallback(csoundMessage);
                     } catch(e) {
                         console.log(e);
                     }
-                    csound.compileOrc(document.getElementById('orc').value);
                     csound.setOption('-m0');
                     //csound.setOption('-j3');
                     csound.setOption('--nodisplays');
                     csound.setOption('-odac');
-                    csound.perform();
+                    csound.compileOrc(document.getElementById('orc').value);
                     csound.readScore('f 0 360\n');
+                    csound.start();
+                    csound.perform();
                     start_time_seconds = new Date().getTime() / 1000.0;
                     ///startTime = csound.getScoreTime();
                     setTimeout(updateTimeCell, 0);
