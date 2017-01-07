@@ -958,7 +958,7 @@ iday     strtod    Sday
 Shor     strsub    Stim, 11, 13
 Smin     strsub    Stim, 14, 16
 Ssec     strsub    Stim, 17, 19
-Sfilename sprintf  "Black Mountain_6-%s_%s_%02d_%s_%s_%s.wav", Syear, Smonth, iday, Shor, Smin, Ssec
+Sfilename sprintf  "Black Mountain 7-%s_%s_%02d_%s_%s_%s.wav", Syear, Smonth, iday, Shor, Smin, Ssec
 prints sprintf("Output filename: %s\n", Sfilename)
 fout Sfilename, 16, aleft, aright
 ;;;;;;;;;;;;;;;;;;;;i
@@ -1023,7 +1023,7 @@ endin
           csound.message(text + '\n' + url + '\n' + line + '\n');
           console.trace();
         }
-        var title = 'Black Mountain 6';
+        var title = 'Black Mountain 7';
         var context = null;
         var lsys = null;
         var startTime = 0;
@@ -1035,32 +1035,30 @@ endin
             lsys = new ParametricLindenmayer.PLSystem();
             // p0_t, p1_d, p2_s, p3_c, p4_k, p5_v, p6_x
             lsys.set_axiom('T(0);Push();Note(1,1,144,1,1,1,0);Pop();');
-            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(true)',           '    Note(t/2+.005, d/2+0, s, c/2+0, k/2+0,   v/2+0, x/2+0);K()  ;Note(t/2.05+0, d/2+0, s, c/2+0, k/1.92+1.02, v/2+0, x/2+0);     Note(t/2+1, d/2+0, s, c/2+0, k/2+0, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+1,    v/2+0, x/2+0);Q(3);');
-            //lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==5)',  'Q(3);Note(t/2+.005, d/2+0, s, c/2+0, k/2+0,   v/2+0, x/2+0);     ;Note(t/2.05+0, d/2+0, s, c/2+0, k/1.92+1.02, v/2+0, x/2+0);     Note(t/2+1, d/2+0, s, c/2+0, k/2+0, v/2+0, x/2+0);     Note(t/2+1, d/2+0, s, c/2+1, k/2+1,    v/2+0, x/2+0);');
-            //lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==6)',  'K(); Note(t/2+.050, d/2+0, s, c/2+0, k/2+0.1, v/2+0, x/2+0);     ;Note(t/2.05+0, d/2+0, s, c/2+0, k/2+1,       v/2+0, x/2+0);     Note(t/2+1, d/2+0, s, c/2+0, k/2+0, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+0, k/2+1,    v/2+0, x/2+0);');
-            //lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration>5)',   '     Note(t/2+.004, d/2+0, s, c/2+0, k/2+0,   v/2+0, x/2+0);T(-1);Note(t/2.05+0, d/2+0, s, c/2-1, k/2+1,       v/2+0, x/2+0);     Note(t/2+1, d/2+0, s, c/2+0, k/2+0, v/2+0, x/2+0);     Note(t/2+1, d/2+0, s, c/2+0, k/1.92+1, v/2+0, x/2+0);');
+            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration!=5)', 'Note(t/2+.005, d/2+0, s, c/2+.08, k/2+0, v/2+0, x/2+0);K()  ;Note(t/2.05+0, d/2+0, s, c/2+0, k/1.92+1.05, v/2+0, x/2+0);     Note(t/2+1, d/2+0, s, c/2+0, k/2+0.1, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+1,    v/2+0, x/2+0);Q(3);');
+            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==5)', 'Note(t/2+.005, d/2+0, s, c/2-.08, k/2+0, v/2+0, x/2+0);K()  ;Note(t/2.05+0, d/2+0, s, c/2+0, k/1.98+1.10, v/2+0, x/2+0);     Note(t/2+1, d/2+0, s, c/2+0, k/2+0, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.9,    v/2+0, x/2+0);Q(3);');
             var chord = ChordSpace.chordForName('FM');
             console.log(chord.information());
             var t = new ParametricLindenmayer.Turtle(new Silencio.Event(), chord, chord);
             //t.note.duration = 2.5;
             lsys.set_turtle(t);
-            lsys.generate(5);
+            lsys.generate(6);
             lsys.score.findScales();
             csound.message('lsys:' + lsys + '\n');
             csound.message(lsys.score.getDuration().toString() + '\n');
             lsys.score.sort();
-            lsys.score.setScale(3, 2, 6.99);
+            lsys.score.setScale(3, 2, 7.99);
             lsys.score.setScale(4, 28, 72);
             lsys.score.temper(12);
             lsys.score.setScale(5, 60, 15);
             lsys.score.setScale(6, .4, .6);
             lsys.score.setScale(7, .4, .6);
-            lsys.conformToChords();
             for (j = 0; j < lsys.score.data.length; j++) {
                 var event = lsys.score.data[j];
-                event.duration = event.duration * 2;
+                event.duration = event.duration * 19/10;
             }
             lsys.score.tieOverlaps(true);
+            lsys.conformToChords();
             lsys.score.setDuration(9 * 60 + 5);
             //console.log(lsys.score.toString());
             console.log('After conforming to chord:');
@@ -1193,7 +1191,7 @@ endin
             gk_Droner_partial3: 0.1,
             gk_Droner_partial4: 0.1,
             gk_Droner_partial5: 0.1,
-            gk_Droner_level: 0.5,
+            gk_Droner_level: -7,
             gk_Harpsichord_level: 0.5,
             gk_Harpsichord_pick: .75,
             gk_Harpsichord_reflection: .5,
@@ -1236,7 +1234,7 @@ endin
                 csound.setOption('--nodisplays');
                 csound.setOption('-odac');
                 generate();
-                gui.revert();
+                //gui.revert();
                 csound.start();
                 csound.perform();
                 start_time_seconds = new Date().getTime() / 1000.0;
@@ -1261,14 +1259,14 @@ endin
         var gui = null;
         var default_json = {
   "remembered": {
-    "undefined": {
+    "Default": {
       "0": {
         "gk_overlap": 2.8396989919068556,
         "gk_Reverb_Feedback": 0.8962799943206012,
         "gk_Reverb2_Feedback": 0.8519096975720566,
         "gk_MasterOutput_level": 16.32429797719947,
         "gk_FM_Clang_preset": 9,
-        "gk_FM_Clang_level": 12,
+        "gk_FM_Clang_level": 3,
         "gk_Blower_grainDensity": 0.15,
         "gk_Blower_grainDuration": 0.2,
         "gk_Blower_grainAmplitudeRange": 0.1,
@@ -1277,7 +1275,7 @@ endin
         "gk_Bower_pressure": 0.2,
         "gk_Bower_level": -2,
         "gk_Buzzer_Harmonics": 15,
-        "gk_Buzzer_level": 0.5,
+        "gk_Buzzer_level": -7,
         "gk_Droner_partial1": 0.5127594700264622,
         "gk_Droner_partial2": 0.2746925732284619,
         "gk_Droner_partial3": 0.5493851464569238,
@@ -1288,12 +1286,12 @@ endin
         "gk_Harpsichord_reflection": 0.8149206707351692,
         "gk_Harpsichord_pluck": 0.75,
         "gk_Harpsichord_level": -4.106837098147643,
-        "gk_Phaser_ratio1": 1,
+        "gk_Phaser_ratio1": 1.7,
         "gk_Phaser_ratio2": 0.5040504050405045,
         "gk_Phaser_index1": 1,
         "gk_Phaser_index2": 0.30603060306030627,
-        "gk_Phaser_level": 0.3240324032403592,
-        "gk_Piano_level": -19,
+        "gk_Phaser_level": 0.125,
+        "gk_Piano_level": -24,
         "gk_Shiner_level": 3.2043204320432395,
         "gk_Sweeper_britel": 1.2452729986356939,
         "gk_Sweeper_briteh": 0.5860108228873854,
@@ -1378,8 +1376,7 @@ endin
 };
         window.onload = function() {
             //csound.message('platform: ' + navigator.platform + '\n');
-            //var gui = new dat.GUI({load: json, width: 300});
-            gui = new dat.GUI({width: 300, load: default_json});
+            gui = new dat.GUI({load: default_json, width: 300});
             gui.remember(parameters);
             gui.add(parameters, 'Play').name('Play [Ctrl-P]');
             gui.add(parameters, 'Stop').name('Stop [Ctrl-S]');

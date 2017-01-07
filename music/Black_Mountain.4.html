@@ -255,7 +255,7 @@ kpres = 0.25
 krat rspline 0.006,0.988,1,4
 kvibf = 4.5
 kvibamp = 0
-iminfreq = 30
+iminfreq = 20
 isine ftgenonce 0,0,65536,10,1
 aSig wgbow kamp,kfreq,gk_Bower_pressure,krat,kvibf,kvibamp,isine,iminfreq
 aleft, aright pan2 aSig / 7, ipan
@@ -1038,6 +1038,7 @@ endin
             lsys.add_rule('Note(t, d, s, c, k, v, x);', '((iteration % 2 === 0) && (iteration > 4))',  'G();Note(t*.500+1.000, d*.50, s, c-1.1,  k*.5+1, v*1.03, x);K();     Note(t*.495+2, d*.35, s, c-1, k*.6,  v*1.04,x);Note(t*.5+3.05, d*.45, s, c, k*.6+1, v,      x);');//Note(i-1.02,t*.500+1.000, d*.50,k*.5+1,v*1.03,p);K();Note(i-1,t*.495+2,d*.35,k*.6+.01,v,p);Note(i,t*.5+3,d*.45,k*.6+1,v,p);');
             lsys.add_rule('Note(t, d, s, c, k, v, x);', '((iteration % 2 === 0) && (iteration <= 4))', '    Note(t*.500+1.000, d*.50, s, c-1.01, k*.5+1, v*1.03, x);Q(3);    Note(t*.500+2, d*.35, s, c-1, k*.6,  v,     x);Note(t*.5+3,    d*.45, s, c, k*.6+1, v,      x);');
             lsys.add_rule('Note(t, d, s, c, k, v, x);', ' (iteration % 2 === 1)',                    '    Note(t*.501+1.005, d*.40, s, c+1,    k*.4,   v*0.99, x);T(5);G();Note(t*.495+2, d*.5,  s, c-1, k*.5+1,v,     x);Note(t*.5+3,    d*.65, s, c, k*.5,   v*1.05, x);');
+            lsys.add_rule('Qx(x)',  '(iteration === 4)', 'K();');
             lsys.add_rule('Qx(x)',  '(iteration === 3)', 'T(2);');
             lsys.add_rule('Tx(x);', '(iteration === 2)', 'T(5);');
             //lsys.add_rule('G();',   '((iteration >= 1) && (iteration < 6))', 'Push();Assign(3,-3);Move(4,.5);Move(0,-.3333335);Note();Move(0,.25);Move(4,.5);G();Note();Move(0,-.1725);Note();G();Pop();');
