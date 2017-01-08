@@ -1,0 +1,21 @@
+{
+  "main": "PianoOutPianoteq.inc",
+  "name": "PianoOutPianoteq",
+  "description": "Visual music for Csound and HTML5",
+  "version": "0.1.0",
+  "keywords": [ "Csound", "node-webkit" ],
+  "nodejs": true,
+  "node-remote": "http://<all-urls>/*",
+  "window": {
+    "title": "PianoOutPianoteq",
+    "icon": "link.png",
+    "toolbar": false,
+    "frame": false,
+    "maximized": true,
+    "position": "mouse",
+    "fullscreen": true
+  },
+  "webkit": {
+    "plugin": true
+  }
+}

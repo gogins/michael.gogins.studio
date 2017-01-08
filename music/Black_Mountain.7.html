@@ -68,7 +68,7 @@
     </table>
     <textarea class="code" id="orc" hidden rows=24 cols=80>
 
-sr = 96000
+sr = 48000
 ksmps = 100
 nchnls = 2
 0dbfs = 1500000
@@ -165,29 +165,8 @@ gk_FM_Clang_NseBW chnget "NseBW"
 gk_FM_Clang_NseFllw chnget "NseFllw"
 endin
 
-gi_OS_Windows init 1
-giPianoteq init 0
-giFluidsynth init 0
-giFluidSteinway init 0
-
-instr PianoNote
-i_instrument = p1
-i_time = p2
-i_duration = p3
-i_midikey = p4
-i_midivelocity = p5
-i_phase = p6
-i_pan = p7
-i_depth = p8
-i_height = p9
-i_pitchclassset = p10
-i_homogeneity = p11
-; Use channel assigned in fluidLoad.
-ichannel = 0
-;;;;;;;;;;;;;;;;;;;;i
-prints "FlSteinway  i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-fluidNote giFluidsynth, ichannel, i_midikey, i_midivelocity
-endin
+;#include "patches/PianoNoteFluidsynth.inc"
+#include "patches/PianoNotePianoteq.inc"
 
 gk_Harpsichord_level init .25
 gk_Harpsichord_pick init .75
@@ -583,7 +562,7 @@ aright = a2*kenv*.02
 adamping linseg 0, 0.03, 1, p3 - 0.1, 1, 0.07, 0
 aleft = adamping * aleft
 aright = adamping * aright
-kgain = ampdb(gk_Sweeper_level)
+kgain = ampdb(gk_Sweeper_level) / 3
 outleta "outleft", aleft * kgain
 outleta "outright", aright * kgain
 ;;;;;;;;;;;;;;;;;;;;i
@@ -648,7 +627,7 @@ aleft, aright pan2 asignal, ipan
 adamping linseg 0, 0.03, 1, p3 - 0.1, 1, 0.07, 0
 aleft = adamping * aleft
 aright = adamping * aright
-kgain = ampdb(gk_Shiner_level)
+kgain = ampdb(gk_Shiner_level) * .5
 ;printks2 "master gain:", kgain
 outleta "outleft", aleft * kgain
 outleta "outright", aright * kgain
@@ -734,7 +713,7 @@ aright = aoutr * kamp * iamplitude
 adamping linseg 0, 0.03, 1, p3 - 0.1, 1, 0.07, 0
 aleft = adamping * aleft
 aright = adamping * aright
-kgain = ampdb(gk_Blower_level)
+kgain = ampdb(gk_Blower_level) / 2
 outleta "outleft", aleft * kgain
 outleta "outright", aright * kgain
 ;;;;;;;;;;;;;;;;;;;;i
@@ -796,26 +775,8 @@ $SET_PRESET(12'2 '0.1 '1 '1.45'1 '2.66'1.00 '16 '0 '0.21 '25 '16 '0 '0 '0.001'1 
 $SET_PRESET(13'1.9'0 '0 '24 '1 '2.29'1.00 '23.25 '-4 '1 '1.5 '16 '1 '151 '0.0178'1 '1 '0.1 '3 '0 '0.5 '0.01 '0.3 '0.55 )
 endin
 
-gk_Piano_level init .25
-instr PianoOut
-kgain = ampdb(gk_Piano_level)
-giFluidsynth fluidEngine 0, 0
-giFluidSteinway fluidLoad "Piano Steinway Grand Model C (21,738KB).sf2", giFluidsynth, 1
-fluidProgramSelect giFluidsynth, 0, giFluidSteinway, 0, 1
-i_instrument = p1
-i_time = p2
-i_duration = p3
-i_midikey = p4
-i_midivelocity = p5
-aoutleft, aoutright fluidOut giFluidsynth
-aoutleft = aoutleft * 5000000
-aoutright = aoutright * 5000000
-;printks "fluidOut: %9.4f %9.4f\n", 0.5, aoutleft, aoutright
-outleta "outleft", aoutleft * kgain
-outleta "outright", aoutright * kgain
-;;;;;;;;;;;;;;;;;;;;i
-prints "PianoOut    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-endin
+;#include "patches/PianoOutFluidsynth.inc"
+#include "patches/PianoOutPianoteq.inc"
 
 /**
  * Solina Chorus, based on Solina String Ensemble Chorus Module
@@ -948,19 +909,10 @@ aenvelope transeg 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp
 aright butterlp aright, 16000
 aleft butterlp aleft, 16000
 outs aleft * kgain * aenvelope, aright * kgain * aenvelope
-idate date
-itim     date
-Stim     dates     itim
-Syear    strsub    Stim, 20, 24
-Smonth   strsub    Stim, 4, 7
-Sday     strsub    Stim, 8, 10
-iday     strtod    Sday
-Shor     strsub    Stim, 11, 13
-Smin     strsub    Stim, 14, 16
-Ssec     strsub    Stim, 17, 19
-Sfilename sprintf  "Black Mountain 7-%s_%s_%02d_%s_%s_%s.wav", Syear, Smonth, iday, Shor, Smin, Ssec
+Sfilename init  "Black Mountain 7.wav"
 prints sprintf("Output filename: %s\n", Sfilename)
-fout Sfilename, 16, aleft, aright
+; We want something that will play on my phone.
+fout Sfilename, 18, aleft, aright
 ;;;;;;;;;;;;;;;;;;;;i
 prints "MasterOutpt i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
 endin
@@ -1035,27 +987,26 @@ endin
             lsys = new ParametricLindenmayer.PLSystem();
             // p0_t, p1_d, p2_s, p3_c, p4_k, p5_v, p6_x
             lsys.set_axiom('T(0);Push();Note(1,1,144,1,1,1,0);Pop();');
-            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration!=5)', 'Note(t/2+.005, d/2+0, s, c/2+.08, k/2+0, v/2+0, x/2+0);K()  ;Note(t/2.05+0, d/2+0, s, c/2+0, k/1.92+1.05, v/2+0, x/2+0);     Note(t/2+1, d/2+0, s, c/2+0, k/2+0.1, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+1,    v/2+0, x/2+0);Q(3);');
-            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==5)', 'Note(t/2+.005, d/2+0, s, c/2-.08, k/2+0, v/2+0, x/2+0);K()  ;Note(t/2.05+0, d/2+0, s, c/2+0, k/1.98+1.10, v/2+0, x/2+0);     Note(t/2+1, d/2+0, s, c/2+0, k/2+0, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.9,    v/2+0, x/2+0);Q(3);');
-            var chord = ChordSpace.chordForName('FM');
+            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration!=5)', 'Note(t/2+.01,  d/2+0, s, c/2+.08, k/2+0, v/2+0, x/2+0);K()  ;Note(t/2.05+0, d/2+0, s, c/2+0, k/1.92+1.05, v/2+0, x/2+0);     Note(t/2+1, d/2+0, s, c/2+0, k/2+0.1, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.7,    v/2+0.0, x/2+0);Q(3);');
+            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==5)', 'Note(t/2+.005, d/2+0, s, c/2-.07, k/2+0, v/2+0, x/2+0);K()  ;Note(t/2.07+0, d/2+0, s, c/2+0, k/1.98+1.10, v/2+0, x/2+0);     Note(t/2+1, d/2+0, s, c/2+0, k/2+0,   v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.9,    v/2+0.1, x/2+0);Q(3);');
+            var chord = ChordSpace.chordForName('AM');
             console.log(chord.information());
             var t = new ParametricLindenmayer.Turtle(new Silencio.Event(), chord, chord);
-            //t.note.duration = 2.5;
             lsys.set_turtle(t);
             lsys.generate(6);
             lsys.score.findScales();
             csound.message('lsys:' + lsys + '\n');
             csound.message(lsys.score.getDuration().toString() + '\n');
             lsys.score.sort();
-            lsys.score.setScale(3, 2, 7.99);
-            lsys.score.setScale(4, 28, 72);
+            lsys.score.setScale(3, 2, 10.99);
+            lsys.score.setScale(4, 26, 77);
             lsys.score.temper(12);
             lsys.score.setScale(5, 60, 15);
             lsys.score.setScale(6, .4, .6);
             lsys.score.setScale(7, .4, .6);
             for (j = 0; j < lsys.score.data.length; j++) {
                 var event = lsys.score.data[j];
-                event.duration = event.duration * 19/10;
+                event.duration = event.duration * 36/20;
             }
             lsys.score.tieOverlaps(true);
             lsys.conformToChords();
@@ -1266,7 +1217,7 @@ endin
         "gk_Reverb2_Feedback": 0.8519096975720566,
         "gk_MasterOutput_level": 16.32429797719947,
         "gk_FM_Clang_preset": 9,
-        "gk_FM_Clang_level": 3,
+        "gk_FM_Clang_level": 6,
         "gk_Blower_grainDensity": 0.15,
         "gk_Blower_grainDuration": 0.2,
         "gk_Blower_grainAmplitudeRange": 0.1,
@@ -1275,23 +1226,23 @@ endin
         "gk_Bower_pressure": 0.2,
         "gk_Bower_level": -2,
         "gk_Buzzer_Harmonics": 15,
-        "gk_Buzzer_level": -7,
-        "gk_Droner_partial1": 0.5127594700264622,
-        "gk_Droner_partial2": 0.2746925732284619,
-        "gk_Droner_partial3": 0.5493851464569238,
+        "gk_Buzzer_level": 0.5,
+        "gk_Droner_partial1": 0.05,
+        "gk_Droner_partial2": 0.4,
+        "gk_Droner_partial3": 0.1,
         "gk_Droner_partial4": 0.1,
-        "gk_Droner_partial5": 0.2563797350132311,
+        "gk_Droner_partial5": 0.25,
         "gk_Droner_level": 2.485784659335444,
         "gk_Harpsichord_pick": 0.2563797350132311,
         "gk_Harpsichord_reflection": 0.8149206707351692,
         "gk_Harpsichord_pluck": 0.75,
         "gk_Harpsichord_level": -4.106837098147643,
-        "gk_Phaser_ratio1": 1.7,
+        "gk_Phaser_ratio1": 1,
         "gk_Phaser_ratio2": 0.5040504050405045,
         "gk_Phaser_index1": 1,
         "gk_Phaser_index2": 0.30603060306030627,
         "gk_Phaser_level": 0.125,
-        "gk_Piano_level": -24,
+        "gk_Piano_level": -19,
         "gk_Shiner_level": 3.2043204320432395,
         "gk_Sweeper_britel": 1.2452729986356939,
         "gk_Sweeper_briteh": 0.5860108228873854,
@@ -1301,6 +1252,50 @@ endin
         "gk_YiString_reverb_send": 0.5,
         "gk_YiString_chorus_send": 0.5,
         "gk_YiString_level": 0.5
+      }
+    },
+    "undefined": {
+      "0": {
+        "gk_overlap": 1.0831595764846051,
+        "gk_Reverb_Feedback": 0.8484750015796074,
+        "gk_Reverb2_Feedback": 0.7943170227553772,
+        "gk_MasterOutput_level": 27.87800012636859,
+        "gk_FM_Clang_preset": 9.460531255436628,
+        "gk_FM_Clang_level": -25,
+        "gk_Blower_grainDensity": 117.20216457747708,
+        "gk_Blower_grainDuration": 0.05493851464569238,
+        "gk_Blower_grainAmplitudeRange": 168.47811158012328,
+        "gk_Blower_grainFrequencyRange": 36.62567643046158,
+        "gk_Blower_level": -40,
+        "gk_Bower_pressure": 0.6317929184254624,
+        "gk_Bower_level": -22.419675313378438,
+        "gk_Buzzer_Harmonics": 16.1152976294031,
+        "gk_Buzzer_level": -33.40737824251691,
+        "gk_Droner_partial1": 0.05,
+        "gk_Droner_partial2": 0.4,
+        "gk_Droner_partial3": 0.1,
+        "gk_Droner_partial4": 0.1,
+        "gk_Droner_partial5": 0.25,
+        "gk_Droner_level": -40,
+        "gk_Harpsichord_pick": 0.36625676430461584,
+        "gk_Harpsichord_reflection": 0.3296314286119785,
+        "gk_Harpsichord_pluck": 0.15565912482946173,
+        "gk_Harpsichord_level": -37.06994588556307,
+        "gk_Phaser_ratio1": 1.684781115801233,
+        "gk_Phaser_ratio2": 0.5040504050405045,
+        "gk_Phaser_index1": 1,
+        "gk_Phaser_index2": 0.3296310878741543,
+        "gk_Phaser_level": -35.60491882834461,
+        "gk_Piano_level": -25,
+        "gk_Shiner_level": -40,
+        "gk_Sweeper_britel": 1.2452729986356939,
+        "gk_Sweeper_briteh": 0.5860108228873854,
+        "gk_Sweeper_britels": 1.6115297629403098,
+        "gk_Sweeper_britehs": 1.25,
+        "gk_Sweeper_level": -40,
+        "gk_YiString_reverb_send": 0.5127594700264622,
+        "gk_YiString_chorus_send": 0.5127594700264622,
+        "gk_YiString_level": -19
       }
     }
   },
@@ -1322,17 +1317,17 @@ endin
         },
         "Blower": {
           "preset": "Default",
-          "closed": true,
+          "closed": false,
           "folders": {}
         },
         "Bower": {
           "preset": "Default",
-          "closed": false,
+          "closed": true,
           "folders": {}
         },
         "Buzzer": {
           "preset": "Default",
-          "closed": true,
+          "closed": false,
           "folders": {}
         },
         "Droner": {
@@ -1347,7 +1342,7 @@ endin
         },
         "Phaser": {
           "preset": "Default",
-          "closed": false,
+          "closed": true,
           "folders": {}
         },
         "Piano": {
@@ -1367,20 +1362,20 @@ endin
         },
         "YiString": {
           "preset": "Default",
-          "closed": true,
+          "closed": false,
           "folders": {}
         }
       }
     }
-  }
+  },
+  "preset": "undefined"
 };
         window.onload = function() {
-            //csound.message('platform: ' + navigator.platform + '\n');
             gui = new dat.GUI({load: default_json, width: 300});
             gui.remember(parameters);
             gui.add(parameters, 'Play').name('Play [Ctrl-P]');
             gui.add(parameters, 'Stop').name('Stop [Ctrl-S]');
-            gui.add(parameters, 'Developer_tools').name('Debugger');
+            gui.add(parameters, 'Developer_tools').name('Debug');
             gui.add(parameters, 'Close').name('Close').name('Exit [Ctrl-X]');
             var Master = gui.addFolder('Master effects');
             add_slider(Master, 'gk_overlap', 0, 20);
