@@ -165,8 +165,8 @@ gk_FM_Clang_NseBW chnget "NseBW"
 gk_FM_Clang_NseFllw chnget "NseFllw"
 endin
 
-;#include "patches/PianoNoteFluidsynth.inc"
-#include "patches/PianoNotePianoteq.inc"
+#include "patches/PianoNoteFluidsynth.inc"
+;#include "patches/PianoNotePianoteq.inc"
 
 gk_Harpsichord_level init .25
 gk_Harpsichord_pick init .75
@@ -775,8 +775,8 @@ $SET_PRESET(12'2 '0.1 '1 '1.45'1 '2.66'1.00 '16 '0 '0.21 '25 '16 '0 '0 '0.001'1 
 $SET_PRESET(13'1.9'0 '0 '24 '1 '2.29'1.00 '23.25 '-4 '1 '1.5 '16 '1 '151 '0.0178'1 '1 '0.1 '3 '0 '0.5 '0.01 '0.3 '0.55 )
 endin
 
-;#include "patches/PianoOutFluidsynth.inc"
-#include "patches/PianoOutPianoteq.inc"
+#include "patches/PianoOutFluidsynth.inc"
+; #include "patches/PianoOutPianoteq.inc"
 
 /**
  * Solina Chorus, based on Solina String Ensemble Chorus Module
@@ -993,7 +993,7 @@ endin
             console.log(chord.information());
             var t = new ParametricLindenmayer.Turtle(new Silencio.Event(), chord, chord);
             lsys.set_turtle(t);
-            lsys.generate(6);
+            lsys.generate(5);
             lsys.score.findScales();
             csound.message('lsys:' + lsys + '\n');
             csound.message(lsys.score.getDuration().toString() + '\n');
@@ -1276,7 +1276,7 @@ endin
         "gk_Droner_partial3": 0.1,
         "gk_Droner_partial4": 0.1,
         "gk_Droner_partial5": 0.25,
-        "gk_Droner_level": -40,
+        "gk_Droner_level": -19,
         "gk_Harpsichord_pick": 0.36625676430461584,
         "gk_Harpsichord_reflection": 0.3296314286119785,
         "gk_Harpsichord_pluck": 0.15565912482946173,

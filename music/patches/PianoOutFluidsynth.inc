@@ -10,8 +10,8 @@ i_duration = p3
 i_midikey = p4
 i_midivelocity = p5
 aoutleft, aoutright fluidOut giFluidsynth
-aoutleft = aoutleft * 5000000
-aoutright = aoutright * 5000000
+aoutleft = aoutleft * 3000000
+aoutright = aoutright * 3000000
 ;printks "fluidOut: %9.4f %9.4f\n", 0.5, aoutleft, aoutright
 outleta "outleft", aoutleft * kgain
 outleta "outright", aoutright * kgain
