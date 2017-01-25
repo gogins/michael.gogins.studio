@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Chaotic Multiples</title>
+        <script type="text/javascript" src="silencio/js/jquery.js"></script>
+        <script type="text/javascript" src="silencio/js/Silencio.js"></script>
+        <script type="text/javascript" src="silencio/js/ChordSpace.js"></script>
+        <script type="text/javascript" src="silencio/js/sprintf.js"></script>
+        <script type="text/javascript" src="silencio/js/three.js"></script>
+        <script type="text/javascript" src="silencio/js/TrackballControls.js"></script>
+        <script type='text/javascript' src='silencio/js/tinycolor.js'></script>
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />
+       <style>
+            input[type='range'] {
+                -webkit-appearance: none;
+                border-radius: 5px;
+                box-shadow: inset 0 0 5px #111;
+                background-color: #333;
+                height: 10px;
+                width: 100%;
+                vertical-align: middle;
+            }
+            input[type=range]::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                border: none;
+                height: 8px;
+                width: 8px;
+                border-radius: 50%;
+                background: yellow;
+                margin-top: 0px;
+                border-radius: 3px;
+            }
+            table td {
+                border-width: 2px;
+                padding: 2px;
+                border-style: transparent;
+                border-color: transparent;
+                color:yellow;
+                background-style: transparent;
+                font-family: sans-serif
+            }
+            table th {
+                border-width: 2px;
+                padding: 2px;
+                border-style: transparent;
+                border-color: transparent;
+                color:white;
+                background-style: transparent;
+                 font-family: sans-serif
+            }
+            ::-webkit-scrollbar
+            {
+                width:10px;
+            }
+            ::-webkit-scrollbar-track-piece
+            {
+                background-color:transparent;
+            }
+            ::-webkit-scrollbar-corner
+            {
+                background-color:transparent;
+            }
+        .dg {
+            font-family: Monaco, sans-serif;
+            font-size:8pt;
+            }
+        </style>
+        <script>
+        try {
+            var csound = require('csound.node');
+            console.log('csound:', csound);
+            //var fs = require('fs');
+            var nwgui = require('nw.gui');
+            var nw_window = nwgui.Window.get();
+            nw_window.on('close', function() {
+                console.log('Closing down...');
+                process.exit(0);
+            });
+        } catch (err) {
+            alert(err);
+            console.log(err.message);
+        }
+    </script>
+    </head>
+    <body style="background:black;">
+    <canvas id = 'graphics_canvas' class='canvas' style="width:98vw;height:98vh;"></canvas>
+    <table id = 'statistics' style="position: absolute;left:1vw;color:#eee;top:1vw;font-family:Monaco, sans-serif;font-size:8pt">
+        <col width=350>
+        <col width=250>
+        <col width=100>
+        <tr style="color:gold;">
+            <!-- Copyright (C) 2016 by Michael Gogins -->
+            <td style="font-weight:bold;"><b><i>Chua's Oscillator</b></i>, for csound.node</td>
+            <td style="color:gold;text-align:right;">Michael Gogins</td>
+        </tr>
+        <tr>
+            <td align="left" colspan=3> 
+                <input type="button" id='play' value="Play" />
+                <input type="button" id='stop' value="Stop" />
+                <input type="button" id='save' value="Save" />
+                <input type="button" id='restore' value="Restore" />
+            </td>
+        </tr>
+        <tr id='messages'>
+            <td colspan="3"><textarea id="Log_cell" style="width:100%;color:SkyBlue;background-color:transparent;border:none;text-align:left;height:200px;overflow:auto;padding:0;margin:0;border-collapse:collapse;"></textarea></td>
+        </tr>
+        <!-- 
+
+gk_Chuas_Oscillator_Step chnget "gk_Chuas_Oscillator_Step"
+gk_Chuas_Oscillator_Inductor_L chnget "gk_Chuas_Oscillator_Inductor_L"
+gk_Chuas_Oscillator_Resistor_R0 chnget "gk_Chuas_Oscillator_Resistor_R0"
+gk_Chuas_Oscillator_Capacitor_C2 chnget "gk_Chuas_Oscillator_Capacitor_C2"
+gk_Chuas_Oscillator_Resistor_G chnget "gk_Chuas_Oscillator_Resistor_G"
+gk_Chuas_Oscillator_Nonlinearity_Ga chnget "gk_Chuas_Oscillator_Nonlinearity_Ga"
+gk_Chuas_Oscillator_Nonlinearity_Gb chnget "gk_Chuas_Oscillator_Nonlinearity_Gb"
+gk_Chuas_Oscillator_Nonlinearity_E chnget "gk_Chuas_Oscillator_Nonlinearity_E"
+gk_Chuas_Oscillator_Capacitor_C1 chnget "gk_Chuas_Oscillator_Capacitor_C1"
+gi_Chuas_Oscillator_Initial_current_3 chnget "gi_Chuas_Oscillator_Initial_current_3"
+gi_Chuas_Oscillator_Initial_voltage_2 chnget "gi_Chuas_Oscillator_Initial_voltage_2"
+gi_Chuas_Oscillator_Initial_voltage_1 chnget "gi_Chuas_Oscillator_Initial_voltage_1"
+gk_Chuas_Oscillator_Pan chnget "gk_Chuas_Oscillator_Pan"
+gk_Chuas_Oscillator_Level chnget "gk_Chuas_Oscillator_Level"
+gk_Moog_Ladder_Filter_Cutoff chnget "gk_Moog_Ladder_Filter_Cutoff"
+gk_Moog_Ladder_Filter_Resonance chnget "gk_Moog_Ladder_Filter_Resonance"
+gk_Moog_Ladder_Filter_Rescale chnget "gk_Moog_Ladder_Filter_Rescale"
+gk_Reverb_SC_Feedback chnget "gk_Reverb_SC_Feedback"
+gi_Reverb_SC_Cutoff chnget "gi_Reverb_SC_Cutoff"
+gi_Reverb_SC_Pitch_modulation chnget "gi_Reverb_SC_Pitch_modulation"
+gk_Reverb_SC_Wet chnget "gk_Reverb_SC_Wet"
+gk_Master_Output_chnget "gk_Master_Output_chnget"
+
+        -->
+        <th colspan=3 align='left'>Chua's Oscillator</th>
+        <tr><td><label for=gk_Chuas_Oscillator_Step>Step size</label></td>
+            <td><input class=persistent-element type=range min=0 max=1 value=.25 id=gk_Chuas_Oscillator_Step step=.001></td>
+            <td><output for=gk_Chuas_Oscillator_Step id=gk_Chuas_Oscillator_Step_output>.5</output></td></tr>
+        <tr><td><label for=gk_Chuas_Oscillator_Inductor_L>Inductor L</label></td>
+            <td><input class=persistent-element type=range min=0 max=1 value=.25 id=gk_Chuas_Oscillator_Inductor_L step=.001></td>
+            <td><output for=gk_Chuas_Oscillator_Inductor_L id=gk_Chuas_Oscillator_Inductor_L_output>.5</output></td></tr>
+        <tr><td><label for=gk_Chuas_Oscillator_Resistor_R0>Resistor R0</label></td>
+            <td><input class=persistent-element type=range min=0 max=1 value=.25 id=gk_Chuas_Oscillator_Resistor_R0 step=.001></td>
+            <td><output for=gk_Chuas_Oscillator_Resistor_R0 id=gk_Chuas_Oscillator_Resistor_R0_output>.5</output></td></tr>
+        <tr><td><label for=gk_Chuas_Oscillator_Capacitor_C2>Capacitor C2</label></td>
+            <td><input class=persistent-element type=range min=0 max=1 value=.25 id=gk_Chuas_Oscillator_Capacitor_C2 step=.001></td>
+            <td><output for=gk_Chuas_Oscillator_Capacitor_C2 id=gk_Chuas_Oscillator_Capacitor_C2_output>.5</output></td></tr>
+    </table>
+    <textarea class="code" id="orc" hidden rows=24 cols=80>
+
+sr = 48000
+ksmps = 100
+nchnls = 2
+0dbfs = 1500000
+
+connect "Chuas_Oscillator", "outleft", "Moog_Ladder_Filter", "inleft"
+connect "Chuas_Oscillator", "outright", "Moog_Ladder_Filter", "inright"
+connect "Moog_Ladder_Filter", "outleft", "Reverb_SC", "inleft"
+connect "Moog_Ladder_Filter", "outright", "Reverb_SC", "inright"
+connect "Reverb_SC", "outleft", "Master_Output", "inleft"
+connect "Reverb_SC", "outleft", "Master_Output", "inleft"
+
+alwayson "Chuas_Oscillator"
+alwayson "Moog_Ladder_Filter"
+alwayson "Reverb_SC"
+alwayson "Master_Output"
+alwayson "Controls"
+
+; istep = p5
+; iL    = p8
+; iR0   = p9
+; iC2   = p10
+; iG    = p11
+; iGa   = p12
+; iGb   = p13
+; iE    = p14
+; iC1   = p15
+; iI3   = p17
+; iV2   = p18
+; iV1   = p19
+;    p1  p2  p3  p4    p5     p6  p7  p8           p9          p10              p11  p12          p13          p14  p15          p16     p17                p18                   p19                 p20   p21   p22     p23  p24  p25  
+;                      i_step         i_L          i_R0        i_C2             i_G  i_Ga         i_Gb         i_E  i_C1                 i_I3               i_V2                  i_V1
+; i  1   0   20  1500  0.1    -1  -1  -0.00707925  0.00001647  100               1   -0.99955324  -1.00028375  1    -0.00222159  204.8   -2.36201596260071  3.08917625807226e-03    3.87075614929199   7     0.4  0.004   1    86   30   ; torus attractor (gallery of attractors) 
+; i  1   +   20  1500  0.425   0  -1   1.3506168   0            -4.50746268737  -1    2.4924       0.93        1     1             0    -22.28662665        0.009506608           -22.2861576         32    10    2      20    86   30   ; heteroclinic orbit
+; i  1   +   20  1024  0.05   -1  -1   0.00667     0.000651     10              -1    0.856        1.1         1     0.06         51.2  -20.200590133667    0.172539323568344      -4.07686233520508   2.5  10    0.2     1    66   81   ; periodic attractor (torus breakdown route)
+; i  1   +   20  1024  0.05   -1  -1   0.00667     0.000651     10              -1    0.856        1.1         1     0.1         153.6   21.12496758        0.03001749              0.515828669        2.5  10    0.2     1    66   81   ; torus attractor (torus breakdown route)
+
+gk_Chuas_Oscillator_Step init 0.05
+gk_Chuas_Oscillator_Inductor_L init 0.00667
+gk_Chuas_Oscillator_Resistor_R0 init 0.000651
+gk_Chuas_Oscillator_Capacitor_C2 init 10
+gk_Chuas_Oscillator_Resistor_G init -1
+gk_Chuas_Oscillator_Nonlinearity_Ga init 0.856
+gk_Chuas_Oscillator_Nonlinearity_Gb init 1.1
+gk_Chuas_Oscillator_Nonlinearity_E init 1
+gk_Chuas_Oscillator_Capacitor_C1 init 0.1
+gi_Chuas_Oscillator_Initial_current_3 init 21.12496758
+gi_Chuas_Oscillator_Initial_voltage_2 init 0.03001749
+gi_Chuas_Oscillator_Initial_voltage_1 init 0.515828669
+gk_Chuas_Oscillator_Pan init 0
+gk_Chuas_Oscillator_Level init 0
+
+instr Chuas_Oscillator
+i_attack = 0.02
+i_sustain = p3
+i_release = 0.02
+p3 = i_attack + i_sustain + i_release
+i_scale = 1.0
+a_damping linsegr 0.0, i_attack, i_scale, i_sustain, i_scale, i_release, 0.0
+i_buzztable ftgenonce 1, 0, 65535, 10, 1   
+a_guide buzz 5000, 440, sr/440, i_buzztable
+; aI3, aV2, aV1 chuap kL, kR0, kC1, kG, kGa, kGb, kE, kC2, iI3, iV2, iV1, ktime_step
+a_I3, a_V2, a_V1 chuap gk_Chuas_Oscillator_Inductor_L, gk_Chuas_Oscillator_Resistor_R0, gk_Chuas_Oscillator_Capacitor_C1, gk_Chuas_Oscillator_Resistor_G, gk_Chuas_Oscillator_Nonlinearity_Ga, gk_Chuas_Oscillator_Nonlinearity_Gb, gk_Chuas_Oscillator_Nonlinearity_E, gk_Chuas_Oscillator_Capacitor_C2, gi_Chuas_Oscillator_Initial_current_3, gi_Chuas_Oscillator_Initial_voltage_2, gi_Chuas_Oscillator_Initial_voltage_1, gk_Chuas_Oscillator_Step
+a_signal balance a_V2, a_guide
+k_gain = ampdb(gk_Chuas_Oscillator_Level)
+a_outleft, a_outright pan2 a_signal * k_gain, gk_Chuas_Oscillator_Pan
+outleta "outleft",  a_outleft
+outleta "outright", a_outright
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;i
+prints "Chuas_Oscillator     i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+endin
+
+gk_Moog_Ladder_Filter_Cutoff init 12000
+gk_Moog_Ladder_Filter_Resonance init 0.5
+gk_Moog_Ladder_Filter_Rescale init 0.1
+
+instr Moog_Ladder_Filter
+a_inleft  inleta "inleft"
+a_inright inleta "inright"
+a_outleft  moogvcf2 a_inleft,  gk_Moog_Ladder_Filter_Cutoff, gk_Moog_Ladder_Filter_Resonance, gk_Moog_Ladder_Filter_Rescale
+a_outright moogvcf2 a_inright, gk_Moog_Ladder_Filter_Cutoff, gk_Moog_Ladder_Filter_Resonance, gk_Moog_Ladder_Filter_Rescale
+outleta "outleft",  a_outleft
+outleta "outright", a_outright
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;i
+prints "Moog_Ladder_Filter   i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+endin
+
+gk_Reverb_SC_Feedback init .8
+gi_Reverb_SC_Cutoff init 15000
+gi_Reverb_SC_Pitch_modulation init .05
+gk_Reverb_SC_Wet init .5
+
+instr Reverb_SC
+a_dummy init 0
+a_zero init 0
+a_leftin  inleta "inleft"
+a_rightin inleta "inright"
+a_outleft,  a_dummy reverbsc a_leftin,  a_zero, gk_Reverb_Feedback, gi_Reverb_SC_Cutoff, gi_Reverb_SC_Pitch_modulation
+a_outright, a_dummy reverbsc a_rightin, a_zero, gk_Reverb_Feedback, gi_Reverb_SC_Cutoff, gi_Reverb_SC_Pitch_modulation
+outleta "outleft",  a_outleft
+outleta "outright", a_outright
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;i
+prints "Reverb_SC            i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+endin
+
+gk_Master_Output_Level init 0
+
+instr Master_Output
+a_left inleta "inleft"
+a_right inleta "inright"
+k_gain = ampdb(gk_Master_Output_Level)
+; printks2 "Master gain: %f\n", k_gain
+outs a_left * k_gain, a_right * k_gain
+Sfilename init "Chuas_Oscillator.wav"
+prints sprintf("Output filename: %s\n", Sfilename)
+fout Sfilename, 16, aleft, aright
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;i
+prints "Master_Output        i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+
+instr Controls
+gk_Chuas_Oscillator_Step chnget "gk_Chuas_Oscillator_Step"
+gk_Chuas_Oscillator_Inductor_L chnget "gk_Chuas_Oscillator_Inductor_L"
+gk_Chuas_Oscillator_Resistor_R0 chnget "gk_Chuas_Oscillator_Resistor_R0"
+gk_Chuas_Oscillator_Capacitor_C2 chnget "gk_Chuas_Oscillator_Capacitor_C2"
+gk_Chuas_Oscillator_Resistor_G chnget "gk_Chuas_Oscillator_Resistor_G"
+gk_Chuas_Oscillator_Nonlinearity_Ga chnget "gk_Chuas_Oscillator_Nonlinearity_Ga"
+gk_Chuas_Oscillator_Nonlinearity_Gb chnget "gk_Chuas_Oscillator_Nonlinearity_Gb"
+gk_Chuas_Oscillator_Nonlinearity_E chnget "gk_Chuas_Oscillator_Nonlinearity_E"
+gk_Chuas_Oscillator_Capacitor_C1 chnget "gk_Chuas_Oscillator_Capacitor_C1"
+gi_Chuas_Oscillator_Initial_current_3 chnget "gi_Chuas_Oscillator_Initial_current_3"
+gi_Chuas_Oscillator_Initial_voltage_2 chnget "gi_Chuas_Oscillator_Initial_voltage_2"
+gi_Chuas_Oscillator_Initial_voltage_1 chnget "gi_Chuas_Oscillator_Initial_voltage_1"
+gk_Chuas_Oscillator_Pan chnget "gk_Chuas_Oscillator_Pan"
+gk_Chuas_Oscillator_Level chnget "gk_Chuas_Oscillator_Level"
+gk_Moog_Ladder_Filter_Cutoff chnget "gk_Moog_Ladder_Filter_Cutoff"
+gk_Moog_Ladder_Filter_Resonance chnget "gk_Moog_Ladder_Filter_Resonance"
+gk_Moog_Ladder_Filter_Rescale chnget "gk_Moog_Ladder_Filter_Rescale"
+gk_Reverb_SC_Feedback chnget "gk_Reverb_SC_Feedback"
+gi_Reverb_SC_Cutoff chnget "gi_Reverb_SC_Cutoff"
+gi_Reverb_SC_Pitch_modulation chnget "gi_Reverb_SC_Pitch_modulation"
+gk_Reverb_SC_Wet chnget "gk_Reverb_SC_Wet"
+gk_Master_Output_chnget "gk_Master_Output_chnget"
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;i
+prints "Controls             i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+endin
+
+    </textarea>
+    <script>
+        window.onerror = function (text, url, line) {
+          csound.message(text + '\n' + url + '\n' + line + '\n');
+          console.trace();
+        }
+        var title = 'Chuas Oscillator 1';
+        var context = null;
+        var startTime = 0;
+    </script>
+    <script>    
+    $(document).ready(function() {
+        $('#play').on('click', function() {      	
+            csound.setOption('-odac')
+            csound.compileOrc(document.getElementById('orc').value);
+            csound.readScore(document.getElementById('sco').value);
+            $('#restore').trigger('click');
+            csound.perform();
+        });
+        $('#stop').on('click', function() {      	
+            csound.stop();
+        });
+        $('#save').on('click', function() {
+            $('.persistent-element').each(function() {
+                localStorage.setItem(this.id, this.value);
+            });
+        });
+        $('#restore').on('click', function() {
+            $('.persistent-element').each(function() {
+                this.value = localStorage.getItem(this.id);
+                csound.setControlChannel(this.id, this.value);
+                var output_selector = '#' + this.id + '_output';
+                $(output_selector).val(this.value);
+            });
+        });
+        $('input').on('input', function(event) {
+            var slider_value = parseFloat(event.target.value);
+            csound.setControlChannel(event.target.id, slider_value);
+            var output_selector = '#' + event.target.id + '_output';
+            $(output_selector).val(slider_value);
+        });
+        $(window).load(function() {
+            $('#restore').trigger('click');
+        });
+    });
+    </script>
+    </body>
+</html>
