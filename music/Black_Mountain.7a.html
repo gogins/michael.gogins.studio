@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Black Mountain 10</title>
+        <title>Black Mountain</title>
         <script type="text/javascript" src="silencio/js/dat.gui.js"></script>
         <script type="text/javascript" src="silencio/js/jquery.js"></script>
         <script type="text/javascript" src="silencio/js/Silencio.js"></script>
@@ -56,7 +56,7 @@
         <col width=250>
             <tr style="color:gold;">
             <!-- Copyright (C) 2016 by Michael Gogins -->
-            <td style="font-weight:bold;"><b><i>Black Mountain 10</b></i>, for csound.node</td>
+            <td style="font-weight:bold;"><b><i>Black Mountain</b></i>, for csound.node</td>
             <td style="color:gold;text-align:right;">Michael Gogins</td>
             <tr>
                 <td style="color:gold;text-align:left">Click "Play"; adjust "Master effects" group "gk_MasterOutput_level" slider.</td>
@@ -909,7 +909,7 @@ aenvelope transeg 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp
 aright butterlp aright, 16000
 aleft butterlp aleft, 16000
 outs aleft * kgain * aenvelope, aright * kgain * aenvelope
-Sfilename init  "Black Mountain 10.wav"
+Sfilename init  "Black Mountain 7a.wav"
 prints sprintf("Output filename: %s\n", Sfilename)
 ; We want something that will play on my phone.
 fout Sfilename, 18, aleft, aright
@@ -975,7 +975,7 @@ endin
           csound.message(text + '\n' + url + '\n' + line + '\n');
           console.trace();
         }
-        var title = 'Black Mountain 10';
+        var title = 'Black Mountain 7';
         var context = null;
         var lsys = null;
         var startTime = 0;
@@ -987,10 +987,8 @@ endin
             lsys = new ParametricLindenmayer.PLSystem();
             // p0_t, p1_d, p2_s, p3_c, p4_k, p5_v, p6_x
             lsys.set_axiom('T(0);Push();Note(1,1,144,1,1,1,0);Pop();');
-          //lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration!=5)', 'Note(t/2+.01,  d/2+0, s, c/2+.08, k/2+0, v/2+0, x/2+0);K()  ;Note(t/2.05+0, d/2+0, s, c/2+0, k/1.92+1.05, v/2+0, x/2+0);     Note(t/2+1, d/2+0, s, c/2+0, k/2+0.1, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.7,    v/2+0.0, x/2+0);Q(3);');
-          //lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==5)', 'Note(t/2+.005, d/2+0, s, c/2-.07, k/2+0, v/2+0, x/2+0);K()  ;Note(t/2.07+0, d/2+0, s, c/2+0, k/1.98+1.10, v/2+0, x/2+0);     Note(t/2+1, d/2+0, s, c/2+0, k/2+0,   v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.9,    v/2+0.1, x/2+0);Q(3);');
-            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration!=5)', 'Note(t/2+.01,  d/2+0, s, c/2+.08, k/2+0, v/2-.04, x/2+0);K()  ;Note(t/2.05+0, d/2+0, s, c/2+0, k/1.92+1.05, v/2+0.04, x/2+0);     Note(t/2+1, d/2+0, s, c/2+0, k/2+0.1, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.7,    v/2+0.0, x/2+0);Q(3);');
-            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==5)', 'Note(t/2+.005, d/2+0, s, c/2-.07, k/2+0, v/2-.06, x/2+0);K()  ;Note(t/2.07+0, d/2+0, s, c/2+0, k/1.98+1.10, v/2+0.05, x/2+0);     Note(t/2+1, d/2+0, s, c/2+0, k/2+0,   v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.9,    v/2+0.1, x/2+0);Q(3);');
+            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration!=5)', 'Note(t/2+.01,  d/2+0, s, c/2+.08, k/2+0, v/2+0, x/2+0);K()  ;Note(t/2.05+0, d/2+0, s, c/2+0, k/1.92+1.05, v/2+0, x/2+0);     Note(t/2+1, d/2+0, s, c/2+0, k/2+0.1, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.7,    v/2+0.0, x/2+0);Q(3);');
+            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==5)', 'Note(t/2+.005, d/2+0, s, c/2-.07, k/2+0, v/2+0, x/2+0);K()  ;Note(t/2.07+0, d/2+0, s, c/2+0, k/1.98+1.10, v/2+0, x/2+0);     Note(t/2+1, d/2+0, s, c/2+0, k/2+0,   v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.9,    v/2+0.1, x/2+0);Q(3);');
             var chord = ChordSpace.chordForName('AM');
             console.log(chord.information());
             var t = new ParametricLindenmayer.Turtle(new Silencio.Event(), chord, chord);
@@ -1181,10 +1179,6 @@ endin
                 } catch(e) {
                     console.log(e);
                 }
-                // To enable the host to restart the piece after stopping it...
-                csound.stop();
-                csound.cleanup();
-                csound.reset();
                 csound.compileOrc(document.getElementById('orc').value);
                 csound.setOption('-m0');
                 //csound.setOption('-j3');
@@ -1268,17 +1262,17 @@ endin
         "gk_MasterOutput_level": 27.87800012636859,
         "gk_FM_Clang_preset": 9.460531255436628,
         "gk_FM_Clang_level": -25,
-        "gk_Blower_grainDensity": 150.60932492125144,
-        "gk_Blower_grainDuration": 0.03214223397709634,
+        "gk_Blower_grainDensity": 117.20216457747708,
+        "gk_Blower_grainDuration": 0.05493851464569238,
         "gk_Blower_grainAmplitudeRange": 168.47811158012328,
         "gk_Blower_grainFrequencyRange": 36.62567643046158,
         "gk_Blower_level": -40,
         "gk_Bower_pressure": 0.6317929184254624,
         "gk_Bower_level": -22.419675313378438,
-        "gk_Buzzer_Harmonics": 7.16312642918147,
+        "gk_Buzzer_Harmonics": 16.1152976294031,
         "gk_Buzzer_level": -33.40737824251691,
         "gk_Droner_partial1": 0.05,
-        "gk_Droner_partial2": 0.30305534892690833,
+        "gk_Droner_partial2": 0.4,
         "gk_Droner_partial3": 0.1,
         "gk_Droner_partial4": 0.1,
         "gk_Droner_partial5": 0.25,
@@ -1294,10 +1288,10 @@ endin
         "gk_Phaser_level": -35.60491882834461,
         "gk_Piano_level": -25,
         "gk_Shiner_level": -40,
-        "gk_Sweeper_britel": 0.8081475971384222,
-        "gk_Sweeper_briteh": 2.167304919598496,
-        "gk_Sweeper_britels": 1.028551487267083,
-        "gk_Sweeper_britehs": 2.6815806632320376,
+        "gk_Sweeper_britel": 1.2452729986356939,
+        "gk_Sweeper_briteh": 0.5860108228873854,
+        "gk_Sweeper_britels": 1.6115297629403098,
+        "gk_Sweeper_britehs": 1.25,
         "gk_Sweeper_level": -40,
         "gk_YiString_reverb_send": 0.5127594700264622,
         "gk_YiString_chorus_send": 0.5127594700264622,
@@ -1338,7 +1332,7 @@ endin
         },
         "Droner": {
           "preset": "Default",
-          "closed": false,
+          "closed": true,
           "folders": {}
         },
         "Harpsichord": {

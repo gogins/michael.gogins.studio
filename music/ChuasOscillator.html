@@ -86,15 +86,83 @@
     </head>
     <body style="background:black;">
     <canvas id = 'graphics_canvas' class='canvas' style="width:98vw;height:98vh;"></canvas>
-    <table id = 'statistics' style="position: absolute;left:1vw;color:#eee;top:1vw;font-family:Monaco, sans-serif;font-size:8pt">
-        <col width=350>
-        <col width=250>
-        <col width=100>
+    <table id = 'statistics' style="position: absolute;left:1vw;color:#0f0;top:1vw;font-family:Monaco, sans-serif;font-size:8pt">
+        <col width=300>
+        <col width=400>
+        <col width=300>
         <tr style="color:gold;">
             <!-- Copyright (C) 2016 by Michael Gogins -->
             <td style="font-weight:bold;"><b><i>Chua's Oscillator</b></i>, for csound.node</td>
             <td style="color:gold;text-align:right;">Michael Gogins</td>
+            <td id='Time_cell' style="color:gold;text-align:right;"></td>
         </tr>
+        <th colspan=3 align='left'>Chua's Oscillator</th>
+        <tr><td><label for=gk_Chuas_Oscillator_Inductor_L>Inductor L</label></td>
+            <td><input class=persistent-element type=range min=-0.1 max=2 value=0.00667 id=gk_Chuas_Oscillator_Inductor_L step=.0001></td>
+            <td><output for=gk_Chuas_Oscillator_Inductor_L id=gk_Chuas_Oscillator_Inductor_L_output>0.00667</output></td></tr>
+        <tr><td><label for=gk_Chuas_Oscillator_Resistor_R0>Resistor R0</label></td>
+            <td><input class=persistent-element type=range min=0 max=.01 value=0.000651 id=gk_Chuas_Oscillator_Resistor_R0 step=.0001></td>
+            <td><output for=gk_Chuas_Oscillator_Resistor_R0 id=gk_Chuas_Oscillator_Resistor_R0_output>0.000651</output></td></tr>
+        <tr><td><label for=gk_Chuas_Oscillator_Capacitor_C2>Capacitor C2</label></td>
+            <td><input class=persistent-element type=range min=-20 max=200 value=10.0 id=gk_Chuas_Oscillator_Capacitor_C2 step=.0001></td>
+            <td><output for=gk_Chuas_Oscillator_Capacitor_C2 id=gk_Chuas_Oscillator_Capacitor_C2_output>10.0</output></td></tr>
+        <tr><td><label for=gk_Chuas_Oscillator_Resistor_G>Resistor G</label></td>
+            <td><input class=persistent-element type=range min=-1 max=1 value=-1 id=gk_Chuas_Oscillator_Resistor_G step=1></td>
+            <td><output for=gk_Chuas_Oscillator_Resistor_G id=gk_Chuas_Oscillator_Resistor_G_output>-1</output></td></tr>
+        <tr><td><label for=gk_Chuas_Oscillator_Nonlinearity_Ga>Nonlinearity Ga</label></td>
+            <td><input class=persistent-element type=range min=-3 max=3 value=0.856 id=gk_Chuas_Oscillator_Nonlinearity_Ga step=.0001></td>
+            <td><output for=gk_Chuas_Oscillator_Resistor_Ga id=gk_Chuas_Oscillator_Resistor_Ga_output>0.856</output></td></tr>
+        <tr><td><label for=gk_Chuas_Oscillator_Nonlinearity_Gb>Nonlinearity Ga</label></td>
+            <td><input class=persistent-element type=range min=-3 max=3 value=1.1 id=gk_Chuas_Oscillator_Nonlinearity_Gb step=.0001></td>
+            <td><output for=gk_Chuas_Oscillator_Nonlinearity_Gb id=gk_Chuas_Oscillator_Nonlinearity_Gb_output>1.1</output></td></tr>
+        <tr><td><label for=gk_Chuas_Oscillator_Nonlinearity_E>Nonlinearity E</label></td>
+            <td><input class=persistent-element type=range min=0 max=5 value=1.0 id=gk_Chuas_Oscillator_Nonlinearity_E step=.0001></td>
+            <td><output for=gk_Chuas_Oscillator_Nonlinearity_E id=gk_Chuas_Oscillator_Nonlinearity_E_output>1.0</output></td></tr>
+        <tr><td><label for=gk_Chuas_Oscillator_Capacitor_C1>Capacitor C1</label></td>
+            <td><input class=persistent-element type=range min=-.1 max=1.1 value=0.1 id=gk_Chuas_Oscillator_Capacitor_C1 step=.0001></td>
+            <td><output for=gk_Chuas_Oscillator_Capacitor_C1 id=gk_Chuas_Oscillator_Capacitor_C1_output>0.1</output></td></tr>
+        <tr><td><label for=gi_Chuas_Oscillator_Initial_current_3>Initial current 3</label></td>
+            <td><input class=persistent-element type=range min=-30 max=30 value=21.12496758 id=gi_Chuas_Oscillator_Initial_current_3 step=.0001></td>
+            <td><output for=gi_Chuas_Oscillator_Initial_current_3 id=gi_Chuas_Oscillator_Initial_current_3_output>21.12496758</output></td></tr>
+        <tr><td><label for=gi_Chuas_Oscillator_Initial_voltage_2>Initial voltage 2</label></td>
+            <td><input class=persistent-element type=range min=-30 max=30 value=0.03001749  id=gi_Chuas_Oscillator_Initial_voltage_2 step=.0001></td>
+            <td><output for=gi_Chuas_Oscillator_Initial_voltage_2 id=gi_Chuas_Oscillator_Initial_voltage_2_output>0.03001749 </output></td></tr>
+        <tr><td><label for=gi_Chuas_Oscillator_Initial_voltage_1>Initial voltage 1</label></td>
+            <td><input class=persistent-element type=range min=-30 max=30 value=0.515828669 id=gi_Chuas_Oscillator_Initial_voltage_1 step=.0001></td>
+            <td><output for=gi_Chuas_Oscillator_Initial_voltage_1 id=gi_Chuas_Oscillator_Initial_voltage_1_output>0.515828669</output></td></tr>
+        <tr><td><label for=gk_Chuas_Oscillator_Step>Step size (implies inverse frequency)</label></td>
+            <td><input class=persistent-element type=range min=0 max=.01 value=0.05 id=gk_Chuas_Oscillator_Step step=.0001></td>
+            <td><output for=gk_Chuas_Oscillator_Step id=gk_Chuas_Oscillator_Step_output>0.05</output></td></tr>
+        <tr><td><label for=gk_Chuas_Oscillator_Pan>Pan</label></td>
+            <td><input class=persistent-element type=range min=0 max=1 value=0.5 id=gk_Chuas_Oscillator_Pan step=.0001></td>
+            <td><output for=gk_Chuas_Oscillator_Pan id=gk_Chuas_Oscillator_Pan_output>0.5</output></td></tr>
+        <tr><td><label for=gk_Chuas_Oscillator_Level>Level adjustment (dB)</label></td>
+            <td><input class=persistent-element type=range min=-40 max=40 value=0 id=gk_Chuas_Oscillator_Level step=.0001></td>
+            <td><output for=gk_Chuas_Oscillator_Level id=gk_Chuas_Oscillator_Level_output>0.0</output></td></tr>
+        <th colspan=3 align='left'>Moog Ladder Filter</th>
+        <tr><td><label for=gk_Moog_Ladder_Filter_Cutoff>Cutoff (Hz)</label></td>
+            <td><input class=persistent-element type=range min=20 max=20000 value=15000 id=gk_Moog_Ladder_Filter_Cutoff step=.0001></td>
+            <td><output for=gk_Moog_Ladder_Filter_Cutoff id=gk_Moog_Ladder_Filter_Cutoff_output>15000</output></td></tr>
+        <tr><td><label for=gk_Moog_Ladder_Filter_Resonance>Resonance</label></td>
+            <td><input class=persistent-element type=range min=0 max=2 value=0.05 id=gk_Moog_Ladder_Filter_Resonance step=.0001></td>
+            <td><output for=gk_Moog_Ladder_Filter_Resonance id=gk_Moog_Ladder_Filter_Resonance_output>0.5</output></td></tr>
+        <th colspan=3 align='left'>Sean Costello Reverb</th>
+        <tr><td><label for=gk_Reverb_SC_Feedback>Feedback (implies decay time)</label></td>
+            <td><input class=persistent-element type=range min=0 max=1 value=0.8 id=gk_Reverb_SC_Feedback step=.0001></td>
+            <td><output for=gk_Reverb_SC_Feedback id=gk_Reverb_SC_Feedback_output>0.8</output></td></tr>
+        <tr><td><label for=gi_Reverb_SC_Cutoff>Lowpass cutoff</label></td>
+            <td><input class=persistent-element type=range min=20 max=20000 value=10000 id=gi_Reverb_SC_Cutoff step=.0001></td>
+            <td><output for=gi_Reverb_SC_Cutoff id=gi_Reverb_SC_Cutoff_output>10000</output></td></tr>
+        <tr><td><label for=gi_Reverb_SC_Pitch_modulation>Pitch modulation</label></td>
+            <td><input class=persistent-element type=range min=0 max=20 value=1.0 id=gi_Reverb_SC_Pitch_modulation step=.0001></td>
+            <td><output for=gi_Reverb_SC_Pitch_modulation id=gi_Reverb_SC_Pitch_modulation_output>1.0</output></td></tr>
+        <tr><td><label for=gk_Reverb_SC_Wet>Wet</label></td>
+            <td><input class=persistent-element type=range min=0 max=1 value=0.5 id=gk_Reverb_SC_Wet step=0.001></td>
+            <td><output for=gk_Reverb_SC_Wet id=gk_Reverb_SC_Wet_output>0.5</output></td></tr>
+        <th colspan=3 align='left'>Master Output</th>
+        <tr><td><label for=gk_Master_Output_Level>Level adjustment (dB)</label></td>
+            <td><input class=persistent-element type=range min=-40 max=40 value=0.0 id=gk_Master_Output_Level step=.0001></td>
+            <td><output for=gk_Master_Output_Level id=gk_Master_Output_Level_output>0.0</output></td></tr>
         <tr>
             <td align="left" colspan=3> 
                 <input type="button" id='play' value="Play" />
@@ -104,61 +172,22 @@
             </td>
         </tr>
         <tr id='messages'>
-            <td colspan="3"><textarea id="Log_cell" style="width:100%;color:SkyBlue;background-color:transparent;border:none;text-align:left;height:200px;overflow:auto;padding:0;margin:0;border-collapse:collapse;"></textarea></td>
+            <td colspan="3"><textarea id="console" style="font-size:5pt;width:100%;color:SkyBlue;background-color:transparent;border:none;text-align:left;height:200px;overflow:auto;padding:0;margin:0;border-collapse:collapse;"></textarea></td>
         </tr>
-        <!-- 
-
-gk_Chuas_Oscillator_Step chnget "gk_Chuas_Oscillator_Step"
-gk_Chuas_Oscillator_Inductor_L chnget "gk_Chuas_Oscillator_Inductor_L"
-gk_Chuas_Oscillator_Resistor_R0 chnget "gk_Chuas_Oscillator_Resistor_R0"
-gk_Chuas_Oscillator_Capacitor_C2 chnget "gk_Chuas_Oscillator_Capacitor_C2"
-gk_Chuas_Oscillator_Resistor_G chnget "gk_Chuas_Oscillator_Resistor_G"
-gk_Chuas_Oscillator_Nonlinearity_Ga chnget "gk_Chuas_Oscillator_Nonlinearity_Ga"
-gk_Chuas_Oscillator_Nonlinearity_Gb chnget "gk_Chuas_Oscillator_Nonlinearity_Gb"
-gk_Chuas_Oscillator_Nonlinearity_E chnget "gk_Chuas_Oscillator_Nonlinearity_E"
-gk_Chuas_Oscillator_Capacitor_C1 chnget "gk_Chuas_Oscillator_Capacitor_C1"
-gi_Chuas_Oscillator_Initial_current_3 chnget "gi_Chuas_Oscillator_Initial_current_3"
-gi_Chuas_Oscillator_Initial_voltage_2 chnget "gi_Chuas_Oscillator_Initial_voltage_2"
-gi_Chuas_Oscillator_Initial_voltage_1 chnget "gi_Chuas_Oscillator_Initial_voltage_1"
-gk_Chuas_Oscillator_Pan chnget "gk_Chuas_Oscillator_Pan"
-gk_Chuas_Oscillator_Level chnget "gk_Chuas_Oscillator_Level"
-gk_Moog_Ladder_Filter_Cutoff chnget "gk_Moog_Ladder_Filter_Cutoff"
-gk_Moog_Ladder_Filter_Resonance chnget "gk_Moog_Ladder_Filter_Resonance"
-gk_Moog_Ladder_Filter_Rescale chnget "gk_Moog_Ladder_Filter_Rescale"
-gk_Reverb_SC_Feedback chnget "gk_Reverb_SC_Feedback"
-gi_Reverb_SC_Cutoff chnget "gi_Reverb_SC_Cutoff"
-gi_Reverb_SC_Pitch_modulation chnget "gi_Reverb_SC_Pitch_modulation"
-gk_Reverb_SC_Wet chnget "gk_Reverb_SC_Wet"
-gk_Master_Output_chnget "gk_Master_Output_chnget"
-
-        -->
-        <th colspan=3 align='left'>Chua's Oscillator</th>
-        <tr><td><label for=gk_Chuas_Oscillator_Step>Step size</label></td>
-            <td><input class=persistent-element type=range min=0 max=1 value=.25 id=gk_Chuas_Oscillator_Step step=.001></td>
-            <td><output for=gk_Chuas_Oscillator_Step id=gk_Chuas_Oscillator_Step_output>.5</output></td></tr>
-        <tr><td><label for=gk_Chuas_Oscillator_Inductor_L>Inductor L</label></td>
-            <td><input class=persistent-element type=range min=0 max=1 value=.25 id=gk_Chuas_Oscillator_Inductor_L step=.001></td>
-            <td><output for=gk_Chuas_Oscillator_Inductor_L id=gk_Chuas_Oscillator_Inductor_L_output>.5</output></td></tr>
-        <tr><td><label for=gk_Chuas_Oscillator_Resistor_R0>Resistor R0</label></td>
-            <td><input class=persistent-element type=range min=0 max=1 value=.25 id=gk_Chuas_Oscillator_Resistor_R0 step=.001></td>
-            <td><output for=gk_Chuas_Oscillator_Resistor_R0 id=gk_Chuas_Oscillator_Resistor_R0_output>.5</output></td></tr>
-        <tr><td><label for=gk_Chuas_Oscillator_Capacitor_C2>Capacitor C2</label></td>
-            <td><input class=persistent-element type=range min=0 max=1 value=.25 id=gk_Chuas_Oscillator_Capacitor_C2 step=.001></td>
-            <td><output for=gk_Chuas_Oscillator_Capacitor_C2 id=gk_Chuas_Oscillator_Capacitor_C2_output>.5</output></td></tr>
     </table>
-    <textarea class="code" id="orc" hidden rows=24 cols=80>
+   <textarea class="code" id="orc" hidden rows=24 cols=80>
 
-sr = 48000
+sr = 44100
 ksmps = 100
 nchnls = 2
-0dbfs = 1500000
+0dbfs = 1000
 
 connect "Chuas_Oscillator", "outleft", "Moog_Ladder_Filter", "inleft"
 connect "Chuas_Oscillator", "outright", "Moog_Ladder_Filter", "inright"
 connect "Moog_Ladder_Filter", "outleft", "Reverb_SC", "inleft"
 connect "Moog_Ladder_Filter", "outright", "Reverb_SC", "inright"
 connect "Reverb_SC", "outleft", "Master_Output", "inleft"
-connect "Reverb_SC", "outleft", "Master_Output", "inleft"
+connect "Reverb_SC", "outright", "Master_Output", "inright"
 
 alwayson "Chuas_Oscillator"
 alwayson "Moog_Ladder_Filter"
@@ -185,7 +214,11 @@ alwayson "Controls"
 ; i  1   +   20  1024  0.05   -1  -1   0.00667     0.000651     10              -1    0.856        1.1         1     0.06         51.2  -20.200590133667    0.172539323568344      -4.07686233520508   2.5  10    0.2     1    66   81   ; periodic attractor (torus breakdown route)
 ; i  1   +   20  1024  0.05   -1  -1   0.00667     0.000651     10              -1    0.856        1.1         1     0.1         153.6   21.12496758        0.03001749              0.515828669        2.5  10    0.2     1    66   81   ; torus attractor (torus breakdown route)
 
-gk_Chuas_Oscillator_Step init 0.05
+; chuap.csd:    L:       0.0067 R0:       0.0007 C2:      10.0000 G:      -1.0000 Ga:       0.8560 Gb:       1.1000 E:       1.0000 C1:       0.1000 iI3:      21.1250 iV2:       0.0300 iV1:       0.5158 step:       0.0500
+
+
+; This instrument: 
+
 gk_Chuas_Oscillator_Inductor_L init 0.00667
 gk_Chuas_Oscillator_Resistor_R0 init 0.000651
 gk_Chuas_Oscillator_Capacitor_C2 init 10
@@ -197,42 +230,42 @@ gk_Chuas_Oscillator_Capacitor_C1 init 0.1
 gi_Chuas_Oscillator_Initial_current_3 init 21.12496758
 gi_Chuas_Oscillator_Initial_voltage_2 init 0.03001749
 gi_Chuas_Oscillator_Initial_voltage_1 init 0.515828669
+gk_Chuas_Oscillator_Step init 0.05
 gk_Chuas_Oscillator_Pan init 0
 gk_Chuas_Oscillator_Level init 0
 
 instr Chuas_Oscillator
-i_attack = 0.02
-i_sustain = p3
-i_release = 0.02
-p3 = i_attack + i_sustain + i_release
-i_scale = 1.0
-a_damping linsegr 0.0, i_attack, i_scale, i_sustain, i_scale, i_release, 0.0
-i_buzztable ftgenonce 1, 0, 65535, 10, 1   
+i_buzztable ftgenonce 1, 0, 65536, 10, 1   
 a_guide buzz 5000, 440, sr/440, i_buzztable
-; aI3, aV2, aV1 chuap kL, kR0, kC1, kG, kGa, kGb, kE, kC2, iI3, iV2, iV1, ktime_step
-a_I3, a_V2, a_V1 chuap gk_Chuas_Oscillator_Inductor_L, gk_Chuas_Oscillator_Resistor_R0, gk_Chuas_Oscillator_Capacitor_C1, gk_Chuas_Oscillator_Resistor_G, gk_Chuas_Oscillator_Nonlinearity_Ga, gk_Chuas_Oscillator_Nonlinearity_Gb, gk_Chuas_Oscillator_Nonlinearity_E, gk_Chuas_Oscillator_Capacitor_C2, gi_Chuas_Oscillator_Initial_current_3, gi_Chuas_Oscillator_Initial_voltage_2, gi_Chuas_Oscillator_Initial_voltage_1, gk_Chuas_Oscillator_Step
+; a_I3, a_V2, a_V1 chuap 0.0067, 0.0007, 10.0000, -1.0000, 0.8560, 1.1000, 1.0000, 0.1000, 21.1250, 0.0300, 0.5158, 0.0500
+a_I3, a_V2, a_V1 chuap gk_Chuas_Oscillator_Inductor_L, gk_Chuas_Oscillator_Resistor_R0, gk_Chuas_Oscillator_Capacitor_C2, gk_Chuas_Oscillator_Resistor_G, gk_Chuas_Oscillator_Nonlinearity_Ga, gk_Chuas_Oscillator_Nonlinearity_Gb, gk_Chuas_Oscillator_Nonlinearity_E, gk_Chuas_Oscillator_Capacitor_C1, gi_Chuas_Oscillator_Initial_current_3, gi_Chuas_Oscillator_Initial_voltage_2, gi_Chuas_Oscillator_Initial_voltage_1, gk_Chuas_Oscillator_Step
+printks "Chuas_Oscillator     I3: %12.4f V2: %12.4f V1: %12.4f chuap L: %12.4f R0: %12.4f C2: %12.4f G: %12.4f Ga: %12.4f Gb: %12.4f E: %12.4f C1: %12.4f iI3: %12.4f iV2: %12.4f iV1: %12.4f step: %12.4f\n", 1, a_I3, a_V2, a_V1, gk_Chuas_Oscillator_Inductor_L, gk_Chuas_Oscillator_Resistor_R0, gk_Chuas_Oscillator_Capacitor_C2, gk_Chuas_Oscillator_Resistor_G, gk_Chuas_Oscillator_Nonlinearity_Ga, gk_Chuas_Oscillator_Nonlinearity_Gb, gk_Chuas_Oscillator_Nonlinearity_E, gk_Chuas_Oscillator_Capacitor_C1, gi_Chuas_Oscillator_Initial_current_3, gi_Chuas_Oscillator_Initial_voltage_2, gi_Chuas_Oscillator_Initial_voltage_1, gk_Chuas_Oscillator_Step
 a_signal balance a_V2, a_guide
 k_gain = ampdb(gk_Chuas_Oscillator_Level)
-a_outleft, a_outright pan2 a_signal * k_gain, gk_Chuas_Oscillator_Pan
+a_signal2 = k_gain * a_signal
+a_signal3 dcblock a_signal2
+a_outleft, a_outright pan2 a_signal3, gk_Chuas_Oscillator_Pan
 outleta "outleft",  a_outleft
 outleta "outright", a_outright
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;i
-prints "Chuas_Oscillator     i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+;prints "Chuas_Oscillator     i %12.4f t %12.4f d %12.4f k %12.4f v %12.4f p %12.4f\n", p1, p2, p3, p4, p5, p7
+printks "Chuas_Oscillator     in: %12.4f %12.4f  out: %12.4f %12.4f\n", 1, 0, 0, a_outleft, a_outright
 endin
 
 gk_Moog_Ladder_Filter_Cutoff init 12000
-gk_Moog_Ladder_Filter_Resonance init 0.5
-gk_Moog_Ladder_Filter_Rescale init 0.1
+gk_Moog_Ladder_Filter_Resonance init 1
+gi_Moog_Ladder_Filter_Rescale init 100000
 
 instr Moog_Ladder_Filter
 a_inleft  inleta "inleft"
 a_inright inleta "inright"
-a_outleft  moogvcf2 a_inleft,  gk_Moog_Ladder_Filter_Cutoff, gk_Moog_Ladder_Filter_Resonance, gk_Moog_Ladder_Filter_Rescale
-a_outright moogvcf2 a_inright, gk_Moog_Ladder_Filter_Cutoff, gk_Moog_Ladder_Filter_Resonance, gk_Moog_Ladder_Filter_Rescale
+a_outleft  moogvcf a_inleft,  gk_Moog_Ladder_Filter_Cutoff, gk_Moog_Ladder_Filter_Resonance, gi_Moog_Ladder_Filter_Rescale
+a_outright  moogvcf a_inright,  gk_Moog_Ladder_Filter_Cutoff, gk_Moog_Ladder_Filter_Resonance, gi_Moog_Ladder_Filter_Rescale
 outleta "outleft",  a_outleft
 outleta "outright", a_outright
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;i
-prints "Moog_Ladder_Filter   i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+;prints "Moog_Ladder_Filter   i %12.4f t %12.4f d %12.4f k %12.4f v %12.4f p %12.4f\n", p1, p2, p3, p4, p5, p7
+printks "Moog_Ladder_Filter   in: %12.4f %12.4f  out: %12.4f %12.4f\n", 1, a_inleft, a_inright, a_outleft, a_outright
 endin
 
 gk_Reverb_SC_Feedback init .8
@@ -243,29 +276,34 @@ gk_Reverb_SC_Wet init .5
 instr Reverb_SC
 a_dummy init 0
 a_zero init 0
-a_leftin  inleta "inleft"
-a_rightin inleta "inright"
-a_outleft,  a_dummy reverbsc a_leftin,  a_zero, gk_Reverb_Feedback, gi_Reverb_SC_Cutoff, gi_Reverb_SC_Pitch_modulation
-a_outright, a_dummy reverbsc a_rightin, a_zero, gk_Reverb_Feedback, gi_Reverb_SC_Cutoff, gi_Reverb_SC_Pitch_modulation
+a_inleft  inleta "inleft"
+a_inright inleta "inright"
+a_outleft,  a_dummy reverbsc a_inleft,  a_zero, gk_Reverb_SC_Feedback, gi_Reverb_SC_Cutoff, sr, gi_Reverb_SC_Pitch_modulation
+a_outright, a_dummy reverbsc a_inright, a_zero, gk_Reverb_SC_Feedback, gi_Reverb_SC_Cutoff, sr, gi_Reverb_SC_Pitch_modulation
 outleta "outleft",  a_outleft
 outleta "outright", a_outright
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;i
-prints "Reverb_SC            i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+;prints "Reverb_SC            i %12.4f t %12.4f d %12.4f k %12.4f v %12.4f p %12.4f\n", p1, p2, p3, p4, p5, p7
+printks "Reverb_SC            in: %12.4f %12.4f  out: %12.4f %12.4f\n", 1, a_inleft, a_inright, a_outleft, a_outright
 endin
 
 gk_Master_Output_Level init 0
 
 instr Master_Output
-a_left inleta "inleft"
-a_right inleta "inright"
+a_inleft inleta "inleft"
+a_inright inleta "inright"
 k_gain = ampdb(gk_Master_Output_Level)
 ; printks2 "Master gain: %f\n", k_gain
-outs a_left * k_gain, a_right * k_gain
+a_outleft = a_inleft * k_gain
+a_outright = a_inright * k_gain
+outs a_outleft, a_outright
 Sfilename init "Chuas_Oscillator.wav"
 prints sprintf("Output filename: %s\n", Sfilename)
-fout Sfilename, 16, aleft, aright
+fout Sfilename, 16, a_outleft, a_outright
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;i
-prints "Master_Output        i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+;prints "Master_Output        i %12.4f t %12.4f d %12.4f k %12.4f v %12.4f p %12.4f\n", p1, p2, p3, p4, p5, p7
+printks "Master_Output        in: %12.4f %12.4f  out: %12.4f %12.4f\n", 1, a_inleft, a_inright, a_outleft, a_outright
+endin
 
 instr Controls
 gk_Chuas_Oscillator_Step chnget "gk_Chuas_Oscillator_Step"
@@ -284,14 +322,13 @@ gk_Chuas_Oscillator_Pan chnget "gk_Chuas_Oscillator_Pan"
 gk_Chuas_Oscillator_Level chnget "gk_Chuas_Oscillator_Level"
 gk_Moog_Ladder_Filter_Cutoff chnget "gk_Moog_Ladder_Filter_Cutoff"
 gk_Moog_Ladder_Filter_Resonance chnget "gk_Moog_Ladder_Filter_Resonance"
-gk_Moog_Ladder_Filter_Rescale chnget "gk_Moog_Ladder_Filter_Rescale"
 gk_Reverb_SC_Feedback chnget "gk_Reverb_SC_Feedback"
 gi_Reverb_SC_Cutoff chnget "gi_Reverb_SC_Cutoff"
 gi_Reverb_SC_Pitch_modulation chnget "gi_Reverb_SC_Pitch_modulation"
 gk_Reverb_SC_Wet chnget "gk_Reverb_SC_Wet"
-gk_Master_Output_chnget "gk_Master_Output_chnget"
+gk_Master_Output_Level chnget "gk_Master_Output_Level"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;i
-prints "Controls             i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "Controls             i %12.4f t %12.4f d %12.4f k %12.4f v %12.4f p %12.4f\n", p1, p2, p3, p4, p5, p7
 endin
 
     </textarea>
@@ -300,33 +337,64 @@ endin
           csound.message(text + '\n' + url + '\n' + line + '\n');
           console.trace();
         }
+        function csoundMessage(text) {
+            var Log_cell = document.getElementById('console');
+            Log_cell.value += text;
+            console.log(text);
+            Log_cell.scrollTop = Log_cell.scrollHeight;
+        }
+        function updateTimeCell() {
+            var score_time_cell = document.getElementById('Time_cell');
+            var score_time = new Date().getTime() / 1000.0;
+            score_time = score_time - start_time_seconds;
+            score_time_cell.innerHTML = score_time.toFixed(4);
+            setTimeout(updateTimeCell, 100);
+        };
         var title = 'Chuas Oscillator 1';
         var context = null;
-        var startTime = 0;
+        var start_time_seconds = 0;
     </script>
     <script>    
     $(document).ready(function() {
         $('#play').on('click', function() {      	
-            csound.setOption('-odac')
+            //csound.stop();
+            try {
+                csound.setMessageCallback(csoundMessage);
+            } catch(e) {
+                console.log(e);
+            }
+            csound.cleanup();
+            csound.reset();
+            csound.setOption('-m0');
+            //csound.setOption('-j3');
+            csound.setOption('--nodisplays');
+            csound.setOption('-odac');
             csound.compileOrc(document.getElementById('orc').value);
-            csound.readScore(document.getElementById('sco').value);
+            csound.readScore('f 0 360\n');
+            csound.start();
             $('#restore').trigger('click');
+            start_time_seconds = new Date().getTime() / 1000.0;
+            setTimeout(updateTimeCell, 0);
             csound.perform();
         });
         $('#stop').on('click', function() {      	
             csound.stop();
-        });
+         });
         $('#save').on('click', function() {
             $('.persistent-element').each(function() {
+                csoundMessage(sprintf('Saving: %s: %s\n', this.id, this.value));
                 localStorage.setItem(this.id, this.value);
             });
         });
         $('#restore').on('click', function() {
+            csoundMessage('Restoring...\n')
             $('.persistent-element').each(function() {
                 this.value = localStorage.getItem(this.id);
-                csound.setControlChannel(this.id, this.value);
+                var slider_value = parseFloat(this.value);
+                csound.setControlChannel(this.id, slider_value);
                 var output_selector = '#' + this.id + '_output';
                 $(output_selector).val(this.value);
+                csoundMessage(sprintf('Restoring:  %s: %s\n', this.id, slider_value));
             });
         });
         $('input').on('input', function(event) {
@@ -336,7 +404,7 @@ endin
             $(output_selector).val(slider_value);
         });
         $(window).load(function() {
-            $('#restore').trigger('click');
+            //$('#restore').trigger('click');
         });
     });
     </script>
