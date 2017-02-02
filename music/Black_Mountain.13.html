@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Black Mountain 12</title>
+        <title>Black Mountain 13</title>
         <script type="text/javascript" src="silencio/js/dat.gui.js"></script>
         <script type="text/javascript" src="silencio/js/jquery.js"></script>
         <script type="text/javascript" src="silencio/js/Silencio.js"></script>
@@ -56,7 +56,7 @@
         <col width=250>
             <tr style="color:gold;">
             <!-- Copyright (C) 2016 by Michael Gogins -->
-            <td style="font-weight:bold;"><b><i>Black Mountain 12</b></i>, for csound.node</td>
+            <td style="font-weight:bold;"><b><i>Black Mountain 13</b></i>, for csound.node</td>
             <td style="color:gold;text-align:right;">Michael Gogins</td>
             <tr>
                 <td style="color:gold;text-align:left">Click "Play"; adjust "Master effects" group "gk_MasterOutput_level" slider.</td>
@@ -945,7 +945,7 @@ aenvelope transeg 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp
 aright butterlp aright, 16000
 aleft butterlp aleft, 16000
 outs aleft * kgain * aenvelope, aright * kgain * aenvelope
-Sfilename init  "Black Mountain 12.wav"
+Sfilename init  "Black Mountain 13.wav"
 prints sprintf("Output filename: %s\n", Sfilename)
 ; We want something that will play on my phone.
 fout Sfilename, 18, aleft, aright
@@ -1011,7 +1011,7 @@ endin
           csound.message(text + '\n' + url + '\n' + line + '\n');
           console.trace();
         }
-        var title = 'Black Mountain 12';
+        var title = 'Black Mountain 13';
         var context = null;
         var lsys = null;
         var startTime = 0;
