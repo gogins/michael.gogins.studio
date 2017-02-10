@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Black Mountain 14</title>
+        <title>Black Mountain 15</title>
         <script type="text/javascript" src="silencio/js/dat.gui.js"></script>
         <script type="text/javascript" src="silencio/js/jquery.js"></script>
         <script type="text/javascript" src="silencio/js/Silencio.js"></script>
@@ -56,7 +56,7 @@
         <col width=250>
             <tr style="color:gold;">
             <!-- Copyright (C) 2016 by Michael Gogins -->
-            <td style="font-weight:bold;"><b><i>Black Mountain 14</b></i>, for csound.node</td>
+            <td style="font-weight:bold;"><b><i>Black Mountain 15</b></i>, for csound.node</td>
             <td style="color:gold;text-align:right;">Michael Gogins</td>
             <tr>
                 <td style="color:gold;text-align:left">Click "Play"; adjust "Master effects" group "gk_MasterOutput_level" slider.</td>
@@ -945,7 +945,7 @@ aenvelope transeg 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp
 aright butterlp aright, 16000
 aleft butterlp aleft, 16000
 outs aleft * kgain * aenvelope, aright * kgain * aenvelope
-Sfilename init  "Black Mountain 14.wav"
+Sfilename init  "Black Mountain 15.wav"
 prints sprintf("Output filename: %s\n", Sfilename)
 ; We want something that will play on my phone.
 fout Sfilename, 18, aleft, aright
@@ -1011,7 +1011,7 @@ endin
           csound.message(text + '\n' + url + '\n' + line + '\n');
           console.trace();
         }
-        var title = 'Black Mountain 14';
+        var title = 'Black Mountain 15';
         var context = null;
         var lsys = null;
         var startTime = 0;
@@ -1022,14 +1022,8 @@ endin
             var canvas = document.getElementById('graphics_canvas');
             lsys = new ParametricLindenmayer.PLSystem();
             lsys.set_axiom('T(0);Push();Note(1,1,144,1,1,1,0);Pop();');
-         // lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==1)', '     Note(t/2+.005, d/2+0, s, c/2-.07, k/2+0, v/2-.06, x/2+0);     ;Note(t/2.07+0, d/2+0, s, c/2+0, k/1.98+1.13, v/2+0.05, x/2+0);K() ;Note(t/2+1, d/2+0, s, c/2+0, k/2+0.1, v/2+0, x/2+0);    ;Note(t/2+1, d/2+0, s, c/2+1, k/2+.8,    v/2-0.1, x/2+0);    ;');
-         // lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration!=1)', 'Q(3);Note(t/2+.01,  d/2+0, s, c/2+.08, k/2+0, v/2-.04, x/2+0);     ;Note(t/2.05+0, d/2+0, s, c/2+0, k/1.92+1.05, v/2+0.04, x/2+0);     Note(t/2+1, d/2+0, s, c/2+0, k/2+0.1, v/2+0, x/2+0);    ;Note(t/2+1, d/2+0, s, c/2+1, k/2+.7,    v/2+0.0, x/2+0);    ;');
-         // lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration!=2)', '     Note(t/2+.01,  d/2+0, s, c/2+.08, k/2+0, v/2-.04, x/2+0);K()  ;Note(t/2.05+0, d/2+0, s, c/2+0, k/1.92+1.05, v/2+0.04, x/2+0);     Note(t/2+1, d/2+0, s, c/2+0, k/2+0.1, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.7,    v/2+0.0, x/2+0);Q(3);');
-         // lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==2)', '     Note(t/2+.005, d/2+0, s, c/2-.07, k/2+0, v/2-.06, x/2+0);K()  ;Note(t/2.07+0, d/2+0, s, c/2+0, k/1.98+1.13, v/2+0.05, x/2+0);     Note(t/2+1, d/2+0, s, c/2+0, k/2+0.1, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.8,    v/2-0.1, x/2+0);Q(3);');
-         // lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration!=2)', '    Note(t/2+.01,  d/2+0, s, c/2+.08, k/2+0, v/2-.04, x/2+0);K()  ;Note(t/2.05+0, d/2+0, s, c/2+0, k/1.92+1.05, v/2+0.04, x/2+0);     Note(t/2+1, d/2+0, s, c/2+0, k/2+0.1, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.7,    v/2+0.0, x/2+0);Q(3);');
-         // lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==2)', '    Note(t/2+.005, d/2+0, s, c/2-.07, k/2+0, v/2-.06, x/2+0);K()  ;Note(t/2.07+0, d/2+0, s, c/2+0, k/1.98+1.13, v/2+0.05, x/2+0);     Note(t/2+1, d/2+0, s, c/2+0, k/2+0.1, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.8,    v/2-0.1, x/2+0);T(5);');
-            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration!=2)', '      Note(t/2+.01,  d/2+0, s, c/2+.08, k/2+0, v/2-.04, x/2+0);K()  ;Note(t/2.05+0, d/2+0, s, c/2+0, k/1.94+1.05, v/2+0.04, x/2+0);     Note(t/2+1, d/2+0, s, c/2+0, k/2+0.1, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.9,    v/2+0.0, x/2+0);Q(3);');
-            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==2)', 'T(5);Note(t/2+.005, d/2+0, s, c/2-.07, k/2+0, v/2-.06, x/2+0);K()  ;Note(t/2.07+0, d/2+0, s, c/2+0, k/1.98+1.13, v/2+0.05, x/2+0);     Note(t/2+1, d/2+0, s, c/2+0, k/2+0.2, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.8,    v/2-0.1, x/2+0);T(5);');
+            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration!=2)', '     Note(t/2+.010, d/2+0, s, c/2+.08, k/2+0, v/2-.04, x/2+0);K()  ;Note(t/2.050+0, d/2+0, s, c/2+0, k/1.950+1.05, v/2+0.0375, x/2+0);     Note(t/2+1, d/2+0, s, c/2+0, k/2+0.1, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.9,    v/2+0.0, x/2+0);Q(3);');
+            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==2)', 'T(3);Note(t/2+.005, d/2+0, s, c/2-.07, k/2+0, v/2-.06, x/2+0);K()  ;Note(t/2.075+0, d/2+0, s, c/2+0, k/1.975+1.13, v/2+0.0500, x/2+0);     Note(t/2+1, d/2+0, s, c/2+0, k/2+0.2, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.8,    v/2-0.1, x/2+0);Q(3);');
             var chord = ChordSpace.chordForName('BM');
             console.log(chord.information());
             var t = new ParametricLindenmayer.Turtle(new Silencio.Event(), chord, chord);
