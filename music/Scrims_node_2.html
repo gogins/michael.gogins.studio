@@ -211,7 +211,7 @@ i_homogeneity = p11
 ; Use channel assigned in fluidLoad.
 ichannel = 0
 ;;;;;;;;;;;;;;;;;;;;i
-prints "FlSteinway  i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "FlSteinway  i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\\n", p1, p2, p3, p4, p5, p7
 fluidNote giFluidsynth, ichannel, i_midikey, i_midivelocity
 endin
 
@@ -255,7 +255,7 @@ kgain = ampdb(gk_Harpsichord_level)
 outleta "outleft", aleft * kgain
 outleta "outright", aright * kgain
 ;;;;;;;;;;;;;;;;;;;;i
-prints "Harpsichord i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "Harpsichord i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\\n", p1, p2, p3, p4, p5, p7
 endin
 
 gk_Bower_level init 0.5
@@ -292,7 +292,7 @@ kgain = ampdb(gk_Bower_level)
 outleta "outleft", aleft * kgain
 outleta "outright", aright * kgain
 ;;;;;;;;;;;;;;;;;;;;i
-prints "Bower       i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "Bower       i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\\n", p1, p2, p3, p4, p5, p7
 endin
 
 gk_Phaser_ratio1 init 1
@@ -328,7 +328,7 @@ kgain = ampdb(gk_Phaser_level)
 outleta "outleft", aleft * kgain
 outleta "outright", aright * kgain
 ;;;;;;;;;;;;;;;;;;;;i
-prints "Phaser      i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "Phaser      i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\\n", p1, p2, p3, p4, p5, p7
 endin
 
 gk_YiString_level init 1
@@ -364,7 +364,7 @@ outleta "outright", aright * kgain * gk_YiString_reverb_send
 outleta "chorusleft", aleft * kgain * gk_YiString_chorus_send
 outleta "chorusright", aright * kgain * gk_YiString_chorus_send
 ;;;;;;;;;;;;;;;;;;;;i
-prints "YiString    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "YiString    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\\n", p1, p2, p3, p4, p5, p7
 endin
 
 gk_Droner_partial1 init .1
@@ -424,7 +424,7 @@ kgain = ampdb(gk_Droner_level)
 outleta "outleft", aleft * kgain
 outleta "outright", aright * kgain
 ;;;;;;;;;;;;;;;;;;;;i
-prints "Droner      i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "Droner      i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\\n", p1, p2, p3, p4, p5, p7
 endin
 
 gk_Sweeper_britel init 0
@@ -487,7 +487,7 @@ kgain = ampdb(gk_Sweeper_level)
 outleta "outleft", aleft * kgain
 outleta "outright", aright * kgain
 ;;;;;;;;;;;;;;;;;;;;i
-prints "Sweeper     i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "Sweeper     i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\\n", p1, p2, p3, p4, p5, p7
 endin
 
 gk_Buzzer_Harmonics init 15
@@ -523,7 +523,7 @@ kgain = ampdb(gk_Buzzer_level)
 outleta "outleft", aleft * kgain
 outleta "outright", aright * kgain
 ;;;;;;;;;;;;;;;;;;;;i
-prints "Buzzer      i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "Buzzer      i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\\n", p1, p2, p3, p4, p5, p7
 endin
 
 gk_Shiner_level init 0.5
@@ -553,7 +553,7 @@ kgain = ampdb(gk_Shiner_level)
 outleta "outleft", aleft * kgain
 outleta "outright", aright * kgain
 ;;;;;;;;;;;;;;;;;;;;i
-prints "Shiner      i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "Shiner      i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\\n", p1, p2, p3, p4, p5, p7
 endin
 
 gk_Blower_grainDensity init 150
@@ -638,7 +638,7 @@ kgain = ampdb(gk_Blower_level)
 outleta "outleft", aleft * kgain
 outleta "outright", aright * kgain
 ;;;;;;;;;;;;;;;;;;;;i
-prints "Blower      i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "Blower      i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\\n", p1, p2, p3, p4, p5, p7
 endin
 
 opcode FM_Clang_veloc, i, iii
@@ -764,7 +764,7 @@ asignal = (aleft1 + aright1) *100
 aleft2, aright2 pan2 asignal, ipan
 outleta "outleft", aleft2
 outleta "outright", aright2
-prints "FM_Clang    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "FM_Clang    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\\n", p1, p2, p3, p4, p5, p7
 endin
 
 gk_FM_Clang_preset init 1
@@ -775,7 +775,7 @@ ktrig changed gk_FM_Clang_preset_
 #define SET_PRESET(N'Amp'AttTim'AttVel'Dur'Sustain'mod'NdxVel'NdxCurve'CarKyb'DtnMix'Detune'LPF'FiltFund'NseAmp'NseBW'NseFllw'ModMix'ModDep'ModRte'ModRteKyb'StMix'StWidth'RvbDryWet'RvbSize)
 #
 if i(gk_FM_Clang_preset_)==$N then
-printks2 "Setting preset %d\n", $N
+printks2 "Setting preset %d\\n", $N
 chnset $Amp ,"Amp"
 chnset $AttTim ,"AttTim"
 chnset $AttVel ,"AttVel"
@@ -836,11 +836,11 @@ i_midivelocity = p5
 aoutleft, aoutright fluidOut giFluidsynth
 aoutleft = aoutleft * 5000000
 aoutright = aoutright * 5000000
-;printks "fluidOut: %9.4f %9.4f\n", 0.5, aoutleft, aoutright
+;printks "fluidOut: %9.4f %9.4f\\n", 0.5, aoutleft, aoutright
 outleta "outleft", aoutleft * kgain
 outleta "outright", aoutright * kgain
 ;;;;;;;;;;;;;;;;;;;;i
-prints "PianoOut    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "PianoOut    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\\n", p1, p2, p3, p4, p5, p7
 endin
 
 /**
@@ -910,7 +910,7 @@ aleft inleta "inleft"
 aleft, aright reverbsc aleft, azero, gk_Reverb_Feedback, 15000.
 outleta "outleft", aleft
 ;;;;;;;;;;;;;;;;;;;;i
-prints "ReverbLeft  i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "ReverbLeft  i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\\n", p1, p2, p3, p4, p5, p7
 endin
 
 instr ReverbRight
@@ -920,7 +920,7 @@ aright inleta "inright"
 aleft, aright reverbsc azero, aright, gk_Reverb_Feedback, 15000.0
 outleta "outright", aright
 ;;;;;;;;;;;;;;;;;;;;i
-prints "ReverbRight i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "ReverbRight i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\\n", p1, p2, p3, p4, p5, p7
 endin
 
 gk_Reverb2_Feedback init 0.975
@@ -933,7 +933,7 @@ aleft inleta "inleft"
 aleft, aright reverbsc aleft, azero, gk_Reverb2_Feedback, 15000.
 outleta "outleft", aleft
 ;;;;;;;;;;;;;;;;;;;;i
-prints "Reverb2Left i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "Reverb2Left i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\\n", p1, p2, p3, p4, p5, p7
 endin
 
 instr Reverb2Right
@@ -943,7 +943,7 @@ aright inleta "inright"
 aleft, aright reverbsc azero, aright, gk_Reverb2_Feedback, 15000.0
 outleta "outright", aright
 ;;;;;;;;;;;;;;;;;;;;i
-prints "Reverb2Righ i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "Reverb2Righ i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\\n", p1, p2, p3, p4, p5, p7
 endin
 
 gk_CenterHz init 200
@@ -957,7 +957,7 @@ aright pareq aright, gk_CenterHz, ampdb(gk_Gain), gk_Q, 0
 outleta "outleft", aleft
 outleta "outright", aright
 ;;;;;;;;;;;;;;;;;;;;i
-prints "ParametrcEQ i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "ParametrcEQ i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\\n", p1, p2, p3, p4, p5, p7
 endin
 
 gk_MasterOutput_level init .5
@@ -965,7 +965,7 @@ instr MasterOutput
 aleft inleta "inleft"
 aright inleta "inright"
 kgain = ampdb(gk_MasterOutput_level)
-; printks2 "Master gain: %f\n", kgain
+; printks2 "Master gain: %f\\n", kgain
 iamp init 1
 iattack init .01
 idecay init 10
@@ -985,10 +985,10 @@ Shor     strsub    Stim, 11, 13
 Smin     strsub    Stim, 14, 16
 Ssec     strsub    Stim, 17, 19
 Sfilename sprintf  "Sevier-6-%s_%s_%02d_%s_%s_%s.wav", Syear, Smonth, iday, Shor, Smin, Ssec
-prints sprintf("Output filename: %s\n", Sfilename)
+prints sprintf("Output filename: %s\\n", Sfilename)
 ; fout Sfilename, 16, aleft, aright
 ;;;;;;;;;;;;;;;;;;;;i
-prints "MasterOutpt i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "MasterOutpt i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\\n", p1, p2, p3, p4, p5, p7
 endin
 
 instr Controls
@@ -1035,13 +1035,13 @@ instr Controls
     gk_Reverb2_Feedback chnget "gk_Reverb2_Feedback"
     gk_overlap chnget "gk_overlap"
 ;;;;;;;;;;;;;;;;;;;;i
-prints "Controls    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "Controls    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\\n", p1, p2, p3, p4, p5, p7
 endin
 
 instr 999
 ;;;;;;;;;;;;;;;;;;;;i
-prints "StopPerform i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-exitnow
+prints "StopPerform i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\\n", p1, p2, p3, p4, p5, p7
+//exitnow
 endin
     </textarea>
         <script type="text/javascript">

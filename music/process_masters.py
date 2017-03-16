@@ -101,10 +101,9 @@ Michael Gogins	2016	Summertrees		6	drone.py.wav	09:50.00	d:\Dropbox\Michael Gogi
 Michael Gogins	2016	Summertrees		7	Attractor1.mml-b	04:08.00	d:\Dropbox\Michael Gogins\Summertrees\07-Various _ 07_Attractor1.mml-b.master.wav	01/14/14 03:15 AM		Publish	1.00			Accepted as composite
 Michael Gogins	2016	Summertrees		8	csound[2005-04-16][15.29.17]-a.py	05:09.00	d:\Dropbox\Michael Gogins\Summertrees\08-Various _ 08_csound[2005-04-16][15.29.17]-a.py.master.wav	01/14/14 03:15 AM		Publish	1.00			Accepted as composite
 '''
-# Test database:
-#database = '''
-#Michael Gogins	2016	Garden of the Hesperides		3	Telamon - Copy	08:02.00	d:\Dropbox\\2015-06-22 NYCEMF\Telamon - Copy.wav	02/08/15 12:24 PM		Publish	0.00						#Published
-#'''
+database = r'''
+Michael Gogins	2017	NYCEMF		1	Black_Mountain.15.html	09:15.00	D:/msys64/home/restore/michael.gogins.studio/music/Black Mountain 15.wav	02/10/17 08:256 AM		Publish	0.00						#Published
+'''
 
 notes = 'Electroacoustic Music'
 lines = database.split('\n')

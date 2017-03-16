@@ -16,6 +16,6 @@ i_homogeneity = p11
 ; Use channel assigned in fluidLoad.
 ichannel = 0
 ;;;;;;;;;;;;;;;;;;i
-prints "PianoNoteFl i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "PianoNoteFl i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\\n", p1, p2, p3, p4, p5, p7
 fluidNote giFluidsynth, ichannel, i_midikey, i_midivelocity
 endin
