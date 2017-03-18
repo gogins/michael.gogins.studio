@@ -945,7 +945,7 @@ aenvelope transeg 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp
 aright butterlp aright, 16000
 aleft butterlp aleft, 16000
 outs aleft * kgain * aenvelope, aright * kgain * aenvelope
-Sfilename init  "Black Mountain 14.wav"
+Sfilename init  "Black Mountain 15.wav"
 prints sprintf("Output filename: %s\n", Sfilename)
 ; We want something that will play on my phone.
 fout Sfilename, 18, aleft, aright
@@ -1028,9 +1028,10 @@ endin
          // lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==2)', '     Note(t/2+.005, d/2+0, s, c/2-.07, k/2+0, v/2-.06, x/2+0);K()  ;Note(t/2.07+0, d/2+0, s, c/2+0, k/1.98+1.13, v/2+0.05, x/2+0);     Note(t/2+1, d/2+0, s, c/2+0, k/2+0.1, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.8,    v/2-0.1, x/2+0);Q(3);');
          // lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration!=2)', '    Note(t/2+.01,  d/2+0, s, c/2+.08, k/2+0, v/2-.04, x/2+0);K()  ;Note(t/2.05+0, d/2+0, s, c/2+0, k/1.92+1.05, v/2+0.04, x/2+0);     Note(t/2+1, d/2+0, s, c/2+0, k/2+0.1, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.7,    v/2+0.0, x/2+0);Q(3);');
          // lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==2)', '    Note(t/2+.005, d/2+0, s, c/2-.07, k/2+0, v/2-.06, x/2+0);K()  ;Note(t/2.07+0, d/2+0, s, c/2+0, k/1.98+1.13, v/2+0.05, x/2+0);     Note(t/2+1, d/2+0, s, c/2+0, k/2+0.1, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.8,    v/2-0.1, x/2+0);T(5);');
-            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration!=2)', '      Note(t/2+.01,  d/2+0, s, c/2+.08, k/2+0, v/2-.04, x/2+0);K()  ;Note(t/2.05+0, d/2+0, s, c/2+0, k/1.94+1.05, v/2+0.04, x/2+0);     Note(t/2+1, d/2.5+0, s, c/2+0, k/2+0.1, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.9,    v/2+0.0, x/2+0);Q(3);');
-            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==2)', 'T(5);Note(t/2.5+.005, d/2+0, s, c/2-.07, k/2+0, v/2-.06, x/2+0);K()  ;Note(t/2.07+0, d/2+0, s, c/2+0, k/1.98+1.13, v/2+0.05, x/2+0);     Note(t/2+1, d/2+0, s, c/2+0, k/2+0.2, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.8,    v/2-0.1, x/2+0);T(5);');
-            var chord = ChordSpace.chordForName('BM');
+            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration!=3) && (iteration!=2)', '     Note(t/2+.01,    d/2+0, s, c/2+.08, k/2+0, v/2-.04, x/2+0);K()  ;Note(t/2.05+0, d/2+0, s, c/2+0, k/1.94+1.05, v/2+0.04, x/2+0);     Note(t/2+1, d/2.5+0, s, c/2+0, k/2+0.1, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.9,    v/2+0.0, x/2+0);Q(3);');
+            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==3)',                 'T(5);Note(t/2.5+.05, d/2+0, s, c/2-.07, k/1.5+0, v/2-.06, x/2+0);K()  ;Note(t/2.07+0, d/2+0, s, c/2+0, k/1.98+1.13, v/2+0.05, x/2+0);     Note(t/2+1,   d/2+0,   s, c/2+0, k/2+0.2, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.8,    v/2-0.1, x/2+0);T(5);');
+            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==2)',                 '                                                                K()  ;Note(t/1.5+0, d/2+0, s, c/2+0, k/1.94+0.25, v/2+0.04, x/2+0);     Note(t/2+.95, d/2.5+0, s, c/2+0, k/1.45+0.01, v/2+0, x/2+0);     Note(t/2+1, d/2+0, s, c/2+1, k/1.5+.9,    v/2+0.0, x/2+0);Q(3);');
+            var chord = ChordSpace.chordForName('Bm');
             console.log(chord.information());
             var t = new ParametricLindenmayer.Turtle(new Silencio.Event(), chord, chord);
             lsys.set_turtle(t);
@@ -1047,7 +1048,7 @@ endin
             lsys.score.setScale(7, .1, .8);
             for (j = 0; j < lsys.score.data.length; j++) {
                 var event = lsys.score.data[j];
-                event.duration = event.duration * 34/20;
+                event.duration = event.duration * 40/20;
             }
             lsys.score.tieOverlaps(true);
             lsys.conformToChords();
@@ -1508,7 +1509,7 @@ endin
             }
             return false;
          });
-         TODO: Try a level of recursion that has extra nodes to introduce more fast/slow, loud/soft.
+         //TODO: Try a level of recursion that has extra nodes to introduce more fast/slow, loud/soft.
        </script>
     </body>
 </html>
