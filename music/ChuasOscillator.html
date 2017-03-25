@@ -76,7 +76,8 @@
             var nw_window = nwgui.Window.get();
             nw_window.on('close', function() {
                 console.log('Closing down...');
-                process.exit(0);
+                this.close(true);
+                //process.exit(0);
             });
         } catch (err) {
             alert(err);
@@ -164,7 +165,7 @@
             <td><input class=persistent-element type=range min=-40 max=40 value=0.0 id=gk_Master_Output_Level step=.0001></td>
             <td><output for=gk_Master_Output_Level id=gk_Master_Output_Level_output>0.0</output></td></tr>
         <tr>
-            <td align="left" colspan=3> 
+            <td align="left" colspan=3>
                 <input type="button" id='play' value="Play" />
                 <input type="button" id='stop' value="Stop" />
                 <input type="button" id='save' value="Save" />
@@ -207,9 +208,9 @@ alwayson "Controls"
 ; iI3   = p17
 ; iV2   = p18
 ; iV1   = p19
-;    p1  p2  p3  p4    p5     p6  p7  p8           p9          p10              p11  p12          p13          p14  p15          p16     p17                p18                   p19                 p20   p21   p22     p23  p24  p25  
+;    p1  p2  p3  p4    p5     p6  p7  p8           p9          p10              p11  p12          p13          p14  p15          p16     p17                p18                   p19                 p20   p21   p22     p23  p24  p25
 ;                      i_step         i_L          i_R0        i_C2             i_G  i_Ga         i_Gb         i_E  i_C1                 i_I3               i_V2                  i_V1
-; i  1   0   20  1500  0.1    -1  -1  -0.00707925  0.00001647  100               1   -0.99955324  -1.00028375  1    -0.00222159  204.8   -2.36201596260071  3.08917625807226e-03    3.87075614929199   7     0.4  0.004   1    86   30   ; torus attractor (gallery of attractors) 
+; i  1   0   20  1500  0.1    -1  -1  -0.00707925  0.00001647  100               1   -0.99955324  -1.00028375  1    -0.00222159  204.8   -2.36201596260071  3.08917625807226e-03    3.87075614929199   7     0.4  0.004   1    86   30   ; torus attractor (gallery of attractors)
 ; i  1   +   20  1500  0.425   0  -1   1.3506168   0            -4.50746268737  -1    2.4924       0.93        1     1             0    -22.28662665        0.009506608           -22.2861576         32    10    2      20    86   30   ; heteroclinic orbit
 ; i  1   +   20  1024  0.05   -1  -1   0.00667     0.000651     10              -1    0.856        1.1         1     0.06         51.2  -20.200590133667    0.172539323568344      -4.07686233520508   2.5  10    0.2     1    66   81   ; periodic attractor (torus breakdown route)
 ; i  1   +   20  1024  0.05   -1  -1   0.00667     0.000651     10              -1    0.856        1.1         1     0.1         153.6   21.12496758        0.03001749              0.515828669        2.5  10    0.2     1    66   81   ; torus attractor (torus breakdown route)
@@ -217,7 +218,7 @@ alwayson "Controls"
 ; chuap.csd:    L:       0.0067 R0:       0.0007 C2:      10.0000 G:      -1.0000 Ga:       0.8560 Gb:       1.1000 E:       1.0000 C1:       0.1000 iI3:      21.1250 iV2:       0.0300 iV1:       0.5158 step:       0.0500
 
 
-; This instrument: 
+; This instrument:
 
 gk_Chuas_Oscillator_Inductor_L init 0.00667
 gk_Chuas_Oscillator_Resistor_R0 init 0.000651
@@ -235,7 +236,7 @@ gk_Chuas_Oscillator_Pan init 0
 gk_Chuas_Oscillator_Level init 0
 
 instr Chuas_Oscillator
-i_buzztable ftgenonce 1, 0, 65536, 10, 1   
+i_buzztable ftgenonce 1, 0, 65536, 10, 1
 a_guide buzz 5000, 440, sr/440, i_buzztable
 ; a_I3, a_V2, a_V1 chuap 0.0067, 0.0007, 10.0000, -1.0000, 0.8560, 1.1000, 1.0000, 0.1000, 21.1250, 0.0300, 0.5158, 0.0500
 a_I3, a_V2, a_V1 chuap gk_Chuas_Oscillator_Inductor_L, gk_Chuas_Oscillator_Resistor_R0, gk_Chuas_Oscillator_Capacitor_C2, gk_Chuas_Oscillator_Resistor_G, gk_Chuas_Oscillator_Nonlinearity_Ga, gk_Chuas_Oscillator_Nonlinearity_Gb, gk_Chuas_Oscillator_Nonlinearity_E, gk_Chuas_Oscillator_Capacitor_C1, gi_Chuas_Oscillator_Initial_current_3, gi_Chuas_Oscillator_Initial_voltage_2, gi_Chuas_Oscillator_Initial_voltage_1, gk_Chuas_Oscillator_Step
@@ -354,9 +355,9 @@ endin
         var context = null;
         var start_time_seconds = 0;
     </script>
-    <script>    
+    <script>
     $(document).ready(function() {
-        $('#play').on('click', function() {      	
+        $('#play').on('click', function() {
             //csound.stop();
             try {
                 csound.setMessageCallback(csoundMessage);
@@ -377,7 +378,7 @@ endin
             setTimeout(updateTimeCell, 0);
             csound.perform();
         });
-        $('#stop').on('click', function() {      	
+        $('#stop').on('click', function() {
             csound.stop();
          });
         $('#save').on('click', function() {

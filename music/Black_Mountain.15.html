@@ -41,7 +41,8 @@
             var nw_window = nwgui.Window.get();
             nw_window.on('close', function() {
                 console.log('Closing down...');
-                process.exit(0);
+                this.close(true);
+                //process.exit(0);
             });
         } catch (err) {
             alert(err);
@@ -1028,10 +1029,10 @@ endin
          // lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==2)', '     Note(t/2+.005, d/2+0, s, c/2-.07, k/2+0, v/2-.06, x/2+0);K()  ;Note(t/2.07+0, d/2+0, s, c/2+0, k/1.98+1.13, v/2+0.05, x/2+0);     Note(t/2+1, d/2+0, s, c/2+0, k/2+0.1, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.8,    v/2-0.1, x/2+0);Q(3);');
          // lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration!=2)', '    Note(t/2+.01,  d/2+0, s, c/2+.08, k/2+0, v/2-.04, x/2+0);K()  ;Note(t/2.05+0, d/2+0, s, c/2+0, k/1.92+1.05, v/2+0.04, x/2+0);     Note(t/2+1, d/2+0, s, c/2+0, k/2+0.1, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.7,    v/2+0.0, x/2+0);Q(3);');
          // lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==2)', '    Note(t/2+.005, d/2+0, s, c/2-.07, k/2+0, v/2-.06, x/2+0);K()  ;Note(t/2.07+0, d/2+0, s, c/2+0, k/1.98+1.13, v/2+0.05, x/2+0);     Note(t/2+1, d/2+0, s, c/2+0, k/2+0.1, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.8,    v/2-0.1, x/2+0);T(5);');
-            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration!=3) && (iteration!=2)', '     Note(t/2+.01,    d/2+0, s, c/2+.08, k/2+0, v/2-.04, x/2+0);K()  ;Note(t/2.05+0, d/2+0, s, c/2+0, k/1.94+1.05, v/2+0.04, x/2+0);     Note(t/2+1, d/2.5+0, s, c/2+0, k/2+0.1, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.9,    v/2+0.0, x/2+0);Q(3);');
-            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==3)',                 'T(5);Note(t/2.5+.05, d/2+0, s, c/2-.07, k/1.5+0, v/2-.06, x/2+0);K()  ;Note(t/2.07+0, d/2+0, s, c/2+0, k/1.98+1.13, v/2+0.05, x/2+0);     Note(t/2+1,   d/2+0,   s, c/2+0, k/2+0.2, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.8,    v/2-0.1, x/2+0);T(5);');
-            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==2)',                 '                                                                K()  ;Note(t/1.5+0, d/2+0, s, c/2+0, k/1.94+0.25, v/2+0.04, x/2+0);     Note(t/2+.95, d/2.5+0, s, c/2+0, k/1.45+0.01, v/2+0, x/2+0);     Note(t/2+1, d/2+0, s, c/2+1, k/1.5+.9,    v/2+0.0, x/2+0);Q(3);');
-            var chord = ChordSpace.chordForName('Bm');
+            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration!=3) && (iteration!=2)', '     Note(t/2+.01,    d/2+0, s, c/2+.08, k/2+0, v/2-.04, x/2+0);K()  ;Note(t/2.45+0, d/2+0, s, c/2+0, k/1.94+1.05, v/2+0.04, x/2+0);     Note(t/2+1, d/2.5+0, s, c/2+0, k/2+0.1, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.9,    v/2+0.0, x/2+0);Q(3);');
+            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==3)',                 'T(2);Note(t/2.15+.05, d/2+0, s, c/2-.03, k/1.5+0, v/2-.06, x/2+0);K()  ;Note(t/2.07+0, d/2+0, s, c/2+0, k/1.98+1.13, v/2+0.05, x/2+0);     Note(t/2+1,   d/2+0,   s, c/2+0, k/2+0.2, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.8,    v/2-0.1, x/2+0);T(5);');
+            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==2)',                 '                                                                K()  ;Note(t/1.5+0, d/2+0, s, c/2+0, k/1.94+0.25, v/2+0.04, x/2+0);     Note(t/2+.95, d/2.5+0, s, c/2+1, k/1.45+0.01, v/2+0, x/2+0);     Note(t/2+1, d/2+0, s, c/2+1, k/1.5+.9,    v/2+0.0, x/2+0);Q(3);');
+            var chord = ChordSpace.chordForName('FM');
             console.log(chord.information());
             var t = new ParametricLindenmayer.Turtle(new Silencio.Event(), chord, chord);
             lsys.set_turtle(t);
@@ -1214,32 +1215,6 @@ endin
             gk_overlap: 0.05,
             gk_FM_Clang_preset: 1,
             gk_FM_Clang_level: 0,
-            Play: function() {
-                csound.stop();
-                try {
-                    csound.setMessageCallback(csoundMessage);
-                } catch(e) {
-                    console.log(e);
-                }
-                csound.compileOrc(document.getElementById('orc').value);
-                csound.setOption('-m0');
-                //csound.setOption('-j3');
-                csound.setOption('--nodisplays');
-                csound.setOption('-odac');
-                generate();
-                gui.revert();
-                csound.start();
-                csound.perform();
-                start_time_seconds = new Date().getTime() / 1000.0;
-                startTime = csound.getScoreTime();
-                setTimeout(updateTimeCell, 0);
-            },
-            Developer_tools: function() {
-                nwgui.Window.get().showDevTools();
-            },
-            Stop: function() {
-                csound.stop();
-            },
             Close: function() {
                 try {
                     csound.stop();
@@ -1417,9 +1392,6 @@ endin
         window.onload = function() {
             gui = new dat.GUI({load: default_json, width: 300});
             gui.remember(parameters);
-            gui.add(parameters, 'Play').name('Play [Ctrl-P]');
-            gui.add(parameters, 'Stop').name('Stop [Ctrl-S]');
-            gui.add(parameters, 'Developer_tools').name('Debug');
             gui.add(parameters, 'Close').name('Close').name('Exit [Ctrl-X]');
             var Master = gui.addFolder('Master effects');
             add_slider(Master, 'gk_overlap', 0, 20);
@@ -1509,7 +1481,23 @@ endin
             }
             return false;
          });
-         //TODO: Try a level of recursion that has extra nodes to introduce more fast/slow, loud/soft.
-       </script>
+         nwgui.Window.get().showDevTools();
+        try {
+            csound.setMessageCallback(csoundMessage);
+        } catch(e) {
+            console.log(e);
+        }
+        csound.compileOrc(document.getElementById('orc').value);
+        csound.setOption('-m0');
+        //csound.setOption('-j3');
+        csound.setOption('--nodisplays');
+        csound.setOption('-odac');
+        generate();
+        csound.start();
+        csound.perform();
+        start_time_seconds = new Date().getTime() / 1000.0;
+        startTime = csound.getScoreTime();
+        setTimeout(updateTimeCell, 0);
+    </script>
     </body>
 </html>
