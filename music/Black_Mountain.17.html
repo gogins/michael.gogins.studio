@@ -948,7 +948,8 @@ outs aleft * kgain * aenvelope, aright * kgain * aenvelope
 Sfilename init  "Black Mountain 17.wav"
 prints sprintf("Output filename: %s\n", Sfilename)
 ; We want something that will play on my phone.
-fout Sfilename, 18, aleft, aright
+i_amplitude_adjustment = ampdbfs(-3) / 32767
+fout Sfilename, 18, aleft * i_amplitude_adjustment, aright * i_amplitude_adjustment
 ;;;;;;;;;;;;;;;;;;;;i
 prints "MasterOutpt i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
 endin
@@ -1018,19 +1019,23 @@ endin
             var startTime = 0;
             var generate = function() {
               csound.message("generate()...\n");
+          try {
               var startTime = 0;
                 var canvas = document.getElementById('graphics_canvas');
             lsys = new ParametricLindenmayer.PLSystem();
-            // Turn(from, to, angle), Step(), Steps(scale)
+            // Turn(from, to, angle)
+            // Step()
+            // Steps(scale)
+            // Scale(dimension, value)
             lsys.set_axiom('T(0);Push();Note(1,1,144,1,1,1,0);Pop();Note(2,1,144,4,3,1,0);');
-            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration!=3) && (iteration!=2)', '     Note(t/2 ,    d/2+0, s, c/2, k/2+0,   v/2-.04, x/2+0);K()  ;Note(t/2.5+0, d/2+0, s, c/2+0,   k/1.95+1.00, v/2+0.04, x/2+0);     Note(t/2+1, d/2.5+0, s, c/2+0, k/2+0.1, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.9,    v/2+0.0, x/2+0);Q(3);');
-            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==3)',                 'T(2);Note(t/2 ,    d/2+0, s, c/2, k/1.5+0, v/2-.06, x/2+0);     ;Note(t/2.0+0, d/2+0, s, c/2+0,   k/1.95+1.00, v/2+0.05, x/2+0);     Note(t/2+1,   d/2+0,   s, c/2+0, k/2+0.2, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.8,    v/2-0.1, x/2+0);T(5);');
-            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==2)',                 '                                                           K()  ;Note(t/1.5+0, d/2+0, s, c/2-0.5, k/1.95+0.25, v/2+0.04, x/2+0);     Note(t/1.95+.95, d/2.5+0, s, c/2+1, k/1.45+0.01, v/2+0, x/2+0);     Note(t/1.95+1, d/2+0, s, c/2+1, k/1.5+.9,    v/2+0.0, x/2+0);Q(3);');
+            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration!=3) && (iteration!=2)', '     Note(t/2 ,    d/2+0, s, c/2, k/2+0,   v/2-.04, x/2+0);K()  ;Note(t/2.5+0, d/2+0, s, c/2+0,   k/1.95+1.00, v/2+0.04, x/2+0);Scale(0,.75);Note(t/2+1,      d/2.5+0, s, c/2+0, k/2+0.1, v/2+0,     x/2+0);T(5);Scale(4,1.125);Note(t/2+1,    d/2+0, s, c/2+1, k/2+.9,      v/2+0.0, x/2+0);Q(3);Scale(0,1/.75);Scale(4,1/1.125);');
+            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==3)',                 'T(2);Note(t/2 ,    d/2+0, s, c/2, k/1.5+0, v/2-.06, x/2+0);     ;Note(t/2.0+0, d/2+0, s, c/2+0,   k/1.95+1.00, v/2+0.05, x/2+0);            ;Note(t/2+1,      d/2+0,   s, c/2+0, k/2+0.2, v/2+0,     x/2+0);T(5);               Note(t/2+1,    d/2+0, s, c/2+1, k/2+.8,      v/2-0.1, x/2+0);T(5);');
+            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==2)',                 '                                                           K()  ;Note(t/1.5+0, d/2+0, s, c/2-0.5, k/1.95+0.25, v/2+0.04, x/2+0);Scale(4,1.5);Note(t/1.95+.95, d/2.5+0, s, c/2+1, k/1.45+0.01, v/2+0, x/2+0);                    Note(t/1.95+1, d/2+0, s, c/2+1, k/1.5+.9,    v/2+0.0, x/2+0);Q(3);');
             var chord = ChordSpace.chordForName('FM');
             console.log(chord.information());
             var t = new ParametricLindenmayer.Turtle(new Silencio.Event(), chord, chord);
             lsys.set_turtle(t);
-            lsys.generate(5);
+            lsys.generate(6);
             lsys.score.findScales();
             csound.message('lsys:' + lsys + '\n');
             csound.message(lsys.score.getDuration().toString() + '\n');
@@ -1043,7 +1048,7 @@ endin
             lsys.score.setScale(7, .1, .8);
             for (j = 0; j < lsys.score.data.length; j++) {
                 var event = lsys.score.data[j];
-                event.duration = event.duration * 40/20;
+                event.duration = event.duration * 30/20;
             }
             lsys.score.tieOverlaps(true);
             lsys.conformToChords();
@@ -1065,7 +1070,7 @@ endin
                         event.key = event.key - 12;
                     }
                 }
-                if (true) {
+                if (false) {
                     // Close up gaps in the score.
                     for (j = i + 1; j < lsys.score.data.length - 1; j++) {
                         var gap_event = lsys.score.data[j];
@@ -1093,7 +1098,7 @@ endin
                 var event = lsys.score.data[i];
                 event.time = event.time + 1;
             }
-            if (true) {
+            if (false) {
                 // Also if keys overlap.
                 for (var i = 0; i < lsys.score.data.length; i++) {
                     var event = lsys.score.data[i];
@@ -1204,6 +1209,7 @@ endin
                 gk_FM_Clang_preset: 1,
                 gk_FM_Clang_level: 0,
                 Play: function() {
+                    silencio.saveDatGuiJson(gui);
                     csound.stop();
                     csound.setMessageCallback(csoundMessage);
                     csound.compileOrc(document.getElementById('orc').value);

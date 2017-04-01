@@ -43,6 +43,7 @@
                 console.log('Closing down...');
                 this.close(true);
             });
+            var fs = require('fs');
         } catch (err) {
             alert(err);
             console.log(err.message);
@@ -1018,14 +1019,14 @@ endin
         var lsys = null;
         var startTime = 0;
         var generate = function() {
-          csound.message("generate()...\n");
+            csound.message("generate()...\n");
             var startTime = 0;
             var canvas = document.getElementById('graphics_canvas');
             lsys = new ParametricLindenmayer.PLSystem();
             // p0_t, p1_d, p2_s, p3_c, p4_k, p5_v, p6_x
             lsys.set_axiom('T(0);Push();Note(1,1,144,1,1,1,0);Pop();');
-            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration!=5)', 'Note(t/2+.01,  d/2+0, s, c/2+.08, k/2+0, v/2+0, x/2+0);K()  ;Note(t/2.05+0, d/2+0, s, c/2+0, k/1.92+1.05, v/2+0, x/2+0);     Note(t/2+1, d/2+0, s, c/2+0, k/2+0.1, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.7,    v/2+0.0, x/2+0);Q(3);');
-            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==5)', 'Note(t/2+.005, d/2+0, s, c/2-.07, k/2+0, v/2+0, x/2+0);K()  ;Note(t/2.07+0, d/2+0, s, c/2+0, k/1.98+1.10, v/2+0, x/2+0);     Note(t/2+1, d/2+0, s, c/2+0, k/2+0,   v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.9,    v/2+0.1, x/2+0);Q(3);');
+            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration!=5)', 'Note(t/2+.01,  d/2+0, s, c/2+.08, k/2+0, v/2+0, x/2+0);Scale(0,.9);K()  ;Note(t/2.05+0, d/2+0, s, c/2+0, k/1.92+1.05, v/2+0, x/2+0);                           Note(t/2+1, d/2+0, s, c/2+0, k/2+0.1, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.7,    v/2+0.0, x/2+0);Q(3);Scale(0,1/.9);');
+            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==5)', 'Note(t/2+.005, d/2+0, s, c/2-.07, k/2+0, v/2+0, x/2+0);            K()  ;Note(t/2.07+0, d/2+0, s, c/2+0, k/1.98+1.10, v/2+0, x/2+0);Scale(0,.9);Scale(4,1.125);Note(t/2+1, d/2+0, s, c/2+0, k/2+0,   v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1, k/2+.9,    v/2+0.1, x/2+0);Q(3);Scale(0,1/.9);Scale(4,1/1.13);');
             var chord = ChordSpace.chordForName('AM');
             console.log(chord.information());
             var t = new ParametricLindenmayer.Turtle(new Silencio.Event(), chord, chord);
@@ -1036,7 +1037,7 @@ endin
             csound.message(lsys.score.getDuration().toString() + '\n');
             lsys.score.sort();
             lsys.score.setScale(3, 2, 10.99);
-            lsys.score.setScale(4, 26, 77);
+            lsys.score.setScale(4, 29, 77);
             lsys.score.temper(12);
             lsys.score.setScale(5, 60, 15);
             lsys.score.setScale(6, .4, .6);
@@ -1204,15 +1205,16 @@ endin
             gk_FM_Clang_preset: 1,
             gk_FM_Clang_level: 0,
             Play: function() {
+                Silencio.saveDatGuiJson(gui);
                 csound.stop();
-                    csound.setMessageCallback(csoundMessage);
+                csound.setMessageCallback(csoundMessage);
                 csound.compileOrc(document.getElementById('orc').value);
                 csound.setOption('-m0');
                 //csound.setOption('-j3');
                 csound.setOption('--nodisplays');
                 csound.setOption('-odac');
                 generate();
-                    gui.revert();
+                gui.revert();
                 csound.start();
                 csound.perform();
                 start_time_seconds = new Date().getTime() / 1000.0;
@@ -1223,13 +1225,14 @@ endin
                 nwgui.Window.get().showDevTools();
             },
             Stop: function() {
+                Silencio.saveDatGuiJson(gui);
                 csound.stop();
             },
             Close: function() {
-                    csound.stop();
-                        ///alert('Closing...');
-                        nw_window.close();
-                }
+                csound.stop();
+                Silencio.saveDatGuiJson(gui);
+                nw_window.close();
+            }
         };
         var gui = null;
         var default_json = {
@@ -1260,7 +1263,7 @@ endin
         "gk_Harpsichord_pick": 0.2563797350132311,
         "gk_Harpsichord_reflection": 0.8149206707351692,
         "gk_Harpsichord_pluck": 0.75,
-            "gk_Harpsichord_level": -6,
+        "gk_Harpsichord_level": -6,
         "gk_Phaser_ratio1": 1,
         "gk_Phaser_ratio2": 0.5040504050405045,
         "gk_Phaser_index1": 1,
@@ -1275,51 +1278,51 @@ endin
         "gk_Sweeper_level": 1.0207576021169729,
         "gk_YiString_reverb_send": 0.5,
         "gk_YiString_chorus_send": 0.5,
-            "gk_YiString_level": 0
+        "gk_YiString_level": 0
       }
     },
     "undefined": {
       "0": {
-            "gk_overlap": 1,
-            "gk_Reverb_Feedback": 0.83,
-            "gk_Reverb2_Feedback": 0.7,
-            "gk_MasterOutput_level": 27,
+        "gk_overlap": 1,
+        "gk_Reverb_Feedback": 0.83,
+        "gk_Reverb2_Feedback": 0.7,
+        "gk_MasterOutput_level": 27,
         "gk_FM_Clang_preset": 9.460531255436628,
-            "gk_FM_Clang_level": -6,
-            "gk_Blower_grainDensity": 150.60932492125144,
-            "gk_Blower_grainDuration": 0.03214223397709634,
+        "gk_FM_Clang_level": -6.049188283446092,
+        "gk_Blower_grainDensity": 150.60932492125144,
+        "gk_Blower_grainDuration": 0.03214223397709634,
         "gk_Blower_grainAmplitudeRange": 168.47811158012328,
         "gk_Blower_grainFrequencyRange": 36.62567643046158,
-            "gk_Blower_level": -26,
-            "gk_Bower_pressure": 0.29,
+        "gk_Blower_level": -31.68716178476921,
+        "gk_Bower_pressure": 0.29,
         "gk_Bower_level": -22.419675313378438,
-            "gk_Buzzer_Harmonics": 6.0432366110261615,
-        "gk_Buzzer_level": -33.40737824251691,
+        "gk_Buzzer_Harmonics": 6.0432366110261615,
+        "gk_Buzzer_level": -41.759222803146145,
         "gk_Droner_partial1": 0.05,
         "gk_Droner_partial2": 0.4,
         "gk_Droner_partial3": 0.1,
         "gk_Droner_partial4": 0.1,
         "gk_Droner_partial5": 0.25,
-            "gk_Droner_level": -23.8847023705969,
+        "gk_Droner_level": -46.33743235695384,
         "gk_Harpsichord_pick": 0.36625676430461584,
         "gk_Harpsichord_reflection": 0.3296314286119785,
         "gk_Harpsichord_pluck": 0.15565912482946173,
-            "gk_Harpsichord_level": -45,
+        "gk_Harpsichord_level": -45,
         "gk_Phaser_ratio1": 1.684781115801233,
         "gk_Phaser_ratio2": 0.5040504050405045,
         "gk_Phaser_index1": 1,
         "gk_Phaser_index2": 0.3296310878741543,
-            "gk_Phaser_level": -33,
-            "gk_Piano_level": -31,
+        "gk_Phaser_level": -20.69945885563073,
+        "gk_Piano_level": -31,
         "gk_Shiner_level": -40,
         "gk_Sweeper_britel": 1.2452729986356939,
         "gk_Sweeper_briteh": 0.5860108228873854,
         "gk_Sweeper_britels": 1.6115297629403098,
         "gk_Sweeper_britehs": 1.25,
-            "gk_Sweeper_level": -16,
-            "gk_YiString_reverb_send": 0.6958878521787701,
-            "gk_YiString_chorus_send": 0.6226364993178469,
-            "gk_YiString_level": -27
+        "gk_Sweeper_level": -30.771519874007666,
+        "gk_YiString_reverb_send": 0.6958878521787701,
+        "gk_YiString_chorus_send": 0.6226364993178469,
+        "gk_YiString_level": -27
       }
     }
   },
@@ -1356,7 +1359,7 @@ endin
         },
         "Droner": {
           "preset": "Default",
-              "closed": false,
+          "closed": false,
           "folders": {}
         },
         "Harpsichord": {
@@ -1366,7 +1369,7 @@ endin
         },
         "Phaser": {
           "preset": "Default",
-              "closed": false,
+          "closed": false,
           "folders": {}
         },
         "Piano": {
@@ -1395,6 +1398,11 @@ endin
   "preset": "undefined"
 };
         window.onload = function() {
+            try {
+                var temporary_json = Silencio.restoreDatGuiJson(default_json);
+                default_json = temporary_json;
+            } catch(e) {
+            }
             gui = new dat.GUI({load: default_json, width: 300});
             gui.remember(parameters);
             gui.add(parameters, 'Play').name('Play [Ctrl-P]');
@@ -1494,7 +1502,6 @@ endin
             console.log(error_message);
             alert(error_message);
         }
-
        </script>
     </body>
 </html>
