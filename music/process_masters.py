@@ -102,7 +102,7 @@ Michael Gogins	2016	Summertrees		7	Attractor1.mml-b	04:08.00	d:\Dropbox\Michael 
 Michael Gogins	2016	Summertrees		8	csound[2005-04-16][15.29.17]-a.py	05:09.00	d:\Dropbox\Michael Gogins\Summertrees\08-Various _ 08_csound[2005-04-16][15.29.17]-a.py.master.wav	01/14/14 03:15 AM		Publish	1.00			Accepted as composite
 '''
 database = r'''
-Michael Gogins	2017	NYCEMF		1	Black_Mountain.15.html	09:15.00	D:/msys64/home/restore/michael.gogins.studio/music/Black Mountain 15.wav	02/10/17 08:256 AM		Publish	0.00						#Published
+Michael Gogins	2017	NYCEMF		1	Black_Mountain.7c.html	09:15.00	C:/Users/restore/michael.gogins.studio/music/Black Mountain 7c.wav	04/08/17 10:03 AM		Publish	0.00						#Published
 '''
 
 notes = 'Electroacoustic Music'

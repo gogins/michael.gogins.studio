@@ -1024,11 +1024,9 @@ endin
             var canvas = document.getElementById('graphics_canvas');
             lsys = new ParametricLindenmayer.PLSystem();
             // p0_t, p1_d, p2_s, p3_c, p4_k, p5_v, p6_x
-            // lsys.set_axiom('T(0);Push();Note(1,1,144,1,1,1,0);Scale(0,.5);Scale(4,1.375);Note(142,1,144,2,-6,1,0);Scale(0,.9875);Scale(4,1);Note(117,1.75,144,1,1,1,0);Pop();');
-            lsys.set_axiom('T(0);Push();Note(1,1,144,1,1.5,1,0);Scale(0,.5);Scale(4,1.375);Note(142,1,144,2,-6,1,0);Scale(0,.9875);Scale(4,1);Note(117,1.75,144,1,1,1,0);Pop();');
+            lsys.set_axiom('T(0);Push();Scale(4,1.0125);Note(1,1,144,1,1,1,0);Scale(0,.5);Scale(4,1.375);Note(142,1,144,3,-6,1,0);Scale(0,.9875);Scale(4,1);Note(117,1,144,1,1,1,0);Pop();');
             lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration!=5)', 'Note(t/2+.01,  d/2+0, s, c/2+.08, k/2+0, v/2+0, x/2+0);K()  ;Note(t/2.05+0, d/2+0, s, c/2+0, k/1.92+1.05, v/2+0, x/2+0);Note(t/2+1, d/2+0, s, c/2+0, k/2+0.1, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1.1, k/2+.7,    v/2+0.0, x/2+0);Q(3);');
             lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==5)', 'Note(t/2+.005, d/2+0, s, c/2-.2,  k/2+0, v/2+0, x/2+0);K()  ;Note(t/2.07+0, d/2+0, s, c/2+0, k/1.98+1.10, v/2+0, x/2+0);Note(t/2+1, d/2+0, s, c/2+0, k/2+0,   v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1,   k/2+.9,    v/2+0.1, x/2+0);Q(3);');
-            //var chord = ChordSpace.chordForName('AM');
             var chord = ChordSpace.chordForName('AM');
             console.log(chord.information());
             var t = new ParametricLindenmayer.Turtle(new Silencio.Event(), chord, chord);
@@ -1040,6 +1038,7 @@ endin
             lsys.score.sort();
             lsys.score.setScale(3, 2, 10.99);
             lsys.score.setScale(4, 29, 77);
+            //lsys.score.setScale(4, 29, 77);
             lsys.score.temper(12);
             lsys.score.setScale(5, 60, 15);
             lsys.score.setScale(6, .4, .6);
@@ -1050,11 +1049,17 @@ endin
             }
             lsys.score.tieOverlaps(true);
             lsys.conformToChords();
+            lsys.score.temper(12);
             lsys.score.setDuration(9 * 60 + 5);
             //console.log(lsys.score.toString());
             console.log('After conforming to chord:');
             console.log(lsys.score.toString());
             csound.message('Cleaning up some annoying things in the score...');
+            for (j = 0; j < lsys.score.data.length; j++) {
+                var event = lsys.score.data[j];
+                event.key = event.key + 3;
+            }
+
             for (var i = 0; i < lsys.score.data.length; i++) {
                 var event = lsys.score.data[i];
                 // We didn't generate pan, so just randomize it.
