@@ -1,49 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<title>GLSL Sandbox</title>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
-		<style>
-			body {
-				background-color: #000000;
-				margin: 0;
-				padding: 0;
-				overflow: hidden;
-			}
-			button, select, a, a:visited {
-				padding: 8px 12px 8px 12px;
-				border: none;
-				border-radius: 5px;
-				margin-right: 5px;
-				color: #ffffff;
-				background-color: #000000;
-				opacity: 0.5;
-				font-family: Monospace;
-				font-size: 12px;
-				font-weight: bold;
-				cursor: pointer;
-				text-decoration: none;
-			}
-			button:hover, select:hover, a:hover {
-				opacity: 1;
-				box-shadow: 0 0 4px #FFF;
-			}
-			option {
-				color: #ffffff;
-				background-color: #000000;
-			}
-		</style>
-		<link rel="stylesheet" href="silencio/css/codemirror.css">
-		<link rel="stylesheet" href="silencio/css/default.css">
-		<script src="silencio/js/lzma.js"></script>
-		<script src='silencio/js/jquery.js'></script>
-		<script src='silencio/js/helpers.js'></script>
-		<script src="silencio/js/codemirror.js"></script>
-		<script src="silencio/js/glsl.js"></script>
-	</head>
-	<body>
-		<script id="example" type="x-shader/x-fragment">
+    <head>
+        <title>GLSL Sandbox</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+        <style>
+            body {
+                background-color: #000000;
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+            }
+            button, select, a, a:visited {
+                padding: 8px 12px 8px 12px;
+                border: none;
+                border-radius: 5px;
+                margin-right: 5px;
+                color: #ffffff;
+                background-color: #000000;
+                opacity: 0.5;
+                font-family: Monospace;
+                font-size: 12px;
+                font-weight: bold;
+                cursor: pointer;
+                text-decoration: none;
+            }
+            button:hover, select:hover, a:hover {
+                opacity: 1;
+                box-shadow: 0 0 4px #FFF;
+            }
+            option {
+                color: #ffffff;
+                background-color: #000000;
+            }
+        </style>
+        <link rel="stylesheet" href="silencio/css/codemirror.css">
+        <link rel="stylesheet" href="silencio/css/default.css">
+        <script src="silencio/js/lzma.js"></script>
+        <script src='silencio/js/jquery.js'></script>
+        <script src='silencio/js/helpers.js'></script>
+        <script src="silencio/js/codemirror.js"></script>
+        <script src="silencio/js/glsl.js"></script>
+    </head>
+    <body>
+        <script id="example" type="x-shader/x-fragment">
 precision mediump float;
 uniform float time;
 uniform vec2 mouse;
@@ -60,7 +60,7 @@ void main(){
     uv.x *= resolution.x / resolution.y;
     float e = time * .125;
     float d = 128.*mouse.x / resolution.x + 8.5;
-    float zoom = 16.;
+    float zoom = 1024.;///16.;
     vec2 g = uv * zoom;
     uv = d * (floor(g) + .5) / zoom;
     g = fract(g) * 2. - 1.;
@@ -72,7 +72,7 @@ void main(){
             vec3(1.0, 1.0, 1.0),
             vec3(0.0, 0.10, 0.20)), 1.);
     gl_FragColor = c * (1. - dot(g, g)) * .2 / abs((fract(f) - .5) * 8.);
-}        
+}
         </script>
              <script id="fragmentShader" type="x-shader/x-fragment">
                         #ifdef GL_ES
@@ -133,8 +133,8 @@ void main(){
             surface = { centerX: 0, centerY: 0, width: 1, height: 1, isPanning: false, isZooming: false, lastX: 0, lastY: 0 },
             frontTarget, backTarget, screenProgram, getWebGL, resizer = {}, compileOnChangeCode = true;
             init();
-            if (gl){ 
-                animate(); 
+            if (gl){
+                animate();
             }
 
             function init(){
@@ -343,14 +343,14 @@ void main(){
                 load_url_code();
                 compileScreenProgram();
             }
-            
+
             function isCodeVisible(){
                 return code && code.getWrapperElement().style.display !== 'none';
             }
-            
+
             var hideUITimer;
             var isUIHidden = false;
-            
+
             function startHideUITimer (){
                 stopHideUITimer();
                 if (!isUIHidden && !isCodeVisible())
@@ -370,7 +370,7 @@ void main(){
                     }
                 }
             }
-            
+
             function stopHideUI (){
                 if (isUIHidden){
                     isUIHidden = false;
@@ -398,7 +398,7 @@ void main(){
                 surface.height = 1;
                 computeSurfaceCorners();
             }
-            
+
             function compile(){
                 if (!gl){
                     if (!getWebGL){
@@ -459,9 +459,9 @@ void main(){
             }
 
             function compileScreenProgram(){
-                if (!gl){ 
+                if (!gl){
                     alert('No gl.');
-                    return; 
+                    return;
                 }
                 var program = gl.createProgram();
                 var fragment = document.getElementById('fragmentShader').textContent;
@@ -491,7 +491,7 @@ void main(){
                 }
                 program.uniformsCache[label] = gl.getUniformLocation(program, label);
             }
-            
+
             function createTarget(width, height){
                 var target = {};
                 target.framebuffer = gl.createFramebuffer();
@@ -521,7 +521,7 @@ void main(){
                 frontTarget = createTarget(parameters.screenWidth, parameters.screenHeight);
                 backTarget = createTarget(parameters.screenWidth, parameters.screenHeight);
             }
-            
+
             function htmlEncode(str){
                 return String(str)
                     .replace(/&/g, '&amp;')
@@ -530,7 +530,7 @@ void main(){
                     .replace(/</g, '&lt;')
                     .replace(/>/g, '&gt;');
             }
-            
+
             function createShader(src, type){
                 var shader = gl.createShader(type);
                 var line, lineNum, lineError, index = 0, indexEnd;
@@ -651,5 +651,5 @@ void main(){
                 backTarget = tmp;
             }
         </script>
-	</body>
+    </body>
 </html>
