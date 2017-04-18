@@ -67,8 +67,10 @@
 sr = 48000
 ksmps = 100
 nchnls = 2
-0dbfs = 1500000
+0dbfs = 1
 
+connect "DelayedPluck", "outleft", "ReverbLeft", "inleft"
+connect "DelayedPluck", "outright", "ReverbRight", "inright"
 connect "FM_Clang", "outleft", "ReverbLeft", "inleft"
 connect "FM_Clang", "outright", "ReverbRight", "inright"
 connect "Harpsichord", "outleft", "Reverb2Left", "inleft"
@@ -95,6 +97,8 @@ alwayson "MasterOutput"
 #include "PianoNotePianoteq.inc"
 #include "Harpsichord.inc"
 #include "FM_Clang.inc"
+#include "DelayedPlucked.inc"
+
 ;#include "PianoOutFluidsynth.inc"
 #include "PianoOutPianoteq.inc"
 
@@ -145,6 +149,7 @@ prints "Reverb2Righ i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, 
 endin
 
 instr Controls
+    gk_FM_Clang_level chnget "gk_FM_Clang_level"
     gk_Harpsichord_level chnget "gk_Harpsichord_level"
     gk_Harpsichord_pick chnget "gk_Harpsichord_pick"
     gk_Harpsichord_reflection chnget "gk_Harpsichord_reflection"
@@ -265,14 +270,16 @@ endin
             var toolbar, compileButton, fullscreenButton, compileTimer, errorLines = [];
             var code, canvas, gl, buffer, currentProgram, vertexPosition, screenVertexPosition, panButton;
             var parameters = {
-                frames_per_second: 24,
+                instruments: 4,
+                frames_per_second: 30,
                 startTime: Date.now(),
                 time: 0,
                 mouseX: 0.5,
                 mouseY: 0.5,
                 screenWidth: 0,
                 screenHeight: 0,
-                legato: 5,
+                legato: 4,
+                gk_DelayedPluck_level: 0.5,
                 gk_Harpsichord_level: 0.5,
                 gk_Harpsichord_pick: 0.75,
                 gk_Harpsichord_reflection: 0.5,
@@ -282,7 +289,6 @@ endin
                 gk_Reverb2_Feedback: 0.7,
                 gk_MasterOutput_level: 0.4,
                 gk_overlap: 0.05,
-                gk_FM_Clang_preset: 1,
                 gk_FM_Clang_level: 0,
                 Play: function() {
                     //csound.stop();
@@ -786,8 +792,8 @@ endin
             // jth row. Pixels are returned in row order from the lowest to
             // the highest row, left to right in each row.
 
-            var value_threshold = 0.5;
-            var instrument_count = 3;
+            var value_threshold = .75;
+            var instrument_count = 4;
             var range = 72;
             var bass = 24;
             var dynamic_range = 20;
@@ -938,7 +944,6 @@ endin
             "gk_Reverb_Feedback": 0.8962799943206012,
             "gk_Reverb2_Feedback": 0.8519096975720566,
             "gk_MasterOutput_level": 16.32429797719947,
-            "gk_FM_Clang_preset": 9,
             "gk_FM_Clang_level": 6,
             "gk_Blower_grainDensity": 0.15,
             "gk_Blower_grainDuration": 0.2,
@@ -982,7 +987,6 @@ endin
             "gk_Reverb_Feedback": 0.83,
             "gk_Reverb2_Feedback": 0.7,
             "gk_MasterOutput_level": 27,
-            "gk_FM_Clang_preset": 9.460531255436628,
             "gk_FM_Clang_level": -6.049188283446092,
             "gk_Blower_grainDensity": 150.60932492125144,
             "gk_Blower_grainDuration": 0.03214223397709634,
@@ -1111,7 +1115,6 @@ endin
                 add_slider(Master, 'gk_MasterOutput_level', -40, 40);
                 var intruments = gui.addFolder('Instruments');
                 var fmclang = intruments.addFolder('FM Clang');
-                add_slider(fmclang, 'gk_FM_Clang_preset', 1, 13);
                 add_slider(fmclang, 'gk_FM_Clang_level', -40, 40);
                 var Harpsichord = intruments.addFolder('Harpsichord');
                 add_slider(Harpsichord, 'gk_Harpsichord_level', -40, 40);
