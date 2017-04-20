@@ -150,6 +150,7 @@ endin
 
 instr Controls
     gk_FM_Clang_level chnget "gk_FM_Clang_level"
+    gk_DelayedPlucked_level chnget "gk_DelayedPlucked_level"
     gk_Harpsichord_level chnget "gk_Harpsichord_level"
     gk_Harpsichord_pick chnget "gk_Harpsichord_pick"
     gk_Harpsichord_reflection chnget "gk_Harpsichord_reflection"
@@ -169,6 +170,8 @@ endin
         <script id="example" type="x-shader/x-fragment">
             precision mediump float;
             uniform float time;
+            uniform float time_factor;
+            uniform float zoom;
             uniform vec2 mouse;
             uniform vec2 resolution;
 
@@ -181,9 +184,9 @@ endin
                 vec2 uv = gl_FragCoord.xy / resolution.xy;
                 uv = uv * 2. - 1.;
                 uv.x *= resolution.x / resolution.y;
-                float e = time * .05;
+                float e = time * time_factor;
                 float d = 128.*mouse.x / resolution.x + 8.5;
-                float zoom = 64.;
+                ///float zoom = 64.;
                 vec2 g = uv * zoom;
                 uv = d * (floor(g) + .5) / zoom;
                 g = fract(g) * 2. - 1.;
@@ -274,12 +277,14 @@ endin
                 frames_per_second: 30,
                 startTime: Date.now(),
                 time: 0,
+                time_factor: 0.025,
+                zoom: 64,
                 mouseX: 0.5,
                 mouseY: 0.5,
                 screenWidth: 0,
                 screenHeight: 0,
                 legato: 4,
-                gk_DelayedPluck_level: 0.5,
+                gk_DelayedPlucked_level: 0.5,
                 gk_Harpsichord_level: 0.5,
                 gk_Harpsichord_pick: 0.75,
                 gk_Harpsichord_reflection: 0.5,
@@ -630,6 +635,8 @@ endin
                 panButton.style.display = (fragment.indexOf('varying vec2 surfacePosition;')>= 0)? 'inline' : 'none';
                 // Cache uniforms
                 cacheUniformLocation(program, 'time');
+                cacheUniformLocation(program, 'time_factor');
+                cacheUniformLocation(program, 'zoom');
                 cacheUniformLocation(program, 'mouse');
                 cacheUniformLocation(program, 'resolution');
                 cacheUniformLocation(program, 'backbuffer');
@@ -795,7 +802,7 @@ endin
             var value_threshold = .75;
             var instrument_count = 4;
             var range = 72;
-            var bass = 24;
+            var bass = 28;
             var dynamic_range = 20;
             var softest = 40;
             var maximum_value = 0;
@@ -898,6 +905,8 @@ endin
                 // Set uniforms for custom shader
                 gl.useProgram(currentProgram);
                 gl.uniform1f(currentProgram.uniformsCache.time, parameters.time / 1000);
+                gl.uniform1f(currentProgram.uniformsCache.time_factor, parameters.time_factor);
+                gl.uniform1f(currentProgram.uniformsCache.zoom, parameters.zoom);
                 gl.uniform2f(currentProgram.uniformsCache.mouse, surface.lastX, surface.lastY);
                 gl.uniform2f(currentProgram.uniformsCache.resolution, parameters.screenWidth, parameters.screenHeight);
                 gl.uniform1i(currentProgram.uniformsCache.backbuffer, 0);
@@ -1109,11 +1118,15 @@ endin
                 gui.add(parameters, 'Developer_tools').name('Debugger');
                 gui.add(parameters, 'Close').name('Close').name('Exit [Ctrl-X]');
                 var Master = gui.addFolder('Master effects');
-                add_slider(Master, 'gk_overlap', 0, 20);
+                add_slider(Master, 'legato', 0, 8);
+                add_slider(Master, 'time_factor', 0, 1);
+                add_slider(Master, 'zoom', 0, 128);
                 add_slider(Master, 'gk_Reverb_Feedback', 0, 1);
                 add_slider(Master, 'gk_Reverb2_Feedback', 0, 1);
                 add_slider(Master, 'gk_MasterOutput_level', -40, 40);
                 var intruments = gui.addFolder('Instruments');
+                var delayedplucked = intruments.addFolder('DelayedPlucked');
+                add_slider(delayedplucked, 'gk_DelayedPlucked_level', -40, 40);
                 var fmclang = intruments.addFolder('FM Clang');
                 add_slider(fmclang, 'gk_FM_Clang_level', -40, 40);
                 var Harpsichord = intruments.addFolder('Harpsichord');
@@ -1144,6 +1157,15 @@ endin
                 var on_parameter_change = function(value) {
                     if (token.startsWith('gk_')) {
                         gk_update(token, value);
+                    }
+                    if (token == 'legato') {
+                        parameters.legato = parseFloat(value);
+                    }
+                    if (token == 'zoom') {
+                        parameters.zoom = parseFloat(value);
+                    }
+                    if (token == 'time_factor') {
+                        parameters.time_factor = parseFloat(value);
                     }
                 };
                 var slider = gui_folder.add(parameters, token, minimum, maximum);
