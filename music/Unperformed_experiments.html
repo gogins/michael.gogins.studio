@@ -93,14 +93,14 @@ alwayson "Reverb2Right"
 alwayson "ParametricEQ"
 alwayson "MasterOutput"
 
-;#include "PianoNoteFluidsynth.inc"
-#include "PianoNotePianoteq.inc"
+#include "PianoNoteFluidsynth.inc"
+;#include "PianoNotePianoteq.inc"
 #include "Harpsichord.inc"
 #include "FM_Clang.inc"
 #include "DelayedPlucked.inc"
 
-;#include "PianoOutFluidsynth.inc"
-#include "PianoOutPianoteq.inc"
+#include "PianoOutFluidsynth.inc"
+;#include "PianoOutPianoteq.inc"
 
 gk_Reverb_Feedback init 0.975
 gk_Delay_Modulation init 0.875
@@ -847,7 +847,7 @@ endin
                var insno = ((x / gl.drawingBufferWidth) * instrument_count) + 1;
                var key = Math.floor((y / gl.drawingBufferHeight) * range + bass);
                var velocity = Math.floor(v * dynamic_range + softest);
-               var pan = Math.floor(v * dynamic_range + softest);
+               var pan = Math.random();
                insno = insno + key / 1000;
                score.add(0, -1, 144.0, insno, key, velocity, pan);
             }
@@ -856,7 +856,7 @@ endin
                var insno = ((x / gl.drawingBufferWidth) * instrument_count) + 1;
                var key = Math.floor((y / gl.drawingBufferHeight) * range + bass);
                var velocity = Math.floor(v * dynamic_range + softest);
-               var pan = Math.floor(v * dynamic_range + softest);
+               var pan = Math.random();
                insno = insno + key / 1000;
                score.add(parameters.legato, -1, 144.0, -insno, key, velocity, pan);
             }
