@@ -43,19 +43,19 @@ Michael Gogins	2001	Garden of Algorithms		10	MC3	05:02.00	d:\Dropbox\Michael Gog
 Michael Gogins	2001	Garden of Algorithms		11	Piano Fall	07:27.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\11-Piano Fall.wav	01/14/14 03:06 AM		Publish	0.00		Registered		Published by CDBaby			Published
 Michael Gogins	2001	Garden of Algorithms		12	Three Trees	05:15.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\12-Three Trees.wav	01/14/14 03:07 AM		Publish	0.00		Registered		Published by CDBaby			Published
 '''
-database_20161211 = r'''
-Michael Gogins	2001	Garden of Algorithms	01:08	1	Three Trees	10:01.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\01-Cloud Strata.wav	01/14/14 03:03 AM		Publish	0.00		Registered		Published by CDBaby			Published
-Michael Gogins	2001	Garden of Algorithms		2	Piano Fall	03:32.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\02-Triptych.wav	01/14/14 03:04 AM		Publish	0.00		Registered		Published by CDBaby			Published
-Michael Gogins	2001	Garden of Algorithms		3	MC3	05:13.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\03-Dark Tower.wav	01/14/14 03:04 AM		Publish	0.00		Registered		Published by CDBaby			Published
-Michael Gogins	2001	Garden of Algorithms		4	Hex	02:43.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\04-Bending Arches.wav	01/14/14 03:04 AM		Publish	0.00		Registered		Published by CDBaby			Published
-Michael Gogins	2001	Garden of Algorithms		5	Linmuse 21	06:48.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\05-Broken Differential.wav	01/14/14 03:04 AM		Publish	0.00		Registered		Published by CDBaby			Published
-Michael Gogins	2001	Garden of Algorithms		6	Chaotic Squares	03:58.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\06-970104e.wav	01/14/14 03:05 AM		Publish	0.00		Registered		Published by CDBaby			Published
-Michael Gogins	2001	Garden of Algorithms		7	970104e	04:05.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\07-Chaotic Squares.wav	01/14/14 03:05 AM		Publish	0.00		Registered		Published by CDBaby			Published
-Michael Gogins	2001	Garden of Algorithms		8	Broken Differential	06:10.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\08-LinMuse21.wav	01/14/14 03:05 AM		Publish	0.00		Registered		Published by CDBaby			Published
-Michael Gogins	2001	Garden of Algorithms		9	Bending Arches	08:02.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\09-Hex.wav	01/14/14 03:06 AM		Publish	0.00		Registered		Published by CDBaby			Published
-Michael Gogins	2001	Garden of Algorithms		10	Dark Tower	05:02.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\10-MC 3.wav	01/14/14 03:06 AM		Publish	0.00		Registered		Published by CDBaby			Published
-Michael Gogins	2001	Garden of Algorithms		11	Triptych	07:27.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\11-Piano Fall.wav	01/14/14 03:06 AM		Publish	0.00		Registered		Published by CDBaby			Published
-Michael Gogins	2001	Garden of Algorithms		12	Cloud Strata	05:15.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\12-Three Trees.wav	01/14/14 03:07 AM		Publish	0.00		Registered		Published by CDBaby			Published
+database = r'''
+Michael Gogins	2001	Garden of Algorithms	01:08	1	Cloud Strata	10:01.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\01-Cloud Strata.wav	01/14/14 03:03 AM		Publish	0.00		Registered		Published by CDBaby			Published
+Michael Gogins	2001	Garden of Algorithms		2	Triptych	03:32.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\02-Triptych.wav	01/14/14 03:04 AM		Publish	0.00		Registered		Published by CDBaby			Published
+Michael Gogins	2001	Garden of Algorithms		3	Dark Tower	05:13.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\03-Dark Tower.wav	01/14/14 03:04 AM		Publish	0.00		Registered		Published by CDBaby			Published
+Michael Gogins	2001	Garden of Algorithms		4	Bending Arches	02:43.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\04-Bending Arches.wav	01/14/14 03:04 AM		Publish	0.00		Registered		Published by CDBaby			Published
+Michael Gogins	2001	Garden of Algorithms		5	Broken Differential	06:48.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\05-Broken Differential.wav	01/14/14 03:04 AM		Publish	0.00		Registered		Published by CDBaby			Published
+Michael Gogins	2001	Garden of Algorithms		6	970104e	03:58.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\06-970104e.wav	01/14/14 03:05 AM		Publish	0.00		Registered		Published by CDBaby			Published
+Michael Gogins	2001	Garden of Algorithms		7	Chaotic Squares	04:05.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\07-Chaotic Squares.wav	01/14/14 03:05 AM		Publish	0.00		Registered		Published by CDBaby			Published
+Michael Gogins	2001	Garden of Algorithms		8	LinMuse 21	06:10.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\08-LinMuse21.wav	01/14/14 03:05 AM		Publish	0.00		Registered		Published by CDBaby			Published
+Michael Gogins	2001	Garden of Algorithms		9	Hex	08:02.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\09-Hex.wav	01/14/14 03:06 AM		Publish	0.00		Registered		Published by CDBaby			Published
+Michael Gogins	2001	Garden of Algorithms		10	MC3	05:02.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\10-MC 3.wav	01/14/14 03:06 AM		Publish	0.00		Registered		Published by CDBaby			Published
+Michael Gogins	2001	Garden of Algorithms		11	Piano Fall	07:27.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\11-Piano Fall.wav	01/14/14 03:06 AM		Publish	0.00		Registered		Published by CDBaby			Published
+Michael Gogins	2001	Garden of Algorithms		12	Three Trees	05:15.00	d:\Dropbox\Michael Gogins\Garden of Algorithms\12-Three Trees.wav	01/14/14 03:07 AM		Publish	0.00		Registered		Published by CDBaby			Published
 Michael Gogins	2006	Semblance	00:54	1	19991216a	04:02.00	d:\Dropbox\Michael Gogins\Semblance\01-19991216a.wav	08/03/10 01:18 AM		Publish	0.00			Accepted as composite	Published by CDBaby			Published
 Michael Gogins	2006	Semblance		2	20000611B-b	07:33.00	d:\Dropbox\Michael Gogins\Semblance\02-20000611B-b.wav	08/03/10 01:18 AM		Publish	0.00			Accepted as composite	Published by CDBaby			Published
 Michael Gogins	2006	Semblance		3	csound-2004-06-11-17.43.24.py	06:41.00	d:\Dropbox\Michael Gogins\Semblance\03-csound-2004-06-11-17.43.24.py.wav	01/14/14 02:53 AM		Publish	0.00				Published by CDBaby			Published
@@ -100,9 +100,10 @@ Michael Gogins	2016	Summertrees		5	f--2002-01-10--23-12-54.054-b.mml	03:24.00	d:
 Michael Gogins	2016	Summertrees		6	drone.py.wav	09:50.00	d:\Dropbox\Michael Gogins\Summertrees\06-Various _ 06_drone.py.wav	01/14/14 03:14 AM		Publish	1.00			Accepted as composite
 Michael Gogins	2016	Summertrees		7	Attractor1.mml-b	04:08.00	d:\Dropbox\Michael Gogins\Summertrees\07-Various _ 07_Attractor1.mml-b.master.wav	01/14/14 03:15 AM		Publish	1.00			Accepted as composite
 Michael Gogins	2016	Summertrees		8	csound[2005-04-16][15.29.17]-a.py	05:09.00	d:\Dropbox\Michael Gogins\Summertrees\08-Various _ 08_csound[2005-04-16][15.29.17]-a.py.master.wav	01/14/14 03:15 AM		Publish	1.00			Accepted as composite
+Michael Gogins	2017	NYCEMF		1	Black_Mountain.19.html	09:15.00	C:/Users/restore/michael.gogins.studio/music/Black Mountain 19.wav	04/25/17 05:12 PM		Publish	0.00						#Published
 '''
 database = r'''
-Michael Gogins	2017	NYCEMF		1	Black_Mountain.19.html	09:15.00	C:/Users/restore/michael.gogins.studio/music/Black Mountain 19.wav	04/20/17 10:03 AM		Publish	0.00						#Published
+Michael Gogins	2017	NYCEMF		1	Black_Mountain.7d.html	09:15.00	C:/Users/restore/michael.gogins.studio/music/Black Mountain 7d.wav	04/25/17 05:00 AM		Publish	0.00						#Published
 '''
 
 notes = 'Electroacoustic Music'
