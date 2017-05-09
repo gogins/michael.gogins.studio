@@ -75,6 +75,12 @@ connect "FM_Clang", "outleft", "ReverbLeft", "inleft"
 connect "FM_Clang", "outright", "ReverbRight", "inright"
 connect "Harpsichord", "outleft", "Reverb2Left", "inleft"
 connect "Harpsichord", "outright", "Reverb2Right", "inright"
+connect "Plucked", "outleft", "ReverbLeft", "inleft"
+connect "Plucked", "outright", "ReverbRight", "inright"
+connect "Rhodes", "outleft", "Reverb2Left", "inleft"
+connect "Rhodes", "outright", "Reverb2Right", "inright"
+connect "STKPlucked", "outleft", "ReverbLeft", "inleft"
+connect "STKPlucked", "outright", "ReverbRight", "inright"
 connect "PianoOut", "outleft", "MasterOutput", "inleft"
 connect "PianoOut", "outright", "MasterOutput", "inright"
 connect "PianoOut", "outleft", "Reverb2Left", "inleft"
@@ -98,6 +104,9 @@ alwayson "MasterOutput"
 #include "Harpsichord.inc"
 #include "FM_Clang.inc"
 #include "DelayedPlucked.inc"
+#include "Plucked.inc"
+#include "STKPlucked.inc"
+#include "Rhodes.inc"
 
 #include "PianoOutFluidsynth.inc"
 ;#include "PianoOutPianoteq.inc"
@@ -157,6 +166,9 @@ instr Controls
     gk_Harpsichord_pluck chnget "gk_Harpsichord_pluck"
     gk_MasterOutput_level chnget "gk_MasterOutput_level"
     gk_Piano_level chnget "gk_Piano_level"
+    gk_Plucked_level chnget "gk_Plucked_level"
+    gk_STKPlucked_level chnget "gk_STKPlucked_level"
+    gk_Rhodes_level chnget "gk_Rhodes_level"
     gk_Reverb_Feedback chnget "gk_Reverb_Feedback"
     gk_Reverb2_Feedback chnget "gk_Reverb2_Feedback"
     gk_overlap chnget "gk_overlap"
@@ -171,7 +183,9 @@ endin
             precision mediump float;
             uniform float time;
             uniform float time_factor;
-            uniform float zoom;
+            //uniform float zoom;
+            uniform float x_zoom;
+            uniform float y_zoom;
             uniform vec2 mouse;
             uniform vec2 resolution;
 
@@ -187,6 +201,9 @@ endin
                 float e = time * time_factor;
                 float d = 128.*mouse.x / resolution.x + 8.5;
                 ///float zoom = 64.;
+                vec2 zoom;
+                zoom.x = x_zoom;
+                zoom.y = y_zoom;
                 vec2 g = uv * zoom;
                 uv = d * (floor(g) + .5) / zoom;
                 g = fract(g) * 2. - 1.;
@@ -247,6 +264,7 @@ endin
                var score = new Silencio.Score();
                var FM9 = ChordSpace.chordForName('FM9');
                var Bb7 = ChordSpace.chordForName('Bb7');
+               var CM = ChordSpace.chordForName('CM');
                var chord = Bb7.clone();
                var modality = chord.clone();
             initialize_helper();
@@ -279,6 +297,8 @@ endin
                 time: 0,
                 time_factor: 0.025,
                 zoom: 64,
+                x_zoom: 1,
+                y_zoom: 64,
                 mouseX: 0.5,
                 mouseY: 0.5,
                 screenWidth: 0,
@@ -290,6 +310,9 @@ endin
                 gk_Harpsichord_reflection: 0.5,
                 gk_Harpsichord_pluck: 0.75,
                 gk_Piano_level: 0.5,
+                gk_Plucked_level: 0,
+                gk_STKPlucked_level: 0,
+                gk_Rhodes_level: 0.0,
                 gk_Reverb_Feedback: 0.975,
                 gk_Reverb2_Feedback: 0.7,
                 gk_MasterOutput_level: 0.4,
@@ -327,17 +350,28 @@ endin
                         console.log(e);
                     }
                 },
+                CM: function() {
+                    chord = CM.clone();
+                    modality = chord.clone();
+                    csound.message('CM:\n' + chord.information());
+                },
                 FM9: function() {
                     chord = FM9.clone();
+                    modality = chord.clone();
                     csound.message('FM9:\n' + chord.information());
                 },
                 Bb7: function() {
                     chord = Bb7.clone();
+                    modality = chord.clone();
                     csound.message('Bb7:\n' + chord.information());
                 },
                 K: function() {
                     chord = chord.K();
                     csound.message('K():\n' + chord.information());
+                },
+                Q1: function() {
+                    chord = chord.Q(1, modality);
+                    csound.message('Q(1, modality):\n' + chord.information());
                 },
                 Q2: function() {
                     chord = chord.Q(2, modality);
@@ -347,9 +381,17 @@ endin
                     chord = chord.Q(3, modality);
                     csound.message('Q(3, modality):\n' + chord.information());
                 },
+                Q4: function() {
+                    chord = chord.Q(4, modality);
+                    csound.message('Q(4, modality):\n' + chord.information());
+                },
                 Q5: function() {
                     chord = chord.Q(5, modality);
                     csound.message('Q(5, modality):\n' + chord.information());
+                },
+                Q6: function() {
+                    chord = chord.Q(6, modality);
+                    csound.message('Q(6, modality):\n' + chord.information());
                 },
                 J2_2: function() {
                     var chords = chord.J(2);
@@ -637,6 +679,8 @@ endin
                 cacheUniformLocation(program, 'time');
                 cacheUniformLocation(program, 'time_factor');
                 cacheUniformLocation(program, 'zoom');
+                cacheUniformLocation(program, 'x_zoom');
+                cacheUniformLocation(program, 'y_zoom');
                 cacheUniformLocation(program, 'mouse');
                 cacheUniformLocation(program, 'resolution');
                 cacheUniformLocation(program, 'backbuffer');
@@ -800,7 +844,7 @@ endin
             // the highest row, left to right in each row.
 
             var value_threshold = .75;
-            var instrument_count = 4;
+            var instrument_count = 6;
             var range = 72;
             var bass = 28;
             var dynamic_range = 20;
@@ -907,6 +951,8 @@ endin
                 gl.uniform1f(currentProgram.uniformsCache.time, parameters.time / 1000);
                 gl.uniform1f(currentProgram.uniformsCache.time_factor, parameters.time_factor);
                 gl.uniform1f(currentProgram.uniformsCache.zoom, parameters.zoom);
+                gl.uniform1f(currentProgram.uniformsCache.x_zoom, parameters.x_zoom);
+                gl.uniform1f(currentProgram.uniformsCache.y_zoom, parameters.y_zoom);
                 gl.uniform2f(currentProgram.uniformsCache.mouse, surface.lastX, surface.lastY);
                 gl.uniform2f(currentProgram.uniformsCache.resolution, parameters.screenWidth, parameters.screenHeight);
                 gl.uniform1i(currentProgram.uniformsCache.backbuffer, 0);
@@ -1119,8 +1165,10 @@ endin
                 gui.add(parameters, 'Close').name('Close').name('Exit [Ctrl-X]');
                 var Master = gui.addFolder('Master effects');
                 add_slider(Master, 'legato', 0, 8);
-                add_slider(Master, 'time_factor', 0, 1);
+                add_slider(Master, 'time_factor', 0, .333334);
                 add_slider(Master, 'zoom', 0, 128);
+                add_slider(Master, 'x_zoom', 0, 128);
+                add_slider(Master, 'y_zoom', 0, 128);
                 add_slider(Master, 'gk_Reverb_Feedback', 0, 1);
                 add_slider(Master, 'gk_Reverb2_Feedback', 0, 1);
                 add_slider(Master, 'gk_MasterOutput_level', -40, 40);
@@ -1133,13 +1181,21 @@ endin
                 add_slider(Harpsichord, 'gk_Harpsichord_level', -40, 40);
                 var Piano = intruments.addFolder('Piano');
                 add_slider(Piano, 'gk_Piano_level', -40, 40);
+                var Plucked = intruments.addFolder('Plucked');
+                add_slider(Plucked, 'gk_Plucked_level', -40, 40);
+                var STKPlucked = intruments.addFolder('STKPlucked');
+                add_slider(STKPlucked, 'gk_STKPlucked_level', -40, 40);
                 var Chords = gui.addFolder('Chords and transformations');
+                Chords.add(parameters, 'CM');
                 Chords.add(parameters, 'Bb7');
                 Chords.add(parameters, 'FM9');
                 Chords.add(parameters, 'K').name('K() [Ctrl-K]');
-                Chords.add(parameters, 'Q2').name('Q(2)');
-                Chords.add(parameters, 'Q3').name('Q(3) [Ctrl-Q]');
-                Chords.add(parameters, 'Q5').name('Q(5)');
+                Chords.add(parameters, 'Q1').name('Q(1) [Ctrl-1]');
+                Chords.add(parameters, 'Q2').name('Q(2) [Ctrl-2]');
+                Chords.add(parameters, 'Q3').name('Q(3) [Ctrl-3]');
+                Chords.add(parameters, 'Q4').name('Q(4) [Ctrl-4]');
+                Chords.add(parameters, 'Q5').name('Q(5) [Ctrl-5]');
+                Chords.add(parameters, 'Q6').name('Q(6) [Ctrl-6]');
                 Chords.add(parameters, 'J2_2').name('J(2,2)');
                 Chords.add(parameters, 'J2_3').name('J(2,3)');
                 Chords.add(parameters, 'J3_1').name('J(3,1)');
@@ -1202,8 +1258,18 @@ endin
                         gui.toggle();
                     } else if (e_char === 'K') {
                         parameters.K();
-                    } else if (e_char === 'Q') {
+                    } else if (e_char === '1') {
+                        parameters.Q1();
+                    } else if (e_char === '2') {
+                        parameters.Q2();
+                    } else if (e_char === '3') {
                         parameters.Q3();
+                    } else if (e_char === '4') {
+                        parameters.Q4();
+                    } else if (e_char === '5') {
+                        parameters.Q5();
+                    } else if (e_char === '6') {
+                        parameters.Q6();
                     } else if (e_char === 'D') {
                         parameters.T5();
                     } else if (e_char === 'T') {

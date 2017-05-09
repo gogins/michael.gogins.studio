@@ -180,7 +180,7 @@ iduration 		 = p3
 ikey 		 = p4
 ivelocity = p5
 iphase = p6
-ipan = p7
+ipan = p6
 idepth = p8
 iheight = p9
 ipcs = p10
@@ -209,7 +209,7 @@ kgain = ampdb(gk_Harpsichord_level)
 outleta "outleft", aleft * kgain
 outleta "outright", aright * kgain
 ;;;;;;;;;;;;;;;;;;;;i
-prints "Harpsichord i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "Harpsichord i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p6
 endin
 
 gk_YiString_level init 1
@@ -226,7 +226,7 @@ iduration = p3
 ikey = p4
 ivelocity = p5
 iphase = p6
-ipan = p7
+ipan = p6
 iamp = ampdb(ivelocity) *16
 iattack = i(gk_overlap)
 idecay = i(gk_overlap)
@@ -245,7 +245,7 @@ outleta "outright", aright * kgain * gk_YiString_reverb_send
 outleta "chorusleft", aleft * kgain * gk_YiString_chorus_send
 outleta "chorusright", aright * kgain * gk_YiString_chorus_send
 ;;;;;;;;;;;;;;;;;;;;i
-prints "YiString    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "YiString    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p6
 endin
 
 ;gk_Bower_level init 0.5
@@ -257,7 +257,7 @@ endin
 ;ikey = p4
 ;ivelocity = p5
 ;iphase = p6
-;ipan = p7
+;ipan = p6
 ;iamp = ampdb(ivelocity) * 100
 ;iattack = i(gk_overlap)
 ;idecay = i(gk_overlap)
@@ -282,7 +282,7 @@ endin
 ;outleta "outleft", aleft * kgain
 ;outleta "outright", aright * kgain
 ;;;;;;;;;;;;;;;;;;;;;i
-;prints "Bower       i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+;prints "Bower       i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p6
 ;endin
 
 gk_Phaser_ratio1 init 1
@@ -297,7 +297,7 @@ iduration = p3
 ikey = p4
 ivelocity = p5
 iphase = p6
-ipan = p7
+ipan = p6
 iamp = ampdb(ivelocity) * 8
 iattack = i(gk_overlap)
 idecay = i(gk_overlap)
@@ -318,7 +318,7 @@ kgain = ampdb(gk_Phaser_level)
 outleta "outleft", aleft * kgain
 outleta "outright", aright * kgain
 ;;;;;;;;;;;;;;;;;;;;i
-prints "Phaser      i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "Phaser      i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p6
 endin
 
 ;gk_YiString_level init 1
@@ -335,7 +335,7 @@ iduration = p3
 ikey = p4
 ivelocity = p5
 iphase = p6
-ipan = p7
+ipan = p6
 iamp = ampdb(ivelocity) *16
 iattack = i(gk_overlap)
 idecay = i(gk_overlap)
@@ -354,7 +354,7 @@ outleta "outright", aright * kgain * gk_YiString_reverb_send
 outleta "chorusleft", aleft * kgain * gk_YiString_chorus_send
 outleta "chorusright", aright * kgain * gk_YiString_chorus_send
 ;;;;;;;;;;;;;;;;;;;;i
-prints "YiString    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "YiString    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p6
 endin
 
 opcode FM_Clang_veloc, i, iii
@@ -375,7 +375,7 @@ iduration = p3
 ikey = p4
 ivelocity = p5
 iphase = p6
-ipan = p7
+ipan = p6
 idepth = p8
 iheight = p9
 ipcs = p10
@@ -480,7 +480,7 @@ asignal = (aleft1 + aright1) *100
 aleft2, aright2 pan2 asignal, ipan
 outleta "outleft", aleft2
 outleta "outright", aright2
-prints "FM_Clang    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "FM_Clang    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p6
 endin
 
 gk_Droner_partial1 init .1
@@ -496,7 +496,7 @@ iduration = p3
 ikey = p4
 ivelocity = p5
 iphase = p6
-ipan = p7
+ipan = p6
 k1 init .5
 k2 init .05
 k3 init .1
@@ -540,7 +540,7 @@ kgain = ampdb(gk_Droner_level)
 outleta "outleft", aleft * kgain
 outleta "outright", aright * kgain
 ;;;;;;;;;;;;;;;;;;;;i
-prints "Droner      i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "Droner      i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p6
 endin
 
 gk_Sweeper_britel init 0
@@ -559,7 +559,7 @@ iduration = p3
 ikey = p4
 ivelocity = p5
 iphase = p6
-ipan = p7
+ipan = p6
 iamp = ampdb(ivelocity)
 gisine ftgenonce 0, 0, 65536, 10, 1
 gioctfn ftgenonce 0, 0, 65536, -19, 1, 0.5, 270, 0.5
@@ -603,7 +603,7 @@ kgain = ampdb(gk_Sweeper_level) / 3
 outleta "outleft", aleft * kgain
 outleta "outright", aright * kgain
 ;;;;;;;;;;;;;;;;;;;;i
-prints "Sweeper     i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "Sweeper     i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p6
 endin
 
 gk_Buzzer_Harmonics init 15
@@ -615,7 +615,7 @@ iduration = p3
 ikey = p4
 ivelocity = p5
 iphase = p6
-ipan = p7
+ipan = p6
 iamp = ampdb(ivelocity) * 4
 iattack = i(gk_overlap)
 idecay = i(gk_overlap)
@@ -639,7 +639,7 @@ kgain = ampdb(gk_Buzzer_level)
 outleta "outleft", aleft * kgain
 outleta "outright", aright * kgain
 ;;;;;;;;;;;;;;;;;;;;i
-prints "Buzzer      i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "Buzzer      i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p6
 endin
 
 gk_Shiner_level init 0.5
@@ -650,7 +650,7 @@ iduration = p3
 ikey = p4
 ivelocity = p5
 iphase = p6
-ipan = p7
+ipan = p6
 iamp = ampdb(ivelocity) * 4
 iattack = i(gk_overlap)
 idecay = i(gk_overlap)
@@ -669,7 +669,7 @@ kgain = ampdb(gk_Shiner_level) * .5
 outleta "outleft", aleft * kgain
 outleta "outright", aright * kgain
 ;;;;;;;;;;;;;;;;;;;;i
-prints "Shiner      i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "Shiner      i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p6
 endin
 
 gk_Blower_grainDensity init 150
@@ -754,7 +754,7 @@ kgain = ampdb(gk_Blower_level) / 2
 outleta "outleft", aleft * kgain
 outleta "outright", aright * kgain
 ;;;;;;;;;;;;;;;;;;;;i
-prints "Blower      i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "Blower      i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p6
 endin
 
 gk_FM_Clang_preset init 1
@@ -882,7 +882,7 @@ aleft inleta "inleft"
 aleft, aright reverbsc aleft, azero, gk_Reverb_Feedback, 15000.
 outleta "outleft", aleft
 ;;;;;;;;;;;;;;;;;;;;i
-prints "ReverbLeft  i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "ReverbLeft  i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p6
 endin
 
 instr ReverbRight
@@ -892,7 +892,7 @@ aright inleta "inright"
 aleft, aright reverbsc azero, aright, gk_Reverb_Feedback, 15000.0
 outleta "outright", aright
 ;;;;;;;;;;;;;;;;;;;;i
-prints "ReverbRight i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "ReverbRight i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p6
 endin
 
 gk_Reverb2_Feedback init 0.975
@@ -905,7 +905,7 @@ aleft inleta "inleft"
 aleft, aright reverbsc aleft, azero, gk_Reverb2_Feedback, 15000.
 outleta "outleft", aleft
 ;;;;;;;;;;;;;;;;;;;;i
-prints "Reverb2Left i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "Reverb2Left i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p6
 endin
 
 instr Reverb2Right
@@ -915,7 +915,7 @@ aright inleta "inright"
 aleft, aright reverbsc azero, aright, gk_Reverb2_Feedback, 15000.0
 outleta "outright", aright
 ;;;;;;;;;;;;;;;;;;;;i
-prints "Reverb2Righ i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "Reverb2Righ i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p6
 endin
 
 gk_CenterHz init 200
@@ -929,7 +929,7 @@ aright pareq aright, gk_CenterHz, ampdb(gk_Gain), gk_Q, 0
 outleta "outleft", aleft
 outleta "outright", aright
 ;;;;;;;;;;;;;;;;;;;;i
-prints "ParametrcEQ i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "ParametrcEQ i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p6
 endin
 
 gk_MasterOutput_level init .5
@@ -946,13 +946,13 @@ aenvelope transeg 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp
 aright butterlp aright, 16000
 aleft butterlp aleft, 16000
 outs aleft * kgain * aenvelope, aright * kgain * aenvelope
-Sfilename init  "Black Mountain 7c.wav"
+Sfilename init  "Black Mountain 7d.wav"
 prints sprintf("Output filename: %s\n", Sfilename)
 ; We want something that will play on my phone.
 i_amplitude_adjustment = ampdbfs(-3) / 32767
 fout Sfilename, 18, aleft * i_amplitude_adjustment, aright * i_amplitude_adjustment
 ;;;;;;;;;;;;;;;;;;;;i
-prints "MasterOutpt i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "MasterOutpt i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p6
 endin
 
 instr Controls
@@ -999,12 +999,12 @@ instr Controls
     gk_Reverb2_Feedback chnget "gk_Reverb2_Feedback"
     gk_overlap chnget "gk_overlap"
 ;;;;;;;;;;;;;;;;;;;;i
-prints "Controls    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "Controls    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p6
 endin
 
 instr 999
 ;;;;;;;;;;;;;;;;;;;;i
-prints "StopPerform i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+prints "StopPerform i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p6
 exitnow
 endin
     </textarea>
@@ -1014,7 +1014,7 @@ endin
           csound.message(text + '\n' + url + '\n' + line + '\n');
           console.trace();
         }
-        var title = 'Black Mountain 7c';
+        var title = 'Black Mountain 7d';
         var context = null;
         var lsys = null;
         var startTime = 0;
@@ -1063,8 +1063,7 @@ endin
             for (var i = 0; i < lsys.score.data.length; i++) {
                 var event = lsys.score.data[i];
                 // We didn't generate pan, so just randomize it.
-                var pan = Math.random() * 2 - 1;
-                event.pan = pan;
+                event.pan = Math.random();
                 var minimum_gap = null;
                 var minimum_gap_event = null;
                 // Move too-high notes for "Harpsichord" down.
@@ -1128,11 +1127,6 @@ endin
                     }
                 }
             }
-            var panskip = .05;
-            var leftpan = panskip / 2;
-            var panrange = 1 - panskip;
-            lsys.score.setScale(6, leftpan, panrange);
-            lsys.score.setScale(7, leftpan, panrange);
             lsys.score.findScales();
             csound.message(lsys.score.minima.toString());
             csound.message(lsys.score.ranges.toString());
