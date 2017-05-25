@@ -105,6 +105,9 @@ Michael Gogins	2017	NYCEMF		1	Black_Mountain.19.html	09:15.00	C:/Users/restore/m
 database = r'''
 Michael Gogins	2017	NYCEMF		1	Black_Mountain.7d.html	09:15.00	C:/Users/restore/michael.gogins.studio/music/Black Mountain 7d.wav	04/25/17 05:00 AM		Publish	0.00						#Published
 '''
+database = r'''
+Michael Gogins	2017	NYCEMF		1	Black_Mountain.jak.html	09:15.00	~/michael.gogins.studio/music/Black Mountain.jak.wav	04/25/17 05:00 AM		Publish	0.00						#Published
+'''
 
 notes = 'Electroacoustic Music'
 lines = database.split('\n')

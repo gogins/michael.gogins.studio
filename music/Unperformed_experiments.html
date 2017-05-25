@@ -99,8 +99,11 @@ alwayson "Reverb2Right"
 alwayson "ParametricEQ"
 alwayson "MasterOutput"
 
+#ifdef USE_PIANOTEQ
+#include "PianoNotePianoteq.inc"
+#else
 #include "PianoNoteFluidsynth.inc"
-;#include "PianoNotePianoteq.inc"
+#endif
 #include "Harpsichord.inc"
 #include "FM_Clang.inc"
 #include "DelayedPlucked.inc"
@@ -108,8 +111,11 @@ alwayson "MasterOutput"
 #include "STKPlucked.inc"
 #include "Rhodes.inc"
 
+#ifdef USE_PIANOTEQ
+#include "PianoOutPianoteq.inc"
+#else
 #include "PianoOutFluidsynth.inc"
-;#include "PianoOutPianoteq.inc"
+#endif
 
 gk_Reverb_Feedback init 0.975
 gk_Delay_Modulation init 0.875
@@ -252,6 +258,11 @@ endin
 /* jshint bitwise: true, strict:false */
             "use strict";
             try {
+                // Minimal test of ChordSpaceGroup.
+                var chordSpaceGroup = new ChordSpace.ChordSpaceGroup();
+                chordSpaceGroup.initialize(4, 36);
+                chordSpaceGroup.list(true, true, true);
+                
                var csound = require('csound.node');
                console.log('csound:', csound);
                 var fs = require('fs');
@@ -1292,6 +1303,7 @@ endin
             } catch (err) {
                 alert(err);
                 console.log(err.message);
+                console.log(err.stack);
             }
         </script>
     </body>
