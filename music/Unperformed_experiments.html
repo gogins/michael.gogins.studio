@@ -347,7 +347,7 @@ endin
                     // Minimal test of ChordSpaceGroup.
                     var chordSpaceGroup = new ChordSpace.ChordSpaceGroup();
                     chordSpaceGroup.initialize(4, 36);
-                    chordSpaceGroup.list(true, true, true);
+                    chordSpaceGroup.list(true, true, false);
                     chordSpaceGroup.printChords();
                     ///var json_text = JSON.stringify(chordSpaceGroup);
                     ///console.log(json_text);
@@ -359,7 +359,14 @@ endin
                     var chord2 = chordSpaceGroup.toChord(10, 1, 3, 15, true).revoicing;
                     console.log(chord2.information());
                     var pitv2 = chordSpaceGroup.fromChord(chord2, true);
+                    // Can't expect same PITV becaue this is a diminished chord!
+                    // I can still turn the knobs and get the right response.
                     console.log(pitv2);
+                    var filename = ChordSpace.createFilename(5, 24, 0.5);
+                    console.log('filename: ' + filename);
+                    var filename = ChordSpace.createFilename(5, 24, 1);
+                    console.log('filename: ' + filename);
+                    var chordSpaceGroup2 = ChordSpace.createChordSpaceGroup(5, 60, 1);
                 },
                 Developer_tools: function() {
                     nwgui.Window.get().showDevTools();
