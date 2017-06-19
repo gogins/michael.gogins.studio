@@ -223,20 +223,27 @@ endin
             precision mediump float;
             uniform float time;
             uniform float time_factor;
-            uniform float zoom;
-            uniform float stride;
+            //uniform float zoom;
+            uniform float x_zoom;
+            uniform float y_zoom;
             uniform vec2 mouse;
             uniform vec2 resolution;
+
             vec3 pal(float t, vec3 a, vec3 b, vec3 c, vec3 d)
             {
                 return a + b * cos(6.28318 * (c * t + d));
             }
+
             void main(){
                 vec2 uv = gl_FragCoord.xy / resolution.xy;
                 uv = uv * 2. - 1.;
                 uv.x *= resolution.x / resolution.y;
                 float e = time * time_factor;
-                float d = 128. * mouse.x / resolution.x + 8.5;
+                float d = 128.*mouse.x / resolution.x + 8.5;
+                ///float zoom = 64.;
+                vec2 zoom;
+                zoom.x = x_zoom;
+                zoom.y = y_zoom;
                 vec2 g = uv * zoom;
                 uv = d * (floor(g) + .5) / zoom;
                 g = fract(g) * 2. - 1.;
@@ -249,11 +256,13 @@ endin
                         vec3(0.0, 0.10, 0.20)), 1.);
                 gl_FragColor = c * (1. - dot(g, g)) * .2 / abs((fract(f) - .5) * 8.);
             }
+
         </script>
         <script id="fragmentShader" type="x-shader/x-fragment">
             precision mediump float;
             uniform vec2 resolution;
             uniform sampler2D texture;
+
             void main(){
                 vec2 uv = gl_FragCoord.xy / resolution.xy;
                 gl_FragColor = texture2D(texture, uv);
@@ -263,6 +272,7 @@ endin
         <script id="vertexShader" type="x-shader/x-vertex">
             precision mediump float;
             attribute vec3 position;
+
             void main(){
                 gl_Position = vec4(position, 1.0);
             }
@@ -332,7 +342,8 @@ endin
                 time: 0,
                 time_factor: 0.025,
                 zoom: 64,
-                stride: 40,
+                x_zoom: 1,
+                y_zoom: 64,
                 mouseX: 0.5,
                 mouseY: 0.5,
                 screenWidth: 0,
@@ -736,7 +747,8 @@ endin
                 cacheUniformLocation(program, 'time');
                 cacheUniformLocation(program, 'time_factor');
                 cacheUniformLocation(program, 'zoom');
-                cacheUniformLocation(program, 'stride');
+                cacheUniformLocation(program, 'x_zoom');
+                cacheUniformLocation(program, 'y_zoom');
                 cacheUniformLocation(program, 'mouse');
                 cacheUniformLocation(program, 'resolution');
                 cacheUniformLocation(program, 'backbuffer');
@@ -769,14 +781,6 @@ endin
                 gl.useProgram(screenProgram);
                 cacheUniformLocation(program, 'resolution');
                 cacheUniformLocation(program, 'texture');
-                cacheUniformLocation(program, 'time');
-                cacheUniformLocation(program, 'time_factor');
-                cacheUniformLocation(program, 'zoom');
-                cacheUniformLocation(program, 'stride');
-                cacheUniformLocation(program, 'mouse');
-                cacheUniformLocation(program, 'resolution');
-                cacheUniformLocation(program, 'backbuffer');
-                cacheUniformLocation(program, 'surfaceSize');
                 screenVertexPosition = gl.getAttribLocation(screenProgram, "position");
                 gl.enableVertexAttribArray(screenVertexPosition);
             }
@@ -980,11 +984,12 @@ endin
                var old_hsv;
                var new_hsv;
                // By row from bottom (0) to top (height - 1).
-               var stride = parameters.stride;
-               var offset = Math.floor(stride / 2);
-               for (var row_index = offset; row_index < gl.drawingBufferHeight; row_index += stride) {
+               var row_stride = Math.floor(gl.drawingBufferHeight / range);
+               var column_stride = Math.floor(gl.drawingBufferWidth / instrument_count);
+               var column_offset = Math.floor(column_stride / 2);
+               for (var row_index = 0; row_index < gl.drawingBufferHeight; row_index += row_stride) {
                   // By column from left (0) to right (width - 1).
-                  for (var column_index = offset; column_index < gl.drawingBufferWidth; column_index += stride) {
+                  for (var column_index = column_offset; column_index < gl.drawingBufferWidth; column_index += column_stride) {
                      var i = 4 * (row_index * gl.drawingBufferHeight + column_index);
                      old_hsv = rgb_to_hsv(old_pixels[i + 0], old_pixels[i + 1], old_pixels[i + 2], old_pixels[i + 3]);
                      new_hsv = rgb_to_hsv(new_pixels[i + 0], new_pixels[i + 1], new_pixels[i + 2], new_pixels[i + 3]);
@@ -1233,7 +1238,8 @@ endin
                 add_slider(Master, 'legato', 0, 8);
                 add_slider(Master, 'time_factor', 0, .333334);
                 add_slider(Master, 'zoom', 0, 128);
-                add_slider(Master, 'stride', 1, 100);
+                add_slider(Master, 'x_zoom', 0, 128);
+                add_slider(Master, 'y_zoom', 0, 128);
                 add_slider(Master, 'gk_Reverb_Feedback', 0, 1);
                 add_slider(Master, 'gk_Reverb2_Feedback', 0, 1);
                 add_slider(Master, 'gk_MasterOutput_level', -40, 40);
@@ -1261,11 +1267,6 @@ endin
                 Chords.add(parameters, 'Q4').name('Q(4) [Ctrl-4]');
                 Chords.add(parameters, 'Q5').name('Q(5) [Ctrl-5]');
                 Chords.add(parameters, 'Q6').name('Q(6) [Ctrl-6]');
-                Chords.add(parameters, 'Q7').name('Q(7) [Ctrl-7]');
-                Chords.add(parameters, 'Q8').name('Q(8) [Ctrl-8]');
-                Chords.add(parameters, 'Q9').name('Q(9) [Ctrl-9]');
-                Chords.add(parameters, 'Q10').name('Q(10) [Ctrl-A]');
-                Chords.add(parameters, 'Q11').name('Q(11) [Ctrl-B]');
                 Chords.add(parameters, 'J2_2').name('J(2,2)');
                 Chords.add(parameters, 'J2_3').name('J(2,3)');
                 Chords.add(parameters, 'J3_1').name('J(3,1)');
@@ -1289,9 +1290,6 @@ endin
                     }
                     if (token == 'zoom') {
                         parameters.zoom = parseFloat(value);
-                    }
-                    if (token == 'stride') {
-                        parameters.stride = parseFloat(value);
                     }
                     if (token == 'time_factor') {
                         parameters.time_factor = parseFloat(value);
