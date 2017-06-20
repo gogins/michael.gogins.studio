@@ -6,50 +6,49 @@
         <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
         <style>
             body {
-            background-color: #000000;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
+                background-color: #000000;
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
             }
             button, select, a, a:visited {
-            padding: 8px 12px 8px 12px;
-            border: none;
-            border-radius: 5px;
-            margin-right: 5px;
-            color: #ffffff;
-            background-color: #000000;
-            opacity: 0.5;
-            font-family: Monospace;
-            font-size: 12px;
-            font-weight: bold;
-            cursor: pointer;
-            text-decoration: none;
+                padding: 8px 12px 8px 12px;
+                border: none;
+                border-radius: 5px;
+                margin-right: 5px;
+                color: #ffffff;
+                background-color: #000000;
+                opacity: 0.5;
+                font-family: Monospace;
+                font-size: 12px;
+                font-weight: bold;
+                cursor: pointer;
+                text-decoration: none;
             }
             button:hover, select:hover, a:hover {
-            opacity: 1;
-            box-shadow: 0 0 4px #FFF;
+                opacity: 1;
+                box-shadow: 0 0 4px #FFF;
             }
             option {
-            color: #ffffff;
-            background-color: #000000;
+                color: #ffffff;
+                background-color: #000000;
             }
             ::-webkit-scrollbar
             {
-            width:10px;
+                width:10px;
             }
             ::-webkit-scrollbar-track-piece
             {
-            background-color:transparent;
+                background-color:transparent;
             }
             ::-webkit-scrollbar-corner
             {
-            background-color:transparent;
+                background-color:transparent;
             }
         .dg {
-            font-family: Monaco, sans-serif;
-            font-size:8pt;
+                font-family: Monaco, sans-serif;
+                font-size:8pt;
             }
-        </style>
         </style>
         <script src="silencio/js/dat.gui.js"></script>
         <script src='silencio/js/jquery.js'></script>
@@ -63,15 +62,15 @@
     </head>
     <body>
         <table id = 'statistics' style="table-layout:fixed;position:absolute;left:1vw;color:#eee;top:1vw;font-family:Monaco, sans-serif;font-size:8pt">
-            <col width=300px>
-            <col width=150px>
+            <col width=400px>
+            <col width=250px>
             <th style="color:gold;text-align:left">Unperformed experiments have no results, by Michael Gogins.
             Wait for "Csound: Ready."; click "Play/Stop"; adjust "Master effects" group "gk_MasterOutput_level" slider.</p></td><td style="color:gold;text-align:right;"</th>
             <!-- Copyright (C) 2017 by Michael Gogins -->
             <tr>
-                <td>Time: </td><td id="Time_cell" style="color:SkyBlue;text-align:right;"></td>
+                <td>Time: </td><td id="Time_cell" style="color:LawnGreen;text-align:right;"></td>
             </tr>
-             <tr>
+            <tr>
                 <td>X: </td><td id="X_cell" style="color:SkyBlue;text-align:right;"></td>
             </tr>
             <tr>
@@ -81,16 +80,12 @@
                 <td>Chord: </td><td id="Chord_cell" style="color:SkyBlue;text-align:right;"></td>
             </tr>
             <tr>
-                <td>Notes: </td><td id="Notes_cell" style="color:SkyBlue;text-align:right;"></td>
-            </tr>
-           <tr>
-            <!-- or: http://stackoverflow.com/questions/35509360/how-to-make-the-content-of-the-following-table-cell-scrollable -->
+                <!-- or: http://stackoverflow.com/questions/35509360/how-to-make-the-content-of-the-following-table-cell-scrollable -->
                 <td colspan=2><textarea id="console" style="width:100%;color:SkyBlue;background-color:transparent;border:none;text-align:left;font-size:10px;height:200px;overflow:auto;"></textarea></td>
             </tr>
         </table>
         <div id = 'webgl_cell' class='canvas' style="position:absolute;left:1vw;color:#eee;top:1vw;"/>
         <textarea class="code" id="orc" hidden rows=24 cols=80>
-
 sr = 48000
 ksmps = 100
 nchnls = 2
@@ -144,12 +139,12 @@ alwayson "MasterOutput"
 #include "PianoOutFluidsynth.inc"
 #endif
 
-maxalloc 1, 4
-maxalloc 2, 4
-maxalloc 3, 4
-maxalloc 4, 4
-maxalloc 5, 4
-maxalloc 6, 4
+maxalloc 1, 5
+maxalloc 2, 5
+maxalloc 3, 5
+maxalloc 4, 5
+maxalloc 5, 5
+maxalloc 6, 5
 
 gk_Reverb_Feedback init 0.975
 gk_Delay_Modulation init 0.875
@@ -218,7 +213,7 @@ endin
 
 #include "MasterOutput.inc"
 
-    </textarea>
+        </textarea>
         <script id="example" type="x-shader/x-fragment">
             precision mediump float;
             uniform float time;
@@ -272,36 +267,34 @@ endin
             attribute vec3 position;
             attribute vec2 surfacePosAttrib;
             varying vec2 surfacePosition;
-
             void main(){
                 surfacePosition = surfacePosAttrib;
                 gl_Position = vec4(position, 1.0);
             }
         </script>
         <script>
-/* jshint bitwise: true, strict:false */
+            /* jshint bitwise: true, strict:false */
             "use strict";
             try {
-
-               var csound = require('csound.node');
-               console.log('csound:', csound);
+                var csound = require('csound.node');
+                console.log('csound:', csound);
                 var fs = require('fs');
-               var nwgui = require('nw.gui');
-               var nw_window = nwgui.Window.get();
-               nw_window.on('close', function() {
-                  console.log('Closing down...');
-                  this.close(true);
-                  });
-               var score = new Silencio.Score();
-               var FM9 = ChordSpace.chordForName('FM9');
-               var Bb7 = ChordSpace.chordForName('Bb7');
-               var CM = ChordSpace.chordForName('CM');
-               var chord = Bb7.clone();
-               var modality = chord.clone();
-            initialize_helper();
-            var compressor=initialize_compressor();
-            if (!window.requestAnimationFrame){
-                window.requestAnimationFrame = (function(){
+                var nwgui = require('nw.gui');
+                var nw_window = nwgui.Window.get();
+                nw_window.on('close', function() {
+                    console.log('Closing down...');
+                    this.close(true);
+                    });
+                var score = new Silencio.Score();
+                var FM9 = ChordSpace.chordForName('FM9');
+                var Bb7 = ChordSpace.chordForName('Bb7');
+                var CM = ChordSpace.chordForName('CM');
+                var chord = Bb7.clone();
+                var modality = chord.clone();
+                initialize_helper();
+                var compressor=initialize_compressor();
+                if (!window.requestAnimationFrame){
+                    window.requestAnimationFrame = (function(){
                     return window.webkitRequestAnimationFrame ||
                         window.mozRequestAnimationFrame ||
                         window.oRequestAnimationFrame ||
@@ -361,35 +354,14 @@ endin
                     csound.setOption('-odac');
                     var orc = document.getElementById('orc').value;
                     csound.compileOrc(orc);
-                    csound.readScore('f 0 360\n');
+                    csound.readScore('f 0 370\n');
                     csound.start();
                     csound.perform();
-                    ///startTime = csound.getScoreTime();
+                    start_time_seconds = new Date().getTime() / 1000.0;
+
                 },
                 Stop: function() {
-                    // Minimal test of ChordSpaceGroup.
-                    var chordSpaceGroup = new ChordSpace.ChordSpaceGroup();
-                    chordSpaceGroup.initialize(4, 36);
-                    chordSpaceGroup.list(true, true, false);
-                    chordSpaceGroup.printChords();
-                    ///var json_text = JSON.stringify(chordSpaceGroup);
-                    ///console.log(json_text);
                     csound.stop();
-                    var chord = ChordSpace.chordForName('Bb7');
-                    console.log(chord.information());
-                    var pitv = chordSpaceGroup.fromChord(chord, true);
-                    console.log(pitv);
-                    var chord2 = chordSpaceGroup.toChord(10, 1, 3, 15, true).revoicing;
-                    console.log(chord2.information());
-                    var pitv2 = chordSpaceGroup.fromChord(chord2, true);
-                    // Can't expect same PITV becaue this is a diminished chord!
-                    // I can still turn the knobs and get the right response.
-                    console.log(pitv2);
-                    var filename = ChordSpace.createFilename(5, 24, 0.5);
-                    console.log('filename: ' + filename);
-                    var filename = ChordSpace.createFilename(5, 24, 1);
-                    console.log('filename: ' + filename);
-                    var chordSpaceGroup2 = ChordSpace.createChordSpaceGroup(5, 60, 1);
                 },
                 Developer_tools: function() {
                     nwgui.Window.get().showDevTools();
@@ -574,14 +546,14 @@ endin
                 // from helper.js
                 add_server_buttons();
                 gl = canvas.getContext('experimental-webgl', { preserveDrawingBuffer: true });
-               // enable dFdx, dFdy, fwidth
-               gl.getExtension('OES_standard_derivatives');
-               // Create vertex buffer (2 triangles)
-               buffer = gl.createBuffer();
-               gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-               gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([- 1.0, - 1.0, 1.0, - 1.0, - 1.0, 1.0, 1.0, - 1.0, 1.0, 1.0, - 1.0, 1.0]), gl.STATIC_DRAW);
-               // Create surface buffer (coordinates at screen corners)
-               surface.buffer = gl.createBuffer();
+                // enable dFdx, dFdy, fwidth
+                gl.getExtension('OES_standard_derivatives');
+                // Create vertex buffer (2 triangles)
+                buffer = gl.createBuffer();
+                gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+                gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([- 1.0, - 1.0, 1.0, - 1.0, - 1.0, 1.0, 1.0, - 1.0, 1.0, 1.0, - 1.0, 1.0]), gl.STATIC_DRAW);
+                // Create surface buffer (coordinates at screen corners)
+                surface.buffer = gl.createBuffer();
                 code = CodeMirror(document.body, {
                     lineNumbers: true,
                     matchBrackets: true,
@@ -618,6 +590,7 @@ endin
                         event.preventDefault();
                     }
                 }, false);
+                
                 var surfaceMouseDown = function (event){
                     if (event.shiftKey){
                         resetSurface();
@@ -634,14 +607,17 @@ endin
                     surface.lastY = event.clientY;
                     event.preventDefault();
                 };
+                
                 var noContextMenu = function (event){
                     event.preventDefault();
                 };
+                
                 canvas.addEventListener('mousedown', surfaceMouseDown, false);
                 panButton.addEventListener('mousedown', surfaceMouseDown, false);
                 canvas.addEventListener('contextmenu', noContextMenu, false);
                 panButton.addEventListener('contextmenu', noContextMenu, false);
                 var clientXLast, clientYLast;
+                
                 document.addEventListener('mousemove', function (event){
                     var clientX = event.clientX;
                     var clientY = event.clientY;
@@ -695,11 +671,12 @@ endin
                 load_url_code();
                 compileScreenProgram();
             }
+            
             init();
             animate();
 
             function computeSurfaceCorners(){
-                if (gl){
+                if (gl) {
                     surface.width = surface.height * parameters.screenWidth / parameters.screenHeight;
                     var halfWidth = surface.width * 0.5, halfHeight = surface.height * 0.5;
                     gl.bindBuffer(gl.ARRAY_BUFFER, surface.buffer);
@@ -750,7 +727,6 @@ endin
                 compileButton.textContent = 'compiled successfully';
                 set_save_button('visible');
                 panButton.style.display = (fragment.indexOf('varying vec2 surfacePosition;')>= 0)? 'inline' : 'none';
-                // Cache uniforms
                 cacheUniformLocation(program, 'time');
                 cacheUniformLocation(program, 'time_factor');
                 cacheUniformLocation(program, 'zoom');
@@ -759,9 +735,7 @@ endin
                 cacheUniformLocation(program, 'resolution');
                 cacheUniformLocation(program, 'backbuffer');
                 cacheUniformLocation(program, 'surfaceSize');
-                // Load program into GPU
                 gl.useProgram(currentProgram);
-                // Set up buffers
                 surface.positionAttribute = gl.getAttribLocation(currentProgram, "surfacePosAttrib");
                 gl.enableVertexAttribArray(surface.positionAttribute);
                 vertexPosition = gl.getAttribLocation(currentProgram, "position");
@@ -915,6 +889,7 @@ endin
                 gl.viewport(0, 0, canvas.width, canvas.height);
                 createRenderTargets();
             }
+            
             var old_pixels = null;
             var new_pixels = new Uint8Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4);
 
@@ -925,13 +900,14 @@ endin
             // jth row. Pixels are returned in row order from the lowest to
             // the highest row, left to right in each row.
 
-            var value_threshold = .95;
+            var value_threshold = .75;
             var instrument_count = 6;
             var range = 72;
             var bass = 28;
             var dynamic_range = 20;
             var softest = 40;
             var maximum_value = 0;
+            var start_time_seconds = 0;
 
             /**
              * Converts an RGB color value to HSV. Conversion formula
@@ -998,7 +974,7 @@ endin
                var old_hsv;
                var new_hsv;
                // By row from bottom (0) to top (height - 1).
-               var stride = parameters.stride;
+               var stride = Math.floor(parameters.stride);
                var offset = Math.floor(stride / 2);
                for (var row_index = offset; row_index < gl.drawingBufferHeight; row_index += stride) {
                   // By column from left (0) to right (width - 1).
@@ -1010,7 +986,7 @@ endin
                         maximum_value = new_hsv[2];
                      }
                      if (isNaN(new_hsv[2]) || isNaN(old_hsv[2])) {                                
-                        alert('Indexing is wrong: isNaN for:' + new_hsv + ' or ' + old_hsv);
+                        console.warn(sprintf("Index out of range at row %d column %d.", row, column));                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ('Indexing is wrong: isNaN for:' + new_hsv + ' or ' + old_hsv);
                      }
                      // On event.
                      if ((old_hsv[2] < value_threshold) && (new_hsv[2] >= value_threshold)) {
@@ -1027,17 +1003,22 @@ endin
                score.sendToCsound(csound);
             }
 
+            var score_time_cell = document.getElementById('Time_cell');
+            var X_cell = document.getElementById("X_cell");
+            var Y_cell = document.getElementById("Y_cell");
+            var Chord_cell = document.getElementById("Chord_cell");
+            var Notes_cell = document.getElementById("Notes_cell");
+
             function render() {
                 if (!currentProgram) return;
                 parameters.time = Date.now() - parameters.startTime;
-                // Set uniforms for custom shader
+                // Set uniforms for custom shader.
                 gl.useProgram(currentProgram);
                 gl.uniform1f(currentProgram.uniformsCache.time, parameters.time / 1000);
                 gl.uniform1f(currentProgram.uniformsCache.time_factor, parameters.time_factor);
                 gl.uniform1f(currentProgram.uniformsCache.zoom, parameters.zoom);
-                gl.uniform1f(currentProgram.uniformsCache.x_zoom, parameters.x_zoom);
-                gl.uniform1f(currentProgram.uniformsCache.y_zoom, parameters.y_zoom);
                 gl.uniform2f(currentProgram.uniformsCache.mouse, surface.lastX, surface.lastY);
+                gl.uniform1f(currentProgram.uniformsCache.stride, parameters.stride);
                 gl.uniform2f(currentProgram.uniformsCache.resolution, parameters.screenWidth, parameters.screenHeight);
                 gl.uniform1i(currentProgram.uniformsCache.backbuffer, 0);
                 gl.uniform2f(currentProgram.uniformsCache.surfaceSize, surface.width, surface.height);
@@ -1067,6 +1048,12 @@ endin
                 // Use pixel buffer objects here?
                 gl.readPixels(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight, gl.RGBA, gl.UNSIGNED_BYTE, new_pixels);
                 send_events();
+                var current_time_seconds = new Date().getTime() / 1000.0;
+                var score_time = current_time_seconds - start_time_seconds;
+                score_time_cell.innerHTML = score_time.toFixed(3);
+                X_cell.innerHTML = parameters.mouseX.toFixed(3);
+                Y_cell.innerHTML = parameters.mouseY.toFixed(3);
+                Chord_cell.innerHTML = chord.name();
             }
 
             function animate() {
