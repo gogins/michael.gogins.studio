@@ -289,7 +289,7 @@ endin
                 var FM9 = ChordSpace.chordForName('FM9');
                 var Bb7 = ChordSpace.chordForName('Bb7');
                 var CM = ChordSpace.chordForName('CM');
-                var chord = Bb7.clone();
+                var chord = FM9.clone();
                 var modality = chord.clone();
                 initialize_helper();
                 var compressor=initialize_compressor();
@@ -348,7 +348,7 @@ endin
                     } catch(e) {
                         console.log(e);
                     }
-                    csound.setOption('-m3');
+                    csound.setOption('-m0');
                     //csound.setOption('-j3');
                     csound.setOption('--nodisplays');
                     csound.setOption('-odac');
@@ -907,8 +907,8 @@ endin
             var dynamic_range = 20;
             var softest = 40;
             var maximum_value = 0;
-            var start_time_seconds = 0;
-
+            var start_time_seconds = new Date().getTime() / 1000.0;
+            
             /**
              * Converts an RGB color value to HSV. Conversion formula
              * adapted from http://en.wikipedia.org/wiki/HSV_color_space.
