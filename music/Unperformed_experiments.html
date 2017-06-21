@@ -211,8 +211,31 @@ instr Controls
 prints "Controls    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
 endin
 
-#include "MasterOutput.inc"
-
+gk_MasterOutput_level init 0
+gS_MasterOutput_filename init ""
+instr MasterOutput
+p3 = 60 * 7
+aleft inleta "inleft"
+aright inleta "inright"
+k_gain = ampdb(gk_MasterOutput_level)
+printks2 "Master gain: %f\n", k_gain
+iamp init 1
+iattack init .01
+idecay init 10
+isustain = p3 - (iattack + idecay)
+aenvelope transeg 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
+aleft butterlp aleft, 18000
+aright butterlp aright, 18000
+outs aleft * k_gain * aenvelope, aright * k_gain * aenvelope
+; We want something that will play on my phone.
+i_amplitude_adjustment = ampdbfs(-3) / 32767
+i_filename_length strlen gS_MasterOutput_filename
+if i_filename_length > 0 then
+prints sprintf("Output filename: %s\n", gS_MasterOutput_filename)
+fout gS_MasterOutput_filename, 18, aleft * i_amplitude_adjustment, aright * i_amplitude_adjustment
+endif
+prints "MasterOutput   i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+endin
         </textarea>
         <script id="example" type="x-shader/x-fragment">
             precision mediump float;
@@ -1306,6 +1329,12 @@ endin
                 slider.onChange(on_parameter_change);
                 return slider;
             };
+            function toggle_controls() {
+                $("#statistics").toggle();
+                gui.toggle();
+                gui.closed = true;            
+                gui.closed = false;            
+            }
             // Used to find out what actually happens when a key is pressed.
             function printKey(e) {
               e = e || event;
@@ -1328,8 +1357,7 @@ endin
                 var e_char = String.fromCharCode(e.keyCode || e.charCode);
                 if (e.ctrlKey === true) {
                     if        (e_char === 'H') {
-                        $("#statistics").toggle();
-                        gui.toggle();
+                        toggle_controls();
                     } else if (e_char === 'K') {
                         parameters.K();
                     } else if (e_char === '1') {
