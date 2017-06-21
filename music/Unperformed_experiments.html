@@ -1235,10 +1235,10 @@ endin
                 gui.add(parameters, 'Developer_tools').name('Debugger');
                 gui.add(parameters, 'Close').name('Close').name('Exit [Ctrl-X]');
                 var Master = gui.addFolder('Master effects');
-                add_slider(Master, 'duration', 0, 8   ).name('Duration [Alt-D]');
-                add_slider(Master, 'tempo', 0, .333334).name('Tempo    [Alt-T]');
-                add_slider(Master, 'zoom', 0, 128     ).name('Zoom     [Alt-Z]');
-                add_slider(Master, 'stride', 1, 100   ).name('Stride   [Alt-S]');
+                add_slider(Master, 'duration', 0, 8   ).name('Duration [Alt-D]').listen();
+                add_slider(Master, 'tempo', 0, .333334).name('Tempo    [Alt-T]').listen();
+                add_slider(Master, 'zoom', 0, 128     ).name('Zoom     [Alt-Z]').listen();
+                add_slider(Master, 'stride', 1, 100   ).name('Stride   [Alt-S]').listen();
                 add_slider(Master, 'gk_Reverb_Feedback', 0, 1);
                 add_slider(Master, 'gk_Reverb2_Feedback', 0, 1);
                 add_slider(Master, 'gk_MasterOutput_level', -40, 40);
@@ -1323,7 +1323,6 @@ endin
                 (e.metaKey ? ' +meta' : '') + '\n';
               logMessage(data);
             }
-            // The 'keydown' event is used for key bindings.
             $(document).on("keydown", function (e) {
                 //printKey(e);
                 var e_char = String.fromCharCode(e.keyCode || e.charCode);
@@ -1367,9 +1366,9 @@ endin
                         parameters.Close();
                     }
                 } else if (e.altKey === true) {
-                    var factor = 1.01;
+                    var factor = 1.05;
                     if (e.shiftKey === true) {
-                        factor = 1 / 1.01;
+                        factor = 1 / 1.05;
                     }  
                     if        (e_char === 'Z') {
                         parameters.zoom *= factor;
