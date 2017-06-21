@@ -65,7 +65,7 @@
             <col width=400px>
             <col width=250px>
             <th style="color:gold;text-align:left">Unperformed experiments have no results, by Michael Gogins.
-            Wait for "Csound: Ready."; click "Play/Stop"; adjust "Master effects" group "gk_MasterOutput_level" slider.</p></td><td style="color:gold;text-align:right;"</th>
+            </p></td><td style="color:gold;text-align:right;"</th>
             <!-- Copyright (C) 2017 by Michael Gogins -->
             <tr>
                 <td>Time: </td><td id="Time_cell" style="color:LawnGreen;text-align:right;"></td>
@@ -217,7 +217,7 @@ endin
         <script id="example" type="x-shader/x-fragment">
             precision mediump float;
             uniform float time;
-            uniform float time_factor;
+            uniform float tempo;
             uniform float zoom;
             uniform float stride;
             uniform vec2 mouse;
@@ -230,7 +230,7 @@ endin
                 vec2 uv = gl_FragCoord.xy / resolution.xy;
                 uv = uv * 2. - 1.;
                 uv.x *= resolution.x / resolution.y;
-                float e = time * time_factor;
+                float e = time * tempo;
                 float d = 128. * mouse.x / resolution.x + 8.5;
                 vec2 g = uv * zoom;
                 uv = d * (floor(g) + .5) / zoom;
@@ -319,14 +319,14 @@ endin
                 frames_per_second: 30,
                 startTime: Date.now(),
                 time: 0,
-                time_factor: 0.025,
+                tempo: 0.025,
                 zoom: 64,
                 stride: 40,
                 mouseX: 0.5,
                 mouseY: 0.5,
                 screenWidth: 0,
                 screenHeight: 0,
-                legato: 4,
+                duration: 4,
                 gk_DelayedPlucked_level: 0.5,
                 gk_Harpsichord_level: 0.5,
                 gk_Harpsichord_pick: 0.75,
@@ -728,7 +728,7 @@ endin
                 set_save_button('visible');
                 panButton.style.display = (fragment.indexOf('varying vec2 surfacePosition;')>= 0)? 'inline' : 'none';
                 cacheUniformLocation(program, 'time');
-                cacheUniformLocation(program, 'time_factor');
+                cacheUniformLocation(program, 'tempo');
                 cacheUniformLocation(program, 'zoom');
                 cacheUniformLocation(program, 'stride');
                 cacheUniformLocation(program, 'mouse');
@@ -762,7 +762,7 @@ endin
                 cacheUniformLocation(program, 'resolution');
                 cacheUniformLocation(program, 'texture');
                 cacheUniformLocation(program, 'time');
-                cacheUniformLocation(program, 'time_factor');
+                cacheUniformLocation(program, 'tempo');
                 cacheUniformLocation(program, 'zoom');
                 cacheUniformLocation(program, 'stride');
                 cacheUniformLocation(program, 'mouse');
@@ -952,7 +952,7 @@ endin
                var velocity = Math.floor(v * dynamic_range + softest);
                var pan = Math.random();
                insno = insno + key / 1000;
-               score.add(0, parameters.legato, 144.0, insno, key, velocity, pan);
+               score.add(0, parameters.duration, 144.0, insno, key, velocity, pan);
             }
 
             var create_off_event = function(score, x, y, h, v) {
@@ -962,7 +962,7 @@ endin
                var velocity = Math.floor(v * dynamic_range + softest);
                var pan = Math.random();
                insno = insno + key / 1000;
-               score.add(parameters.legato, -1, 144.0, -insno, key, velocity, pan);
+               score.add(parameters.duration, -1, 144.0, -insno, key, velocity, pan);
             }
 
             var send_events = function() {
@@ -1015,7 +1015,7 @@ endin
                 // Set uniforms for custom shader.
                 gl.useProgram(currentProgram);
                 gl.uniform1f(currentProgram.uniformsCache.time, parameters.time / 1000);
-                gl.uniform1f(currentProgram.uniformsCache.time_factor, parameters.time_factor);
+                gl.uniform1f(currentProgram.uniformsCache.tempo, parameters.tempo);
                 gl.uniform1f(currentProgram.uniformsCache.zoom, parameters.zoom);
                 gl.uniform2f(currentProgram.uniformsCache.mouse, surface.lastX, surface.lastY);
                 gl.uniform1f(currentProgram.uniformsCache.stride, parameters.stride);
@@ -1235,10 +1235,10 @@ endin
                 gui.add(parameters, 'Developer_tools').name('Debugger');
                 gui.add(parameters, 'Close').name('Close').name('Exit [Ctrl-X]');
                 var Master = gui.addFolder('Master effects');
-                add_slider(Master, 'legato', 0, 8);
-                add_slider(Master, 'time_factor', 0, .333334);
-                add_slider(Master, 'zoom', 0, 128);
-                add_slider(Master, 'stride', 1, 100);
+                add_slider(Master, 'duration', 0, 8   ).name('Duration [Alt-D]');
+                add_slider(Master, 'tempo', 0, .333334).name('Tempo    [Alt-T]');
+                add_slider(Master, 'zoom', 0, 128     ).name('Zoom     [Alt-Z]');
+                add_slider(Master, 'stride', 1, 100   ).name('Stride   [Alt-S]');
                 add_slider(Master, 'gk_Reverb_Feedback', 0, 1);
                 add_slider(Master, 'gk_Reverb2_Feedback', 0, 1);
                 add_slider(Master, 'gk_MasterOutput_level', -40, 40);
@@ -1259,18 +1259,18 @@ endin
                 Chords.add(parameters, 'CM');
                 Chords.add(parameters, 'Bb7');
                 Chords.add(parameters, 'FM9');
-                Chords.add(parameters, 'K').name('K() [Ctrl-K]');
-                Chords.add(parameters, 'Q1').name('Q(1) [Ctrl-1]');
-                Chords.add(parameters, 'Q2').name('Q(2) [Ctrl-2]');
-                Chords.add(parameters, 'Q3').name('Q(3) [Ctrl-3]');
-                Chords.add(parameters, 'Q4').name('Q(4) [Ctrl-4]');
-                Chords.add(parameters, 'Q5').name('Q(5) [Ctrl-5]');
-                Chords.add(parameters, 'Q6').name('Q(6) [Ctrl-6]');
-                Chords.add(parameters, 'Q7').name('Q(7) [Ctrl-7]');
-                Chords.add(parameters, 'Q8').name('Q(8) [Ctrl-8]');
-                Chords.add(parameters, 'Q9').name('Q(9) [Ctrl-9]');
-                Chords.add(parameters, 'Q10').name('Q(10) [Ctrl-A]');
-                Chords.add(parameters, 'Q11').name('Q(11) [Ctrl-B]');
+                Chords.add(parameters, 'K'   ).name('K()   [Ctrl-K]');
+                Chords.add(parameters, 'Q1'  ).name('Q(1)  [Ctrl-1]');
+                Chords.add(parameters, 'Q2'  ).name('Q(2)  [Ctrl-2]');
+                Chords.add(parameters, 'Q3'  ).name('Q(3)  [Ctrl-3]');
+                Chords.add(parameters, 'Q4'  ).name('Q(4)  [Ctrl-4]');
+                Chords.add(parameters, 'Q5'  ).name('Q(5)  [Ctrl-5]');
+                Chords.add(parameters, 'Q6'  ).name('Q(6)  [Ctrl-6]');
+                Chords.add(parameters, 'Q7'  ).name('Q(7)  [Ctrl-7]');
+                Chords.add(parameters, 'Q8'  ).name('Q(8)  [Ctrl-8]');
+                Chords.add(parameters, 'Q9'  ).name('Q(9)  [Ctrl-9]');
+                Chords.add(parameters, 'Q10' ).name('Q(10) [Ctrl-A]');
+                Chords.add(parameters, 'Q11' ).name('Q(11) [Ctrl-B]');
                 Chords.add(parameters, 'J2_2').name('J(2,2)');
                 Chords.add(parameters, 'J2_3').name('J(2,3)');
                 Chords.add(parameters, 'J3_1').name('J(3,1)');
@@ -1289,8 +1289,8 @@ endin
                     if (token.startsWith('gk_')) {
                         gk_update(token, value);
                     }
-                    if (token == 'legato') {
-                        parameters.legato = parseFloat(value);
+                    if (token == 'duration') {
+                        parameters.duration = parseFloat(value);
                     }
                     if (token == 'zoom') {
                         parameters.zoom = parseFloat(value);
@@ -1298,8 +1298,8 @@ endin
                     if (token == 'stride') {
                         parameters.stride = parseFloat(value);
                     }
-                    if (token == 'time_factor') {
-                        parameters.time_factor = parseFloat(value);
+                    if (token == 'tempo') {
+                        parameters.tempo = parseFloat(value);
                     }
                 };
                 var slider = gui_folder.add(parameters, token, minimum, maximum);
@@ -1367,9 +1367,18 @@ endin
                         parameters.Close();
                     }
                 } else if (e.altKey === true) {
-                    var sign = -1;
+                    var factor = 1.01;
                     if (e.shiftKey === true) {
-                        sign = 1;
+                        factor = 1 / 1.01;
+                    }  
+                    if        (e_char === 'Z') {
+                        parameters.zoom *= factor;
+                    } else if (e_char === 'T') {
+                        parameters.tempo *= factor;
+                    } else if (e_char === 'S') {
+                        parameters.stride *= factor;
+                    } else if (e_char === 'D') {
+                        parameters.duration *= factor;
                     }
                 }
                 return false;
