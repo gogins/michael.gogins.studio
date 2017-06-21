@@ -121,6 +121,7 @@ alwayson "Reverb2Right"
 alwayson "ParametricEQ"
 alwayson "MasterOutput"
 
+#define USE_PIANOTEQ #1#
 #ifdef USE_PIANOTEQ
 #include "PianoNotePianoteq.inc"
 #else
@@ -365,7 +366,7 @@ endin
                 gk_overlap: 0.05,
                 gk_FM_Clang_level: 0,
                 Play: function() {
-                    //csound.stop();
+                    Silencio.saveDatGuiJson(gui);
                     try {
                         csound.setMessageCallback(csoundMessage);
                     } catch(e) {
@@ -384,6 +385,7 @@ endin
 
                 },
                 Stop: function() {
+                    Silencio.saveDatGuiJson(gui);
                     csound.stop();
                 },
                 Developer_tools: function() {
@@ -392,6 +394,7 @@ endin
                 Close: function() {
                     try {
                         csound.stop();
+                        Silencio.saveDatGuiJson(gui);
                         window.close();
                     } catch (e) {
                         console.log(e);
@@ -492,7 +495,7 @@ endin
                 var messages_textarea = document.getElementById("console");
                 var existing = messages_textarea.value;
                 messages_textarea.value = existing + message;
-                messages_textarea.scrollTop = messages_textarea.scrollHeight;                
+                messages_textarea.scrollTop = messages_textarea.scrollHeight;
             }
             var init = function(){
                 canvas = document.createElement('canvas');
@@ -613,7 +616,7 @@ endin
                         event.preventDefault();
                     }
                 }, false);
-                
+
                 var surfaceMouseDown = function (event){
                     if (event.shiftKey){
                         resetSurface();
@@ -630,17 +633,17 @@ endin
                     surface.lastY = event.clientY;
                     event.preventDefault();
                 };
-                
+
                 var noContextMenu = function (event){
                     event.preventDefault();
                 };
-                
+
                 canvas.addEventListener('mousedown', surfaceMouseDown, false);
                 panButton.addEventListener('mousedown', surfaceMouseDown, false);
                 canvas.addEventListener('contextmenu', noContextMenu, false);
                 panButton.addEventListener('contextmenu', noContextMenu, false);
                 var clientXLast, clientYLast;
-                
+
                 document.addEventListener('mousemove', function (event){
                     var clientX = event.clientX;
                     var clientY = event.clientY;
@@ -694,7 +697,7 @@ endin
                 load_url_code();
                 compileScreenProgram();
             }
-            
+
             init();
             animate();
 
@@ -912,7 +915,7 @@ endin
                 gl.viewport(0, 0, canvas.width, canvas.height);
                 createRenderTargets();
             }
-            
+
             var old_pixels = null;
             var new_pixels = new Uint8Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4);
 
@@ -931,7 +934,7 @@ endin
             var softest = 40;
             var maximum_value = 0;
             var start_time_seconds = new Date().getTime() / 1000.0;
-            
+
             /**
              * Converts an RGB color value to HSV. Conversion formula
              * adapted from http://en.wikipedia.org/wiki/HSV_color_space.
@@ -1008,7 +1011,7 @@ endin
                      if (new_hsv[2] > maximum_value) {
                         maximum_value = new_hsv[2];
                      }
-                     if (isNaN(new_hsv[2]) || isNaN(old_hsv[2])) {                                
+                     if (isNaN(new_hsv[2]) || isNaN(old_hsv[2])) {
                         console.warn(sprintf("Index out of range at row %d column %d.", row, column));                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ('Indexing is wrong: isNaN for:' + new_hsv + ' or ' + old_hsv);
                      }
                      // On event.
@@ -1250,6 +1253,7 @@ endin
                     var temporary_json = Silencio.restoreDatGuiJson(default_json);
                     default_json = temporary_json;
                 } catch(e) {
+                    console.warn(e);
                 }
                 gui = new dat.GUI({load: default_json, width: 300});
                 gui.remember(parameters);
@@ -1349,8 +1353,8 @@ endin
             function toggle_controls() {
                 $("#statistics").toggle();
                 gui.toggle();
-                gui.closed = true;            
-                gui.closed = false;            
+                gui.closed = true;
+                gui.closed = false;
             }
             $(document).on("keydown", function (e) {
                 //printKey(e);
@@ -1397,7 +1401,7 @@ endin
                     var factor = 1.05;
                     if (e.shiftKey === true) {
                         factor = 1 / 1.05;
-                    }  
+                    }
                     if        (e_char === 'Z') {
                         parameters.zoom *= factor;
                     } else if (e_char === 'T') {
