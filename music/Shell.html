@@ -166,8 +166,8 @@ gk_FM_Clang_NseBW chnget "NseBW"
 gk_FM_Clang_NseFllw chnget "NseFllw"
 endin
 
-#include "patches/PianoNoteFluidsynth.inc"
-;#include "patches/PianoNotePianoteq.inc"
+;#include "patches/PianoNoteFluidsynth.inc"
+#include "patches/PianoNotePianoteq.inc"
 
 gk_Harpsichord_level init .25
 gk_Harpsichord_pick init .75
@@ -813,8 +813,8 @@ $SET_PRESET(13'1.9'0 '0 '24 '1 '2.29'1.00 '23.25 '-4 '1 '1.5 '16 '1 '151 '0.0178
 prints "FM_Clang_pre  i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p6
 endin
 
-#include "patches/PianoOutFluidsynth.inc"
-;#include "patches/PianoOutPianoteq.inc"
+;#include "patches/OutFluidsynth.inc"
+#include "patches/PianoOutPianoteq.inc"
 
 /**
  * Solina Chorus, based on Solina String Ensemble Chorus Module
@@ -1025,15 +1025,16 @@ endin
             var canvas = document.getElementById('graphics_canvas');
             lsys = new ParametricLindenmayer.PLSystem();
             // p0_t, p1_d, p2_s, p3_c, p4_k, p5_v, p6_x
-            lsys.set_axiom('T(0);Push();Scale(4,1.0125);Note(1,1,144,1,1,1,0);Scale(0,.5);Scale(4,1.375);Note(125,1.5,144,3,-6,1,0);Scale(0,1.09875);Scale(4,1);Note(100,1,144,1,1,1,0);Pop();');
-            lsys.set_axiom('T(0);Push();Scale(4,1.0125);Note(1,1,144,1,1,1,0);Scale(0,.5);Scale(4,1.375);Note(125,1.5,144,3,-6,1,0);Scale(0,1.09875);Pop();');
-            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration!=4)', 'Note(t/2+.1,  d/2+0, s, c/2+.003, k/2+0, v/2+0, x/2+0);K()  ;Note(t/2.5+0,  d/2+0, s, c/2+0, k/1.92+1.05, v/2+0, x/2+0);Note(t/2+1, d/2+0, s, c/2+0, k/2+0.1, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1.1, k/2+.7,    v/2+0.0, x/2+0);Q(3);');
-            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==4)', 'Note(t/2+.5,  d/2+0, s, c/2-.2,   k/2+0, v/2+0, x/2+0);K()  ;Note(t/2.04+0, d/2+0, s, c/2+0, k/1.98+1.10, v/2+0, x/2+0);Note(t/2+1, d/2+0, s, c/2+0, k/2+0,   v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1,   k/2+.9,    v/2+0.1, x/2+0);Q(3);');
-            var chord = ChordSpace.chordForName('F#M');
+            lsys.set_axiom('T(0);Push();Scale(4,1.0125);Note(1,1,144,1,1,1,0);Scale(0,.3125);Scale(4,1.5);  Note(171,1.75,144,3,-6,1,0);Pop();');
+            //lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration!=4)', 'Note(t/2+.1,  d/2+0, s, c/2+.003, k/2+0, v/2+0, x/2+0);K()  ;Note(t/2.5+0,  d/2+0, s, c/2+0, k/1.92+1.05, v/2+0, x/2+0);Note(t/2+1, d/2+0, s, c/2+0, k/2+0.1, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1.1, k/2+.7,    v/2+0.0, x/2+0);Q(3);');
+            //lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==4)', 'Note(t/2+.5,  d/2+0, s, c/2-.02,  k/2+0, v/2+0, x/2+0);K()  ;Note(t/2.04+0, d/2+0, s, c/2+0, k/1.98+1.10, v/2+0, x/2+0);Note(t/2+1, d/2+0, s, c/2+0, k/2+0,   v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1,   k/2+.9,    v/2+0.1, x/2+0);Q(3);');
+            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration!=4)', '     Note(t/2+.1,  d/2+0, s, c/2+.003, k/2+0, v/2+0, x/2+0);K()  ;Note(t/2.5+0,  d/2+0, s, c/2+0, k/1.92+1.05, v/2+0, x/2+0);Note(t/2+1, d/2+0, s, c/2+0, k/2+0.1, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1.1, k/2+.7,    v/2+0.0, x/2+0);Q(3);');
+            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==4)', 'Q(1);Note(t/2+.5,  d/2+0, s, c/2-.02,  k/2+0, v/2+0, x/2+0);K()  ;Note(t/2.04+0, d/2+0, s, c/2+0, k/1.98+1.10, v/2+0, x/2+0);Note(t/2+1, d/2+0, s, c/2+0, k/2+0,   v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1,   k/2+.9,    v/2+0.1, x/2+0);Q(3);');
+            var chord = ChordSpace.chordForName('FM');
             console.log(chord.information());
             var t = new ParametricLindenmayer.Turtle(new Silencio.Event(), chord, chord);
             lsys.set_turtle(t);
-            lsys.generate(5);
+            lsys.generate(4);
             lsys.score.findScales();
             csound.message('lsys:' + lsys + '\n');
             csound.message(lsys.score.getDuration().toString() + '\n');
@@ -1042,18 +1043,18 @@ endin
             lsys.score.setScale(4, 29, 77);
             //lsys.score.setScale(4, 29, 77);
             lsys.score.temper(12);
-            lsys.score.setScale(5, 60, 15);
+            lsys.score.setScale(5, 60, 7);
             lsys.score.setScale(6, .4, .6);
             lsys.score.setScale(7, .4, .6);
             for (j = 0; j < lsys.score.data.length; j++) {
                 var event = lsys.score.data[j];
-                //event.duration = event.duration * 25/20;
-                event.duration = event.duration * 5/20;
+                event.duration = event.duration * 25/20;
+                //event.duration = event.duration * 5/20;
             }
             lsys.score.tieOverlaps(true);
             lsys.conformToChords();
             lsys.score.temper(12);
-            lsys.score.setDuration(7 * 60 + 5);
+            lsys.score.setDuration(5 * 60 + 5);
             //console.log(lsys.score.toString());
             console.log('After conforming to chord:');
             console.log(lsys.score.toString());
@@ -1062,7 +1063,6 @@ endin
                 var event = lsys.score.data[j];
                 event.key = event.key + 3;
             }
-
             for (var i = 0; i < lsys.score.data.length; i++) {
                 var event = lsys.score.data[i];
                 // We didn't generate pan, so just randomize it.
@@ -1103,7 +1103,7 @@ endin
                 var event = lsys.score.data[i];
                 event.time = event.time + 1;
             }
-            if (false) {
+            if (true) {
                 // Also if keys overlap.
                 for (var i = 0; i < lsys.score.data.length; i++) {
                     var event = lsys.score.data[i];
