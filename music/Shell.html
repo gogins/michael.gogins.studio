@@ -606,42 +606,6 @@ outleta "outright", aright * kgain
 prints "Sweeper     i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p6
 endin
 
-gk_Buzzer_Harmonics init 15
-gk_Buzzer_level init .5
-instr Buzzer
-insno = p1
-istart = p2
-iduration = p3
-ikey = p4
-ivelocity = p5
-iphase = p6
-ipan = p6
-iamp = ampdb(ivelocity) * 4
-iattack = i(gk_overlap)
-idecay = i(gk_overlap)
-isustain = p3 - i(gk_overlap)
-p3 = iattack + isustain + idecay
-kenvelope transeg 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
-ihertz = cpsmidinn(ikey)
-;asignal gbuzz kenvelope, ihertz, 3, gk_FirstHarmonic, gk_DistortFactor, gisine
-isine ftgenonce 0, 0, 65536, 10, 1
-gk_Harmonics = gk_Buzzer_Harmonics
-asignal buzz kenvelope, ihertz, gk_Harmonics, isine
-asignal = asignal * 3
-;asignal vco2 kenvelope, ihertz, 12
-;asignal poscil3 kenvelope, ihertz, giharmonics
-;asignal distort asignal, gk_DistortFactor * .4, giwaveshaping
-aleft, aright pan2 asignal, ipan
-adamping linseg 0, 0.03, 1, p3 - 0.1, 1, 0.07, 0
-aleft = adamping * aleft
-aright = adamping * aright
-kgain = ampdb(gk_Buzzer_level)
-outleta "outleft", aleft * kgain
-outleta "outright", aright * kgain
-;;;;;;;;;;;;;;;;;;;;i
-prints "Buzzer      i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p6
-endin
-
 gk_Blower_grainDensity init 150
 gk_Blower_grainDuration init 0.2
 gk_Blower_grainAmplitudeRange init 100
@@ -725,6 +689,42 @@ outleta "outleft", aleft * kgain
 outleta "outright", aright * kgain
 ;;;;;;;;;;;;;;;;;;;;i
 prints "Blower      i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p6
+endin
+
+gk_Buzzer_Harmonics init 15
+gk_Buzzer_level init .5
+instr Buzzer
+insno = p1
+istart = p2
+iduration = p3
+ikey = p4
+ivelocity = p5
+iphase = p6
+ipan = p6
+iamp = ampdb(ivelocity) * 4
+iattack = i(gk_overlap)
+idecay = i(gk_overlap)
+isustain = p3 - i(gk_overlap)
+p3 = iattack + isustain + idecay
+kenvelope transeg 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
+ihertz = cpsmidinn(ikey)
+;asignal gbuzz kenvelope, ihertz, 3, gk_FirstHarmonic, gk_DistortFactor, gisine
+isine ftgenonce 0, 0, 65536, 10, 1
+gk_Harmonics = gk_Buzzer_Harmonics
+asignal buzz kenvelope, ihertz, gk_Harmonics, isine
+asignal = asignal * 3
+;asignal vco2 kenvelope, ihertz, 12
+;asignal poscil3 kenvelope, ihertz, giharmonics
+;asignal distort asignal, gk_DistortFactor * .4, giwaveshaping
+aleft, aright pan2 asignal, ipan
+adamping linseg 0, 0.03, 1, p3 - 0.1, 1, 0.07, 0
+aleft = adamping * aleft
+aright = adamping * aright
+kgain = ampdb(gk_Buzzer_level)
+outleta "outleft", aleft * kgain
+outleta "outright", aright * kgain
+;;;;;;;;;;;;;;;;;;;;i
+prints "Buzzer      i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p6
 endin
 
 gk_Shiner_level init 0.5
@@ -946,7 +946,7 @@ isustain = 2400 - (iattack + idecay)
 aenvelope transeg 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
 aright butterlp aright, 16000
 aleft butterlp aleft, 16000
-outs aleft * kgain * aenvelope, aright * kgain * aenvelope
+outs aleft * kgain * aenvelope, aright * kgain * aenvelope * 20
 Sfilename init  "Shell.wav"
 prints sprintf("Output filename: %s\n", Sfilename)
 ; We want something that will play on my phone.
@@ -1025,12 +1025,10 @@ endin
             var canvas = document.getElementById('graphics_canvas');
             lsys = new ParametricLindenmayer.PLSystem();
             // p0_t, p1_d, p2_s, p3_c, p4_k, p5_v, p6_x
-            lsys.set_axiom('T(0);Push();Scale(4,1.0125);Note(1,1,144,1,1,1,0);Scale(0,.3125);Scale(4,1.5);  Note(171,1.75,144,3,-6,1,0);Pop();');
-            //lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration!=4)', 'Note(t/2+.1,  d/2+0, s, c/2+.003, k/2+0, v/2+0, x/2+0);K()  ;Note(t/2.5+0,  d/2+0, s, c/2+0, k/1.92+1.05, v/2+0, x/2+0);Note(t/2+1, d/2+0, s, c/2+0, k/2+0.1, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1.1, k/2+.7,    v/2+0.0, x/2+0);Q(3);');
-            //lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==4)', 'Note(t/2+.5,  d/2+0, s, c/2-.02,  k/2+0, v/2+0, x/2+0);K()  ;Note(t/2.04+0, d/2+0, s, c/2+0, k/1.98+1.10, v/2+0, x/2+0);Note(t/2+1, d/2+0, s, c/2+0, k/2+0,   v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1,   k/2+.9,    v/2+0.1, x/2+0);Q(3);');
-            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration!=4)', '     Note(t/2+.1,  d/2+0, s, c/2+.003, k/2+0, v/2+0, x/2+0);K()  ;Note(t/2.5+0,  d/2+0, s, c/2+0, k/1.92+1.05, v/2+0, x/2+0);Note(t/2+1, d/2+0, s, c/2+0, k/2+0.1, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1.1, k/2+.7,    v/2+0.0, x/2+0);Q(3);');
-            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==4)', 'Q(1);Note(t/2+.5,  d/2+0, s, c/2-.02,  k/2+0, v/2+0, x/2+0);K()  ;Note(t/2.04+0, d/2+0, s, c/2+0, k/1.98+1.10, v/2+0, x/2+0);Note(t/2+1, d/2+0, s, c/2+0, k/2+0,   v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1,   k/2+.9,    v/2+0.1, x/2+0);Q(3);');
-            var chord = ChordSpace.chordForName('FM');
+            lsys.set_axiom('T(0);Push();Scale(4,1);Note(1,1.25,144,1,1,1,0);Scale(0,.3125);A();Scale(4,1.75);T(0);Note(158,1.675,144,3,-6,1,0);Pop();');
+            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration!=4)', '     Note(t/2+.1,  d/2+0, s, c/2+.003, k/2+0, v/2+0.2, x/2+0);K();Note(t/2.45+0,  d/2+0, s, c/2+0, k/1.92+1.05, v/2+0, x/2+0);Note(t/2+1, d/2+0, s, c/2+0, k/2+0.1, v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1.1, k/2+.7,    v/2+0.0, x/2+0);Q(3);');
+            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==4)', 'Q(1);Note(t/2+.5,  d/2+0, s, c/2-.02,  k/2+0.1, v/2+0, x/2+0);K();Note(t/2.4+0,  d/2+0, s, c/2+0, k/1.98+1.10, v/2+0.1, x/2+0);Note(t/2+1, d/2+0, s, c/2+0, k/2+0,   v/2+0, x/2+0);T(5);Note(t/2+1, d/2+0, s, c/2+1,   k/2+.9,    v/2+0.1, x/2+0);Q(3);');
+            var chord = ChordSpace.chordForName('CM');
             console.log(chord.information());
             var t = new ParametricLindenmayer.Turtle(new Silencio.Event(), chord, chord);
             lsys.set_turtle(t);
@@ -1040,6 +1038,7 @@ endin
             csound.message(lsys.score.getDuration().toString() + '\n');
             lsys.score.sort();
             lsys.score.setScale(3, 2, 10.99);
+            //lsys.score.setScale(3, 4,  8.99);
             lsys.score.setScale(4, 29, 77);
             //lsys.score.setScale(4, 29, 77);
             lsys.score.temper(12);
@@ -1048,8 +1047,8 @@ endin
             lsys.score.setScale(7, .4, .6);
             for (j = 0; j < lsys.score.data.length; j++) {
                 var event = lsys.score.data[j];
-                event.duration = event.duration * 25/20;
-                //event.duration = event.duration * 5/20;
+                //event.duration = event.duration * 25/20;
+                event.duration = event.duration * 19/20;
             }
             lsys.score.tieOverlaps(true);
             lsys.conformToChords();
@@ -1071,7 +1070,7 @@ endin
                 var minimum_gap_event = null;
                 // Move too-high notes for "Harpsichord" down.
                 if (Math.floor(event.channel) === 3) {
-                    while (event.key > 67) {
+                    while (event.key > 77) {
                         event.key = event.key - 12;
                     }
                 }
@@ -1135,7 +1134,7 @@ endin
             csound.message(lsys.score.ranges.toString());
             csound.message('Generated ' + lsys.score.data.length + ' notes.\n');
             context = lsys.score.draw3D(canvas);
-            lsys.score.add(9 * 60 + 15, 1, 144, 999);
+            lsys.score.add(5 * 60 + 15, 1, 144, 999);
             lsys.score.sendToCsound(csound);
         }
         function csoundMessage(text) {
@@ -1417,55 +1416,55 @@ endin
             add_slider(Master, 'gk_overlap', 0, 20);
             add_slider(Master, 'gk_Reverb_Feedback', 0, 1);
             add_slider(Master, 'gk_Reverb2_Feedback', 0, 1);
-                add_slider(Master, 'gk_MasterOutput_level', -50, 50);
+                add_slider(Master, 'gk_MasterOutput_level', -60, 60);
             var intruments = gui.addFolder('Instruments');
             var fmclang = intruments.addFolder('FM Clang');
             add_slider(fmclang, 'gk_FM_Clang_preset', 1, 13);
-                add_slider(fmclang, 'gk_FM_Clang_level', -50, 50);
+                add_slider(fmclang, 'gk_FM_Clang_level', -60, 60);
             var Blower = intruments.addFolder('Blower');
             add_slider(Blower, 'gk_Blower_grainDensity', 0, 400);
             add_slider(Blower, 'gk_Blower_grainDuration', 0, .5);
             add_slider(Blower, 'gk_Blower_grainAmplitudeRange', 0, 400);
             add_slider(Blower, 'gk_Blower_grainFrequencyRange', 0, 100);
-                add_slider(Blower, 'gk_Blower_level', -50, 50);
+                add_slider(Blower, 'gk_Blower_level', -60, 60);
             var Bower = intruments.addFolder('Bower');
             add_slider(Bower, 'gk_Bower_pressure', 0, 1);
-                add_slider(Bower, 'gk_Bower_level', -50, 50);
+                add_slider(Bower, 'gk_Bower_level', -60, 60);
             var Buzzer = intruments.addFolder('Buzzer');
             add_slider(Buzzer, 'gk_Buzzer_Harmonics', 0, 20);
-                add_slider(Buzzer, 'gk_Buzzer_level', -50, 50);
+                add_slider(Buzzer, 'gk_Buzzer_level', -60, 60);
             var Droner = intruments.addFolder('Droner');
             add_slider(Droner, 'gk_Droner_partial1', 0, 1);
             add_slider(Droner, 'gk_Droner_partial2', 0, 1);
             add_slider(Droner, 'gk_Droner_partial3', 0, 1);
             add_slider(Droner, 'gk_Droner_partial4', 0, 1);
             add_slider(Droner, 'gk_Droner_partial5', 0, 1);
-                add_slider(Droner, 'gk_Droner_level', -50, 50);
+                add_slider(Droner, 'gk_Droner_level', -60, 60);
             var Harpsichord = intruments.addFolder('Harpsichord');
             add_slider(Harpsichord, 'gk_Harpsichord_pick', 0, 1);
             add_slider(Harpsichord, 'gk_Harpsichord_reflection', .000001, .999999);
             add_slider(Harpsichord, 'gk_Harpsichord_pluck', 0, 1);
-                add_slider(Harpsichord, 'gk_Harpsichord_level', -50, 50);
+                add_slider(Harpsichord, 'gk_Harpsichord_level', -60, 60);
             var Phaser = intruments.addFolder('Phaser');
             add_slider(Phaser, 'gk_Phaser_ratio1', 0, 2);
             add_slider(Phaser, 'gk_Phaser_ratio2', 0, 2);
             add_slider(Phaser, 'gk_Phaser_index1', 0, 1);
             add_slider(Phaser, 'gk_Phaser_index2', 0, 1);
-                add_slider(Phaser, 'gk_Phaser_level', -50, 50);
+                add_slider(Phaser, 'gk_Phaser_level', -60, 60);
             var Piano = intruments.addFolder('Piano');
-                add_slider(Piano, 'gk_Piano_level', -50, 50);
+                add_slider(Piano, 'gk_Piano_level', -60, 60);
             var Shiner = intruments.addFolder('Shiner');
-                add_slider(Shiner, 'gk_Shiner_level', -50, 50);
+                add_slider(Shiner, 'gk_Shiner_level', -60, 60);
             var Sweeper = intruments.addFolder('Sweeper');
             add_slider(Sweeper, 'gk_Sweeper_britel', 0, 4);
             add_slider(Sweeper, 'gk_Sweeper_briteh', 0, 4);
             add_slider(Sweeper, 'gk_Sweeper_britels', 0, 4);
             add_slider(Sweeper, 'gk_Sweeper_britehs', 0, 4);
-                add_slider(Sweeper, 'gk_Sweeper_level', -50, 50);
+                add_slider(Sweeper, 'gk_Sweeper_level', -60, 60);
             var YiString = intruments.addFolder('YiString');
             add_slider(YiString, 'gk_YiString_reverb_send', 0, 1);
             add_slider(YiString, 'gk_YiString_chorus_send', 0, 1);
-                add_slider(YiString, 'gk_YiString_level', -50, 50);
+                add_slider(YiString, 'gk_YiString_level', -60, 60);
             gui.revert();
         }
         function gk_update(name, value) {
@@ -1489,7 +1488,7 @@ endin
             if (e.ctrlKey === true) {
                 if        (e_char === 'H') {
                     $("#statistics").toggle();
-                    gui.toggle();
+                    gui.closed = !gui.closed;
                 } else if (e_char === 'P') {
                     parameters.Play();
                 } else if (e_char === 'S') {
