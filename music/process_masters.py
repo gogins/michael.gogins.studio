@@ -112,6 +112,9 @@ database = r'''
 Michael Gogins	2017	NYCEMF		1	Black_Mountain.7d.html	09:15.00	C:/Users/restore/michael.gogins.studio/music/Black Mountain 7d.wav	04/25/17 05:00 AM		Publish	0.00						#Published
 Michael Gogins	2017	NYCEMF		1	Black_Mountain.7e.html	09:15.00	C:/Users/restore/michael.gogins.studio/music/Black Mountain 7e.wav	04/25/29 05:00 AM		Publish	0.00						#Published
 '''
+database = r'''
+Michael Gogins	2017	ICSC 2017		1	Shell.html	09:15.00	C:/Users/restore/michael.gogins.studio/music/Shell.wav	07/03/17 11:37 AM		Publish	0.00						#Published
+'''
 
 notes = 'Electroacoustic Music'
 lines = database.split('\n')
@@ -136,6 +139,7 @@ for line in lines:
         cd_quality_filename = '%s.cd.wav' % label
         mp3_filename = '%s.mp3' % label
         mp4_filename = '%s.mp4' % label
+        flac_filename = '%s.flac' % label
         print 'Original file:          ', filepath
         print 'Basename:               ', basename
         print 'Rootname:               ', rootname
@@ -145,6 +149,7 @@ for line in lines:
         print 'CD quality filename:    ', cd_quality_filename
         print 'MP3 filename:           ', mp3_filename
         print 'MP4 filename:           ', mp4_filename
+        print 'FLAC filename:          ', flac_filename
         bext_description       = notes
         bext_originator        = 'Michael Gogins'
         bext_orig_ref          = basename
@@ -178,6 +183,9 @@ for line in lines:
         mp3_command = '''%s\\lame.exe --add-id3v2 --tt "%s" --ta "%s" --tl "%s" --ty "%s" --tc "%s" --tn "%s" --tg "%s"  "%s" "%s"''' % (lame_path, title, "Michael Gogins", album, year, notes, track, "Electroacoustic", master_filename, mp3_filename)
         print 'mp3_command:            ', mp3_command
         os.system(mp3_command)
+        sox_flac_command = '''%s\\sox -S "%s" "%s"''' % (sox_path, master_filename, flac_filename)
+        print 'sox_flac_command:         ', sox_flac_command
+        os.system(sox_flac_command)
         mp4_command = '''"%s" -r 1 -i "%s" -i "%s" -codec:a aac -strict -2 -b:a 384k -r:a 48000 -c:v libx264 -b:v 500k "%s"''' % (ffmpeg_program, os.path.join(cwd, spectrogram_filename), os.path.join(cwd, master_filename), os.path.join(cwd, mp4_filename))
         mp4_metadata =  '-metadata title="%s" ' % title
         mp4_metadata += '-metadata album="%s" ' % album
