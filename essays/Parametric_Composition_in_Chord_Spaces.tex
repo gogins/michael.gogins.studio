@@ -1,0 +1,151 @@
+\documentclass[english,11pt,letterpaper,onecolumn]{scrartcl}
+
+%\usepackage[utf8]{inputenc}
+\usepackage{babel}
+\usepackage{mathptmx}
+% Extra leading.
+\renewcommand{\baselinestretch}{1.125}
+\usepackage{tocloft}
+% \usepackage{fancyhdr}
+\usepackage{scrlayer-scrpage}
+\usepackage{ifthen}
+\usepackage{keyval}
+\usepackage{geometry}
+\usepackage{url}
+\usepackage{calc}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{listings}
+\usepackage{supertabular}
+%\usepackage{scrpage2}
+\usepackage[pdftex,
+            pagebackref=true,
+            colorlinks=true,
+            linkcolor=blue,
+            pdfpagelabels,
+            pdfstartpage=3
+           ]{hyperref}
+% \usepackage{poemscol}
+% \global\verselinenumbersfalse
+\makeindex
+\definecolor{LstColor}{cmyk}{0.1,0.1,0,0.025} 
+\setcounter{tocdepth}{9}
+\newcommand\floor[1]{\lfloor#1\rfloor}
+\newcommand\ceil[1]{\lceil#1\rceil}
+\begin{document}
+
+\title{Parametric Composition in Chord Spaces}
+\author{Michael Gogins \\ \texttt{michael.gogins@gmail.com}}
+\maketitle
+%\pagestyle{scrheadings}
+
+%\lohead{Parametric Composition}
+
+\section{Introduction}
+
+Parametric composition is the art of composing music by exploring the 
+numerical parameter space of some score-generating algorithm. Such exploration 
+can be performed by literally zooming around in a colored map of the parameter 
+space, by interpolating between two parameter points in that space, or by 
+evolving parameters using the genetic algorithm. 
+
+Parametric composition has previously been investigated with respect to 
+the generation of pieces in spaces that directly represent either sound, 
+e.g. in the form of a grid of sound grains (Gabor transform) \cite{obsessed}, 
+or scores, e.g. in the form of a grid of notes (piano roll) \cite{ifsmusic}. 
+Here, pieces are generated in a chord space constructed from the basic 
+symmetries of chord space identified by Callender, 
+Quinn and Tymoczko \cite{callender346}, along with revoicings and 
+rearrangements. The dimensions of this $PITVi$ space are: set class 
+(the most basic form of a chord) $P$ (i.e. Callender et al.'s OPTI), 
+inversion $I$, transposition $T$, octavewise revoicings $V$, and rearrangements 
+of instruments $i$. In $PITVi$ space, a piece of note-based music may be 
+considered a succession of more or less fleeting chord points or, in other 
+words, as the graph of a vector-valued function of time, $$(P, I, T, V, i) = 
+r(t).$$ The notes and chords do \textit{not} need to be confined to 12-tone 
+equal temperament.
+
+Here, the advantage of $PITVi$ is simply that \textit{shorter moves 
+in chord spaces are easier for audiences to hear}. In other words, score 
+generators in chord spaces are more likely to produce what musical tradition 
+considers ``well-formed'' pieces.
+
+In addition, the score generators used here are \textit{iterated function 
+systems} (IFSs) \cite{barnsley1985iterated, 
+10.2307/24893080, fractalseverywhere} composed of \textit{fractels} (fractal 
+elements) such that, by construction, the fixed point or attractor of the IFS 
+is the graph of the vector-valued function $r$ \cite{2016arXiv161001369B}. An 
+IFS that computes the graph of a function in this way is called a 
+\textit{fractal interpolation} or \textit{fractal approximation} (FA) 
+\cite{barnsley1986, fractalseverywhere, navascues2014fractal} and the function 
+for that graph is called simply a \textit{fractal function}. It is interesting 
+that all continuous functions are fractal functions \cite{2016arXiv161001369B}.
+
+A FA may be completely specified as a set of fractels each of which, 
+in turn, may be computed by a Read-Bajraktarevi\'{c} operator. These can be 
+completely specified as a set of numerical parameters. Thus, any piece of 
+note-based music may be approximated as closely as desired by a fixed size set 
+of numerical parameters, a list of the matrix representations of the 
+Read-Bajraktarevi\'{c} operators.
+
+Although there might be dozens or hundreds of numbers in such FA parameters, 
+each parameter set can effectively be represented as a single real or complex 
+number by using a recursive indexing scheme such as a Hilbert index 
+\cite{hamilton2006compact}. We call this number the \textit{effective 
+parameter} of the FA because the \textit{actual parameters}, i.e.\ the 
+complete representation of the Read-Bajraktarevi\'{c} operators, can be 
+recovered by decoding the index. 
+
+Then, using the effective parameters, it is simple to compute a parametric map 
+of all pieces within a given range of FAs, or to interpolate between two 
+pieces by interpolating between their effective parameters. It is also, of 
+course, possible to evolve pieces using the genetic algorithm on sets of 
+actual parameters.
+
+The remainder of this paper presents the mathematical background in 
+somewhat more detail; discusses the implementation of fractels, fractal 
+approximations, Hilbert indices, and the genetic algorithm for FA parameters 
+in the Silencio library for algorithmic composition in JavaScript; and finishes 
+with examples of each of the three methods of algorithmic composition, 
+implemented in Silencio and Csound.
+
+\section{Mathematical Background}
+
+This section is not intended as a complete, self-contained exposition but 
+rather as providing entry points for readers who have some exposure to 
+mathematical music theory or fractal geometry. I have tried to supply 
+references not only to original publications of ideas, but also to recent 
+reviews or summaries.
+
+\subsection{Chord Space}
+
+\subsection{Fractal Interpolation Functions}
+
+It is interesting that, as Massopust notes \cite{massopust2017} 
+\begin{quote}D. Hardin proved in 2012 that every compactly supported 
+refinable function is a piecewise fractal function. In particular, the unique 
+compactly supported continuous function determined by the mask of a convergent 
+subdivision scheme is a piecewise fractal function. \end{quote} 
+This implies that the same technique of parametric 
+composition based on FIFs and described here, would also work for composing 
+sound directly using refinable sets of sound grains, e.g. wavelets.
+
+\subsection{Hilbert Indices for Fractal Interpolation Functions}
+
+\section{Implementation Notes}
+
+\section{Musical Examples}
+
+\subsection{Parametric Mapping}
+
+
+\subsection{Interpolating Between Pieces}
+
+
+\subsection{Using the Genetic Algorithm with Fractal Interpolation Functions}
+
+
+\bibliographystyle{ieeetr}
+\bibliography{gogins}{}
+\end{document} 
