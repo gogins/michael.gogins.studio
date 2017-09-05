@@ -2,7 +2,10 @@
 
 %\usepackage[utf8]{inputenc}
 \usepackage{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
 \usepackage{mathptmx}
+\usepackage{enumitem}
 % Extra leading.
 \renewcommand{\baselinestretch}{1.125}
 \usepackage{tocloft}
@@ -20,8 +23,7 @@
 \usepackage{supertabular}
 %\usepackage{scrpage2}
 \usepackage[pdftex,
-            pagebackref=true,
-            colorlinks=true,
+           colorlinks=true,
             linkcolor=blue,
             pdfpagelabels,
             pdfstartpage=3
@@ -33,9 +35,19 @@
 \setcounter{tocdepth}{9}
 \newcommand\floor[1]{\lfloor#1\rfloor}
 \newcommand\ceil[1]{\lceil#1\rceil}
+
+\usepackage[
+backend=biber,
+style=numeric,
+sorting=ynt,
+hyperref=true,
+backref=true
+]{biblatex}
+ 
+\addbibresource{gogins.bib}
 \begin{document}
 
-\title{Parametric Composition in Chord Spaces}
+\title{Parametric Composition}
 \author{Michael Gogins \\ \texttt{michael.gogins@gmail.com}}
 \maketitle
 %\pagestyle{scrheadings}
@@ -44,43 +56,47 @@
 
 \section{Introduction}
 
-Parametric composition is the art of composing music by exploring the 
-numerical parameter space of some score-generating algorithm. Such exploration 
-can be performed by literally zooming around in a colored map of the parameter 
-space, by interpolating between two parameter points in that space, or by 
-evolving parameters using the genetic algorithm. 
+We define a \textit{score space} as a space in which a set of points represents 
+a piece of music, e.g. the grand staff, a piano roll, some more abstract 
+space, or even a representation of sound such as a sonogram. We define a 
+\textit{score generator} as a computer program that generates a musical score 
+in some score space. We define a \textit{parametric score generator} as one 
+whose behavior is completely specified by adjusting numerical parameters. Then 
+\textit{parametric composition} is the art of composing music by exploring the 
+parameter space of a parametric score generator. Such exploration can be 
+performed by literally zooming around in a colored map of the parameter space, 
+by interpolating between two parameter points in that space, or by evolving 
+parameters using the genetic algorithm. 
 
 Parametric composition has previously been investigated with respect to 
 the generation of pieces in spaces that directly represent either sound, 
 e.g. in the form of a grid of sound grains (Gabor transform) \cite{obsessed}, 
 or scores, e.g. in the form of a grid of notes (piano roll) \cite{ifsmusic}. 
-Here, pieces are generated in a chord space constructed from the basic 
+Here, pieces are generated in a score space constructed from the basic 
 symmetries of chord space identified by Callender, 
-Quinn and Tymoczko \cite{callender346}, along with revoicings and 
-rearrangements. The dimensions of this $PITVi$ space are: set class 
-(the most basic form of a chord) $P$ (i.e. Callender et al.'s OPTI), 
-inversion $I$, transposition $T$, octavewise revoicings $V$, and rearrangements 
-of instruments $i$. In $PITVi$ space, a piece of note-based music may be 
-considered a succession of more or less fleeting chord points or, in other 
-words, as the graph of a vector-valued function of time, $$(P, I, T, V, i) = 
-r(t).$$ The notes and chords do \textit{not} need to be confined to 12-tone 
+Quinn and Tymoczko \cite{callender:346}, along with revoicings and 
+rearrangements. The dimensions of this score space are: set class 
+(the most basic form of a chord) $P$ (i.e. Callender et al.'s OPTIC), 
+inversion $I$, transposition $T$, octavewise revoicings $v$, and 
+rearrangements of voices $a$. In $PITva$ space, a piece of note-based music may 
+be considered a succession of more or less fleeting chord points or, in other 
+words, as the graph of a vector-valued function of time in the score space, 
+$$(P, I, T, v, a) = r(t).$$ The notes and chords do \textit{not} need to be 
+confined to 12-tone 
 equal temperament.
 
-Here, the advantage of $PITVi$ is simply that \textit{shorter moves 
-in chord spaces are easier for audiences to hear}. In other words, score 
-generators in chord spaces are more likely to produce what musical tradition 
-considers ``well-formed'' pieces.
-
-In addition, the score generators used here are \textit{iterated function 
-systems} (IFSs) \cite{barnsley1985iterated, 
-10.2307/24893080, fractalseverywhere} composed of \textit{fractels} (fractal 
-elements) such that, by construction, the fixed point or attractor of the IFS 
-is the graph of the vector-valued function $r$ \cite{2016arXiv161001369B}. An 
-IFS that computes the graph of a function in this way is called a 
-\textit{fractal interpolation} or \textit{fractal approximation} (FA) 
-\cite{barnsley1986, fractalseverywhere, navascues2014fractal} and the function 
-for that graph is called simply a \textit{fractal function}. It is interesting 
-that all continuous functions are fractal functions \cite{2016arXiv161001369B}.
+The score generators used here are \textit{iterated function systems} (IFSs) 
+\cite{barnsley1985iterated, 10.2307/24893080, fractalseverywhere} composed of 
+\textit{fractels} (fractal elements) such that, by construction, the fixed 
+point or attractor of the IFS is the graph of the vector-valued function $r$ 
+\cite{2016arXiv161001369B}. An IFS that computes the graph of a function in 
+this way is called a \textit{fractal interpolation} or \textit{fractal 
+approximation} (FA) \cite{Barnsley1986, fractalseverywhere, 
+navascues2014fractal} and the function for that graph is called simply a 
+\textit{fractal function}. It is interesting that all continuous functions are 
+fractal functions \cite{2016arXiv161001369B}. The advantage of using fractal 
+approximations of the graph of $r$ is that \textit{any} score can be so 
+generated and \textit{every} FA of this type generates a graph of $r$.
 
 A FA may be completely specified as a set of fractels each of which, 
 in turn, may be computed by a Read-Bajraktarevi\'{c} operator. These can be 
@@ -103,12 +119,12 @@ pieces by interpolating between their effective parameters. It is also, of
 course, possible to evolve pieces using the genetic algorithm on sets of 
 actual parameters.
 
-The remainder of this paper presents the mathematical background in 
+The remainder of this paper develops the mathematical background in 
 somewhat more detail; discusses the implementation of fractels, fractal 
 approximations, Hilbert indices, and the genetic algorithm for FA parameters 
-in the Silencio library for algorithmic composition in JavaScript; and finishes 
-with examples of each of the three methods of algorithmic composition, 
-implemented in Silencio and Csound.
+in the Silencio library for algorithmic composition in JavaScript; and 
+finishes with examples of each of the three methods of algorithmic 
+composition, implemented in Silencio and Csound.
 
 \section{Mathematical Background}
 
@@ -118,20 +134,136 @@ mathematical music theory or fractal geometry. I have tried to supply
 references not only to original publications of ideas, but also to recent 
 reviews or summaries.
 
-\subsection{Chord Space}
+\subsection{Chord Spaces}
 
-\subsection{Fractal Interpolation Functions}
+A chord space is simply a space in which each voice of a chord is represented 
+by a different dimension. A single voice is represented by a point on a line; 
+an interval, by a point on a plane; a triad, by a point in a 3-dimensional 
+space; and so on. The concept of chord space has many uses. For example, 
+Tymoczko \cite{tymoczko2006geometry, tymoczko2011geometry} showed that 
+perceptually smoother voice-leadings between chords are represented by shorter 
+paths through chord space. Here the octave is always 12, so that pitch-classes 
+are always integers and compatible with MIDI.
 
-It is interesting that, as Massopust notes \cite{massopust2017} 
-\begin{quote}D. Hardin proved in 2012 that every compactly supported 
-refinable function is a piecewise fractal function. In particular, the unique 
-compactly supported continuous function determined by the mask of a convergent 
-subdivision scheme is a piecewise fractal function. \end{quote} 
-This implies that the same technique of parametric 
-composition based on FIFs and described here, would also work for composing 
-sound directly using refinable sets of sound grains, e.g. wavelets.
+Even unschooled musicians are aware that pitches transposed to different 
+octaves are somehow the same. This is expressed in music theory by saying that 
+pitch-classes, e.g. C or F\#, are pitches under \textit{octave equivalence}. 
+Octave equivalence transforms the line of pitch into a circle, an 
+\textit{orbifold} or \textit{quotient space} $\mathbb{R}/12$, by 
+gluing the lowest pitch under octave equivalence to the same pitch an octave 
+higher. There are other implicitly familiar equivalence classes in music: 
+\textit{permutational equivalence} (a triad is somehow the same whether the 
+notes are assigned to violin, trumpet, and flute or to flute, trumpet, and 
+violin), \textit{cardinality equivalence} (a chord is somehow the same if 
+voices are doubled in different octaves), and so on. A little more theoretical 
+sophistication reveals \textit{inversional equivalence}: a major triad is 
+somehow the same as a minor triad. Callender, Quinn, and Tymoczko 
+\cite{callender:346} concisely analyzed these equivalence classes, or 
+symmetries, as different quotients of chord space.
 
-\subsection{Hilbert Indices for Fractal Interpolation Functions}
+Here, we do not use chord space for composing; rather, we construct a new 
+space in which each of the irreducible symmetries of chord space identified by 
+Callender, Quinn, and Tymoczko is a separate dimension, on which operations 
+are indexed. These are:
+
+\begin{enumerate}
+ \item $P$ (Callender, Quinn, and Tymoczko's OPTI space) -- Set-type, the most 
+abstract conception of a chord; all major and minor triads are equivalent. The 
+number of elements in P depends upon the maximum number of voices and the 
+number of divisions of the octave.
+ \item $I$ -- Inversion.
+ \item $T$ -- Transposition.
+\end{enumerate}
+
+\noindent To these we add:
+
+\begin{enumerate}[resume]
+ \item $V$ -- octavewise revoicing (within some specified range) of the 
+$PIT$ chord, through all permutations of the possible voicings.
+ \item $a$ -- Voicewise re-arrangement of voices or instrument, through all
+permutations of the possible arrangements.
+\end{enumerate}
+
+\noindent The purpose of this odd $PITva$ space is to permit composing by 
+moving a single point through the space and thus controlling at once 
+set-class, inversion, transposition, voicing, and arrangement; another way of 
+saying this is that any piece of note-based music can be represented by the 
+graph of a vector-valued function of time, $$(P, I, T, V, a) = 
+r(t).$$
+
+A further purpose is that, by assigning each symmetry to an orthogonal 
+dimension of the $PITva$ space, the IFSs to be developed for composing can 
+more easily be adapted to control the dimensions independently, e.g.\ by 
+generating arpeggiations without affecting chord type.
+
+\subsection{Fractal Approximation}
+
+A fractal is simply a set of points that fills some definite fraction of its 
+space. A line on the plane occupies no space. A snowflake curve iterates 
+bending segments of the curve to infinity, and thus comes to occupy some 
+fraction of the plane \cite{Mandelbrot:1982:FGN}.
+
+One basic way to generate fractals is with the multiple copy reduction 
+machine (MCRM). Imagine a copier with more than one lens, each equipped with 
+adjustments (sliding, shrinking, or rotating the image of the original). Make 
+a copy, replace the original with the copy, and repeat to infinity. Just as 
+with the snowflake curve, the final copy comes to occupy a definite fraction 
+of the picture plane and thus is a fractal \cite{chaosandfractals}. 
+
+Mathematically, the MCRM is an iterated function system (IFS). Each lens 
+represents an affine transformation of the plane. Each lens, chosen at random 
+or in turns, transforms the original set, and the transformations are summed 
+to replace the original; if the transformations are on the whole contractive, 
+the Banach Fixed Point Theorem proves that iterating this process to infinity 
+brings the original to a fixed point, the attractor of the IFS 
+\cite{chaosandfractals, barnsley1985iterated, 10.2307/24893080, 
+fractalseverywhere}. \textit{Any} original will end up producing the 
+\textit{same} attractor. 
+
+Furthermore, Barnsley's Collage Theorem \cite{barnsley:1986:solution} proves 
+that any original set can be approximated, as closely as desired, by some IFS. 
+This is done by arranging the affine transformations to cover the original set 
+with transformed copies of itself, minimizing overlaps. \textit{The Collage 
+Theorem is the key motivation for using IFS in algorithmic music composition}: 
+IFS are simple yet extremely powerful. 
+
+The remainder of this paper concerns how to control this power: how to 
+filter out as many of the musically useless productions, which of course are 
+overwhelmingly more numerous, as possible; and how to explore the 
+remaining vast parameter space of IFS in a \textit{musical} way.
+
+It would be possible to use IFS to generate sound grains on a grid; to 
+generate notes on a grid; or to generate a path through a different chord 
+space, e.g. use Callender, Quinn, and Tymoczko's OPC $\times$ revoicings 
+$\times$ rearrangements instead of $PITva$. Again, the purpose is to filter 
+out unmusical productions. Since by the Collage Theorem IFSs are universal, we 
+cannot exclude such productions; but we can simply make it harder, take more 
+steps, to generate then. This is not an esthetic judgement. We are 
+simply trying to make the generative space more like the space of human 
+musical perception, as its geometry is implied by music theory.
+
+So, we have a piece as a sequence of points in $PITva$ space, or, 
+alternatively, the graph of a function of time in that space. IFSs can 
+be used to approximate graphs of functions by applying the Collage Theorem 
+as follows. This applies in spaces of any dimension, i.e.\ to vector-valued as 
+well as to single-valued functions:
+
+\begin{enumerate}
+ \item Define the domain of the function, an interval $[a, b]$.
+ \item Identify a set of interpolation points, samples of the value of the 
+function, within $[a, b]$, 
+\end{enumerate}
+
+
+
+
+
+
+
+
+
+
+\subsection{Hilbert Indices for Fractal Approximation Parameters}
 
 \section{Implementation Notes}
 
@@ -145,7 +277,28 @@ sound directly using refinable sets of sound grains, e.g. wavelets.
 
 \subsection{Using the Genetic Algorithm with Fractal Interpolation Functions}
 
+\section{Future Directions}
 
-\bibliographystyle{ieeetr}
-\bibliography{gogins}{}
+It is interesting that, as Massopust notes \cite{massopust2017}, 
+\begin{quote}D. Hardin proved in 2012 that every compactly supported 
+refinable function is a piecewise fractal function. In particular, the unique 
+compactly supported continuous function determined by the mask of a convergent 
+subdivision scheme is a piecewise fractal function. \end{quote} 
+This implies that the same technique of parametric 
+composition based on FAs and described here, would also work for composing 
+sound directly using refinable sets of sound grains, e.g. wavelets.
+
+It also is interesting that Barnsley, Hegland, and Massopust 
+\cite{2013arXiv1309.0972B} discuss how to derive fractal approximations of 
+existing data sets. This implies that it is possible to automatically derive 
+FA parameters for existing works of note-based music, and then to use the 
+resulting parameter map or parametric interpolation to analyze the 
+relationship between the works, or to compose new works intermediate in form 
+between them.
+
+% \bibliographystyle{ieeetr}
+%\bibliographystyle{ieeetr}
+%\bibliography{gogins}{}
+\printbibliography
+
 \end{document} 
