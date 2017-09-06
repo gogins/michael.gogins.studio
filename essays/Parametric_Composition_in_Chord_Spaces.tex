@@ -47,7 +47,7 @@ backref=true
 \addbibresource{gogins.bib}
 \begin{document}
 
-\title{Parametric Composition}
+\title{Parametric Composition of Score Functions}
 \author{Michael Gogins \\ \texttt{michael.gogins@gmail.com}}
 \maketitle
 %\pagestyle{scrheadings}
@@ -57,13 +57,14 @@ backref=true
 \section{Introduction}
 
 We define a \textit{score space} as a space in which a set of points represents 
-a piece of music, e.g. the grand staff, a piano roll, some more abstract 
-space, or even a representation of sound such as a sonogram. We define a 
+a piece of music, e.g. notes on the grand staff, punches in a piano roll, some more abstract 
+space, or even grains of sound on a sonogram. We define a 
 \textit{score generator} as a computer program that generates a musical score 
 in some score space. We define a \textit{parametric score generator} as one 
-whose behavior is completely specified by adjusting numerical parameters. Then 
-\textit{parametric composition} is the art of composing music by exploring the 
-parameter space of a parametric score generator. Such exploration can be 
+whose behavior is completely defined by adjusting numerical parameters. 
+
+Then \textit{parametric composition} is the art of composing music by exploring the 
+parameter space of some parametric score generator. Such exploration can be 
 performed by literally zooming around in a colored map of the parameter space, 
 by interpolating between two parameter points in that space, or by evolving 
 parameters using the genetic algorithm. 
@@ -76,7 +77,7 @@ Here, pieces are generated in a score space constructed from the basic
 symmetries of chord space identified by Callender, 
 Quinn and Tymoczko \cite{callender:346}, along with revoicings and 
 rearrangements. The dimensions of this score space are: set class 
-(the most basic form of a chord) $P$ (i.e. Callender et al.'s OPTIC), 
+(the most basic form of a chord) $P$ (\textit{i.e.}, Callender \textit{et al.}'s OPTIC), 
 inversion $I$, transposition $T$, octavewise revoicings $v$, and 
 rearrangements of voices $a$. In $PITva$ space, a piece of note-based music may 
 be considered a succession of more or less fleeting chord points or, in other 
@@ -95,8 +96,8 @@ approximation} (FA) \cite{Barnsley1986, fractalseverywhere,
 navascues2014fractal} and the function for that graph is called simply a 
 \textit{fractal function}. It is interesting that all continuous functions are 
 fractal functions \cite{2016arXiv161001369B}. The advantage of using fractal 
-approximations of the graph of $r$ is that \textit{any} score can be so 
-generated and \textit{every} FA of this type generates a graph of $r$.
+approximations of graphs of $r$ is that \textit{any} score can be so 
+generated, and \textit{every} FA of this type generates a graph of $r$.
 
 A FA may be completely specified as a set of fractels each of which, 
 in turn, may be computed by a Read-Bajraktarevi\'{c} operator. These can be 
@@ -111,7 +112,7 @@ number by using a recursive indexing scheme such as a Hilbert index
 \cite{hamilton2006compact}. We call this number the \textit{effective 
 parameter} of the FA because the \textit{actual parameters}, i.e.\ the 
 complete representation of the Read-Bajraktarevi\'{c} operators, can be 
-recovered by decoding the index. 
+recovered (given sufficient numerical precision) by decoding the index. 
 
 Then, using the effective parameters, it is simple to compute a parametric map 
 of all pieces within a given range of FAs, or to interpolate between two 
@@ -126,7 +127,7 @@ in the Silencio library for algorithmic composition in JavaScript; and
 finishes with examples of each of the three methods of algorithmic 
 composition, implemented in Silencio and Csound.
 
-\section{Mathematical Background}
+\section{Mathematical Development}
 
 This section is not intended as a complete, self-contained exposition but 
 rather as providing entry points for readers who have some exposure to 
@@ -136,15 +137,15 @@ reviews or summaries.
 
 \subsection{Chord Spaces}
 
-A chord space is simply a space in which each voice of a chord is represented 
+A \textit{chord space} is simply a space in which each voice of a chord is represented 
 by a different dimension. A single voice is represented by a point on a line; 
 an interval, by a point on a plane; a triad, by a point in a 3-dimensional 
-space; and so on. The concept of chord space has many uses. For example, 
+space; and so on. Chord space has many uses. For example, 
 Tymoczko \cite{tymoczko2006geometry, tymoczko2011geometry} showed that 
 perceptually smoother voice-leadings between chords are represented by shorter 
-paths through chord space. Here the octave is always 12, so that pitch-classes 
-are always integers and compatible with MIDI.
-
+paths in chord space. Here the octave is always 12, so that pitch-classes 
+are always integers (and compatible with MIDI).
+                  
 Even unschooled musicians are aware that pitches transposed to different 
 octaves are somehow the same. This is expressed in music theory by saying that 
 pitch-classes, e.g. C or F\#, are pitches under \textit{octave equivalence}. 
@@ -158,10 +159,10 @@ violin), \textit{cardinality equivalence} (a chord is somehow the same if
 voices are doubled in different octaves), and so on. A little more theoretical 
 sophistication reveals \textit{inversional equivalence}: a major triad is 
 somehow the same as a minor triad. Callender, Quinn, and Tymoczko 
-\cite{callender:346} concisely analyzed these equivalence classes, or 
+\cite{callender:346} have concisely analyzed these equivalence classes, or 
 symmetries, as different quotients of chord space.
 
-Here, we do not use chord space for composing; rather, we construct a new 
+Here, we do not use chord space for composing; rather, we construct a parameter 
 space in which each of the irreducible symmetries of chord space identified by 
 Callender, Quinn, and Tymoczko is a separate dimension, on which operations 
 are indexed. These are:
@@ -198,6 +199,20 @@ generating arpeggiations without affecting chord type.
 
 \subsection{Fractal Approximation}
 
+TO DO: Really understand (a) what is a local IFS, (b) how exactly does the RB 
+operator compute one, and what this all has to do with fractels. What \textit{is\textbf{}} clear 
+is that they are trying specifically to produce IFS whose attractors are graphs 
+of functions.
+
+An RB operator is a kind of IFS in which the graph of a function over a segment $[a, b]$ is 
+approximated by mapping the $[a, b]$ to each of the sub-segments defined by a pair of 
+interpolation points.
+
+A \textit{local} IFS is one in which each function or mapping in the IFS may have a different domain.
+
+Numerous maps can be used to construct an RB operator for a given graph. Here, we use local iterated functions 
+instead of plain linear mappings for each interpolation segment.
+
 A fractal is simply a set of points that fills some definite fraction of its 
 space. A line on the plane occupies no space. A snowflake curve iterates 
 bending segments of the curve to infinity, and thus comes to occupy some 
@@ -212,8 +227,8 @@ of the picture plane and thus is a fractal \cite{chaosandfractals}.
 
 Mathematically, the MCRM is an iterated function system (IFS). Each lens 
 represents an affine transformation of the plane. Each lens, chosen at random 
-or in turns, transforms the original set, and the transformations are summed 
-to replace the original; if the transformations are on the whole contractive, 
+or in turns, transforms the original set, and the union of the transformations  
+replaces the original; if the transformations are contractive, 
 the Banach Fixed Point Theorem proves that iterating this process to infinity 
 brings the original to a fixed point, the attractor of the IFS 
 \cite{chaosandfractals, barnsley1985iterated, 10.2307/24893080, 
