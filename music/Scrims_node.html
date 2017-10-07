@@ -40,11 +40,11 @@
     </script>
     </head>
     <body style="background:black;">
-         <div id = 'webgl_cell' class='canvas' style="width:98vw;height:98vh;"/>
-        <table id = 'statistics' style="table-layout:fixed;position:absolute;left:1vw;color:#eee;top:1vw;font-family:Monaco, sans-serif;font-size:8pt">
+         <div id = 'webgl_cell' class='canvas' style="width:98vw;height:98vh;cursor:none;"/>
+        <table id = 'statistics' style="table-layout:fixed;position:absolute;left:1vw;color:#eee;top:1vw;font-family:Monaco, sans-serif;font-size:8pt;cursor:none;">
             <col width=300px>
             <col width=150px>
-            <tr style="color:gold;font-size:18px;">
+            <tr style="color:gold;font-size:14px;">
             <!-- Copyright (C) 2016 by Michael Gogins -->
             <td style="font-weight:bold;">Scrims, for csound.node</td>
             <td style="color:gold;text-align:right;">Michael Gogins</td>
@@ -77,7 +77,7 @@
             </tr>
            <tr>
             <!-- or: http://stackoverflow.com/questions/35509360/how-to-make-the-content-of-the-following-table-cell-scrollable -->
-                <td colspan="2"><textarea id="console" style="width:100%;color:SkyBlue;background-color:transparent;border:none;text-align:left;font-size:8.25px;height:200px;overflow:auto;"></textarea></td>
+                <td colspan="2"><textarea id="console" style="width:100%;color:SkyBlue;background-color:transparent;border:none;text-align:left;font-size:8.25px;height:200px;overflow:auto;cursor:none;"></textarea></td>
             </tr>
         </table>
     <textarea class="code" id="orc" hidden rows=24 cols=80>
@@ -1441,19 +1441,20 @@ endin
             Notes_per_second: 8,
             Stride: 100,
             Play: function() {
-                csound.stop();
+                    //csound.stop();
                 try {
                     csound.setMessageCallback(csoundMessage);
                 } catch(e) {
                     console.log(e);
                 }
-                csound.compileOrc(document.getElementById('orc').value);
                 csound.setOption('-m0');
                 //csound.setOption('-j3');
                 csound.setOption('--nodisplays');
                 csound.setOption('-odac');
+                    csound.compileOrc(document.getElementById('orc').value);
+                    csound.readScore('f 0 360\n');
+                    csound.start();
                 csound.perform();
-                csound.readScore('f 0 360\n');
                 start_time_seconds = new Date().getTime() / 1000.0;
                 ///startTime = csound.getScoreTime();
                 setTimeout(updateTimeCell, 0);
