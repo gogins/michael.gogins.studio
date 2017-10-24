@@ -208,7 +208,7 @@ backref=true
     
     We define a \textit{score space} as a space in which a set of points 
 represents 
-    a piece of music, \textit{e.g.} notes on the grand staff, punches in a 
+    a piece of music, \textit{e.g.}\ notes on the grand staff, punches in a 
 piano 
     roll, some more abstract space, or even grains of sound on a sonogram. We 
     define a \textit{score generator} as a computer program that generates a 
@@ -229,8 +229,8 @@ evolving
     Parametric composition has previously been investigated with respect to 
 the 
     generation of pieces in spaces that directly represent either sound, 
-    \textit{e.g.} in the form of a grid of sound grains (Gabor transform) 
-    \cite{obsessed}, or scores, \textit{e.g.} in the form of a grid of notes 
+    \textit{e.g.}\ in the form of a grid of sound grains (Gabor transform) 
+    \cite{obsessed}, or scores, \textit{e.g.}\ in the form of a grid of notes 
 (piano 
     roll) \cite{ifsmusic}. Here, pieces are generated in a score space 
 constructed 
@@ -270,9 +270,9 @@ fractal
     interpolations \cite{Barnsley1986, fractalseverywhere, 
 navascues2014fractal}. 
     The function for such a graph is called simply a \textit{fractal function}. 
-It 
+(It 
     is interesting that all continuous functions are fractal functions 
-    \cite{2016arXiv161001369B}. Even more particularly, we use FAs to compute 
+    \cite{2016arXiv161001369B}.) Even more particularly, we use FAs to compute 
     graphs of $r$. The advantage of such FAs is that \textit{any} score can be 
 so 
     generated, and \textit{every} FA of this type generates a graph of some 
@@ -290,7 +290,7 @@ parameters,
 complex 
     number by using a recursive indexing scheme such as a Hilbert index 
     \cite{hamilton2006compact}. We call this number the \textit{effective 
-        parameter} of the FA because the complete set of parameters, can be 
+        parameter} of the FA because the complete set of parameters can be 
     recovered (given sufficient numerical precision) by decoding the index. 
     
     Then, using the effective parameters, it is simple to compute a parametric 
@@ -394,13 +394,13 @@ collapses
     to a single layer 
 $\left(\mathbb{R}/12\mathbb{Z}\right)^{n-1}/\mathcal{S}_{n}$, 
     in which points at 120 degrees rotation are equivalent (Figure 
-\ref{fig:optc}; 
+\ref{fig:opttc}; 
     to simplify the view, pitches are rounded by semitone). This is $OPTC$, 
 which 
     is what musicians normally mean by ``chord type.''
     
     \begin{figure}
-        \centerline{\includegraphics[width = 0.9\textwidth]{opttc}}
+        \centerline{\includegraphics[width = 0.5\textwidth]{opttc}}
         \caption{\label{fig:opttc} 
             $OPTC$ for trichords in 12TET.}
     \end{figure}
@@ -415,7 +415,7 @@ is
     abstract commonly used concept of what is a ``chord.''
     
     \begin{figure}
-        \centerline{\includegraphics[width = 0.9\textwidth]{opttic}}
+        \centerline{\includegraphics[width = 0.25\textwidth]{opttic}}
         \caption{\label{fig:optic} 
             $OPTIC$ for trichords in 12TET.}
     \end{figure}
@@ -468,110 +468,160 @@ the
 without 
     affecting chord type.
     
-    \subsection{Fractal Approximation}
-    
-    A fractal is simply a set of points that fills some definite fraction of 
-its 
-    space. A line on the plane occupies no space. A snowflake curve iterates 
-    bending segments of the curve to infinity, and thus comes to occupy some 
-    fraction of the plane \cite{Mandelbrot:1982:FGN}.
-    
-    One basic way to generate fractals is with the multiple copy reduction 
-    machine (MCRM). Imagine a copier with more than one lens, each equipped 
-with 
-    adjustments (sliding, shrinking, or rotating the image of the original). 
-Make 
-    a copy, replace the original with the copy, and repeat to infinity. Just 
-as 
-    with the snowflake curve, the final copy comes to occupy a definite 
-fraction 
-    of the picture plane and thus is a fractal \cite{chaosandfractals}. 
-    
-    Mathematically, the MCRM is an iterated function system (IFS). Each lens 
-    represents an affine transformation of the plane. Each lens, chosen at 
-random 
-    or in turns, transforms the original set, and the union of the 
-transformations  
-    replaces the original.
-    
-    An \emph{iterated function system (IFS)} is a topological space $X$
-    together with a finite set of continuous functions $f_{n}:X\rightarrow X$, 
-    $n=1,2,\dots,N$.
-    
-    If the transformations are contractive, the Banach Fixed Point Theorem 
-proves 
-    that iterating this process to infinity brings the original to a fixed 
-point, 
-    the attractor of the IFS \cite{chaosandfractals, barnsley1985iterated, 
-        10.2307/24893080, fractalseverywhere}. \textit{Any} original will end 
-up 
-    producing the \textit{same} attractor. 
-    
-    An \emph{attractor} of the IFS $\mathcal{F}$ is a set
-    $A\in H(X)$ such that
-    
-    \begin{enumerate}
-        \item $\cF(A)=A$, and
-        
-        \item there is an open set $U\subset X$ such that $A\subset U$ and
-        $\lim_{k\rightarrow\infty}\cF^{k}(S)=A,$ for all $S\in H$ with 
-$S\subset U$,
-        where the limit is with respect to the Hausdorff metric on $H$.
-    \end{enumerate}
-    
-    
-    Furthermore, Barnsley's Collage Theorem \cite{barnsley:1986:solution} 
-proves 
-    that any original set can be approximated, as closely as desired, by some 
-IFS. 
-    This is done by arranging the affine transformations to cover the original 
-set 
-    with transformed copies of itself, minimizing overlaps. \textit{The 
-Collage 
-        Theorem is the key motivation for using IFS in algorithmic music 
-composition}: 
-    IFS are simple yet extremely powerful. 
-    
-    The remainder of this paper concerns how to control this power: how to 
-    filter out as many of the musically useless productions, which of course 
-are 
-    overwhelmingly more numerous, as possible; and how to explore the 
-    remaining vast parameter space of IFS in a \textit{musical} way.
-    
-    It would be possible to use IFS to generate sound grains on a grid; to 
-    generate notes on a grid; or to generate a path through a different chord 
-    space, \textit{e.g.} use Callender, Quinn, and Tymoczko's OPC $\times$ 
-    revoicings 
-    $\times$ rearrangements instead of $PITva$. Again, the purpose is to 
-filter 
-    out unmusical productions. Since by the Collage Theorem IFSs are universal, 
-we 
-    cannot exclude such productions; but we can simply make it harder, take 
-more 
-    steps, to generate then. This is not an esthetic judgement. We are 
-    simply trying to make the generative space more like the space of human 
-    musical perception, as its geometry is implied by music theory.
-    
-    So, we have a piece as a sequence of points in $PITva$ space, or, 
-    alternatively, the graph of a function of time in that space. IFSs can 
-    be used to approximate graphs of functions by applying the Collage Theorem 
-    as follows. This applies in spaces of any dimension, \textit{i.e.}\ to 
-    vector-valued as 
-    well as to single-valued functions:
-    
-    \begin{enumerate}
-        \item Define the domain of the function, an interval $[a, b]$.
-        \item Identify a set of interpolation points, samples of the value of 
-the 
-        function, within $[a, b]$, 
-    \end{enumerate}
-    
-    
-    
-    
-    
-    
-    
+ \subsection{Fractal Approximation}
+
+A \textit{fractal} is simply a set of points that fills some definite fraction 
+of its space. A line on the plane occupies no space. A snowflake curve 
+iterates bending segments of its sides to infinity, and thus comes to occupy 
+some fraction of the plane (Figure \ref{fig:kochflake} 
+\cite{Mandelbrot:1982:FGN}.
+
+    \begin{figure}
+        \centerline{\includegraphics[width = 0.6667\textwidth]{KochFlake}}
+        \caption{\label{fig:kochflake} Koch snowflake 
+curve.\protect\footnotemark}
+    \end{figure}
+
+\footnotetext{Image in \ref{fig:kochflake} licensed Creative 
+Commons Attribution-ShareAlike 3.0 Unported.} 
+
+One basic way to generate fractals is with the multiple copy reduction 
+machine (MCRM). Imagine a copier with more than one lens, each equipped with 
+adjustments (sliding, shrinking, or rotating the image of the original). Make 
+a copy, replace the original with the copy, and repeat to infinity. Just as 
+with the snowflake curve, the final copy comes to occupy a definite fraction 
+of the picture plane and thus is a fractal \cite{chaosandfractals}. 
+
+Mathematically, the MCRM is an iterated function system (IFS). Each lens 
+represents an affine transformation of the plane. Each lens, chosen at random 
+or in turns, transforms the original set, and the union of the transformations 
+replaces the original. More formally, an \emph{iterated function system (IFS)}
+is a topological space $\mathbb{X}$ with a finite set of continuous functions 
+$f_{n}:\X\rightarrow \X$, 
+$n=1,2,\dots,N$. If the functions or transformations are contractive, the 
+Banach Fixed Point Theorem proves that iterating this process to infinity 
+brings the original to a fixed point, the attractor of the IFS 
+\cite{chaosandfractals, barnsley1985iterated, 10.2307/24893080, 
+fractalseverywhere}. An \emph{attractor} of the IFS $\cal{F}$ is a set
+$A\in \cal{H}(\X)$ the set of all closed compact subsets of $\X$ such that
+
+\begin{enumerate}
+\item $\cF(A)=A$, and
+\item there is an open set $U\subset \X$ such that $A\subset U$ and
+$\lim_{k\rightarrow\infty}\mathcal{F}^{k}(S)=A,$ for all $S\in \cal{H}$ with 
+$S\subset U$; the limit is with respect to the Hausdorff metric on $\cal{H}$.
+\end{enumerate}
+
+\noindent Thus, \textit{any} original will end up producing the 
+\textit{same} attractor. 
+
+Furthermore, Barnsley's Collage Theorem \cite{barnsley:1986:solution} proves 
+that any original set can be approximated, as closely as desired, by some IFS. 
+
+This is done by arranging the affine transformations to cover the original set 
+with transformed copies of itself, minimizing overlaps. Let 
+$(\mathbb{X},d_\mathbb{X})$ be a complete metric space. $(\calH (\X), 
+d_\calH)$ 
+is the associated metric space based on the hyperspace of nonempty compact 
+subsets of $\X$ with Hausdorff metric $d_\calH$. Assume $M\in\calH(\X)$ and 
+$\varepsilon > 0$. Assume $\cF := \{\X; f_1, \ldots, f_N\}$ is a contractive 
+IFS such that
+
+\[
+d_\calH \left(M, \;\bigcup_{i=1}^N f_i (M) \right) < \varepsilon.
+\]
+
+\noindent Then
+
+\[
+d_\calH (M, A) < \frac{\varepsilon}{1-s},
+\]
+
+\noindent where $A$ is the attractor of the IFS and  and $s := 
+\max\{\mathrm{Lip}\,f_i\st 
+i = 1, \ldots, N\}$.
+
+\textit{The Collage Theorem is the key motivation for using IFSs in 
+algorithmic music composition}. The theorem proves that IFSs, while 
+conceptually simple, are as powerful as one might like. 
+
+The remainder of this paper concerns how to control this power: how to 
+filter out as many of the musically useless productions, which of course are 
+overwhelmingly more numerous, as possible; and how to explore the 
+remaining vast parameter space of IFSs in a \textit{musical} way.
+
+It would be possible to use IFS to generate sound grains on a grid; to 
+generate notes on a grid; or to generate a path through a different chord 
+space, \textit{e.g.} use Callender, Quinn, and Tymoczko's OPC $\times$ 
+revoicings $\times$ rearrangements instead of $PITva$. Again, our purpose is 
+to filter out unmusical productions. Since by the Collage Theorem IFSs are 
+universal, we cannot exclude such productions; but we \textit{can} simply make 
+it harder, take more steps, to generate then. This is not an esthetic 
+judgement. We are simply trying to make the score space more like the 
+geometry, as implied by music theory, of human musical perception.
+
+So, we have a piece as a sequence of points in $PITva$ space, \textit{i.e.}, 
+the graph of a function of time in that space. Graphs of functions, 
+\textit{i.e.} fractal approximations, can be computed by a special kind of IFS 
+associated with a \textit{Read-Bajraktarevi\'c} operator $\Phi$. Suppose we 
+are given a finite family $\{l_n : X\to X \mid n = 1, \ldots, N\}$ of 
+injective contractions with the following two properties: 
+
+\begin{align}
+&X = \bigcup_{n=1}^N l_n(X);\label{union}\\
+&\Int (l_m(X))\cap \Int(l_n(X)) = \emptyset, \quad\forall\;m, n\in \{1,\ldots, 
+N\}, m\neq n.\label{partition} 
+\end{align}
+
+\noindent Here, $\Int (S)$ denotes the interior of a set $S$.
+
+Suppose that $(Y,d_Y)$ is a complete metric space with metric $d_Y$. A mapping 
+$g:X\to Y$ is called \emph{bounded} (with respect to the metric $d_Y$) if 
+there exists an $M> 0$ so that for all $x_1, x_2\in X$, $d_Y(g(x_1),g(x_2)) < 
+M$. Then the Read-Bajraktarevi\'c operator is defined as
+
+\be\label{RB}
+\Phi g (x) := \sum\limits_{n=1}^N F_n (l_n^{-1} (x), g\circ l_n^{-1} 
+(x))\,\chi_{l_n(X)}(x), 
+\ee
+
+\noindent where $\chi_M$ denotes the characteristic function of a set $M$. 
+Equivalently, \eqref{RB} can also be written in the form
+
+\be\label{3.3}
+(\Phi g \circ l_n) (x) := F_n (x, g(x)),\quad x\in X, \;n = 1, \ldots, N. 
+\ee
+
+%\noindent The operator $\Phi$ is well-defined and since $g$ is bounded and 
+%each $v_i$ 
+%contractive in the second variable, $\Phi g\in B(X,Y)$.
+
+This obviously is an application of the Collage Theorem. Each mapping is 
+actually a shear transformation that is rescaled 
+to fit within the interpolation points (Figure \ref{fig:rboperator}).
+
+    \begin{figure}
+        \centerline{\includegraphics[width = 0.5\textwidth]{interp}}
+        \caption{\label{fig:rboperator} Three shear transformations in 
+a fractal approximation by Read-Bajraktarevi\'c 
+operator.\protect\footnotemark}
+    \end{figure}
+
+\footnotetext{Image in \ref{fig:rboperator} from \cite{barnsley2015bilinear}.} 
+
+However, the flexibility of FAs can be increased by using a 
+\textit{local iterated function system}. A local IFS is one in which the 
+transformations in the IFS have the same co-domain, but not necessarily the 
+same domain. The individual domains must not overlap.
+
+The association of the RB operator with the IFS of our score graph $G(r)$ is 
+shown in this commutation diagram:
+
+Our purpose in using the RB operator is to ensure that we generate only IFS 
+that compute score graphs.
+
+
+
     
     
     
