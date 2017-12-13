@@ -1,7 +1,7 @@
 gk_Piano_level init .25
 instr PianoOut
 kgain = ampdb(gk_Piano_level)
-giPianoteq vstinit "C:/Program_Files/Steinberg/VSTPlugins/Pianoteq5_x64", 0
+giPianoteq vstinit "/home/mkg/Pianoteq\ 6/amd64/Pianoteq\ 6.so", 0
 ; Should be "D4 Daily Practice".
 vstprogset giPianoteq, 0
 ; Sustain off.
