@@ -321,12 +321,10 @@ examples
     references not only to original publications of ideas, but also to recent 
     reviews or summaries.
     
-    TO DO: Really understand (a) what is a local IFS, (b) how exactly does the 
-RB 
-    operator compute one, and what this all has to do with fractels. What 
-    \textit{is\textbf{}} clear is that they are trying specifically to produce 
-IFS 
-    whose attractors are graphs of functions.
+    TO DO: Really understand (a) how exactly can the local IFS dual to a RB 
+    operator be implemented in code, and (b) what exactly is a fractal in this 
+    context. What \textit{\textbf{is}} clear is that they are trying specifically 
+    to produce IFSs whose attractors are graphs of functions.
     
     An RB operator is a kind of IFS in which the graph of a function over a 
 segment 
@@ -335,13 +333,11 @@ sub-segments
     defined by a pair of interpolation points.
     
     A \textit{local} IFS is one in which each function or mapping in the IFS 
-may 
-    have a different domain.
+    may have a different domain, but the domains do not overlap.
     
-    Numerous maps can be used to construct an RB operator for a given graph. 
-Here, 
-    we use local iterated functions 
-    instead of plain linear mappings for each interpolation segment.
+    Various maps can be used to construct an RB operator for a given graph. Here, 
+    we use local iterated functions instead of plain linear mappings for each 
+    interpolation segment.
     
     \subsection{Chord Spaces}
     
@@ -474,7 +470,7 @@ A \textit{fractal} is simply a set of points that fills some definite fraction
 of its space. A line on the plane occupies no space. A snowflake curve 
 iterates bending segments of its sides to infinity, and thus comes to occupy 
 some fraction of the plane (Figure \ref{fig:kochflake} 
-\cite{Mandelbrot:1982:FGN}.
+\cite{Mandelbrot:1982:FGN}).
 
     \begin{figure}
         \centerline{\includegraphics[width = 0.6667\textwidth]{KochFlake}}
@@ -597,17 +593,16 @@ Equivalently, \eqref{RB} can also be written in the form
 %contractive in the second variable, $\Phi g\in B(X,Y)$.
 
 This obviously is an application of the Collage Theorem. Each mapping is 
-actually a shear transformation that is rescaled 
-to fit within the interpolation points (Figure \ref{fig:rboperator}).
+actually a bilinear affine transformation that is rescaled 
+to fit within the interpolation points (Figure \ref{fig:fif}).
 
     \begin{figure}
         \centerline{\includegraphics[width = 0.5\textwidth]{interp}}
-        \caption{\label{fig:rboperator} Three shear transformations in 
-a fractal approximation by Read-Bajraktarevi\'c 
-operator.\protect\footnotemark}
+        \caption{\label{fig:fif} Three shear transformations in 
+a fractal interpolation function.\protect\footnotemark}
     \end{figure}
 
-\footnotetext{Image in \ref{fig:rboperator} from \cite{barnsley2015bilinear}.} 
+\footnotetext{Image in \ref{fig:fif} from \cite{barnsley2015bilinear}.} 
 
 However, the flexibility of FAs can be increased by using a 
 \textit{local iterated function system}. A local IFS is one in which the 
