@@ -19,7 +19,7 @@ instr 1
 ;p5 fm index
 ;p6 pan (L=0, R=1)
 
-kenv	expon		1,p3,0.01
+kenv	expon		1,p3,0.001
 kindx	expon		p5,p3,.4
 a1	foscil	kenv*10000,p4,1,1.143,kindx,1
 	outs		a1*(1-p6),a1*p6
@@ -29,7 +29,7 @@ endin
 instr 2
 Score cmask {{ 
 {
-f1 0 8193 10 1
+f1 0 65536 10 1
 }
 
 f 0 20  
