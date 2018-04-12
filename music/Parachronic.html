@@ -11,12 +11,21 @@
         <script src="silencio/js/TrackballControls.js"></script>
         <script src="silencio/js/ParametricLindenmayer4.js"></script>
         <script src='silencio/js/tinycolor.js'></script>
-        <script>
-        console.log("When running in NW.js, convince the WASM 'Module' code that we really are runing in Node.js.");
+        <!--<script>
+        console.log("When running in NW.js, convince the WASM 'Module' code that we really are running in Node.js.");
         var Module = {};
         Module["ENVIRONMENT"] = "NODE";
+        function onRuntimeInitialized() {
+            csound_wasm = new Module.CsoundWebAudio();
+            console.log("csound_wasm: " + csound_wasm + "\n");
+            if (csound_node === null) {
+                csound = csound_wasm;
+            }
+        }
+        Module["onRuntimeInitialized"] = onRuntimeInitialized;
         </script>
         <script src="csound_extended.js"></script>
+        -->
         <style>
             ::-webkit-scrollbar
             {
@@ -36,9 +45,15 @@
             }
         </style>
         <script>
+            // Set up for running csound.node if available, fall back on 
+            // Csound for WebAssembly.
+            var csound_node = null;
+            var csound_wasm = null;
+            var csound = null;
             try {
-                var csound = require('csound.node');
-                console.log('csound:', csound);
+                csound_node = require('csound.node');
+                csound = csound_node;
+                console.log('csound_node:', csound_node);
                 var nwgui = require('nw.gui');
                 var nw_window = nwgui.Window.get();
                 nw_window.on('close', function() {
@@ -221,25 +236,29 @@ endin
             // but Command() does not. I will try Note(t,d,s,c,k,v,x) with zero v instead of Move.
             lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration<4)', `
                   Note(t/2.00+0.05, d/2.00+0, s, c/2+0.003, k/2.00+0.00, v/2.00+0.02, x/2+0);  
-                  Note(t/2.10+0.00, d/2.50+0, s, c/2+0.000, k/1.98+1.10, v/2.00+0.00, x/2+0); 
+                  Note(t/2.10+0.00, d/2.50+0, s, c/2+1.000, k/1.98+1.10, v/2.00+0.00, x/2+0); 
                   Note(t/2.10+1.00, d/2.00+0, s, c/2+0.000, k/2.00+0.01, v/2.00+0.00, x/2+0); 
                   Note(t/2.10+1.00, d/2.00+0, s, c/2+1.100, k/2.00+0.90, v/2.00+0.00, x/2+0); T(-1); 
             `);
             lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==4)', `
-                  Note(t/1.50-1.00, d/1.50+0, s, c/2+0.003, k/2.00+0.00, v/2.00+0.02, x/2+0);  
-            T(2); Note(t/2.00+0.00, d/2.00+0, s, c/2+0.000, k/1.30+0.20, v/2.00+0.00, x/2+0); T(5);
-                  Note(t/2.00+1.00, d/2.00+0, s, c/2+0.000, k/2.00+0.00, v/2.00+0.00, x/2+0); 
+                  Scale(0, 2.0);
+                  Scale(4, 2.0);
+                  Note(t/1.50-0.50, d/1.50+0, s, c/2+0.003, k/2.00+0.00, v/2.00+0.02, x/2+0);  
+            T(2); Note(t/1.50+0.00, d/2.00+0, s, c/2-1.000, k/1.20+0.80, v/2.00+0.00, x/2+0); T(5);
+                  Note(t/1.50+0.50, d/2.00+0, s, c/2+0.000, k/2.00-1.00, v/2.00+0.00, x/2+0); 
+                  Scale(0, 0.5);
+                  Scale(4, 0.5);
             `);
             lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration>4)', `
                   Note(t/2.00+0.05, d/2.00+0, s, c/2+0.003, k/2.00+0.00, v/2.00+0.02, x/2+0);  
-                  Note(t/2.10+0.00, d/2.00+0, s, c/2+0.000, k/1.98+1.10, v/2.00+0.00, x/2+0); T(5);
+                  Note(t/2.10+0.00, d/2.00+0, s, c/2+0.500, k/1.98+1.10, v/2.00+0.00, x/2+0); T(5);
             K();  Note(t/2.10+1.00, d/2.00+0, s, c/2+0.000, k/2.00+0.01, v/2.00+0.00, x/2+0); 
                   Note(t/2.10+1.00, d/2.00+0, s, c/2+1.100, k/2.00+0.90, v/2.00+0.00, x/2+0); T(2);
             `);
             console.log(chord.information());
             var t = new ParametricLindenmayer.Turtle(new Silencio.Event(), chord, chord);
             lsys.set_turtle(t);
-            lsys.generate(6);
+            lsys.generate(7);
             lsys.score.findScales();
             csound.message('lsys:' + lsys + '\n');
             csound.message(lsys.score.getDuration().toString() + '\n');
@@ -321,7 +340,7 @@ endin
                 }
             }
             //lsys.conformToChords();
-            lsys.score.setDuration(9 * 60 + 5);
+            lsys.score.setDuration(10 * 60 + 5);
             lsys.score.findScales();
             csound.message(lsys.score.minima.toString());
             csound.message(lsys.score.ranges.toString());
@@ -402,6 +421,9 @@ endin
             gk_FM_Clang_level: 0,
             Play: function() {
                 Silencio.saveDatGuiJson(gui);
+                if (csound_node !== null) {
+                    csound = csound_node;
+                }
                 csound.stop();
                 try {
                     csound.setMessageCallback(csoundMessage);
@@ -409,8 +431,7 @@ endin
                 }
                 csound.compileOrc(document.getElementById('orc').value);
                 csound.setOption('-m0');
-                //csound.setOption('-j3');
-                csound.setOption('--nodisplays');
+                csound.setOption('-d');
                 csound.setOption('-odac');
                 generate();
                 gui.revert();
@@ -424,10 +445,16 @@ endin
                 nwgui.Window.get().showDevTools();
             },
             Stop: function() {
+                if (csound_node !== null) {
+                    csound = csound_node;
+                }
                 Silencio.saveDatGuiJson(gui);
                 csound.stop();
             },
             Close: function() {
+                if (csound_node !== null) {
+                    csound = csound_node;
+                }
                 csound.stop();
                 Silencio.saveDatGuiJson(gui);
                 nw_window.close();

@@ -1,45 +1,189 @@
+<!DOCTYPE html>
 <html>
     <head>
-        <script src="silencio/js/jquery.js"></script>
-        <script src="silencio/js/dat.gui.js"></script>
-        <script src="silencio/js/Silencio.js"></script>
-        <script src="silencio/js/ChordSpace.js"></script>
+        <title>Swum</title>
         <script src="silencio/js/sprintf.js"></script>
         <script src="silencio/js/p5.js"></script>
-        <script src="silencio/js/three.js"></script>
-        <script src="silencio/js/TrackballControls.js"></script>
-        <script src="silencio/js/ParametricLindenmayer4.js"></script>
-        <script src='silencio/js/tinycolor.js'></script>
+        <!--
         <script>
             console.log("When running in NW.js, convince the WASM 'Module' code that we really are runing in Node.js.");
             var Module = {};
             Module["ENVIRONMENT"] = "NODE";
         </script>
         <script src="csound_extended.js"></script>
-    </head>
+        -->
+        <script>
+            try {
+                var csound = require('csound.node');
+                console.log('csound:', csound);
+                var nwgui = require('nw.gui');
+                var nw_window = nwgui.Window.get();
+                nw_window.on('close', function() {
+                    console.log('Closing down...');
+                    this.close(true);
+                });
+                var fs = require('fs');
+            } catch (err) {
+                alert(err);
+                console.log(err.message);
+            }
+        </script>
+     </head>
     <body>
+        <textarea class="code" id="orc" hidden rows=24 cols=80>
+sr = 48000
+ksmps = 100
+nchnls = 2
+0dbfs = 1
+
+connect "Blower", "outleft", "ReverbSC", "inleft"
+connect "Blower", "outright", "ReverbSC", "inright"
+connect "Bower", "outleft", "ReverbSC", "inleft"
+connect "Bower", "outright", "ReverbSC", "inright"
+connect "Buzzer", "outleft", "ReverbSC", "inleft"
+connect "Buzzer", "outright", "ReverbSC", "inright"
+connect "Droner", "outleft", "ReverbSC", "inleft"
+connect "Droner", "outright", "ReverbSC", "inright"
+connect "FM_Clang", "outleft", "ReverbSC", "inleft"
+connect "FM_Clang", "outright", "ReverbSC", "inright"
+connect "Harpsichord", "outleft", "ReverbSC", "inleft"
+connect "Harpsichord", "outright", "ReverbSC", "inright"
+connect "Phaser", "outleft", "ReverbSC", "inleft"
+connect "Phaser", "outright", "ReverbSC", "inright"
+connect "PianoOut", "outleft", "MasterOutput", "inleft"
+connect "PianoOut", "outright", "MasterOutput", "inright"
+connect "PianoOut", "outleft", "ReverbSC", "inleft"
+connect "PianoOut", "outright", "ReverbSC", "inright"
+connect "Sweeper", "outleft", "ReverbSC", "inleft"
+connect "Sweeper", "outright", "ReverbSC", "inright"
+connect "Shiner", "outleft", "ReverbSC", "inleft"
+connect "Shiner", "outright", "ReverbSC", "inright"
+connect "YiString", "outleft", "ReverbSC", "inleft"
+connect "YiString", "outright", "ReverbSC", "inright"
+connect "YiString", "chorusleft", "SolinaChorus", "inleft"
+connect "YiString", "chorusright", "SolinaChorus", "inright"
+connect "SolinaChorus", "outleft", "ReverbSC", "inleft"
+connect "SolinaChorus", "outright", "ReverbSC", "inright"
+connect "ReverbSC", "outleft", "MasterOutput", "inleft"
+connect "ReverbSC", "outright", "MasterOutput", "inright"
+connect "Reverberator", "outleft", "MasterOutput", "inleft"
+connect "Reverberator", "outright", "MasterOutput", "inright"
+
+alwayson "FM_Clang_Controls"
+alwayson "Controls"
+alwayson "PianoOut"
+alwayson "SolinaChorus"
+alwayson "Reverberator"
+alwayson "ReverbSC"
+alwayson "FM_Clang_Preset"
+alwayson "ParametricEQ"
+alwayson "MasterOutput"
+
+gk_overlap init .25
+
+#include "silencio/patches/FM_Clang_Controls.inc"
+#include "silencio/patches/PianoNotePianoteq.inc"
+#include "silencio/patches/Harpsichord.inc"
+#include "silencio/patches/YiString.inc"
+#include "silencio/patches/FM_Clang.inc"
+#include "silencio/patches/Bower.inc"
+#include "silencio/patches/Droner.inc"
+#include "silencio/patches/Sweeper.inc"
+#include "silencio/patches/Blower.inc"
+#include "silencio/patches/Buzzer.inc"
+#include "silencio/patches/Phaser.inc"
+#include "silencio/patches/Shiner.inc"
+#include "silencio/patches/FM_Clang_Preset.inc"
+#include "silencio/patches/PianoOutPianoteq.inc"
+#include "silencio/patches/SolinaChorus.inc"
+#include "silencio/patches/ReverbSC.inc"
+#include "silencio/patches/Reverberator.inc"
+#include "silencio/patches/ParametricEQ.inc"
+#include "silencio/patches/MasterOutput.inc"
+
+instr Controls
+    gk_Bower_level chnget "gk_Bower_level"
+    gk_Bower_pressure chnget "gk_Bower_pressure"
+    gk_Blower_grainDensity chnget "gk_Blower_grainDensity"
+    gk_Blower_grainDuration chnget "gk_Blower_grainDuration"
+    gk_Blower_grainAmplitudeRange chnget "gk_Blower_grainAmplitudeRange"
+    gk_Blower_grainFrequencyRange chnget "gk_Blower_grainFrequencyRange"
+    gk_Blower_level chnget "gk_Blower_level"
+    gk_Buzzer_harmonics chnget "gk_Buzzer_harmonics"
+    gk_Buzzer_level chnget "gk_Buzzer_level"
+    gk_Droner_partial1 chnget "gk_Droner_partial1"
+    gk_Droner_partial2 chnget "gk_Droner_partial2"
+    gk_Droner_partial3 chnget "gk_Droner_partial3"
+    gk_Droner_partial4 chnget "gk_Droner_partial4"
+    gk_Droner_partial5 chnget "gk_Droner_partial5"
+    gk_Droner_level chnget "gk_Droner_level"
+    gk_Harpsichord_level chnget "gk_Harpsichord_level"
+    gk_Harpsichord_pick chnget "gk_Harpsichord_pick"
+    gk_Harpsichord_reflection chnget "gk_Harpsichord_reflection"
+    gk_Harpsichord_pluck chnget "gk_Harpsichord_pluck"
+    gk_MasterOutput_level chnget "gk_MasterOutput_level"
+    gk_Phaser_ratio1 chnget "gk_Phaser_ratio1"
+    gk_Phaser_ratio2 chnget "gk_Phaser_ratio2"
+    gk_Phaser_index1 chnget "gk_Phaser_index1"
+    gk_Phaser_index2 chnget "gk_Phaser_index2"
+    gk_Phaser_level chnget "gk_Phaser_level"
+    gk_Piano_level chnget "gk_Piano_level"
+    gk_Shiner_level chnget "gk_Shiner_level"
+    gk_Sweeper_britel chnget "gk_Sweeper_britel"
+    gk_Sweeper_briteh chnget "gk_Sweeper_briteh"
+    gk_Sweeper_britels chnget "gk_Sweeper_britels"
+    gk_Sweeper_britehs chnget "gk_Sweeper_britehs"
+    gk_Sweeper_level chnget "gk_Sweeper_level"
+    gk_YiString_reverb_send chnget "gk_YiString_reverb_send"
+    gk_YiString_cbhorus_send chnget "gk_YiString_cbhorus_send"
+    gk_YiString_level chnget "gk_YiString_level"
+   ;gk_SolinaChorus_chorus_lfo1_hz init .18
+   ;gk_SolinaChorus_chorus_lfo1_amp init .6
+   ;gk_SolinaChorus_chorus_lfo2_hz init 6
+   ;gk_SolinaChorus_chorus_lfo2_amp init .2
+    gk_Reverb_feedback chnget "gk_Reverb_Feedback"
+    gk_overlap chnget "gk_overlap"
+prints "Controls       i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+endin
+
+instr 999
+prints "StopPerform    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+exitnow
+endin
+        </textarea>
         <script>
             NUMSINES = 10; // how many of these things can we do at once?
             var sines = new Array(NUMSINES); // an array to hold all the current angles
             var rad; // an initial radius value for the central sine
             var i; // a counter variable
-
             // play with these to get a sense of what's going on:
             var fund = 0.005; // the speed of the central sine
             var ratio = .25; // what multiplier for speed is each additional sine?
             var alpha = 70; // how opaque is the tracing system
-
             var trace = false; // are we tracing?
-
             function setup() {
-              createCanvas(window.innerWidth-20, window.innerHeight-20);
-
-              rad = height/6; // compute radius for central circle
-              background(0); // clear the screen
-
-              for (var i = 0; i<sines.length; i++) {
-                sines[i] = PI; // start EVERYBODY facing NORTH
-              }
+                createCanvas(window.innerWidth-20, window.innerHeight-20);
+                rad = height/6; // compute radius for central circle
+                background(0); // clear the screen
+                for (var i = 0; i<sines.length; i++) {
+                    sines[i] = PI; // start EVERYBODY facing NORTH
+                }
+                var csoundMessageCallback = function(message) {
+                    console.log(message);
+                };
+                try {
+                    csound.setMessageCallback(csoundMessageCallback);
+                } catch (e) {
+                }
+                csound.Stop();
+                csound.CompileOrc(document.getElementById('orc').value);
+                csound.SetOption('-m0');
+                csound.SetOption('-d');
+                csound.SetOption('-odac');
+                csound.Start();
+                csound.Perform();
+                start_time_seconds = new Date().getTime() / 1000.0;
+                score_time = csound.GetScoreTime();
             }
 
             function draw() {
