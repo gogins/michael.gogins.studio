@@ -131,8 +131,6 @@ alwayson "FM_Clang_Preset"
 alwayson "ParametricEQ"
 alwayson "MasterOutput"
 
-gk_overlap init .25
-
 #include "silencio/patches/FM_Clang_Controls.inc"
 #include "silencio/patches/PianoNotePianoteq.inc"
 #include "silencio/patches/Harpsichord.inc"
@@ -169,6 +167,7 @@ instr Controls
     gk_Droner_partial4 chnget "gk_Droner_partial4"
     gk_Droner_partial5 chnget "gk_Droner_partial5"
     gk_Droner_level chnget "gk_Droner_level"
+    gk_FM_Clang_level chnget "gk_FM_Clang_level"
     gk_Harpsichord_level chnget "gk_Harpsichord_level"
     gk_Harpsichord_pick chnget "gk_Harpsichord_pick"
     gk_Harpsichord_reflection chnget "gk_Harpsichord_reflection"
@@ -231,41 +230,43 @@ endin
             lsys.set_turtle(t);
             // p0_t, p1_d, p2_s, p3_c, p4_k, p5_v, p6_x
             lsys = new ParametricLindenmayer.PLSystem();
-            lsys.set_axiom('C();Note(1,.99,144,1,1,1,0);');
+            lsys.set_axiom('C();Note(1,1.5,144,1,1,1,0);');
             // The problem here is that Command(t,d,s,c,k,v,x) carries state down from the stack,
             // but Command() does not. I will try Note(t,d,s,c,k,v,x) with zero v instead of Move.
-            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration<4)', `
-                  Note(t/2.00+0.05, d/2.00+0, s, c/2+0.003, k/2.00+0.00, v/2.00+0.02, x/2+0);  
-                  Note(t/2.10+0.00, d/2.50+0, s, c/2+1.000, k/1.98+1.10, v/2.00+0.00, x/2+0); 
-                  Note(t/2.10+1.00, d/2.00+0, s, c/2+0.000, k/2.00+0.01, v/2.00+0.00, x/2+0); 
-                  Note(t/2.10+1.00, d/2.00+0, s, c/2+1.100, k/2.00+0.90, v/2.00+0.00, x/2+0); T(-1); 
+            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration<5)', `
+                  Note(t/2.00+0.00, d/2.00+0, s, c/2+0.000, k/2.00+0.00, v/2.00+0.02, x/2+0);  
+                  Note(t/2.10+1.00, d/2.00+0, s, c/2+0.000, k/2.00+0.00, v/2.00+0.00, x/2+0); 
+                  Note(t/2.10+1.05, d/2.00+0, s, c/2+1.100, k/2.00-1.90, v/2.00+0.00, x/2+0); 
             `);
-            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==4)', `
+            //                  Note(t/2.10+0.00, d/2.50+0, s, c/2+1.000, k/2.00+1.10, v/2.00+0.00, x/2+0); 
+
+            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration==5)', `
                   Scale(0, 2.0);
                   Scale(4, 2.0);
-                  Note(t/1.50-0.50, d/1.50+0, s, c/2+0.003, k/2.00+0.00, v/2.00+0.02, x/2+0);  
-            T(2); Note(t/1.50+0.00, d/2.00+0, s, c/2-1.000, k/1.20+0.80, v/2.00+0.00, x/2+0); T(5);
-                  Note(t/1.50+0.50, d/2.00+0, s, c/2+0.000, k/2.00-1.00, v/2.00+0.00, x/2+0); 
+            T(2); Note(t/1.50-0.50, d/1.50+0, s, c/2+0.000, k/2.00-0.10, v/2.00+0.00, x/2+0);  
+                  Note(t/2.50+0.00, d/4.00+0, s, c/2-1.000, k/2.20+0.30, v/2.00+0.00, x/2+0); 
+            K();  Note(t/1.50+0.55, d/2.00+0, s, c/2+0.000, k/2.00-0.05, v/2.00+0.00, x/2+0); 
                   Scale(0, 0.5);
                   Scale(4, 0.5);
             `);
-            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration>4)', `
-                  Note(t/2.00+0.05, d/2.00+0, s, c/2+0.003, k/2.00+0.00, v/2.00+0.02, x/2+0);  
-                  Note(t/2.10+0.00, d/2.00+0, s, c/2+0.500, k/1.98+1.10, v/2.00+0.00, x/2+0); T(5);
-            K();  Note(t/2.10+1.00, d/2.00+0, s, c/2+0.000, k/2.00+0.01, v/2.00+0.00, x/2+0); 
-                  Note(t/2.10+1.00, d/2.00+0, s, c/2+1.100, k/2.00+0.90, v/2.00+0.00, x/2+0); T(2);
+            lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration>5)', `
+                  Note(t/2.00+0.00, d/2.00+0, s, c/2+0.000, k/2.00+0.00, v/2.00+0.02, x/2+0);  
+                  Note(t/2.30+0.04, d/2.00+0, s, c/2+0.500, k/2.00+1.10, v/2.00+0.00, x/2+0); Q(3);
+                  Note(t/2.10+1.00, d/2.00+0, s, c/2+0.000, k/2.00+0.00, v/2.00+0.00, x/2+0); 
+                  Note(t/2.10+1.00, d/2.00+0, s, c/2+1.150, k/2.00+0.90, v/2.00+0.00, x/2+0); 
             `);
+
             console.log(chord.information());
             var t = new ParametricLindenmayer.Turtle(new Silencio.Event(), chord, chord);
             lsys.set_turtle(t);
-            lsys.generate(7);
+            lsys.generate(6);
             lsys.score.findScales();
             csound.message('lsys:' + lsys + '\n');
             csound.message(lsys.score.getDuration().toString() + '\n');
             lsys.score.sort();
-            lsys.score.setScale(3, 2, 4);
+            lsys.score.setScale(3, 2, 4.99);
             lsys.score.setScale(4, 24, 88);
-            lsys.score.setScale(5, 70, 10);
+            lsys.score.setScale(5, 70, 16);
             lsys.score.temper(12);
             lsys.score.tieOverlaps(true);
             lsys.conformToChords();
@@ -307,11 +308,6 @@ endin
                     }
                 }
             }
-            // Pianoteq misbehaves if we start right at time 0.
-            for (var i = 0; i < lsys.score.data.length; i++) {
-                var event = lsys.score.data[i];
-                event.time = event.time + 1;
-            }
             if (true) {
                 // Also if keys overlap.
                 for (var i = 0; i < lsys.score.data.length; i++) {
@@ -341,6 +337,11 @@ endin
             }
             //lsys.conformToChords();
             lsys.score.setDuration(10 * 60 + 5);
+            // Pianoteq misbehaves if we start right at time 0.
+            for (var i = 0; i < lsys.score.data.length; i++) {
+                var event = lsys.score.data[i];
+                event.time = event.time + 2;
+            }
             lsys.score.findScales();
             csound.message(lsys.score.minima.toString());
             csound.message(lsys.score.ranges.toString());
@@ -430,7 +431,8 @@ endin
                 } catch (e) {
                 }
                 csound.compileOrc(document.getElementById('orc').value);
-                csound.setOption('-m0');
+                csound.setOption('-m35');
+                csound.setOption('--nchnls=2');
                 csound.setOption('-d');
                 csound.setOption('-odac');
                 generate();
@@ -641,9 +643,6 @@ endin
             add_slider(Master, 'gk_Reverb2_Feedback', 0, 1);
             add_slider(Master, 'gk_MasterOutput_level', -60, 60);
             var intruments = gui.addFolder('Instruments');
-            var fmclang = intruments.addFolder('FM Clang');
-            add_slider(fmclang, 'gk_FM_Clang_preset', 1, 13);
-            add_slider(fmclang, 'gk_FM_Clang_level', -60, 60);
             var Blower = intruments.addFolder('Blower');
             add_slider(Blower, 'gk_Blower_grainDensity', 0, 400);
             add_slider(Blower, 'gk_Blower_grainDuration', 0, .5);
@@ -651,7 +650,7 @@ endin
             add_slider(Blower, 'gk_Blower_grainFrequencyRange', 0, 100);
             add_slider(Blower, 'gk_Blower_level', -60, 60);
             var Bower = intruments.addFolder('Bower');
-            add_slider(Bower, 'gk_Bower_pressure', 0, 1);
+            add_slider(Bower, 'gk_Bower_pressure', 0, 4);
             add_slider(Bower, 'gk_Bower_level', -60, 60);
             var Buzzer = intruments.addFolder('Buzzer');
             add_slider(Buzzer, 'gk_Buzzer_Harmonics', 0, 20);
@@ -663,6 +662,9 @@ endin
             add_slider(Droner, 'gk_Droner_partial4', 0, 1);
             add_slider(Droner, 'gk_Droner_partial5', 0, 1);
             add_slider(Droner, 'gk_Droner_level', -60, 60);
+            var fmclang = intruments.addFolder('FM Clang');
+            add_slider(fmclang, 'gk_FM_Clang_preset', 1, 13);
+            add_slider(fmclang, 'gk_FM_Clang_level', -90, 90);
             var Harpsichord = intruments.addFolder('Harpsichord');
             add_slider(Harpsichord, 'gk_Harpsichord_pick', 0, 1);
             add_slider(Harpsichord, 'gk_Harpsichord_reflection', .000001, .999999);
