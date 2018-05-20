@@ -10,7 +10,7 @@ All rights reserved.
 sr = 48000
 ksmps = 128
 nchnls = 2
-0dbfs = 100000
+0dbfs = 10000
 
 #define USE_SPATIALIZATION #1#
 
@@ -35,25 +35,78 @@ gi_scene_radius = 60
 gi_minimum_rate = 1/15
 gi_maximum_rate = 1/60
 
-connect "Blower",    "outbformat", "BformatDecoder", "inbformat"
-connect "Blower",    "out", "SpatialReverb", "in"
-connect "Bower",     "outbformat", "BformatDecoder", "inbformat"
-connect "Bower",     "out", "SpatialReverb", "in"
-connect "Buzzer",    "outbformat", "BformatDecoder", "inbformat"
-connect "Buzzer",    "out", "SpatialReverb", "in"
-connect "FMDroner",  "outbformat", "BformatDecoder", "inbformat"
-connect "FMDroner",  "out", "SpatialReverb", "in"
-connect "Phaser",    "outbformat", "BformatDecoder", "inbformat"
-connect "Phaser",    "out", "SpatialReverb", "in"
-connect "Shiner",    "outbformat", "BformatDecoder", "inbformat"
-connect "Shiner",    "out", "SpatialReverb", "in"
-connect "Sweeper",   "outbformat", "BformatDecoder", "inbformat"
-connect "Sweeper",   "out", "SpatialReverb", "in"
+connect "Blower",        "outbformat", "BformatDecoder", "inbformat"
+connect "Blower",        "out", "SpatialReverb", "in"
+connect "Bower",         "outbformat", "BformatDecoder", "inbformat"
+connect "Bower",         "out", "SpatialReverb", "in"
+connect "Buzzer",        "outbformat", "BformatDecoder", "inbformat"
+connect "Buzzer",        "out", "SpatialReverb", "in"
+connect "FMDroner",      "outbformat", "BformatDecoder", "inbformat"
+connect "FMDroner",      "out", "SpatialReverb", "in"
+connect "Phaser",        "outbformat", "BformatDecoder", "inbformat"
+connect "Phaser",        "out", "SpatialReverb", "in"
+connect "Shiner",        "outbformat", "BformatDecoder", "inbformat"
+connect "Shiner",        "out", "SpatialReverb", "in"
+connect "STKBeeThree",   "outbformat", "BformatDecoder", "inbformat"
+connect "STKBeeThree",   "out", "SpatialReverb", "in"
+connect "Sweeper",       "outbformat", "BformatDecoder", "inbformat"
+connect "Sweeper",       "out", "SpatialReverb", "in"
 connect "SpatialReverb", "outbformat", "BformatDecoder", "inbformat"
 
 alwayson "SpatialReverb"
-alwayson "BformatDecoder"
+alwayson "BformatDecoder"   
 ;alwayson "Controls"
+
+gk_STKBeeThree_level init 0
+instr STKBeeThree
+; Authors: Michael Gogins
+if p3 == -1 then
+  p3 = 1000000
+endif
+i_instrument = p1
+i_time = p2
+i_duration = p3
+i_midi_key = p4
+i_midi_velocity = p5
+k_space_front_to_back = p6
+k_space_left_to_right = p7
+k_space_bottom_to_top = p8
+i_phase = p9
+i_frequency = cpsmidinn(i_midi_key)
+; Adjust the following value until "overall amps" at the end of performance is about -6 dB.
+i_overall_amps = 64
+i_normalization = ampdb(-i_overall_amps) / 2
+i_amplitude = ampdb(i_midi_velocity) * i_normalization
+k_gain = ampdb(gk_STKBeeThree_level)
+asignal STKBeeThree i_frequency, 1.0, 1, 1.5, 2, 4.8, 4, 2.1
+; ares phaser1 asig, kfreq, kord, kfeedback [, iskip]
+a_signal phaser1 asignal, 8000, 16, .2, .9
+i_attack = .002
+i_sustain = p3
+i_release = 0.01
+xtratim i_attack + i_sustain + i_release
+a_declicking linsegr 0, i_attack, 1, i_sustain, 1, i_release, 0
+a_signal = a_signal * i_amplitude * a_declicking * k_gain
+kx jspline gi_scene_radius * 2, gi_minimum_rate, gi_maximum_rate
+ky jspline gi_scene_radius * 2, gi_minimum_rate, gi_maximum_rate
+kz jspline gi_scene_radius * 2, gi_minimum_rate, gi_maximum_rate
+k_space_front_to_back = kx - gi_scene_radius
+k_space_left_to_right = ky - gi_scene_radius
+k_space_bottom_to_top = kz - gi_scene_radius
+kelapsed timeinsts
+printks "STKBeeThree    i %7.2f t %7.2f [%7.2f] d %7.2f k %7.2f f %7.2f v %7.2f kx %7.2f ky %7.2f kz %7.2f A %9.2f\n", 1.0, p1, p2, kelapsed, p3, p4, i_frequency, p5, kx, ky, kz, rms(a_signal)
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+endin
 
 gk_FMDroner_partial1 init 1
 gk_FMDroner_partial2 init 2
@@ -128,7 +181,7 @@ kx = kx - gi_scene_radius
 ky = ky - gi_scene_radius
 kz = kz - gi_scene_radius
 kelapsed timeinsts
-printks "FMDroner       i %7.2f t %7.2f [%7.2f] d %7.2f k %7.2f f %7.2f v %7.2f kx %7.2f ky %7.2f kz %7.2f A %9.2f\n", 1.0, p1, p2, kelapsed, p3, p4, ihertz, p5, kx, ky, kz, rms(a_damping)
+printks "FMDroner       i %7.2f t %7.2f [%7.2f] d %7.2f k %7.2f f %7.2f v %7.2f kx %7.2f ky %7.2f kz %7.2f A %9.2f\n", 1.0, p1, p2, kelapsed, p3, p4, ihertz, p5, kx, ky, kz, rms(a_signal)
 ;outs a_signal, a_signal
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -579,21 +632,24 @@ prealloc "Sweeper",   8
 t 0  30
 ;t 0 120
 
-; C E B
-i "FMDroner"    0  60 [ (( 0 /  1) * 12) + (0 * 12) + 24 ] 63
-i "FMDroner"    0  60 [ (( 4 /  5) * 12) + (1 * 12) + 24 ] 60
-i "FMDroner"    0  30 [ (( 3 /  2) * 12) + (2 * 12) + 24 ] 60
-i "FMDroner"    0  60 [ ((15 /  8) * 12) + (2 * 12) + 24 ] 57
+i "STKBeeThree"    0  60 [ (( 0 /  1) * 12) + (0 * 12) + 24 ] 63
+i "STKBeeThree"    0  60 [ (( 4 /  5) * 12) + (1 * 12) + 24 ] 60
+i "STKBeeThree"    0  30 [ (( 3 /  2) * 12) + (2 * 12) + 24 ] 60
+i "STKBeeThree"    0  60 [ ((15 /  8) * 12) + (2 * 12) + 24 ] 57
 
-; C Ab E B
+;i "FMDroner"    0  60 [ (( 0 /  1) * 12) + (0 * 12) + 24 ] 63
+;i "FMDroner"    0  60 [ (( 4 /  5) * 12) + (1 * 12) + 24 ] 60
+;i "FMDroner"    0  30 [ (( 3 /  2) * 12) + (2 * 12) + 24 ] 60
+;i "FMDroner"    0  60 [ ((15 /  8) * 12) + (2 * 12) + 24 ] 57
+
 i "Bower"      30  30 [ (( 5 /  8) * 12) + (2 * 12) + 24 ] 72
-; G F# B
+
 i "Sweeper"    60  60 [ (( 2 /  3) * 12) + (0 * 12) + 24 ] 56
 i "Sweeper"    60  60 [ ((32 / 45) * 12) + (0 * 12) + 24 ] 54
 i "Sweeper"    60  30 [ ((15 /  8) * 12) + (0 * 12) + 24 ] 51
-; G F B
+
 i "Buzzer"     90  30 [ (( 3 /  4) * 12) + (1 * 12) + 24 ] 60
-; C E B
+
 i "Buzzer"    120  60 [ (( 0 /  1) * 12) + (0 * 12) + 24 ] 63
 i "FMDroner"  120  60 [ (( 4 /  5) * 12) + (1 * 12) + 24 ] 60
 i "Bower"     120  30 [ ((15 /  8) * 12) + (2 * 12) + 24 ] 60

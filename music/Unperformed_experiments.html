@@ -86,7 +86,7 @@
         </table>
         <textarea class="code" id="orc" hidden rows=24 cols=80>
 sr = 48000
-ksmps = 100
+ksmps = 128
 nchnls = 2
 0dbfs = 1
 
@@ -120,7 +120,11 @@ alwayson "Reverb2Right"
 alwayson "ParametricEQ"
 alwayson "MasterOutput"
 
-; #define USE_PIANOTEQ #1#
+giPianoteq init 0
+giFluidsynth init 0
+giFluidSteinway init 0
+
+#define USE_PIANOTEQ #1#
 #ifdef USE_PIANOTEQ
 #include "PianoNotePianoteq.inc"
 #else
@@ -145,6 +149,8 @@ maxalloc 3, 8
 maxalloc 4, 8
 maxalloc 5, 8
 maxalloc 6, 8
+
+
 
 gk_Reverb_Feedback init 0.975
 gk_Delay_Modulation init 0.875

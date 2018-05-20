@@ -131,6 +131,8 @@ alwayson "FM_Clang_Preset"
 alwayson "ParametricEQ"
 alwayson "MasterOutput"
 
+giPianoteq init 0
+
 #include "silencio/patches/FM_Clang_Controls.inc"
 #include "silencio/patches/PianoNotePianoteq.inc"
 #include "silencio/patches/Harpsichord.inc"
@@ -236,6 +238,7 @@ endin
             lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration<5)', `
                   Note(t/2.00+0.00, d/2.00+0, s, c/2+0.000, k/2.00+0.00, v/2.00+0.02, x/2+0);  
                   Note(t/2.10+1.00, d/2.00+0, s, c/2+0.000, k/2.00+0.00, v/2.00+0.00, x/2+0); 
+          Push(); K(); t/2.30+0.04, d/2.00+0, s, c/2+0.500, k/2.00+4.10, v/2.00+0.00, x/2+0); Pop();
                   Note(t/2.10+1.05, d/2.00+0, s, c/2+1.100, k/2.00-1.90, v/2.00+0.00, x/2+0); 
             `);
             //                  Note(t/2.10+0.00, d/2.50+0, s, c/2+1.000, k/2.00+1.10, v/2.00+0.00, x/2+0); 
@@ -443,9 +446,6 @@ endin
                 startTime = csound.getScoreTime();
                 setTimeout(updateTimeCell, 0);
             },
-            Developer_tools: function() {
-                nwgui.Window.get().showDevTools();
-            },
             Stop: function() {
                 if (csound_node !== null) {
                     csound = csound_node;
@@ -635,7 +635,6 @@ endin
             gui.remember(parameters);
             gui.add(parameters, 'Play').name('Play [Ctrl-P]');
             gui.add(parameters, 'Stop').name('Stop [Ctrl-S]');
-            gui.add(parameters, 'Developer_tools').name('Debug');
             gui.add(parameters, 'Close').name('Close').name('Exit [Ctrl-X]');
             var Master = gui.addFolder('Master effects');
             add_slider(Master, 'gk_overlap', 0, 20);
