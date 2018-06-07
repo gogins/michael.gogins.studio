@@ -252,13 +252,13 @@ endin
             lsys.add_rule('Note(t, d, s, c, k, v, x);', '(iteration>4)', `
                   Note(t/2.00+0.05, d/2.00+0, s, c/2+0.003, k/2.00+0.00, v/2.00+0.02, x/2+0);  
                   Note(t/2.10+0.00, d/2.00+0, s, c/2+0.500, k/1.98+1.10, v/2.00+0.00, x/2+0); T(5);
-            K();  Note(t/2.10+1.00, d/2.00+0, s, c/2+0.000, k/2.00+0.01, v/2.00+0.00, x/2+0); 
+            K();  Note(t/2.10+1.00, d/2.00+0, s, c/2+0.000, k/2.00+0.01, 0, x/2+0); 
                   Note(t/2.10+1.00, d/2.00+0, s, c/2+1.100, k/2.00+0.90, v/2.00+0.00, x/2+0); T(2);
             `);
             console.log(chord.information());
             var t = new ParametricLindenmayer.Turtle(new Silencio.Event(), chord, chord);
             lsys.set_turtle(t);
-            lsys.generate(7);
+            lsys.generate(6);
             lsys.score.findScales();
             csound.message('lsys:' + lsys + '\n');
             csound.message(lsys.score.getDuration().toString() + '\n');
