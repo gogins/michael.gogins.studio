@@ -5,6 +5,8 @@
         <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
         <meta http-equiv="Pragma" content="no-cache" />
         <meta http-equiv="Expires" content="0" />
+        <!-- <script data-main="silencio/js" src="silencio/js/require.js"></script> -->
+        <script src="silencio/js/system.js"></script>
         <script src="csound_samples.js"></script>
         <script src="csound_extended.js"></script> 
         <script src="CsoundAudioNode.js"></script>
@@ -16,6 +18,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/sprintf/1.1.1/sprintf.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/91/three.js"></script>
         <script src="silencio/js/clubber.js"></script>
+        <script src="silencio/js/flame.js"></script>
         <style>
             ::-webkit-scrollbar
             {
@@ -2322,11 +2325,9 @@ i "FMDroner"  150  30 [ (( 0 /  1) * 12) + (2 * 12) + 24 ] 60
                 Play: function() {
                     try {
                         csound = get_csound(csoundMessage);
-                        //csound = csound_audio_node
                         if (csound === null) {
                             return;
                         }
-                        //console.log = csoundMessage;
                         gui.revert();
                         let csd = document.getElementById('csd').value;
                         csound.Stop();
@@ -2347,7 +2348,6 @@ i "FMDroner"  150  30 [ (( 0 /  1) * 12) + (2 * 12) + 24 ] 60
                             context: csound.context
                         });
                         clubber.listen(csound); 
-                        //clubber.update(currentTime); // currentTime is optional and specified in milliseconds.
                         console.log(clubber.notes); // This is the array containing the audio energy per midi note.
                     } catch (e) {
                         alert(e);
