@@ -67,8 +67,8 @@ int main(int argc, const char **argv)
 {
     csound::MusicModel model;
     // These fields determine output filenames and ID 3 tags.
-    model.setTitle("\"Parachronic_6_B\"");
-    model.setFilename("Parachronic_6_B");
+    model.setTitle("\"Parachronic\"");
+    model.setFilename("Parachronic");
     model.setAlbum("Silence");
     model.setArtist("\"Michael Gogins\"");
     model.setCopyright("\"(C) 2018 by Michael Gogins\"");
@@ -216,7 +216,7 @@ int main(int argc, const char **argv)
 
     model.setCsoundOrchestra(R"(
 
-sr                              =                       48000
+sr                              =                       96000
 ksmps                           =                       128
 nchnls                          =                       2
 0dbfs                           =                       1000
@@ -929,7 +929,7 @@ i_pitchclassset                 =                       p10
 i_homogeneity                   =                       p11
 iattack                         =                       0.03
 isustain                        =                       p3
-irelease                        =                       0.52
+irelease                        =                       1.52
                                 xtratim                 iattack + irelease
 i_duration                      =                       p3 + iattack + irelease
 adeclick                        linsegr                 0.0, iattack, 1.0, isustain, 1.0, irelease, 0.0
@@ -1227,6 +1227,7 @@ i_time                          =                       p2
 i_duration                      =                       p3
 i_midikey                       =                       p4
 i_midivelocity                  =                       p5
+iamplitude                      =                       ampdb(i_midivelocity) * 2.0
 i_phase                         =                       p6
 i_pan                           =                       p7
 i_depth                         =                       p8
@@ -1234,26 +1235,12 @@ i_height                        =                       p9
 i_pitchclassset                 =                       p10
 i_homogeneity                   =                       p11
 ipch                            =                       cpsmidinn(i_midikey)
-iamplitude                      =                       ampdb(i_midivelocity) * 2.0
-ipch2                           =                       ipch
-kpchline                         line                    ipch, i_duration, ipch2
-iamp                             =                       2
-ienvType                        =                       2
-akenv                             init                     0
-                                if ienvType == 0 kgoto env0  ; adsr
-                                if ienvType == 1 kgoto env1  ; pyramid
-                                if ienvType == 2 kgoto env2  ; ramp
-env0:
-akenv                            adsr                    .3, .2, .9, .5
-                                kgoto                   endEnvelope
-env1:
-akenv                             linseg                    0, i_duration * .5, 1, i_duration * .5, 0
-                                kgoto                   endEnvelope
-env2:
-akenv                            linseg                     0, i_duration - .1, 1, .1, 0    
-kgoto                           endEnvelope
-endEnvelope:
+iamp                            =                       2
+if p3 < 70 then
+kc1                             =                       12
+else
 kc1                             =                       5
+endif
 kc2                             =                       5
 kvdepth                         =                       0.005
 kvrate                          =                       6
@@ -1262,7 +1249,14 @@ ifn2                            =                       gi_FMWaterBell_cosine
 ifn3                            =                       gi_FMWaterBell_cosine
 ifn4                            =                       gi_FMWaterBell_cosine
 ivfn                            =                       gi_FMWaterBell_cosine
-asignal                         fmbell                    iamp, kpchline, kc1, kc2, kvdepth, kvrate, ifn1, ifn2, ifn3, ifn4, ivfn
+isus                            init                    4
+; Fill in gaps at the beginning of the score.
+if                              (p3 < 70.)              then
+isus                            = 13.
+else
+isus                            = 4.
+endif
+asignal                         fmbell                  iamp, ipch, kc1, kc2, kvdepth, kvrate, ifn1, ifn2, ifn3, ifn4, ivfn, isus
 iattack                         =                       0.003
 isustain                        =                       p3
 irelease                        =                       0.06
@@ -3120,22 +3114,21 @@ prints "Xing           i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", 
                                 // Original by Lee Zakian.
                                 // Adapted by Michael Gogins.
                                 //////////////////////////////////////////////
-if1                                ftgenonce               0, 0, 65536,    10,     1
-iwtsin                            init                    if1
-if2                                ftgenonce               0, 0, 16,       -2,     40, 40, 80, 160, 320, 640, 1280, 2560, 5120, 10240, 10240
-if26                               ftgenonce               0, 0, 65536,    -10,    2000, 489, 74, 219, 125, 9, 33, 5, 5
-if27                               ftgenonce               0, 0, 65536,    -10,    2729, 1926, 346, 662, 537, 110, 61, 29, 7
-if28                               ftgenonce               0, 0, 65536,    -10,    2558, 2012, 390, 361, 534, 139, 53, 22, 10, 13, 10
-if29                               ftgenonce               0, 0, 65536,    -10,    12318, 8844, 1841, 1636, 256, 150, 60, 46, 11
-if30                               ftgenonce               0, 0, 65536,    -10,    1229, 16, 34, 57, 32
-if31                               ftgenonce               0, 0, 65536,    -10,    163, 31, 1, 50, 31
-if32                               ftgenonce               0, 0, 65536,    -10,    4128, 883, 354, 79, 59, 23
-if33                               ftgenonce               0, 0, 65536,    -10,    1924, 930, 251, 50, 25, 14
-if34                               ftgenonce               0, 0, 65536,    -10,    94, 6, 22, 8
-if35                               ftgenonce               0, 0, 65536,    -10,    2661, 87, 33, 18
-if36                               ftgenonce               0, 0, 65536,    -10,    174, 12
-if37                               ftgenonce               0, 0, 65536,    -10,    314, 13
-                                pset                    0, 0, 3600
+if1                             ftgenonce               0, 0, 65536,    10,     1
+iwtsin                          init                    if1
+if2                             ftgenonce               0, 0, 16,       -2,     40, 40, 80, 160, 320, 640, 1280, 2560, 5120, 10240, 10240
+if26                            ftgenonce               0, 0, 65536,    -10,    2000, 489, 74, 219, 125, 9, 33, 5, 5
+if27                            ftgenonce               0, 0, 65536,    -10,    2729, 1926, 346, 662, 537, 110, 61, 29, 7
+if28                            ftgenonce               0, 0, 65536,    -10,    2558, 2012, 390, 361, 534, 139, 53, 22, 10, 13, 10
+if29                            ftgenonce               0, 0, 65536,    -10,    12318, 8844, 1841, 1636, 256, 150, 60, 46, 11
+if30                            ftgenonce               0, 0, 65536,    -10,    1229, 16, 34, 57, 32
+if31                            ftgenonce               0, 0, 65536,    -10,    163, 31, 1, 50, 31
+if32                            ftgenonce               0, 0, 65536,    -10,    4128, 883, 354, 79, 59, 23
+if33                            ftgenonce               0, 0, 65536,    -10,    1924, 930, 251, 50, 25, 14
+if34                            ftgenonce               0, 0, 65536,    -10,    94, 6, 22, 8
+if35                            ftgenonce               0, 0, 65536,    -10,    2661, 87, 33, 18
+if36                            ftgenonce               0, 0, 65536,    -10,    174, 12
+if37                            ftgenonce               0, 0, 65536,    -10,    314, 13
 i_instrument                    =                       p1
 i_time                          =                       p2
 i_duration                      =                       p3
@@ -3152,11 +3145,11 @@ iamplitude                      =                       ampdb(i_midivelocity) * 
 iattack                         =                       .25
 isustain                        =                       p3
 irelease                        =                       .33333333
-p3                              =                       iattack + isustain + irelease
+                                xtratim                 iattack + irelease
 iHz                             =                       ifrequency
 kHz                             =                       k(iHz)
 idB                             =                       i_midivelocity
-adeclick77                        linsegr                 0, iattack, 1, isustain, 1, irelease, 0
+adeclick77                      linsegr               0, iattack, 1, isustain, 1, irelease, 0
 ip3                             =                       (p3 < 3.0 ? p3 : 3.0)
 ; parameters
 ; p4    overall amplitude scaling factor
@@ -3198,9 +3191,7 @@ isus                            =                       isustain/4
 idec                            =                       idecay/6
 iphase                          =                       giseed                          ; use same phase for all wavetables
 giseed                          =                       frac(giseed*105.947)
-; vibrato block
-; kvibdepth                       linseg                  .1, .8*p3, 1, .2*p3, .7
-kvibdepth                       linseg                  .1, .8*ip3, 1, isustain, 1, .2*ip3, .7
+kvibdepth                       linseg                  .1, .8*ip3, 1, isustain, .8, .2*ip3, .7
 kvibdepth                       =                       kvibdepth* ivibdepth            ; vibrato depth
 kvibdepthr                      randi                   .1*kvibdepth, 5, giseed         ; up to 10% vibrato depth variation
 giseed                          =                       frac(giseed*105.947)
@@ -3209,7 +3200,6 @@ ivibr1                          =                       giseed                  
 giseed                          =                       frac(giseed*105.947)
 ivibr2                          =                       giseed
 giseed                          =                       frac(giseed*105.947)
-
                                 if                      ip6 < 0 goto            vibrato1
 kvibrate                        linseg                  2.5+ivibr1, p3, 4.5+ivibr2      ; if p6 positive vibrato gets faster
                                 goto                    vibrato2
@@ -3445,17 +3435,17 @@ prints "MasterOutput   i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", 
                                 endin
                                 
             )");
-    model.arrange( 1,  9,-12.00); // Was 25.
+    model.arrange( 1,  9, -9.00); 
     model.arrange( 2, 16,  7.00);
-    model.arrange( 3, 14,  1.00); // Was 5.
-    model.arrange( 4,  5, 85.00); // Was 1.
+    model.arrange( 3, 14,  1.00); 
+    model.arrange( 4,  5, 85.00); 
     model.arrange( 5, 57,  0.75);
     model.arrange( 6, 15,  5.00);
     model.arrange( 7, 16,  7.00);
     model.arrange( 8, 16,  7.00);
-    model.arrange( 9, 13, 54.00); // Was -7.
+    model.arrange( 9, 13, 54.00);
     model.arrange(10, 11,  3.00);
-    model.arrange(11, 14,  5.00); // Was 5.
+    model.arrange(11, 14,  5.00); 
     model.arrange(12,  4, 64.00);
     model.processArgv(argc, argv);
 }
