@@ -5,7 +5,7 @@ All rights reserved<br>
 http://michaelgogins.tumblr.com<br>
 michael /dot/ gogins /at/ gmail /dot/ com
 
-This is my private Git repository, intended to serve as my creative studio for computer music and other projects. All materials found herein are copyright by Michael Gogins, and are not open source or public domain, unless expressly stated otherwise.
+This is my private Git repository, intended to serve as my creative studio for computer music and other projects. All materials found herein are copyright by Michael Gogins,  and are licensed under the terms of the Creative Commons Attribution-NonCommercial-NoDerivs license (CC BY-NC-ND). This permits you to download these works and share them with others as long as they credit me, but nobody is allowed to change these works in any way, or to use them commercially, without my written permission.
 
 ## Methodology
 

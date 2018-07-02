@@ -1252,7 +1252,7 @@ ivfn                            =                       gi_FMWaterBell_cosine
 isus                            init                    4
 ; Fill in gaps at the beginning of the score.
 if                              (p3 < 70.)              then
-isus                            = 13.
+isus                            = 17.
 else
 isus                            = 4.
 endif
@@ -3435,7 +3435,7 @@ prints "MasterOutput   i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", 
                                 endin
                                 
             )");
-    model.arrange( 1,  9, -9.00); 
+    model.arrange( 1,  9, -7.00); 
     model.arrange( 2, 16,  7.00);
     model.arrange( 3, 14,  1.00); 
     model.arrange( 4,  5, 85.00); 
