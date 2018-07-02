@@ -5,24 +5,11 @@ All rights reserved<br>
 http://michaelgogins.tumblr.com<br>
 michael /dot/ gogins /at/ gmail /dot/ com
 
-This is my private Git repository, intended to serve as my creative studio for computer music and other projects. All materials found herein are copyright by Michael Gogins,  and are licensed under the terms of the Creative Commons Attribution-NonCommercial-NoDerivs license (CC BY-NC-ND). This permits you to download these works and share them with others as long as they credit me, but nobody is allowed to change these works in any way, or to use them commercially, without my written permission.
+This is my Git repository, intended to serve as my creative studio for computer music and other projects. All materials found herein are copyright by Michael Gogins, and are licensed under the terms of the [Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International license (CC BY-NC-ND 4.0)](https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode). This permits you to download these works and share them with others as long as you credit me, but nobody is allowed to change these works in any way, or to use them commercially, without my express written permission.
 
-## Methodology
+## External Resources
 
-My open source toolkit code and other resources for computer music, including some example pieces, may be found at https://github.com/gogins/gogins.github.io. In general, pieces that use Silencio from gogins.github.io should be created in a subdirectory of studio with a symbolic link to gogins.github.io/csound/silencio. Alternatively, just copy the silencio directory of gogins.github.io to the working directory.
-
-To try to keep the size of this repository down, run this periodically:
-
-```
-git count-objects -v --human-readable
-git reflog expire --all --expire=now
-git gc --prune=now --aggressive
-git count-objects -v --human-readable
-```
-
-Also, try to avoid versioning media files such as photographs; fix them up before committing them.
-
-It is possible to delete objects and their histories using https://rtyley.github.io/bfg-repo-cleaner/.
+Many of these works use Csound and extensions of Csound. These can be found in the open source [csound-extended repository](https://github.com/gogins/csound-extended).
 
 ## Guiding Principles
 
