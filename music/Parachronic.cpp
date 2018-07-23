@@ -8,6 +8,10 @@
 #include <VoiceleadingNode.hpp>
 #include <vector>
 
+#define PI      (3.141592653589793238462643383279502884197)
+#define TWO_PI  (6.283185307179586476925286766559005768394)
+
+
 /**
  * Generators are lambdas with the same signature as the following example.
  * The pen is the current position of a "pen" in the score. The pen is
@@ -63,11 +67,11 @@ int main(int argc, const char **argv)
 {
     csound::MusicModel model;
     // These fields determine output filenames and ID 3 tags.
-    model.setTitle("\"Parachronic\"");
-    model.setFilename("Parachronic");
+    model.setAuthor("Michael Gogins");
+    model.setTitle("Parachronic");
     model.setAlbum("Silence");
-    model.setArtist("\"Michael Gogins\"");
-    model.setCopyright("\"(C) 2018 by Michael Gogins\"");
+    model.setYear("2018");
+    model.setPerformanceRightsOrganization("Irreducible Productions, ASCAP");
 
     std::vector<std::function<csound::Event(const csound::Event &, int, csound::Score &, csound::VoiceleadingNode &)>> generators;
 
@@ -82,9 +86,9 @@ int main(int argc, const char **argv)
         pen[csound::Event::VELOCITY] =      1.0;
         pen[csound::Event::PAN] =           .875;
         score.append(pen);     
-        if (depth == 6) {
+        if (depth == 4) {
             //voiceleadingNode.C(pen[csound::Event::TIME], "Dm9");
-            voiceleadingNode.Q(pen[csound::Event::TIME], -1);
+            voiceleadingNode.Q(pen[csound::Event::TIME], -5);
         }
         if (depth == 3) {
             voiceleadingNode.K(pen[csound::Event::TIME]);
@@ -134,10 +138,10 @@ int main(int argc, const char **argv)
         pen[csound::Event::INSTRUMENT] =    4.0 * 4.5 + double(depth % 4);
         pen[csound::Event::VELOCITY] =      2.0;
         pen[csound::Event::PAN] =           -.875;
-        if (depth == 3) {
+        if (depth == 2) {
             voiceleadingNode.Q(pen[csound::Event::TIME], -5);
         }
-        if (depth == 4) {
+        if (depth == 3) {
             voiceleadingNode.K(pen[csound::Event::TIME]);
         }
         return pen;
@@ -170,16 +174,15 @@ int main(int argc, const char **argv)
     csound::ScoreNode scoreNode;
     csound::VoiceleadingNode voiceleadingNode;
     voiceleadingNode.setModality({0., 2., 5., 7., 11.});
+    voiceleadingNode.rescaleTimes = true;
+    voiceleadingNode.addChild(&scoreNode);
+    model.addChild(&voiceleadingNode);
     csound::Score &score = scoreNode.getScore();
     recurrent(generators, transitions, 9, 0, pen, score, voiceleadingNode);
-    score.sort();
-    voiceleadingNode.C(score[0].getTime(), "Dm9");
-    voiceleadingNode.transform(score, false);
     std::cout << "Generated duration:     " << score.getDuration() << std::endl;
     score.rescale(csound::Event::TIME,          true,  0.0, false,  0.0);
     score.rescale(csound::Event::TIME,          true,  0.0, false,  0.0);
     score.rescale(csound::Event::INSTRUMENT,    true,  1.0, false, 11.99999);
-    //score.rescale(csound::Event::INSTRUMENT,    true, 16.0, true,  0.);
     score.rescale(csound::Event::KEY,           true, 24.0, true,  72.0);
     score.rescale(csound::Event::VELOCITY,      true, 40.0, true,   0.0);
     score.rescale(csound::Event::DURATION,      true,  2.0, true,   4.0);
@@ -192,7 +195,6 @@ int main(int argc, const char **argv)
     //score.tieOverlappingNotes(true);
     score.findScale();
     score.setDuration(60. * 10.);
-    model.addChild(&scoreNode);
     std::mt19937 mersenneTwister;
     std::uniform_real_distribution<> randomvariable(-0.9, +0.9);
     for (int i = 0, n = score.size(); i < n; ++i) {
@@ -274,8 +276,8 @@ gkMasterLevel                   init                    1.5
                                 connect                 "BassModel",            "outright", "Reverberation",        "inright"
                                 connect                 "ChebyshevDrone",       "outleft",     "Reverberation",        "inleft"
                                 connect                 "ChebyshevDrone",       "outright", "Reverberation",        "inright"
-                                connect                 "ChebyshevPoly",        "outleft",     "Reverberation",        "inleft"
-                                connect                 "ChebyshevPoly",        "outright", "Reverberation",        "inright"
+                                connect                 "ChebyshevPoly",       "outleft",     "Reverberation",        "inleft"
+                                connect                 "ChebyshevPoly",       "outright", "Reverberation",        "inright"
                                 connect                 "Compressor",           "outleft",     "ParametricEq1",        "inleft"
                                 connect                 "Compressor",           "outright", "ParametricEq1",        "inright"
                                 connect                 "DelayedPluckedString", "outleft",     "Reverberation",        "inleft"
@@ -310,8 +312,8 @@ gkMasterLevel                   init                    1.5
                                 connect                 "Hypocycloid",          "outright", "Reverberation",        "inright"
                                 connect                 "KungModulatedFM",      "outleft",     "Reverberation",        "inleft"
                                 connect                 "KungModulatedFM",      "outright", "Reverberation",        "inright"
-                                connect                 "ModerateFM",           "outleft",     "Reverberation",        "inleft"
-                                connect                 "ModerateFM",           "outright", "Reverberation",        "inright"
+                                connect                 "ModerateFM",              "outleft",     "Reverberation",        "inleft"
+                                connect                 "ModerateFM",              "outright", "Reverberation",        "inright"
                                 connect                 "ModulatedFM",          "outleft",     "Reverberation",        "inleft"
                                 connect                 "ModulatedFM",          "outright", "Reverberation",        "inright"
                                 connect                 "Melody",               "outleft",     "Reverberation",        "inleft"
@@ -3429,7 +3431,7 @@ prints "MasterOutput   i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", 
                                 endin
                                 
             )");
-    model.arrange( 1,  9, -7.00); 
+    model.arrange( 1,  9, -1.00); 
     model.arrange( 2, 16,  7.00);
     model.arrange( 3, 14,  1.00); 
     model.arrange( 4,  5, 85.00); 
