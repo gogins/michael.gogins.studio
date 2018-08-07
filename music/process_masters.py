@@ -6,27 +6,30 @@ Author: Michael Gogins
 Attempts to process masters for all works listed in a tab-delimited text
 database. Processing produces normalized, cd-audio, mp3, and wmv files
 with metadata and sortable, self-explanatory filenames in a single directory.
+
+Also can be used to process one or a few files by making up lines in the "database."
+Rejiggered now for Linux where paths are standard.
 '''
 
 import datetime
 import os
 import os.path
-import soundfile
+##import soundfile
 import string
 import sys
 import time
 import traceback
 
 output = r'sifting.m3u'
-sox_path = r'C:\Program_Files_x86\sox-14-4-2'
-sndfile_path = r'C:\Program_Files\Mega-Nerd\libsndfile\bin'
-lame_path = r'C:\Program_Files_x86\"Lame For Audacity"'
-bwfmetaedit_path = r'''C:\Program Files\BWF_MetaEdit_CLI_1.3.1_Windows_x64'''
+sox_path = r''
+sndfile_path = r''
+lame_path = r''
+bwfmetaedit_path = r''
 # YouTube accepts MOV, MP4 (MPEG4), AVI, WMV, FLV, 3GP, MPEGPS, WebM
 # To use FFmpeg see https://bbs.archlinux.org/viewtopic.php?id=168433 and https://www.virag.si/2015/06/encoding-videos-for-youtube-with-ffmpeg/
 # ffmpeg -loop 1 -framerate 2 -i input.png -i audio.ogg -c:v libx264 -preset medium -tune stillimage -crf 18 -c:a copy -shortest -pix_fmt yuv420p output.mkv
 # ffmpeg -i <input file> -codec:v libx264 -crf 21 -bf 2 -flags +cgop -pix_fmt yuv420p -codec:a aac -strict -2 -b:a 384k -r:a 48000 -movflags faststart <output_name>.mp4
-ffmpeg_program = r'''C:\Program_Files\ffmpeg-3.2-win64-shared\bin\ffmpeg.exe'''
+ffmpeg_program = r'''ffmpeg'''
 # ffmpeg tags are documented here: http://jonhall.info/how_to/create_id3_tags_using_ffmpeg
 
 cd_had_titles_in_reverse_order = r'''
@@ -115,6 +118,9 @@ Michael Gogins	2017	NYCEMF		1	Black_Mountain.7e.html	09:15.00	C:/Users/restore/m
 database = r'''
 Michael Gogins	2017	ICSC 2017		1	Shell.html	09:15.00	C:/Users/restore/michael.gogins.studio/music/Shell.wav	07/03/17 11:37 AM		Publish	0.00						#Published
 '''
+database = r'''
+Michael Gogins	2018	-		-	Three Trees v2	11:20.00	/home/mkg/michael.gogins.studio/music/Three_Trees_v2.master.wav	08/03/18 03:07 PM		Publish	0.00		Not Registered		#Published by CDBaby			Published
+'''
 
 notes = 'Electroacoustic Music'
 lines = database.split('\n')
@@ -128,12 +134,15 @@ for line in lines:
         author = parts[0]
         year = parts[1]
         album = parts[2]
-        track = int(parts[4])
+        track = parts[4]
         title = parts[5]
         filepath = parts[7]
         directory, basename = os.path.split(filepath)
         rootname = os.path.splitext(basename)[0]
-        label = '%s -- %s -- Track %s -- %s' % (author, album, track, title)
+        if album == '-':
+            label = '%s -- %s' % (author, title)
+        else:
+            label = '%s -- %s -- Track %s -- %s' % (author, album, track, title)
         master_filename = '%s.master.wav' % label
         spectrogram_filename = '%s.png' % label
         cd_quality_filename = '%s.cd.wav' % label
@@ -188,9 +197,11 @@ for line in lines:
         os.system(sox_flac_command)
         mp4_command = '''"%s" -r 1 -i "%s" -i "%s" -codec:a aac -strict -2 -b:a 384k -r:a 48000 -c:v libx264 -b:v 500k "%s"''' % (ffmpeg_program, os.path.join(cwd, spectrogram_filename), os.path.join(cwd, master_filename), os.path.join(cwd, mp4_filename))
         mp4_metadata =  '-metadata title="%s" ' % title
-        mp4_metadata += '-metadata album="%s" ' % album
+        if album != '-':
+            mp4_metadata += '-metadata album="%s" ' % album
         mp4_metadata += '-metadata date="%s" ' % year
-        mp4_metadata += '-metadata track="%s" ' % track
+        if track != '1':
+            mp4_metadata += '-metadata track="%s" ' % track
         mp4_metadata += '-metadata genre="%s" ' % "Electroacoustic Music"
         mp4_metadata += '-metadata publisher="%s" ' % 'Irreducible Productions, ASCAP'
         mp4_metadata += '-metadata copyright="%s" ' % str_copyright
@@ -200,12 +211,7 @@ for line in lines:
         mp4_command = '''"%s" -y -loop 1 -framerate 2 -i "%s" -i "%s" -c:v libx264 -preset medium -tune stillimage -crf 18 -codec:a aac -strict -2 -b:a 384k -r:a 48000 -shortest -pix_fmt yuv420p -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" %s "%s"''' % (ffmpeg_program, os.path.join(cwd, spectrogram_filename), os.path.join(cwd, master_filename), mp4_metadata, os.path.join(cwd, mp4_filename))
         mp4_command = mp4_command.replace('\\', '/')
         print 'mp4_command:            ', mp4_command
-        # Limited length for os.system command, so...
-        with open('temp.bat', 'w') as f:
-            f.write(mp4_command)
-            f.write('\n')
-            f.close()
-        os.system('temp.bat')
+        os.system(mp4_command)
         filecount = filecount + 1
         os.system('del *wavuntagged.wav')
         print
