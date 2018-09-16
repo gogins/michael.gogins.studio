@@ -21,6 +21,16 @@
 \usepackage{color}
 \usepackage{listings}
 \usepackage{supertabular}
+% definitions used by included articles, reproduced here for 
+% educational benefit, and to minimize alterations needed to be made
+% in developing this sample file.
+\usepackage{amssymb}
+\usepackage{latexsym}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amscd}     % commutative diagrams
+\usepackage{mathrsfs}  % This package allows the use of script letters. Type \mathscr to invoke math script.
+\usepackage{amsbsy}
 %\usepackage{scrpage2}
 \usepackage[pdftex,
 colorlinks=true,
@@ -326,6 +336,13 @@ examples
     context. What \textit{\textbf{is}} clear is that they are trying specifically 
     to produce IFSs whose attractors are graphs of functions.
     
+    It has become clear that "bilinear transformation" is a bit more general than 
+    "affine transformation." Basically, in this context, a bilinear transformation 
+    is similar to a shear transformation, but the two sides of the image can have 
+    different sizes. It's also clear that the concept originated in 2-dimensional 
+    graphics but can be generalized to N dimensions. Barnsley does give formulas for 
+    deriving the coefficients.
+    
     An RB operator is a kind of IFS in which the graph of a function over a 
 segment 
     $[a, b]$ is approximated by mapping the $[a, b]$ to each of the 
@@ -333,7 +350,7 @@ sub-segments
     defined by a pair of interpolation points.
     
     A \textit{local} IFS is one in which each function or mapping in the IFS 
-    may have a different domain, but the domains do not overlap.
+    may have a different co-domain, but the domains do not overlap.
     
     Various maps can be used to construct an RB operator for a given graph. Here, 
     we use local iterated functions instead of plain linear mappings for each 
@@ -593,7 +610,7 @@ Equivalently, \eqref{RB} can also be written in the form
 %contractive in the second variable, $\Phi g\in B(X,Y)$.
 
 This obviously is an application of the Collage Theorem. Each mapping is 
-actually a bilinear affine transformation that is rescaled 
+actually a bilinear (in the computer graphics sense, not the digital signal processing sense) transformation that is rescaled 
 to fit within the interpolation points (Figure \ref{fig:fif}).
 
     \begin{figure}
@@ -609,20 +626,29 @@ However, the flexibility of FAs can be increased by using a
 transformations in the IFS have the same co-domain, but not necessarily the 
 same domain. The individual domains must not overlap.
 
-The association of the RB operator with the IFS of our score graph $G(r)$ is 
+The association of the RB operator $\Phi$ with the IFS of a score graph $G(r)$ is 
 shown in this commutation diagram:
 
-Our purpose in using the RB operator is to ensure that we generate only IFS 
+\be
+\begin{CD}
+	X\times Y @>\cF_\Phi>> X\times X\\
+	@AAGA                  @AAGA\\
+	B(X,Y) @>\Phi>>  B(X,Y)
+\end{CD}
+\ee
+
+\noindent where $G$ is the mapping $B(X,Y)\ni g\longmapsto G(g) = \{(x, g(x))\mid x\in X\}\in X\times Y$.
+
+Our purpose in using the RB operator is to ensure that we generate \textit{only} IFS 
 that compute score graphs.
 
-
-
-    
-    
-    
     \subsection{Hilbert Indices for Fractal Approximation Parameters}
     
     \section{Implementation Notes}
+    
+Any Hutchinson operator is an RB operator if its member affine transformations do not have overlapping domains. 
+Many methods can be used to ensure this. Here, we simply compute the domains of each transformation, then add to the 
+domain translation a factor to separate the domains.
     
     \section{Musical Examples}
     
