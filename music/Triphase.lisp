@@ -1,7 +1,3 @@
-;;; **********************************************************************
-;;; $Name$
-;;; $Revision$
-;;; $Date$
 (require "asdf")
 (asdf:load-system :nudruz)
 (in-package :cm)
@@ -55,19 +51,24 @@
               wait (* pulse (next tempo))))))
 
 
-(defparameter pnotes   '(e4 fs b cs5 d fs4 g4 e cs5 b4 fs d5 cs))
+(defparameter pnotes   '(e4 fs4 b4 cs5 d5 fs4 g4 e4 cs5 b4 fs4 d5 cs5 c4 cs4 cs4 cs3 cs3))
 
-;        trope                pulse amp move stay
 (defparameter seq-1 (new seq :name "seq-1"))
-(events (piano-phase pnotes   .25 .5   5    5) seq-1)
-(map-objects (lambda (k) (+ k 16)) seq-1 :slot! 'keynum)
 (defparameter seq-2 (new seq :name "seq-2"))
-(events (piano-phase pnotes   .125  .5   5    10) seq-2)
-(map-objects (lambda (k) (+ k 1)) seq-2 :slot! 'channel)
 (defparameter seq-3 (new seq :name "seq-3"))
-(events (piano-phase pnotes 1   .7   5    3) seq-3)
-(map-objects (lambda (k) (- k 12)) seq-3 :slot! 'keynum)
-(map-objects (lambda (k) (+ k 2)) seq-3 :slot! 'channel)
+;        trope                pulse   amp  move stay
+(events (piano-phase pnotes   (/ 1 4) .5   8    8) seq-1)
+(events (piano-phase pnotes   (/ 1 2) .5   4    4) seq-2)
+(events (piano-phase pnotes   (/ 1 1) .7   2    2) seq-3)
+(map-objects (lambda (k) (+ k  12)) seq-1 :slot! 'keynum)
+(map-objects (lambda (k) (+ k   0)) seq-2 :slot! 'keynum)
+(map-objects (lambda (k) (+ k -12)) seq-3 :slot! 'keynum)
+(map-objects (lambda (k) (+ k   0)) seq-1 :slot! 'channel)
+(map-objects (lambda (k) (+ k   0)) seq-2 :slot! 'channel)
+(map-objects (lambda (k) (+ k   1)) seq-3 :slot! 'channel)
+
+(set-dispatch-macro-character #\# #\> #'cl-heredoc:read-heredoc)
+
 (defparameter aeolus-orc #>qqq>sr = 48000
 ksmps = 64
 nchnls = 2 
@@ -116,9 +117,11 @@ a_out aeolus_out gi_aeolus
 out a_out
 endin                                
     qqq)
+    
 (defparameter csound-seq (new seq :name "csound-seq"))
 (events (list seq-1 seq-2 seq-3) csound-seq)
-(render-with-orc csound-seq aeolus-orc :channel-offset 1 :velocity-scale 100)
+(render-with-orc csound-seq aeolus-orc :output "Triphase.wav" :channel-offset 1 :velocity-scale 100)
+(uiop:run-program '("python" "./post-process.py" "Triphase.wav"))
 (quit)
 
 
