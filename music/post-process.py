@@ -106,6 +106,6 @@ mp4_command = '''ffmpeg -y -loop 1 -framerate 2 -i "%s" -i "%s" -c:v libx264 -pr
 mp4_command = mp4_command.replace('\\', '/')
 print 'mp4_command:            ', mp4_command
 os.system(mp4_command)
-os.system('del *wavuntagged.wav')
+os.system('rm *wavuntagged.wav')
 print
 

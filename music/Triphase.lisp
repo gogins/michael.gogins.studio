@@ -51,21 +51,23 @@
               wait (* pulse (next tempo))))))
 
 
-(defparameter pnotes   '(e4 fs4 b4 cs5 d5 fs4 g4 e4 cs5 b4 fs4 d5 cs5 c4 cs4 cs4 cs3 cs3))
+(defparameter pnotes  '(e4 fs4 b4 cs5 d5 fs4 g4 e4 cs5 b4 fs4 d5 a4 fs4 e4 e4 e3 e3))
 
-(defparameter seq-1 (new seq :name "seq-1"))
-(defparameter seq-2 (new seq :name "seq-2"))
-(defparameter seq-3 (new seq :name "seq-3"))
+(defparameter transpose 8)
+
+(defparameter seq-II (new seq :name "seq-II"))
+(defparameter seq-I (new seq :name "seq-I"))
+(defparameter seq-P (new seq :name "seq-P"))
 ;        trope                pulse   amp  move stay
-(events (piano-phase pnotes   (/ 1 4) .5   8    8) seq-1)
-(events (piano-phase pnotes   (/ 1 2) .5   4    4) seq-2)
-(events (piano-phase pnotes   (/ 1 1) .7   2    2) seq-3)
-(map-objects (lambda (k) (+ k  12)) seq-1 :slot! 'keynum)
-(map-objects (lambda (k) (+ k   0)) seq-2 :slot! 'keynum)
-(map-objects (lambda (k) (+ k -12)) seq-3 :slot! 'keynum)
-(map-objects (lambda (k) (+ k   0)) seq-1 :slot! 'channel)
-(map-objects (lambda (k) (+ k   0)) seq-2 :slot! 'channel)
-(map-objects (lambda (k) (+ k   1)) seq-3 :slot! 'channel)
+(events (piano-phase pnotes   (/ 1 4) .1   4    4) seq-I)
+(events (piano-phase pnotes   (/ 1 2) .8   2    2) seq-II)
+(events (piano-phase pnotes   (/ 1 1) .9   1    1) seq-P)
+(map-objects (lambda (x) (+ x   0 transpose)) seq-I :slot! 'keynum)
+(map-objects (lambda (x) (+ x -12 transpose)) seq-II :slot! 'keynum)
+(map-objects (lambda (x) (+ x -24 transpose)) seq-P :slot! 'keynum)
+(map-objects (lambda (x) (+ x   2)) seq-I :slot! 'channel)
+(map-objects (lambda (x) (+ x   1)) seq-II :slot! 'channel)
+(map-objects (lambda (x) (+ x   0)) seq-P :slot! 'channel)
 
 (set-dispatch-macro-character #\# #\> #'cl-heredoc:read-heredoc)
 
@@ -74,7 +76,7 @@ ksmps = 64
 nchnls = 2 
 0dbfs = 1
 
-gi_aeolus aeolus_init "/home/mkg/stops-0.3.0", "Aeolus", "waves", 0, 3
+gi_aeolus aeolus_init "stops-0.3.0", "Aeolus", "waves", 0, 3
 
 instr 1 
 print p1, p2, p3, p4, p5
@@ -111,7 +113,19 @@ alwayson "aeolus_out"
 ; Send audio from the Aeolus to the output.
 instr aeolus_out 
 print p1, p2, p3
-aeolus_preset gi_aeolus, 1, 1, "~/.aeolus-presets"
+aeolus_preset gi_aeolus, 1, 1, "/home/mkg/.aeolus-presets"
+;aeolus_group_mode gi_aeolus, 0, 2
+;aeolus_group_mode gi_aeolus, 1, 2
+;aeolus_group_mode gi_aeolus, 2, 2
+;aeolus_group_mode gi_aeolus, 3, 2
+;aeolus_stop gi_aeolus, 20
+;aeolus_stop gi_aeolus, 23
+;aeolus_stop gi_aeolus, 33
+;aeolus_stop gi_aeolus, 38
+;aeolus_stop gi_aeolus, 41
+;aeolus_stop gi_aeolus, 46
+;aeolus_stop gi_aeolus, 51
+;aeolus_stop gi_aeolus, 52
 a_out[] init 2
 a_out aeolus_out gi_aeolus
 out a_out
@@ -119,9 +133,13 @@ endin
     qqq)
     
 (defparameter csound-seq (new seq :name "csound-seq"))
-(events (list seq-1 seq-2 seq-3) csound-seq)
-(render-with-orc csound-seq aeolus-orc :output "Triphase.wav" :channel-offset 1 :velocity-scale 100)
-(uiop:run-program '("python" "./post-process.py" "Triphase.wav"))
+(events (list seq-II seq-I seq-P ) csound-seq)
+(defparameter output "Triphase.wav")
+(render-with-orc csound-seq aeolus-orc :output output :channel-offset 1 :velocity-scale 100)
+(unless (equal output "dac")    
+    (print "Post-processing...")
+    (uiop:run-program '("python" "post-process.py" "Triphase.wav") :output t)
+)
 (quit)
 
 
