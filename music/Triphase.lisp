@@ -134,11 +134,11 @@ endin
     
 (defparameter csound-seq (new seq :name "csound-seq"))
 (events (list seq-II seq-I seq-P ) csound-seq)
-(defparameter output "Triphase.wav")
+(defparameter output "Triphase-1.wav")
 (render-with-orc csound-seq aeolus-orc :output output :channel-offset 1 :velocity-scale 100)
 (unless (equal output "dac")    
     (print "Post-processing...")
-    (uiop:run-program '("python" "post-process.py" "Triphase.wav") :output t)
+    ;(uiop:run-program '("python" "post-process.py" "Triphase.wav") :output t)
 )
 (quit)
 
