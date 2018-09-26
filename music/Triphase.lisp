@@ -76,7 +76,7 @@ ksmps = 64
 nchnls = 2 
 0dbfs = 1
 
-gi_aeolus aeolus_init "stops-0.3.0", "Aeolus", "waves", 0, 3
+gi_aeolus aeolus_init "stops-0.3.0", "Aeolus", "waves", 0, 5
 
 instr 1 
 print p1, p2, p3, p4, p5
@@ -113,7 +113,7 @@ alwayson "aeolus_out"
 ; Send audio from the Aeolus to the output.
 instr aeolus_out 
 print p1, p2, p3
-aeolus_preset gi_aeolus, 1, 1, "/home/mkg/.aeolus-presets"
+aeolus_preset gi_aeolus, 1, 1, "/home/mkg/michael.gogins.studio/music/stops-0.3.0/Aeolus/presets"
 ;aeolus_group_mode gi_aeolus, 0, 2
 ;aeolus_group_mode gi_aeolus, 1, 2
 ;aeolus_group_mode gi_aeolus, 2, 2

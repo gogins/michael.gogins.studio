@@ -1,0 +1,161 @@
+\documentclass[a4paper,10pt]{scrartcl}
+\usepackage[utf8]{inputenc}
+
+%opening
+\title{Playpen}
+\author{Michael Gogins}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+``Playpen'' is the word I use to denote a computer environment that makes it 
+easy, fast, and fun to generate new algorithmic compositions. I started using 
+this word to reflect my initial experiences playing with the Mandelbrot set, 
+chaotic dynamical systems, cellular automata, and Lindenmayer systems in 
+the Basic programming language, inspired by Martin Gardner's columns in the 
+Scientific American. A few lines of code would generate a whole piece, and it 
+was all new. Since then I have tried to replicate this experience with more 
+powerful programming languages, and with more sophisticated algorithms, but 
+with mixed results. A key component of the playpen experience was, and 
+continues to be, computational irreducibility, which guarantees that small 
+changes in algorithms will have big effects on the generated pieces. Here, I 
+investigate the issues and means of returning to a better version of my 
+compositional playpen.
+\end{abstract}
+
+\section*{Why}
+
+Because it is fun, and even more, because it makes it easier to compose. For 
+me, it is vital to be able to make a few edits in code, and then to 
+immediately hear the resulting new piece. Furthermore, it must be possible to 
+think musically about what I am doing without, of course, being able to 
+imagine every note in advance.
+
+\section*{Why Not}
+
+The thorns that have cropped up in my little garden (to change the metaphor) 
+are, in \emph{increasing} order of importance:
+
+\begin{enumerate}
+ \item The increasing complexity of the code, which brings in...
+ \item Third-party dependencies, which increase the amount of time required to 
+maintain the code.
+ \item The swampland of algorithmic composition languages and systems. Every 
+composer seems to re-invent the wheel, and systems that work for one composer 
+are not necessarily adopted by other composers.
+ \item Perhaps most importantly, it has not been possible for me (so far, I 
+haven't quit trying) to implement my idea of a Mandelbrot set for music, where 
+each point in a parameter space would represent the parameters for generating 
+a separate piece of music, and all possible pieces could be thus generated. I 
+will say more about this. To be precise, I have been able to implement the 
+\emph{idea}, but I have not been able to implement it in a \emph{usable} way, 
+for important reasons that I will discuss, along with possible solutions and 
+workarounds.
+\end{enumerate}
+
+\section*{\emph{Mea Culpa}}
+
+To address the less important issues first, I made some huge mistakes that I 
+still have not fully corrected.
+
+It was a huge mistake to get as involved as I did with the development and 
+maintenance of Csound. I wanted to make Csound usable as a library rather than 
+as a command line program in my algorithmic composition system. I did that, 
+it works great, and this idea has been adopted by the Csound maintainers. 
+\emph{But I should have stopped right there}. Further contributions were not 
+as important, were not all adopted by the Csound maintainers, and turned into 
+a huge time sink.
+
+It was a huge mistake to develop my own algorithmic composition systems from 
+scratch, and an even huger mistake to create versions of this system in so 
+many different languages. I had reasons, of course, every step along the way, 
+but the whole business has been a huge time sink.
+
+I have mixed feelings about the HTML5 approach. I do \emph{not} think it was a 
+mistake to try to get algorithmic composition going in HTML5 with Csound,  
+it did not really take that long to do, and the WebAssembly build of Csound is 
+being maintained and extended. It may still be possible to move my C++ 
+CsoundAC code into WebAssembly. 
+
+Hindsight is so great. With it, I would have learned Common Lisp, and 
+developed my own algorithms in it, especially the parametric Lindenmayer system 
+and the chord space library. Of course, the wider Lisp community has been no 
+particular help, and neither has Ircam. Only recently has it become possible 
+to treat Common Lisp as a standard language with cross-platform, 
+cross-implementation library support. And it may still be possible either to 
+port the best parts of CsoundAC to Lisp, or to provide a Common Lisp CFFI 
+binding for CsoundAC.
+
+\section*{Parametric Composition}
+
+The big problem is this. Obviously the whole idea of computational 
+irreducibility does mean that it makes sense to compose with algorithms. 
+Otherwise I would simply not have been able to make pieces that other composers 
+respect. Equally obviously, the Mandelbrot set for music idea has validity, as 
+I have proved mathematically that it does. 
+
+But there are serious problems that I have not yet been able to solve. These 
+are:
+
+\begin{enumerate}
+ \item The mathematics that are used in the literature for analogous tasks 
+produce results that do not map naturally to musical scores.
+ \item Perhaps partly as a result of that, the scores that are generated 
+contain relatively few usable ones.
+ \item This all takes a \emph{lot} of computer power.
+ \item I'm no mathematician, and working with postgraduate level mathematics 
+doesn't always work for me.
+\end{enumerate}
+
+I'm happy to say that I have recently made some progress on some of these 
+problems. 
+
+\begin{enumerate}
+ \item I have identified some mathematics, namely fractal functions and 
+fractels, that in theory will map naturally to musical scores. 
+ \item I have developed a better understanding of the iterated function 
+system and its algorithmic implementation. The code runs faster as a result.
+\end{enumerate}
+
+Unfortunately, right now I'm stuck on fractal functions and fractels because I 
+just haven't been able to unpack the math to get at how to implement them.
+
+\section*{Next}
+
+There are two sets of issues that I should work on.
+
+\subsection*{System}
+
+It remains a vexing issue to have all these languages. I'd prefer everything 
+to work in HTML5 because it comes with so many goodies and runs everywhere, 
+but currently, the real firepower in algorithmic composition is in Common Lisp.
+
+I need to monkey around with these questions:
+
+\begin{enumerate}
+ \item Does it make sense to translate some or all of CsoundAC to Common Lisp? 
+ \item Does it make sense to ultimately target WebAssembly?
+\end{enumerate}
+
+\subsection*{Mathematics}
+
+I really must just bear down and try to implement fractal functions and 
+fractels in C++. And I need to keep tracking the literature.
+
+\section*{Trucking}
+
+In the meantime I must keep composing. Since I don't really know what system 
+to use I shall keep trying to use nudruz. I will also look at other Lisp stuff.
+
+
+
+
+
+
+
+
+
+
+\end{document}
