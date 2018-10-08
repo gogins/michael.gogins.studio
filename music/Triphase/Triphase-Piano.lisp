@@ -57,7 +57,7 @@
 
 (defparameter aeolus-orc #>qqq>
 sr = 44100
-ksmps = 128
+ksmps = 64
 nchnls = 2
 
 giPianoteq init 0
@@ -176,13 +176,13 @@ a_out_right = aoutright * k_gain * i_amplitude
 #endif
 prints "PianoOutPt     i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", p1, p2, p3, p4, p5, p7, active(p1)
 outs a_out_left, a_out_right
-;i_amplitude_adjustment = ampdbfs(-3) / 32767
-;fout "Triphase-piano.wav", 18, a_out_left * i_amplitude_adjustment, a_out_right * i_amplitude_adjustment
+i_amplitude_adjustment = ampdbfs(-3) / 32767
+fout "Triphase-Piano.wav", 18, a_out_left * i_amplitude_adjustment, a_out_right * i_amplitude_adjustment
 endin
 
 qqq)
     
-(defparameter trope  '(e4 b5 fs4 d5 g4 g4 d4 fs4 a5 g3 g3))
+(defparameter trope '(e4 b5 fs4 d5 g4 g4 d4 fs4 a5 g3 g3))
 
 (defparameter transpose 8)
 
@@ -201,7 +201,7 @@ qqq)
 (map-objects (lambda (x) 3) seq-P  :slot! 'channel)
 
 (defparameter csound-seq (new seq :name "csound-seq"))
-(events (list seq-II seq-I seq-P ) csound-seq 60)
+(events (list seq-II seq-I seq-P ) csound-seq 1)
 (defparameter *piano-part* 
   (new fomus:part
    :name "Piano"
@@ -211,18 +211,18 @@ qqq)
 (setf (gethash 2 partids) 0)
 (setf (gethash 3 partids) 0)
 (defparameter voices (make-hash-table))
-(setf (gethash 1 voices) 1)
-(setf (gethash 2 voices) 2)
-(setf (gethash 3 voices) 3)
-;(seq-to-lilypond csound-seq "Triphase-piano.ly" *piano-part* partids voices)
-(seq-to-midifile csound-seq "Triphase-piano.mid")
+(setf (gethash 1 voices) (list 1 2 3 4))
+(setf (gethash 2 voices) (list 1 2 3 4))
+(setf (gethash 3 voices) (list 1 2 3 4))
+;(seq-to-lilypond csound-seq "Triphase-Piano.ly" *piano-part* partids voices)
+(seq-to-midifile csound-seq "Triphase-Piano.mid")
 
-;(defparameter output "dac")
-(defparameter output "Triphase-piano.wav")
+(defparameter output "dac")
+;(defparameter output "Triphase-Piano.wav")
 (render-with-orc csound-seq aeolus-orc :output output :channel-offset 1 :velocity-scale 100)
 (unless (equal output "dacx")    
     (print "Post-processing...")
-    (uiop:run-program '("python" "post-process.py" "Triphase-piano.wav") :output t)
+    (uiop:run-program '("python" "../post-process.py" "Triphase-Piano.wav") :output t)
 )
 (quit)
 

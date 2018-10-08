@@ -11,7 +11,7 @@ ksmps = 64
 nchnls = 2 
 0dbfs = 1
 
-gi_aeolus aeolus_init "stops-0.3.0", "Aeolus", "waves", 0, 3
+gi_aeolus aeolus_init "../stops-0.3.0", "Aeolus", "waves", 0, 3
 
 instr 1 
 print p1, p2, p3, p4, p5
@@ -151,15 +151,15 @@ endin
 (setf (gethash 1 voices) 1)
 (setf (gethash 2 voices) 2)
 (setf (gethash 3 voices) 3)
-;(seq-to-lilypond csound-seq "Triphase.ly" *piano-part* partids voices)
-(seq-to-midifile csound-seq "Triphase.mid")
+;(seq-to-lilypond csound-seq "Triphase-Aeolus.ly" *piano-part* partids voices)
+(seq-to-midifile csound-seq "Triphase-Aeolus.mid")
 
-(defparameter output "Triphase.wav")
+(defparameter output "Triphase-Aeolus.wav")
 ;(defparameter output "dac")
 (render-with-orc csound-seq aeolus-orc :output output :channel-offset 1 :velocity-scale 100)
 (unless (equal output "dac")    
     (print "Post-processing...")
-    (uiop:run-program '("python" "post-process.py" "Triphase.wav") :output t)
+    (uiop:run-program '("python" "../post-process.py" "Triphase-Aeolus.wav") :output t)
 )
 (quit)
 
