@@ -126,36 +126,10 @@ a_out_right = aoutright * k_gain * i_amplitude
 prints "PianoOutPt     i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", p1, p2, p3, p4, p5, p7, active(p1)
 outs a_out_left, a_out_right
 i_amplitude_adjustment = ampdbfs(-3) / 32767
-fout "Triphase-Piano.wav", 18, a_out_left * i_amplitude_adjustment, a_out_right * i_amplitude_adjustment
+fout "Triphase-Piano-2.wav", 18, a_out_left * i_amplitude_adjustment, a_out_right * i_amplitude_adjustment
 endin
 
 qqq)
-
-(defun play-pat (times knums durs amps tmpo)
-  (process repeat times
-           for k = (next knums)
-           for r = (* (next durs) tmpo)
-           for a = (next amps)
-           output (new midi :time (now) 
-                       :keynum k
-                       :duration (* r 1.5)
-                       :amplitude a)
-           wait r))
-
-(defparameter trope '(e4 b5 fs4 d5 g4 g4 d4 fs4 a5 g3 g3))
-
-(defparameter pat1
-  (new cycle :of (list (new cycle :notes trope 
-                            :for (new cycle :of '(4 3 2 1 0)))
-                       (new cycle :of trope
-                            :for (new cycle :of '(0 1 2 3)))
-                       (new cycle :of trope :for 1))))
-
-(defparameter pat2
-  (new weighting :rhythms `(e ,(new line :rhythms 's :for 4))))
-
-
-(defparameter transpose 8)
 
 (defparameter seq-II (new seq :name "seq-II"))
 (defparameter seq-I  (new seq :name "seq-I"))
@@ -171,11 +145,35 @@ qqq)
 (map-objects (lambda (x) 2) seq-II :slot! 'channel)
 (map-objects (lambda (x) 3) seq-P  :slot! 'channel)
 
+(defparameter pat1
+  (new cycle 
+       :of (list (new chord 
+                      :of (new rotation :notes '(c3 d ef f g af bf c6 ef3) 
+                               :for (new weighting :of '(9 5))))
+                 (new chord
+                      :of (new rotation :notes '(c2 d6 g5 f5 g4 af bf c5 c3 c3) 
+                               :for (new weighting :of '(4 9))))
+                 (new chord
+                      :of (new rotation :notes '(c3 d ef f g af bf c) 
+                               :for (new weighting :of '(7 5)))))))
+
+(defun play-pat (reps pat amp tempo)
+  (let ((rhy (new cycle :of '(e s s e e s))))
+    (process repeat reps
+             for r = (rhythm (next rhy) tempo)
+             each k in (next pat)
+             output (new midi :time (now)
+                         :keynum k
+                         :amplitude amp
+                         :duration (* r .975))
+             wait r)))
+
 (defparameter csound-seq (new seq :name "csound-seq"))
 
-(events (play-pat 80 pat1 pat2 .4 .75) csound-seq 1)
 
-;(events (list seq-II seq-I seq-P) csound-seq 1)
+(events (play-pat 140 pat1 .3 225) csound-seq 1)
+
+
 (defparameter *piano-part* 
   (new fomus:part
    :name "Piano"
@@ -189,11 +187,11 @@ qqq)
 (setf (gethash 1 voices) '(1 2 3 4))
 (setf (gethash 2 voices) '(1 2 3 4))
 (setf (gethash 3 voices) '(1 2 3 4))
-;(seq-to-lilypond csound-seq "Triphase-Piano-1.ly" *piano-part* partids voices)
-(seq-to-midifile csound-seq "Triphase-Piano-1.mid")
+;(seq-to-lilypond csound-seq "Triphase-Piano-2.ly" *piano-part* partids voices)
+(seq-to-midifile csound-seq "Triphase-Piano-2.mid")
 
 (defparameter output "dac")
-;(defparameter output "Triphase-Piano-1.wav")
+;(defparameter output "Triphase-Piano-2.wav")
 (render-with-orc csound-seq aeolus-orc :output output :channel-offset 1 :velocity-scale 100)
 ; (unless (equal output "dacx")    
     ; (print "Post-processing...")
