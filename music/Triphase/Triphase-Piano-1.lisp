@@ -2,55 +2,6 @@
 (require :nudruz)
 (in-package :cm)
 
-(defun piano-phase (trope pulse amp stay move)
-  (let* ((len (length trope))
-         (dur (- (* pulse 2) .01))
-         (stop (* len len (+ stay move))))
-    
-    ;; stop is the number of notes to play. set to the
-    ;; number notes in the trope times the number of times
-    ;; the shifting happens to get back the first note
-    ;; (also the length of the trope) times the number of
-    ;; cycles of the trope perfomer 2 stays steady plus
-    ;; the number of cycles the performer takes to move the
-    ;; pattern ahead one sixteenth.
-    
-    ;; return two processes. the first keeps a regular beat
-    ;; while the second plays the trope steadily for STAY
-    ;; repetitions then moves one 16th ahead over MOVE
-    ;; repetitions of the trope.
-    
-    (list
-     (process with play = (new cycle :keynums trope)
-              repeat stop
-              output
-              (new midi :time (now) :duration dur 
-                   :keynum (next play) :amplitude amp :channel 0)     
-              wait pulse)
-     
-     ;; phasing tempo is represented as a ratio P/N where P is
-     ;; the time the phasing takes (counted in pulses) and N is
-     ;; the number of notes to play in that time. so 16/16 means
-     ;; play 16 notes in the time of 16 pulses and 15/16 means
-     ;; to play 16 notes in the time of 15 pulses.  for piano
-     ;; phase N is the length of the trope and P is one less.
-     
-     (process with play = (new cycle keynums trope)
-              and tempo = (new cycle 
-                            of
-                            (list (new cycle :of 1
-                                       :for (* len stay))
-                                  (new cycle 
-                                    :of (/ (1- (* len move))
-                                          (* len move))
-                                    :for (* len move))))
-              repeat stop
-              output
-              (new midi :time (now) :duration dur
-                   :keynum (next play) :amplitude amp :channel 0)
-              wait (* pulse (next tempo))))))
-
-
 (set-dispatch-macro-character #\# #\> #'cl-heredoc:read-heredoc)
 
 (defparameter aeolus-orc #>qqq>
@@ -179,7 +130,28 @@ fout "Triphase-Piano.wav", 18, a_out_left * i_amplitude_adjustment, a_out_right 
 endin
 
 qqq)
-    
+
+(defun play-pat (times knums durs amps tmpo)
+  (process repeat times
+           for k = (next knums)
+           for r = (* (next durs) tmpo)
+           for a = (next amps)
+           output (new midi :time (now) 
+                       :keynum k
+                       :duration (* r 1.5)
+                       :amplitude a)
+           wait r))
+
+(defparameter pat1
+  (new cycle :of (list (new cycle :notes '(a4 b c5 d) 
+                            :for (new cycle :of '(4 3 2 1 0)))
+                       (new cycle :of '(e4 e5 e6 e3)
+                            :for (new cycle :of '(0 1 2 3)))
+                       (new cycle :of '(f5 ef4) :for 1))))
+
+(defparameter pat2
+  (new weighting :rhythms `(e ,(new line :rhythms 's :for 4))))
+
 (defparameter trope '(e4 b5 fs4 d5 g4 g4 d4 fs4 a5 g3 g3))
 
 (defparameter transpose 8)
@@ -188,9 +160,9 @@ qqq)
 (defparameter seq-I  (new seq :name "seq-I"))
 (defparameter seq-P  (new seq :name "seq-P"))
 ;                    trope    pulse   amp  move stay
-(events (piano-phase trope   (/ 1.75 4) .4   4    4) seq-I)
-(events (piano-phase trope   (/ 1.75 2) .4   2    2) seq-II)
-(events (piano-phase trope   (/ 1.75 1) .5   1    1) seq-P)
+;(events (piano-phase trope   (/ 1.75 4) .4   4    4) seq-I)
+;(events (piano-phase trope   (/ 1.75 2) .4   2    2) seq-II)
+;(events (piano-phase trope   (/ 1.75 1) .5   1    1) seq-P)
 (map-objects (lambda (x) (+ x   0 transpose)) seq-I  :slot! 'keynum)
 (map-objects (lambda (x) (+ x  -5 transpose)) seq-II :slot! 'keynum)
 (map-objects (lambda (x) (+ x -24 transpose)) seq-P  :slot! 'keynum)
@@ -199,7 +171,8 @@ qqq)
 (map-objects (lambda (x) 3) seq-P  :slot! 'channel)
 
 (defparameter csound-seq (new seq :name "csound-seq"))
-(events (list seq-II seq-I seq-P) csound-seq 1)
+(events (play-pat 80 pat1 pat2 .4 .75) csound-seq)
+;(events (list seq-II seq-I seq-P) csound-seq 1)
 (defparameter *piano-part* 
   (new fomus:part
    :name "Piano"
@@ -213,15 +186,15 @@ qqq)
 (setf (gethash 1 voices) '(1 2 3 4))
 (setf (gethash 2 voices) '(1 2 3 4))
 (setf (gethash 3 voices) '(1 2 3 4))
-;(seq-to-lilypond csound-seq "Triphase-Piano.ly" *piano-part* partids voices)
-(seq-to-midifile csound-seq "Triphase-Piano.mid")
+;(seq-to-lilypond csound-seq "Triphase-Piano-1.ly" *piano-part* partids voices)
+(seq-to-midifile csound-seq "Triphase-Piano-1.mid")
 
-; (defparameter output "dac")
-(defparameter output "Triphase-Piano.wav")
+(defparameter output "dac")
+;(defparameter output "Triphase-Piano-1.wav")
 (render-with-orc csound-seq aeolus-orc :output output :channel-offset 1 :velocity-scale 100)
 ; (unless (equal output "dacx")    
     ; (print "Post-processing...")
-    ; (uiop:run-program '("python" "../post-process.py" "Triphase-Piano.wav") :output t)
+    ; (uiop:run-program '("python" "../post-process.py" "Triphase-Piano-1.wav") :output t)
 ; )
 ; (quit)
 

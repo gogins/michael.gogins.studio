@@ -1,6 +1,4 @@
 (require :asdf)
-(require :cm2)
-(require :fomus)
 (require :nudruz)
 (in-package :cm)
 
@@ -123,8 +121,8 @@ endin
 (defparameter transpose 8)
 
 (defparameter seq-II (new seq :name "seq-II"))
-(defparameter seq-I (new seq :name "seq-I"))
-(defparameter seq-P (new seq :name "seq-P"))
+(defparameter seq-I  (new seq :name "seq-I"))
+(defparameter seq-P  (new seq :name "seq-P"))
 ;                    trope   pulse   amp  move stay
 (events (piano-phase trope   (/ 2 4) .01  4    4) seq-II)
 (events (piano-phase trope   (/ 2 2) .8   2    2) seq-I)
@@ -137,31 +135,39 @@ endin
 (map-objects (lambda (x) (+ x   0)) seq-P  :slot! 'channel)
 
 (defparameter csound-seq (new seq :name "csound-seq"))
-(events (list seq-II seq-I seq-P ) csound-seq 1)
+(events (list seq-II seq-I seq-P ) csound-seq 0)
 
-(defparameter *piano-part* 
-  (new fomus:part
+(fms:list-fomus-settings)
+(defparameter *organ-part* (new fomus:part 
    :name "Organ"
-   :instr '(:piano :simultlim 9 :clefs (:treble :bass :bass)) :partid 0))
+   :partid 0
+   :instr '(:piano :staves 3 :minp nil :maxp nil :simultlim nil))
+)
 (defparameter partids (make-hash-table))
+(setf (gethash 0 partids) 0)
 (setf (gethash 1 partids) 0)
 (setf (gethash 2 partids) 0)
 (setf (gethash 3 partids) 0)
+(setf (gethash 4 partids) 0)
 (defparameter voices (make-hash-table))
-(setf (gethash 1 voices) 1)
-(setf (gethash 2 voices) 2)
-(setf (gethash 3 voices) 3)
-;(seq-to-lilypond csound-seq "Triphase-Aeolus.ly" *piano-part* partids voices)
-(seq-to-midifile csound-seq "Triphase-Aeolus.mid")
+(defparameter voicelist '(1 2 3))
+(setf (gethash 0 voices) voicelist)
+(setf (gethash 1 voices) voicelist)
+(setf (gethash 2 voices) voicelist)
+(setf (gethash 3 voices) voicelist)
+(setf (gethash 4 voices) voicelist)
+(seq-to-lilypond csound-seq "Triphase-Aeolus.ly" *organ-part* partids voices)
 
 (defparameter output "Triphase-Aeolus.wav")
-;(defparameter output "dac")
+(defparameter output "dac")
 (render-with-orc csound-seq aeolus-orc :output output :channel-offset 1 :velocity-scale 100)
 (unless (equal output "dac")    
     (print "Post-processing...")
     (uiop:run-program '("python" "../post-process.py" "Triphase-Aeolus.wav") :output t)
 )
+;;
 (quit)
+
 
 
 
