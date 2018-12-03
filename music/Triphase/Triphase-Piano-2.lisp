@@ -20,13 +20,13 @@
 (defparameter pat2
   (new cycle 
        :of (list (new chord 
-                      :of (new rotation :notes '(c3 d ef f  bf c6 ef3)
+                      :of (new palindrome :notes '(c3 d ef f  bf c6 ef3)
                                :for (new weighting :of '(9 7))))
                  (new chord
-                      :of (new rotation :notes '(c2 f5 g4 af bf c5 c3 c3)
+                      :of (new palindrome :notes '(c2 f5 g4 af bf c5 c3 c3)
                                :for (new weighting :of '(4 5))))
                  (new chord
-                      :of (new rotation :notes '(c3 d ef f g af2 bf3 c)
+                      :of (new palindrome :notes '(c3 d ef f g af2 bf3 c)
                                :for (new weighting :of '(3 5)))))))
 
 (defun play-pat (reps pat amp tempo transp offset channel_)
@@ -43,7 +43,7 @@
 
 (defparameter csound-seq (new seq :name "csound-seq"))
 
-(events (list (play-pat 300 pat1 .9 25 0 0 23) (play-pat 300 pat2 .9 25 5 2.5 14)) csound-seq 1)
+(events (list (play-pat 300 pat1 .9 25 0 0 23) (play-pat 300 pat2 .8 24 5 0 14)) csound-seq 1)
 
 (defparameter *piano-part* 
   (new fomus:part
@@ -63,7 +63,7 @@
 
 ;(defparameter output "dac")
 (defparameter output "Triphase-Piano-2.wav")
-(render-with-orc csound-seq orc-vst :channel-offset 0 :velocity-scale 80 :csd-filename "Triphase-Piano-2.csd")
+(render-with-orc csound-seq orc-vst :channel-offset 0 :velocity-scale 90 :csd-filename "Triphase-Piano-2.csd")
 (unless (equal output "dac")    
     (print "Post-processing...")
     (uiop:run-program '("python" "../post-process.py" "Triphase-Piano-1.wav") :output t)
