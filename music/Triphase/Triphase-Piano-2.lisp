@@ -1,9 +1,15 @@
 (require :asdf)
 (asdf:load-system :nudruz)
-(load "/home/mkg/csound-extended/nudruz/sources/example-vst.lisp")
+(load "/home/mkg/csound-extended/nudruz/sources/all-in-one-orc.lisp")
 (in-package :cm)
 
 (set-dispatch-macro-character #\# #\> #'cl-heredoc:read-heredoc)
+
+(defparameter CM9     (new mode :degrees   '(c  d  e     g     b  c)))
+(defparameter Cm9     (new mode :degrees   '(c  d  ef    g     bf c)))
+(defparameter C7s9f5  (new mode :degrees   '(c  ds e     gf    bf c)))
+
+(defparameter progression (new cycle :of (list CM9 (transpose Cm9 2) CM9 (transpose Cm9 2) (transpose C7s9f5 7))))
 
 (defparameter pat1
   (new cycle 
@@ -23,27 +29,36 @@
                       :of (new palindrome :notes '(c3 d ef f  bf c6 ef3)
                                :for (new weighting :of '(9 7))))
                  (new chord
-                      :of (new palindrome :notes '(c2 f5 g4 af bf c5 c3 c3)
+                      :of (new palindrome :notes '(c2 f5 g4 af bf d d c5 c3 c3)
                                :for (new weighting :of '(4 5))))
                  (new chord
                       :of (new palindrome :notes '(c3 d ef f g af2 bf3 c)
                                :for (new weighting :of '(3 5)))))))
-
+                               
 (defun play-pat (reps pat amp tempo transp offset channel_)
-  (let ((rhy (new cycle :of '(e s s e e s))))
-    (process repeat reps
-             for r = (rhythm (next rhy) tempo)
-             each k in (next pat)
-             output (new midi :time (+ (now) offset)
-                         :keynum (+ transp (keynum k))
-                         :amplitude amp
-                         :channel channel_
-                         :duration (* r .975))
-             wait r)))
+    (let 
+        (
+            (rhy (new cycle :of '(e s s e e s)))
+            (chord (next progression))
+        )
+        (process 
+            repeat reps
+            for r = (rhythm (next rhy) tempo)
+            each k in (next pat)
+            output (new midi :time (+ (now) offset)
+                :keynum (+ (keynum k :through chord) transp)
+                :amplitude amp
+                :channel channel_
+                :duration (* r .975))
+            when (eop? pat) set chord = (next progression)
+            wait r
+        )
+    )
+)
 
 (defparameter csound-seq (new seq :name "csound-seq"))
 
-(events (list (play-pat 300 pat1 .9 25 0 0 23) (play-pat 300 pat2 .8 24 5 0 14)) csound-seq 1)
+(events (list (play-pat 300 pat1 .9 25 0 0 23) (play-pat 300 pat2 .8 24 5 0 57)) csound-seq 1)
 
 (defparameter *piano-part* 
   (new fomus:part
@@ -63,7 +78,7 @@
 
 ;(defparameter output "dac")
 (defparameter output "Triphase-Piano-2.wav")
-(render-with-orc csound-seq orc-vst :channel-offset 0 :velocity-scale 90 :csd-filename "Triphase-Piano-2.csd")
+(render-with-orc csound-seq orc-vst :output output :channel-offset 0 :velocity-scale 90 :csd-filename "Triphase-Piano-2.csd")
 (unless (equal output "dac")    
     (print "Post-processing...")
     (uiop:run-program '("python" "../post-process.py" "Triphase-Piano-1.wav") :output t)
