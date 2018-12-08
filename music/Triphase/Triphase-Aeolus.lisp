@@ -156,9 +156,9 @@ endin
 (setf (gethash 2 voices) voicelist)
 (setf (gethash 3 voices) voicelist)
 (setf (gethash 4 voices) voicelist)
-(seq-to-lilypond csound-seq "Triphase-Aeolus.ly" *organ-part* partids voices)
+;(seq-to-lilypond csound-seq "Triphase-Aeolus.ly" *organ-part* partids voices)
 
-(defparameter output "Triphase-Aeolus.wav")
+;(defparameter output "Triphase-Aeolus.wav")
 (defparameter output "dac")
 (render-with-orc csound-seq aeolus-orc :output output :channel-offset 1 :velocity-scale 100)
 (unless (equal output "dac")    

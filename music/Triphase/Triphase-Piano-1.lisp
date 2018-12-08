@@ -194,7 +194,7 @@ qqq)
 
 (defparameter output "dac")
 ;(defparameter output "Triphase-Piano-1.wav")
-(render-with-orc csound-seq aeolus-orc :output output :channel-offset 1 :velocity-scale 100)
+(render-with-orc csound-seq aeolus-orc :output output :channel-offset 28 :velocity-scale 100)
 ; (unless (equal output "dacx")    
     ; (print "Post-processing...")
     ; (uiop:run-program '("python" "../post-process.py" "Triphase-Piano-1.wav") :output t)
