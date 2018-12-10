@@ -35,12 +35,14 @@
                       :of (new palindrome :notes '(c3 d ef f g af2 bf3 c)
                                :for (new weighting :of '(3 5)))))))
                                
-(defparameter trope
+(defparameter trope1
+  (keynum '(e4 fs b cs5 d fs4 e cs5 b4 fs d5 cs5 cs4 e4 cs4)))
+(defparameter trope2
   (keynum '(e4 fs b cs5 d fs4 e cs5 b4 fs d5 cs5 cs4 cs4)))
 
 (defparameter pp-pulse 1/24)
 
-(defparameter pp-tempo 50)
+(defparameter pp-tempo 30)
 
 (defun bpm->seconds (bpm)
   (/ 60.0 bpm))
@@ -48,30 +50,27 @@
 (defun rhythm->seconds (rhy tempo)
   (* rhy 4.0 (bpm->seconds tempo)))
 
-(defun piano1 (trope amp chan)
-  (let* ((tlen (length trope))
-         (cycs tlen)
-         (rate (rhythm->seconds pp-pulse
-                                pp-tempo)))
-    (process repeat (* tlen cycs)
-             for i from 0
-             for x = (mod i tlen)
-             for k = (nth x trope)
-             output (new midi :time (now)
-                         :keynum k
-                         :duration (* rate .75)
+(defun piano1 (trope amp chan t-offset k-offset)
+  (let* ((cycl (new cycle :keynums trope
+                    :repeat (length trope)))
+         (rate (rhythm->seconds pp-pulse pp-tempo)))
+    (process for k = (next cycl)
+             until (eod? k)
+             output (new midi :time (+ t-offset (now) )
+                         :keynum (+ k-offset k)
+                         :duration (* rate .5)
                          :amplitude amp
                          :channel chan)
              wait rate)))
 
-                               (defun pphase (trope amp)
-  (list (piano1 trope amp 0)
-        (piano1 trope amp 1)))
+(defun pphase (amp)
+  (list (piano1 trope1 amp 0 0 -7)
+        (piano1 trope1 amp 1 .5 .0)
+        (piano1 trope2 amp 2 2.5 5)))
 
 (defparameter csound-seq (new seq :name "csound-seq"))
 
-;(events (list (play-pat 300 pat1 .9 25 0 0 23) (play-pat 300 pat2 .8 24 5 0 57)) csound-seq 1)
-(events (pphase trope .75) csound-seq 1)
+(events (pphase .75) csound-seq 1)
 
 (defparameter *piano-part* 
   (new fomus:part
@@ -86,12 +85,11 @@
 (setf (gethash 1 voices) '(1 2 3 4))
 (setf (gethash 2 voices) '(1 2 3 4))
 (setf (gethash 3 voices) '(1 2 3 4))
-;(seq-to-lilypond csound-seq "Triphase-Piano-3.ly" *piano-part* partids voices)
-(seq-to-midifile csound-seq "Triphase-Piano-3.mid")
+;(seq-to-lilypond csound-seq "Triphase-Aeolus-3.ly" *piano-part* partids voices)
+(seq-to-midifile csound-seq "Triphase-Aeolus-3.mid")
 
 (defparameter output "dac")
-;(defparameter output "Triphase-Piano-3.wav")
-(render-with-orc csound-seq all-in-one-orc :output output :channel-offset 1 :velocity-scale 1 :csd-filename "Triphase-Piano-3.csd" :options "--midi-key=4 --midi-velocity=5 --0dbfs=10000 -m195")
+(render-with-orc csound-seq all-in-one-orc :output output :channel-offset 1 :velocity-scale 127 :csd-filename "Triphase-Aeolus-3.csd" :options "--midi-key=4 --midi-velocity=5 --0dbfs=1 -m195")
 (quit)
 
 
