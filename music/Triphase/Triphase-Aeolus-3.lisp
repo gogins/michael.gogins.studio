@@ -5,11 +5,11 @@
 
 (set-dispatch-macro-character #\# #\> #'cl-heredoc:read-heredoc)
 
-(defparameter CM9     (new mode :degrees   '(c  d  e     g     b  c)))
-(defparameter Cm9     (new mode :degrees   '(c  d  ef    g     bf c)))
-(defparameter C7s9f5  (new mode :degrees   '(c  ds e     gf    bf c)))
+(defparameter CM9     (new mode :degrees   '(c  d  e     g   a b  c)))
+(defparameter Cm9     (new mode :degrees   '(c  d  ef  f g     bf c)))
+(defparameter C7s9f5  (new mode :degrees   '(c  df e     gs    bf c)))
 
-(defparameter progression (new cycle :of (list CM9 (transpose Cm9 2) CM9 (transpose Cm9 2) (transpose C7s9f5 7))))
+(defparameter progression (new cycle :of (list CM9 (transpose Cm9 2) CM9 (transpose Cm9 2) (transpose C7s9f5 11))))
 
 (defparameter pat1
   (new cycle 
@@ -35,38 +35,52 @@
                       :of (new palindrome :notes '(c3 d ef f g af2 bf3 c)
                                :for (new weighting :of '(3 5)))))))
                                
-(defparameter trope1
-  (keynum '(e4 fs b cs5 d fs4 e cs5 b4 fs d5 cs5 cs4 e4 cs4)))
-(defparameter trope2
-  (keynum '(e4 fs b cs5 d fs4 e cs5 b4 fs d5 cs5 cs4 cs4)))
+(defparameter trope
+  (keynum '(e4 fs b cs5 d fs4 e b5 cs5 b4 fs d5 cs5 cs4 e4 fs cs4 e4 fs b cs5 d fs4 e cs5 d e b4 fs d5 cs5 cs4 cs3 cs3)))
 
 (defparameter pp-pulse 1/24)
 
-(defparameter pp-tempo 30)
+(defparameter pp-tempo 60)
 
 (defun bpm->seconds (bpm)
   (/ 60.0 bpm))
 
 (defun rhythm->seconds (rhy tempo)
   (* rhy 4.0 (bpm->seconds tempo)))
+  
+(defparameter pulses 0)
 
-(defun piano1 (trope amp chan t-offset k-offset)
-  (let* ((cycl (new cycle :keynums trope
-                    :repeat (length trope)))
-         (rate (rhythm->seconds pp-pulse pp-tempo)))
-    (process for k = (next cycl)
-             until (eod? k)
-             output (new midi :time (+ t-offset (now) )
-                         :keynum (+ k-offset k)
-                         :duration (* rate .5)
-                         :amplitude amp
-                         :channel chan)
-             wait rate)))
+(defparameter chord (next progression))
+
+(defun piano1 (trope cyc-offset amp chan t-offset k-offset)
+    (let* 
+        (
+            (cycl (new cycle :keynums (subseq trope 0 (- (length trope) cyc-offset)) :repeat 32))
+            (rate (rhythm->seconds pp-pulse pp-tempo))
+            (waits (new cycle :of '(1 1 1 1 2 1 1 1 1 2 1 1 1 1 4)))
+        )
+        (process 
+            for k = (next cycl)
+            until (eod? k)
+            for trigger = (rem (incf pulses) 21)
+            for chord = (if (equal trigger 0) 
+                (next progression)
+                chord)
+            for note_ = (new midi :time (+ t-offset (now) )
+                :keynum (keynum (+ k-offset k) :through chord)
+                :duration (* rate (*  (next waits)))
+                :amplitude amp
+                :channel chan)
+            do (format t "Pulse: ~a ~a Chord: ~a Note: ~a~%" pulses trigger (keynum chord) note_)
+            output note_
+        wait (* (pattern-value waits) rate))
+    )
+)
 
 (defun pphase (amp)
-  (list (piano1 trope1 amp 0 0 -7)
-        (piano1 trope1 amp 1 .5 .0)
-        (piano1 trope2 amp 2 2.5 5)))
+  (list (piano1 trope 0 amp 1   0 -17)
+        (piano1 trope 1 amp 1   2   0)
+        (piano1 trope 2 amp 1   1   9)))
 
 (defparameter csound-seq (new seq :name "csound-seq"))
 

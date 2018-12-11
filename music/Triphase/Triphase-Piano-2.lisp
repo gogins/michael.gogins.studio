@@ -46,7 +46,7 @@
             for r = (rhythm (next rhy) tempo)
             each k in (next pat)
             output (new midi :time (+ (now) offset)
-                :keynum (+ (keynum k :through chord) transp)
+                :keynum (keynum (transpose k transp) :through chord)
                 :amplitude amp
                 :channel channel_
                 :duration (* r .975))
@@ -76,9 +76,9 @@
 ;(seq-to-lilypond csound-seq "Triphase-Piano-2.ly" *piano-part* partids voices)
 (seq-to-midifile csound-seq "Triphase-Piano-2.mid")
 
-;(defparameter output "dac")
-(defparameter output "Triphase-Piano-2.wav")
-(render-with-orc csound-seq orc-vst :output output :channel-offset 0 :velocity-scale 90 :csd-filename "Triphase-Piano-2.csd")
+(defparameter output "dac")
+;(defparameter output "Triphase-Piano-2.wav")
+(render-with-orc csound-seq all-in-one-orc :output output :channel-offset 0 :velocity-scale 90 :csd-filename "Triphase-Piano-2.csd")
 (unless (equal output "dac")    
     (print "Post-processing...")
     (uiop:run-program '("python" "../post-process.py" "Triphase-Piano-1.wav") :output t)
