@@ -5,7 +5,7 @@
 
 (set-dispatch-macro-character #\# #\> #'cl-heredoc:read-heredoc)
 
-(defparameter CM9     (new mode :degrees   '(c  d  e     g   a b  c)))
+(defparameter CM9     (new mode :degrees   '(c     e     g     b  c)))
 (defparameter Cm9     (new mode :degrees   '(c  d  ef  f g     bf c)))
 (defparameter C7s9f5  (new mode :degrees   '(c  df e     gs    bf c)))
 
@@ -35,12 +35,12 @@
                       :of (new palindrome :notes '(c3 d ef f g af2 bf3 c)
                                :for (new weighting :of '(3 5)))))))
                                
-(defparameter trope
+(defparameter motive
   (keynum '(e4 fs b cs5 d fs4 e b5 cs5 b4 fs d5 cs5 cs4 e4 fs cs4 e4 fs b cs5 d fs4 e cs5 d e b4 fs d5 cs5 cs4 cs3 cs3)))
 
 (defparameter pp-pulse 1/24)
 
-(defparameter pp-tempo 60)
+(defparameter pp-tempo 50)
 
 (defun bpm->seconds (bpm)
   (/ 60.0 bpm))
@@ -52,35 +52,39 @@
 
 (defparameter chord (next progression))
 
-(defun piano1 (trope cyc-offset amp chan t-offset k-offset)
+(defun voice-1 (motive key-cycle-pop-tail amp channel time-offset key-offset extra-wait)
     (let* 
         (
-            (cycl (new cycle :keynums (subseq trope 0 (- (length trope) cyc-offset)) :repeat 32))
+            (key-cycle (new cycle :keynums (subseq motive 0 (- (length motive) key-cycle-pop-tail)) :repeat 32))
             (rate (rhythm->seconds pp-pulse pp-tempo))
-            (waits (new cycle :of '(1 1 1 1 2 1 1 1 1 2 1 1 1 1 4)))
+            (wait-factors (new cycle :of '(1 1 1 1 2 1 1 1 1 2 1 1 1 1 4)))
         )
         (process 
-            for k = (next cycl)
+            for k = (next key-cycle)
             until (eod? k)
-            for trigger = (rem (incf pulses) 21)
-            for chord = (if (equal trigger 0) 
+            for progression-trigger = (rem (incf pulses) 21)
+            for chord = (if (equal progression-trigger 0) 
                 (next progression)
                 chord)
-            for note_ = (new midi :time (+ t-offset (now) )
-                :keynum (keynum (+ k-offset k) :through chord)
-                :duration (* rate (*  (next waits)))
+            for note_ = (new midi :time (+ time-offset (now) )
+                :keynum (keynum (+ key-offset k) :through chord)
+                :duration (* (* extra-wait rate) (*  (next wait-factors)))
                 :amplitude amp
-                :channel chan)
-            do (format t "Pulse: ~a ~a Chord: ~a Note: ~a~%" pulses trigger (keynum chord) note_)
+                :channel channel)
+            do (format t "Pulse: ~a ~a Chord: ~a Note: ~a~%" pulses progression-trigger (keynum chord) note_)
             output note_
-        wait (* (pattern-value waits) rate))
+        wait (* (pattern-value wait-factors) (* extra-wait rate)))
     )
 )
 
 (defun pphase (amp)
-  (list (piano1 trope 0 amp 1   0 -17)
-        (piano1 trope 1 amp 1   2   0)
-        (piano1 trope 2 amp 1   1   9)))
+    (list 
+        (voice-1 motive 0 amp 2   0 -24 4)
+        (voice-1 motive 1 amp 1   1   0 3)
+        (voice-1 motive 2 amp 0   2   5 2)
+        (voice-1 motive 3 amp 1   3   8 1)
+    )
+)
 
 (defparameter csound-seq (new seq :name "csound-seq"))
 
@@ -103,7 +107,7 @@
 (seq-to-midifile csound-seq "Triphase-Aeolus-3.mid")
 
 (defparameter output "dac")
-(render-with-orc csound-seq all-in-one-orc :output output :channel-offset 1 :velocity-scale 127 :csd-filename "Triphase-Aeolus-3.csd" :options "--midi-key=4 --midi-velocity=5 --0dbfs=1 -m195")
+(render-with-orc csound-seq all-in-one-orc :output output :channel-offset 1 :velocity-scale 127 :csd-filename "Triphase-Aeolus-3.csd" :options "--midi-key=4 --midi-velocity=5 --0dbfs=1 -m195 -+msg_color=0")
 (quit)
 
 
