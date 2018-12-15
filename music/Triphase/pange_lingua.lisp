@@ -8,8 +8,8 @@
 (defparameter csound-seq (midifile-to-seq "/home/mkg/Downloads/Pange_Lingua_More_Hispano.mid"))
 (list-objects csound-seq)
 
-;(defparameter output "dac")
-(defparameter output "Pange-Lingua.wav")
+(defparameter output "dac")
+;(defparameter output "Pange-Lingua.wav")
 (render-with-orc csound-seq all-in-one-orc :output output :channel-offset 1 :velocity-scale 140 :csd-filename "Pange-Lingua.csd")
 (unless (equal output "dac")    
     (print "Post-processing...")
