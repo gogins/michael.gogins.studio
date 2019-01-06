@@ -1,3 +1,21 @@
+#|
+PANGUE LINGUA SHUFFLED
+Michael Gogins
+5 January 2019
+
+Been trying to make something out of this jewel for decades!
+
+To do:
+
+(1) Double and triple time in the middle in some voices. 
+(2) Changes of stops using special instrument.
+(3) Changes of range/transposition in the middle.
+(4) End roundly if possible, otherwise by ear.
+(5) Better harmony if possible.
+(6) Hocketting?
+(7) The exactly correct tempo and duration and reverb.
+|#
+
 (load "~/quicklisp/setup.lisp")
 (ql:quickload "nudruz")
 (load "/home/mkg/csound-extended/nudruz/sources/all-in-one-orc.lisp")
@@ -5,15 +23,28 @@
 
 (set-dispatch-macro-character #\# #\> #'cl-heredoc:read-heredoc)
 
-(defparameter chord-1  (new mode :degrees   '(c  d  e   f  g  a  b  c)))
-(defparameter chord-2  (new mode :degrees   '(c  d  ef    g  af  bf c)))
-(defparameter chord-3  (new mode :degrees   '(c  ds e     gf    bf c)))
+(defparameter pitch-class-set-1  (new mode :degrees   '(c  d  e  f  fs g  a  b  c)))
+(defparameter pitch-class-set-2  (new mode :degrees   '(c  d  ef       g  af bf c)))
+(defparameter pitch-class-set-3  (new mode :degrees   '(c  ds e        gf    bf c)))
 
-(defparameter progression (new cycle :of (list chord-1 (transpose chord-1 2) chord-2 (transpose chord-2 2) (transpose chord-1 3))))
+(defparameter voice-1-tempos    '(2   2   4       4       4       4       2   4     2   2))
+(defparameter voice-2-tempos    '(2   2   4       3     3     3     3     2   4     2   2))
+(defparameter voice-3-tempos    '(2   2   2   2   2   2   2   2   2   2   1 1 2  2  1 1 2))
+(defparameter voice-4-tempos    '(2   2   2   2   1 1 1 1 1 1 1 1 1 1 1 1 1 1 2  2  1 1 2))
+
+(defparameter voice-1-transpositions    '(-12 -24 -24 -24   0 -12 -24))
+(defparameter voice-2-transpositions    '(-12 -12   4   4   0   0 -12))
+(defparameter voice-3-transpositions    '(-12   0   9  21   0   9   0))
+(defparameter voice-4-transpositions    '(-12   0  12  24   0  28  12))
+
+
+(defparameter progression (new cycle :of 
+    (list pitch-class-set-1 
+    (list pitch-class-set-1 (transpose pitch-class-set-1 2) pitch-class-set-1 (transpose pitch-class-set-1 2) 
+    (transpose pitch-class-set-1 7)))))
 
 (defparameter pangue
     (keynum '(e4 e e d g g a c5 c c c c c d c c c a4 c5 b4 a g g g g g a c5 b4 a g a a a a a a b g fs e a a a a a d d d d g g g e g a a g g g g a b g a g f d e e e e)))
-    ;(keynum '(e4 d g a c5 d c a4 c5 b4 a g a c5 b4 a g a b g fs e a d g e g a g a b g a g f d e)))
   
 (format t "Length of pangue ~a~%" (length pangue))
 (defparameter rhythms
@@ -32,47 +63,54 @@
   (* rhy 4.0 (bpm->seconds tempo)))
   
 (defparameter pulses 0)
+(defparameter total-pulses (* 4 72))
 
-(defparameter chord (next progression))
-
-(defun voice-1 (pangue key-cycle-pop-tail amp channel time-offset key-offset extra-wait)
+(defun voice-1 (pangue key-cycle-pop-tail amp channel time-offset transpositions tempos)
     (let* 
         (
+            (duration-seconds 360.0)
             (key-cycle (new cycle :keynums (subseq pangue 0 (- (length pangue) key-cycle-pop-tail))))
             (rate (rhythm->seconds pp-pulse pp-tempo))
             (wait-factors (new cycle :of (subseq rhythms 0 (- (length rhythms) key-cycle-pop-tail))))
-            (duration-seconds 360.0)
+            (tempo-cycle (new cycle :of tempos))
+            (tempo_ (next tempo-cycle))
+            (chord (next progression))
+            (transposition-cycle (new cycle :of transpositions))
+            (transposition (next transposition-cycle))
         )
         (process 
             for now_ = (now)
-            until (> now_ duration-seconds)
-            for progression-trigger = (rem (incf pulses) 72)
+            ;until (> now_ duration-seconds)
+            until (eop? tempo-cycle)
+            for progression-trigger = (rem (incf pulses) total-pulses)
             for chord = (if (equal progression-trigger 0) 
                 (next progression)
                 chord)
             for k = (next key-cycle)
-            for k-adjusted = (keynum (+ key-offset k) :through chord)
+            for tempo_ = (if (eop? key-cycle) 
+                (next tempo-cycle) 
+                tempo_)
+            for transposition = (if (eop? key-cycle) 
+                (next transposition-cycle) 
+                transposition)
+            for key-adjusted = (keynum (+ transposition k) :through chord)
             for note_ = (new midi :time (+ time-offset (now) )
-                :keynum k-adjusted
-                :duration (* (* extra-wait rate) (* (next wait-factors)))
+                :keynum key-adjusted
+                :duration (*  (* (next wait-factors)) (* tempo_ rate))
                 :amplitude amp
                 :channel channel)
-            do (format t "Pulse: ~a ~a Chord: ~a Note: ~a~%" pulses progression-trigger (keynum chord) note_)
+            do (format t "Pulse: ~a Duration: ~a Chord: ~a Note: ~a~%" pulses tempo_ progression-trigger (keynum chord) note_)
             output note_
-        wait (* (pattern-value wait-factors) (* extra-wait rate)))
+        wait (* (pattern-value wait-factors) (* tempo_ rate)))
     )
 )
 
 (defun phasing (amp transpose)
     (list 
-        ;voice-1 pangue 0 amp 0 0 (+ transpose -12) 4)
-        ;voice-1 pangue 1 amp 1 1 (+ transpose   0) 3)
-        ;voice-1 pangue 2 amp 2 2 (+ transpose   5) 2)
-        ;voice-1 pangue 3 amp 1 3 (+ transpose   9) 1)
-        (voice-1 pangue 0 amp 3 0 (+ transpose -12) 2)
-        (voice-1 pangue 1 amp 1 0 (+ transpose   0) 2)
-        (voice-1 pangue 2 amp 2 0 (+ transpose   9) 2)
-        (voice-1 pangue 3 amp 1 0 (+ transpose  16) 2)
+        (voice-1 pangue 0 amp 3 0 voice-1-transpositions voice-1-tempos)
+        (voice-1 pangue 1 amp 1 0 voice-2-transpositions voice-2-tempos)
+        (voice-1 pangue 2 amp 2 0 voice-3-transpositions voice-3-tempos)
+        (voice-1 pangue 3 amp 1 0 voice-4-transpositions voice-4-tempos)
     )
 )
 
