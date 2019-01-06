@@ -38,7 +38,7 @@ To do:
 (defparameter voice-4-transpositions    '(-12   0  12  24   0  28  12))
 
 
-(defparameter progression (new cycle :of 
+(defparameter chord-cycle (new cycle :of 
     (list pitch-class-set-1 
     (list pitch-class-set-1 (transpose pitch-class-set-1 2) pitch-class-set-1 (transpose pitch-class-set-1 2) 
     (transpose pitch-class-set-1 7)))))
@@ -74,7 +74,7 @@ To do:
             (wait-factors (new cycle :of (subseq rhythms 0 (- (length rhythms) key-cycle-pop-tail))))
             (tempo-cycle (new cycle :of tempos))
             (tempo_ (next tempo-cycle))
-            (chord (next progression))
+            (chord (next chord-cycle))
             (transposition-cycle (new cycle :of transpositions))
             (transposition (next transposition-cycle))
         )
@@ -82,24 +82,24 @@ To do:
             for now_ = (now)
             ;until (> now_ duration-seconds)
             until (eop? tempo-cycle)
-            for progression-trigger = (rem (incf pulses) total-pulses)
-            for chord = (if (equal progression-trigger 0) 
-                (next progression)
-                chord)
+            for chord-cycle-trigger = (rem (incf pulses) total-pulses)
+            for chord = (if (equal chord-cycle-trigger 0) 
+                (next chord-cycle)
+                (pattern-value chord-cycle))
             for k = (next key-cycle)
             for tempo_ = (if (eop? key-cycle) 
                 (next tempo-cycle) 
-                tempo_)
+                (pattern-value tempo-cycle))
             for transposition = (if (eop? key-cycle) 
                 (next transposition-cycle) 
-                transposition)
+                (pattern-value transposition-cycle))
             for key-adjusted = (keynum (+ transposition k) :through chord)
             for note_ = (new midi :time (+ time-offset (now) )
                 :keynum key-adjusted
-                :duration (*  (* (next wait-factors)) (* tempo_ rate))
+                :duration (* (* (next wait-factors)) (* tempo_ rate))
                 :amplitude amp
                 :channel channel)
-            do (format t "Pulse: ~a Duration: ~a Chord: ~a Note: ~a~%" pulses tempo_ progression-trigger (keynum chord) note_)
+            do (format t "Pulse: ~a Duration: ~a Chord: ~a Note: ~a~%" pulses tempo_ chord-cycle-trigger (keynum chord) note_)
             output note_
         wait (* (pattern-value wait-factors) (* tempo_ rate)))
     )
