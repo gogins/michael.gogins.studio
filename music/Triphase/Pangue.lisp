@@ -35,31 +35,32 @@ To do:
 ;; Nine repetitions of the tune in the bass.
 ;; The bass, voice 1, is the master voice that sequences the others at each repetition.
 
-(defparameter voice-1-tempos    '(2   2   4       4       4       4       4       2   2))
-(defparameter voice-2-tempos    '(2   2   4       3     3     3     3     4       2   2))
-(defparameter voice-3-tempos    '(2   2   2   2   2   2   1 1 1 1 2   2   2   2   2   2))
-(defparameter voice-4-tempos    '(2   2   2   2   1 1 1 1 1 1 1 1 1 1 1 1 2   2   2   2))
+;; Nine repetitions...                      1   2   3       4       5       6       7       8   9
 
-;; Nine repetitions...                      1   2   3   4   5   6   7   8   9
+(defparameter voice-1-tempos            '(  2   2   4       4       4       4       4       2   2))
+(defparameter voice-2-tempos            '(  2   2   4       3     3     3     3     4       2   2))
+(defparameter voice-3-tempos            '(  2   2   2   2   2   2   1 1 1 1 2   2   2   2   2   2))
+(defparameter voice-4-tempos            '(  2   2   2   2   1 1 1 1 1 1 1 1 1 1 1 1 2   2   2   2))
 
-(defparameter voice-1-transpositions    '(-12 -12 -12 -24 -24 -24 -24 -24 -24)) 
-(defparameter voice-2-transpositions    '( -3  -3   4   4   4   4   4  -3  -3))
-(defparameter voice-3-transpositions    '(  4   4   9   9  12   9   9   4   4))
-(defparameter voice-4-transpositions    '( 12  12  12  12  12  12  12  12  12))
+(defparameter voice-1-transpositions    '(-12 -12 -12     -24     -24     -24     -24     -24 -24)) 
+(defparameter voice-2-transpositions    '( -3  -3  -3      -3       4      -3      -3      -3  -3))
+(defparameter voice-3-transpositions    '(  4   4   4       6       9       4       4       4   4))
+(defparameter voice-4-transpositions    '(  0   2   4       6       9      12      12      12  12))
 
 
 (defparameter chord-cycle 
     (new cycle :of 
         (list 
-            (transpose pitch-class-set-1  0)
-            (transpose pitch-class-set-1  0)
-            (transpose pitch-class-set-1  2) 
-            (transpose pitch-class-set-1  3)
-            (transpose pitch-class-set-1  4)
-            (transpose pitch-class-set-1  5)
-            (transpose pitch-class-set-1  6) 
-            (transpose pitch-class-set-1  7) 
-            (transpose pitch-class-set-1  0)
+            ; Out of order because of new cycles created in (*let,
+            (transpose pitch-class-set-3 11) ; 7
+            (transpose pitch-class-set-3 11) ; 8
+            (transpose pitch-class-set-1  0) ; 9
+            (transpose pitch-class-set-1  0) ; 1
+            (transpose pitch-class-set-1  0) ; 2
+            (transpose pitch-class-set-1  5) ; 3
+            (transpose pitch-class-set-1  5) ; 4
+            (transpose pitch-class-set-2 10) ; 5
+            (transpose pitch-class-set-2 10) ; 6
         )
     )
 )

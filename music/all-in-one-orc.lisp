@@ -3095,6 +3095,14 @@ aoutleft, aoutright             pan2                    asignal * adeclick, i_pa
                                 outleta                 "outright", aoutright
                                 prints                  "ZakianFlute    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
                                 endin
+                                
+                                instr AeolusPreset
+i_instrument                    =                       p1
+i_time                          =                       p2
+i_duration                      =                       p3
+i_preset                        =                       p4
+                                aeolus_preset           gi_aeolus, 0, 1.
+                                endin
 
                                 //////////////////////////////////////////////
                                 // OUTPUT INSTRUMENTS MUST GO BELOW HERE
