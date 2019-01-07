@@ -9,7 +9,7 @@ To do:
 
 --  Double and triple time in the middle in some voices. OK,
 --  Changes of stops using special instrument.
---  Changes of range/transposition in the middle. Needs work.
+--  Changes of range/transposition in the middle. Needs work. Note that 8vo preserves tune, others vary it.
 --  End roundly if possible, otherwise by ear. OK.
 --  Better harmony if possible. Not OK. Next chord by time (modulus of now), or by next tempo in one voice.
 --  Hocketting?
@@ -28,7 +28,7 @@ To do:
 (defparameter Pangue-Lingua
     (keynum '(e4 e e d g g a c5 c c c c c d c c c a4 c5 b4 a g g g g g a c5 b4 a g a a a a a a b g fs e a a a a a d d d d g g g e g a a g g g g a b g a g f d e e e e e e e)))
   
-(defparameter pitch-class-set-1  (new mode :degrees   '(c  d  e  f  fs g  a  b  c)))
+(defparameter pitch-class-set-1  (new mode :degrees   '(c  d  e  f     g  a  b  c)))
 (defparameter pitch-class-set-2  (new mode :degrees   '(c  d  ef       g  af bf c)))
 (defparameter pitch-class-set-3  (new mode :degrees   '(c  ds e        gf    bf c)))
 
@@ -43,17 +43,17 @@ To do:
 (defparameter voice-4-tempos            '(  2   2   2   2   1 1 1 1 1 1 1 1 1 1 1 1 2   2   2   2))
 
 (defparameter voice-1-transpositions    '(-12 -12 -12     -24     -24     -24     -24     -24 -24)) 
-(defparameter voice-2-transpositions    '( -3  -3  -3      -3       4      -3      -3      -3  -3))
-(defparameter voice-3-transpositions    '(  4   4   4       6       9       4       4       4   4))
-(defparameter voice-4-transpositions    '(  0   2   4       6       9      12      12      12  12))
+(defparameter voice-2-transpositions    '(  4  -3  -3      -3       4      -3      -3      -3  -3))
+(defparameter voice-3-transpositions    '(  9   4   4       6       9       4       4       4   4))
+(defparameter voice-4-transpositions    '( 12   2   4       6       9      12      12      12  12))
 
 
 (defparameter chord-cycle 
     (new cycle :of 
         (list 
-            ; Out of order because of new cycles created in (*let,
-            (transpose pitch-class-set-3 11) ; 7
-            (transpose pitch-class-set-3 11) ; 8
+            ; Out of order because of new cycles created in (*let.
+            (transpose pitch-class-set-3  7) ; 7
+            (transpose pitch-class-set-3  7) ; 8
             (transpose pitch-class-set-1  0) ; 9
             (transpose pitch-class-set-1  0) ; 1
             (transpose pitch-class-set-1  0) ; 2
@@ -114,10 +114,10 @@ To do:
 
 (defun phasing (amp)
     (list 
-        (voice-1 Pangue-Lingua 3 amp 2 0 voice-1-transpositions voice-1-tempos t)
-        (voice-1 Pangue-Lingua 2 amp 2 0 voice-2-transpositions voice-2-tempos nil)
-        (voice-1 Pangue-Lingua 1 amp 2 0 voice-3-transpositions voice-3-tempos nil)
-        (voice-1 Pangue-Lingua 0 amp 2 0 voice-4-transpositions voice-4-tempos nil)
+        (voice-1 Pangue-Lingua 0 amp 2 0 voice-1-transpositions voice-1-tempos t)
+        (voice-1 Pangue-Lingua 3 amp 2 0 voice-2-transpositions voice-2-tempos nil)
+        (voice-1 Pangue-Lingua 2 amp 2 0 voice-3-transpositions voice-3-tempos nil)
+        (voice-1 Pangue-Lingua 1 amp 2 0 voice-4-transpositions voice-4-tempos nil)
     )
 )
 
