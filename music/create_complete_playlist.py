@@ -20,14 +20,28 @@ import traceback
 output = r'complete.m3u'
 spreadsheet = r'complete_soundfiles.tsv'
 
-rootdirs = string.split('c:\\Users\\mike c:\\Users\\restore d:\\Dropbox f:\\ D:\\msys64\\home\\restore\\michael.gogins.studio')
-omitdirs = string.split('rawwaves orc eSupport attic Attic music-attic Examples Music MUSIC examples winabx csound-csound6-git ssdir Hrabovsky')
+rootdirs = string.split('/home/mkg')
+omitdirs = string.split('Trash csound-extended-vst4cs Downloads jak_stretch Nancarrow_Renderings imparting_harmonies rawwaves orc eSupport attic Attic music-attic Examples Music MUSIC examples winabx csound-extended ssdir Hrabovsky')
 extensions = string.split('.wav .aif .aiff')
 
 def omit(omitdirs, filepath):
     for omitdir in omitdirs:
         omitdir = os.sep + omitdir + os.sep
         if filepath.find(omitdir) != -1:
+            return True
+        if filepath.find(".cd.wav") != -1:
+            return True
+        if filepath.find("test.wav") != -1:
+            return True
+        if filepath.find("Heidi Rogers") != -1:
+            return True
+        if filepath.find("TASCAM") != -1:
+            return True
+        if filepath.find(".CHK.wav") != -1:
+            return True
+        if filepath.find(".output.wav") != -1:
+            return True
+        if filepath.find(".wavuntagged.wav") != -1:
             return True
     return False
 
@@ -45,6 +59,7 @@ def add(pathname):
                 if basename not in timesForBasenames:
                     timesForBasenames[basename] = {}
                 timesForBasenames[basename][filestat.st_ctime] = pathname
+                print pathname
 
 for rootdir in rootdirs:
     for root, subdirs, files in os.walk(rootdir):

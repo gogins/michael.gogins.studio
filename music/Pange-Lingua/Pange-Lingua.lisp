@@ -7,17 +7,14 @@ Been trying to make something out of this jewel for decades!
 
 To do:
 
---  Double and triple time in the middle in some voices. OK,
---  Changes of stops using special instrument. Next stop is offset, needs to start at 0.
 --  Changes of range/transposition in the middle. Needs work. Note that 8vo preserves tune, others vary it.
---  End roundly,
---  Better harmony if possible. Next chord is offset, needs to start at 0.
---  Hocketting?
+--  End with reverb tail.
+--  Better harmony if possible. 
 --  The exactly correct tempo and duration and reverb. Maybe a little tweaking,
 
 Program Notes
 
-This piece consists of the tune of Pangue Lingua, in Mode III, played in four 
+This piece consists of the tune of Pange Lingua, in Mode III, played in four 
 voices that are layered at different modal transpositions and repeated at 
 different tempos and lengths. I created the composition using the Lisp version 
 of Common Music. I created the sound using Fons Adriaensen's software pipe 
@@ -69,7 +66,7 @@ gkMasterLevel                   init                    1.5
                                 alwayson                "Reverberation"
                                 alwayson                "MasterOutput"
                                                                 
-gi_aeolus                       aeolus_init             "./stops-0.3.0", "Aeolus", "waves", 0, 5, 1
+gi_aeolus                       aeolus_init             "./stops-0.3.0", "Aeolus", "waves", 0, 7, 1
 
                                 instr Aeolus_P 
                                 //////////////////////////////////////////////
@@ -174,9 +171,9 @@ aoutright                       =                       gkMasterLevel * ainright
                                 endin
 qqq)
 
-; Each beat of "Pangue Lingua" in Mode 3.
+; Each beat of "Pange Lingua" in Mode 3.
 
-(defparameter Pangue-Lingua
+(defparameter Pange-Lingua
     (keynum '(e4 e e d g g a c5 c c c c c d c c c a4 c5 b4 a g g g g g a c5 b4 a g a a a a a a b g fs e a a a a a d d d d g g g e g a a g g g g a b g a g f d e e e e e e e)))
 
 ; Pitches of Mode 3, but without the F sharp.
@@ -195,14 +192,13 @@ qqq)
 (defparameter voice-3-tempos                         '(  2   2   2   2   2   2   1 1 1 1 2   2   2   2   2   2))
 (defparameter voice-4-tempos                         '(  2   2   2   2   1 1 1 1 1 1 1 1 1 1 1 1 2   2   2   2))
 
-(defparameter voice-1-transpositions (new cycle :of  '(-12 -12 -24     -24     -20     -24     -24     -12 -12))) 
-(defparameter voice-2-transpositions (new cycle :of  '(  4   4 -15     -3       -3      -3     -15       4   4)))
-(defparameter voice-3-transpositions (new cycle :of  '(  9   9   4       4       4       4       4       9   9)))
-(defparameter voice-4-transpositions (new cycle :of  '( 12  12  12      12      14      12      12      10  12)))
+(defparameter voice-1-transpositions (new cycle :of  '(-12 -12 -24     -21     -19     -16     -24     -12 -12))) 
+(defparameter voice-2-transpositions (new cycle :of  '(  4   4 -20      -3      -3      -3     -15       4   4)))
+(defparameter voice-3-transpositions (new cycle :of  '(  9   9   4       9      12       4       4       9   9)))
+(defparameter voice-4-transpositions (new cycle :of  '( 12  12  12      12      12      12      12      12  12)))
 
 (defparameter preset-cycle (new cycle :of            '(  0   1   2       3       4       5       6       7   0)))
 (next preset-cycle)
-
 
 (defparameter chord-cycle 
     (new cycle :of 
@@ -221,11 +217,12 @@ qqq)
 )
 (defparameter chord (next chord-cycle))
 
-(format t "Length of 'Pangue Lingua:' ~a~%" (length Pangue-Lingua))
+(format t "Length of 'Pange Lingua:' ~a~%" (length Pange-Lingua))
 
 (defparameter pp-pulse 1/24)
 
 (defparameter pp-tempo 46.0)
+(defparameter stop-flag 0)
 
 (defun bpm->seconds (bpm)
   (/ 60.0 bpm))
@@ -233,18 +230,18 @@ qqq)
 (defun rhythm->seconds (rhy tempo)
   (* rhy 4.0 (bpm->seconds tempo)))
   
-(defun voice-1 (Pangue-Lingua key-cycle-pop-tail amp channel time-offset transposition-cycle tempos is-master)
+(defun voice-1 (Pange-Lingua key-cycle-pop-tail amp channel time-offset transposition-cycle tempos is-master)
     (let* 
         (
             (rate (rhythm->seconds pp-pulse pp-tempo))
             ; Differential canon.
-            (key-cycle (new cycle :keynums (subseq Pangue-Lingua 0 (- (length Pangue-Lingua) key-cycle-pop-tail))))
+            (key-cycle (new cycle :keynums (subseq Pange-Lingua 0 (- (length Pange-Lingua) key-cycle-pop-tail))))
             (tempo-cycle (new cycle :of tempos))
             (tempo_ (next tempo-cycle))
             (transposition (next transposition-cycle))
         )
         (process 
-            until (eop? tempo-cycle)
+            until (= stop-flag 1)
             for now_ = (now)
             for k = (next key-cycle)
             for key-adjusted = (keynum (+ transposition k) :through chord)
@@ -271,16 +268,18 @@ qqq)
                         (setf chord (next chord-cycle))
                         (setf transposition (next transposition-cycle)) 
                     )
+            if (and is-master (eop? tempo-cycle))
+                set stop-flag = 1
        wait (* tempo_ rate))
     )
 )
 
 (defun phasing (amp)
     (list 
-        (voice-1 Pangue-Lingua 0 amp 0 0 voice-1-transpositions voice-1-tempos t)
-        (voice-1 Pangue-Lingua 1 amp 1 0 voice-2-transpositions voice-2-tempos nil)
-        (voice-1 Pangue-Lingua 2 amp 2 0 voice-3-transpositions voice-3-tempos nil)
-        (voice-1 Pangue-Lingua 3 amp 3 0 voice-4-transpositions voice-4-tempos nil)
+        (voice-1 Pange-Lingua 3 amp 0 0 voice-1-transpositions voice-1-tempos t)
+        (voice-1 Pange-Lingua 2 amp 1 0 voice-2-transpositions voice-2-tempos nil)
+        (voice-1 Pange-Lingua 1 amp 2 0 voice-3-transpositions voice-3-tempos nil)
+        (voice-1 Pange-Lingua 0 amp 3 0 voice-4-transpositions voice-4-tempos nil)
     )
 )
 
@@ -301,12 +300,12 @@ qqq)
 (setf (gethash 1 voices) '(1 2 3 4))
 (setf (gethash 2 voices) '(1 2 3 4))
 (setf (gethash 3 voices) '(1 2 3 4))
-;(seq-to-lilypond csound-seq "Pangue-Lingua.ly" *piano-part* partids voices)
-(seq-to-midifile csound-seq "Pangue-Lingua.mid")
+;(seq-to-lilypond csound-seq "Pange-Lingua.ly" *piano-part* partids voices)
+(seq-to-midifile csound-seq "Pange-Lingua.mid")
 
 (defparameter output "Pange-Lingua.wav")
-(defparameter output "dac")
-(render-with-orc csound-seq aeolus-orc :output output :channel-offset 1 :velocity-scale 127 :csd-filename "Pangue-Lingua.csd" :options "--midi-key=4 --midi-velocity=5 --0dbfs=1 -m195 -+msg_color=0")
+;(defparameter output "dac")
+(render-with-orc csound-seq aeolus-orc :output output :channel-offset 1 :velocity-scale 127 :csd-filename "Pange-Lingua.csd" :options "--midi-key=4 --midi-velocity=5 --0dbfs=1 -m0 -d -+msg_color=0")
 (quit)
 
 
