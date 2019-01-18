@@ -171,11 +171,35 @@ window.onload = function() {
   if (navigator.platform === 'Linux armv7l') {
     document.getElementById('controls').appendChild(gui.domElement);
   }
-  parameters.generate = function() {
-    gui.revert();  
-    window.generate();  
-  }
+    /*
+    instr FMWaterBell uses instrument number 1
+    instr Phaser uses instrument number 2
+    instr Bower uses instrument number 3
+    instr Droner uses instrument number 4
+    instr Sweeper uses instrument number 5
+    instr Buzzer uses instrument number 6
+    instr Shiner uses instrument number 7
+    instr Blower uses instrument number 8
+    instr PianoteqOut uses instrument number 10
+    instr Reverb uses instrument number 11
+    instr Reverb2 uses instrument number 13
+    instr ParametricEQ uses instrument number 15
+    instr MasterOutput uses instrument number 16
+    */
   gui.remember(parameters);
+  var FMWaterBell = gui.AddFolder('FMWaterBell');
+  var Phaser = gui.addFolder('Phaser');
+  var Bower = gui.addFolder('Bower');
+  var Sweeper = gui.addFolder('Sweeper');
+  var Buzzer = gui.addFolder('Buzzer');
+  var Shiner = gui.addFolder('Shiner');
+  var Blower = gui.addFolder('Blower');
+  var Pianoteq = gui.addFolder('Pianoteq');
+  var Reverb = gui.addFolder('Reverb');
+  var Reverb2 = gui.addFolder('Reverb2');
+  var ParametricEQ = gui.addFolder('ParametricEQ');
+  var MasterOutput = gui.addFolder('MasterOutput');
+  
   var f5 = gui.addFolder('Blower');
   add_slider(f5, 'gk_Blower_grainDensity', 0, 400);
   add_slider(f5, 'gk_Blower_grainDuration', 0, .5);
