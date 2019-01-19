@@ -1,17 +1,22 @@
 <html>
 <head>
 <style>
-::-webkit-scrollbar {
-    width: 12px;
-}
-::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
-    border-radius: 10px;
-}
-::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
-}
+    ::-webkit-scrollbar
+    {
+    width:10px;
+    }
+    ::-webkit-scrollbar-track-piece
+    {
+    background-color:transparent;
+    }
+    ::-webkit-scrollbar-corner
+    {
+    background-color:transparent;
+    }
+.dg {
+    font-family: Monaco, sans-serif;
+    font-size:8pt;
+    }
 </style>
 </head>
 <body style="background:black;">
@@ -137,6 +142,16 @@ var generate = function() {
   }
 };
 var parameters = {
+    gk_FMWaterBell_level: 15,
+    gi_FMWaterBell_attack: 0.002,
+    gi_FMWaterBell_release: 0.01,
+    gi_FMWaterBell_exponent: 15,
+    gi_FMWaterBell_sustain: 20,
+    gi_FMWaterBell_sustain_level: .1,
+    gk_FMWaterBell_index: .5,
+    gk_FMWaterBell_crossfade: .5,
+    gk_FMWaterBell_vibrato_depth: 0.05,
+    gk_FMWaterBell_vibrato_rate: 6,
     gk_Bower_level: 0.5,
     gk_Bower_pressure: 0.25,
     gk_Blower_grainDensity: .150,
@@ -168,6 +183,21 @@ var parameters = {
     gk_Reverb2_Feedback: .7,
     gk_MasterOutput_level: .4,
     gk_overlap: 0.05,
+    play: function() {
+        var csd = document.getElementById('csd').value;
+        var csound_score = lsys.score.toCsoundScore();
+        csound_score = csound_score.concat("\n</CsScore>");
+        csd = csd.replace("</CsScore>", csound_score);
+        console.log("Playing...");
+        csound.setOption('-m0');
+        //csound.setOption('-j3');
+        csound.setOption('--nodisplays');
+        csound.setOption('-odac');
+        csound.compileCsdText(csd);
+        fs.writeFileSync("Poustinia-v2-generated.csd", csd);
+        csound.start();
+        csound.perform();
+    },
 };
 function handleMessage(message) {
     console.log(message);
@@ -180,30 +210,24 @@ window.onload = function() {
     get_csound(handleMessage);
     var gui = new dat.GUI({width: 400});
     console.log('platform: ' + navigator.platform + '\n');
-    if (navigator.platform === 'Linux armv7l') {
-        document.getElementById('controls').appendChild(gui.domElement);
-    }
-    var play = function() {
-        gui.revert();
-        generate();
-        var csd = document.getElementById('csd').value;
-        var csound_score = lsys.score.toCsoundScore();
-        csound_score = csound_score.concat("\n</CsScore>");
-        csd = csd.replace("</CsScore>", csound_score);
-        console.log(csd);
-        console.log("Playing...");
-        csound.setOption('-m0');
-        //csound.setOption('-j3');
-        csound.setOption('--nodisplays');
-        csound.setOption('-odac');
-        csound.compileCsdText(csd);
-        fs.writeFileSync("Poustinia-v2-generated.csd", csd);
-        //csound.readScore('f 0 360\n');
-        csound.start();
-        csound.perform();
-    };
     gui.remember(parameters);
+    gui.add(parameters, 'play').name('Play');
+    var Master = gui.addFolder('Master');
+    add_slider(Master, 'gk_overlap', 0, 20);
+    add_slider(Master, 'gk_Reverb_Feedback', 0, 1);
+    add_slider(Master, 'gk_Reverb2_Feedback', 0, 1);
+    add_slider(Master, 'gk_MasterOutput_level', -40, 40);
     var FMWaterBell = gui.addFolder('FMWaterBell');
+    add_slider(FMWaterBell, 'gi_FMWaterBell_attack', 0, .1);
+    add_slider(FMWaterBell, 'gi_FMWaterBell_release', 0, .1);
+    add_slider(FMWaterBell, 'gi_FMWaterBell_exponent', -30, 30);
+    add_slider(FMWaterBell, 'gi_FMWaterBell_sustain', 0, 20);
+    add_slider(FMWaterBell, 'gi_FMWaterBell_sustain_level', 0, 1);
+    add_slider(FMWaterBell, 'gk_FMWaterBell_crossfade', 0, 1);
+    add_slider(FMWaterBell, 'gk_FMWaterBell_index', 0, 15);
+    add_slider(FMWaterBell, 'gk_FMWaterBell_vibrato_depth', 0, 10);
+    add_slider(FMWaterBell, 'gk_FMWaterBell_vibrato_rate', 0, 10);
+    add_slider(FMWaterBell, 'gk_FMWaterBell_level',-40, 40);
     var Phaser = gui.addFolder('Phaser');
     add_slider(Phaser, 'gk_Phaser_ratio1', 0, 1);
     add_slider(Phaser, 'gk_Phaser_ratio2', 0, 1);
@@ -211,7 +235,7 @@ window.onload = function() {
     add_slider(Phaser, 'gk_Phaser_index2', 0, 1);
     add_slider(Phaser, 'gk_Phaser_level', -40, 40);
     var Bower = gui.addFolder('Bower');
-    add_slider(Bower, 'gk_Bower_pressure', 0, 1);
+    add_slider(Bower, 'gk_Bower_pressure', 0, 5);
     add_slider(Bower, 'gk_Bower_level', -40, 40);
     var Droner = gui.addFolder('Droner');
     add_slider(Droner, 'gk_Droner_partial1', 0, 1);
@@ -239,25 +263,38 @@ window.onload = function() {
     add_slider(Blower, 'gk_Blower_level', -40, 40);
     var Pianoteq = gui.addFolder('Pianoteq');
     add_slider(Pianoteq, 'gk_PianoteqOut_level', -40, 40);
-    var Master = gui.addFolder('Master');
-    add_slider(Master, 'gk_overlap', 0, 20);
-    add_slider(Master, 'gk_Reverb_Feedback', 0, 1);
-    add_slider(Master, 'gk_Reverb2_Feedback', 0, 1);
-    add_slider(Master, 'gk_MasterOutput_level', -40, 40);
     gui.revert();  
-    play();
+    generate();
 };
 function gk_update(name, value) {
   var numberValue = parseFloat(value);
   csound.setControlChannel(name, numberValue);
   csound.message(name + ': ' + numberValue + '\n');
 }
-function add_slider(gui_folder, token, minimum, maximum) {
+function add_slider(gui_folder, token, minimum, maximum, name) {
     var on_parameter_change = function(value) {
         gk_update(token, value);
     };
     gui_folder.add(parameters, token, minimum, maximum).onChange(on_parameter_change);
 };
+// The 'keydown' event is used for key bindings.
+$(document).on("keydown", function (e) {
+    var e_char = String.fromCharCode(e.keyCode || e.charCode);
+    if (e.ctrlKey === true) {
+        if        (e_char === 'H') {
+            $("#console").toggle();
+            gui.toggle();
+        } else if (e_char === 'P') {
+            parameters.Play();
+        } else if (e_char === 'S') {
+            parameters.Stop();
+        } else if (e_char === 'X') {
+            parameters.Close();
+        }
+
+    }
+    return false;
+ });
 </script>
 <textarea class="code" id="csd" hidden rows=24 cols=80>
 <CsoundSynthesizer>
@@ -275,8 +312,8 @@ connect "Buzzer", "outleft", "ReverbLeft", "inleft"
 connect "Buzzer", "outright", "ReverbRight", "inright"
 connect "Droner", "outleft", "ReverbLeft", "inleft"
 connect "Droner", "outright", "ReverbRight", "inright"
-connect "FMWaterBell", "outleft", "ReverbLeft", "inleft"
-connect "FMWaterBell", "outright", "ReverbRight", "inright"
+connect "FMWaterBell", "outleft", "Reverb2Left", "inleft"
+connect "FMWaterBell", "outright", "Reverb2Right", "inright"
 connect "Phaser", "outleft", "ReverbLeft", "inleft"
 connect "Phaser", "outright", "ReverbRight", "inright"
 connect "PianoteqOut", "outleft", "MasterOutput", "inleft"
@@ -306,15 +343,16 @@ gk_overlap init 4.5
 //////////////////////////////////////////////
 gk_FMWaterBell_level init 15
 gi_FMWaterBell_attack init 0.002
-gi_FMWaterBell_release init 0.01
+gi_FMWaterBell_exponent init 15
 gi_FMWaterBell_sustain init 20
 gi_FMWaterBell_sustain_level init .1
+gi_FMWaterBell_release init 0.01
 gk_FMWaterBell_index init .5
 gk_FMWaterBell_crossfade init .5
 gk_FMWaterBell_vibrato_depth init 0.05
 gk_FMWaterBell_vibrato_rate init 6
 gk_FMWaterBell_midi_dynamic_range init 127
-gi_FMWaterBell_cosine ftgen 0, 0, 65536, 11, 1
+gi_FMWaterBell_sine ftgen 0, 0, 65536, 10, 1
 instr FMWaterBell
 i_instrument = p1
 i_time = p2
@@ -331,13 +369,15 @@ k_space_bottom_to_top = p8
 i_phase = p9
 i_frequency = cpsmidinn(i_midi_key)
 ; Adjust the following value until "overall amps" at the end of performance is about -6 dB.
-i_level_correction = 0
+i_level_correction = -10
 i_normalization = ampdb(-i_level_correction) / 2
 i_amplitude = ampdb(i_midi_velocity) * i_normalization
 k_gain = ampdb(gk_FMWaterBell_level)
-a_signal fmbell	1, i_frequency, gk_FMWaterBell_index, gi_FMWaterBell_sustain, gk_FMWaterBell_vibrato_depth, gk_FMWaterBell_vibrato_rate, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine, gi_FMWaterBell_sustain
-a_envelope transegr 0, gi_FMWaterBell_attack, -16, 1, i_duration, -12, gi_FMWaterBell_sustain_level, gi_FMWaterBell_release, -16, 0
-a_signal = a_signal * i_amplitude * a_envelope * k_gain
+; ares fmbell kamp, kfreq, kc1, kc2, kvdepth, kvrate[, ifn1, ifn2, ifn3, ifn4, ivfn, isus]
+a_signal fmbell	1, i_frequency, gk_FMWaterBell_index, gk_FMWaterBell_crossfade, gk_FMWaterBell_vibrato_depth, gk_FMWaterBell_vibrato_rate, gi_FMWaterBell_sine, gi_FMWaterBell_sine, gi_FMWaterBell_sine, gi_FMWaterBell_sine, gi_FMWaterBell_sine ;, gi_FMWaterBell_sustain
+a_envelope transegr 0, gi_FMWaterBell_attack, gi_FMWaterBell_exponent, 1, i_duration, gi_FMWaterBell_exponent, gi_FMWaterBell_sustain_level, gi_FMWaterBell_release, gi_FMWaterBell_exponent, 0
+; a_signal = a_signal * i_amplitude * a_envelope * k_gain
+a_signal = a_signal * i_amplitude * k_gain
 a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
@@ -735,7 +775,7 @@ prints "ReverbRight    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", 
 endin
 
 gk_Reverb2_Feedback init 0.975
-gk_Delay2_Modulation init 0.875
+gk_Delay2_Modulation init 0.0075
 
 instr Reverb2Left
 aleft init 0
@@ -775,39 +815,58 @@ aright inleta "inright"
 kgain = ampdb(gk_MasterOutput_level)
 outs aleft * kgain, aright * kgain
 ; idate date
-Sfilename sprintf "Poustinia-v2-%d.wav", 7
+Sfilename sprintf "Poustinia-v2-%d.wav", 8
 prints sprintf("Filename: %s\n", Sfilename)
-;fout Sfilename, 16, aleft, aright
+fout Sfilename, 16, aleft, aright
 prints "MasterOutput   i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
 instr Controls
+    gk_FMWaterBell_level chnget "gk_FMWaterBell_level"
+    gi_FMWaterBell_attack chnget "gi_FMWaterBell_attack"
+    gi_FMWaterBell_exponent chnget "gi_FMWaterBell_exponent"
+    gi_FMWaterBell_release chnget "gi_FMWaterBell_release"
+    gi_FMWaterBell_sustain chnget "gi_FMWaterBell_sustain"
+    gi_FMWaterBell_sustain_level chnget "gi_FMWaterBell_sustain_level"
+    gk_FMWaterBell_index chnget "gk_FMWaterBell_index"
+    gk_FMWaterBell_crossfade chnget "gk_FMWaterBell_crossfade"
+    gk_FMWaterBell_vibrato_depth chnget "gk_FMWaterBell_vibrato_depth"
+    gk_FMWaterBell_vibrato_rate chnget "gk_FMWaterBell_vibrato_rate"
+
     gk_Bower_level chnget "gk_Bower_level"
+    
     gk_Blower_grainDensity chnget "gk_Blower_grainDensity" 
     gk_Blower_grainDuration chnget "gk_Blower_grainDuration" 
     gk_Blower_grainAmplitudeRange chnget "gk_Blower_grainAmplitudeRange"
     gk_Blower_grainFrequencyRange chnget "gk_Blower_grainFrequencyRange"
     gk_Blower_level chnget "gk_Blower_level" 
+    
     gk_Buzzer_harmonics chnget "gk_Buzzer_harmonics" 
     gk_Buzzer_level chnget "gk_Buzzer_level" 
+    
     gk_Droner_partial1 chnget "gk_Droner_partial1" 
     gk_Droner_partial2 chnget "gk_Droner_partial2" 
     gk_Droner_partial3 chnget "gk_Droner_partial3" 
     gk_Droner_partial4 chnget "gk_Droner_partial4" 
     gk_Droner_partial5 chnget "gk_Droner_partial5" 
     gk_Droner_level chnget "gk_Droner_level" 
+    
     gk_Phaser_ratio1 chnget "gk_Phaser_ratio1" 
     gk_Phaser_ratio2 chnget "gk_Phaser_ratio2" 
     gk_Phaser_index1 chnget "gk_Phaser_index1" 
     gk_Phaser_index2 chnget "gk_Phaser_index2" 
     gk_Phaser_level chnget "gk_Phaser_level" 
+    
     gk_PianoteqOut_level chnget "gk_PianoteqOut_level" 
+    
     gk_Shiner_level chnget "gk_Shiner_level" 
+    
     gk_Sweeper_britel chnget "gk_Sweeper_britel"
     gk_Sweeper_briteh chnget "gk_Sweeper_briteh" 
     gk_Sweeper_britels chnget "gk_Sweeper_britels" 
     gk_Sweeper_britehs chnget "gk_Sweeper_britehs" 
     gk_Sweeper_level chnget "gk_Sweeper_level" 
+    
     gk_Reverb_Feedback chnget "gk_Reverb_Feedback" 
     gk_Reverb2_Feedback chnget "gk_Reverb2_Feedback" 
     gk_MasterOutput_level chnget "gk_MasterOutput_level" 
