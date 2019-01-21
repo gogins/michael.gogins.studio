@@ -3,29 +3,21 @@
 <style>
     ::-webkit-scrollbar
     {
-    width:10px;
+        width:10px;
     }
     ::-webkit-scrollbar-track-piece
     {
-    background-color:transparent;
+        background-color:transparent;
     }
     ::-webkit-scrollbar-corner
     {
-    background-color:transparent;
+        background-color:transparent;
     }
 .dg {
-    font-family: Monaco, sans-serif;
-    font-size:8pt;
+        font-family: Monaco, sans-serif;
+        font-size:8pt;
     }
 </style>
-</head>
-<body style="background:black;">
-<div id="controls">
-</div>
-<canvas id="canvas" style="block;">
-</canvas>
-<!-- or: http://stackoverflow.com/questions/35509360/how-to-make-the-content-of-the-following-table-cell-scrollable -->
-<textarea id="console" style="position:absolute;left:1vw;top:1vw;width:50vw;height:98vh;color:SkyBlue;background-color:transparent;border:none;text-align:left;font-size:8.25px;overflow:auto;cursor:none;"></textarea>
 <script type='text/javascript' src='silencio/js/csound_loader.js'></script>
 <script type='text/javascript' src='silencio/js/canvas_wrapper.js'></script>
 <script type='text/javascript' src='silencio/js/sprintf.js'></script>
@@ -34,12 +26,14 @@
 <script type='text/javascript' src='silencio/js/Silencio.js'></script>
 <script type='text/javascript' src='silencio/js/ChordSpace.js'></script>
 <script type="text/javascript" src="silencio/js/dat.gui.js"></script>
+</head>
+<body style="background:black;">
+<div id="controls">
+</div>
+<canvas id="canvas" style="block;height:100vh;width:100vw">
+</canvas>
+<textarea id="console" style="position:absolute;left:1vw;top:1vw;width:50vw;height:98vh;color:SkyBlue;background-color:transparent;border:none;text-align:left;font-size:8.25px;overflow:auto;cursor:none;"></textarea>
 <script>
-if (typeof(Storage) == "undefined" ) {
-  alert("HTML5 localStorage is not supported.");
-} else {
-  console.log("Both localStorage and sessionStorage support are present.\n");
-}
 var fs = require("fs");
 var title = 'Poustinia'
 var chaos = (function() {
@@ -72,12 +66,12 @@ var chaos = (function() {
         },
     };
 }());
+
 window.onerror = function (message, url, line) {
   csound.message(message + '\n' + url + '\n' + line + '\n');
   console.trace();
 }
-</script>
-<script>
+
 var generate = function() {
   csound.message("generate()...\n");
   try {
@@ -108,21 +102,22 @@ var generate = function() {
     lsys.addRule('c2', '- f f f f +');
     lsys.addRule('b3', '- f f f +');    
     var chord = ChordSpace.chordForName('C7#9');      
+    /* var chord = ChordSpace.chordForName('CM');      
     csound.message(chord.information() + '\n');  
     var transformed = chord.J(2);
     for (var i = 0; i < transformed.length; i++) {
         csound.message('J(2)[' + i + ']\n' + transformed[i].information() + '\n');
-    };
+    }; */
     var t = new ChordSpace.Turtle(5, Math.PI/2.002, chord, chord);
-    lsys.generate(5);
     chaos.clear();
+    lsys.generate(5);
     lsys.draw(t, ctx, W, H);
-    csound.message('H: ' + H + ' W: ' + W + '\n');
+    //csound.message('H: ' + H + ' W: ' + W + '\n');
     lsys.score.findScales();
-    csound.message('lsys:' + lsys + '\n');
-    csound.message(lsys.score.minima.toString());
-    csound.message(lsys.score.ranges.toString());
-    csound.message(lsys.score.getDuration().toString() + '\n');
+    //csound.message('lsys:' + lsys + '\n');
+    //csound.message(lsys.score.minima.toString());
+    //csound.message(lsys.score.ranges.toString());
+    //csound.message(lsys.score.getDuration().toString() + '\n');
     lsys.score.setScale(3, 1, 8.9999);
     lsys.score.setScale(4, 36, 60);
     lsys.score.setScale(5, 60, 8);
@@ -131,7 +126,9 @@ var generate = function() {
     lsys.score.setDuration(460);
     lsys.score.sort();
     lsys.score.tieOverlaps(true);
+    csound.message("Conforming to chords...\n");
     lsys.conformToChords();
+    csound.message("Finding scales...\n");
     lsys.score.findScales();
     csound.message(lsys.score.minima.toString());
     csound.message(lsys.score.ranges.toString());
@@ -141,6 +138,7 @@ var generate = function() {
     csound.message(err.name + ': ' + err.message + ' ' + err.line + '\n');
   }
 };
+
 var parameters = {
     gk_FMWaterBell_level: 15,
     gi_FMWaterBell_attack: 0.002,
@@ -183,6 +181,7 @@ var parameters = {
     gk_Reverb2_Feedback: .7,
     gk_MasterOutput_level: .4,
     gk_overlap: 0.05,
+    generate: window.generate,
     play: function() {
         var csd = document.getElementById('csd').value;
         var csound_score = lsys.score.toCsoundScore();
@@ -192,13 +191,18 @@ var parameters = {
         csound.setOption('-m0');
         //csound.setOption('-j3');
         csound.setOption('--nodisplays');
+        //csound.setOption('--realtime');
         csound.setOption('-odac');
         csound.compileCsdText(csd);
         fs.writeFileSync("Poustinia-v2-generated.csd", csd);
         csound.start();
         csound.perform();
     },
+    stop: function() {
+        csound.stop();
+    },
 };
+
 function handleMessage(message) {
     console.log(message);
     var messages_textarea = document.getElementById("console");
@@ -206,12 +210,15 @@ function handleMessage(message) {
     messages_textarea.value = existing + message;
     messages_textarea.scrollTop = messages_textarea.scrollHeight;
 }
+
 window.onload = function() {
     get_csound(handleMessage);
     var gui = new dat.GUI({width: 400});
     console.log('platform: ' + navigator.platform + '\n');
     gui.remember(parameters);
+    gui.add(parameters, 'generate').name('Generate');
     gui.add(parameters, 'play').name('Play');
+    gui.add(parameters, 'stop').name('Stop');
     var Master = gui.addFolder('Master');
     add_slider(Master, 'gk_overlap', 0, 20);
     add_slider(Master, 'gk_Reverb_Feedback', 0, 1);
@@ -264,42 +271,27 @@ window.onload = function() {
     var Pianoteq = gui.addFolder('Pianoteq');
     add_slider(Pianoteq, 'gk_PianoteqOut_level', -40, 40);
     gui.revert();  
-    generate();
+    //generate();
 };
+
 function gk_update(name, value) {
   var numberValue = parseFloat(value);
   csound.setControlChannel(name, numberValue);
-  csound.message(name + ': ' + numberValue + '\n');
+  //csound.message(name + ': ' + numberValue + '\n');
 }
+
 function add_slider(gui_folder, token, minimum, maximum, name) {
     var on_parameter_change = function(value) {
         gk_update(token, value);
     };
     gui_folder.add(parameters, token, minimum, maximum).onChange(on_parameter_change);
 };
-// The 'keydown' event is used for key bindings.
-$(document).on("keydown", function (e) {
-    var e_char = String.fromCharCode(e.keyCode || e.charCode);
-    if (e.ctrlKey === true) {
-        if        (e_char === 'H') {
-            $("#console").toggle();
-            gui.toggle();
-        } else if (e_char === 'P') {
-            parameters.Play();
-        } else if (e_char === 'S') {
-            parameters.Stop();
-        } else if (e_char === 'X') {
-            parameters.Close();
-        }
 
-    }
-    return false;
- });
 </script>
 <textarea class="code" id="csd" hidden rows=24 cols=80>
 <CsoundSynthesizer>
 <CsInstruments>
-sr = 96000
+sr = 48000
 ksmps = 100
 nchnls = 2
 0dbfs = 1500000
@@ -337,22 +329,31 @@ alwayson "MasterOutput"
 
 gk_overlap init 4.5
 
+prealloc 1, 50
+prealloc 2, 50
+prealloc 3, 50
+prealloc 4, 50
+prealloc 5, 50
+prealloc 6, 50
+prealloc 7, 50
+prealloc 8, 20
+prealloc 9,520
+
 //////////////////////////////////////////////
 // Original by Steven Yi.
 // Adapted by Michael Gogins.
 //////////////////////////////////////////////
-gk_FMWaterBell_level init 15
+gk_FMWaterBell_level init 0
 gi_FMWaterBell_attack init 0.002
-gi_FMWaterBell_exponent init 15
+gi_FMWaterBell_release init 0.01
 gi_FMWaterBell_sustain init 20
 gi_FMWaterBell_sustain_level init .1
-gi_FMWaterBell_release init 0.01
 gk_FMWaterBell_index init .5
 gk_FMWaterBell_crossfade init .5
 gk_FMWaterBell_vibrato_depth init 0.05
 gk_FMWaterBell_vibrato_rate init 6
 gk_FMWaterBell_midi_dynamic_range init 127
-gi_FMWaterBell_sine ftgen 0, 0, 65536, 10, 1
+gi_FMWaterBell_cosine ftgen 0, 0, 65536, 11, 1
 instr FMWaterBell
 i_instrument = p1
 i_time = p2
@@ -369,20 +370,21 @@ k_space_bottom_to_top = p8
 i_phase = p9
 i_frequency = cpsmidinn(i_midi_key)
 ; Adjust the following value until "overall amps" at the end of performance is about -6 dB.
-i_level_correction = -10
+i_level_correction = -20
 i_normalization = ampdb(-i_level_correction) / 2
 i_amplitude = ampdb(i_midi_velocity) * i_normalization
 k_gain = ampdb(gk_FMWaterBell_level)
-; ares fmbell kamp, kfreq, kc1, kc2, kvdepth, kvrate[, ifn1, ifn2, ifn3, ifn4, ivfn, isus]
-a_signal fmbell	1, i_frequency, gk_FMWaterBell_index, gk_FMWaterBell_crossfade, gk_FMWaterBell_vibrato_depth, gk_FMWaterBell_vibrato_rate, gi_FMWaterBell_sine, gi_FMWaterBell_sine, gi_FMWaterBell_sine, gi_FMWaterBell_sine, gi_FMWaterBell_sine ;, gi_FMWaterBell_sustain
-a_envelope transegr 0, gi_FMWaterBell_attack, gi_FMWaterBell_exponent, 1, i_duration, gi_FMWaterBell_exponent, gi_FMWaterBell_sustain_level, gi_FMWaterBell_release, gi_FMWaterBell_exponent, 0
-; a_signal = a_signal * i_amplitude * a_envelope * k_gain
+a_signal fmbell	1, i_frequency, gk_FMWaterBell_index, gk_FMWaterBell_crossfade, gk_FMWaterBell_vibrato_depth, gk_FMWaterBell_vibrato_rate, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine ;, gi_FMWaterBell_sustain
+;a_envelope linsegr 0, gi_FMWaterBell_attack, 1, i_sustain, gi_FMWaterBell_sustain_level, gi_FMWaterBell_release, 0
+; ares transegr ia, idur, itype, ib [, idur2] [, itype] [, ic] ...
+;a_envelope transegr 0, gi_FMWaterBell_attack, -6, 1, i_sustain, -12, gi_FMWaterBell_sustain_level, gi_FMWaterBell_release, -6, 0
+;a_signal = a_signal * i_amplitude * a_envelope * k_gain
 a_signal = a_signal * i_amplitude * k_gain
 a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 prints "FMWaterBell    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
-;printks "FMWaterBell    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d l%9.4f r%9.4f\n", 1, p1, p2, p3, p4, p5, p7, active(p1), dbamp(rms(a_out_left)), dbamp(rms(a_out_right))
+printks "FMWaterBell    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d l%9.4f r%9.4f\n", 1, p1, p2, p3, p4, p5, p7, active(p1), dbamp(rms(a_out_left)), dbamp(rms(a_out_right))
 endin
 
 gk_Phaser_ratio1 init 1
@@ -420,38 +422,55 @@ outleta "outright", aright * kgain
 prints "Phaser         i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
+gk_Bower_midi_dynamic_range init 127
+gk_Bower_attack init .0125
+gk_Bower_release init .0125
 gk_Bower_level init 0.5
+gk_Bower_pressure init 0.25
 instr Bower
-insno = p1
-istart = p2
-iduration = p3
-ikey = p4
-ivelocity = p5
-iphase = p6
-ipan = p7
-iamp = ampdb(ivelocity) * 200
-iattack = i(gk_overlap)
-idecay = i(gk_overlap)
-isustain = p3 - i(gk_overlap)
-p3 = iattack + isustain + idecay
+if p3 == -1 goto indefinite
+  goto non_indefinite
+indefinite:
+  p3 = 1000000
+non_indefinite:
+i_instrument = p1
+i_time = p2
+i_duration = p3
+i_midi_key = p4
+i_midi_dynamic_range = i(gk_Bower_midi_dynamic_range)
+i_midi_velocity = p5 * i_midi_dynamic_range / 127 + (63.5 - i_midi_dynamic_range / 2)
+k_space_front_to_back = p6
+k_space_left_to_right = p7
+k_space_bottom_to_top = p8
+i_phase = p9
+i_frequency = cpsmidinn(i_midi_key)
+; Adjust the following value until "overall amps" at the end of performance is about -6 dB.
+i_level_correction = 74.6
+i_normalization = ampdb(-i_level_correction) / 2
+i_amplitude = ampdb(i_midi_velocity) * i_normalization
+k_gain = ampdb(gk_Bower_level)
+iattack = i(gk_Bower_attack)
+idecay = i(gk_Bower_release)
+isustain = p3 - i(gk_Bower_release)
+xtratim iattack + isustain + idecay
+iamp = i_amplitude
 kenvelope transeg 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
-ihertz = cpsmidinn(ikey)
+ihertz = cpsmidinn(i_midi_key)
 kamp = kenvelope
 kfreq = ihertz
 kpres = 0.25
 krat rspline 0.006,0.988,1,4
 kvibf = 4.5
 kvibamp = 0
-iminfreq = 20
+iminfreq = 30
 isine ftgenonce 0,0,65536,10,1
-aSig wgbow kamp,kfreq,kpres,krat,kvibf,kvibamp,isine,iminfreq
-aleft, aright pan2 aSig / 7, ipan
+aSig wgbow kamp,kfreq,gk_Bower_pressure,krat,kvibf,kvibamp,isine,iminfreq
+aleft, aright pan2 aSig / 7, k_space_left_to_right
 adamping linseg 0, 0.03, 1, p3 - 0.1, 1, 0.07, 0
 aleft = adamping * aleft
 aright = adamping * aright
-kgain = ampdb(gk_Bower_level)
-outleta "outleft", aleft * kgain
-outleta "outright", aright * kgain
+outleta "outleft", aleft * k_gain
+outleta "outright", aright * k_gain
 prints "Bower          i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
@@ -633,10 +652,6 @@ gk_Blower_grainAmplitudeRange init 100
 gk_Blower_grainFrequencyRange init .033
 gk_Blower_level init 0.5
 instr Blower
- //////////////////////////////////////////////
- // Original by Hans Mikelson.
- // Adapted by Michael Gogins.
- //////////////////////////////////////////////
 i_time = p2
 i_duration = p3
 i_midikey = p4
@@ -690,6 +705,11 @@ ifrng = ip8
 idens = ip9
 ifade = ip10
 igdur = 0.2
+if p3 == -1 goto indefinite
+  goto non_indefinite
+indefinite:
+  p3 = 1000000
+non_indefinite:
 iattack = i(gk_overlap) * 2
 idecay = i(gk_overlap) * 2
 isustain = p3 - i(gk_overlap) * 2
@@ -754,7 +774,7 @@ prints "PianoteqOut    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", 
 endin
 
 gk_Reverb_Feedback init 0.775
-gk_Delay_Modulation init 0.075
+gk_Delay_Modulation init 0.000
 
 instr ReverbLeft
 aleft init 0
@@ -774,8 +794,8 @@ outleta "outright", aright
 prints "ReverbRight    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
-gk_Reverb2_Feedback init 0.975
-gk_Delay2_Modulation init 0.0075
+gk_Reverb2_Feedback init 0.65
+gk_Delay2_Modulation init 0.000
 
 instr Reverb2Left
 aleft init 0
