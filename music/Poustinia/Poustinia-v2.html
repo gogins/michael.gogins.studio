@@ -28,14 +28,12 @@
 <script type="text/javascript" src="silencio/js/dat.gui.js"></script>
 </head>
 <body style="background:black;">
-<div id="controls">
-</div>
 <canvas id="canvas" style="block;height:100vh;width:100vw">
 </canvas>
 <textarea id="console" style="position:absolute;left:1vw;top:1vw;width:50vw;height:98vh;color:SkyBlue;background-color:transparent;border:none;text-align:left;font-size:8.25px;overflow:auto;cursor:none;"></textarea>
 <script>
 var fs = require("fs");
-var title = 'Poustinia'
+var title = 'Poustinia v2'
 var chaos = (function() {
     return {
         /**
@@ -84,7 +82,9 @@ var generate = function() {
     lsys.axiom = "- [ b f f I I I I g ] g";
     lsys.addRule('g',  'Ja b a3 c aa F F c2 T,5 a2 t,/,1.025 b2 K c2 g b2 t,*,1.025 F F F c g Jb a b g');
     lsys.addRule('g',  'Jb b a3 c aa F F c2 T,5 a2 t,/,1.025 b2 K c2 g b2 t,*,1.025 F F F c g Ja a b g');
+    lsys.addRule('g',  'Ja b a3 c aa F F c2 a2 t,/,1.025 b2 K c2 g b2 t,*,1.025 Q,5 F F F c g Jb a b g'); 
     lsys.addRule('g',  'Ja b a3 c aa F F c2 a2 t,/,1.025 b2 K c2 g b2 t,*,1.025 T,5 F F F c g Jb a b g');
+    lsys.addRule('g',  'Ja b a3 c aa F F c2 a2 t,/,1.025 b2 K c2 g b2 t,*,1.025 T,5 F Jb F F c g a b g');
     lsys.addRule('a',  'F b F a2 b a2 [ b3 F F F F [ c F F F F ] ] F F F Ja c2 a2 c F c F F F b2 Jb a2');
     lsys.addRule('a',  'F b F a2 b a2 [ b3 F F F F [ c F F F F ] ] F F F Jb c2 a2 c F c F F F b2 Ja a2');
     lsys.addRule('aa', '[ b3 F F F c3 f F F F F ] F b F a2 b I I I F F [ c2 F F F F F F ] F c2 a2 c F c F F b2 a2');
@@ -101,39 +101,24 @@ var generate = function() {
     lsys.addRule('b2', '+ f f f f -');    
     lsys.addRule('c2', '- f f f f +');
     lsys.addRule('b3', '- f f f +');    
-    var chord = ChordSpace.chordForName('C7#9');      
-    /* var chord = ChordSpace.chordForName('CM');      
-    csound.message(chord.information() + '\n');  
-    var transformed = chord.J(2);
-    for (var i = 0; i < transformed.length; i++) {
-        csound.message('J(2)[' + i + ']\n' + transformed[i].information() + '\n');
-    }; */
+    var chord = ChordSpace.chordForName('CM');      
+    //var chord = ChordSpace.chordForName('CM9');      
     var t = new ChordSpace.Turtle(5, Math.PI/2.002, chord, chord);
     chaos.clear();
     lsys.generate(5);
     lsys.draw(t, ctx, W, H);
-    //csound.message('H: ' + H + ' W: ' + W + '\n');
     lsys.score.findScales();
-    //csound.message('lsys:' + lsys + '\n');
-    //csound.message(lsys.score.minima.toString());
-    //csound.message(lsys.score.ranges.toString());
-    //csound.message(lsys.score.getDuration().toString() + '\n');
     lsys.score.setScale(3, 1, 8.9999);
     lsys.score.setScale(4, 36, 60);
     lsys.score.setScale(5, 60, 8);
     lsys.score.setScale(7, 0, 1);
     lsys.score.temper(12);
+    csound.message("Conforming to chords...\n");
+    lsys.conformToChords();
     lsys.score.setDuration(460);
     lsys.score.sort();
     lsys.score.tieOverlaps(true);
-    csound.message("Conforming to chords...\n");
-    lsys.conformToChords();
-    csound.message("Finding scales...\n");
-    lsys.score.findScales();
-    csound.message(lsys.score.minima.toString());
-    csound.message(lsys.score.ranges.toString());
     csound.message('Generated ' + lsys.score.data.length + ' notes.\n');
-    this.revert();
   } catch(err) {
     csound.message(err.name + ': ' + err.message + ' ' + err.line + '\n');
   }
@@ -177,8 +162,8 @@ var parameters = {
     gk_Sweeper_britels: .2 / 3,
     gk_Sweeper_britehs: 2.5 / 2,
     gk_Sweeper_level: 0.5,
-    gk_Reverb_Feedback: .975,
-    gk_Reverb2_Feedback: .7,
+    gk_Reverb_feedback: .975,
+    gk_Reverb2_feedback: .7,
     gk_MasterOutput_level: .4,
     gk_overlap: 0.05,
     generate: window.generate,
@@ -188,7 +173,7 @@ var parameters = {
         csound_score = csound_score.concat("\n</CsScore>");
         csd = csd.replace("</CsScore>", csound_score);
         console.log("Playing...");
-        csound.setOption('-m0');
+        csound.setOption('-m195');
         //csound.setOption('-j3');
         csound.setOption('--nodisplays');
         //csound.setOption('--realtime');
@@ -203,7 +188,7 @@ var parameters = {
     },
 };
 
-function handleMessage(message) {
+var handleMessage = function(message) {
     console.log(message);
     var messages_textarea = document.getElementById("console");
     var existing = messages_textarea.value;
@@ -213,16 +198,15 @@ function handleMessage(message) {
 
 window.onload = function() {
     get_csound(handleMessage);
-    var gui = new dat.GUI({width: 400});
-    console.log('platform: ' + navigator.platform + '\n');
+    gui = new dat.GUI({width: 400});
     gui.remember(parameters);
     gui.add(parameters, 'generate').name('Generate');
     gui.add(parameters, 'play').name('Play');
     gui.add(parameters, 'stop').name('Stop');
     var Master = gui.addFolder('Master');
     add_slider(Master, 'gk_overlap', 0, 20);
-    add_slider(Master, 'gk_Reverb_Feedback', 0, 1);
-    add_slider(Master, 'gk_Reverb2_Feedback', 0, 1);
+    add_slider(Master, 'gk_Reverb_feedback', 0, 1);
+    add_slider(Master, 'gk_Reverb2_feedback', 0, 1);
     add_slider(Master, 'gk_MasterOutput_level', -40, 40);
     var FMWaterBell = gui.addFolder('FMWaterBell');
     add_slider(FMWaterBell, 'gi_FMWaterBell_attack', 0, .1);
@@ -271,16 +255,29 @@ window.onload = function() {
     var Pianoteq = gui.addFolder('Pianoteq');
     add_slider(Pianoteq, 'gk_PianoteqOut_level', -40, 40);
     gui.revert();  
-    //generate();
+    document.addEventListener("keydown", function (e) {
+        var e_char = String.fromCharCode(e.keyCode || e.charCode);
+        if (e.ctrlKey === true) {
+            if        (e_char === 'H') {
+                var console = document.getElementById("console");
+                if (console.style.display === "none") {
+                    console.style.display = "block";
+                } else {
+                    console.style.display = "none";
+                }
+                gui.closed = true;
+                gui.closed = false;
+            }
+        }
+    });
 };
 
-function gk_update(name, value) {
+var gk_update = function(name, value) {
   var numberValue = parseFloat(value);
   csound.setControlChannel(name, numberValue);
-  //csound.message(name + ': ' + numberValue + '\n');
 }
 
-function add_slider(gui_folder, token, minimum, maximum, name) {
+var add_slider = function(gui_folder, token, minimum, maximum, name) {
     var on_parameter_change = function(value) {
         gk_update(token, value);
     };
@@ -291,40 +288,38 @@ function add_slider(gui_folder, token, minimum, maximum, name) {
 <textarea class="code" id="csd" hidden rows=24 cols=80>
 <CsoundSynthesizer>
 <CsInstruments>
-sr = 48000
+sr = 96000
 ksmps = 100
 nchnls = 2
 0dbfs = 1500000
 
-connect "Blower", "outleft", "ReverbLeft", "inleft"
-connect "Blower", "outright", "ReverbRight", "inright"
-connect "Bower", "outleft", "ReverbLeft", "inleft"
-connect "Bower", "outright", "ReverbRight", "inright"
-connect "Buzzer", "outleft", "ReverbLeft", "inleft"
-connect "Buzzer", "outright", "ReverbRight", "inright"
-connect "Droner", "outleft", "ReverbLeft", "inleft"
-connect "Droner", "outright", "ReverbRight", "inright"
-connect "FMWaterBell", "outleft", "Reverb2Left", "inleft"
-connect "FMWaterBell", "outright", "Reverb2Right", "inright"
-connect "Phaser", "outleft", "ReverbLeft", "inleft"
-connect "Phaser", "outright", "ReverbRight", "inright"
+connect "Blower", "outleft", "Reverb", "inleft"
+connect "Blower", "outright", "Reverb", "inright"
+connect "Bower", "outleft", "Reverb", "inleft"
+connect "Bower", "outright", "Reverb", "inright"
+connect "Buzzer", "outleft", "Reverb", "inleft"
+connect "Buzzer", "outright", "Reverb", "inright"
+connect "Droner", "outleft", "Reverb", "inleft"
+connect "Droner", "outright", "Reverb", "inright"
+connect "FMWaterBell", "outleft", "Reverb2", "inleft"
+connect "FMWaterBell", "outright", "Reverb2", "inright"
+connect "Phaser", "outleft", "Reverb", "inleft"
+connect "Phaser", "outright", "Reverb", "inright"
 connect "PianoteqOut", "outleft", "MasterOutput", "inleft"
 connect "PianoteqOut", "outright", "MasterOutput", "inright"
-connect "Sweeper", "outleft", "ReverbLeft", "inleft"
-connect "Sweeper", "outright", "ReverbRight", "inright"
-connect "Shiner", "outleft", "ReverbLeft", "inleft"
-connect "Shiner", "outright", "ReverbRight", "inright"
-connect "ReverbLeft", "outleft", "MasterOutput", "inleft"
-connect "ReverbRight", "outright", "MasterOutput", "inright"
-connect "Reverb2Left", "outleft", "MasterOutput", "inleft"
-connect "Reverb2Right", "outright", "MasterOutput", "inright"
+connect "Sweeper", "outleft", "Reverb", "inleft"
+connect "Sweeper", "outright", "Reverb", "inright"
+connect "Shiner", "outleft", "Reverb", "inleft"
+connect "Shiner", "outright", "Reverb", "inright"
+connect "Reverb", "outleft", "MasterOutput", "inleft"
+connect "Reverb", "outright", "MasterOutput", "inright"
+connect "Reverb2", "outleft", "MasterOutput", "inleft"
+connect "Reverb2", "outright", "MasterOutput", "inright"
 
 alwayson "Controls"
 alwayson "PianoteqOut"
-alwayson "ReverbLeft"
-alwayson "ReverbRight"
-alwayson "Reverb2Left"
-alwayson "Reverb2Right"
+alwayson "Reverb"
+alwayson "Reverb2"
 alwayson "MasterOutput"
 
 gk_overlap init 4.5
@@ -337,7 +332,7 @@ prealloc 5, 50
 prealloc 6, 50
 prealloc 7, 50
 prealloc 8, 20
-prealloc 9,520
+prealloc 9, 20
 
 //////////////////////////////////////////////
 // Original by Steven Yi.
@@ -376,15 +371,16 @@ i_amplitude = ampdb(i_midi_velocity) * i_normalization
 k_gain = ampdb(gk_FMWaterBell_level)
 a_signal fmbell	1, i_frequency, gk_FMWaterBell_index, gk_FMWaterBell_crossfade, gk_FMWaterBell_vibrato_depth, gk_FMWaterBell_vibrato_rate, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine ;, gi_FMWaterBell_sustain
 ;a_envelope linsegr 0, gi_FMWaterBell_attack, 1, i_sustain, gi_FMWaterBell_sustain_level, gi_FMWaterBell_release, 0
+a_envelope linsegr 0, gi_FMWaterBell_attack, 1, i_sustain, 1, gi_FMWaterBell_release, 0
 ; ares transegr ia, idur, itype, ib [, idur2] [, itype] [, ic] ...
-;a_envelope transegr 0, gi_FMWaterBell_attack, -6, 1, i_sustain, -12, gi_FMWaterBell_sustain_level, gi_FMWaterBell_release, -6, 0
-;a_signal = a_signal * i_amplitude * a_envelope * k_gain
-a_signal = a_signal * i_amplitude * k_gain
+; a_envelope transegr 0, gi_FMWaterBell_attack, 12, 1, i_sustain, 12, gi_FMWaterBell_sustain_level, gi_FMWaterBell_release, 12, 0
+a_signal = a_signal * i_amplitude * a_envelope * k_gain
+;_signal = a_signal * i_amplitude * k_gain
 a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 prints "FMWaterBell    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
-printks "FMWaterBell    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d l%9.4f r%9.4f\n", 1, p1, p2, p3, p4, p5, p7, active(p1), dbamp(rms(a_out_left)), dbamp(rms(a_out_right))
+; printks "FMWaterBell    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d l%9.4f r%9.4f\n", 1, p1, p2, p3, p4, p5, p7, active(p1), dbamp(rms(a_out_left)), dbamp(rms(a_out_right))
 endin
 
 gk_Phaser_ratio1 init 1
@@ -773,46 +769,34 @@ outleta "outright", aoutright * kgain
 prints "PianoteqOut    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
-gk_Reverb_Feedback init 0.775
-gk_Delay_Modulation init 0.000
-
-instr ReverbLeft
+gk_Reverb_feedback init 0.975
+gi_Reverb_delay_modulation init 0.875
+gk_Reverb_frequency_cutoff init 15000
+instr Reverb
 aleft init 0
-azero init 0
+aright init 0
 aleft inleta "inleft"
-aleft, aright reverbsc aleft, azero, gk_Reverb_Feedback, 15000.
-outleta "outleft", aleft
-prints "ReverbLeft     i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
-endin
-
-instr ReverbRight
-aleft init 0
-azero init 0
 aright inleta "inright"
-aleft, aright reverbsc azero, aright, gk_Reverb_Feedback, 15000.0
+; aoutL, aoutR reverbsc ainL, ainR, kfblvl, kfco[, israte[, ipitchm[, iskip]]]
+aleft, aright reverbsc aleft, aright, gk_Reverb_feedback, gk_Reverb_frequency_cutoff, sr, gi_Reverb_delay_modulation
+outleta "outleft", aleft
 outleta "outright", aright
-prints "ReverbRight    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
+prints "Reverb         i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
-gk_Reverb2_Feedback init 0.65
-gk_Delay2_Modulation init 0.000
-
-instr Reverb2Left
+gk_Reverb2_feedback init 0.975
+gi_Reverb2_delay_modulation init 0.875
+gk_Reverb2_frequency_cutoff init 15000
+instr Reverb2
 aleft init 0
-azero init 0
+aright init 0
 aleft inleta "inleft"
-aleft, aright reverbsc aleft, azero, gk_Reverb2_Feedback, 15000.
-outleta "outleft", aleft
-prints "Reverb2Left    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
-endin
-
-instr Reverb2Right
-aleft init 0
-azero init 0
 aright inleta "inright"
-aleft, aright reverbsc azero, aright, gk_Reverb2_Feedback, 15000.0
+; aoutL, aoutR reverbsc ainL, ainR, kfblvl, kfco[, israte[, ipitchm[, iskip]]]
+aleft, aright reverbsc aleft, aright, gk_Reverb2_feedback, gk_Reverb2_frequency_cutoff, sr, gi_Reverb2_delay_modulation
+outleta "outleft", aleft
 outleta "outright", aright
-prints "Reverb2Right   i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
+prints "Reverb2        i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
 gk_CenterHz init 200
@@ -887,8 +871,8 @@ instr Controls
     gk_Sweeper_britehs chnget "gk_Sweeper_britehs" 
     gk_Sweeper_level chnget "gk_Sweeper_level" 
     
-    gk_Reverb_Feedback chnget "gk_Reverb_Feedback" 
-    gk_Reverb2_Feedback chnget "gk_Reverb2_Feedback" 
+    gk_Reverb_feedback chnget "gk_Reverb_feedback" 
+    gk_Reverb2_feedback chnget "gk_Reverb2_feedback" 
     gk_MasterOutput_level chnget "gk_MasterOutput_level" 
     gk_overlap chnget "gk_overlap" 
 prints "Controls       i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
