@@ -18,13 +18,15 @@
         font-size:8pt;
     }
 </style>
-<script type='text/javascript' src='silencio/js/csound_loader.js'></script>
-<script type='text/javascript' src='silencio/js/canvas_wrapper.js'></script>
-<script type='text/javascript' src='silencio/js/sprintf.js'></script>
-<script type='text/javascript' src='silencio/js/numeric.js'></script>
-<script type='text/javascript' src='silencio/js/tinycolor.js'></script>
-<script type='text/javascript' src='silencio/js/Silencio.js'></script>
-<script type='text/javascript' src='silencio/js/ChordSpace.js'></script>
+<script src='silencio/js/csound_loader.js'></script>
+<script src='silencio/js/canvas_wrapper.js'></script>
+<script src='silencio/js/sprintf.js'></script>
+<script src='silencio/js/numeric.js'></script>
+<script src="silencio/js/three.js"></script>
+<script src='silencio/js/tinycolor.js'></script>
+<script src='silencio/js/Silencio.js'></script>
+<script src="silencio/js/TrackballControls.js"></script>
+<script src='silencio/js/ChordSpace.js'></script>
 <script type="text/javascript" src="silencio/js/dat.gui.js"></script>
 </head>
 <body style="background:black;">
@@ -34,37 +36,6 @@
 <script>
 var fs = require("fs");
 var title = 'Poustinia v2'
-var chaos = (function() {
-    return {
-        /**
-         * Initializes chaos by finding the canvas on the page and resizing it.
-         */
-        init: function() {
-            this.canvas = document.getElementById("canvas");
-            this.context = this.canvas.getContext("2d");
-            //var master = document.getElementById("controls");
-            this.setSize(window.innerWidth, window.innerHeight);
-        },
-        setSize: function(width, height) {
-            this.width = this.canvas.width = width;
-            this.height = this.canvas.height = height;
-        },
-        /**
-         * Clears the canvas by filling it with the color specified, or erasing all
-         * pixels if no color is specified.
-         */
-        clear: function(color) {
-            if(color) {
-                this.context.fillStyle = color;
-                this.context.fillRect(0, 0, this.width, this.height);
-            }
-            else {
-                this.context.clearRect(0, 0, this.width, this.height);
-            }
-        },
-    };
-}());
-
 window.onerror = function (message, url, line) {
   csound.message(message + '\n' + url + '\n' + line + '\n');
   console.trace();
@@ -73,42 +44,36 @@ window.onerror = function (message, url, line) {
 var generate = function() {
   csound.message("generate()...\n");
   try {
-    chaos.init();
-    var ctx = chaos.context;
-    // Code borrowed from namin.org/fractals.htm and adapted by me.
-    var H = ctx.canvas.height;
-    var W = ctx.canvas.width;
     window.lsys = new ChordSpace.LSys();
-    lsys.axiom = "- [ b f f I I I I g ] g";
-    lsys.addRule('g',  'Ja b a3 c aa F F c2 T,5 a2 t,/,1.025 b2 K c2 g b2 t,*,1.025 F F F c g Jb a b g');
-    lsys.addRule('g',  'Jb b a3 c aa F F c2 T,5 a2 t,/,1.025 b2 K c2 g b2 t,*,1.025 F F F c g Ja a b g');
-    lsys.addRule('g',  'Ja b a3 c aa F F c2 a2 t,/,1.025 b2 K c2 g b2 t,*,1.025 Q,5 F F F c g Jb a b g'); 
-    lsys.addRule('g',  'Ja b a3 c aa F F c2 a2 t,/,1.025 b2 K c2 g b2 t,*,1.025 T,5 F F F c g Jb a b g');
-    lsys.addRule('g',  'Ja b a3 c aa F F c2 a2 t,/,1.025 b2 K c2 g b2 t,*,1.025 T,5 F Jb F F c g a b g');
-    lsys.addRule('a',  'F b F a2 b a2 [ b3 F F F F [ c F F F F ] ] F F F Ja c2 a2 c F c F F F b2 Jb a2');
-    lsys.addRule('a',  'F b F a2 b a2 [ b3 F F F F [ c F F F F ] ] F F F Jb c2 a2 c F c F F F b2 Ja a2');
-    lsys.addRule('aa', '[ b3 F F F c3 f F F F F ] F b F a2 b I I I F F [ c2 F F F F F F ] F c2 a2 c F c F F b2 a2');
-    lsys.addRule('xaa', '[ b3 F F F c3 f F F F F ] F b F a2 b I I F F [ c2 F F F F F F ] F c2 a2 c F c F F b2 a2');
-    lsys.addRule('xa2', 'I F b F b a3 i i b2 f F F f c2 a3 c F c2 F b2 a3 i i c');
+    lsys.axiom = "C - [ b f f I I I I g ] g C";
+    //lsys.axiom = "- [ b f f I g ] g";
+    lsys.addRule('g',   'b a3 c aa   F F c2 a2 t,/,1.025 b2 c2 g1 b2 t,*,1.025 T,-3 F F F   c g1 a b g1');
+    lsys.addRule('g1',  'b a3 c aa K F F c2 a2 t,/,1.025 b2 c2 g2 b2 t,*,1.025       F F F c g2 a b g2');
+    lsys.addRule('g2',  'b a3 c aa   F F c2 a2 t,/,1.025 b2 c2 g  b2 t,*,1.025       F F F c g  a b g');
+    lsys.addRule('a',  'F b F a2 b a2 [ b3 F F F F [ c F F F F ] ] F F F c2 a2 c F c F F F b2 a2');
+    lsys.addRule('aa', '[ b3 F F F c3 f F F F F ] F b F a2 b I I I F F [ c2 F F F F F F ] Jb F c2 a2 c F c F F b2 a2');
     lsys.addRule('a3', 'F b2 b F a I v F F c F F F F F c2 aa V f c2 F F b2 a');
-    lsys.addRule('xa3', 'F b2 b F a I v F F c F F F F F c2 aa i i V f c2 F F b2 a');
     lsys.addRule('Ja', 'J,2,1');
     lsys.addRule('Ja', 'J,2,0');
     lsys.addRule('Jb', 'J,2,4');  
-    lsys.addRule('Jb', 'J,2,2');  
+    //lsys.addRule('Jb', 'J,2,2');  
     lsys.addRule('b',  '+ f f f f f -');    
     lsys.addRule('c',  '- f f f f f +');
     lsys.addRule('b2', '+ f f f f -');    
     lsys.addRule('c2', '- f f f f +');
+    lsys.addRule('c2', '- f f f f +');
     lsys.addRule('b3', '- f f f +');    
-    var chord = ChordSpace.chordForName('CM');      
-    //var chord = ChordSpace.chordForName('CM9');      
-    var t = new ChordSpace.Turtle(5, Math.PI/2.002, chord, chord);
-    chaos.clear();
+    //var chord = ChordSpace.chordForName('C7#9');      
+    var chord = ChordSpace.chordForName('CM9');      
+    //var t = new ChordSpace.Turtle(5, Math.PI/2.002, chord, chord);
+    var t = new ChordSpace.Turtle(5, Math.PI/2.0012, chord, chord);
     lsys.generate(5);
-    lsys.draw(t, ctx, W, H);
+    lsys.write_score(t);
+    csound.message("Finding size of score...\n");
     lsys.score.findScales();
+    csound.message("Rescaling score...\n");
     lsys.score.setScale(3, 1, 8.9999);
+    //lsys.score.setScale(3, 8, 0);
     lsys.score.setScale(4, 36, 60);
     lsys.score.setScale(5, 60, 8);
     lsys.score.setScale(7, 0, 1);
@@ -117,11 +82,58 @@ var generate = function() {
     lsys.conformToChords();
     lsys.score.setDuration(460);
     lsys.score.sort();
+    csound.message("Tieing overlapping notes...\n");
     lsys.score.tieOverlaps(true);
+    csound.message("Plotting score...\n");
+    lsys.score.draw3D(document.getElementById("canvas"));
     csound.message('Generated ' + lsys.score.data.length + ' notes.\n');
   } catch(err) {
     csound.message(err.name + ': ' + err.message + ' ' + err.line + '\n');
   }
+};
+
+// Message level for standard (terminal) output. Takes the sum of any of the following values:
+// 1 = note amplitude messages
+// 2 = samples out of range message
+// 4 = warning messages
+// 128 = print benchmark information
+// And exactly one of these to select note amplitude format:
+// 0 = raw amplitudes, no colours
+// 32 = dB, no colors
+// 64 = dB, out of range highlighted with red
+// 96 = dB, all colors
+// 256 = raw, out of range highlighted with red
+// 512 = raw, all colours    
+var play = function() {
+    var csd = document.getElementById('csd').value;
+    var csound_score = lsys.score.toCsoundScore();
+    csound_score = csound_score.concat("\n</CsScore>");
+    csd = csd.replace("</CsScore>", csound_score);
+    console.log("Playing...");
+    csound.setOption(sprintf('-m%d', 2 + 128 + 32));
+    //csound.setOption('-j3');
+    csound.setOption('--nodisplays');
+    //csound.setOption('--realtime');
+    csound.setOption('-R')
+    csound.setOption('-f')
+    csound.setOption('-odac');
+    //csound.setOption('-oPoustinia-v2.wav');
+    csound.compileCsdText(csd);
+    fs.writeFileSync("Poustinia-v2-generated.csd", csd);
+    csound.start();
+    csound.perform();
+    updateScoreTime();
+}
+
+var stop = function() {
+    Silencio.saveDatGuiJson(gui);
+    csound.stop();
+}
+
+var updateScoreTime = function() {
+    var score_time = csound.getScoreTime();
+    setTimeout(updateScoreTime, 200);
+    lsys.score.progress3D(score_time);
 };
 
 var parameters = {
@@ -142,7 +154,7 @@ var parameters = {
     gk_Blower_grainAmplitudeRange: .1,
     gk_Blower_grainFrequencyRange: .033,
     gk_Blower_level: 0.5,
-    gk_Buzzer_Harmonics: 15,
+    gk_Buzzer_harmonics: 15,
     gk_Buzzer_level: 0.5,
     gk_Droner_partial1: 0.1,
     gk_Droner_partial2: 0.1,
@@ -167,25 +179,8 @@ var parameters = {
     gk_MasterOutput_level: .4,
     gk_overlap: 0.05,
     generate: window.generate,
-    play: function() {
-        var csd = document.getElementById('csd').value;
-        var csound_score = lsys.score.toCsoundScore();
-        csound_score = csound_score.concat("\n</CsScore>");
-        csd = csd.replace("</CsScore>", csound_score);
-        console.log("Playing...");
-        csound.setOption('-m195');
-        //csound.setOption('-j3');
-        csound.setOption('--nodisplays');
-        //csound.setOption('--realtime');
-        csound.setOption('-odac');
-        csound.compileCsdText(csd);
-        fs.writeFileSync("Poustinia-v2-generated.csd", csd);
-        csound.start();
-        csound.perform();
-    },
-    stop: function() {
-        csound.stop();
-    },
+    play: window.play,
+    stop: window.stop,
 };
 
 var handleMessage = function(message) {
@@ -196,13 +191,23 @@ var handleMessage = function(message) {
     messages_textarea.scrollTop = messages_textarea.scrollHeight;
 }
 
+var default_json = null;
+
 window.onload = function() {
     get_csound(handleMessage);
-    gui = new dat.GUI({width: 400});
+    try {
+        var temporary_json = Silencio.restoreDatGuiJson(default_json);
+        default_json = temporary_json;
+        gui = new dat.GUI({load: default_json, width: 300});
+        csound.message("Restored Csound instrument parameters.\n");
+    } catch(e) {
+        csound.message("Failed to restore Csound instrument parameters.\n");
+        gui = new dat.GUI({width: 400});
+    }
     gui.remember(parameters);
-    gui.add(parameters, 'generate').name('Generate');
-    gui.add(parameters, 'play').name('Play');
-    gui.add(parameters, 'stop').name('Stop');
+    gui.add(parameters, 'generate').name('Generate [Ctrl-G]');
+    gui.add(parameters, 'play').name('Play [Ctrl-P]');
+    gui.add(parameters, 'stop').name('Stop {Ctrl-S]');
     var Master = gui.addFolder('Master');
     add_slider(Master, 'gk_overlap', 0, 20);
     add_slider(Master, 'gk_Reverb_feedback', 0, 1);
@@ -220,10 +225,10 @@ window.onload = function() {
     add_slider(FMWaterBell, 'gk_FMWaterBell_vibrato_rate', 0, 10);
     add_slider(FMWaterBell, 'gk_FMWaterBell_level',-40, 40);
     var Phaser = gui.addFolder('Phaser');
-    add_slider(Phaser, 'gk_Phaser_ratio1', 0, 1);
-    add_slider(Phaser, 'gk_Phaser_ratio2', 0, 1);
-    add_slider(Phaser, 'gk_Phaser_index1', 0, 1);
-    add_slider(Phaser, 'gk_Phaser_index2', 0, 1);
+    add_slider(Phaser, 'gk_Phaser_ratio1', 0, 5);
+    add_slider(Phaser, 'gk_Phaser_ratio2', 0, 5);
+    add_slider(Phaser, 'gk_Phaser_index1', 0, 15);
+    add_slider(Phaser, 'gk_Phaser_index2', 0, 15);
     add_slider(Phaser, 'gk_Phaser_level', -40, 40);
     var Bower = gui.addFolder('Bower');
     add_slider(Bower, 'gk_Bower_pressure', 0, 5);
@@ -242,7 +247,7 @@ window.onload = function() {
     add_slider(Sweeper, 'gk_Sweeper_britehs', 0, 4);
     add_slider(Sweeper, 'gk_Sweeper_level', -40, 40);
     var Buzzer = gui.addFolder('Buzzer');
-    add_slider(Buzzer, 'gk_Buzzer_Harmonics', 0, 20);
+    add_slider(Buzzer, 'gk_Buzzer_harmonics', 0, 20);
     add_slider(Buzzer, 'gk_Buzzer_level', -40, 40);
     var Shiner = gui.addFolder('Shiner');
     add_slider(Shiner, 'gk_Shiner_level', -40, 40);
@@ -267,6 +272,12 @@ window.onload = function() {
                 }
                 gui.closed = true;
                 gui.closed = false;
+            } else if (e_char === 'G') {
+                generate();
+            } else if (e_char === 'P') {
+                parameters.play();
+            } else if (e_char === 'S') {
+                parameters.stop();
             }
         }
     });
@@ -284,14 +295,20 @@ var add_slider = function(gui_folder, token, minimum, maximum, name) {
     gui_folder.add(parameters, token, minimum, maximum).onChange(on_parameter_change);
 };
 
+window.addEventListener("unload", function(event) { 
+    parameters.stop();
+    nw_window.close();
+});
+
 </script>
 <textarea class="code" id="csd" hidden rows=24 cols=80>
 <CsoundSynthesizer>
 <CsInstruments>
+; Change to 96000 with 1 ksmps for final rendering.
 sr = 96000
 ksmps = 100
 nchnls = 2
-0dbfs = 1500000
+0dbfs = 2500000
 
 connect "Blower", "outleft", "Reverb", "inleft"
 connect "Blower", "outright", "Reverb", "inright"
@@ -425,9 +442,11 @@ gk_Bower_level init 0.5
 gk_Bower_pressure init 0.25
 instr Bower
 if p3 == -1 goto indefinite
+  //prints "Non-indefinite.\n"
   goto non_indefinite
 indefinite:
   p3 = 1000000
+  //prints "Indefinite.\n"
 non_indefinite:
 i_instrument = p1
 i_time = p2
@@ -441,16 +460,17 @@ k_space_bottom_to_top = p8
 i_phase = p9
 i_frequency = cpsmidinn(i_midi_key)
 ; Adjust the following value until "overall amps" at the end of performance is about -6 dB.
-i_level_correction = 74.6
+i_level_correction = -80
 i_normalization = ampdb(-i_level_correction) / 2
 i_amplitude = ampdb(i_midi_velocity) * i_normalization
 k_gain = ampdb(gk_Bower_level)
-iattack = i(gk_Bower_attack)
-idecay = i(gk_Bower_release)
-isustain = p3 - i(gk_Bower_release)
-xtratim iattack + isustain + idecay
+iattack = i(gk_overlap)
+idecay = i(gk_overlap)
+isustain = p3 - i(gk_overlap)
+p3 = iattack + isustain + idecay
+xtratim iattack + idecay
 iamp = i_amplitude
-kenvelope transeg 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
+kenvelope transegr 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
 ihertz = cpsmidinn(i_midi_key)
 kamp = kenvelope
 kfreq = ihertz
@@ -463,11 +483,12 @@ isine ftgenonce 0,0,65536,10,1
 aSig wgbow kamp,kfreq,gk_Bower_pressure,krat,kvibf,kvibamp,isine,iminfreq
 aleft, aright pan2 aSig / 7, k_space_left_to_right
 adamping linseg 0, 0.03, 1, p3 - 0.1, 1, 0.07, 0
-aleft = adamping * aleft
-aright = adamping * aright
-outleta "outleft", aleft * k_gain
-outleta "outright", aright * k_gain
+aleft = adamping * aleft * k_gain
+aright = adamping * aright * k_gain
+outleta "outleft", aleft
+outleta "outright", aright 
 prints "Bower          i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
+;printks "Bower          i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d l%9.4f r%9.4f\n", 1, p1, p2, p3, p4, p5, p7, active(p1), dbamp(rms(aleft)), dbamp(rms(aright))
 endin
 
 gk_Droner_partial1 init .1
@@ -506,7 +527,7 @@ iattack = i(gk_overlap)
 idecay = i(gk_overlap)
 isustain = p3 - i(gk_overlap)
 p3 = iattack + isustain + idecay
-kenvelope transeg 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
+kenvelope transegr 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
 ihertz = cpsmidinn(ikey)
 asignal poscil3 1, ihertz, gi_Droner_sine
 asignal chebyshevpoly asignal, 0, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10
@@ -541,6 +562,7 @@ iattack = i(gk_overlap)
 idecay = i(gk_overlap)
 isustain = p3 - i(gk_overlap)
 p3 = iattack + isustain + idecay
+xtratim iattack + idecay
 kenvelope transeg 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
 ihertz = cpsmidinn(ikey)
 icps = ihertz
@@ -570,7 +592,7 @@ kenv linsegr 1, 1, 0
 kenv = kenvelope
 aleft = a1*kenv*.02
 aright = a2*kenv*.02
-adamping linseg 0, 0.03, 1, p3 - 0.1, 1, 0.07, 0
+adamping linsegr 0, 0.03, 1, p3 - 0.1, 1, 0.07, 0
 aleft = adamping * aleft
 aright = adamping * aright
 kgain = ampdb(gk_Sweeper_level)
@@ -579,7 +601,7 @@ outleta "outright", aright * kgain
 prints "Sweeper        i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
-gk_Buzzer_Harmonics init 15
+gk_Buzzer_harmonics init 15
 gk_Buzzer_level init .5
 instr Buzzer
 insno = p1
@@ -594,11 +616,12 @@ iattack = i(gk_overlap)
 idecay = i(gk_overlap)
 isustain = p3 - i(gk_overlap)
 p3 = iattack + isustain + idecay
-kenvelope transeg 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
+xtratim iattack + idecay
+kenvelope transegr 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
 ihertz = cpsmidinn(ikey)
 ;asignal gbuzz kenvelope, ihertz, 3, gk_FirstHarmonic, gk_DistortFactor, gisine
 isine ftgenonce 0, 0, 65536, 10, 1
-gk_Harmonics = gk_Buzzer_Harmonics
+gk_Harmonics = gk_Buzzer_harmonics
 asignal buzz kenvelope, ihertz, gk_Harmonics, isine
 asignal = asignal * 3
 ;asignal vco2 kenvelope, ihertz, 12
@@ -628,7 +651,8 @@ iattack = i(gk_overlap)
 idecay = i(gk_overlap)
 isustain = p3 - i(gk_overlap)
 p3 = iattack + isustain + idecay
-kenvelope transeg 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
+xtratim iattack + idecay
+kenvelope transegr 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
 ihertz = cpsmidinn(ikey)
 gk_Harmonics = 1 * 20
 asignal vco2 kenvelope * 4, ihertz, 12
@@ -710,7 +734,7 @@ iattack = i(gk_overlap) * 2
 idecay = i(gk_overlap) * 2
 isustain = p3 - i(gk_overlap) * 2
 p3 = iattack + isustain + idecay
-kenvelope transeg 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
+kenvelope transegr 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
 ; kamp linseg 0, ifade, 1, idur - 2 * ifade, 1, ifade, 0
 kamp = kenvelope
 ; Amp Fqc Dense AmpOff PitchOff GrDur GrTable WinTable MaxGrDur
@@ -838,6 +862,7 @@ instr Controls
     gk_FMWaterBell_vibrato_rate chnget "gk_FMWaterBell_vibrato_rate"
 
     gk_Bower_level chnget "gk_Bower_level"
+    gk_Bower_pressure chnget "gk_Bower_pressure"
     
     gk_Blower_grainDensity chnget "gk_Blower_grainDensity" 
     gk_Blower_grainDuration chnget "gk_Blower_grainDuration" 
