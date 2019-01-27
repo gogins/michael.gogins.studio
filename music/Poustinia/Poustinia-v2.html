@@ -34,8 +34,12 @@
 </canvas>
 <textarea id="console" style="position:absolute;left:1vw;top:1vw;width:50vw;height:98vh;color:SkyBlue;background-color:transparent;border:none;text-align:left;font-size:8.25px;overflow:auto;cursor:none;"></textarea>
 <script>
-var fs = require("fs");
 var title = 'Poustinia v2'
+
+var fs = require("fs");
+var git = require('git-rev-sync');
+var soundfile_name = sprintf("Poustinia-v2-%s.wav",  git.short());
+
 window.onerror = function (message, url, line) {
   csound.message(message + '\n' + url + '\n' + line + '\n');
   console.trace();
@@ -45,17 +49,31 @@ var generate = function() {
   csound.message("generate()...\n");
   try {
     window.lsys = new ChordSpace.LSys();
-    lsys.axiom = "C - [ b f f I I I I g ] g C";
+    lsys.axiom = "C - [ b f f I I I I g ] g1 C";
     //lsys.axiom = "- [ b f f I g ] g";
-    lsys.addRule('g',   'b a3 c aa   F F c2 a2 t,/,1.025 b2 c2 g1 b2 t,*,1.025 T,-3 F F F   c g1 a b g1');
-    lsys.addRule('g1',  'b a3 c aa K F F c2 a2 t,/,1.025 b2 c2 g2 b2 t,*,1.025       F F F c g2 a b g2');
-    lsys.addRule('g2',  'b a3 c aa   F F c2 a2 t,/,1.025 b2 c2 g  b2 t,*,1.025       F F F c g  a b g');
+
+    //lsys.addRule('g',   'b a3 c aa   F F c2 a2 t,/,1.025 b2 c2 g1 b2 t,*,1.025       F F F   c g1 a b g1');
+    //lsys.addRule('g1',  'b a3 c aa   F F c2 a2 t,/,1.025 b2 c2 g2 b2 t,*,1.025  T,4  F F F c g2 a b g2');
+    //lsys.addRule('g2',  'b a3 c aa K F F c2 a2 t,/,1.025 b2 c2 g  b2 t,*,1.025       F F F c g  a b g');
+    
+    //lsys.addRule('g',  '    b a3 c aa   F F c2 a2 t,/,1.025 b2 c2 g2 b2 t,*,1.025     F F F c g2 a b g2');
+    //lsys.addRule('g1', 'T,5 b a3 c aa   F F c2 a2 t,/,1.025 b2 c2 g1 b2 t,*,1.025     F F F   c g1 a b g1 K');
+    //lsys.addRule('g2', '    b a3 c aa K F F c2 a2 t,/,1.025 b2 c2 g  b2 t,*,1.025     F F F c g  a b g');
+    
+    lsys.addRule('g',  'K   b a3 c aa   F F c2 a2 t,/,1.025 b2 c2 g1 b2 t,*,1.025     F F F c g1 a b g1 T,5');
+    lsys.addRule('g1', '    b a3 c aa   F F c2 a2 t,/,1.025 b2 c2 g2 b2 t,*,1.025     F F F c g2 a b g2 ');
+    lsys.addRule('g2', 'T,3 b a3 c aa   F F c2 a2 t,/,1.025 b2 c2 g  b2 t,*,1.025     F F F c g  a b g');
+    
+    lsys.addRule('g',  'T,7 b a3 c aa   F F c2 a2 t,/,1.025 b2 c2 g1 b2 t,*,1.025     F F F c g1 a b g1 K');
+    lsys.addRule('g1', '    b a3 c aa   F F c2 a2 t,/,1.025 b2 c2 g2 b2 t,*,1.025     F F F c g2 a b g2 ');
+    lsys.addRule('g2', '    b a3 c aa   F F c2 a2 t,/,1.025 b2 c2 g  b2 t,*,1.025     F F F c g  a b g');
+    
     lsys.addRule('a',  'F b F a2 b a2 [ b3 F F F F [ c F F F F ] ] F F F c2 a2 c F c F F F b2 a2');
     lsys.addRule('aa', '[ b3 F F F c3 f F F F F ] F b F a2 b I I I F F [ c2 F F F F F F ] Jb F c2 a2 c F c F F b2 a2');
     lsys.addRule('a3', 'F b2 b F a I v F F c F F F F F c2 aa V f c2 F F b2 a');
-    lsys.addRule('Ja', 'J,2,1');
-    lsys.addRule('Ja', 'J,2,0');
-    lsys.addRule('Jb', 'J,2,4');  
+    //lsys.addRule('Ja', 'J,2,1');
+    //lsys.addRule('Ja', 'J,2,0');
+    //lsys.addRule('Jb', 'J,2,4');  
     //lsys.addRule('Jb', 'J,2,2');  
     lsys.addRule('b',  '+ f f f f f -');    
     lsys.addRule('c',  '- f f f f f +');
@@ -114,10 +132,11 @@ var play = function() {
     //csound.setOption('-j3');
     csound.setOption('--nodisplays');
     //csound.setOption('--realtime');
-    csound.setOption('-R')
-    csound.setOption('-f')
-    csound.setOption('-odac');
-    //csound.setOption('-oPoustinia-v2.wav');
+    csound.setOption('-R');
+    csound.setOption('-W');
+    csound.setOption('-f');
+    csound.setOption('-o' + soundfile_name);
+    //csound.setOption('-odac');
     csound.compileCsdText(csd);
     fs.writeFileSync("Poustinia-v2-generated.csd", csd);
     csound.start();
@@ -842,10 +861,7 @@ aleft inleta "inleft"
 aright inleta "inright"
 kgain = ampdb(gk_MasterOutput_level)
 outs aleft * kgain, aright * kgain
-; idate date
-Sfilename sprintf "Poustinia-v2-%d.wav", 8
-prints sprintf("Filename: %s\n", Sfilename)
-fout Sfilename, 16, aleft, aright
+fout "Poustinia-v2.wav", 16, aleft, aright
 prints "MasterOutput   i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
