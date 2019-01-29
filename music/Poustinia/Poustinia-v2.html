@@ -65,9 +65,9 @@ var generate = function() {
     //lsys.addRule('g1', '    b a3 c aa   F F c2 a2 t,/,1.025 b2 c2 g2 b2 t,*,1.025     F F F c g2 a b g2 ');
     //lsys.addRule('g2', 'T,3 b a3 c aa   F F c2 a2 t,/,1.025 b2 c2 g  b2 t,*,1.025     F F F c g  a b g');
     
-    lsys.addRule('g',  'b a3 c aa T,3 F F c2 a2 t,/,1.025 b2 c2 g1 b2 t,*,1.025 K   F F F c g1 a b g1');
+    lsys.addRule('g',  'b a3 c aa T,3 F F c2 a2 t,/,1.025 b2 c2 g1 b2 t,*,1.025     F F F c g1 a b g1');
     lsys.addRule('g1', 'b a3 c aa     F F c2 a2 t,/,1.025 b2 c2 g2 b2 t,*,1.025 T,2 F F F c g2 a b g2 ');
-    lsys.addRule('g2', 'b a3 c aa     F F c2 a2 t,/,1.025 b2 c2 g  b2 t,*,1.025     F F F c g  a b g');
+    lsys.addRule('g2', 'b a3 c aa     F F c2 a2 t,/,1.025 b2 c2 g  b2 t,*,1.025 K   F F F c g  a b g');
     
     lsys.addRule('a',  'F b F a2 b a2 [ b3 F F F F [ c F F F F ] ] F F F c2 a2 c F c F F F b2 a2');
     lsys.addRule('aa', '[ b3 F F F c3 f F F F F ] F b F a2 b I I I F F [ c2 F F F F F F ] Jb F c2 a2 c F c F F b2 a2');
