@@ -50,7 +50,7 @@ var generate = function() {
   try {
     window.lsys = new ChordSpace.LSys();
     // NB: "-" reverses time.
-    lsys.axiom = "C - [ b f f I I I I g ] g C";
+    lsys.axiom = "C - [ + F F F F F - b f f I I I I g ] g C";
 
     lsys.addRule('g',  'b a3 c aa T,7 F F c2 a2 t,/,1.025 b2 c2 g1 b2 t,*,1.025     F F F c   g1 a b g1 K');
     lsys.addRule('g1', 'b a3 c aa     F F c2 a2 t,/,1.025 b2 c2 g2 b2 t,*,1.025     F F F c   g2 a b g2 ');
@@ -209,7 +209,7 @@ var default_json = {
         "gk_FMWaterBell_index": 1.1401499375260309,
         "gk_FMWaterBell_vibrato_depth": 0.2897954989209742,
         "gk_FMWaterBell_vibrato_rate": 4.762100503545371,
-        "gk_FMWaterBell_level": 37.05799151343706,
+        "gk_FMWaterBell_level": 36.5,
         "gk_Phaser_ratio1": 1,
         "gk_Phaser_ratio2": 0.3333334,
         "gk_Phaser_index1": 1,
@@ -236,7 +236,7 @@ var default_json = {
         "gk_Blower_grainAmplitudeRange": 87.88408180043162,
         "gk_Blower_grainFrequencyRange": 30.596081700708627,
         "gk_Blower_level": -2,
-        "gk_PianoteqOut_level": 15.06738918994025
+        "gk_PianoteqOut_level": 14.5
       }
     }
   },
@@ -249,7 +249,7 @@ var default_json = {
     },
     "FMWaterBell": {
       "preset": "Default",
-      "closed": true,
+      "closed": false,
       "folders": {}
     },
     "Phaser": {
