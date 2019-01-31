@@ -52,12 +52,12 @@ var generate = function() {
     // NB: "-" reverses time.
     lsys.axiom = "C - [ b f f I I I I g ] g C";
 
-    lsys.addRule('g',  'b a3 c aa T,3 F F c2 a2 t,/,1.025 b2 c2 g1 b2 t,*,1.025     F F F c g1 a b g1');
-    lsys.addRule('g1', 'b a3 c aa     F F c2 a2 t,/,1.025 b2 c2 g2 b2 t,*,1.025     F F F c g2 a b g2 ');
-    lsys.addRule('g2', 'b a3 c aa     F F c2 a2 t,/,1.025 b2 c2 g  b2 t,*,1.025 K   F F F c g  a b g');
+    lsys.addRule('g',  'b a3 c aa T,7 F F c2 a2 t,/,1.025 b2 c2 g1 b2 t,*,1.025     F F F c   g1 a b g1 K');
+    lsys.addRule('g1', 'b a3 c aa     F F c2 a2 t,/,1.025 b2 c2 g2 b2 t,*,1.025     F F F c   g2 a b g2 ');
+    lsys.addRule('g2', 'b a3 c aa     F F c2 a2 t,/,1.025 b2 c2 g  b2 t,*,1.025     F F F c   g  a b g');
     
     lsys.addRule('a',  'F b F a2 b a2 [ b3 F F F F [ c F F F F ] ] F F F c2 a2 c F c F F F b2 a2');
-    lsys.addRule('aa', '[ b3 F F F c3 f F F F F ] F b F a2 b I I I F F [ c2 F F F F F F ] Jb F c2 a2 c F c F F b2 a2');
+    lsys.addRule('aa', '[ b3 F F F c3 f F F F F ] F b F a2 b I I I F F [ c2 F F F F F F ] F c2 a2 c F c F F b2 a2');
     lsys.addRule('a3', 'F b2 b F a I v F F c F F F F F c2 aa V f c2 F F b2 a');
     lsys.addRule('b',  '+ f f f f f -');    
     lsys.addRule('c',  '- f f f f f +');
@@ -191,7 +191,109 @@ var handleMessage = function(message) {
     messages_textarea.scrollTop = messages_textarea.scrollHeight;
 }
 
-var default_json = null;
+var default_json = {
+  "preset": "Default",
+  "remembered": {
+    "Default": {
+      "0": {
+        "gk_overlap": 5.504950495049505,
+        "gk_Reverb_feedback": 0.7731258840169731,
+        "gk_Reverb2_feedback": 0.5691378592253228,
+        "gk_MasterOutput_level": -10,
+        "gi_FMWaterBell_attack": 0.002936276551436901,
+        "gi_FMWaterBell_release": 0.022698875468554768,
+        "gi_FMWaterBell_exponent": 12.544773011245312,
+        "gi_FMWaterBell_sustain": 5.385256143273636,
+        "gi_FMWaterBell_sustain_level": 0.08267388588088297,
+        "gk_FMWaterBell_crossfade": 0.48250728862973763,
+        "gk_FMWaterBell_index": 1.1401499375260309,
+        "gk_FMWaterBell_vibrato_depth": 0.2897954989209742,
+        "gk_FMWaterBell_vibrato_rate": 4.762100503545371,
+        "gk_FMWaterBell_level": 37.05799151343706,
+        "gk_Phaser_ratio1": 1,
+        "gk_Phaser_ratio2": 0.3333334,
+        "gk_Phaser_index1": 1,
+        "gk_Phaser_index2": 2,
+        "gk_Phaser_level": 14.608203677510609,
+        "gk_Bower_pressure": 3.050919377652051,
+        "gk_Bower_level": -12.677504515770458,
+        "gk_Droner_partial1": 0.11032374600527997,
+        "gk_Droner_partial2": 0.4927052938724468,
+        "gk_Droner_partial3": 0.11921634014172572,
+        "gk_Droner_partial4": 0.06586077532305128,
+        "gk_Droner_partial5": 0.6616645824649159,
+        "gk_Droner_level": 0.8392385716270638,
+        "gk_Sweeper_britel": 0.2773844231570179,
+        "gk_Sweeper_briteh": 3.382178217821782,
+        "gk_Sweeper_britels": 0.19575671852899576,
+        "gk_Sweeper_britehs": 0.8837340876944837,
+        "gk_Sweeper_level": 7.366336633663366,
+        "gk_Buzzer_harmonics": 2.608203677510608,
+        "gk_Buzzer_level": 24.74681753889675,
+        "gk_Shiner_level": 16.056577086280058,
+        "gk_Blower_grainDensity": 79.99177885109444,
+        "gk_Blower_grainDuration": 0.2,
+        "gk_Blower_grainAmplitudeRange": 87.88408180043162,
+        "gk_Blower_grainFrequencyRange": 30.596081700708627,
+        "gk_Blower_level": -2,
+        "gk_PianoteqOut_level": 15.06738918994025
+      }
+    }
+  },
+  "closed": false,
+  "folders": {
+    "Master": {
+      "preset": "Default",
+      "closed": true,
+      "folders": {}
+    },
+    "FMWaterBell": {
+      "preset": "Default",
+      "closed": true,
+      "folders": {}
+    },
+    "Phaser": {
+      "preset": "Default",
+      "closed": true,
+      "folders": {}
+    },
+    "Bower": {
+      "preset": "Default",
+      "closed": true,
+      "folders": {}
+    },
+    "Droner": {
+      "preset": "Default",
+      "closed": false,
+      "folders": {}
+    },
+    "Sweeper": {
+      "preset": "Default",
+      "closed": false,
+      "folders": {}
+    },
+    "Buzzer": {
+      "preset": "Default",
+      "closed": false,
+      "folders": {}
+    },
+    "Shiner": {
+      "preset": "Default",
+      "closed": false,
+      "folders": {}
+    },
+    "Blower": {
+      "preset": "Default",
+      "closed": false,
+      "folders": {}
+    },
+    "Pianoteq": {
+      "preset": "Default",
+      "closed": false,
+      "folders": {}
+    }
+  }
+};
 
 window.onload = function() {
     get_csound(handleMessage);
