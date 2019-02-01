@@ -943,8 +943,14 @@ instr MasterOutput
 aleft inleta "inleft"
 aright inleta "inright"
 kgain = ampdb(gk_MasterOutput_level)
-outs aleft * kgain, aright * kgain
-fout "Poustinia-v2.wav", 16, aleft, aright
+; Fade out before ending on wrong note.
+iamp init 1
+iattack init 0.1
+isustain init (7 * 60 + 44)
+idecay init .375
+kenvelope transeg 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
+outs aleft * kgain * kenvelope, aright * kgain * kenvelope
+fout "Poustinia-v2.wav", 16, aleft * kenvelope, aright * kenvelope
 prints "MasterOutput   i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
@@ -1004,7 +1010,7 @@ endin
 
 </CsInstruments>
 <CsScore>
-f 0 480
+f 0 [ 7 * 60 + 45]
 </CsScore>
 </CsoundSynthesizer>
 </textarea>
