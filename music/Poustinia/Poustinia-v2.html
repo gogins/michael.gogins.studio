@@ -408,7 +408,7 @@ window.addEventListener("unload", function(event) {
 <CsInstruments>
 ; Change to 96000 with 1 ksmps for final rendering.
 sr = 96000
-ksmps = 100
+ksmps = 1
 nchnls = 2
 0dbfs = 2500000
 
@@ -946,8 +946,8 @@ kgain = ampdb(gk_MasterOutput_level)
 ; Fade out before ending on wrong note.
 iamp init 1
 iattack init 0.1
-isustain init (7 * 60 + 44)
-idecay init .375
+isustain init (7 * 60 + 43.75)
+idecay init .25
 kenvelope transeg 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
 outs aleft * kgain * kenvelope, aright * kgain * kenvelope
 fout "Poustinia-v2.wav", 16, aleft * kenvelope, aright * kenvelope
