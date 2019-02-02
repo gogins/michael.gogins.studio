@@ -82,18 +82,24 @@ var generate = function() {
     lsys.score.setDuration(460);
     csound.message("Tieing overlapping notes...\n");
     lsys.score.tieOverlaps(true);
-    // Extend the notes at the end.
     lsys.score.sort();
+    // Fix up score before rendering.
     var i;
     var n = lsys.score.data.length;
     var cutoff = 7 * 60 + 35;
     var note;
     for (i = n - 1; i >= 0; --i) {
         note = lsys.score.data[i];
-        if ((note.time + note.duration) < cutoff) {
-            break;
+        // Extend the notes at the end.
+        if ((note.time + note.duration) >= cutoff) {
+            note.duration = (note.duration + 2.5);
         }
-        note.duration = (note.duration + 2);
+        // Pianoteq notes should not cut off abruptly.
+        if (note.channel == 9) {
+            if (note.duration < .5) {
+                note.duration = .5;
+            }
+        }
     }
     csound.message("Plotting score...\n");
     lsys.score.draw3D(document.getElementById("canvas"));
@@ -427,7 +433,7 @@ nchnls = 2
 ; Ensure the same random stream for each rendering.
 ; rand, randh, randi, rnd(x) and birnd(x) are not affected by seed.
 
-seed 1037751814
+seed  81814
 
 connect "Blower", "outleft", "Reverb", "inleft"
 connect "Blower", "outright", "Reverb", "inright"
