@@ -80,9 +80,21 @@ var generate = function() {
     csound.message("Conforming to chords...\n");
     lsys.conformToChords();
     lsys.score.setDuration(460);
-    lsys.score.sort();
     csound.message("Tieing overlapping notes...\n");
     lsys.score.tieOverlaps(true);
+    // Extend the notes at the end.
+    lsys.score.sort();
+    var i;
+    var n = lsys.score.data.length;
+    var cutoff = 7 * 60 + 35;
+    var note;
+    for (i = n - 1; i >= 0; --i) {
+        note = lsys.score.data[i];
+        if ((note.time + note.duration) < cutoff) {
+            break;
+        }
+        note.duration = (note.duration + 2);
+    }
     csound.message("Plotting score...\n");
     lsys.score.draw3D(document.getElementById("canvas"));
     csound.message('Generated ' + lsys.score.data.length + ' notes.\n');
@@ -408,9 +420,14 @@ window.addEventListener("unload", function(event) {
 <CsInstruments>
 ; Change to 96000 with 1 ksmps for final rendering.
 sr = 96000
-ksmps = 1
+ksmps = 100
 nchnls = 2
 0dbfs = 2500000
+
+; Ensure the same random stream for each rendering.
+; rand, randh, randi, rnd(x) and birnd(x) are not affected by seed.
+
+seed 1037751814
 
 connect "Blower", "outleft", "Reverb", "inleft"
 connect "Blower", "outright", "Reverb", "inright"
@@ -679,7 +696,9 @@ iphs init 0
 a1 hsboscil kenvelope, ktone, kbrite, ibasfreq, gisine, gioctfn, ioctcnt, iphs
 amod poscil3 0.25, ibasfreq*(1/3), gisine
 arm = a1*amod
-kmix expseg 0.001, 0.01, rnd(1), rnd(3)+0.3, 0.001
+irnd1 = unirand(1)
+irnd3 = unirand(3)
+kmix expseg 0.001, 0.01, irnd1, irnd3+0.3, 0.001
 kmix=.25
 a1 ntrpol a1, arm, kmix
 ;a1 pareq a1/10, 400, 15, .707
@@ -688,8 +707,10 @@ kpanrte jspline 5, 0.05, 0.1
 kpandep jspline 0.9, 0.2, 0.4
 kpan poscil3 kpandep, kpanrte, gisine
 a1,a2 pan2 a1, kpan
-a1 delay a1, rnd(0.1)
-a2 delay a2, rnd(0.11)
+irnd01 = unirand(0.1)
+a1 delay a1, irnd01
+irnd011 = unirand(0.11)
+a2 delay a2, irnd011
 kenv linsegr 1, 1, 0
 kenv = kenvelope
 aleft = a1*kenv*.02
@@ -943,14 +964,8 @@ instr MasterOutput
 aleft inleta "inleft"
 aright inleta "inright"
 kgain = ampdb(gk_MasterOutput_level)
-; Fade out before ending on wrong note.
-iamp init 1
-iattack init 0.1
-isustain init (7 * 60 + 43.75)
-idecay init .25
-kenvelope transeg 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
-outs aleft * kgain * kenvelope, aright * kgain * kenvelope
-fout "Poustinia-v2.wav", 16, aleft * kenvelope, aright * kenvelope
+outs aleft * kgain, aright * kgain
+fout "Poustinia-v2.wav", 16, aleft, aright
 prints "MasterOutput   i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
