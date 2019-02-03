@@ -95,7 +95,7 @@ var generate = function() {
             note.duration = (note.duration + 2.5);
         }
         // Pianoteq notes should not cut off abruptly.
-        if (note.channel == 9) {
+        if (Math.round(note.channel) == 9) {
             if (note.duration < .5) {
                 note.duration = .5;
             }
