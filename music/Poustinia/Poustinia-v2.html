@@ -101,6 +101,38 @@ var generate = function() {
             }
         }
     }
+    // Pianoteq misbehaves if we start right at time 0.
+    for (var i = 0; i < lsys.score.data.length; i++) {
+        var event = lsys.score.data[i];
+        event.time = event.time + 1;
+    }
+    if (false) {
+        // Also if keys overlap.
+        for (var i = 0; i < lsys.score.data.length; i++) {
+            var event = lsys.score.data[i];
+            csound.message(event.toIStatement() + ' e: ' + event.end);
+            var channel = Math.floor(event.channel);
+            var key = event.key;
+            for (var j = i + 1; j < lsys.score.data.length; j++) {
+                var overlap = lsys.score.data[j];
+                var overlap_channel = Math.floor(overlap.channel);
+                var overlap_key = overlap.key;
+                if (key === overlap_key && channel === overlap_channel && channel === 2) {
+                    if (event.end > overlap.time) {
+                        var the_end = Math.max(event.end, overlap.end);
+                        csound.message('Correcting overlap for:');
+                        csound.message('  ' + event.toIStatement() + ' e: ' + event.end);
+                        csound.message('  ' + overlap.toIStatement() + ' e: ' + overlap.end);
+                        event.end = the_end;
+                        overlap.end = the_end;
+                        csound.message('to:');
+                        csound.message('  ' + event.toIStatement() + ' e: ' + event.end);
+                        csound.message('  ' + overlap.toIStatement() + ' e: ' + overlap.end + '\n');
+                     }
+                }
+            }
+        }
+    }
     csound.message("Plotting score...\n");
     lsys.score.draw3D(document.getElementById("canvas"));
     csound.message('Generated ' + lsys.score.data.length + ' notes.\n');
@@ -126,7 +158,7 @@ var play = function() {
     var csound_score = lsys.score.toCsoundScore();
     csound_score = csound_score.concat("\n</CsScore>");
     csd = csd.replace("</CsScore>", csound_score);
-    console.log("Playing...");
+    csound.message("Playing...");
     csound.setOption(sprintf('-m%d', 2 + 128 + 32));
     //csound.setOption('-j3');
     csound.setOption('--nodisplays');
@@ -433,7 +465,9 @@ nchnls = 2
 ; Ensure the same random stream for each rendering.
 ; rand, randh, randi, rnd(x) and birnd(x) are not affected by seed.
 
-seed  81814
+;seed  81814
+;seed  818145
+seed  88818145
 
 connect "Blower", "outleft", "Reverb", "inleft"
 connect "Blower", "outright", "Reverb", "inright"
@@ -509,7 +543,7 @@ i_frequency = cpsmidinn(i_midi_key)
 ; Adjust the following value until "overall amps" at the end of performance is about -6 dB.
 i_level_correction = -20
 i_normalization = ampdb(-i_level_correction) / 2
-i_amplitude = ampdb(i_midi_velocity) * i_normalization
+i_amplitude = ampdb(i_midi_velocity) * i_normalization * 1.6
 k_gain = ampdb(gk_FMWaterBell_level)
 a_signal fmbell	1, i_frequency, gk_FMWaterBell_index, gk_FMWaterBell_crossfade, gk_FMWaterBell_vibrato_depth, gk_FMWaterBell_vibrato_rate, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine ;, gi_FMWaterBell_sustain
 ;a_envelope linsegr 0, gi_FMWaterBell_attack, 1, i_sustain, gi_FMWaterBell_sustain_level, gi_FMWaterBell_release, 0
@@ -907,6 +941,7 @@ gk_PianoteqOut_level init .5
 instr PianoteqOut
 vstprogset  giPianoteq, 1
 vstparamset giPianoteq, 0, .01
+; vstparamset giPianoteq, 7, 1
 vstparamset giPianoteq, 72, .01
 vstparamset giPianoteq, 73, .01
 vstparamset giPianoteq, 74, .01
@@ -917,8 +952,8 @@ ainleft init 0.0
 ainright init 0.0
 aoutleft, aoutright vstaudio giPianoteq, ainleft, ainright
 kgain = ampdb(gk_PianoteqOut_level)
-outleta "outleft", aoutleft * kgain
-outleta "outright", aoutright * kgain
+outleta "outleft", aoutleft * kgain * 1.33334
+outleta "outright", aoutright * kgain * 1.33334
 prints "PianoteqOut    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
