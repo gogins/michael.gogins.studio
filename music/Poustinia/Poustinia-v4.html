@@ -34,11 +34,11 @@
 </canvas>
 <textarea id="console" style="position:absolute;left:1vw;top:1vw;width:50vw;height:98vh;color:SkyBlue;background-color:transparent;border:none;text-align:left;font-size:8.25px;overflow:auto;cursor:none;"></textarea>
 <script>
-var title = 'Poustinia v2'
+var title = 'Poustinia v3'
 
 var fs = require("fs");
 var git = require('git-rev-sync');
-var soundfile_name = sprintf("Poustinia-v2-%s.wav",  git.short());
+var soundfile_name = sprintf("Poustinia-v3-%s.wav",  git.short());
 
 window.onerror = function (message, url, line) {
   csound.message(message + '\n' + url + '\n' + line + '\n');
@@ -49,23 +49,30 @@ var generate = function() {
   csound.message("generate()...\n");
   try {
     window.lsys = new ChordSpace.LSys();
-    // NB: "-" reverses time.
-    lsys.axiom = "C - [ + F F F F F - b f f I I I I g ] g C";
-
-    lsys.addRule('g',  'b a3 c aa T,3 F F c2 a2 t,/,1.025 b2 c2 g1 b2 t,*,1.025     F F F c g1 a b g1 K');
-    lsys.addRule('g1', 'b a3 c aa     F F c2 a2 t,/,1.025 b2 c2 g2 b2 t,*,1.025     F F F c g2 a b g2 ');
-    lsys.addRule('g2', 'b a3 c aa     F F c2 a2 t,/,1.025 b2 c2 g  b2 t,*,1.025     F F F c g  a b g');
-    
-    lsys.addRule('a',  'F b F a2 b a2 [ b3 F F F F [ c F F F F ] ] F F F c2 a2 c F c F F F b2 a2');
+    lsys.axiom = "- [ b f f I I I I g ] g";
+    lsys.addRule('g',  'Ja b a3 c aa F F c2 T,5 a2 t,/,1.025 b2 K c2 g b2 t,*,1.025 F F F c g Jb a b g');
+    lsys.addRule('g',  'Jb b a3 c aa F F c2 T,5 a2 t,/,1.025 b2 K c2 g b2 t,*,1.025 F F F c g Ja a b g');
+    lsys.addRule('g',  'Ja b a3 c aa F F c2 a2 t,/,1.025 b2 K c2 g b2 t,*,1.025 Q,5 F F F c g Jb a b g'); 
+    lsys.addRule('g',  'Ja b a3 c aa F F c2 a2 t,/,1.025 b2 K c2 g b2 t,*,1.025 T,5 F F F c g Jb a b g');
+    lsys.addRule('g',  'Ja b a3 c aa F F c2 a2 t,/,1.025 b2 K c2 g b2 t,*,1.025 T,5 F Jb F F c g a b g');
+    lsys.addRule('a',  'F b F a2 b a2 [ b3 F F F F [ c F F F F ] ] F F F Ja c2 a2 c F c F F F b2 Jb a2');
+    lsys.addRule('a',  'F b F a2 b a2 [ b3 F F F F [ c F F F F ] ] F F F Jb c2 a2 c F c F F F b2 Ja a2');
     lsys.addRule('aa', '[ b3 F F F c3 f F F F F ] F b F a2 b I I I F F [ c2 F F F F F F ] F c2 a2 c F c F F b2 a2');
+    lsys.addRule('xaa', '[ b3 F F F c3 f F F F F ] F b F a2 b I I F F [ c2 F F F F F F ] F c2 a2 c F c F F b2 a2');
+    lsys.addRule('xa2', 'I F b F b a3 i i b2 f F F f c2 a3 c F c2 F b2 a3 i i c');
     lsys.addRule('a3', 'F b2 b F a I v F F c F F F F F c2 aa V f c2 F F b2 a');
-    lsys.addRule('b',  '+ f f f f f -');    
+    lsys.addRule('xa3', 'F b2 b F a I v F F c F F F F F c2 aa i i V f c2 F F b2 a');
+    lsys.addRule('Ja', 'J,2,1');
+    lsys.addRule('Ja', 'J,2,0');
+    lsys.addRule('Jb', 'J,2,4');  
+    lsys.addRule('Jb', 'J,2,2');  
+    lsys.addRule('b',  '+ f f f f f - -');    
     lsys.addRule('c',  '- f f f f f +');
     lsys.addRule('b2', '+ f f f f -');    
-    lsys.addRule('c2', '- f f f f +');
-    lsys.addRule('b3', '- f f f +');    
+    lsys.addRule('c2', '- - f f f f +');
+    lsys.addRule('b3', '- f f f + +');    
     var chord = ChordSpace.chordForName('CM9');      
-    var t = new ChordSpace.Turtle(5, Math.PI/2.0012, chord, chord);
+    var t = new ChordSpace.Turtle(4.5, Math.PI/2, chord, chord);
     lsys.generate(5);
     lsys.write_score(t);
     csound.message("Finding size of score...\n");
@@ -73,13 +80,13 @@ var generate = function() {
     csound.message("Rescaling score...\n");
     lsys.score.setScale(3, 1, 8.9999);
     //lsys.score.setScale(3, 8, 0);
-    lsys.score.setScale(4, 36, 60);
+    lsys.score.setScale(4, 24, 72);
     lsys.score.setScale(5, 60, 8);
     lsys.score.setScale(7, 0, 1);
     lsys.score.temper(12);
     csound.message("Conforming to chords...\n");
     lsys.conformToChords();
-    lsys.score.setDuration(460);
+    lsys.score.setDuration(12*60);
     csound.message("Tieing overlapping notes...\n");
     lsys.score.tieOverlaps(true);
     lsys.score.sort();
@@ -106,7 +113,7 @@ var generate = function() {
         var event = lsys.score.data[i];
         event.time = event.time + 1;
     }
-    if (true) {
+    if (false) {
         // Also if keys overlap.
         for (var i = 0; i < lsys.score.data.length; i++) {
             var event = lsys.score.data[i];
@@ -161,16 +168,29 @@ var play = function() {
     csound.message("Playing...");
     csound.setOption(sprintf('-m%d', 2 + 128 + 32));
     //csound.setOption('-j3');
+    csound.compileCsdText(csd);
     csound.setOption('--nodisplays');
     csound.setOption('-R');
     csound.setOption('-W');
     csound.setOption('-f');
-    csound.setOption('-o' + soundfile_name);
+    //csound.setOption('-o' + soundfile_name);
     //csound.setOption('-odac');
-    csound.compileCsdText(csd);
-    fs.writeFileSync("Poustinia-v2-generated.csd", csd);
+    csound.setMetadata("artist", "Michael Gogins");
+    csound.setMetadata("copyright", "Copyright 2019 by Michael Gogins");
+    csound.setMetadata("performer", "Mike Gogins");
+    csound.setMetadata("title", "Poustinia Variation 4");
+    csound.setMetadata("album", "Silence");
+    csound.setMetadata("track", "1");
+    csound.setMetadata("tracknumber", "1");
+    csound.setMetadata("date", "2019");
+    csound.setMetadata("publisher", "Irreducible Productions ASCAP");
+    csound.setMetadata("comment", "Lindenmayer system in chord space.");
+    csound.setMetadata("license", "CC BY-NC-SA");
+    csound.setMetadata("genre", "Electroacoustic");
+    csound.setOutput("Poustinia-v4.wav", "wav", "float");
+    fs.writeFileSync("Poustinia-v4-generated.csd", csd);
     csound.start();
-    csound.perform();
+    csound.performAndPostProcess();
     updateScoreTime();
 }
 
@@ -1006,7 +1026,7 @@ aleft inleta "inleft"
 aright inleta "inright"
 kgain = ampdb(gk_MasterOutput_level)
 outs aleft * kgain, aright * kgain
-fout "Poustinia-v2.wav", 16, aleft, aright
+fout "Poustinia-v4.wav", 16, aleft, aright
 prints "MasterOutput   i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
