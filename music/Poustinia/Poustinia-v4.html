@@ -34,11 +34,11 @@
 </canvas>
 <textarea id="console" style="position:absolute;left:1vw;top:1vw;width:50vw;height:98vh;color:SkyBlue;background-color:transparent;border:none;text-align:left;font-size:8.25px;overflow:auto;cursor:none;"></textarea>
 <script>
-var title = 'Poustinia v3'
+var title = 'Poustinia v4'
 
 var fs = require("fs");
 var git = require('git-rev-sync');
-var soundfile_name = sprintf("Poustinia-v3-%s.wav",  git.short());
+var soundfile_name = sprintf("Poustinia-v4-%s.wav",  git.short());
 
 window.onerror = function (message, url, line) {
   csound.message(message + '\n' + url + '\n' + line + '\n');
@@ -78,7 +78,7 @@ var generate = function() {
     csound.message("Finding size of score...\n");
     lsys.score.findScales();
     csound.message("Rescaling score...\n");
-    lsys.score.setScale(3, 1, 8.9999);
+    lsys.score.setScale(3, 1, 7.9999);
     //lsys.score.setScale(3, 8, 0);
     lsys.score.setScale(4, 24, 72);
     lsys.score.setScale(5, 60, 8);
@@ -168,12 +168,11 @@ var play = function() {
     csound.message("Playing...");
     csound.setOption(sprintf('-m%d', 2 + 128 + 32));
     //csound.setOption('-j3');
-    csound.compileCsdText(csd);
     csound.setOption('--nodisplays');
     csound.setOption('-R');
     csound.setOption('-W');
     csound.setOption('-f');
-    //csound.setOption('-o' + soundfile_name);
+    csound.setOption('-o' + soundfile_name);
     //csound.setOption('-odac');
     csound.setMetadata("artist", "Michael Gogins");
     csound.setMetadata("copyright", "Copyright 2019 by Michael Gogins");
@@ -189,6 +188,7 @@ var play = function() {
     csound.setMetadata("genre", "Electroacoustic");
     csound.setOutput("Poustinia-v4.wav", "wav", "float");
     fs.writeFileSync("Poustinia-v4-generated.csd", csd);
+    csound.compileCsdText(csd);
     csound.start();
     csound.performAndPostProcess();
     updateScoreTime();
@@ -243,6 +243,7 @@ var parameters = {
     gk_Sweeper_britels: .2 / 3,
     gk_Sweeper_britehs: 2.5 / 2,
     gk_Sweeper_level: 0.5,
+    gk_ZakianFlute_level: 0,
     gk_Reverb_feedback: .975,
     gk_Reverb2_feedback: .7,
     gk_MasterOutput_level: .4,
@@ -305,6 +306,7 @@ var default_json = {
         "gk_Blower_grainAmplitudeRange": 87.88408180043162,
         "gk_Blower_grainFrequencyRange": 30.596081700708627,
         "gk_Blower_level": -2,
+        "gk_ZakianFlute_level": 0,
         "gk_PianoteqOut_level": 14.5
       }
     }
@@ -428,6 +430,8 @@ window.onload = function() {
     add_slider(Blower, 'gk_Blower_grainAmplitudeRange', 0, 400);
     add_slider(Blower, 'gk_Blower_grainFrequencyRange', 0, 100);
     add_slider(Blower, 'gk_Blower_level', -40, 40);
+    var Flute = gui.addFolder('Zakian Flute');
+    add_slider(Flute, 'gk_ZakianFlute_level', -40, 40);
     var Pianoteq = gui.addFolder('Pianoteq');
     add_slider(Pianoteq, 'gk_PianoteqOut_level', -40, 40);
     gui.revert();  
@@ -506,6 +510,8 @@ connect "Sweeper", "outleft", "Reverb", "inleft"
 connect "Sweeper", "outright", "Reverb", "inright"
 connect "Shiner", "outleft", "Reverb", "inleft"
 connect "Shiner", "outright", "Reverb", "inright"
+connect "ZakianFlute", "outleft", "Reverb", "inleft"
+connect "ZakianFlute", "outright", "Reverb", "inright"
 connect "Reverb", "outleft", "MasterOutput", "inleft"
 connect "Reverb", "outright", "MasterOutput", "inright"
 connect "Reverb2", "outleft", "MasterOutput", "inleft"
@@ -612,62 +618,6 @@ kgain = ampdb(gk_Phaser_level)
 outleta "outleft", aleft * kgain
 outleta "outright", aright * kgain
 prints "Phaser         i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
-endin
-
-gk_Bower_midi_dynamic_range init 127
-gk_Bower_attack init .0125
-gk_Bower_release init .0125
-gk_Bower_level init 0.5
-gk_Bower_pressure init 0.25
-instr Bower
-if p3 == -1 goto indefinite
-  //prints "Non-indefinite.\n"
-  goto non_indefinite
-indefinite:
-  p3 = 1000000
-  //prints "Indefinite.\n"
-non_indefinite:
-i_instrument = p1
-i_time = p2
-i_duration = p3
-i_midi_key = p4
-i_midi_dynamic_range = i(gk_Bower_midi_dynamic_range)
-i_midi_velocity = p5 * i_midi_dynamic_range / 127 + (63.5 - i_midi_dynamic_range / 2)
-k_space_front_to_back = p6
-k_space_left_to_right = p7
-k_space_bottom_to_top = p8
-i_phase = p9
-i_frequency = cpsmidinn(i_midi_key)
-; Adjust the following value until "overall amps" at the end of performance is about -6 dB.
-i_level_correction = -80
-i_normalization = ampdb(-i_level_correction) / 2
-i_amplitude = ampdb(i_midi_velocity) * i_normalization
-k_gain = ampdb(gk_Bower_level)
-iattack = i(gk_overlap)
-idecay = i(gk_overlap)
-isustain = p3 - i(gk_overlap)
-p3 = iattack + isustain + idecay
-;xtratim iattack + idecay
-iamp = i_amplitude
-kenvelope transegr 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
-ihertz = cpsmidinn(i_midi_key)
-kamp = kenvelope
-kfreq = ihertz
-kpres = 0.25
-krat rspline 0.006,0.988,1,4
-kvibf = 4.5
-kvibamp = 0
-iminfreq = 30
-isine ftgenonce 0,0,65536,10,1
-aSig wgbow kamp,kfreq,gk_Bower_pressure,krat,kvibf,kvibamp,isine,iminfreq
-aleft, aright pan2 aSig / 7, k_space_left_to_right
-adamping linseg 0, 0.03, 1, p3 - 0.1, 1, 0.07, 0
-aleft = adamping * aleft * k_gain
-aright = adamping * aright * k_gain
-outleta "outleft", aleft
-outleta "outright", aright 
-prints "Bower          i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
-;printks "Bower          i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d l%9.4f r%9.4f\n", 1, p1, p2, p3, p4, p5, p7, active(p1), dbamp(rms(aleft)), dbamp(rms(aright))
 endin
 
 gk_Droner_partial1 init .1
@@ -934,7 +884,54 @@ outleta "outright", aright * kgain
 prints "Blower         i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
-giPianoteq vstinit "/home/mkg/pianoteq_linux_v630/Pianoteq\ 6/amd64/Pianoteq\ 6.so", 0
+gk_ZakianFlute_midi_dynamic_range init 20
+gk_ZakianFlute_level init 0
+gk_ZakianFlute_pan init .5
+gi_ZakianFLute_seed init .5
+instr ZakianFlute
+; Author: Lee Zakian
+; Adapted by: Michael Gogins
+i_instrument = p1
+i_time = p2
+i_duration = p3
+i_midi_key = p4
+i_midi_velocity = p5
+k_space_front_to_back = p6
+k_space_left_to_right = p7
+k_space_bottom_to_top = p8
+i_phase = p9
+i_overall_amps = 65
+i_normalization = ampdb(-i_overall_amps) / 2
+i_midi_dynamic_range = i(gk_ZakianFlute_midi_dynamic_range)
+i_midi_velocity = p5 * i_midi_dynamic_range / 127 + (63.5 - i_midi_dynamic_range / 2)
+i_amplitude = ampdb(i_midi_velocity) * i_normalization
+k_gain = ampdb(gk_ZakianFlute_level)
+iattack = .002
+isustain = p3
+irelease = .3
+p3 = iattack + isustain + irelease
+iHz = cpsmidinn(i_midi_key)
+kHz = k(iHz)
+aenvelope transeg 1.0, 20.0, -10.0, 0.05
+ip3 = (p3 < 3.0 ? p3 : 3.0)
+if2 ftgenonce 0, 0, 16, -2, 40, 40, 80, 160, 320, 640, 1280, 2560, 5120, 10240, 10240
+if26 ftgenonce 0, 0, 65536, -10, 2000, 489, 74, 219, 125, 9, 33, 5, 5
+if27 ftgenonce 0, 0, 65536, -10, 2729, 1926, 346, 662, 537, 110, 61, 29, 7
+if28 ftgenonce 0, 0, 65536, -10, 2558, 2012, 390, 361, 534, 139, 53, 22, 10, 13, 10
+if29 ftgenonce 0, 0, 65536, -10, 12318, 8844, 1841, 1636, 256, 150, 60, 46, 11
+if30 ftgenonce 0, 0, 65536, -10, 1229, 16, 34, 57, 32
+if31 ftgenonce 0, 0, 65536, -10, 163, 31, 1, 50, 31
+if32 ftgenonce 0, 0, 65536, -10, 4128, 883, 354, 79, 59, 23
+if33 ftgenonce 0, 0, 65536, -10, 1924, 930, 251, 50, 25, 14
+if34 ftgenonce 0, 0, 65536, -10, 94, 6, 22, 8
+if35 ftgenonce 0, 0, 65536, -10, 2661, 87, 33, 18
+if36 ftgenonce 0, 0, 65536, -10, 174, 12
+if37 ftgenonce 0, 0, 65536, -10, 314, 13
+iwtsin ftgenonce 0, 0, 65536, 10, 1
+prints "ZakianFlute    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
+endin
+
+giPianoteq vstinit "/home/mkg/pianoteq_linux_v630/Pianoteq\ 6/amd64/Pianoteq\ 6.so", 1
 
 instr PianoteqNote
 i_instrument = p1
@@ -955,6 +952,62 @@ i_amplitude = ampdb(i_midivelocity)
 ichannel = 0
 vstnote giPianoteq, ichannel, i_midikey, i_midivelocity, i_duration
 prints "PIanoteqNote   i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
+endin
+
+gk_Bower_midi_dynamic_range init 127
+gk_Bower_attack init .0125
+gk_Bower_release init .0125
+gk_Bower_level init 0.5
+gk_Bower_pressure init 0.25
+instr Bower
+if p3 == -1 goto indefinite
+  //prints "Non-indefinite.\n"
+  goto non_indefinite
+indefinite:
+  p3 = 1000000
+  //prints "Indefinite.\n"
+non_indefinite:
+i_instrument = p1
+i_time = p2
+i_duration = p3
+i_midi_key = p4
+i_midi_dynamic_range = i(gk_Bower_midi_dynamic_range)
+i_midi_velocity = p5 * i_midi_dynamic_range / 127 + (63.5 - i_midi_dynamic_range / 2)
+k_space_front_to_back = p6
+k_space_left_to_right = p7
+k_space_bottom_to_top = p8
+i_phase = p9
+i_frequency = cpsmidinn(i_midi_key)
+; Adjust the following value until "overall amps" at the end of performance is about -6 dB.
+i_level_correction = -80
+i_normalization = ampdb(-i_level_correction) / 2
+i_amplitude = ampdb(i_midi_velocity) * i_normalization
+k_gain = ampdb(gk_Bower_level)
+iattack = i(gk_overlap)
+idecay = i(gk_overlap)
+isustain = p3 - i(gk_overlap)
+p3 = iattack + isustain + idecay
+;xtratim iattack + idecay
+iamp = i_amplitude
+kenvelope transegr 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
+ihertz = cpsmidinn(i_midi_key)
+kamp = kenvelope
+kfreq = ihertz
+kpres = 0.25
+krat rspline 0.006,0.988,1,4
+kvibf = 4.5
+kvibamp = 0
+iminfreq = 30
+isine ftgenonce 0,0,65536,10,1
+aSig wgbow kamp,kfreq,gk_Bower_pressure,krat,kvibf,kvibamp,isine,iminfreq
+aleft, aright pan2 aSig / 7, k_space_left_to_right
+adamping linseg 0, 0.03, 1, p3 - 0.1, 1, 0.07, 0
+aleft = adamping * aleft * k_gain
+aright = adamping * aright * k_gain
+outleta "outleft", aleft
+outleta "outright", aright 
+prints "Bower          i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
+;printks "Bower          i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d l%9.4f r%9.4f\n", 1, p1, p2, p3, p4, p5, p7, active(p1), dbamp(rms(aleft)), dbamp(rms(aright))
 endin
 
 gk_PianoteqOut_level init .5
@@ -1077,6 +1130,8 @@ instr Controls
     gk_Sweeper_britehs chnget "gk_Sweeper_britehs" 
     gk_Sweeper_level chnget "gk_Sweeper_level" 
     
+    gk_ZakianFlute_level chnget "gk_ZakianFlute_level"
+
     gk_Reverb_feedback chnget "gk_Reverb_feedback" 
     gk_Reverb2_feedback chnget "gk_Reverb2_feedback" 
     gk_MasterOutput_level chnget "gk_MasterOutput_level" 

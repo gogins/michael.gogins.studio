@@ -106,7 +106,7 @@ var generate = function() {
         var event = lsys.score.data[i];
         event.time = event.time + 1;
     }
-    if (true) {
+    if (false) {
         // Also if keys overlap.
         for (var i = 0; i < lsys.score.data.length; i++) {
             var event = lsys.score.data[i];
@@ -167,10 +167,23 @@ var play = function() {
     csound.setOption('-f');
     csound.setOption('-o' + soundfile_name);
     //csound.setOption('-odac');
+    csound.setMetadata("artist", "Michael Gogins");
+    csound.setMetadata("copyright", "Copyright 2019 by Michael Gogins");
+    csound.setMetadata("performer", "Mike Gogins");
+    csound.setMetadata("title", "Poustinia Variation 2");
+    csound.setMetadata("album", "Silence");
+    csound.setMetadata("track", "1");
+    csound.setMetadata("tracknumber", "1");
+    csound.setMetadata("date", "2019");
+    csound.setMetadata("publisher", "Irreducible Productions ASCAP");
+    csound.setMetadata("comment", "Lindenmayer system in chord space.");
+    csound.setMetadata("license", "CC BY-NC-SA");
+    csound.setMetadata("genre", "Electroacoustic");
+    csound.setOutput("Poustinia-v4.wav", "wav", "float");
+    fs.writeFileSync("Poustinia-v4-generated.csd", csd);
     csound.compileCsdText(csd);
-    fs.writeFileSync("Poustinia-v2-generated.csd", csd);
     csound.start();
-    csound.perform();
+    csound.performAndPostProcess();
     updateScoreTime();
 }
 
