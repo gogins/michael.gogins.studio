@@ -49,31 +49,25 @@ var generate = function() {
   csound.message("generate()...\n");
   try {
     window.lsys = new ChordSpace.LSys();
-    lsys.axiom = "- [ b f f I I I I g ] g";
-    lsys.addRule('g',  'Ja b a3 c aa F F c2 T,5 a2 t,/,1.025 b2 K c2 g b2 t,*,1.025 F F F c g Jb a b g');
-    lsys.addRule('g',  'Jb b a3 c aa F F c2 T,5 a2 t,/,1.025 b2 K c2 g b2 t,*,1.025 F F F c g Ja a b g');
-    lsys.addRule('g',  'Ja b a3 c aa F F c2 a2 t,/,1.025 b2 K c2 g b2 t,*,1.025 Q,5 F F F c g Jb a b g'); 
-    lsys.addRule('g',  'Ja b a3 c aa F F c2 a2 t,/,1.025 b2 K c2 g b2 t,*,1.025 T,5 F F F c g Jb a b g');
+    lsys.axiom = "- [ g f f I I I I a ] g a";
     lsys.addRule('g',  'Ja b a3 c aa F F c2 a2 t,/,1.025 b2 K c2 g b2 t,*,1.025 T,5 F Jb F F c g a b g');
-    lsys.addRule('a',  'F b F a2 b a2 [ b3 F F F F [ c F F F F ] ] F F F Ja c2 a2 c F c F F F b2 Jb a2');
-    lsys.addRule('a',  'F b F a2 b a2 [ b3 F F F F [ c F F F F ] ] F F F Jb c2 a2 c F c F F F b2 Ja a2');
+    lsys.addRule('a',  'F b F a2 b a2 [ b3 F F f F [ c F F F F ] ] F F F Jb c2 a2 c F c F F F b2 Ja a2');
     lsys.addRule('aa', '[ b3 F F F c3 f F F F F ] F b F a2 b I I I F F [ c2 F F F F F F ] F c2 a2 c F c F F b2 a2');
     lsys.addRule('xaa', '[ b3 F F F c3 f F F F F ] F b F a2 b I I F F [ c2 F F F F F F ] F c2 a2 c F c F F b2 a2');
     lsys.addRule('xa2', 'I F b F b a3 i i b2 f F F f c2 a3 c F c2 F b2 a3 i i c');
     lsys.addRule('a3', 'F b2 b F a I v F F c F F F F F c2 aa V f c2 F F b2 a');
     lsys.addRule('xa3', 'F b2 b F a I v F F c F F F F F c2 aa i i V f c2 F F b2 a');
-    lsys.addRule('Ja', 'J,2,1');
-    lsys.addRule('Ja', 'J,2,0');
-    lsys.addRule('Jb', 'J,2,4');  
+     lsys.addRule('Ja', 'J,2,0');
+    //lsys.addRule('Jb', 'J,2,4');  
     lsys.addRule('Jb', 'J,2,2');  
     lsys.addRule('b',  '+ f f f f f - -');    
     lsys.addRule('c',  '- f f f f f +');
     lsys.addRule('b2', '+ f f f f -');    
-    lsys.addRule('c2', '- - f f f f +');
-    lsys.addRule('b3', '- f f f + +');    
+    lsys.addRule('c2', '- - f f f f + +');
+    lsys.addRule('b3', '- - f f f + +');    
     var chord = ChordSpace.chordForName('CM9');      
     var t = new ChordSpace.Turtle(4.5, Math.PI/2, chord, chord);
-    lsys.generate(5);
+    lsys.generate(4);
     lsys.write_score(t);
     csound.message("Finding size of score...\n");
     lsys.score.findScales();
@@ -160,14 +154,13 @@ var generate = function() {
 // 96 = dB, all colors
 // 256 = raw, out of range highlighted with red
 // 512 = raw, all colours    
-var play = function() {
+var render = function(soundfile, post_process) {
     var csd = document.getElementById('csd').value;
     var csound_score = lsys.score.toCsoundScore();
     csound_score = csound_score.concat("\n</CsScore>");
     csd = csd.replace("</CsScore>", csound_score);
     csound.message("Playing...");
     csound.setOption(sprintf('-m%d', 2 + 128 + 32));
-    //csound.setOption('-j3');
     csound.setOption('--nodisplays');
     csound.setOption('-R');
     csound.setOption('-W');
@@ -186,13 +179,33 @@ var play = function() {
     csound.setMetadata("comment", "Lindenmayer system in chord space.");
     csound.setMetadata("license", "CC BY-NC-SA");
     csound.setMetadata("genre", "Electroacoustic");
-    csound.setOutput("Poustinia-v4.wav", "wav", "float");
-    //csound.setOutput("dac", "wav", "float");
+    if (soundfile === true) {
+        csound.setOutput("Poustinia-v4.wav", "wav", "float");
+    } else {
+        csound.setOutput("dac", "wav", "float");
+    }
     fs.writeFileSync("Poustinia-v4-generated.csd", csd);
     csound.compileCsdText(csd);
+    csound.message("Rendering...");
     csound.start();
-    csound.performAndPostProcess();
+    if (post_process == true) {
+        csound.performAndPostProcess();
+    } else {
+        csound.perform();
+    }
     updateScoreTime();
+}
+
+var render_audio = function() {
+    render(false, false);
+}
+
+var render_soundfile = function() {
+    render(true, false);
+}
+
+var render_soundfile_and_postprocess = function() {
+    render(true, true);
 }
 
 var stop = function() {
@@ -250,7 +263,9 @@ var parameters = {
     gk_MasterOutput_level: .4,
     gk_overlap: 0.05,
     generate: window.generate,
-    play: window.play,
+    render_audio: window.render_audio,
+    render_soundfile: window.render_soundfile,
+    render_soundfile_and_postprocess: window.render_soundfile_and_postprocess,
     stop: window.stop,
 };
 
@@ -380,8 +395,10 @@ window.onload = function() {
     }
     gui.remember(parameters);
     gui.add(parameters, 'generate').name('Generate [Ctrl-G]');
-    gui.add(parameters, 'play').name('Play [Ctrl-P]');
-    gui.add(parameters, 'stop').name('Stop {Ctrl-S]');
+    gui.add(parameters, 'render_audio').name('Render audio [Ctrl-A]');
+    gui.add(parameters, 'render_soundfile').name('Render soundfile');
+    gui.add(parameters, 'render_soundfile_and_postprocess').name('Render/post [Ctrl-P]');
+    gui.add(parameters, 'stop').name('Stop [Ctrl-S]');
     var Master = gui.addFolder('Master');
     add_slider(Master, 'gk_overlap', 0, 20);
     add_slider(Master, 'gk_Reverb_feedback', 0, 1);
@@ -1268,7 +1285,7 @@ aleft inleta "inleft"
 aright inleta "inright"
 kgain = ampdb(gk_MasterOutput_level)
 outs aleft * kgain, aright * kgain
-fout "Poustinia-v4.wav", 16, aleft, aright
+; fout "Poustinia-v4.wav", 16, aleft, aright
 prints "MasterOutput   i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
