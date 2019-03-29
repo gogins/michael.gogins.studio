@@ -1827,26 +1827,40 @@ kmasterlevel = pow(10, gk_BformatDecoder_MasterLevel / 20)
 asignal[] init nchnls
 absignal[] init 16
 absignal[] inletv "inbformat"
-if irig == 0 then
+if irig == 0 goto irig_0
+goto irig_1
+irig_0:
  asignal bformdec1 1, absignal
-elseif irig == 1 then
+ goto irig_endif
+irig_1:
+if irig == 1 goto irig_1_1
+goto irig_2
+irig_1_1:
  asignal Bformat2DecodeBinaural, absignal, sr
  asignal[0] = asignal[0] * kmasterlevel
  asignal[1] = asignal[1] * kmasterlevel
-elseif irig == 2 then
+goto irig_endif
+if irig == 2 goto irig_2_1
+goto irig_3
+irig_2_1:
  asignal bformdec1 2, absignal
  asignal[0] = asignal[0] * kmasterlevel
  asignal[1] = asignal[1] * kmasterlevel
  asignal[2] = asignal[2] * kmasterlevel
  asignal[3] = asignal[3] * kmasterlevel
-elseif irig == 3 then
+ goto irig_endif
+irig_3:
+if irig == 3 goto irig_3_1
+goto irig_else
+irig_3_1:
  asignal bformdec1 3, absignal
  asignal[0] = asignal[0] * kmasterlevel
  asignal[1] = asignal[1] * kmasterlevel
  asignal[2] = asignal[2] * kmasterlevel
  asignal[3] = asignal[3] * kmasterlevel
  asignal[4] = asignal[4] * kmasterlevel
-else
+ goto irig_endif
+irig_else:
  asignal bformdec1 irig, absignal
  asignal[0] = asignal[0] * kmasterlevel
  asignal[1] = asignal[1] * kmasterlevel
@@ -1856,7 +1870,7 @@ else
  asignal[5] = asignal[5] * kmasterlevel
  asignal[6] = asignal[6] * kmasterlevel
  asignal[7] = asignal[7] * kmasterlevel
-endif
+irig_endif:
 out asignal
 endin
                                 
