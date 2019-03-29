@@ -1840,6 +1840,7 @@ irig_1_1:
  asignal[0] = asignal[0] * kmasterlevel
  asignal[1] = asignal[1] * kmasterlevel
 goto irig_endif
+irig_2:
 if irig == 2 goto irig_2_1
 goto irig_3
 irig_2_1:
