@@ -1333,10 +1333,12 @@ aboutput[13] = aboutput[13] + abreverberated[13]
 aboutput[14] = aboutput[14] + abreverberated[14]
 aboutput[15] = aboutput[15] + abreverberated[15]
 outletv "outbformat", aboutput
-if gk_Spatialize_Verbose != 0 then
+if gk_Spatialize_Verbose != 0 goto gk_Spatialize_Verbose_not_0
+goto gk_Spatialize_Verbose_0
+gk_Spatialize_Verbose_not_0:
 kelapsed timeinsts
 printks "SpatialReverb i %5.2f t %5.2f [%5.2f] d %5.2f c %9.2f in %5.2f A[0] %5.2f\n", 1.0, p1, p2, kelapsed, p3, gk_SpatialReverb_CutoffHz, downsamp(arevsig), downsamp(aboutput[0])
-endif
+gk_Spatialize_Verbose_0:
 endin
 
 gk_SpatialReverb_Gain init 0.2
@@ -1641,11 +1643,13 @@ aboutput[13] = aboutput[13] + abreverberated12[13]
 aboutput[14] = aboutput[14] + abreverberated12[14]
 aboutput[15] = aboutput[15] + abreverberated12[15]
 outletv "outbformat", aboutput
-if gk_Spatialize_Verbose != 0 then
+if gk_Spatialize_Verbose != 0 goto gk_Spatialize_Verbose_not_0
+goto gk_Spatialize_Verbose_0
+gk_Spatialize_Verbose_not_0:
 aoutput sum aboutput[0], aboutput[1], aboutput[2], aboutput[3], aboutput[4], aboutput[5], aboutput[6], aboutput[7], aboutput[8], aboutput[9], aboutput[10], aboutput[11], aboutput[12], aboutput[13], aboutput[14], aboutput[15]
 kelapsed timeinsts
 printks "SpatialReverb i %5.2f t %5.2f [%5.2f] d %5.2f c %9.2f in %5.2f A %5.2f\n", 1.0, p1, p2, kelapsed, p3, kcutoff, asignal, aoutput
-endif
+gk_Spatialize_Verbose_0:
 endin
 
 gk_Bformat2DecodeBinaural_krelcoef init 1
