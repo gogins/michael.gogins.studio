@@ -200,7 +200,24 @@ idbaheadroom                    init                    idbafs - iheadroom
 iampheadroom                    init                    ampdb(idbaheadroom)
                                 prints                  "Amplitude at headroom:        %9.4f\n", iampheadroom
                                 prints                  "Balance so the overall amps at the end of performance -6 dbfs.\n"
-                                
+   
+gk_BformatDecoder_SpeakerRig    init                    1
+gk_Spatialize_SpeakerRigRadius  init                    5.0
+gk_SpatialReverb_ReverbDecay    init                    0.96
+gk_SpatialReverb_CutoffHz       init                    sr
+gk_SpatialReverb_RandomDelayModulation init             4.0
+gk_LocalReverbByDistance_Wet    init                    0.5
+; This is a fraction of the speaker rig radius.
+gk_LocalReverbByDistance_FrontWall init                 0.9
+gk_LocalReverbByDistance_ReverbDecay init               0.6
+gk_LocalReverbByDistance_CutoffHz init                  20000
+gk_LocalReverbByDistance_RandomDelayModulation init     1.0
+
+connect                         "SpatialReverb",        "outbformat",       "BformatDecoder",        "inbformat"
+
+alwayson "SpatialReverb"
+alwayson "BformatDecoder"
+
 giFlatQ                         init                    sqrt(0.5)
 giseed				            init                    0.5
 
@@ -534,6 +551,10 @@ i_depth                         =                       p8
 i_height                        =                       p9
 i_pitchclassset                 =                       p10
 i_homogeneity                   =                       p11
+k_space_front_to_back           =                       4
+k_space_left_to_right           =                       3
+k_space_bottom_to_top           =                       1
+
 ihertz                          =                       cpsmidinn(i_midikey)
 iamp                            =                       ampdb(i_midivelocity) * 6
 idampingattack                  =                       .01
@@ -549,10 +570,18 @@ isinetable                      ftgenonce               0, 0, 65536, 10, 1, 0, .
 asignal                         poscil3                 1, ihertz, isinetable
 asignal                         chebyshevpoly           asignal, 0, gkChebyshevDroneCoefficient1, gkChebyshevDroneCoefficient2, gkChebyshevDroneCoefficient3, gkChebyshevDroneCoefficient4, gkChebyshevDroneCoefficient5, gkChebyshevDroneCoefficient6, gkChebyshevDroneCoefficient7, gkChebyshevDroneCoefficient8, gkChebyshevDroneCoefficient9, gkChebyshevDroneCoefficient10
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
-asignal                         =                       asignal * aenvelope
-aoutleft, aoutright             pan2                    asignal * adeclick, i_pan
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
+a_signal                         =                       asignal * aenvelope
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
