@@ -279,7 +279,7 @@ endin
 
 TODO
 
--- Upgrade demonstration piece with jspline spatial trajectories
+-- Upgrade demonstration piece with init rnd31(4, 0, 0); jspline spatial trajectories
    and algorithmically generated percussive notes.
 
 -- Plug in and test early reflections code.
@@ -300,8 +300,23 @@ prints gShelp
 ; Global parameters that can be re-defined in the orchestra header.
 
 gk_Spatialize_Verbose init 0
-gk_BformatDecoder_SpeakerRig init 5
-gk_Spatialize_SpeakerRigRadius init 5.0
+gk_BformatDecoder_SpeakerRig init 1
+gk_Spatialize_SpeakerRigRadius init 7.0
+
+; Picks a random point from the surface of a sphere of the given radius (i-rate).
+
+opcode random_point_from_sphere, kkk, i
+i_radius xin
+i_uniform_1 rnd 1
+i_uniform_2 rnd 1
+i_latitude = cosinv(2 * i_uniform_1 - 1) - $M_PI / 2
+i_longitude = 2 * $M_PI * i_uniform_2
+i_x = cos(i_latitude) * cos(i_longitude) * i_radius
+i_y = cos(i_latitude) * sin(i_longitude) * i_radius
+i_z = sin(i_latitude) * i_radius
+xout i_x, i_y, i_z
+print i_x, i_y, i_z
+endop
 
 opcode CartesianToPolar, kkk, kkk
 kx, ky, kz xin
@@ -1882,16 +1897,16 @@ out asignal
 endin
 
 gk_BformatDecoder_SpeakerRig    init                    1
-gk_Spatialize_SpeakerRigRadius  init                    5.0
-gk_SpatialReverb_ReverbDecay    init                    0.96
-gk_SpatialReverb_CutoffHz       init                    sr
-gk_SpatialReverb_RandomDelayModulation init             4.0
+gk_Spatialize_SpeakerRigRadius  init                    50.0
+gk_SpatialReverb_ReverbDecay    init                    0.92
+gk_SpatialReverb_CutoffHz       init                    sr * .7
+gk_SpatialReverb_RandomDelayModulation init             0.2
 gk_LocalReverbByDistance_Wet    init                    0.5
 ; This is a fraction of the speaker rig radius.
 gk_LocalReverbByDistance_FrontWall init                 0.9
-gk_LocalReverbByDistance_ReverbDecay init               0.6
-gk_LocalReverbByDistance_CutoffHz init                  20000
-gk_LocalReverbByDistance_RandomDelayModulation init     1.0
+gk_LocalReverbByDistance_ReverbDecay init               0.8
+gk_LocalReverbByDistance_CutoffHz init                  sr * .9
+gk_LocalReverbByDistance_RandomDelayModulation init     0.2
 
 connect                         "SpatialReverb",        "outbformat",       "BformatDecoder",        "inbformat"
 
@@ -2115,9 +2130,11 @@ aoutright                       =                       aampenv * aoy
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_left_to_right           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -2162,9 +2179,11 @@ aoutleft, aoutright             pan2                    asignal * iamplitude * a
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_left_to_right           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -2250,9 +2269,11 @@ aoutleft, aoutright             pan2                    asignal * iamplitude * a
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_left_to_right           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -2304,9 +2325,11 @@ adeclick                        linsegr                 0, idampingattack, 1, id
 
 a_signal                        =                       asignal * aenvelope
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_left_to_right           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -2384,9 +2407,11 @@ asignal        		            balance         	    a8, a1
 asignal                         =                       asignal * iamplitude
 a_signal                        =                       asignal
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_left_to_right           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -2453,9 +2478,11 @@ asignal2                        balance                 asignal1, asignal
 
 a_signal                        =                       asignal2 * adeclick
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_left_to_right           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -2528,9 +2555,11 @@ asignal                         =                       aenvelope * (acar + arvb
 
 a_signal                        =                       asignal * adeclick
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_left_to_right           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -2587,9 +2616,11 @@ asignal                         fmrhode                 iamplitude, ifrequency, 
 ;aoutleft, aoutright		        pan2			        asignal * adeclick, i_pan
 a_signal                        =                       asignal * adeclick
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_left_to_right           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -2678,9 +2709,11 @@ aoutleft                        =                       a17 * adeclick
 aoutright                       =                       a18 * adeclick
 a_signal                        =                       aoutleft + aoutright
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_left_to_right           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -2769,9 +2802,11 @@ aoutleft, aoutright             pan2                    a3 * adeclick, i_pan
 
 a_signal                        =                       aoutleft + aoutright
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_left_to_right           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -2827,9 +2862,11 @@ asignal                         =                       (aouta + aoutb) * kinden
 
 a_signal                        =                       asignal * iamplitude * adeclick
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_left_to_right           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -2885,9 +2922,13 @@ aoutleft, aoutright		        pan2			        asignal * iamplitude * adeclick, i_p
 
 a_signal                        =                       asignal * iamplitude * adeclick
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_left_to_right           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -2961,9 +3002,11 @@ asignal                         =                       asignal * iamplitude
 ;aoutleft, aoutright		        pan2			        asignal * adeclick, i_pan
 a_signal                        =                       asignal * adeclick
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_left_to_right           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -3036,9 +3079,11 @@ adeclick                        linsegr                 0.0, iattack, 1.0, isust
 ;aoutleft, aoutright             pan2                    iamplitude * asignal * adeclick, i_pan
 a_signal                        =                       iamplitude * asignal * adeclick
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_left_to_right           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -3119,9 +3164,11 @@ aoutright                       =                       aoutr * kamp * iamplitud
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_left_to_right           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -3177,9 +3224,11 @@ aoutleft, aoutright             pan2                    asignal * adeclick, i_pa
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_left_to_right           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -3234,9 +3283,11 @@ aoutleft, aoutright		        pan2			        asignal * iamplitude * adeclick, i_p
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_left_to_right           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -3289,9 +3340,11 @@ aoutleft, aoutright             pan2                    asignal * adeclick, ipan
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_left_to_right           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -3329,7 +3382,7 @@ iattack                         =                       0.01
 idecay                          =                       2.0
 isustain                        =                       i_duration
 irelease                        =                       0.125
-p3                              =                       iattack + iattack + idecay + irelease
+p3                              =                       iattack + isustain + idecay + irelease
 adeclick                        linsegr                 0.0, iattack, 1.0, idecay + isustain, 1.0, irelease, 0.0
 iindex                          =                       1
 icrossfade                      =                       3
@@ -3353,9 +3406,11 @@ aoutleft, aoutright             pan2                    asignal * adeclick, i_pa
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_left_to_right           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -3435,9 +3490,11 @@ ileftgain                       =                       sqrt(2.0) / 2.0 * (cos(i
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_left_to_right           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -3474,6 +3531,7 @@ iattack			                =			            0.002
 isustain		                =			            p3
 idecay				            =			            8
 irelease		                =			            0.05
+p3                              =                       iattack + isustain + irelease
 iHz                             =                       cpsmidinn(i_midikey)
 idB                             =                       i_midivelocity
 iamplitude                      =                       ampdb(idB) * 4.0
@@ -3497,9 +3555,11 @@ aoutleft, aoutright             pan2                    asignal * adeclick, i_pa
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_left_to_right           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -3573,9 +3633,11 @@ aoutleft, aoutright             pan2                    asignal * adeclick, i_pa
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_left_to_right           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -3623,9 +3685,11 @@ aoutleft, aoutright		        pan2			        asignal * adeclick, i_pan
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_left_to_right           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -3669,9 +3733,11 @@ aoutleft, aoutright             pan2                    asignal * iamplitude * a
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_left_to_right           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -3730,9 +3796,11 @@ aoutleft, aoutright             pan2                    asignal2 * iamplitude * 
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_left_to_right           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -3782,9 +3850,11 @@ aoutleft, aoutright             pan2                    asignal * iamplitude * a
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_left_to_right           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           init rnd31(4, 0, 0); jspline                 6, 1/5, 1/20
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -3829,9 +3899,11 @@ aoutleft, aoutright             pan2                    asignal * iamplitude * a
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init                    0
+k_space_left_to_right           init                    0
+k_space_bottom_to_top           init                    0
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -3879,9 +3951,11 @@ aoutleft, aoutright             pan2                    aphased * iamplitude * a
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init                    0
+k_space_left_to_right           init                    0
+k_space_bottom_to_top           init                    0
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -3928,9 +4002,11 @@ aoutleft, aoutright             pan2                    asignal * iamplitude * a
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init                    0
+k_space_left_to_right           init                    0
+k_space_bottom_to_top           init                    0
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -3977,9 +4053,11 @@ aoutleft, aoutright             pan2                    asignal * iamplitude * a
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init                    0
+k_space_left_to_right           init                    0
+k_space_bottom_to_top           init                    0
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -4032,9 +4110,11 @@ aoutleft, aoutright             pan2                    asignal * iamplitude * a
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init                    0
+k_space_left_to_right           init                    0
+k_space_bottom_to_top           init                    0
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -4081,9 +4161,11 @@ aoutleft, aoutright             pan2                    asignal * iamplitude * a
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init                    0
+k_space_left_to_right           init                    0
+k_space_bottom_to_top           init                    0
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -4130,9 +4212,11 @@ aoutleft, aoutright             pan2                    asignal * iamplitude * a
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init                    0
+k_space_left_to_right           init                    0
+k_space_bottom_to_top           init                    0
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -4185,9 +4269,11 @@ aoutleft, aoutright             pan2                    asignal * iamplitude * a
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init                    0
+k_space_left_to_right           init                    0
+k_space_bottom_to_top           init                    0
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -4240,9 +4326,11 @@ aoutleft, aoutright             pan2                    asignal * iamplitude * a
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init                    0
+k_space_left_to_right           init                    0
+k_space_bottom_to_top           init                    0
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -4295,9 +4383,11 @@ aoutleft, aoutright             pan2                    asignal * iamplitude * a
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init                    0
+k_space_left_to_right           init                    0
+k_space_bottom_to_top           init                    0
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -4344,9 +4434,11 @@ aoutleft, aoutright             pan2                    asignal * iamplitude * a
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init                    0
+k_space_left_to_right           init                    0
+k_space_bottom_to_top           init                    0
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -4410,9 +4502,11 @@ aoutleft, aoutright             pan2                    asignal * iamplitude * a
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init                    0
+k_space_left_to_right           init                    0
+k_space_bottom_to_top           init                    0
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -4459,9 +4553,11 @@ aoutleft, aoutright             pan2                    asignal * iamplitude * a
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init                    0
+k_space_left_to_right           init                    0
+k_space_bottom_to_top           init                    0
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -4508,9 +4604,11 @@ aoutleft, aoutright             pan2                    asignal * iamplitude * a
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init                    0
+k_space_left_to_right           init                    0
+k_space_bottom_to_top           init                    0
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -4557,9 +4655,11 @@ aoutleft, aoutright             pan2                    asignal * iamplitude * a
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init                    0
+k_space_left_to_right           init                    0
+k_space_bottom_to_top           init                    0
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -4612,9 +4712,11 @@ aoutleft, aoutright             pan2                    asignal * iamplitude * a
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init                    0
+k_space_left_to_right           init                    0
+k_space_bottom_to_top           init                    0
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -4661,9 +4763,11 @@ aoutleft, aoutright             pan2                    asignal * iamplitude * a
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init                    0
+k_space_left_to_right           init                    0
+k_space_bottom_to_top           init                    0
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -4718,9 +4822,11 @@ aoutleft, aoutright             pan2                    asignal * iamplitude * a
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init                    0
+k_space_left_to_right           init                    0
+k_space_bottom_to_top           init                    0
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -4797,9 +4903,11 @@ aoutleft, aoutright             pan2                    asignal * iamplitude * a
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init                    0
+k_space_left_to_right           init                    0
+k_space_bottom_to_top           init                    0
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -4851,9 +4959,11 @@ aoutleft, aoutright             pan2                    asignal * iamplitude * a
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init                    0
+k_space_left_to_right           init                    0
+k_space_bottom_to_top           init                    0
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -4900,9 +5010,11 @@ aoutleft, aoutright             pan2                    asignal * iamplitude * a
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init                    0
+k_space_left_to_right           init                    0
+k_space_bottom_to_top           init                    0
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -4949,9 +5061,11 @@ aoutleft, aoutright             pan2                    asignal * iamplitude * a
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init                    0
+k_space_left_to_right           init                    0
+k_space_bottom_to_top           init                    0
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -4998,9 +5112,11 @@ aoutleft, aoutright             pan2                    asignal * iamplitude * a
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init                    0
+k_space_left_to_right           init                    0
+k_space_bottom_to_top           init                    0
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -5047,9 +5163,11 @@ aoutleft, aoutright             pan2                    asignal * iamplitude * a
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init                    0
+k_space_left_to_right           init                    0
+k_space_bottom_to_top           init                    0
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -5096,9 +5214,11 @@ aoutleft, aoutright             pan2                    asignal * iamplitude * a
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init                    0
+k_space_left_to_right           init                    0
+k_space_bottom_to_top           init                    0
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -5158,9 +5278,11 @@ aoutleft, aoutright             pan2                    asignal * adeclick, i_pa
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init                    0
+k_space_left_to_right           init                    0
+k_space_bottom_to_top           init                    0
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -5236,9 +5358,11 @@ aoutleft, aoutright             pan2                    asignal * adeclick, i_pa
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init                    0
+k_space_left_to_right           init                    0
+k_space_bottom_to_top           init                    0
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -5296,9 +5420,11 @@ aoutleft, aoutright		        pan2	                asignal * iamplitude * adeclic
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init                    0
+k_space_left_to_right           init                    0
+k_space_bottom_to_top           init                    0
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -5509,9 +5635,11 @@ aoutleft, aoutright             pan2                    asignal * iamplitude, i_
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init                    0
+k_space_left_to_right           init                    0
+k_space_bottom_to_top           init                    0
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
@@ -5587,9 +5715,11 @@ aoutleft, aoutright		        pan2			        asignal * adeclick, .875;ipan
 
 a_signal                        =                       aoutright + aoutleft
 
-k_space_front_to_back           jspline                 6, 1/5, 1/20
-k_space_left_to_right           jspline                 6, 1/5, 1/20
-k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+k_space_front_to_back           init                    0
+k_space_left_to_right           init                    0
+k_space_bottom_to_top           init                    0
+
+k_space_from_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere 20
 
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
