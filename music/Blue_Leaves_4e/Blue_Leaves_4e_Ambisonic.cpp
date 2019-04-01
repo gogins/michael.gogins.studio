@@ -2907,9 +2907,25 @@ aoutl                           oscili                  1 * kadsr * a4, ao2 + cp
 aoutr                           oscili                  1 * kadsr * a4, ao2 + cpsmidinn(ioct - ishift), isine
 asignal                         =                       aoutl + aoutr
 asignal                         =                       asignal * iamplitude
-aoutleft, aoutright		        pan2			        asignal * adeclick, i_pan
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
+;aoutleft, aoutright		        pan2			        asignal * adeclick, i_pan
+a_signal                        =                       asignal * adeclick
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
@@ -2966,9 +2982,24 @@ isustain                        =                       p3
 irelease                        =                       0.06
 p3                              =                       isustain + iattack + irelease
 adeclick                        linsegr                 0.0, iattack, 1.0, isustain, 1.0, irelease, 0.0
-aoutleft, aoutright             pan2                    iamplitude * asignal * adeclick, i_pan
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
+;aoutleft, aoutright             pan2                    iamplitude * asignal * adeclick, i_pan
+a_signal                        =                       iamplitude * asignal * adeclick
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
@@ -3034,8 +3065,25 @@ aoutl                           grain                   ip4,  ifqc,  idens, 100,
 aoutr                           grain                   ip4,  ifqc,  idens, 100,   ifqc * ifrng, igdur, igrtab,   iwintab,  5
 aoutleft                        =                       aoutl * kamp * iamplitude
 aoutright                       =                       aoutr * kamp * iamplitude
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
@@ -3075,8 +3123,25 @@ kexp                            expseg                  1.0, iattack, 2.0, isust
 kenv                            =                       kexp - 1.0
 asignal                         =                       aout * kenv * kamp
 aoutleft, aoutright             pan2                    asignal * adeclick, i_pan
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
@@ -3115,8 +3180,25 @@ kenv                            =                       kexp - 1.0
 asignal                         =                       aout * kenv
 asignal                         dcblock                 asignal
 aoutleft, aoutright		        pan2			        asignal * iamplitude * adeclick, i_pan
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
@@ -3153,8 +3235,25 @@ aharp2                  	    balance                 apluck, aharp
 asignal			                =                       (apluck + aharp2) * iamplitude * aenvelope * gkHarpsichordGain
 adeclick                        linsegr                 0, iattack, 1, isustain, 1, irelease, 0
 aoutleft, aoutright             pan2                    asignal * adeclick, ipan
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
@@ -3200,8 +3299,25 @@ adecay                          transeg                 0.0, iattack, 4, 1.0, id
 asignal                         fmmetal                 0.1, ifrequency, iindex, icrossfade, ivibedepth, iviberate, ifn1, ifn2, ifn3, ifn4, ivibefn
 asignal                         =                       asignal * iamplitude
 aoutleft, aoutright             pan2                    asignal * adeclick, i_pan
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
@@ -3265,8 +3381,25 @@ itheta                          =                       iradians / 2.0
                                 ; Translate angle in [-1, 1] to left and right gain factors.
 irightgain                      =                       sqrt(2.0) / 2.0 * (cos(itheta) + sin(itheta))
 ileftgain                       =                       sqrt(2.0) / 2.0 * (cos(itheta) - sin(itheta))
-                                outleta                 "outleft",  aoutleft * ileftgain
-                                outleta                 "outright", aoutright * irightgain
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
@@ -3310,8 +3443,25 @@ asignal               		    =                       (aouta + aoutb) * aindenv
 adeclick                        linsegr                 0, iattack, 1, isustain, 1, irelease, 0
 asignal                         =                       asignal * iamplitude
 aoutleft, aoutright             pan2                    asignal * adeclick, i_pan
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
@@ -3369,8 +3519,25 @@ aleft                   	    poscil                  a4, ao2 + cpsoct(koct + ish
 aright                  	    poscil                  a4, ao2 + cpsoct(koct - ishift), isine
 asignal                         =                       (aleft + aright) * iamplitude
 aoutleft, aoutright             pan2                    asignal * adeclick, i_pan
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
@@ -3402,8 +3569,25 @@ asignal1                        pluck                   1, ifrequency, ifrequenc
 asignal2                        pluck                   1, ifrequency * 1.003, ifrequency, 0, 1
 asignal                         =                       (asignal1 + asignal2) * aenvelope
 aoutleft, aoutright		        pan2			        asignal * adeclick, i_pan
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
@@ -3431,12 +3615,29 @@ p3                              =                       isustain + iattack + ire
 asignal                         STKBeeThree             ifrequency, 1
 adeclick                        linsegr                 0.0, iattack, 1.0, isustain, 1.0, irelease, 0.0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
                                 
-                               instr                   PRCBeeThreeDelayed
+                                instr                   PRCBeeThreeDelayed
                                 //////////////////////////////////////////////////////
                                 // By Michael Gogins.
                                 //////////////////////////////////////////////////////
@@ -3475,8 +3676,25 @@ afdbk2                          =                       -0.7 * adly1 + 0.7 * adl
 asignal2                        =                       adly1 + adly2
 adeclick                        linsegr                 0.0, iattack, 1.0, isustain, 1.0, irelease, 0.0
 aoutleft, aoutright             pan2                    asignal2 * iamplitude * adeclick, i_pan
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
@@ -3510,9 +3728,25 @@ irelease                        =                       0.06
 p3                              =                       isustain + iattack + irelease
 adeclick                        linsegr                 0.0, iattack, 1.0, isustain, 1.0, irelease, 0.0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 endin
                                 
                                 instr                   STKBandedWG
@@ -3541,8 +3775,25 @@ irelease                        =                       0.06
 p3                              =                       isustain + iattack + irelease
 adeclick                        linsegr                 0.0, iattack, 1.0, isustain, 1.0, irelease, 0.0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
                                 
@@ -3574,8 +3825,25 @@ iduration                       =                       idampingattack + idampin
 p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    aphased * iamplitude * adeclick, i_pan
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
 
@@ -3606,8 +3874,25 @@ iduration                       =                       idampingattack + idampin
 p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
 
@@ -3638,8 +3923,25 @@ iduration                       =                       idampingattack + idampin
 p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
 
@@ -3676,8 +3978,25 @@ iduration                       =                       idampingattack + idampin
 p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
 
@@ -3708,8 +4027,25 @@ iduration                       =                       idampingattack + idampin
 p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
 
@@ -3740,8 +4076,25 @@ iduration                       =                       idampingattack + idampin
 p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
 
@@ -3778,8 +4131,25 @@ iduration                       =                       idampingattack + idampin
 p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
 
@@ -3816,8 +4186,25 @@ iduration                       =                       idampingattack + idampin
 p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
 
@@ -3854,8 +4241,25 @@ iduration                       =                       idampingattack + idampin
 p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
 
@@ -3886,8 +4290,25 @@ iduration                       =                       idampingattack + idampin
 p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
                                 
@@ -3935,12 +4356,29 @@ iduration                       =                       idampingattack + idampin
 p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
                                 
-                                 instr                   STKMoog
+                                instr                   STKMoog
                                 //////////////////////////////////////////////
                                 // Original by Perry R. Cook.
                                 // Adapted by Michael Gogins.
@@ -3967,8 +4405,25 @@ iduration                       =                       idampingattack + idampin
 p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
                                 
@@ -3999,8 +4454,25 @@ iduration                       =                       idampingattack + idampin
 p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
                                 
@@ -4031,8 +4503,25 @@ iduration                       =                       idampingattack + idampin
 p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
                                 
@@ -4069,8 +4558,25 @@ iduration                       =                       idampingattack + idampin
 p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
                                 
@@ -4101,8 +4607,25 @@ iduration                       =                       idampingattack + idampin
 p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
                                 
@@ -4141,8 +4664,25 @@ iduration                       =                       idampingattack + idampin
 p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
 
@@ -4203,8 +4743,25 @@ iduration                       =                       idampingattack + idampin
 p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
 
@@ -4240,8 +4797,25 @@ iduration                       =                       idampingattack + idampin
 p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
 
@@ -4272,8 +4846,25 @@ iduration                       =                       idampingattack + idampin
 p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
 
@@ -4304,8 +4895,25 @@ iduration                       =                       idampingattack + idampin
 p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
 
@@ -4336,8 +4944,25 @@ iduration                       =                       idampingattack + idampin
 p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
 
@@ -4368,8 +4993,25 @@ iduration                       =                       idampingattack + idampin
 p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
 
@@ -4400,8 +5042,25 @@ iduration                       =                       idampingattack + idampin
 p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
 
@@ -4445,8 +5104,25 @@ irelease                        =                       0.06
 p3                              =                       isustain + iattack + irelease
 adeclick                        linsegr                 0.0, iattack, 1.0, isustain, 1.0, irelease, 0.0
 aoutleft, aoutright             pan2                    asignal * adeclick, i_pan
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
@@ -4506,8 +5182,25 @@ a6th                            oscili                  0, 5.9932 * ifqc,  iwhee
 a8th                            oscili                  4, 8      * ifqc,  iwheel4, iphase / (ikey + 36)
 asignal                         =                       iamplitude * (asubfund + asub3rd + afund + a2nd + a3rd + a4th + a5th + a6th + a8th)
 aoutleft, aoutright             pan2                    asignal * adeclick, i_pan
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
@@ -4549,8 +5242,25 @@ ifn4                            =                       isine
 ivibefn                         =                       icosine
 asignal                         fmbell                  1.0, ifrequency, iindex, icrossfade, ivibedepth, iviberate, ifn1, ifn2, ifn3, ifn4, ivibefn
 aoutleft, aoutright		        pan2	                asignal * iamplitude * adeclick, i_pan
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
@@ -4745,8 +5455,25 @@ abkdout	                        filter2                 abkdout, 3, 0, ia0, ia1,
 aresbod                         filter2                 (afwdout + abkdout), 5, 4, 0.000000000005398681501844749, .00000000000001421085471520200, -.00000000001076383426834582, -00000000000001110223024625157, .000000000005392353230604385, -3.990098622573566, 5.974971737738533, -3.979630684599723, .9947612723736902
 asignal                         =                       (1500 * (afwav + abkwav + aresbod * .000000000000000000003)) ; * adeclick
 aoutleft, aoutright             pan2                    asignal * iamplitude, i_pan
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
                                 
@@ -4806,8 +5533,25 @@ asignal                         =                       asig * (iamp / inorm) * 
 adeclick                        linsegr                 0, iattack, 1, isustain, 1, irelease, 0
 asignal                         =                       asignal
 aoutleft, aoutright		        pan2			        asignal * adeclick, .875;ipan
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
+
+a_signal                        =                       aoutright + aoutleft
+
+k_space_front_to_back           jspline                 6, 1/5, 1/20
+k_space_left_to_right           jspline                 6, 1/5, 1/20
+k_space_bottom_to_top           jspline                 6, 1/5, 1/20
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+
                                 prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
