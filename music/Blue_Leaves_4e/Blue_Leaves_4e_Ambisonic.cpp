@@ -74,7 +74,7 @@ int main(int argc, const char **argv)
     model.setAlbum("Silence");
     model.setArtist("Michael Gogins");
     model.setAuthor("Michael Gogins");
-    model.setCopyright("\"(C) 2012 by Michael Gogins\"");
+    model.setCopyright("(C) 2012, 2019 by Michael Gogins");
 
     std::vector<std::function<csound::Event(const csound::Event &, int, csound::Score &, csound::VoiceleadingNode &)>> generators;
 
@@ -295,7 +295,7 @@ TODO
 
 }}
 
-prints gShelp
+; prints gShelp
 
 ; Global parameters that can be re-defined in the orchestra header.
 
@@ -1928,10 +1928,6 @@ gkReverberationWet          	init                    0.15
 
 gkMasterLevel                   chnexport               "gkMasterLevel", 1
 gkMasterLevel                   init                    1.5
-
-;                               connect                 "Droner",               "outbformat",   "BformatDecoder",       "inbformat"
-;                               connect                 "Droner",               "out",          "SpatialReverb",        "in"
-
 
                                 connect                 "BanchoffKleinBottle",  "outbformat",   "BformatDecoder",       "inbformat"
                                 connect                 "BanchoffKleinBottle",  "out",          "SpatialReverb",        "in"
@@ -5548,7 +5544,7 @@ idepth                          =                       p8
 iheight                         =                       p9
 ipcs                            =                       p10
 ihomogeneity                    =                       p11
-kgain			    	=                       1.25
+kgain			    	        =                       1.25
 iHz                             =                       cpsmidinn(ikey)
 kHz                             =                       k(iHz)
 iattack                         =                       (440.0 / iHz) * 0.01
