@@ -213,11 +213,13 @@ i_longitude = 2 * $M_PI * i_uniform_2
 i_x = cos(i_latitude) * cos(i_longitude) * i_radius
 i_y = cos(i_latitude) * sin(i_longitude) * i_radius
 i_z = sin(i_latitude) * i_radius
-prints "random pan: %9.4f depth: %9.4f height: %9.4f\n", i_y, i_x, i_z
+;prints "random pan: %9.4f depth: %9.4f height: %9.4f\n", i_y, i_x, i_z
 xout i_x, i_y, i_z
 endop
 
-#include "Spatialize1.inc"
+; TODO: Paste code inline here.
+
+#include "silencio/patches/Spatialize1.inc"
 
 gk_BformatDecoder_SpeakerRig    init                    1
 gk_Spatialize_SpeakerRigRadius  init                    5.0
@@ -606,7 +608,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "BanchoffKleinBottle   %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
 
                                 instr                   BandedWG
@@ -653,7 +655,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "BandedWG              %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
                         
                                 instr                   BassModel
@@ -742,7 +744,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "BassModel             %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
 
                                 instr                   ChebyshevDrone
@@ -797,7 +799,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "ChebyshevDrone        %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   ChebyshevMelody
@@ -878,7 +880,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "ChebyshevMelody       %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   DelayedPluckedString
@@ -930,7 +932,7 @@ asignal2                        balance                 asignal1, asignal
 aoutleft, aoutright             pan2                    asignal2 * adeclick, i_pan
                                 outleta                 "outleft",  aoutleft
                                 outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "DelayedPluckedString  %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   EnhancedFMBell
@@ -1006,7 +1008,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "EnhancedFMBell        %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   EnhancedFMBell
@@ -1082,7 +1084,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "EnhancedFMBell2       %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   FenderRhodesModel
@@ -1142,7 +1144,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "FenderRhodesModel     %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   FilteredSines
@@ -1234,7 +1236,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "FilteredSines         %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   Flute
@@ -1326,7 +1328,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "Flute                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   FMModerateIndex
@@ -1385,7 +1387,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "FMModerateIndex       %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   FMModerateIndex2
@@ -1444,7 +1446,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "FMModerateIndex2      %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   FMModulatedChorusing
@@ -1521,7 +1523,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "FMModulatedChorusing  %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   FMWaterBell
@@ -1597,7 +1599,7 @@ a_out_left, a_out_right pan2 a_signal, i_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "FMWaterBell           %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   Granular
@@ -1682,7 +1684,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "Granular              %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   Guitar
@@ -1741,7 +1743,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "Guitar                %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   Guitar2
@@ -1799,7 +1801,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "Guitar2               %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr 			        Harpsichord
@@ -1855,7 +1857,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "Harpsichord           %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   HeavyMetalModel
@@ -1920,7 +1922,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "HeavyMetalModel %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   Hypocycloid
@@ -2003,7 +2005,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "Hypocycloid           %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr			        ModerateFM
@@ -2066,7 +2068,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "ModerateFM            %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr 			        ModulatedFM
@@ -2143,7 +2145,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "ModulatedFM           %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   PlainPluckedString
@@ -2194,7 +2196,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "PlainPluckedString %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   PRCBeeThree
@@ -2241,7 +2243,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "PRCBeeThree           %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
                                 
                                 instr                   PRCBeeThreeDelayed
@@ -2303,7 +2305,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "PRCBeeThreeDelayed    %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   PRCBowed
@@ -2356,7 +2358,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "PRCBowed              %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
                                 
                                 instr                   STKBandedWG
@@ -2405,7 +2407,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "STKBandedWG           %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
                                 
                                 instr                   STKBeeThree
@@ -2456,7 +2458,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "STKBeeThree           %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
 
                                 instr                   STKBlowBotl
@@ -2506,7 +2508,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "STKBlowBotle %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
 
                                 instr                   STKBlowHole
@@ -2514,7 +2516,6 @@ outleta "outright", a_out_right
                                 // Original by Perry R. Cook.
                                 // Adapted by Michael Gogins.
                                 //////////////////////////////////////////////
-
 i_instrument                    =                       p1
 i_time                          =                       p2
 i_duration                      =                       p3
@@ -2556,7 +2557,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "STKBlowHole           %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
 
                                 instr                   STKBowed
@@ -2612,7 +2613,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "STKBowed              %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
 
                                 instr                   STKClarinet
@@ -2662,7 +2663,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "STKClarinet           %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
 
                                 instr                   STKDrummer
@@ -2712,7 +2713,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "STKDrummer            %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
 
                                 instr                   STKFlute
@@ -2768,7 +2769,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "STKFlute              %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
 
                                 instr                   STKFMVoices
@@ -2824,7 +2825,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "STKFMVoices           %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
 
                                 instr                   STKHvyMetl
@@ -2880,7 +2881,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "STKHvyMetl %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
 
                                 instr                   STKMandolin
@@ -2930,7 +2931,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "STKMandolin           %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
                                 
                                 instr                   STKModalBar
@@ -2997,7 +2998,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "STKModalBar %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
                                 
                                 instr                   STKMoog
@@ -3047,7 +3048,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "STKMoog               %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
                                 
                                 instr                   STKPercFlut
@@ -3097,7 +3098,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "STKPercFlut           %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
                                 
                                 instr                   STKPlucked
@@ -3147,7 +3148,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "STKPlucked            %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
                                 
                                 instr                   STKResonate
@@ -3203,7 +3204,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "STKResonate           %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
                                 
                                 instr                   STKRhodey
@@ -3253,7 +3254,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "STKRhodey             %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
                                 
                                 instr                   STKSaxofony
@@ -3311,7 +3312,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "STKSaxophony          %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
 
                                 instr                   STKShakers
@@ -3391,7 +3392,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "STKShakers            %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
 
                                 instr                   STKSimple
@@ -3446,7 +3447,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "STKSimple             %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
 
                                 instr                   STKSitar
@@ -3496,7 +3497,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "STKSitar              %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
 
                                 instr                   STKTubeBell
@@ -3546,7 +3547,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "STKTubeBell           %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
 
                                 instr                   STKVoicForm
@@ -3596,7 +3597,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "STKVoicForm           %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
 
                                 instr                   STKWhistle
@@ -3646,7 +3647,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "STKWhistle            %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
 
                                 instr                   STKWurley
@@ -3696,7 +3697,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "STKWurley             %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin                                
 
                                 instr                   StringPad
@@ -3759,7 +3760,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "StringPad             %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   ToneWheelOrgan
@@ -3838,7 +3839,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "ToneWheelOrgan        %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   TubularBellModel
@@ -3899,7 +3900,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "TubularBellModel      %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   WaveguideGuitar
@@ -4113,7 +4114,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "WaveguideGuitar       %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
                                 
                                 instr                   Xing
@@ -4167,7 +4168,7 @@ awt2                            poscil                  amp2, 2.7 * kfreq, isine
 awt3                            poscil                  amp3, 4.95 * kfreq, isine
 asig                            =                       awt1 + awt2 + awt3
 arel                            linenr                  1,0, iduration, .06
-; asignal                         =                       asig * arel * (iamp / inorm) * iamplitude * kgain
+; asignal                       =                       asig * arel * (iamp / inorm) * iamplitude * kgain
 asignal                         =                       asig * (iamp / inorm) * iamplitude * kgain
 adeclick                        linsegr                 0, iattack, 1, isustain, 1, irelease, 0
 asignal                         =                       asignal
@@ -4192,7 +4193,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "Xing                  %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr			        ZakianFlute
@@ -4236,7 +4237,7 @@ p3                              =                       iattack + isustain + ire
 iHz                             =                       ifrequency
 kHz                             =                       k(iHz)
 idB                             =                       i_midivelocity
-adeclick77                        linsegr                 0, iattack, 1, isustain, 1, irelease, 0
+adeclick77                      linsegr                 0, iattack, 1, isustain, 1, irelease, 0
 ip3                     	    =                       (p3 < 3.0 ? p3 : 3.0)
 ; parameters
 ; p4    overall amplitude scaling factor
@@ -4433,7 +4434,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                prints                  "ZakianFlute           %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 //////////////////////////////////////////////
@@ -4486,6 +4487,9 @@ aoutright                       =                       gkMasterLevel * ainright
     model.arrange(10, 11+3,  3.00);
     model.arrange(11, 14+3,  5.00); // Was 5.
     model.arrange(12,  4+3,  5.00);
+    auto csound_command = model.getCsoundCommand();
+    csound_command.append(" -+msg_color=0");
+    model.setCsoundCommand(csound_command);
     model.processArgv(argc, argv);
 }
 
