@@ -233,6 +233,8 @@ gk_LocalReverbByDistance_ReverbDecay init               0.8
 gk_LocalReverbByDistance_CutoffHz init                  sr * .9
 gk_LocalReverbByDistance_RandomDelayModulation init     0.2
 
+gi_PanningExpansion             init                    2
+
 #ifdef USE_SPATIALIZATION
 
 connect                         "SpatialReverb",        "outbformat",       "BformatDecoder",        "inbformat"
@@ -782,12 +784,12 @@ aoutleft, aoutright             pan2                    asignal * adeclick, i_pa
 
 a_signal                        =                       aoutleft + aoutright
 
-i_space_front_to_back           init                    rnd31(1,0,0)
-i_space_left_to_right           init                    rnd31(1,0,0)
-i_space_bottom_to_top           init                    rnd31(1,0,0)
+i_space_front_to_back           init                    gi_PanningExpansion * -5
+i_space_left_to_right           init                    gi_PanningExpansion * 2
+i_space_bottom_to_top           init                    gi_PanningExpansion * 0
 
 #ifdef USE_SPATIALIZATION
-i_space_front_to_back, i_space_left_to_right, i_space_bottom_to_top random_point_from_sphere gi_radius
+;i_space_front_to_back, i_space_left_to_right, i_space_bottom_to_top random_point_from_sphere gi_radius
 a_spatial_reverb_send init 0
 a_bsignal[] init 16
 a_bsignal, a_spatial_reverb_send Spatialize a_signal, i_space_front_to_back, i_space_left_to_right, i_space_bottom_to_top
@@ -863,12 +865,12 @@ asignal        		            balance         	    a8, a1
 asignal                         =                       asignal * iamplitude
 a_signal                        =                       asignal
 
-i_space_front_to_back           init                    rnd31(1,0,0)
-i_space_left_to_right           init                    rnd31(1,0,0)
-i_space_bottom_to_top           init                    rnd31(1,0,0)
+i_space_front_to_back           init                    gi_PanningExpansion * -5
+i_space_left_to_right           init                    gi_PanningExpansion * -3
+i_space_bottom_to_top           init                    gi_PanningExpansion * 2
 
 #ifdef USE_SPATIALIZATION
-i_space_front_to_back, i_space_left_to_right, i_space_bottom_to_top random_point_from_sphere gi_radius
+;i_space_front_to_back, i_space_left_to_right, i_space_bottom_to_top random_point_from_sphere gi_radius
 a_spatial_reverb_send init 0
 a_bsignal[] init 16
 a_bsignal, a_spatial_reverb_send Spatialize a_signal, i_space_front_to_back, i_space_left_to_right, i_space_bottom_to_top
@@ -1219,12 +1221,12 @@ aoutleft                        =                       a17 * adeclick
 aoutright                       =                       a18 * adeclick
 a_signal                        =                       aoutleft + aoutright
 
-i_space_front_to_back           init                    rnd31(1,0,0)
-i_space_left_to_right           init                    rnd31(1,0,0)
-i_space_bottom_to_top           init                    rnd31(1,0,0)
+i_space_front_to_back           init                    gi_PanningExpansion * -5
+i_space_left_to_right           init                    gi_PanningExpansion * -1
+i_space_bottom_to_top           init                    gi_PanningExpansion * 0
 
 #ifdef USE_SPATIALIZATION
-i_space_front_to_back, i_space_left_to_right, i_space_bottom_to_top random_point_from_sphere gi_radius
+;i_space_front_to_back, i_space_left_to_right, i_space_bottom_to_top random_point_from_sphere gi_radius
 a_spatial_reverb_send init 0
 a_bsignal[] init 16
 a_bsignal, a_spatial_reverb_send Spatialize a_signal, i_space_front_to_back, i_space_left_to_right, i_space_bottom_to_top
@@ -1370,12 +1372,12 @@ asignal                         =                       (aouta + aoutb) * kinden
 
 a_signal                        =                       asignal * iamplitude * adeclick
 
-i_space_front_to_back           init                    rnd31(1,0,0)
-i_space_left_to_right           init                    rnd31(1,0,0)
-i_space_bottom_to_top           init                    rnd31(1,0,0)
+i_space_front_to_back           init                    gi_PanningExpansion * -5
+i_space_left_to_right           init                    gi_PanningExpansion * 3
+i_space_bottom_to_top           init                    gi_PanningExpansion * 0
 
 #ifdef USE_SPATIALIZATION
-i_space_front_to_back, i_space_left_to_right, i_space_bottom_to_top random_point_from_sphere gi_radius
+;i_space_front_to_back, i_space_left_to_right, i_space_bottom_to_top random_point_from_sphere gi_radius
 a_spatial_reverb_send init 0
 a_bsignal[] init 16
 a_bsignal, a_spatial_reverb_send Spatialize a_signal, i_space_front_to_back, i_space_left_to_right, i_space_bottom_to_top
@@ -1454,7 +1456,6 @@ outleta "outright", a_out_right
                                 // Original by Thomas Kung.
                                 // Adapted by Michael Gogins.
                                 //////////////////////////////////////////////
-
 i_instrument                    =                       p1
 i_time                          =                       p2
 i_duration                      =                       p3
@@ -1506,12 +1507,12 @@ asignal                         =                       asignal * iamplitude
 ;aoutleft, aoutright		        pan2			        asignal * adeclick, i_pan
 a_signal                        =                       asignal * adeclick
 
-i_space_front_to_back           init                    rnd31(1,0,0)
-i_space_left_to_right           init                    rnd31(1,0,0)
-i_space_bottom_to_top           init                    rnd31(1,0,0)
+i_space_front_to_back           init                    gi_PanningExpansion * -5
+i_space_left_to_right           init                    gi_PanningExpansion * -2
+i_space_bottom_to_top           init                    gi_PanningExpansion * 2
 
 #ifdef USE_SPATIALIZATION
-i_space_front_to_back, i_space_left_to_right, i_space_bottom_to_top random_point_from_sphere gi_radius
+;i_space_front_to_back, i_space_left_to_right, i_space_bottom_to_top random_point_from_sphere gi_radius
 a_spatial_reverb_send init 0
 a_bsignal[] init 16
 a_bsignal, a_spatial_reverb_send Spatialize a_signal, i_space_front_to_back, i_space_left_to_right, i_space_bottom_to_top
@@ -1583,12 +1584,12 @@ aoutleft, aoutright             pan2                    iamplitude * asignal * a
 
 a_signal                        =                       aoutleft + aoutright
 
-i_space_front_to_back           init                    rnd31(1,0,0)
-i_space_left_to_right           init                    rnd31(1,0,0)
-i_space_bottom_to_top           init                    rnd31(1,0,0)
+i_space_front_to_back           init                    gi_PanningExpansion * -5
+i_space_left_to_right           init                    gi_PanningExpansion * 4
+i_space_bottom_to_top           init                    gi_PanningExpansion * -1
 
 #ifdef USE_SPATIALIZATION
-i_space_front_to_back, i_space_left_to_right, i_space_bottom_to_top random_point_from_sphere gi_radius
+;i_space_front_to_back, i_space_left_to_right, i_space_bottom_to_top random_point_from_sphere gi_radius
 a_spatial_reverb_send init 0
 a_bsignal[] init 16
 a_bsignal, a_spatial_reverb_send Spatialize a_signal, i_space_front_to_back, i_space_left_to_right, i_space_bottom_to_top
@@ -1667,12 +1668,12 @@ aoutright                       =                       aoutr * kamp * iamplitud
 
 a_signal                        =                       aoutright + aoutleft
 
-i_space_front_to_back           init                    rnd31(1,0,0)
-i_space_left_to_right           init                    rnd31(1,0,0)
-i_space_bottom_to_top           init                    rnd31(1,0,0)
+i_space_front_to_back           init                    gi_PanningExpansion * -5
+i_space_left_to_right           init                    gi_PanningExpansion * 0
+i_space_bottom_to_top           init                    gi_PanningExpansion * 3
 
 #ifdef USE_SPATIALIZATION
-i_space_front_to_back, i_space_left_to_right, i_space_bottom_to_top random_point_from_sphere gi_radius
+;i_space_front_to_back, i_space_left_to_right, i_space_bottom_to_top random_point_from_sphere gi_radius
 a_spatial_reverb_send init 0
 a_bsignal[] init 16
 a_bsignal, a_spatial_reverb_send Spatialize a_signal, i_space_front_to_back, i_space_left_to_right, i_space_bottom_to_top
@@ -1726,12 +1727,12 @@ aoutleft, aoutright             pan2                    asignal * adeclick, i_pa
 
 a_signal                        =                       aoutright + aoutleft
 
-i_space_front_to_back           init                    rnd31(1,0,0)
-i_space_left_to_right           init                    rnd31(1,0,0)
-i_space_bottom_to_top           init                    rnd31(1,0,0)
+i_space_front_to_back           init                    gi_PanningExpansion * -5
+i_space_left_to_right           init                    gi_PanningExpansion * -4
+i_space_bottom_to_top           init                    gi_PanningExpansion * -1
 
 #ifdef USE_SPATIALIZATION
-i_space_front_to_back, i_space_left_to_right, i_space_bottom_to_top random_point_from_sphere gi_radius
+;i_space_front_to_back, i_space_left_to_right, i_space_bottom_to_top random_point_from_sphere gi_radius
 a_spatial_reverb_send init 0
 a_bsignal[] init 16
 a_bsignal, a_spatial_reverb_send Spatialize a_signal, i_space_front_to_back, i_space_left_to_right, i_space_bottom_to_top
@@ -4417,12 +4418,12 @@ aoutleft, aoutright             pan2                    asignal * adeclick, i_pa
 
 a_signal                        =                       aoutright + aoutleft
 
-i_space_front_to_back           init                    rnd31(1,0,0)
-i_space_left_to_right           init                    rnd31(1,0,0)
-i_space_bottom_to_top           init                    rnd31(1,0,0)
+i_space_front_to_back           init                    gi_PanningExpansion * -5
+i_space_left_to_right           init                    gi_PanningExpansion * 1
+i_space_bottom_to_top           init                    gi_PanningExpansion * 0
 
 #ifdef USE_SPATIALIZATION
-i_space_front_to_back, i_space_left_to_right, i_space_bottom_to_top random_point_from_sphere gi_radius
+;i_space_front_to_back, i_space_left_to_right, i_space_bottom_to_top random_point_from_sphere gi_radius
 a_spatial_reverb_send init 0
 a_bsignal[] init 16
 a_bsignal, a_spatial_reverb_send Spatialize a_signal, i_space_front_to_back, i_space_left_to_right, i_space_bottom_to_top
@@ -4487,9 +4488,9 @@ aoutright                       =                       gkMasterLevel * ainright
     model.arrange(10, 11+3,  3.00);
     model.arrange(11, 14+3,  5.00); // Was 5.
     model.arrange(12,  4+3,  5.00);
-    auto csound_command = model.getCsoundCommand();
-    csound_command.append(" -+msg_color=0");
-    model.setCsoundCommand(csound_command);
+    //auto csound_command = model.getCsoundCommand();
+    //csound_command.append(" -+msg_color=0");
+    //model.setCsoundCommand(csound_command);
     model.processArgv(argc, argv);
 }
 
