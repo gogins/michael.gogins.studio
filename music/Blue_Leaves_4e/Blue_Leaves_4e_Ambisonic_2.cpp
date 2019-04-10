@@ -185,9 +185,21 @@ int main(int argc, const char **argv)
     model.setCsoundOrchestra(R"(
     
 #define USE_SPATIALIZATION #1#
+    
+; Enable one or more at a time for debugging, all for mastering.
+
+#define ENABLE_GUITAR #1#
+;#define ENABLE_ZAKIANFLUTE #1#
+;#define ENABLE_CHEBYSHEVDRONE #1#
+;#define ENABLE_CHEBYSHEVMELODY #1#
+;#define ENABLE_FILTEREDSINES #1#
+;#define ENABLE_FMMODERATEINDEX #1#
+;#define ENABLE_FMMODULATEDCHORUSING #1#
+;#define ENABLE_FMWATERBELL #1#
+;#define ENABLE_GRANULAR #1#
 
 sr                              =                       96000
-ksmps                           =                       100
+ksmps                           =                       1
 nchnls                          =                       2
 iampdbfs                        init                    32768
                                 prints                  "Default amplitude at 0 dBFS:  %9.4f\n", iampdbfs
@@ -222,7 +234,7 @@ endop
 #include "silencio/patches/Spatialize1.inc"
 
 gk_BformatDecoder_SpeakerRig    init                    1
-gk_Spatialize_SpeakerRigRadius  init                    5.0
+gk_Spatialize_SpeakerRigRadius  init                   15.0
 gk_SpatialReverb_ReverbDecay    init                    0.85
 gk_SpatialReverb_CutoffHz       init                    sr * .7
 gk_SpatialReverb_RandomDelayModulation init             0.2
@@ -788,6 +800,7 @@ i_space_front_to_back           init                    gi_PanningExpansion * -5
 i_space_left_to_right           init                    gi_PanningExpansion * 2
 i_space_bottom_to_top           init                    gi_PanningExpansion * 0
 
+#ifdef ENABLE_CHEBYSHEVDRONE
 #ifdef USE_SPATIALIZATION
 ;i_space_front_to_back, i_space_left_to_right, i_space_bottom_to_top random_point_from_sphere gi_radius
 a_spatial_reverb_send init 0
@@ -800,9 +813,9 @@ a_out_left, a_out_right pan2 a_signal, i_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
-
                                 prints                  "ChebyshevDrone        %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-                                endin
+#endif
+endin
 
                                 instr                   ChebyshevMelody
                                 ///////////////////////////////////////////////////////
@@ -866,9 +879,10 @@ asignal                         =                       asignal * iamplitude
 a_signal                        =                       asignal
 
 i_space_front_to_back           init                    gi_PanningExpansion * -5
-i_space_left_to_right           init                    gi_PanningExpansion * -3
+i_space_left_to_right           init                    gi_PanningExpansion * -6
 i_space_bottom_to_top           init                    gi_PanningExpansion * 2
 
+#ifdef ENABLE_CHEBYSHEVMELODY
 #ifdef USE_SPATIALIZATION
 ;i_space_front_to_back, i_space_left_to_right, i_space_bottom_to_top random_point_from_sphere gi_radius
 a_spatial_reverb_send init 0
@@ -881,9 +895,9 @@ a_out_left, a_out_right pan2 a_signal, i_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
-
                                 prints                  "ChebyshevMelody       %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-                                endin
+#endif
+endin
 
                                 instr                   DelayedPluckedString
                                 //////////////////////////////////////////////////////
@@ -1222,9 +1236,10 @@ aoutright                       =                       a18 * adeclick
 a_signal                        =                       aoutleft + aoutright
 
 i_space_front_to_back           init                    gi_PanningExpansion * -5
-i_space_left_to_right           init                    gi_PanningExpansion * -1
+i_space_left_to_right           init                    gi_PanningExpansion * -.5
 i_space_bottom_to_top           init                    gi_PanningExpansion * 0
 
+#ifdef ENABLE_FILTEREDSINES
 #ifdef USE_SPATIALIZATION
 ;i_space_front_to_back, i_space_left_to_right, i_space_bottom_to_top random_point_from_sphere gi_radius
 a_spatial_reverb_send init 0
@@ -1237,9 +1252,9 @@ a_out_left, a_out_right pan2 a_signal, i_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
-
                                 prints                  "FilteredSines         %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-                                endin
+#endif
+endin
 
                                 instr                   Flute
                                 //////////////////////////////////////////////////////
@@ -1373,9 +1388,10 @@ asignal                         =                       (aouta + aoutb) * kinden
 a_signal                        =                       asignal * iamplitude * adeclick
 
 i_space_front_to_back           init                    gi_PanningExpansion * -5
-i_space_left_to_right           init                    gi_PanningExpansion * 3
+i_space_left_to_right           init                    gi_PanningExpansion * 6
 i_space_bottom_to_top           init                    gi_PanningExpansion * 0
 
+#ifdef ENABLE_FMMODERATEINDEX
 #ifdef USE_SPATIALIZATION
 ;i_space_front_to_back, i_space_left_to_right, i_space_bottom_to_top random_point_from_sphere gi_radius
 a_spatial_reverb_send init 0
@@ -1388,9 +1404,9 @@ a_out_left, a_out_right pan2 a_signal, i_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
-
                                 prints                  "FMModerateIndex       %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-                                endin
+#endif
+endin
 
                                 instr                   FMModerateIndex2
                                 //////////////////////////////////////////////////////
@@ -1511,6 +1527,7 @@ i_space_front_to_back           init                    gi_PanningExpansion * -5
 i_space_left_to_right           init                    gi_PanningExpansion * -2
 i_space_bottom_to_top           init                    gi_PanningExpansion * 2
 
+#ifdef ENABLE_FMMODULATEDCHORUSING
 #ifdef USE_SPATIALIZATION
 ;i_space_front_to_back, i_space_left_to_right, i_space_bottom_to_top random_point_from_sphere gi_radius
 a_spatial_reverb_send init 0
@@ -1523,9 +1540,9 @@ a_out_left, a_out_right pan2 a_signal, i_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
-
                                 prints                  "FMModulatedChorusing  %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-                                endin
+#endif
+endin
 
                                 instr                   FMWaterBell
                                 //////////////////////////////////////////////
@@ -1585,9 +1602,10 @@ aoutleft, aoutright             pan2                    iamplitude * asignal * a
 a_signal                        =                       aoutleft + aoutright
 
 i_space_front_to_back           init                    gi_PanningExpansion * -5
-i_space_left_to_right           init                    gi_PanningExpansion * 4
+i_space_left_to_right           init                    gi_PanningExpansion * 8
 i_space_bottom_to_top           init                    gi_PanningExpansion * -1
 
+#ifdef ENABLE_FMWATERBELL
 #ifdef USE_SPATIALIZATION
 ;i_space_front_to_back, i_space_left_to_right, i_space_bottom_to_top random_point_from_sphere gi_radius
 a_spatial_reverb_send init 0
@@ -1601,7 +1619,8 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
                                 prints                  "FMWaterBell           %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-                                endin
+#endif
+endin
 
                                 instr                   Granular
                                 //////////////////////////////////////////////
@@ -1672,6 +1691,7 @@ i_space_front_to_back           init                    gi_PanningExpansion * -5
 i_space_left_to_right           init                    gi_PanningExpansion * 0
 i_space_bottom_to_top           init                    gi_PanningExpansion * 3
 
+#ifdef ENABLE_GRANULAR
 #ifdef USE_SPATIALIZATION
 ;i_space_front_to_back, i_space_left_to_right, i_space_bottom_to_top random_point_from_sphere gi_radius
 a_spatial_reverb_send init 0
@@ -1684,15 +1704,14 @@ a_out_left, a_out_right pan2 a_signal, i_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
-
                                 prints                  "Granular              %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-                                endin
+#endif
+endin
 
                                 instr                   Guitar
                                 //////////////////////////////////////////////
                                 // By Michael Gogins.
                                 //////////////////////////////////////////////
-                                ;pset                    0, 0, 3600
 i_instrument                    =                       p1
 i_time                          =                       p2
 i_duration                      =                       p3
@@ -1711,27 +1730,28 @@ isustain                        =                       p3
 irelease                        =                       0.05
 p3                              =                       isustain + iattack + irelease
 adeclick                        linsegr                 0.0, iattack, 1.0, isustain, 1.0, irelease, 0.0
-ifrequency                      =                       cpsmidinn(p4)
 iamplitude                      =                       ampdb(p5) * 20
-kamp                            linsegr                 0.0, iattack, iamplitude, isustain, iamplitude, irelease, 0.0
+kamp                            linseg                  0.0, iattack, iamplitude, isustain, iamplitude, irelease, 0.0
 asigcomp                        pluck                   1, 440, 440, 0, 1
 asig                            pluck                   1, ifrequency, ifrequency, 0, 1
 af1                             reson                   asig, 110, 80
 af2                             reson                   asig, 220, 100
 af3                             reson                   asig, 440, 80
-aout                            balance                 0.6 * af1+ af2 + 0.6 * af3 + 0.4 * asig, asigcomp
-kexp                            expseg                  1.0, iattack, 2.0, isustain, 1.0, irelease, 1.0
-kenv                            =                       kexp - 1.0
-asignal                         =                       aout * kenv * kamp
+aout                            balance                 0.1 * asig + 0.6 * af1 + af2 + 0.6 * af3 + 0.4 * asig, asigcomp
+;kexp                            expseg                  1.0, iattack, 2.0, isustain, 1.0, irelease, 1.0
+;kenv                            =                       kexp - 1.0
+;asignal                         =                       aout * kenv * kamp
+asignal                         =                       aout ;* kenv * kamp
 aoutleft, aoutright             pan2                    asignal * adeclick, i_pan
 
 a_signal                        =                       aoutright + aoutleft
 
 i_space_front_to_back           init                    gi_PanningExpansion * -5
-i_space_left_to_right           init                    gi_PanningExpansion * -4
+i_space_left_to_right           init                    gi_PanningExpansion * -8
 i_space_bottom_to_top           init                    gi_PanningExpansion * -1
 
-#ifdef USE_SPATIALIZATION
+#ifdef ENABLE_GUITAR
+#ifdef USE_SPATIALIZATION 
 ;i_space_front_to_back, i_space_left_to_right, i_space_bottom_to_top random_point_from_sphere gi_radius
 a_spatial_reverb_send init 0
 a_bsignal[] init 16
@@ -1743,8 +1763,8 @@ a_out_left, a_out_right pan2 a_signal, i_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
-
                                 prints                  "Guitar                %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+#endif
                                 endin
 
                                 instr                   Guitar2
@@ -4419,9 +4439,10 @@ aoutleft, aoutright             pan2                    asignal * adeclick, i_pa
 a_signal                        =                       aoutright + aoutleft
 
 i_space_front_to_back           init                    gi_PanningExpansion * -5
-i_space_left_to_right           init                    gi_PanningExpansion * 1
+i_space_left_to_right           init                    gi_PanningExpansion * .5
 i_space_bottom_to_top           init                    gi_PanningExpansion * 0
 
+#ifdef ENABLE_ZAKIANFLUTE
 #ifdef USE_SPATIALIZATION
 ;i_space_front_to_back, i_space_left_to_right, i_space_bottom_to_top random_point_from_sphere gi_radius
 a_spatial_reverb_send init 0
@@ -4434,9 +4455,9 @@ a_out_left, a_out_right pan2 a_signal, i_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
-
                                 prints                  "ZakianFlute           %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-                                endin
+#endif
+endin
 
                                 //////////////////////////////////////////////
                                 // OUTPUT INSTRUMENTS MUST GO BELOW HERE
@@ -4489,7 +4510,7 @@ aoutright                       =                       gkMasterLevel * ainright
     model.arrange(11, 14+3,  5.00); // Was 5.
     model.arrange(12,  4+3,  5.00);
     //auto csound_command = model.getCsoundCommand();
-    //csound_command.append(" -+msg_color=0");
+    //csound_command.append("-m0 -+msg_color=0");
     //model.setCsoundCommand(csound_command);
     model.processArgv(argc, argv);
 }
