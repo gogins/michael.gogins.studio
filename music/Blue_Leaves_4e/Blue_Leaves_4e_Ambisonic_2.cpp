@@ -1549,7 +1549,6 @@ endin
                                 // Original by Steven Yi.
                                 // Adapted by Michael Gogins.
                                 //////////////////////////////////////////////
-                                ;pset                    0, 0, 3600
 i_instrument                    =                       p1
 i_time                          =                       p2
 i_duration                      =                       p3
