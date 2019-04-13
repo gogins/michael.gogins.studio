@@ -139,6 +139,12 @@ int main(int argc, const char **argv)
         if (depth > 2) {
             voiceleader.C(pen[csound::Event::TIME], "Dm9");
         }
+        //if (depth == 4) {
+        //    voiceleader.K(pen[csound::Event::TIME]);
+        //}
+        //if (depth == 6) {
+        //    voiceleader.Q(pen[csound::Event::TIME], 3);
+        //}
         return pen;
     };
     generators.push_back(g4);
@@ -153,12 +159,15 @@ int main(int argc, const char **argv)
                     1, 0, 1, 1;
     csound::ScoreNode scoreNode;
     csound::VoiceleadingNode voiceleadingNode;
+    voiceleadingNode.rescaleTimes = true;
     voiceleadingNode.setModality({0., 2., 5., 7., 11.});
-    voiceleadingNode.addChild(&scoreNode);
-    model.addChild(&voiceleadingNode);
+    //voiceleadingNode.addChild(&scoreNode);
+    //model.addChild(&voiceleadingNode);
+    model.addChild(&scoreNode);
     csound::Score &score = scoreNode.getScore();
     recurrent(generators, transitions, 9, 0, pen, score, voiceleadingNode);
     std::cout << "Generated duration:     " << score.getDuration() << std::endl;
+    score.sort();
     score.rescale(csound::Event::TIME,          true,  0.0, false,  0.0);
     score.rescale(csound::Event::INSTRUMENT,    true,  1.0, false, 11.99999);
     score.rescale(csound::Event::KEY,           true, 24.0, true,  72.0);
@@ -170,6 +179,7 @@ int main(int argc, const char **argv)
     std::cout << "set duration:           " << score.getDuration() << std::endl;
     score.rescale(csound::Event::DURATION,      true,  2.375, true,   4.0);
     score.temper(12.);
+    voiceleadingNode.transform(score);
     score.tieOverlappingNotes(true);
     score.findScale();
     score.setDuration(360.0);
