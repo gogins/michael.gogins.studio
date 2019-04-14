@@ -373,6 +373,8 @@ gkMasterLevel                   init                    1.5
                                 alwayson                "Reverberation"
                                 alwayson                "MasterOutput"
 
+;; Original Instruments
+
                                 instr                   BanchoffKleinBottle
                                 //////////////////////////////////////////////
                                 // Original by Hans Mikelson.
@@ -553,6 +555,8 @@ i_pitchclassset                 =                       p10
 i_homogeneity                   =                       p11
 ihertz                          =                       cpsmidinn(i_midikey)
 iamp                            =                       ampdb(i_midivelocity) * 6
+; Level correction
+iamp                            =                       iamp * .5
 idampingattack                  =                       .01
 idampingrelease                 =                       .02
 idampingsustain                 =                       p3
@@ -1045,6 +1049,8 @@ isustain                        =                       p3
 p3                              =                       isustain + iattack + irelease
 adeclick                        linsegr                  0.0, iattack, 1.0, isustain, 1.0, irelease, 0.0
 iamplitude                      =                       ampdb(i_midikey) / 1200
+; Level correction
+iamplitude                      =                       iamplitude * .5
 ip6                             =                       0.3
 ip7                             =                       2.2
                                 ; shift it.
@@ -1146,7 +1152,6 @@ aoutleft, aoutright             pan2                    iamplitude * asignal * a
                                 // Original by Hans Mikelson.
                                 // Adapted by Michael Gogins.
                                 //////////////////////////////////////////////
-                                ;pset                    0, 0, 3600
 i_instrument                    =                       p1
 i_time                          =                       p2
 i_duration                      =                       p3
@@ -1160,6 +1165,8 @@ i_pitchclassset                 =                       p10
 i_homogeneity                   =                       p11
 ifrequency                      =                       cpsmidinn(i_midikey)
 iamplitude                      =                       ampdb(i_midivelocity) / 175
+; Level correction
+iamplitude                      =                       iamplitude * 1.5
                                 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
                                 ; f1  0 65536 1 "hahaha.aif" 0 4 0
                                 ; f2  0 1024  7 0 224 1 800 0
@@ -3239,6 +3246,8 @@ aoutleft                        =                       gkMasterLevel * ainleft
 aoutright                       =                       gkMasterLevel * ainright
                                 outs                    aoutleft, aoutright
                                 endin
+
+;; Original Instruments
                                 
             )");
     model.arrange( 1,  9,-12.00); // Was 25.
