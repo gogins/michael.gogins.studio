@@ -18,12 +18,7 @@ g++ Yellow_Leaves_4.cpp -o Yellow_Leaves_4.exe -mtune=native -std=c++0x -O2 -g -
  * Generators are lambdas with the same signature as the following example.
  * The pen is the current position of a "pen" in the score. The pen is
  * "written" by appending it to the score. Additional events can be computed
- * based on the parameters of the function, and also appended to the score.
- * The function can, and usually does, move the pen to a new position before
- * returning it.
- */
-auto generator = [&](const csound::Event &pen, int depth, csound::Score &score, csound::VoiceleadingNode &voiceleader)
-{
+ * based on the parameters of the function, and alsl
     csound::Event result = pen;
     return result;
 };
@@ -246,6 +241,17 @@ k_y = cos(i_latitude) * sin(i_longitude) * i_radius
 k_z = sin(i_latitude) * i_radius
 ;prints "random pan: %9.4f depth: %9.4f height: %9.4f\n", k_y, k_x, k_z
 xout k_x, k_y, k_z
+endop
+
+; Move a point at k-rate in Cartesian coordinates from x1, y1, z2 to x2, y2, z2 
+; over a specified duration.
+
+opcode linear_move, kkk, kkkkkkk
+ix1, iy1, iz1, ix2, iy2, iz2, idur xin
+kx line ix1, idur, ix2
+ky line iy1, idur, iy2
+kz line iz1, idur, iz2
+xout kx, ky, kz
 endop
 
 ; TODO: Paste code inline here.
@@ -805,8 +811,10 @@ a_signal                        =                       aoutleft + aoutright
 k_space_front_to_back           init                    rnd31(1,0,0)
 k_space_left_to_right           init                    rnd31(1,0,0)
 k_space_bottom_to_top           init                    rnd31(1,0,0)
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top linear_move -4, 7, 2, -4, 7, 2, p3
+
 #ifdef USE_SPATIALIZATION
-k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+;k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
 a_spatial_reverb_send init 0
 a_bsignal[] init 16
 a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
@@ -885,8 +893,11 @@ a_signal                        =                       aoutleft + aoutright
 k_space_front_to_back           init                    rnd31(1,0,0)
 k_space_left_to_right           init                    rnd31(1,0,0)
 k_space_bottom_to_top           init                    rnd31(1,0,0)
+
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top linear_move -7, -1, -1, 6, -4, 2, p3
+
 #ifdef USE_SPATIALIZATION
-k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+;k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
 a_spatial_reverb_send init 0
 a_bsignal[] init 16
 a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
@@ -1173,8 +1184,9 @@ a_signal                        =                       aoutleft + aoutright
 k_space_front_to_back           init                    rnd31(1,0,0)
 k_space_left_to_right           init                    rnd31(1,0,0)
 k_space_bottom_to_top           init                    rnd31(1,0,0)
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top linear_move -2, 7, 0, -2, 7, 0, p3
 #ifdef USE_SPATIALIZATION
-k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+;k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
 a_spatial_reverb_send init 0
 a_bsignal[] init 16
 a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
@@ -1318,8 +1330,10 @@ a_signal                        =                       aoutleft + aoutright
 k_space_front_to_back           init                    rnd31(1,0,0)
 k_space_left_to_right           init                    rnd31(1,0,0)
 k_space_bottom_to_top           init                    rnd31(1,0,0)
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top linear_move -2, -7, 0, -2, -7, 0, p3
+
 #ifdef USE_SPATIALIZATION
-k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+;k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
 a_spatial_reverb_send init 0
 a_bsignal[] init 16
 a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
@@ -1451,8 +1465,10 @@ a_signal                        =                       aoutleft + aoutright
 k_space_front_to_back           init                    rnd31(1,0,0)
 k_space_left_to_right           init                    rnd31(1,0,0)
 k_space_bottom_to_top           init                    rnd31(1,0,0)
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top linear_move -7, 1, -1, 6, 4, 2, p3
+
 #ifdef USE_SPATIALIZATION
-k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+;k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
 a_spatial_reverb_send init 0
 a_bsignal[] init 16
 a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
@@ -1525,8 +1541,10 @@ a_signal                        =                       aoutleft + aoutright
 k_space_front_to_back           init                    rnd31(1,0,0)
 k_space_left_to_right           init                    rnd31(1,0,0)
 k_space_bottom_to_top           init                    rnd31(1,0,0)
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top linear_move -6, 7, 4, -6, 7, 4, p3
+
 #ifdef USE_SPATIALIZATION
-k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+;k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
 a_spatial_reverb_send init 0
 a_bsignal[] init 16
 a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
@@ -1608,8 +1626,10 @@ a_signal                        =                       aoutleft + aoutright
 k_space_front_to_back           init                    rnd31(1,0,0)
 k_space_left_to_right           init                    rnd31(1,0,0)
 k_space_bottom_to_top           init                    rnd31(1,0,0)
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top linear_move -8, 0, 0, 7, 0, 3, p3
+
 #ifdef USE_SPATIALIZATION
-k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+;k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
 a_spatial_reverb_send init 0
 a_bsignal[] init 16
 a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
@@ -1672,8 +1692,10 @@ a_signal                        =                       aoutleft + aoutright
 k_space_front_to_back           init                    rnd31(1,0,0)
 k_space_left_to_right           init                    rnd31(1,0,0)
 k_space_bottom_to_top           init                    rnd31(1,0,0)
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top linear_move -6, -7, 4, -6, -7, 4, p3
+
 #ifdef USE_SPATIALIZATION
-k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+;k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
 a_spatial_reverb_send init 0
 a_bsignal[] init 16
 a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
@@ -4243,8 +4265,10 @@ a_signal                        =                       aoutleft + aoutright
 k_space_front_to_back           init                    rnd31(1,0,0)
 k_space_left_to_right           init                    rnd31(1,0,0)
 k_space_bottom_to_top           init                    rnd31(1,0,0)
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top linear_move -4, -7, 2, -4, -7, 2, p3
+
 #ifdef USE_SPATIALIZATION
-k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+;k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
 a_spatial_reverb_send init 0
 a_bsignal[] init 16
 a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
@@ -5512,7 +5536,7 @@ k_space_bottom_to_top           init                    gi_PanningExpansion * -1
 
 #ifdef ENABLE_GUITAR
 #ifdef USE_SPATIALIZATION
-;k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
 a_spatial_reverb_send init 0
 a_bsignal[] init 16
 a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
