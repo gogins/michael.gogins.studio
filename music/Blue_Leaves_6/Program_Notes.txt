@@ -1,0 +1,14 @@
+B L U E   L E A V E S   6
+6' 01"
+
+Michael Gogins
+Irreducible Productions
+17 September 2013
+
+I composed this piece using a recurrent iterated function system of four transformations acting recursively upon a single note, which acts as a pen to write a Csound score.
+
+In addition to moving the note up and down in pitch, back and forth in time, and from instrument to instrument, the transformations act upon the harmony of the note at the higher levels of recursion in the piece, that is, upon the larger scale of time.
+
+There are two chord types in the piece, a major ninth chord and a dominant seventh flat ninth chord. One transformation acts upon the major ninth chord, transposing it by a root progression of up by a perfect fourth, then conforming the heard pitch of the note to the resulting chord. The other transformation acts upon the flat ninth chord, also transposing it up by a perfect fourth, then applying the heard pitch of the note to the resulting chord.
+
+The piece itself is written as a C++ program using the CsoundAC (Csound Algorithmic Composition) library. Both Csound, and a complete Csound orchestra with all the instruments and effects for rendering the piece, are also embedded in the program. I learned this basic approach to writing pieces as programs from the music demo programs in the demoscene, and from CMix. The instruments and effects are a combination of borrowing and original design.

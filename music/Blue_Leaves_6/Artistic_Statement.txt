@@ -1,0 +1,15 @@
+I am an (almost) exclusively algorithmic composer. I find that algorithmic composition amplifies my musical imagination and contributes to formal unity. It opens up worlds of musical possibility for me that are beyond the power of my unassisted imagination. I am particularly interested in parametric and evolutionary composition. I am also trying to develop more efficient and recursive representations of music that encode musical craft without at the same time imposing a style.
+
+I am interested (almost) solely in absolute music: instrumental music designed for undistracted listening. If I could find software that can sing passably, I would try “vocal” music since I have a great love of poetry.
+
+I use Csound (almost) exclusively for rendering my pieces. Needless to say, I do not work in real time nor do I improvise, even though my interest in musical composition arose out of free improvisation on the flute.
+
+I have become a contributor to the development of Csound, in order to improve Csound’s support for my approach to composition. In particular, I have added Python and Lua scripting to Csound, as well as the CsoundAC classes for various techniques of algorithmic composition.
+
+These include imported MIDI sequences, loops and hockets, Lindenmayer systems, chaotic dynamical systems, iterated function systems, and the translation of images into both sounds (using additive synthesis) and scores (by extracting features), and most recently facilities mathematically generating and controlling voice-leadings, chord progressions, and voicings.
+
+I sometimes contribute features and code to Csound. I sometimes publish articles on computer music. I sometimes have pieces in concerts or on the radio.
+
+You can find albums and pieces by me online in various places, and I will be posting some pieces here as well.
+
+My interest in composing computer music arises from the phenomenon of computational irreducibility. This is what happens when a computer program is short, easy to read, and easy to understand, and yet the output of the program is impossible to predict without actually running the program. An excellent example of such an irreducible procedure is iterating the logistic map x <= r * x * (x - 1) where r is greater than about 0.89. This recurrence is chaotic, therefore unpredictable, for most values of r. 
