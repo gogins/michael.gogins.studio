@@ -779,7 +779,7 @@ i_homogeneity                   =                       p11
 ihertz                          =                       cpsmidinn(i_midikey)
 iamp                            =                       ampdb(i_midivelocity) * 6
 ; Level correction
-iamp                            =                       iamp * .5
+iamp                            =                       iamp * 1.5
 idampingattack                  =                       .01
 idampingrelease                 =                       .02
 idampingsustain                 =                       p3
@@ -836,6 +836,8 @@ i_pitchclassset                 =                       p10
 i_homogeneity                   =                       p11
 iHz                             =                       cpsmidinn(i_midikey)
 iamplitude                      =                       ampdb(i_midivelocity) * 7.
+; Level correction.
+iamplitude                      =                       iamplitude * 2
 iattack                         =                       .01
 isustain                        =                       p3
 irelease                        =                       .01
@@ -1126,6 +1128,8 @@ i_duration                      =                       p3
 adeclick                        linsegr                  0.0, iattack, 1.0, isustain, 1.0, irelease, 0.0
 ip4                             =                       i_midivelocity
 idb                             =                       ampdb(i_midivelocity) * 4
+; Level correction.
+idb                             =                       idb * 4
 ibergeman                       ftgenonce               0, 0, 65536,     10,     0.28, 1, 0.74, 0.66, 0.78, 0.48, 0.05, 0.33, 0.12, 0.08, 0.01, 0.54, 0.19, 0.08, 0.05, 0.16, 0.01, 0.11, 0.3, 0.02, 0.2 ; Bergeman f1
 ip5                             =                       ibergeman
 ip3                             =                       i_duration
@@ -1421,6 +1425,8 @@ isustain                        =                       p3
 p3                              =                       isustain + iattack + irelease
 adeclick                        linsegr                 0.0, iattack, 1.0, isustain, 1.0, irelease, 0.0
 iamplitude                      =                       ampdb(i_midikey) / 12
+; Level correction.
+iamplitude                      =                       iamplitude * 2
 ip6                             =                       0.3
 ip7                             =                       2.2
                                 ; shift it.
@@ -1480,7 +1486,6 @@ outleta "outright", a_out_right
                                 // Original by Steven Yi.
                                 // Adapted by Michael Gogins.
                                 //////////////////////////////////////////////
-                                ;pset                    0, 0, 3600
 i_instrument                    =                       p1
 i_time                          =                       p2
 i_duration                      =                       p3
@@ -1494,6 +1499,8 @@ i_pitchclassset                 =                       p10
 i_homogeneity                   =                       p11
 ipch                            =                       cpsmidinn(i_midikey)
 iamplitude                      =                       ampdb(i_midivelocity) * 2.0
+; Level correction.
+iamplitude                      =                       iamplitude * 2
 ipch2                           =                       ipch
 kpchline 	                    line                    ipch, i_duration, ipch2
 iamp 	                        =                       2
@@ -1570,7 +1577,7 @@ i_homogeneity                   =                       p11
 ifrequency                      =                       cpsmidinn(i_midikey)
 iamplitude                      =                       ampdb(i_midivelocity) / 175
 ; Level correction
-iamplitude                      =                       iamplitude * 1.5
+iamplitude                      =                       iamplitude * 3
                                 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
                                 ; f1  0 65536 1 "hahaha.aif" 0 4 0
                                 ; f2  0 1024  7 0 224 1 800 0
@@ -1669,6 +1676,8 @@ le_84:
 adeclick                        linsegr                 0.0, iattack, 1.0, isustain, 1.0, irelease, 0.0
 ifrequency                      =                       cpsmidinn(p4)
 iamplitude                      =                       ampdb(p5) * 20
+; Level correction.
+iamplitude                      =                       iamplitude * 2
 kamp                            linsegr                 0.0, iattack, iamplitude, isustain, iamplitude, irelease, 0.0
 asigcomp                        pluck                   1, 440, 440, 0, 1
 asig                            pluck                   1, ifrequency, ifrequency, 0, 1
@@ -4069,6 +4078,8 @@ i_pitchclassset                 =                       p10
 i_homogeneity                   =                       p11
 ifrequency                      =                       cpsmidinn(i_midikey)
 iamplitude                      =                       ampdb(i_midivelocity) * 4
+; Level correction.
+iamplitude                      =                       iamplitude * 2
 iattack                         =                       .25
 isustain                        =                       p3
 irelease                        =                       .33333333
