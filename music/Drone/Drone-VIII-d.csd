@@ -1,4 +1,4 @@
-d<CsoundSynthesizer>
+<CsoundSynthesizer>
 <CsLicense>
 Drone-VIII-d
 Copyright (C) 2014 by Michael Gogins.
@@ -14,7 +14,7 @@ nchnls = 2
 0dbfs = 10000
 
 lua_exec {{
-package.path = package.path .. ";/storage/emulated/0/silencio/?.lua;"
+package.path = package.path .. ";/home/mkg/csound-extended/silencio/lua/?.lua;"
 local ffi = require("ffi")
 local math = require("math")
 local string = require("string")
@@ -22,8 +22,8 @@ local silencio = require ("Silencio")
 local LindenmayerPITV = require("LindenmayerPITV")
 local ChordSpace = require ("ChordSpace")
 local duration = 1
--- local csoundApi = ffi.load("csoundandroid.so")
-local csoundApi = ffi.load("csound64.dll")
+local csoundApi = ffi.load("csoundandroid.so")
+-- local csoundApi = ffi.load("csound64.dll")
 -- Declare the parts of the Csound API that we need.
 ffi.cdef[[
  int csoundGetKsmps(void *);
@@ -437,7 +437,7 @@ ak8 rspline -.0006 * kReverbModulationFrequency, .0006 * kReverbModulationFreque
 ;ak8 += .44
 ; apj is used to calculate "resultant junction pressure" for
 ; the scattering junction of 8 lossless waveguides
-.; of equal characteristic impedance. If you wish to
+; of equal characteristic impedance. If you wish to
 ; add more delay lines, simply add them to the following
 ; equation, and replace the .25 by 2/N, where N is the
 ; number of delay lines.
