@@ -70,11 +70,12 @@ int main(int argc, const char **argv)
 {
     csound::MusicModel model;
     // These fields determine output filenames and ID 3 tags.
-    model.setTitle("\"Blue Leaves 6\"");
-    model.setFilename("Blue_Leaves_6");
+    model.setTitle("aBlue Leaves 6a");
+    model.setFilename("Blue_Leaves_6a");
     model.setAlbum("Silence");
-    model.setArtist("\"Michael Gogins\"");
-    model.setCopyright("\"(C) 2013 by Michael Gogins\"");
+    model.setArtist("Michael Gogins");
+    model.setAuthor("Michael Gogins");
+    model.setCopyright("(C) 2013 by Michael Gogins");
     double T = 0;
     double _M9 = csound::Voicelead::nameToC("DM9", 12.0);
     _M9 = csound::Voicelead::cToP(_M9);
