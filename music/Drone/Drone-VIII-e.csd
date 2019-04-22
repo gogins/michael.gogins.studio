@@ -43,23 +43,19 @@ local score = lindenmayer.score
 score:setCsound(csound, csoundApi)
 csoundApi.csoundMessage(csound, 'score: %s\\n', tostring(score))
 math.randomseed(39284)
-lindenmayer:initialize(4, 30)
+lindenmayer:initialize(4, 3)
 lindenmayer.duration = 300
---lindenmayer.axiom = 'P=C7 V=543 I=0 T=0 d=1 v=10 p=0.5 a P=CM7 T+5 a L T+3 L C C C'
---lindenmayer.axiom = 'P=C7 V=543 I=0 T=0 d=1 v=10 p=0.5 a P=CM7 T+5 d+1 L C C C C'
-  lindenmayer.axiom = 'P=C7 V=543 I=0 T=0 d=1 v=10 p=0.5 a P=CM7 T+5 d+1 L C C'
---lindenmayer.rules['a'] = 'a L T+3 v+2   V+2 a v-2 C C I+1 C V-2 P=CM7 a L T+5 L d+.25 a P=C7 d-.5 I+1 T+2 '
---lindenmayer.rules['a'] = 'a L T+4 v+2   V+126 a v-2 C V-2 P=CM7 a L T+2 L K d+.25 V-80 a P=C7 d-.5  T+2 '    	              
---lindenmayer.rules['a'] = 'a L T+4 v+2   V+126 K a v-2 C V-2 P=CM7 a L T+2 L d+.25 V-80 a P=C7 d-.5  T+2 '  
---lindenmayer.rules['a'] = 'a K L v+2 K L V+126 a v-2 C V-2 P=CM7 d+.25 T-5 V-25 a L T+2 L d-.5 V-79 a P=C7  K '  
-  lindenmayer.rules['a'] = 'a K L v+2 K L V+126 a v-2 C V-2 P=CM7 d+.25 T-5 V-25 a L T+2 L d-.325 V-79 a P=C7  K '  
-  lindenmayer.iterations = 2
+lindenmayer.axiom = 'P=C7 V=543 I=0 T=0 d=1 v=10 p=0.5 a P=CM7 T+5 d+1 C C'
+-- lindenmayer.rules['a'] = 'a K C v+2 K C v+126 a v-2 C v-2 P=CM7 d+.25 T-5 V-25 a L T+2 L d-.325 V-79 a P=C7  K '  
+lindenmayer.rules['a'] = 'a K L v+2 K L V+126 a v-2 C V-2 P=CM7 d+.25 T-5 V-25 a L T+2 L d-.325 V-79 a P=C7  K '  
+lindenmayer.iterations = 2
 lindenmayer:generate()
 for key, value in ipairs(score) do
 	value[PAN+1] = math.random()
 end
-score:setScale(KEY, 30.0)
-score:setScale(CHANNEL, 0, 3.999)
+score:setScale(KEY, 24.0)
+--score:setScale(CHANNEL, 0, 3.999)
+score:setScale(CHANNEL, 0, 1.999)
 score:setScale(VELOCITY, 40.0, 5.5)
 score:setScale(PAN, 0.0, 1.0)
 score:setDuration(60 * 10)
@@ -67,6 +63,7 @@ score:setScale(TIME, 1)
 score:temper(12.0)
 score:tieOverlaps()
 score:print()
+score:renderMidi()
 scales = score:findScales()
 print('minima:', scales[1])
 print('ranges:', scales[2])
@@ -76,8 +73,8 @@ csoundApi.csoundMessage(csound, 'Finished generating score.\\n')
 #define USE_REVERBSC #1#
 
 #include "silencio/patches/Droner.inc"
-#include "silencio/patches/Blower.inc"
 #include "silencio/patches/Sweeper.inc"
+#include "silencio/patches/Blower.inc"
 #include "silencio/patches/Buzzer.inc"
 #ifdef USE_REVERBSC
 #include "silencio/patches/ReverbSC.inc"
@@ -98,35 +95,35 @@ gk_Droner_partial7 init 0
 gk_Droner_partial8 init .05
 gk_Droner_partial9 init .1
 gk_Droner_partial10 init 0
-gk_Droner_level init 4
+gk_Droner_level init -14
 gk_Droner_pan init .5
 
 gk_Blower_grainDensity init 300
 gk_Blower_grainDuration init 0.05
 gk_Blower_grainAmplitudeRange init 100
 gk_Blower_grainFrequencyRange init .33
-gk_Blower_level init -6
+gk_Blower_level init -4
 gk_Blower_midi_dynamic_range init 127
 
 gk_Sweeper_midi_dynamic_range init 127
 gk_Sweeper_attack init .125
 gk_Sweeper_release init .25
-gk_Sweeper_britel init 0
-gk_Sweeper_briteh init 2.9
-gk_Sweeper_britels init .2 / 3
-gk_Sweeper_britehs init 2.5 / 3
-gk_Sweeper_level init -4
+gk_Sweeper_britel init 1
+gk_Sweeper_briteh init 4
+gk_Sweeper_britels init 1
+gk_Sweeper_britehs init 0.6
+gk_Sweeper_level init -1
 
 gk_Buzzer_attack init .125
 gk_Buzzer_release init .25
 gk_Buzzer_harmonics init 3
-gk_Buzzer_level init -4
+gk_Buzzer_level init -3
 gk_Buzzer_midi_dynamic_range init 127
 
 gk_Reverb_feedback init 0.995
 gi_Reverb_delay_modulation init 0.01
-gk_Reverb_feedback init 0.996
-gi_Reverb_delay_modulation init .2
+gk_Reverb_feedback init 0.997
+gi_Reverb_delay_modulation init .02
 gk_Reverb_frequency_cutoff init 11000
 gk_Reverb_Wet init 1
 
