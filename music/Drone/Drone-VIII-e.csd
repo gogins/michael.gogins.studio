@@ -8,6 +8,7 @@ All rights reserved.
 -RWdfo Drone-VIII-e.wav -m195 --midi-key=4 --midi-velocity=5 -+id_artist=Michael_Gogins -+id_copyright=Copr_2014_Michael_Gogins -+id_title=Drone-VIII-e 
 </CsOptions>
 <CsInstruments>
+
 sr = 96000
 ksmps = 100
 nchnls = 2
@@ -43,19 +44,19 @@ local score = lindenmayer.score
 score:setCsound(csound, csoundApi)
 csoundApi.csoundMessage(csound, 'score: %s\\n', tostring(score))
 math.randomseed(39284)
-lindenmayer:initialize(4, 3)
+lindenmayer:initialize(4, 5)
 lindenmayer.duration = 300
-lindenmayer.axiom = 'P=C7 V=543 I=0 T=0 d=1 v=10 p=0.5 a P=CM7 T+5 d+1 C C'
+lindenmayer.axiom = 'P=C7 V=890 I=0 T=0 d=1 v=10 p=0.5 a P=CM7 T+5 d+1 C C'
 -- lindenmayer.rules['a'] = 'a K C v+2 K C v+126 a v-2 C v-2 P=CM7 d+.25 T-5 V-25 a L T+2 L d-.325 V-79 a P=C7  K '  
-lindenmayer.rules['a'] = 'a K L v+2 K L V+126 a v-2 C V-2 P=CM7 d+.25 T-5 V-25 a L T+2 L d-.325 V-79 a P=C7  K '  
+lindenmayer.rules['a'] = 'a K L v+2 K L V+126 a v-2 C V-2 P=CM7 d+.25 T-5 V-205 a L T+2 L d-.325 V-9 a P=C7  K '  
 lindenmayer.iterations = 2
 lindenmayer:generate()
 for key, value in ipairs(score) do
-	value[PAN+1] = math.random()
+	value[PAN] = math.random()
 end
 score:setScale(KEY, 24.0)
 --score:setScale(CHANNEL, 0, 3.999)
-score:setScale(CHANNEL, 0, 1.999)
+score:setScale(CHANNEL, 0, 3.999)
 score:setScale(VELOCITY, 40.0, 5.5)
 score:setScale(PAN, 0.0, 1.0)
 score:setDuration(60 * 10)
@@ -70,130 +71,93 @@ print('ranges:', scales[2])
 score:sendToCsound(false)
 csoundApi.csoundMessage(csound, 'Finished generating score.\\n')
 }}
-#define USE_REVERBSC #1#
+
+sr = 96000
+ksmps = 100
+nchnls = 2
+0dbfs = 3
 
 #include "silencio/patches/Droner.inc"
+#include "silencio/patches/Blower2.inc"
 #include "silencio/patches/Sweeper.inc"
-#include "silencio/patches/Blower.inc"
+;#include "silencio/patches/FMModulatedChorus.inc"
 #include "silencio/patches/Buzzer.inc"
-#ifdef USE_REVERBSC
 #include "silencio/patches/ReverbSC.inc"
-#else
-#include "silencio/patches/Reverberator1.inc"
-#include "silencio/patches/Reverberator2.inc"
-#endif
+#include "silencio/patches/ParametricEQ.inc"
 #include "silencio/patches/MasterOutput.inc"
 
-gi_Droner_waveform init 0
+gi_Droner_waveform init 1
 gk_Droner_partial1 init 1
-gk_Droner_partial2 init 2
-gk_Droner_partial3 init 0
+gk_Droner_partial2 init .2
+gk_Droner_partial3 init .1
 gk_Droner_partial4 init .1
 gk_Droner_partial5 init 0
-gk_Droner_partial6 init .7
+gk_Droner_partial6 init 0
 gk_Droner_partial7 init 0
-gk_Droner_partial8 init .05
-gk_Droner_partial9 init .1
+gk_Droner_partial8 init 0
+gk_Droner_partial9 init 0
 gk_Droner_partial10 init 0
-gk_Droner_level init -14
+gk_Droner_level init -2
 gk_Droner_pan init .5
 
-gk_Blower_grainDensity init 300
-gk_Blower_grainDuration init 0.05
-gk_Blower_grainAmplitudeRange init 100
-gk_Blower_grainFrequencyRange init .33
-gk_Blower_level init -4
-gk_Blower_midi_dynamic_range init 127
+gk_Blower2_grainDensity init 400
+gk_Blower2_grainDuration init 0.02
+gk_Blower2_grainAmplitudeRange init .01
+gk_Blower2_grainCentsRange init 4
+gk_Blower2_level init -26
+gk_Blower2_midi_dynamic_range init 127
 
 gk_Sweeper_midi_dynamic_range init 127
 gk_Sweeper_attack init .125
 gk_Sweeper_release init .25
 gk_Sweeper_britel init 1
-gk_Sweeper_briteh init 4
-gk_Sweeper_britels init 1
+gk_Sweeper_briteh init 3
+gk_Sweeper_britels init 0.2
 gk_Sweeper_britehs init 0.6
-gk_Sweeper_level init -1
+gk_Sweeper_level init -10
+
+gk_FMModulatedChorus_level init 46
+gi_FMModulatedChorus_attack init 0.003
+gi_FMModulatedChorus_release init 0.01
 
 gk_Buzzer_attack init .125
 gk_Buzzer_release init .25
 gk_Buzzer_harmonics init 3
-gk_Buzzer_level init -3
+gk_Buzzer_level init -13
 gk_Buzzer_midi_dynamic_range init 127
 
-gk_Reverb_feedback init 0.995
-gi_Reverb_delay_modulation init 0.01
-gk_Reverb_feedback init 0.997
+gk_ParametricEQ_Frequency init 3500
+gk_ParametricEQ_Gain init 0
+gk_ParametricEQ_Q init .707
+gi_ParametricEQ_Mode init 0
+
+gk_Reverb_feedback init 0.9975
 gi_Reverb_delay_modulation init .02
 gk_Reverb_frequency_cutoff init 11000
-gk_Reverb_Wet init 1
+gk_Reverb_Wet init .5
 
-gk_MasterOutput_level init 6
+gk_MasterOutput_level init 0
 
-#ifdef USE_REVERBSC
-connect "Droner",           "outleft",  "ReverbSC",     "inleft"
-connect "Droner",           "outright", "ReverbSC",     "inright"
-connect "Blower",           "outleft",  "ReverbSC",     "inleft"
-connect "Blower",           "outright", "ReverbSC",     "inright"
-connect "Sweeper",          "outleft",  "ReverbSC",     "inleft"
-connect "Sweeper",          "outright", "ReverbSC",     "inright"
-connect "Buzzer",           "outleft",  "ReverbSC",     "inleft"
-connect "Buzzer",           "outright", "ReverbSC",     "inright"
-connect "ReverbSC",         "outleft",  "MasterOutput", "inleft"
-connect "ReverbSC",         "outright", "MasterOutput", "inright"
+connect "Droner",               "outleft",  "ReverbSC",     "inleft"
+connect "Droner",               "outright", "ReverbSC",     "inright"
+connect "Blower2",              "outleft",  "ReverbSC",     "inleft"
+connect "Blower2",              "outright", "ReverbSC",     "inright"
+connect "Sweeper",              "outleft",  "ReverbSC",     "inleft"
+connect "Sweeper",              "outright", "ReverbSC",     "inright"
+connect "Buzzer",               "outleft",  "ReverbSC",     "inleft"
+connect "Buzzer",               "outright", "ReverbSC",     "inright"
+connect "FMModulatedChorus",    "outleft", 	"ReverbSC",     "inleft"
+connect "FMModulatedChorus",    "outright", "ReverbSC",     "inright"
+connect "ReverbSC",             "outleft",  "ParametricEQ", "inleft"
+connect "ReverbSC",             "outright", "ParametricEQ", "inright"
+connect "ParametricEQ",         "outleft",  "MasterOutput", "inleft"
+connect "ParametricEQ",         "outright", "MasterOutput", "inright"
 alwayson "ReverbSC"
-#else
-connect "Droner",           "outleft",  "Reverb1",    "in"
-connect "Droner",           "outright", "Reverb2",    "in"
-connect "Blower",           "outleft",  "Reverb1",    "in"
-connect "Blower",           "outright", "Reverb2",    "in"
-connect "Sweeper",          "outleft",  "Reverb1",    "in"
-connect "Sweeper",          "outright", "Reverb2",    "in"
-connect "Buzzer",           "outleft",  "Reverb1",    "in"
-connect "Buzzer",           "outright", "Reverb2",    "in"
-connect "Reverb1",    "out",      "MasterOutput",     "inleft"
-connect "Reverb2",    "out",      "MasterOutput",     "inright"
-alwayson "Reverb1",    i(gk_Reverb_feedback),    i(gi_Reverb_delay_modulation),   i(gk_Reverb_frequency_cutoff),  i(gk_Reverb_Wet)
-alwayson "Reverb2",    i(gk_Reverb_feedback),    i(gi_Reverb_delay_modulation),   i(gk_Reverb_frequency_cutoff),  i(gk_Reverb_Wet)
-#endif
-
+alwayson "ParametricEQ"
 alwayson "MasterOutput"
-;alwayson "Controls"
-
-
-instr Controls
-gkDroner1 invalue "gkDroner1"
-gkDroner2 invalue "gkDroner2"
-gkDroner3 invalue "gkDroner3"
-gkDroner4 invalue "gkDroner4"
-gkDroner5 invalue "gkDroner5"
-gkDroner6 invalue "gkDroner6"
-gkDroner7 invalue "gkDroner7"
-gkDroner8 invalue "gkDroner8"
-gkDroner9 invalue "gkDroner9"
-gkDroner10 invalue "gkDroner10"
-gkDronerLevel invalue "gkDronerLevel"
-gkDronerEnabled invalue "gkDronerEnabled"
-gkSweeperLevel invalue "gkSweeperLevel"
-gkSweeperEnabled invalue "gkSweeperEnabled"
-gkgrainDensity invalue "gkgrainDensity"
-gkgrainDuration invalue "gkgrainDuration"
-gkgrainAmplitudeRange invalue "gkgrainAmplitudeRange"
-gkgrainFrequencyRange invalue "gkgrainFrequencyRange"
-gkBlowerLevel invalue "gkBlowerLevel"
-gkBlowerEnabled invalue "gkBlowerEnabled"
-gkReverbFeedbackDela invalue "gkReverbFeedback"
-gkReverbModulation invalue "gkReverbModulation"
-gkReverbModulation invalue "gkReverbModulationFrequency"
-gkReverbWet invalue "gkReverbWet"
-gkMasterLevelLeft invalue "gkMasterLevelLeft"
-gkMasterLevelRight invalue "gkMasterLevelRight"
-gkBuzzerHarmonics invalue "gkBuzzerHarmonics"
-gkBuzzerLevel invalue "gkBuzzerLevel"
-gkBuzzerEnabled invalue "gkBuzzerEnabled"
-endin
 
 </CsInstruments>
 <CsScore>
-f 0 430
+f 0 610
 </CsScore>
 </CsoundSynthesizer>
