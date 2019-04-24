@@ -5,7 +5,7 @@ Copyright (C) 2014 by Michael Gogins.
 All rights reserved.
 </CsLicense>
 <CsOptions>
--RWdfo Drone-VIII-e.wav -m195 --midi-key=4 --midi-velocity=5 -+id_artist=Michael_Gogins -+id_copyright=Copr_2014_Michael_Gogins -+id_title=Drone-VIII-e 
+-RWdfo Drone-VIII-e.wav -m195 -+msg_color=0 --midi-key=4 --midi-velocity=5 -+id_artist=Michael_Gogins -+id_copyright=Copr_2014_Michael_Gogins -+id_title=Drone-VIII-e 
 </CsOptions>
 <CsInstruments>
 
@@ -52,13 +52,14 @@ lindenmayer.rules['a'] = 'a K L v+2 K L V+126 a v-2 C V-2 P=CM7 d+.25 T-5 V-205 
 lindenmayer.iterations = 2
 lindenmayer:generate()
 for key, value in ipairs(score) do
-	value[PAN] = math.random()
+	value[PAN+1] = math.random()
 end
 score:setScale(KEY, 24.0)
 --score:setScale(CHANNEL, 0, 3.999)
 score:setScale(CHANNEL, 0, 3.999)
 score:setScale(VELOCITY, 40.0, 5.5)
 score:setScale(PAN, 0.0, 1.0)
+score:sort()
 score:setDuration(60 * 10)
 score:setScale(TIME, 1)
 score:temper(12.0)
@@ -66,8 +67,9 @@ score:tieOverlaps()
 score:print()
 score:renderMidi()
 scales = score:findScales()
-print('minima:', scales[1])
-print('ranges:', scales[2])
+print('minima:  ', scales[1])
+print('ranges:  ', scales[2])
+print('duration:', score:getDuration())
 score:sendToCsound(false)
 csoundApi.csoundMessage(csound, 'Finished generating score.\\n')
 }}
@@ -98,13 +100,14 @@ gk_Droner_partial8 init 0
 gk_Droner_partial9 init 0
 gk_Droner_partial10 init 0
 gk_Droner_level init -2
+gk_Droner_level init 0
 gk_Droner_pan init .5
 
 gk_Blower2_grainDensity init 400
 gk_Blower2_grainDuration init 0.02
 gk_Blower2_grainAmplitudeRange init .01
 gk_Blower2_grainCentsRange init 4
-gk_Blower2_level init -26
+gk_Blower2_level init -36
 gk_Blower2_midi_dynamic_range init 127
 
 gk_Sweeper_midi_dynamic_range init 127
@@ -115,6 +118,7 @@ gk_Sweeper_briteh init 3
 gk_Sweeper_britels init 0.2
 gk_Sweeper_britehs init 0.6
 gk_Sweeper_level init -10
+gk_Sweeper_level init -2
 
 gk_FMModulatedChorus_level init 46
 gi_FMModulatedChorus_attack init 0.003
@@ -132,11 +136,12 @@ gk_ParametricEQ_Q init .707
 gi_ParametricEQ_Mode init 0
 
 gk_Reverb_feedback init 0.9975
+gk_Reverb_feedback init 0.9975
 gi_Reverb_delay_modulation init .02
 gk_Reverb_frequency_cutoff init 11000
 gk_Reverb_Wet init .5
 
-gk_MasterOutput_level init 0
+gk_MasterOutput_level init 8
 
 connect "Droner",               "outleft",  "ReverbSC",     "inleft"
 connect "Droner",               "outright", "ReverbSC",     "inright"
@@ -146,18 +151,19 @@ connect "Sweeper",              "outleft",  "ReverbSC",     "inleft"
 connect "Sweeper",              "outright", "ReverbSC",     "inright"
 connect "Buzzer",               "outleft",  "ReverbSC",     "inleft"
 connect "Buzzer",               "outright", "ReverbSC",     "inright"
-connect "FMModulatedChorus",    "outleft", 	"ReverbSC",     "inleft"
-connect "FMModulatedChorus",    "outright", "ReverbSC",     "inright"
+;connect "FMModulatedChorus",    "outleft", 	"ReverbSC",     "inleft"
+;connect "FMModulatedChorus",    "outright", "ReverbSC",     "inright"
 connect "ReverbSC",             "outleft",  "ParametricEQ", "inleft"
 connect "ReverbSC",             "outright", "ParametricEQ", "inright"
 connect "ParametricEQ",         "outleft",  "MasterOutput", "inleft"
 connect "ParametricEQ",         "outright", "MasterOutput", "inright"
+
 alwayson "ReverbSC"
 alwayson "ParametricEQ"
 alwayson "MasterOutput"
 
 </CsInstruments>
 <CsScore>
-f 0 610
+f 0 [10 * 60 + 2 * 60]
 </CsScore>
 </CsoundSynthesizer>
