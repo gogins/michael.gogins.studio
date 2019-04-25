@@ -47,6 +47,7 @@ math.randomseed(39284)
 lindenmayer:initialize(4, 5)
 lindenmayer.duration = 300
 lindenmayer.axiom = 'P=C7 V=890 I=0 T=0 d=1 v=10 p=0.5 a P=CM7 T+5 d+1 C C'
+-- lindenmayer.rules['a'] = 'a K L v+2 K L V+126 a v-2 C V-2 P=CM7 d+.25 T-5 V-205 a L T+2 L d-.325 V-9 a P=C7  K '  
 lindenmayer.rules['a'] = 'a K L v+2 K L V+126 a v-2 C V-2 P=CM7 d+.25 T-5 V-205 a L T+2 L d-.325 V-9 a P=C7  K '  
 lindenmayer.iterations = 2
 lindenmayer:generate()
@@ -57,9 +58,10 @@ for key, value in ipairs(score) do
 	value[PAN+1] = pan
 end
 score:setScale(KEY, 24.0)
---score:setScale(CHANNEL, 0, 3.999)
+-- score:setScale(CHANNEL, 0, 3.999)
 score:setScale(CHANNEL, 0, 3.999)
-score:setScale(VELOCITY, 40.0, 5.5)
+-- score:setScale(VELOCITY, 40.0, 5.5)
+score:setScale(VELOCITY, 40.0, 2.75)
 score:setScale(PAN, 0.0, 1.0)
 score:sort()
 score:setDuration(60 * 10)
@@ -109,25 +111,25 @@ scoreline_i "e"
 endin
 
 gi_Droner_waveform init 1
-gk_Droner_partial1 init 1
-gk_Droner_partial2 init .2
-gk_Droner_partial3 init .1
-gk_Droner_partial4 init .1
+gk_Droner_partial1 init 4
+gk_Droner_partial2 init .02
+gk_Droner_partial3 init .05
+gk_Droner_partial4 init .003
 gk_Droner_partial5 init 0
-gk_Droner_partial6 init 0
+gk_Droner_partial6 init .1
 gk_Droner_partial7 init 0
 gk_Droner_partial8 init 0
 gk_Droner_partial9 init 0
 gk_Droner_partial10 init 0
 gk_Droner_level init -2
-gk_Droner_level init 0
+gk_Droner_level init (0 + 8 - 13 -3)
 gk_Droner_pan init .5
 
 gk_Blower2_grainDensity init 400
 gk_Blower2_grainDuration init 0.02
 gk_Blower2_grainAmplitudeRange init .01
 gk_Blower2_grainCentsRange init 4
-gk_Blower2_level init -36
+gk_Blower2_level init (-36 + 12 -2)
 gk_Blower2_midi_dynamic_range init 127
 
 gk_Sweeper_midi_dynamic_range init 127
@@ -137,17 +139,16 @@ gk_Sweeper_britel init 1
 gk_Sweeper_briteh init 3
 gk_Sweeper_britels init 0.2
 gk_Sweeper_britehs init 0.6
-gk_Sweeper_level init -10
-gk_Sweeper_level init -2
-
-gk_FMModulatedChorus_level init 46
-gi_FMModulatedChorus_attack init 0.003
-gi_FMModulatedChorus_release init 0.01
+gk_Sweeper_britel init -2
+gk_Sweeper_briteh init 2
+gk_Sweeper_britels init (8 / 24)
+gk_Sweeper_britehs init (8 / 3)
+gk_Sweeper_level init (-2 -6)
 
 gk_Buzzer_attack init .125
 gk_Buzzer_release init .25
-gk_Buzzer_harmonics init 3
-gk_Buzzer_level init -13
+gk_Buzzer_harmonics init 2
+gk_Buzzer_level init (-13 -6)
 gk_Buzzer_midi_dynamic_range init 127
 
 gk_ParametricEQ_Frequency init 3500
@@ -161,7 +162,7 @@ gi_Reverb_delay_modulation init .02
 gk_Reverb_frequency_cutoff init 11000
 gk_Reverb_Wet init .5
 
-gk_MasterOutput_level init 8
+gk_MasterOutput_level init (8 +6 +6)
 
 connect "Droner",               "outleft",  "ReverbSC",         "inleft"
 connect "Droner",               "outright", "ReverbSC",         "inright"
@@ -178,14 +179,14 @@ connect "ParametricEQ",         "outright", "MasterEnvelope",   "inright"
 connect "MasterEnvelope",       "outleft",  "MasterOutput",     "inleft"
 connect "MasterEnvelope",       "outright", "MasterOutput",     "inright"
 
-schedule "TurnOff", 625, 1
+schedule "TurnOff", 626, 1
 alwayson "ReverbSC"
 alwayson "ParametricEQ"
-alwayson "MasterEnvelope", .01, 610, 5
+alwayson "MasterEnvelope", .01, 620, 5
 alwayson "MasterOutput"
 
 </CsInstruments>
 <CsScore>
-f 0 [10 * 6 + 20]
+f 0 [10 * 6 + 45]
 </CsScore>
 </CsoundSynthesizer>
