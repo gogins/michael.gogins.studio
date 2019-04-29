@@ -77,7 +77,7 @@ var generate = function() {
     lsys.score.setScale(3, 1, 8.125);
     //lsys.score.setScale(3, 8, 0);
     lsys.score.setScale(4, 24, 72);
-    lsys.score.setScale(5, 60, 9);
+    lsys.score.setScale(5, 60, 8);
     lsys.score.setScale(7, 0, 1);
     lsys.score.temper(12);
     csound.message("Conforming to chords...\n");
@@ -177,6 +177,7 @@ var render = function(soundfile, post_process) {
     csound.setOption('-W');
     csound.setOption('-f');
     csound.setOption('-o' + soundfile_name);
+    //csound.setOption('-odac');
     csound.setMetadata("artist", "Michael Gogins");
     csound.setMetadata("copyright", "Copyright 2019 by Michael Gogins");
     csound.setMetadata("performer", "Mike Gogins");
@@ -307,7 +308,7 @@ var default_json = {
         "gk_FMWaterBell_index": 1.1401499375260309,
         "gk_FMWaterBell_vibrato_depth": 0.2897954989209742,
         "gk_FMWaterBell_vibrato_rate": 4.762100503545371,
-        "gk_FMWaterBell_level": 36.5,
+        "gk_FMWaterBell_level": 37.0,
         "gk_Phaser_ratio1": 1,
         "gk_Phaser_ratio2": 0.3333334,
         "gk_Phaser_index1": 1,
@@ -324,11 +325,11 @@ var default_json = {
         "gk_Sweeper_britel": 0.2773844231570179,
         "gk_Sweeper_briteh": 3.382178217821782,
         "gk_Sweeper_britels": 0.19575671852899576,
-        "gk_Sweeper_britehs": 0.6837340876944837,
+        "gk_Sweeper_britehs": 0.8837340876944837,
         "gk_Sweeper_level": 7.366336633663366,
         "gk_Buzzer_harmonics": 2.608203677510608,
-        "gk_Buzzer_level": 11.,
-        "gk_Shiner_level": 8.,
+        "gk_Buzzer_level": 24.74681753889675,
+        "gk_Shiner_level": 16.056577086280058,
         "gk_Blower_grainDensity": 79.99177885109444,
         "gk_Blower_grainDuration": 0.2,
         "gk_Blower_grainAmplitudeRange": 87.88408180043162,
@@ -398,7 +399,7 @@ window.onload = function() {
     get_csound(handleMessage);
     try {
         var temporary_json = Silencio.restoreDatGuiJson(default_json);
-        default_json = temporary_json;
+        //default_json = temporary_json;
         gui = new dat.GUI({load: default_json, width: 300});
         csound.message("Restored Csound instrument parameters.\n");
     } catch(e) {
@@ -600,7 +601,12 @@ k_space_bottom_to_top = p8
 i_phase = p9
 i_frequency = cpsmidinn(i_midi_key)
 ; Adjust the following value until "overall amps" at the end of performance is about -6 dB.
+if i_midi_key > 42 goto high_level
+i_level_correction = -23.5
+goto end_level
+high_level:
 i_level_correction = -20
+end_level:
 i_normalization = ampdb(-i_level_correction) / 2
 i_amplitude = ampdb(i_midi_velocity) * i_normalization * 1.6
 k_gain = ampdb(gk_FMWaterBell_level)
