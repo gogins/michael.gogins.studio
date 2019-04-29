@@ -129,7 +129,7 @@ gk_Blower2_grainDensity init 400
 gk_Blower2_grainDuration init 0.02
 gk_Blower2_grainAmplitudeRange init .01
 gk_Blower2_grainCentsRange init 4
-gk_Blower2_level init (-36 + 12 -2)
+gk_Blower2_level init (-36 + 12 -2 -3)
 gk_Blower2_midi_dynamic_range init 127
 
 gk_Sweeper_midi_dynamic_range init 127

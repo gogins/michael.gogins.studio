@@ -56,7 +56,7 @@
 #EXTINF:-1,08-silence-2003-07-07--19.52.47-.py.wav
 /home/mkg/Dropbox/studio/04_to_copyright/Semblance/08-silence-2003-07-07--19.52.47-.py.wav
 #EXTINF:-1,08-silence-2003-07-07-19.52.47.py.wav
-/home/mkg/Dropbox/Michael Gogins/Semblance/08-silence-2003-07-07-19.52.47.py.wav
+/home/mkg/Dropbox/2019_ICMC-NYCEMF/submissions/08-silence-2003-07-07-19.52.47.py.wav
 #EXTINF:-1,09-Hex.wav
 /home/mkg/Dropbox/Michael Gogins/Garden of Algorithms/09-Hex.wav
 #EXTINF:-1,09-zodiac.wav
@@ -69,6 +69,16 @@
 /home/mkg/Dropbox/Michael Gogins/Garden of Algorithms/12-Three Trees.wav
 #EXTINF:-1,13\Submission 13.wav
 /home/mkg/ICMC2018/13\Submission 13.wav
+#EXTINF:-1,308 Submission.wav
+/home/mkg/Dropbox/2019_ICMC-NYCEMF/reviews/308 Submission.wav
+#EXTINF:-1,311 Submission.wav
+/home/mkg/Dropbox/2019_ICMC-NYCEMF/reviews/311 Submission.wav
+#EXTINF:-1,326 Submission.wav
+/home/mkg/Dropbox/2019_ICMC-NYCEMF/reviews/326 Submission.wav
+#EXTINF:-1,334 Submission.wav
+/home/mkg/Dropbox/2019_ICMC-NYCEMF/reviews/334 Submission.wav
+#EXTINF:-1,356 Submission.wav
+/home/mkg/Dropbox/2019_ICMC-NYCEMF/reviews/356 Submission.wav
 #EXTINF:-1,598\Submission 598.wav
 /home/mkg/ICMC2018/598\Submission 598.wav
 #EXTINF:-1,92021__knufds__stream-02.wav
@@ -165,6 +175,10 @@
 /home/mkg/Dropbox/2013-Csound-MKG/Gogins Submissions/Drone IV/Drone-IV-1377971544.tagged.wav
 #EXTINF:-1,Drone-VIII-d.wav
 /home/mkg/Dropbox/2014-LAC-MKG/Submission/Drone-VIII-d.wav
+#EXTINF:-1,Drone-VIII-e.csd.wav
+/home/mkg/michael.gogins.studio/music/Drone/Drone-VIII-e.csd.wav
+#EXTINF:-1,Drone-VIII-e.wav
+/home/mkg/michael.gogins.studio/music/Drone/Drone-VIII-e.wav
 #EXTINF:-1,Example1.wav
 /home/mkg/Dropbox/music/ComposingInC++/Example1.wav
 #EXTINF:-1,Fractal 23.wav
@@ -185,14 +199,18 @@
 /home/mkg/Dropbox/2015-02-15 Spectrum NYC/Hesperide.wav
 #EXTINF:-1,Ladon-1-d.wav
 /home/mkg/Dropbox/2014-11-05 Spectrum NYC/Ladon-1-d.wav
+#EXTINF:-1,Michael Gogins -- Drone VIII e.master.wav
+/home/mkg/michael.gogins.studio/music/Drone/Michael Gogins -- Drone VIII e.master.wav
 #EXTINF:-1,Michael Gogins -- NYCEMF -- Track 1 -- Black_Mountain.7d.html.master.wav
 /home/mkg/Dropbox/2017-06-25 NYCEMF/Michael Gogins -- NYCEMF -- Track 1 -- Black_Mountain.7d.html.master.wav
 #EXTINF:-1,Michael Gogins -- Pange Lingua.master.wav
 /home/mkg/michael.gogins.studio/music/Triphase/Michael Gogins -- Pange Lingua.master.wav
+#EXTINF:-1,Michael Gogins -- Poustinia v2 f8e4108.master.wav
+/home/mkg/Dropbox/2019_ICMC-NYCEMF/submissions/Michael Gogins -- Poustinia v2 f8e4108.master.wav
 #EXTINF:-1,Michael Gogins -- Test Piece v1.master.wav
 /home/mkg/michael.gogins.studio/music/Michael Gogins -- Test Piece v1.master.wav
 #EXTINF:-1,Michael Gogins -- Three Trees v2.master.wav
-/home/mkg/michael.gogins.studio/music/Michael Gogins -- Three Trees v2.master.wav
+/home/mkg/michael.gogins.studio/music/Poustinia/Michael Gogins -- Three Trees v2.master.wav
 #EXTINF:-1,Michael Gogins -- ThreeTrees v2.master.wav
 /home/mkg/michael.gogins.studio/music/Michael Gogins -- ThreeTrees v2.master.wav
 #EXTINF:-1,Michael Gogins -- Triphase Aeolus 1.master.wav
@@ -207,6 +225,48 @@
 /home/mkg/michael.gogins.studio/music/Michael Gogins -- Triphase.master.wav
 #EXTINF:-1,Michael Gogins -- scratch.master.wav
 /home/mkg/michael.gogins.studio/music/Michael Gogins -- scratch.master.wav
+#EXTINF:-1,Michael_Gogins-Poustinia_Variation_2-normalized.wav
+/home/mkg/michael.gogins.studio/music/Poustinia/Michael_Gogins-Poustinia_Variation_2-normalized.wav
+#EXTINF:-1,Michael_Gogins-Poustinia_Variation_2.wav
+/home/mkg/michael.gogins.studio/music/Poustinia/Michael_Gogins-Poustinia_Variation_2.wav
+#EXTINF:-1,Michael_Gogins-Poustinia_Variation_4-normalized.wav
+/home/mkg/michael.gogins.studio/music/Poustinia/Michael_Gogins-Poustinia_Variation_4-normalized.wav
+#EXTINF:-1,Michael_Gogins-Poustinia_Variation_4.wav
+/home/mkg/michael.gogins.studio/music/Poustinia/Michael_Gogins-Poustinia_Variation_4.wav
+#EXTINF:-1,Michael_Gogins-Poustinia_Variation_4a-normalized.wav
+/home/mkg/michael.gogins.studio/music/Poustinia/Michael_Gogins-Poustinia_Variation_4a-normalized.wav
+#EXTINF:-1,Michael_Gogins-Poustinia_Variation_4a.wav
+/home/mkg/michael.gogins.studio/music/Poustinia/Michael_Gogins-Poustinia_Variation_4a.wav
+#EXTINF:-1,Michael_Gogins-Poustinia_Variation_5-normalized.wav
+/home/mkg/michael.gogins.studio/music/Poustinia/Michael_Gogins-Poustinia_Variation_5-normalized.wav
+#EXTINF:-1,Michael_Gogins-Poustinia_Variation_5.wav
+/home/mkg/michael.gogins.studio/music/Poustinia/Michael_Gogins-Poustinia_Variation_5.wav
+#EXTINF:-1,Michael_Gogins_--_Blue_Leaves_4e1.master.wav
+/home/mkg/michael.gogins.studio/music/Blue_Leaves_4e/Michael_Gogins_--_Blue_Leaves_4e1.master.wav
+#EXTINF:-1,Michael_Gogins_--_Blue_Leaves_4e1.norm.wav
+/home/mkg/michael.gogins.studio/music/Blue_Leaves_4e/Michael_Gogins_--_Blue_Leaves_4e1.norm.wav
+#EXTINF:-1,Michael_Gogins_--_Blue_Leaves_4e2.master.wav
+/home/mkg/michael.gogins.studio/music/Blue_Leaves_4e/Michael_Gogins_--_Blue_Leaves_4e2.master.wav
+#EXTINF:-1,Michael_Gogins_--_Blue_Leaves_4e2.norm.wav
+/home/mkg/michael.gogins.studio/music/Blue_Leaves_4e/Michael_Gogins_--_Blue_Leaves_4e2.norm.wav
+#EXTINF:-1,Michael_Gogins_--_Blue_Leaves_4e2_Ambisonic_2b.master.wav
+/home/mkg/michael.gogins.studio/music/Blue_Leaves_4e/Michael_Gogins_--_Blue_Leaves_4e2_Ambisonic_2b.master.wav
+#EXTINF:-1,Michael_Gogins_--_Blue_Leaves_4e2_Ambisonic_2b.norm.wav
+/home/mkg/michael.gogins.studio/music/Blue_Leaves_4e/Michael_Gogins_--_Blue_Leaves_4e2_Ambisonic_2b.norm.wav
+#EXTINF:-1,Michael_Gogins_--_Blue_Leaves_4e_Ambisonic.master.wav
+/home/mkg/michael.gogins.studio/music/Blue_Leaves_4e/Michael_Gogins_--_Blue_Leaves_4e_Ambisonic.master.wav
+#EXTINF:-1,Michael_Gogins_--_Blue_Leaves_4e_Ambisonic.norm.wav
+/home/mkg/michael.gogins.studio/music/Blue_Leaves_4e/Michael_Gogins_--_Blue_Leaves_4e_Ambisonic.norm.wav
+#EXTINF:-1,Michael_Gogins_--_Blue_Leaves_4e_Ambisonic_1.master.wav
+/home/mkg/michael.gogins.studio/music/Blue_Leaves_4e/Michael_Gogins_--_Blue_Leaves_4e_Ambisonic_1.master.wav
+#EXTINF:-1,Michael_Gogins_--_Blue_Leaves_4e_Ambisonic_2.master.wav
+/home/mkg/michael.gogins.studio/music/Blue_Leaves_4e/Michael_Gogins_--_Blue_Leaves_4e_Ambisonic_2.master.wav
+#EXTINF:-1,Michael_Gogins_--_Blue_Leaves_4e_Ambisonic_2.norm.wav
+/home/mkg/michael.gogins.studio/music/Blue_Leaves_4e/Michael_Gogins_--_Blue_Leaves_4e_Ambisonic_2.norm.wav
+#EXTINF:-1,Michael_Gogins_--_Blue_Leaves_6b.master.wav
+/home/mkg/michael.gogins.studio/music/Blue_Leaves_6/Michael_Gogins_--_Blue_Leaves_6b.master.wav
+#EXTINF:-1,Michael_Gogins_--_Blue_Leaves_6b.norm.wav
+/home/mkg/michael.gogins.studio/music/Blue_Leaves_6/Michael_Gogins_--_Blue_Leaves_6b.norm.wav
 #EXTINF:-1,Michael_Gogins_--_Car_Track.master.wav
 /home/mkg/Dropbox/2019_ICMC-NYCEMF/Michael_Gogins_--_Car_Track.master.wav
 #EXTINF:-1,Michael_Gogins_--_Car_Track.norm.wav
@@ -244,7 +304,7 @@
 #EXTINF:-1,Mountain_Drone.wav
 /home/mkg/Dropbox/music/qt_drone/Mountain_Drone.wav
 #EXTINF:-1,Pange-Lingua.wav
-/home/mkg/michael.gogins.studio/music/Pangue-Lingua/Pange-Lingua.wav
+/home/mkg/michael.gogins.studio/music/Pange-Lingua/Pange-Lingua.wav
 #EXTINF:-1,Parachronic.norm.wav
 /home/mkg/Dropbox/2018-07-16 NYCEMF/Parachronic_NYCEMF/Parachronic.norm.wav
 #EXTINF:-1,Parachronic.wav
@@ -282,7 +342,15 @@
 #EXTINF:-1,Parachronic_A.wav
 /home/mkg/Dropbox/2018-07-16 NYCEMF/Parachronic_A.wav
 #EXTINF:-1,Poustinia-normalized.wav
-/home/mkg/Dropbox/2015-09-01 ICSC/html/Poustinia-normalized.wav
+/home/mkg/Dropbox/2019_ICMC-NYCEMF/submissions/Poustinia-normalized.wav
+#EXTINF:-1,Poustinia-v2-8.wav
+/home/mkg/michael.gogins.studio/music/samples/Poustinia-v2-8.wav
+#EXTINF:-1,Poustinia-v2.wav
+/home/mkg/michael.gogins.studio/music/Poustinia/Poustinia-v2.wav
+#EXTINF:-1,Poustinia-v3.wav
+/home/mkg/michael.gogins.studio/music/Poustinia/Poustinia-v3.wav
+#EXTINF:-1,Poustinia-v4.wav
+/home/mkg/michael.gogins.studio/music/Poustinia/Poustinia-v4.wav
 #EXTINF:-1,Poustinia.wav
 /home/mkg/Dropbox/2015-09-01 ICSC/html/Poustinia.wav
 #EXTINF:-1,Semblance 09 chaotic dynamical system.wav
@@ -297,6 +365,8 @@
 /home/mkg/Dropbox/music/Study_4/Study.4.norm.wav
 #EXTINF:-1,Study.4.wav
 /home/mkg/Dropbox/music/Study_4/Study.4.wav
+#EXTINF:-1,Submission 230.wav
+/home/mkg/Dropbox/2019_ICMC-NYCEMF/reviews/Submission 230.wav
 #EXTINF:-1,Telamon - Copy.wav
 /home/mkg/Dropbox/2015-06-22 NYCEMF/Telamon - Copy.wav
 #EXTINF:-1,Telamon.wav
@@ -385,10 +455,8 @@
 /home/mkg/Dropbox/music/Yellow_Leaves/Yellow_Leaves_9.norm.wav
 #EXTINF:-1,Yellow_Leaves_9.wav
 /home/mkg/Dropbox/music/Yellow_Leaves/Yellow_Leaves_9.wav
-#EXTINF:-1,_--_Blue_Leaves_4e.master.wav
-/home/mkg/michael.gogins.studio/music/Blue_Leaves_4e/_--_Blue_Leaves_4e.master.wav
 #EXTINF:-1,cellular.wav
-/home/mkg/Dropbox/tutorial/code/01_DiceGame/cellular.wav
+/home/mkg/michael.gogins.studio/music/Cellular/cellular.wav
 #EXTINF:-1,counterpoint.wav
 /home/mkg/Dropbox/studio/01_workshop/counterpoint/counterpoint.wav
 #EXTINF:-1,csound-2005-03-06--03.38.19.py.wav
@@ -407,6 +475,18 @@
 /home/mkg/Dropbox/tutorial/csoundac-tutorial-1.wav
 #EXTINF:-1,drone.py.wav
 /home/mkg/Dropbox/studio/01_workshop/drone.py.wav
+#EXTINF:-1,extend_envelope_1.wav
+/home/mkg/Dropbox/performance_mode/extend_envelope_1.wav
+#EXTINF:-1,extend_envelope_1_fout.wav
+/home/mkg/Dropbox/performance_mode/extend_envelope_1_fout.wav
+#EXTINF:-1,extend_envelope_2_fout.wav
+/home/mkg/Dropbox/performance_mode/extend_envelope_2_fout.wav
+#EXTINF:-1,extend_envelope_3.wav
+/home/mkg/Dropbox/performance_mode/extend_envelope_3.wav
+#EXTINF:-1,extend_envelope_3_fout.wav
+/home/mkg/Dropbox/performance_mode/extend_envelope_3_fout.wav
+#EXTINF:-1,extend_envelope_4_fout.wav
+/home/mkg/michael.gogins.studio/music/samples/extend_envelope_4_fout.wav
 #EXTINF:-1,f--2002-01-28--17-37-42.042.mm.a.wav
 /home/mkg/Dropbox/2014-NYCEMF-MKG/submissions/f--2002-01-28--17-37-42.042.mm.a.wav
 #EXTINF:-1,f--2002-01-28--17-37-42.042.mm.b.wav
@@ -573,6 +653,8 @@
 /home/mkg/Dropbox/2010-ICMC-MKG/60x60/mkg-2009-12-30-8.py.wav
 #EXTINF:-1,mkg-2010-03-16-e-1.py.wav
 /home/mkg/Dropbox/music/mkg-2010-03-16-e/mkg-2010-03-16-e-1.py.wav
+#EXTINF:-1,music_model_output.wav
+/home/mkg/michael.gogins.studio/music/Blue_Leaves_4e/music_model_output.wav
 #EXTINF:-1,reich-mkg.cm.wav
 /home/mkg/michael.gogins.studio/music/reich-mkg.cm.wav
 #EXTINF:-1,scratch.wav

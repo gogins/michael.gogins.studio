@@ -143,7 +143,7 @@ for line in lines:
             label = '%s -- %s' % (author, title)
         else:
             label = '%s -- %s -- Track %s -- %s' % (author, album, track, title)
-        master_filename = '%s.master.wav' % label
+        master_filename = '%s.normalized.wav' % label
         spectrogram_filename = '%s.png' % label
         cd_quality_filename = '%s.cd.wav' % label
         mp3_filename = '%s.mp3' % label
