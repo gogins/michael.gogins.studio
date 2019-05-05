@@ -41,7 +41,7 @@ print
 print 'Set "rendering" to:     "cd", "preview" (default), or "audio".'
 print 'Set "playback" to:      True (default) or False.'
 print
-rendering = 'preview'
+rendering = 'cd'
 playback = True
 print 'Rendering option:       %s' % rendering
 print 'Play after rendering:   %s' % playback
@@ -63,6 +63,7 @@ print 'CREATING MUSIC MODEL...'
 print
 
 minuetTable = {}
+# Put some changes in here, perhaps a bitonal differential.
 minuetTable[ 2] = { 1: 96,  2: 22,  3:141,  4: 41,  5:105,  6:122,  7: 11,  8: 30,  9: 70, 10:121, 11: 26, 12:  9, 13:112, 14: 49, 15:109, 16: 14}
 minuetTable[ 3] = { 1: 32,  2:  6,  3:128,  4: 63,  5:146,  6: 46,  7:134,  8: 81,  9:117, 10: 39, 11:126, 12: 56, 13:174, 14: 18, 15:116, 16: 83}
 minuetTable[ 4] = { 1: 69,  2: 95,  3:158,  4: 13,  5:153,  6: 55,  7:110,  8: 24,  9: 66, 10:139, 11: 15, 12:132, 13: 73, 14: 58, 15:145, 16: 79}
@@ -75,12 +76,22 @@ minuetTable[10] = { 1: 98,  2:142,  3: 42,  4:156,  5: 75,  6:129,  7: 62,  8:12
 minuetTable[11] = { 1:  3,  2: 87,  3:165,  4: 61,  5:135,  6: 47,  7:147,  8: 33,  9:102, 10:  4, 11: 31, 12:164, 13:144, 14: 59, 15:173, 16: 78}
 minuetTable[12] = { 1: 54,  2:130,  3: 10,  4:103,  5: 28,  6: 37,  7:106,  8:  5,  9: 35, 10: 20, 11:108, 12: 92, 13: 12, 14:124, 15: 44, 16:131}
 
+def reverse_enumeration(L):
+   for index in reversed(xrange(len(L))):
+      yield index, L[index]
+   
 def readMeasure(number):
     scoreNode = CsoundAC.ScoreNode()
     scoreNode.thisown = 0
     filename = 'M' + str(number) + '.mid'
     print 'Reading "%s"' % (filename)
-    scoreNode.getScore().load(filename)
+    score = scoreNode.getScore()
+    score.load(filename)
+    # Remove false notes.
+    for i, event in reverse_enumeration(score):
+        if event.getChannel() < 0:
+            score.remove(i)
+    print score.getCsoundScore()
     return scoreNode
 
 def buildTrack(sequence, channel, bass):
@@ -95,10 +106,10 @@ def buildTrack(sequence, channel, bass):
                 rescale = CsoundAC.Rescale()
                 rescale.setRescale(CsoundAC.Event.TIME, bool(1), bool(0), cumulativeTime, 0)
                 rescale.setRescale(CsoundAC.Event.INSTRUMENT, bool(1), bool(0), channel, 0)
-                rescale.setRescale(CsoundAC.Event.KEY, bool(1), bool(0), bass, 0)
+                rescale.setRescale(CsoundAC.Event.KEY, bool(1), bool(0), float(bass), 48)
                 rescale.thisown = 0
                 rescale.addChild(measure)
-                print 'Repeat %4d of %4d at %8.3f with %3d notes of duration %7.3f...' %(k + 1, repeatCount, cumulativeTime, len(measure.getScore()), duration)
+                print 'Repeat %4d of %4d at %8.3f with %3d notes of duration %7.3f at bass %7.3f...' %(k + 1, repeatCount, cumulativeTime, len(measure.getScore()), duration, bass)
                 sequence.addChild(rescale)
                 cumulativeTime = cumulativeTime + duration
 
@@ -107,28 +118,28 @@ model.setAuthor("Michael Gogins")
 model.setArtist("Michael Gogins")
 model.setTitle("Cellular")
 model.addChild(sequence)
-model.setConformPitches(True)
-sequence.setRescale(CsoundAC.Event.KEY,        bool(1), bool(1), 24, 48)
+#model.setConformPitches(bool(1))
+sequence.setRescale(CsoundAC.Event.KEY,        bool(1), bool(0), 12, 48)
 sequence.setRescale(CsoundAC.Event.VELOCITY,   bool(1), bool(1), 60, 12)
-sequence.setRescale(CsoundAC.Event.PITCHES,    bool(1), bool(1), CsoundAC.Conversions_nameToM("Ab major"), 0)
+sequence.setRescale(CsoundAC.Event.PITCHES,    bool(1), bool(0), CsoundAC.Conversions_nameToM("A major"), 0)
 #sequence.setRescale(CsoundAC.Event.KEY,        bool(1), bool(0), 24, 48)
 sequence.setRescale(CsoundAC.Event.INSTRUMENT, bool(1), bool(1),  0, 5)
-sequence.setRescale(CsoundAC.Event.TIME,       bool(1), bool(1),  0, 700)
-sequence.setRescale(CsoundAC.Event.DURATION,   bool(1), bool(1),  1.0, 3.0)
-buildTrack(sequence, 1, (36-12))
-buildTrack(sequence, 2, (48-12))
-buildTrack(sequence, 3, (36-12))
-buildTrack(sequence, 4, (48-12))
-buildTrack(sequence, 5, (60-12))
+sequence.setRescale(CsoundAC.Event.TIME,       bool(1), bool(1),  1, 700)
+#sequence.setRescale(CsoundAC.Event.DURATION,   bool(1), bool(1),  .025, .03)
+buildTrack(sequence, 1, 24)
+buildTrack(sequence, 2, 36)
+buildTrack(sequence, 3, 36)
+buildTrack(sequence, 4, 48)
+buildTrack(sequence, 5, 48)
 #model.setCppSound(csound)
-random.seed(83929)
+random.seed(8329)
 
 print 'CREATING CSOUND ORCHESTRA...'
 print
 csoundOrchestra = \
 '''
 
-sr                              =                       96000
+sr                              =                       48000
 ksmps                           =                       100
 nchnls                          =                       2
 iampdbfs                        init                    32768
@@ -3238,27 +3249,30 @@ aoutright                       =                       gkMasterLevel * ainright
 print 'CREATING CSOUND ARRANGEMENT...'
 print
 
+# Good: 8 14 23
+
 model.setCsoundOrchestra(csoundOrchestra)
 #model.setCsoundScoreHeader(csoundScoreHeader)
 #             oldinsno, newinso, level (+-dB), pan (-1.0 through +1.0)
 panIncrement = 1./6.
 pan = 0.
-model.arrange( 0,        8,      -30.0+30,          pan )
+model.arrange( 0,       19,     0.,          pan )
 pan = pan + panIncrement
-model.arrange( 1,       20,      -30.0+30,          pan )
+model.arrange( 1,       19,     0.,          pan )
 pan = pan + panIncrement
-model.arrange( 2,       34,      -36.0+30,          pan )
+model.arrange( 2,       19,     0.,          pan )
 pan = pan + panIncrement
-model.arrange( 3,       14,      -33.0+30,          pan )
+model.arrange( 3,       19,     0.,          pan )
 pan = pan + panIncrement
-model.arrange( 4,        7,      -30.0+30,          pan )
+model.arrange( 4,       19,     0.,          pan )
 pan = pan + panIncrement
-model.arrange( 5,        9,      -30.0+30,          pan )
+model.arrange( 5,       19,     0.,          pan )
 model.setCsoundCommand(csoundCommand)
 
 print 'RENDERING...'
 print
 model.render()
+print score.getCsoundScore()
 score.save(midiFilename)
 
 
