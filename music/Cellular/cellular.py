@@ -41,7 +41,7 @@ print
 print 'Set "rendering" to:     "cd", "preview" (default), or "audio".'
 print 'Set "playback" to:      True (default) or False.'
 print
-rendering = 'cd'
+rendering = 'audio'
 playback = True
 print 'Rendering option:       %s' % rendering
 print 'Play after rendering:   %s' % playback
@@ -91,7 +91,7 @@ def readMeasure(number):
     for i, event in reverse_enumeration(score):
         if event.getChannel() < 0:
             score.remove(i)
-    print score.getCsoundScore()
+    #rint score.getCsoundScore()
     return scoreNode
 
 def buildTrack(sequence, channel, bass):
@@ -121,7 +121,7 @@ model.addChild(sequence)
 #model.setConformPitches(bool(1))
 sequence.setRescale(CsoundAC.Event.KEY,        bool(1), bool(0), 12, 48)
 sequence.setRescale(CsoundAC.Event.VELOCITY,   bool(1), bool(1), 60, 12)
-sequence.setRescale(CsoundAC.Event.PITCHES,    bool(1), bool(0), CsoundAC.Conversions_nameToM("A major"), 0)
+sequence.setRescale(CsoundAC.Event.PITCHES,    bool(1), bool(0), CsoundAC.Conversions_nameToM("D major"), 0)
 #sequence.setRescale(CsoundAC.Event.KEY,        bool(1), bool(0), 24, 48)
 sequence.setRescale(CsoundAC.Event.INSTRUMENT, bool(1), bool(1),  0, 5)
 sequence.setRescale(CsoundAC.Event.TIME,       bool(1), bool(1),  1, 700)
@@ -3249,24 +3249,24 @@ aoutright                       =                       gkMasterLevel * ainright
 print 'CREATING CSOUND ARRANGEMENT...'
 print
 
-# Good: 8 14 23
+# Good: 8 14 23 27
 
 model.setCsoundOrchestra(csoundOrchestra)
 #model.setCsoundScoreHeader(csoundScoreHeader)
 #             oldinsno, newinso, level (+-dB), pan (-1.0 through +1.0)
 panIncrement = 1./6.
 pan = 0.
-model.arrange( 0,       19,     0.,          pan )
+model.arrange( 0,       28,   0.,          pan )
 pan = pan + panIncrement
-model.arrange( 1,       19,     0.,          pan )
+model.arrange( 1,       28,   0.,          pan )
 pan = pan + panIncrement
-model.arrange( 2,       19,     0.,          pan )
+model.arrange( 2,       28,   0.,          pan )
 pan = pan + panIncrement
-model.arrange( 3,       19,     0.,          pan )
+model.arrange( 3,       28,   0.,          pan )
 pan = pan + panIncrement
-model.arrange( 4,       19,     0.,          pan )
+model.arrange( 4,       28,   0.,          pan )
 pan = pan + panIncrement
-model.arrange( 5,       19,     0.,          pan )
+model.arrange( 5,       28,   0.,          pan )
 model.setCsoundCommand(csoundCommand)
 
 print 'RENDERING...'
