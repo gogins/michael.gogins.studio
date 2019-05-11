@@ -64,6 +64,8 @@ print
 
 minuetTable = {}
 # Put some changes in here, perhaps a bitonal differential.
+# There needs to be some association between a measure and a harmony. 
+# This could be in one, or even several, master tracks, or in a separate track.
 minuetTable[ 2] = { 1: 96,  2: 22,  3:141,  4: 41,  5:105,  6:122,  7: 11,  8: 30,  9: 70, 10:121, 11: 26, 12:  9, 13:112, 14: 49, 15:109, 16: 14}
 minuetTable[ 3] = { 1: 32,  2:  6,  3:128,  4: 63,  5:146,  6: 46,  7:134,  8: 81,  9:117, 10: 39, 11:126, 12: 56, 13:174, 14: 18, 15:116, 16: 83}
 minuetTable[ 4] = { 1: 69,  2: 95,  3:158,  4: 13,  5:153,  6: 55,  7:110,  8: 24,  9: 66, 10:139, 11: 15, 12:132, 13: 73, 14: 58, 15:145, 16: 79}
@@ -80,29 +82,36 @@ def reverse_enumeration(L):
    for index in reversed(xrange(len(L))):
       yield index, L[index]
    
-def readMeasure(number):
+CM = CsoundAC.Conversions_nameToM("CM")
+Em = CsoundAC.Conversions.nameToM("Em")
+BbM = CsoundAC.Conversions.nameToM("BbM")
+
+def readMeasure(number, pitches):
     scoreNode = CsoundAC.ScoreNode()
     scoreNode.thisown = 0
     filename = 'M' + str(number) + '.mid'
-    print 'Reading "%s"' % (filename)
     score = scoreNode.getScore()
     score.load(filename)
     # Remove false notes.
     for i, event in reverse_enumeration(score):
+        event.setPitches(pitches)
         if event.getChannel() < 0:
             score.remove(i)
     #rint score.getCsoundScore()
-    return scoreNode
+    score.setDuration(random.choice([12, 9, 15]))
+    print 'Read "%s" with duration %9.4f.' % (filename, score.getDuration())
+    return scoreNode    
 
 def buildTrack(sequence, channel, bass):
     print 'Building track for channel %3d bass %3d...' % (channel, bass)
     cumulativeTime = 0.0
     for i in xrange(1, 16):
-        for j in xrange(2, 6):
+        pitches = random.choice([CM, Em, CM, Em, BbM])
+        for j in xrange(3, 7):
             repeatCount = 1 + int(random.random() * 12)
             for k in xrange(repeatCount):
-                measure = readMeasure(minuetTable[j][i])
-                duration = 1.5
+                measure = readMeasure(minuetTable[j][i], pitches)
+                duration = measure.getScore().getDuration()
                 rescale = CsoundAC.Rescale()
                 rescale.setRescale(CsoundAC.Event.TIME, bool(1), bool(0), cumulativeTime, 0)
                 rescale.setRescale(CsoundAC.Event.INSTRUMENT, bool(1), bool(0), channel, 0)
@@ -118,10 +127,10 @@ model.setAuthor("Michael Gogins")
 model.setArtist("Michael Gogins")
 model.setTitle("Cellular")
 model.addChild(sequence)
-#model.setConformPitches(bool(1))
-sequence.setRescale(CsoundAC.Event.KEY,        bool(1), bool(0), 12, 48)
+model.setConformPitches(bool(1))
+#sequence.setRescale(CsoundAC.Event.KEY,        bool(1), bool(0), 12, 48)
 sequence.setRescale(CsoundAC.Event.VELOCITY,   bool(1), bool(1), 60, 12)
-sequence.setRescale(CsoundAC.Event.PITCHES,    bool(1), bool(0), CsoundAC.Conversions_nameToM("D major"), 0)
+#sequence.setRescale(CsoundAC.Event.PITCHES,    bool(1), bool(1), CsoundAC.Conversions_nameToM("Cb major"), 0)
 #sequence.setRescale(CsoundAC.Event.KEY,        bool(1), bool(0), 24, 48)
 sequence.setRescale(CsoundAC.Event.INSTRUMENT, bool(1), bool(1),  0, 5)
 sequence.setRescale(CsoundAC.Event.TIME,       bool(1), bool(1),  1, 700)
