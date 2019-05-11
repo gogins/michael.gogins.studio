@@ -1,9 +1,11 @@
 '''
-TUTORIAL COMPOSITION DEMONSTRATING THE USE OF CELLULAR ACCRETION
-Copyright (C) 2005 -- 2007 by Michael Gogins.
-All rights reserved.
-This software is licensed under the terms of the
-GNU Lesser General Public License.
+Cellular, for Computer Piano
+
+Copyright (C) 2019 by Michael Gogins
+
+Mozart's musical dice game is taken apart and put back together along the 
+lines of Terry Riley's "In C" using Python, and realized using Csound with 
+the Pianoteq synthesized piano.
 '''
 print __doc__
 print 'IMPORTING REQUIRED MODULES...'
@@ -11,6 +13,7 @@ print
 import CsoundAC
 import os
 import random
+random.seed(839)
 import signal
 import string
 import sys
@@ -46,9 +49,8 @@ playback = True
 print 'Rendering option:       %s' % rendering
 print 'Play after rendering:   %s' % playback
 commandsForRendering = {
-    'cd':       'csound -r 44100 -k 44100 -m195 -+msg_color=0 -RWZdfo %s' % (soundfileName),
-    'preview':  'csound -r 44100 -k 100   -m195 -+msg_color=0 -RWZdfo %s' % (soundfileName),
-    'audio':    'csound -r 44100 -k 100   -m195 -+msg_color=0 -RWZdfo %s' % (dacName),
+    'soundfile':    'csound -r 96000 -k 100 -m195 -+msg_color=0 -RWZdfo %s' % (soundfileName),
+    'audio':        'csound -r 48000 -k 100 -m0   -+msg_color=0 -RWZdfo %s' % (dacName),
 }    
 csoundCommand = commandsForRendering[rendering]
 print 'Csound command line:    %s' % csoundCommand
@@ -85,6 +87,7 @@ def reverse_enumeration(L):
 CM = CsoundAC.Conversions_nameToM("CM")
 Em = CsoundAC.Conversions.nameToM("Em")
 BbM = CsoundAC.Conversions.nameToM("BbM")
+GM9 = CsoundAC.Conversions.nameToM("GM9")
 
 def readMeasure(number, pitches):
     scoreNode = CsoundAC.ScoreNode()
@@ -98,7 +101,7 @@ def readMeasure(number, pitches):
         if event.getChannel() < 0:
             score.remove(i)
     #rint score.getCsoundScore()
-    score.setDuration(random.choice([12, 9, 15]))
+    score.setDuration(random.choice([2, 3, 4, 6, 8]))
     print 'Read "%s" with duration %9.4f.' % (filename, score.getDuration())
     return scoreNode    
 
@@ -106,8 +109,8 @@ def buildTrack(sequence, channel, bass):
     print 'Building track for channel %3d bass %3d...' % (channel, bass)
     cumulativeTime = 0.0
     for i in xrange(1, 16):
-        pitches = random.choice([CM, Em, CM, Em, BbM])
         for j in xrange(3, 7):
+            pitches = random.choice([CM, Em, CM, Em, BbM, GM9])
             repeatCount = 1 + int(random.random() * 12)
             for k in xrange(repeatCount):
                 measure = readMeasure(minuetTable[j][i], pitches)
@@ -125,85 +128,49 @@ def buildTrack(sequence, channel, bass):
 sequence = CsoundAC.Rescale()
 model.setAuthor("Michael Gogins")
 model.setArtist("Michael Gogins")
-model.setTitle("Cellular")
+model.setTitle("Cellular, for Computer Piano")
 model.addChild(sequence)
 model.setConformPitches(bool(1))
-#sequence.setRescale(CsoundAC.Event.KEY,        bool(1), bool(0), 12, 48)
-sequence.setRescale(CsoundAC.Event.VELOCITY,   bool(1), bool(1), 60, 12)
-#sequence.setRescale(CsoundAC.Event.PITCHES,    bool(1), bool(1), CsoundAC.Conversions_nameToM("Cb major"), 0)
-#sequence.setRescale(CsoundAC.Event.KEY,        bool(1), bool(0), 24, 48)
-sequence.setRescale(CsoundAC.Event.INSTRUMENT, bool(1), bool(1),  0, 5)
-sequence.setRescale(CsoundAC.Event.TIME,       bool(1), bool(1),  1, 700)
-#sequence.setRescale(CsoundAC.Event.DURATION,   bool(1), bool(1),  .025, .03)
+sequence.setRescale(CsoundAC.Event.VELOCITY,   bool(1), bool(1), 60, 24)
+sequence.setRescale(CsoundAC.Event.INSTRUMENT, bool(1), bool(1),  1, 5)
+#sequence.setRescale(CsoundAC.Event.TIME,       bool(1), bool(1),  1, 1700)
 buildTrack(sequence, 1, 24)
 buildTrack(sequence, 2, 36)
 buildTrack(sequence, 3, 36)
 buildTrack(sequence, 4, 48)
 buildTrack(sequence, 5, 48)
-#model.setCppSound(csound)
-random.seed(8329)
 
 print 'CREATING CSOUND ORCHESTRA...'
 print
 csoundOrchestra = \
 '''
 
-sr = 48000
-ksmps = 64
-nchnls = 2 
-0dbfs = 1
-nchnls = 2 ; Changed for WebAssembly output from: = 2
+sr              =               48000
+ksmps           =               64
+nchnls          =               2 
+0dbfs           =               1
 
-alwayson "PianoOutput"
+gi_pianoteq     vstinit         "/home/mkg/pianoteq_linux_v630/Pianoteq\ 6/amd64/Pianoteq\ 6.so", 0
+                vstinfo         gi_pianoteq
 
-                ; Load the Pianoteq into memory.
-gipianoteq      vstinit         "/home/mkg/pianoteq_linux_v630/Pianoteq\ 6/amd64/Pianoteq\ 6.so", 0
-                
-                ; Print information about the Pianoteq, such as parameter names and numbers.
-                vstinfo         gipianoteq
-                
-                ; Open the Pianoteq's GUI.
-                ;vstedit         gipianoteq
-
-                ; Send notes from the score to the Pianoteq.
-                instr 1 
-                ; MIDI channels are numbered starting at 0.
-                ; p3 always contains the duration of the note.
-                ; p4 contains the MIDI key number (pitch),
-                ; p5 contains the MIDI velocity number (loudness),
-imidichannel    init            0
-                vstnote         gipianoteq, imidichannel, p4, p5, p3
+                instr 1, 2, 3, 4, 5, 6 
+i_midichannel   init            0
+                vstnote         gi_pianoteq, i_midichannel, p4, p5, p3
+                prints          "Pianoteq:    Channel: %3d Time: %9.4f Duration: %9.4f Key: %9.4f Velocity: %9.4f\\n", p1, p2, p3, p4, p5
                 endin
 
-                ; Send audio from the Pianoteq to the output.
                 instr PianoOutput 
-ablankinput     init            0
-aleft, aright   vstaudio        gipianoteq, ablankinput, ablankinput
-                outs            aleft, aright
+a_blankinput    init            0
+a_left, a_right   vstaudio      gi_pianoteq, a_blankinput, a_blankinput
+                outs            a_left, a_right
+                prints          "PianoOutput: Channel: %3d Time: %9.4f Duration: %9.4f\\n", p1, p2, p3
                 endin
+                alwayson "PianoOutput"
 '''
 
 print 'CREATING CSOUND ARRANGEMENT...'
 print
-
-# Good: 8 14 23 27
-
 model.setCsoundOrchestra(csoundOrchestra)
-#model.setCsoundScoreHeader(csoundScoreHeader)
-#             oldinsno, newinso, level (+-dB), pan (-1.0 through +1.0)
-panIncrement = 1./6.
-pan = 0.
-model.arrange( 0,       1,   0.,          pan )
-pan = pan + panIncrement
-model.arrange( 1,       1,   0.,          pan )
-pan = pan + panIncrement
-model.arrange( 2,       1,   0.,          pan )
-pan = pan + panIncrement
-model.arrange( 3,       1,   0.,          pan )
-pan = pan + panIncrement
-model.arrange( 4,       1,   0.,          pan )
-pan = pan + panIncrement
-model.arrange( 5,       1,   0.,          pan )
 model.setCsoundCommand(csoundCommand)
 
 print 'RENDERING...'
@@ -211,7 +178,6 @@ print
 model.render()
 print score.getCsoundScore()
 score.save(midiFilename)
-
 
 print 'FINISHED.'
 print
