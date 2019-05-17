@@ -8,6 +8,7 @@ lines of Terry Riley's "In C" using Python, and realized using Csound with
 the Pianoteq synthesized piano.
 '''
 print __doc__
+print
 print 'IMPORTING REQUIRED MODULES...'
 print
 import CsoundAC
@@ -41,7 +42,7 @@ print
 
 print 'SETTING RENDERING AND PLAYBACK OPTIONS...'
 print
-print 'Set "rendering" to:     "cd", "preview" (default), or "audio".'
+print 'Set "rendering" to:     "soundfile" or "audio".'
 print 'Set "playback" to:      True (default) or False.'
 print
 rendering = 'audio'
@@ -65,9 +66,7 @@ print 'CREATING MUSIC MODEL...'
 print
 
 minuetTable = {}
-# Put some changes in here, perhaps a bitonal differential.
-# There needs to be some association between a measure and a harmony. 
-# This could be in one, or even several, master tracks, or in a separate track.
+# This is Mozart's original minuet table for his musical dice game.
 minuetTable[ 2] = { 1: 96,  2: 22,  3:141,  4: 41,  5:105,  6:122,  7: 11,  8: 30,  9: 70, 10:121, 11: 26, 12:  9, 13:112, 14: 49, 15:109, 16: 14}
 minuetTable[ 3] = { 1: 32,  2:  6,  3:128,  4: 63,  5:146,  6: 46,  7:134,  8: 81,  9:117, 10: 39, 11:126, 12: 56, 13:174, 14: 18, 15:116, 16: 83}
 minuetTable[ 4] = { 1: 69,  2: 95,  3:158,  4: 13,  5:153,  6: 55,  7:110,  8: 24,  9: 66, 10:139, 11: 15, 12:132, 13: 73, 14: 58, 15:145, 16: 79}
@@ -100,23 +99,25 @@ def readMeasure(number, pitches):
         event.setPitches(pitches)
         if event.getChannel() < 0:
             score.remove(i)
-    #rint score.getCsoundScore()
-    score.setDuration(random.choice([2, 3, 4, 6, 8]))
+    #print score.getCsoundScore()
+    score.setDuration(random.choice([2, 3, 4, 6, 8]) / 1.5)
     print 'Read "%s" with duration %9.4f.' % (filename, score.getDuration())
     return scoreNode    
 
 def buildTrack(sequence, channel, bass):
     print 'Building track for channel %3d bass %3d...' % (channel, bass)
-    cumulativeTime = 0.0
+    cumulativeTime = 1.0
     for i in xrange(1, 16):
-        for j in xrange(3, 7):
+        for j in xrange(2, 6):
             pitches = random.choice([CM, Em, CM, Em, BbM, GM9])
             repeatCount = 1 + int(random.random() * 12)
+            factor = random.choice([0., 1., 2., 3.])
             for k in xrange(repeatCount):
                 measure = readMeasure(minuetTable[j][i], pitches)
                 duration = measure.getScore().getDuration()
+                offset = factor * duration / 24.
                 rescale = CsoundAC.Rescale()
-                rescale.setRescale(CsoundAC.Event.TIME, bool(1), bool(0), cumulativeTime, 0)
+                rescale.setRescale(CsoundAC.Event.TIME, bool(1), bool(0), cumulativeTime + offset, 0)
                 rescale.setRescale(CsoundAC.Event.INSTRUMENT, bool(1), bool(0), channel, 0)
                 rescale.setRescale(CsoundAC.Event.KEY, bool(1), bool(0), float(bass), 48)
                 rescale.thisown = 0
@@ -131,8 +132,8 @@ model.setArtist("Michael Gogins")
 model.setTitle("Cellular, for Computer Piano")
 model.addChild(sequence)
 model.setConformPitches(bool(1))
-sequence.setRescale(CsoundAC.Event.VELOCITY,   bool(1), bool(1), 60, 24)
-sequence.setRescale(CsoundAC.Event.INSTRUMENT, bool(1), bool(1),  1, 5)
+sequence.setRescale(CsoundAC.Event.VELOCITY,   bool(1), bool(1), 60, 12)
+sequence.setRescale(CsoundAC.Event.INSTRUMENT, bool(1), bool(1),  1,  5)
 #sequence.setRescale(CsoundAC.Event.TIME,       bool(1), bool(1),  1, 1700)
 buildTrack(sequence, 1, 24)
 buildTrack(sequence, 2, 36)
@@ -175,9 +176,10 @@ model.setCsoundCommand(csoundCommand)
 
 print 'RENDERING...'
 print
-model.render()
+model.generate()
 print score.getCsoundScore()
 score.save(midiFilename)
+model.perform()
 
 print 'FINISHED.'
 print
