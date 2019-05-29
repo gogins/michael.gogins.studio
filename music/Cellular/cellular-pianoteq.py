@@ -3,8 +3,8 @@ Cellular, for Computer Piano
 
 Copyright (C) 2019 by Michael Gogins
 
-Mozart's musical dice game is taken apart and put back together along the 
-lines of Terry Riley's "In C" using Python, and realized using Csound with 
+Mozart's musical dice game is taken apart and put back together along the
+lines of Terry Riley's "In C" using Python, and realized using Csound with
 the Pianoteq synthesized piano.
 '''
 print __doc__
@@ -52,7 +52,7 @@ print 'Play after rendering:   %s' % playback
 commandsForRendering = {
     'soundfile':    'csound -r 96000 -k 100 -m195 -+msg_color=0 -RWZdfo %s' % (soundfileName),
     'audio':        'csound -r 48000 -k 100 -m0   -+msg_color=0 -RWZdfo %s' % (dacName),
-}    
+}
 csoundCommand = commandsForRendering[rendering]
 print 'Csound command line:    %s' % csoundCommand
 print
@@ -82,7 +82,7 @@ minuetTable[12] = { 1: 54,  2:130,  3: 10,  4:103,  5: 28,  6: 37,  7:106,  8:  
 def reverse_enumeration(L):
    for index in reversed(xrange(len(L))):
       yield index, L[index]
-   
+
 CM = CsoundAC.Conversions_nameToM("CM")
 Em = CsoundAC.Conversions.nameToM("Em")
 BbM = CsoundAC.Conversions.nameToM("BbM")
@@ -102,14 +102,14 @@ def readMeasure(number, pitches):
     #print score.getCsoundScore()
     score.setDuration(random.choice([2, 3, 4, 6, 8]) / 1.5)
     print 'Read "%s" with duration %9.4f.' % (filename, score.getDuration())
-    return scoreNode    
+    return scoreNode
 
 def buildTrack(sequence, channel, bass):
     print 'Building track for channel %3d bass %3d...' % (channel, bass)
     cumulativeTime = 1.0
     for i in xrange(1, 16):
         for j in xrange(2, 6):
-            pitches = random.choice([CM, Em, CM, Em, BbM, GM9])
+            pitches = random.choice([CM, Em, CM, Em, BbM, GM9, Ab9])
             repeatCount = 1 + int(random.random() * 12)
             factor = random.choice([0., 1., 2., 3.])
             for k in xrange(repeatCount):
@@ -148,19 +148,19 @@ csoundOrchestra = \
 
 sr              =               48000
 ksmps           =               64
-nchnls          =               2 
+nchnls          =               2
 0dbfs           =               1
 
 gi_pianoteq     vstinit         "/home/mkg/pianoteq_linux_v630/Pianoteq\ 6/amd64/Pianoteq\ 6.so", 0
                 vstinfo         gi_pianoteq
 
-                instr 1, 2, 3, 4, 5, 6 
+                instr 1, 2, 3, 4, 5, 6
 i_midichannel   init            0
                 vstnote         gi_pianoteq, i_midichannel, p4, p5, p3
                 prints          "Pianoteq:    Channel: %3d Time: %9.4f Duration: %9.4f Key: %9.4f Velocity: %9.4f\\n", p1, p2, p3, p4, p5
                 endin
 
-                instr PianoOutput 
+                instr PianoOutput
 a_blankinput    init            0
 a_left, a_right   vstaudio      gi_pianoteq, a_blankinput, a_blankinput
                 outs            a_left, a_right
@@ -183,4 +183,3 @@ model.perform()
 
 print 'FINISHED.'
 print
-

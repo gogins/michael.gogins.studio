@@ -27,7 +27,7 @@ cwd = os.getcwd()
 print 'cwd:                    ', cwd
 filepath = sys.argv[1]
 author = 'Michael Gogins'
-year = '2018'
+year = '2019'
 license = 'ASCAP'
 publisher = 'Irreducible Productions, ASCAP'
 notes = 'Electroacoustic Music'
@@ -46,8 +46,14 @@ mp4_filename = '%s.mp4' % label
 flac_filename = '%s.flac' % label
 print 'Original file:          ', filepath
 print 'Basename:               ', basename
-print 'Rootname:               ', rootname
+print 'Author:                 ', author
 print 'Title:                  ', title
+print 'Year:                   ', year
+str_copyright          = 'Copyright %s by %s' % (year, author)
+print 'Copyright:              ', str_copyright
+print 'Licence:                ', license
+print 'Publisher:              ', publisher
+print 'Notes:                  ', notes
 print 'Master filename:        ', master_filename
 print 'Spectrogram filename:   ', spectrogram_filename
 print 'CD quality filename:    ', cd_quality_filename

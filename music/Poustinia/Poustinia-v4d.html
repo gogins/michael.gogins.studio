@@ -18,6 +18,7 @@
         font-size:8pt;
     }
 </style>
+</script>
 <script src='silencio/js/csound_loader.js'></script>
 <script src='silencio/js/canvas_wrapper.js'></script>
 <script src='silencio/js/sprintf.js'></script>
@@ -43,8 +44,8 @@ try {
     console.log(e);
 }
 window.onerror = function (message, url, line) {
-  csound.message(message + '\n' + url + '\n' + line + '\n');
   console.trace();
+  csound.message(message + '\n' + url + '\n' + line + '\n');
 }
 
 var generate = function() {
