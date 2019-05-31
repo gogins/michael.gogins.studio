@@ -212,6 +212,23 @@ backref=true
 \maketitle
 %\pagestyle{scrheadings}
 
+\begin{abstract}
+I present several new related methods for the parametric composition of musical
+scores. Scores are defined as the graphs of functions of time in chord spaces.
+These graphs are computed using special iterated function systems (IFS) related
+to the Read-Bajraktarevi\'c operator. The Collage Theorem proves that any such
+graph may be approximated, as closely as desired, by such an IFS. One method of
+composing is then to manually construct these IFSs, or to evolve them using the
+genetic algorithm, and then to render the IFS to an actual score. Additionally,
+using Hilbert indexes, a single complex virtual parameter can be derived to
+represent each set of IFS parameters (potentially dozens or more numbers) used
+to compute each score graph. Each virtual parameter may be mapped to the score
+produced from the corresponding IFS, thus producing a parametric map of scores
+colored by some musical feature of interest. Other methods of composition are to
+interactively explore this parametric map, or to interpolate between different
+scores located in this map.
+\end{abstract}
+
 %\lohead{Parametric Composition}
 
 \section{Introduction}
@@ -233,10 +250,10 @@ Parametric composition has previously been investigated with respect to the
 generation of pieces in spaces that directly represent either sound,
 \textit{e.g.}\ in the form of a grid of sound grains (Gabor transform)
 \cite{obsessed}, or scores, \textit{e.g.}\ in the form of a grid of notes
-(piano  roll) \cite{ifsmusic}.
+(piano roll) \cite{ifsmusic}.
 
-Here, pieces are generated in a score space constructed from the basic
-symmetries of chord space identified by Callender, Quinn  and  Tymoczko
+Here, pieces are generated in a score space constructed from time and the basic
+symmetries of chord space identified by Callender, Quinn and Tymoczko
 \cite{callender:346}, along with revoicings and rearrangements. The dimensions
 of this score space are: set class (the most basic form of a  chord) $P$
 (\textit{i.e.}, Callender \textit{et al.}'s $OPTIC$), inversion $I$,
@@ -248,7 +265,7 @@ vector-valued function of time in the score space, which we call a
 
 $$(P, I, T, v, a) = r(t).$$
 
-\noindent The notes and chords do \textit{not} need to be confined to  12-tone
+\noindent The notes and chords do \textit{not} need to be confined to 12-tone
 equal temperament. One motivation for using score functions to compose is that,
 at any one point in time, there is one and only one ``harmony.''
 
@@ -262,8 +279,9 @@ interpolations \cite{Barnsley1986, fractalseverywhere, navascues2014fractal}.
 The function for such a graph is called simply a \textit{fractal function}. (It
 is interesting that all continuous functions are fractal functions
 \cite{2016arXiv161001369B}.) Even more particularly, we use FAs to compute
-graphs of $r$. The advantage of such FAs is that \textit{any} score can be so
-generated, and \textit{every} FA of this type generates a graph of some $r$.
+graphs of $r$. The advantage of such FAs is that (in principle) \textit{any}
+score can be so generated, and \textit{every} FA of this type generates a graph
+of some $r$.
 
 A FA may be completely specified as a set of numerical parameters. Thus, any
 piece of note-based music may be approximated as closely as desired by a fixed
