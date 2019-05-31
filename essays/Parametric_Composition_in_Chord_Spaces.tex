@@ -478,9 +478,9 @@ subsets of $\X$ with Hausdorff metric $d_\calH$. Assume $M\in\calH(\X)$ and
 $\varepsilon > 0$. Assume $\cF := \{\X; f_1, \ldots, f_N\}$ is a contractive
 IFS such that
 
-\[
+\be\label{hutchop}
 d_\calH \left(M, \;\bigcup_{i=1}^N f_i (M) \right) < \varepsilon.
-\]
+\ee
 
 \noindent Then
 
@@ -547,8 +547,8 @@ Equivalently, \eqref{RB} can also be written in the form
 %$v_i$ contractive in the second variable, $\Phi g\in B(X,Y)$.
 
 This obviously is an application of the Collage Theorem. Each mapping is
-actually a bilinear (in the computer graphics sense, not the digital signal
-processing sense) transformation that is rescaled to fit within the
+actually a bilinear transformation (in the computer graphics sense, not the
+digital signal processing sense) that is rescaled to fit within the
 interpolation points (Figure \ref{fig:fif}).
 
 \begin{figure}
@@ -577,8 +577,28 @@ B(X,Y) @>\Phi>>  B(X,Y)
 
 \noindent where $G$ is the mapping $B(X,Y)\ni g\longmapsto G(g) = \{(x, g(x))\mid x\in X\}\in X\times Y$.
 
+Please note, and do not forget, that here we use the \textit{graph} of a bounded
+fractal function to represent a musical score, not the fractal function as such.
 Our purpose in using the RB operator is to ensure that we generate \textit{only} IFS
 that compute score graphs.
+
+The IFS that computes the graph of the fractal function can be expressed:
+
+Next, we exhibit the relation between the graph $G$ of the fixed point $f^*$ of the operator $\Phi$ given by \eqref{RB} and the local attractor of an associated contractive local IFS. To this end, we need to require that $\X$ is a closed subset of a complete metric space. Consider the complete metric space $\X\times\Y$ and define mappings $w_i:\X_i\times\Y\to\X\times\Y$ by
+\[
+w_i (x, y) := (u_i (x), v_i (x,y)), \quad i\in \N_N.
+\]
+
+In this equation, the $u$ functions transform the graph in the direction of the
+\emph{domain} $t$ of the graph, and the $v$ functions transform the graph in the
+direction of the \emph{range} of the graph.
+
+The family $\cW_\loc := \{\X\times\Y; (\X_i\times\Y, w_i)\st i\in \N_N\}$ is a contractive local IFS in the metric $d_\theta$ and the graph $G(f^*)$ of the local fractal function $f^*$ associated with the operator $\Phi$ given by \eqref{Phi} is an attractor of $\cW_\loc$. Moreover,
+\be\label{GW}
+G(\Phi f^*) = \cW_\loc (G(f^*)),
+\ee
+where $\cW_\loc$ denotes the set-valued operator \eqref{hutchop} associated with the local IFS $\cW_\loc$.
+
 
 \subsection{Hilbert Indices for Fractal Approximation Parameters}
 
