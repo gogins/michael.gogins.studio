@@ -214,19 +214,19 @@ backref=true
 
 \begin{abstract}
 I present several new related methods for the parametric composition of musical
-scores. Scores are defined as the graphs of functions of time in chord spaces.
-These graphs are computed using special iterated function systems (IFS) related
+scores. A scores is defined as the graph of a function of time in chord spaces.
+Such graphs are computed using special iterated function systems (IFS) related
 to the Read-Bajraktarevi\'c operator. The Collage Theorem proves that any such
 graph may be approximated, as closely as desired, by such an IFS. One method of
 composing is then to manually construct these IFSs, or to evolve them using the
 genetic algorithm, and then to render the IFS to an actual score. Additionally,
 using Hilbert indexes, a single complex virtual parameter can be derived to
-represent each set of IFS parameters (potentially dozens or more numbers) used
-to compute each score graph. Each virtual parameter may be mapped to the score
-produced from the corresponding IFS, thus producing a parametric map of scores
-colored by some musical feature of interest. Other methods of composition are to
-interactively explore this parametric map, or to interpolate between different
-scores located in this map.
+represent each set (potentially dozens or more numbers) of the IFS parameters
+used to compute each score graph. Each virtual parameter may be mapped to the
+score produced from the corresponding IFS, thus producing a parametric map of
+scores colored by some musical feature of interest. Other methods of composition
+are to interactively explore this parametric map, or to interpolate between
+different scores located in this map.
 \end{abstract}
 
 %\lohead{Parametric Composition}
@@ -571,7 +571,7 @@ interpolation points (Figure \ref{fig:fif}).
 
 \begin{figure}
 \centerline{\includegraphics[width = 0.5\textwidth]{interp}}
-\caption{\label{fig:fif} Three shear transformations in
+\caption{\label{fig:fif} Three bilinear transformations in
 a fractal interpolation function.\protect\footnotemark}
 \end{figure}
 
