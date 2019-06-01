@@ -199,7 +199,7 @@ pdfborder={0 0 0}}
 
 \usepackage[
 backend=biber,
-bibencoding=utf8, 
+bibencoding=utf8,
 style=numeric,
 sorting=ynt,
 hyperref=true,
@@ -215,31 +215,31 @@ backref=true
 
 \begin{abstract}
 I present several new, related methods for the parametric composition of musical
-scores. A score is defined as the \textit{graph} of a score function, which maps 
-time to a succession of of more or less fleeting chords, which are represented as 
-points in a chord space. 
-Such score graphs are computed using special iterated function systems (IFS) related
-to the Read-Bajraktarevi\'c operator. The Collage Theorem proves that any such
-graph may be approximated, as closely as desired, by such an IFS. One method of
-composing is then to manually construct these IFSs, or to evolve them using the
-genetic algorithm, and then to render the IFS to an actual score. Additionally,
-using Hilbert indexes, a single complex virtual parameter can be derived to
-represent each set (potentially dozens or more numbers) of the IFS parameters
-used to compute each score graph. Each virtual parameter may be mapped to the
-score produced from the corresponding IFS, thus producing a parametric map of
-scores colored by some musical feature of interest. Other methods of composition
-are then to interactively explore such parametric maps, or to interpolate between
-different scores located in such a map.
+scores. A score is defined as the \textit{graph} of a score function, which maps
+time to a succession of of more or less fleeting chords, which are represented
+as  points in a chord space.  Such score graphs are computed using special
+iterated function systems (IFS) related to the Read-Bajraktarevi\'c operator.
+The Collage Theorem proves that any such graph may be approximated, as closely
+as desired, by such an IFS. One method of composing is then to manually
+construct these IFSs, or to evolve them using the genetic algorithm, and then to
+render the IFS to an actual score. Additionally, using Hilbert indexes, a single
+complex virtual parameter can be derived to represent each set (potentially
+dozens or more numbers) of the IFS parameters used to compute each score graph.
+Each virtual parameter may be mapped to the score produced from the
+corresponding IFS, thus producing a parametric map of scores colored by some
+musical feature of interest. Other methods of composition are then to
+interactively explore such parametric maps, or to interpolate between different
+scores located in such a map.
 \end{abstract}
 
 %\lohead{Parametric Composition}
 
 \section{Introduction}
 
-In general, we define a \textit{score space} as a space in which a set of points represents
-a piece of music, \textit{e.g.}\ notes on the grand staff, punches in a piano
-roll, some more abstract space, or even grains of sound on a sonogram. We
-define a \textit{score generator} as a computer program that generates a
+In general, we define a \textit{score space} as a space in which a set of points
+represents a piece of music, \textit{e.g.}\ notes on the grand staff, punches in
+a piano roll, some more abstract space, or even grains of sound on a sonogram.
+We define a \textit{score generator} as a computer program that generates a
 musical score in some score space. We define a \textit{parametric score
 generator} as one whose behavior is completely defined by numerical parameters.
 
@@ -252,26 +252,27 @@ parameters using the genetic algorithm.
 Parametric composition has previously been investigated with respect to the
 generation of pieces in spaces that directly represent either sound,
 \textit{e.g.}\ in the form of a grid of sound grains (Gabor transform)
-\cite{obsessed}, or scores, \textit{e.g.}\ in the form of a grid of notes
-(piano roll) \cite{ifsmusic}.
+\cite{obsessed}, or scores, \textit{e.g.}\ in the form of a grid of notes (piano
+roll) \cite{ifsmusic}.
 
-Here, pieces are generated in a score space constructed from time and the basic
-symmetries of chord space identified by Callender, Quinn and Tymoczko
+Here, pieces are generated in a special score space constructed from time and
+the basic symmetries of chord space identified by Callender, Quinn and Tymoczko
 \cite{callender:346}, along with revoicings and rearrangements. The dimensions
 of this score space are: time, set class (the most basic form of a  chord) $P$
 (\textit{i.e.}, Callender \textit{et al.}'s $OPTIC$), inversion $I$,
 transposition $T$, octavewise revoicings $v$, and rearrangements of voices $a$.
 In $PITva$ space, a piece of note-based music may be considered a succession of
 more or less fleeting chord points or, in other words, as the graph of a
-vector-valued function of time in the score space, which we call a
-\textit{score graph} of a \textit{score function},
+vector-valued function of time in the score space, which we call a \textit{score
+graph} of a \textit{score function},
 
 $$\mathsf{G}(\mathsf{f}: t \mapsto P, I, T, v, a).$$
 
-\noindent (In the following, mathematical entities considered from a musical context 
-are displayed in a \textsf{sans serif} font.) The notes and chords do \textit{not} need to be confined to 12-tone
-equal temperament. One motivation for using score functions to compose is that,
-at any one point in time, there is one and only one ``harmony.''
+\noindent (In the following, mathematical entities considered from a musical
+context  are displayed in a \textsf{sans serif} font.) The notes and chords do
+\textit{not} need to be confined to 12-tone equal temperament. One motivation
+for using score functions to compose is that, at any one point in time, there is
+one and only one ``harmony.''
 
 The score generators used here are \textit{iterated function systems} (IFSs)
 \cite{barnsley1985iterated, 10.2307/24893080, fractalseverywhere}. More
@@ -283,9 +284,9 @@ interpolations \cite{Barnsley1986, fractalseverywhere, navascues2014fractal}.
 The function for such a graph is called simply a \textit{fractal function}. (It
 is interesting that all continuous functions are fractal functions
 \cite{2016arXiv161001369B}.) Even more particularly, we use FAs to compute
-graphs of $r$. The advantage of such FAs is that (in principle) \textit{any}
-score can be so generated, and \textit{every} FA of this type generates a graph
-of some $r$.
+$\mathsf{G(f)}$. The advantage of such FAs is that (in principle) \textit{any}
+score can be so generated, and \textit{every} FA of this type generates some
+$\mathsf{G(f)}$.
 
 A FA may be completely specified as a set of numerical parameters. Thus, any
 piece of note-based music may be approximated as closely as desired by a fixed
@@ -404,7 +405,7 @@ commonly used concept of what is a ``chord.''
   $OPTIC$ for trichords in 12TET.}
 \end{figure}
 
-Here, we do not use chord space for composing. Rather, we construct a parameter
+Here, we do not directly use chord space for composing. Rather, we construct a parameter
 space in which each of the irreducible symmetries of chord space identified by
 Callender, Quinn, and Tymoczko is a separate dimension, on which a specific
 operation is indexed. These are:
@@ -434,7 +435,7 @@ inversion, transposition, voicing, and arrangement; another way of saying this
 is that any piece of note-based music can be represented by the graph of a
 vector-valued function of time,
 
-$$(P, I, T, v, a) = r(t).$$
+$$\mathsf{G}(\mathsf{f}: t \mapsto P, I, T, v, a).$$
 
 By assigning each symmetry to an orthogonal dimension of the $PITva$ space, the
 IFSs to be developed for composing are guaranteed to control the dimensions
@@ -529,7 +530,7 @@ space, \textit{e.g.} use Callender, Quinn, and Tymoczko's OPC $\times$
 revoicings $\times$ rearrangements instead of $PITva$. Again, our purpose is
 to filter out unmusical productions. Since by the Collage Theorem IFSs are
 universal, we cannot exclude such productions; but we \textit{can} simply make
-it harder, take more steps, to generate then. This is not an esthetic
+it harder, take more steps, to generate them. This is not an esthetic
 judgement. We are simply trying to make the score space more like the
 geometry, as implied by music theory, of human musical perception.
 
