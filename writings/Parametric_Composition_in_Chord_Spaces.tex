@@ -255,24 +255,25 @@ generation of pieces in spaces that directly represent either sound,
 \cite{obsessed}, or scores, \textit{e.g.}\ in the form of a grid of notes (piano
 roll) \cite{ifsmusic}.
 
-Here, pieces are generated in a special score space constructed from time and
-the basic symmetries of chord space identified by Callender, Quinn and Tymoczko
-\cite{callender:346}, along with revoicings and rearrangements. The dimensions
-of this score space are: time, set class (the most basic form of a  chord) $P$
-(\textit{i.e.}, Callender \textit{et al.}'s $OPTIC$), inversion $I$,
-transposition $T$, octavewise revoicings $v$, and rearrangements of voices $a$.
-In $PITva$ space, a piece of note-based music may be considered a succession of
-more or less fleeting chord points or, in other words, as the graph of a
-vector-valued function of time in the score space, which we call a \textit{score
-graph} of a \textit{score function},
+The present work extends this by generating scores in a special score space
+constructed from time and the basic symmetries of chord space identified by
+Callender, Quinn and Tymoczko \cite{callender:346}, along with revoicings and
+rearrangements. The dimensions of this score space are: time, set class (the
+most basic form of a  chord) $P$ (\textit{i.e.}, Callender \textit{et al.}'s
+$OPTIC$), inversion $I$, transposition $T$, octavewise revoicings $v$, and
+rearrangements of voices $a$. In this space, a piece of note-based music may be
+considered a succession of more or less fleeting chord points or, in other
+words, as the graph of a vector-valued function of time in the score space,
+which we call a \textit{score graph} of a \textit{score function},
 
 $$\mathsf{G}(\mathsf{f}: t \mapsto P, I, T, v, a).$$
 
 \noindent (In the following, mathematical entities considered from a musical
-context  are displayed in a \textsf{sans serif} font.) The notes and chords do
-\textit{not} need to be confined to 12-tone equal temperament. One motivation
-for using score functions to compose is that, at any one point in time, there is
-one and only one ``harmony.''
+perspective are displayed in a \textsf{sans serif} font.) The notes and chords
+do \textit{not} need to be confined to 12-tone equal temperament. One motivation
+for using this score space to compose is that movements in the chord dimensions
+of the space are clearly audible as harmonic moves. Another motivation is that,
+at any one point in time, there is one and only one ``harmony.''
 
 The score generators used here are \textit{iterated function systems} (IFSs)
 \cite{barnsley1985iterated, 10.2307/24893080, fractalseverywhere}. More
@@ -318,30 +319,6 @@ This section is not intended as a complete, self-contained exposition but rather
 as providing entry points for readers who have some exposure to mathematical
 music theory or fractal geometry. I have tried to supply references not only to
 original publications of ideas, but also to recent reviews or summaries.
-
-TO DO: Really understand (a) how exactly can the local IFS dual to a RB operator
-be implemented in code, and (b) what exactly is a fractal in this context. What
-\textit{\textbf{is}} clear is that they are trying specifically to produce IFSs
-whose attractors are graphs of functions.
-
-It has become clear that "bilinear transformation" is a bit more general than
-"affine transformation." Basically, in this context, a bilinear transformation
-is similar to a shear transformation, but the two sides of the image can have
-different sizes. It's also clear that the concept originated in 2-dimensional
-graphics but can be generalized to N dimensions. Barnsley does give formulas for
-deriving the coefficients.
-
-An RB operator is a kind of IFS in which the graph of a function over a segment
-$[a, b]$ is approximated by mapping the $[a, b]$ to each of the sub-segments
-defined by a pair of interpolation points. For a somewhat more concrete
-presentation in the form of a Mathematica workbook, see \cite{McClure2006}.
-
-A \textit{local} IFS is one in which each function or mapping in the IFS may
-have a different co-domain, but the domains do not overlap.
-
-Various maps can be used to construct an RB operator for a given graph. Here, we
-use local iterated functions instead of plain linear mappings for each
-interpolation segment.
 
 \subsection{Chord Spaces}
 
@@ -419,9 +396,11 @@ number of divisions of the octave.
 \item $T/R$ -- Transposition within a specified range $R$.
 \end{enumerate}
 
-\noindent To these we add:
+\noindent From chord space, we construct a more complete \textit{score space} by
+adding:
 
 \begin{enumerate}[resume]
+\item $t$ -- time.
 \item $v$ -- octavewise revoicing (within some specified range) of the $PIT$
 chord, through all permutations of the possible voicings.
 \item $a$ -- Voicewise re-arrangement of voices or instrument, through all
@@ -429,7 +408,7 @@ permutations of the possible arrangements.
 \end{enumerate}
 
 \noindent Obviously not all dimensions of this odd parameter space are
-continuous. The purpose of $PITva$ space is to permit composing by moving a
+continuous. The purpose of score space is to permit composing by moving a
 single point through the space and thus controlling at once set class,
 inversion, transposition, voicing, and arrangement; another way of saying this
 is that any piece of note-based music can be represented by the graph of a
@@ -437,7 +416,7 @@ vector-valued function of time,
 
 $$\mathsf{G}(\mathsf{f}: t \mapsto P, I, T, v, a).$$
 
-By assigning each symmetry to an orthogonal dimension of the $PITva$ space, the
+By assigning each symmetry to an orthogonal dimension of score space, the
 IFSs to be developed for composing are guaranteed to control the dimensions
 independently, \textit{e.g.}\ to generate arpeggiations without affecting
 chord type.
@@ -492,14 +471,12 @@ $S\subset U$; the limit is with respect to the Hausdorff metric on $\cal{H}$.
 Furthermore, Barnsley's Collage Theorem \cite{barnsley:1986:solution} proves
 that any original set can be approximated, as closely as desired, by some IFS.
 
-This is done by arranging the affine transformations to cover the original set
-with transformed copies of itself, minimizing overlaps. Let
-$(\mathbb{X},d_\mathbb{X})$ be a complete metric space. $(\calH (\X),
-d_\calH)$
-is the associated metric space based on the hyperspace of nonempty compact
-subsets of $\X$ with Hausdorff metric $d_\calH$. Assume $M\in\calH(\X)$ and
-$\varepsilon > 0$. Assume $\cF := \{\X; f_1, \ldots, f_N\}$ is a contractive
-IFS such that
+One way this can be done is to cover the attractor with transformed copies of
+itself, minimizing overlaps. Let $(\mathbb{X},d_\mathbb{X})$ be a complete
+metric space. $(\calH (\X), d_\calH)$ is the associated metric space based on
+the hyperspace of nonempty compact subsets of $\X$ with Hausdorff metric
+$d_\calH$. Assume $M\in\calH(\X)$ and $\varepsilon > 0$. Assume $\cF := \{\X;
+f_1, \ldots, f_N\}$ is a contractive IFS such that
 
 \be\label{hutchop}
 d_\calH \left(M, \;\bigcup_{i=1}^N f_i (M) \right) < \varepsilon.
@@ -515,31 +492,23 @@ d_\calH (M, A) < \frac{\varepsilon}{1-s},
 \max\{\mathrm{Lip}\,f_i\st
 i = 1, \ldots, N\}$.
 
-\textit{The Collage Theorem is the key motivation for using IFSs in
-algorithmic music composition}. The theorem proves that IFSs, while
-conceptually simple, are as musically powerful as one might like.
+\textit{The Collage Theorem is the key motivation for using IFSs in music
+composition}. The theorem proves that IFSs, while conceptually simple, are as
+musically powerful as one might like. The remainder of this paper concerns how
+to control this power, and how to explore the vast parameter space of IFSs in a
+\textit{musical} way.
 
-The remainder of this paper concerns how to control this power: how to
-filter out as many of the musically useless productions, which of course are
-overwhelmingly more numerous, as possible; and how to explore the
-remaining vast parameter space of IFSs in a \textit{musical} way.
+It would be possible to use IFS to generate sound grains on a grid; to generate
+notes on a grid; or to generate a path through a different chord space,
+\textit{e.g.} use Callender, Quinn, and Tymoczko's $OPC$ instead of $OPTIC$. We
+have chosen $OPTIC$ in order to work at a higher level of harmonic abstraction.
 
-It would be possible to use IFS to generate sound grains on a grid; to
-generate notes on a grid; or to generate a path through a different chord
-space, \textit{e.g.} use Callender, Quinn, and Tymoczko's OPC $\times$
-revoicings $\times$ rearrangements instead of $PITva$. Again, our purpose is
-to filter out unmusical productions. Since by the Collage Theorem IFSs are
-universal, we cannot exclude such productions; but we \textit{can} simply make
-it harder, take more steps, to generate them. This is not an esthetic
-judgement. We are simply trying to make the score space more like the
-geometry, as implied by music theory, of human musical perception.
-
-So, we have a piece as a sequence of points in $PITva$ space, \textit{i.e.},
-the graph of a function of time in that space. Graphs of functions,
-\textit{i.e.} fractal approximations, can be computed by a special kind of IFS
-associated with a \textit{Read-Bajraktarevi\'c} operator $\Phi$. Suppose we
-are given a finite family $\{l_n : X\to X \mid n = 1, \ldots, N\}$ of
-injective contractions with the following two properties:
+So, we have a piece as a sequence of points in score space, \textit{i.e.}, the
+graph of a function of time in that space. Graphs of functions, \textit{i.e.}
+fractal approximations, can be computed by a special kind of IFS associated with
+a \textit{Read-Bajraktarevi\'c} operator $\Phi$. Suppose we are given a finite
+family $\{l_n : X\to X \mid n = 1, \ldots, N\}$ of injective contractions with
+the following two properties:
 
 \begin{align}
 &X = \bigcup_{n=1}^N l_n(X);\label{union}\\
@@ -551,7 +520,7 @@ N\}, m\neq n.\label{partition}
 
 Suppose that $(Y,d_Y)$ is a complete metric space with metric $d_Y$. A mapping
 $g:X\to Y$ is called \emph{bounded} (with respect to the metric $d_Y$) if
-there exists an $M> 0$ so that for all $x_1, x_2\in X$, $d_Y(g(x_1),g(x_2)) <
+there exists an $M > 0$ so that for all $x_1, x_2\in X$, $d_Y(g(x_1),g(x_2)) <
 M$. Then the Read-Bajraktarevi\'c operator is defined as
 
 \be\label{RB}
@@ -569,10 +538,10 @@ Equivalently, \eqref{RB} can also be written in the form
 %\noindent The operator $\Phi$ is well-defined and since $g$ is bounded and each
 %$v_i$ contractive in the second variable, $\Phi g\in B(X,Y)$.
 
-This obviously is an application of the Collage Theorem. Each mapping is
-actually a bilinear transformation (in the computer graphics sense, not the
-digital signal processing sense) that is rescaled to fit within the
-interpolation points (Figure \ref{fig:fif}).
+This obviously is an application of the Collage Theorem. Figure \ref{fig:fif}
+shows the graph of a  function computed by an RB operator consisting of three
+bilinear transformations (in the computer graphics sense, not the signal
+processing sense).
 
 \begin{figure}
 \centerline{\includegraphics[width = 0.5\textwidth]{interp}}
@@ -585,9 +554,9 @@ a fractal interpolation function.\protect\footnotemark}
 However, the flexibility of FAs can be increased by using a
 \textit{local iterated function system}. A local IFS is one in which the
 transformations in the IFS have the same co-domain, but not necessarily the
-same domain. The individual domains must not overlap.
+same domain.
 
-The association of the RB operator $\Phi$ with the IFS of a score graph $G(r)$ is
+The association of the RB operator $\Phi$ with the IFS of a score graph $\mathsf{G(f)}$ is
 shown in this commutation diagram:
 
 \be
