@@ -214,27 +214,33 @@ backref=true
 %\pagestyle{scrheadings}
 
 \begin{abstract}
-I present several new, related methods for the parametric composition of musical
-scores. A score is defined as the \textit{graph} of a score function, which maps
-time to a succession of of more or less fleeting chords, which are represented
-as  points in a chord space.  Such score graphs are computed using special
-iterated function systems (IFS) related to the Read-Bajraktarevi\'c operator.
-The Collage Theorem proves that any such graph may be approximated, as closely
-as desired, by such an IFS. One method of composing is then to manually
-construct these IFSs, or to evolve them using the genetic algorithm, and then to
-render the IFS to an actual score. Additionally, using Hilbert indexes, a single
-complex virtual parameter can be derived to represent each set (potentially
-dozens or more numbers) of the IFS parameters used to compute each score graph.
-Each virtual parameter may be mapped to the score produced from the
-corresponding IFS, thus producing a parametric map of scores colored by some
-musical feature of interest. Other methods of composition are then to
-interactively explore such parametric maps, or to interpolate between different
-scores located in such a map.
+We present new methods for the parametric composition of musical scores in
+spaces with harmonic structure, extending our earlier work on generating scores
+with iterated function systems (IFSs). We define a score as the \textit{graph}
+of a score function that maps time to a succession of more or less fleeting
+chords, which are represented as points in a discrete space of chord symmetries.
+Such score graphs can be computed using special iterated function systems (IFS)
+that compute the graphs of fractal interpolation functions (FIFs), which are
+related to the Read-Bajraktarevi\'c operator. The Collage Theorem proves that
+any such graph may be approximated, as closely as desired, by such a IFS. One
+method of composing is then to manually construct these IFSs, or to evolve them
+using the genetic algorithm, and then to render the IFS to an actual score.
+Additionally, using Hilbert indexes, a single complex virtual parameter can be
+derived to represent each set (potentially dozens or more numbers) of the IFS
+parameters used to compute each score graph. Each virtual parameter may be
+mapped to the score produced from the corresponding IFS, thus producing a
+parametric map of scores colored by some musical feature of interest. Other
+methods of composition are then to interactively explore such parametric maps,
+or to interpolate between different scores located in such a map.
 \end{abstract}
 
 %\lohead{Parametric Composition}
 
+
+
 \section{Introduction}
+
+\lstset{language=c++,basicstyle=\ttfamily\tiny,commentstyle=\ttfamily\tiny,tabsize=2,breaklines,backgroundcolor=\color{LstColor},fontadjust=true,keepspaces=false,showstringspaces=false,moredelim=[is][\textbf]{\\emph\{}{\}}}.
 
 In general, we define a \textit{score space} as a space in which a set of points
 represents a piece of music, \textit{e.g.}\ notes on the grand staff, punches in
@@ -249,13 +255,12 @@ performed by literally zooming around in a colored map of the parameter space,
 by interpolating between two parameter points in that space, or by evolving
 parameters using the genetic algorithm.
 
-Parametric composition has previously been investigated with respect to the
-generation of pieces in spaces that directly represent either sound,
-\textit{e.g.}\ in the form of a grid of sound grains (Gabor transform)
-\cite{obsessed}, or scores, \textit{e.g.}\ in the form of a grid of notes (piano
-roll) \cite{ifsmusic}.
+We have previously investigated parametric composition in spaces that directly
+represent either sound, \textit{e.g.}\ in the form of a grid of sound grains
+(Gabor transform) \cite{obsessed}, or scores, \textit{e.g.}\ in the form of a
+grid of notes (piano roll) \cite{ifsmusic}.
 
-The present work extends this by generating scores in a special score space
+Here, we extend our previous work by generating scores in a special score space
 constructed from time and the basic symmetries of chord space identified by
 Callender, Quinn and Tymoczko \cite{callender:346}, along with revoicings and
 rearrangements. The dimensions of this score space are: time, set class (the
@@ -263,61 +268,63 @@ most basic form of a  chord) $P$ (\textit{i.e.}, Callender \textit{et al.}'s
 $OPTIC$), inversion $I$, transposition $T$, octavewise revoicings $v$, and
 rearrangements of voices $a$. In this space, a piece of note-based music may be
 considered a succession of more or less fleeting chord points or, in other
-words, as the graph of a vector-valued function of time in the score space,
+words, as the graph of a vector-valued function of time mapped to chord space,
 which we call a \textit{score graph} of a \textit{score function},
 
-$$\mathsf{G}(\mathsf{f}: t \mapsto P, I, T, v, a).$$
 
-\noindent (In the following, mathematical entities considered from a musical
-perspective are displayed in a \textsf{sans serif} font.) The notes and chords
-do \textit{not} need to be confined to 12-tone equal temperament. One motivation
-for using this score space to compose is that movements in the chord dimensions
-of the space are clearly audible as harmonic moves. Another motivation is that,
-at any one point in time, there is one and only one ``harmony.''
+\be \label{score_graph}
+G(f: t \mapsto P, I, T, v, a).
+\ee
+
+
+\noindent Notes and chords do
+\textit{not} need to be confined to 12-tone equal temperament. One motivation
+for using this score space to compose is that different values on the chord
+dimensions of the space are clearly audible as harmonic differences. Another
+motivation is that, at any one point in time, there is one and only one
+``harmony.''
 
 The score generators used here are \textit{iterated function systems} (IFSs)
 \cite{barnsley1985iterated, 10.2307/24893080, fractalseverywhere}. More
 particularly, our score generators are special IFSs where the contractive
 transformations that make up the IFS are constrained such that the IFS computes
-not any old attractors, but only attractors that closely approximate the graphs
-of functions. These are called \textit{fractal approximations} (FAs) or fractal
-interpolations \cite{Barnsley1986, fractalseverywhere, navascues2014fractal}.
-The function for such a graph is called simply a \textit{fractal function}. (It
-is interesting that all continuous functions are fractal functions
-\cite{2016arXiv161001369B}.) Even more particularly, we use FAs to compute
-$\mathsf{G(f)}$. The advantage of such FAs is that (in principle) \textit{any}
-score can be so generated, and \textit{every} FA of this type generates some
-$\mathsf{G(f)}$.
+attractors that closely approximate the graphs of functions. The function for
+such a graph is called a \textit{fractal approximation} (FA) or fractal
+interpolation function (FIF), or simply a \textit{fractal function}
+\cite{Barnsley1986, fractalseverywhere, navascues2014fractal}. (It is
+interesting that all continuous functions are fractal functions
+\cite{2016arXiv161001369B}.) Even more particularly, we use IFSs to compute
+score graphs $G(f)$. The advantage of such IFSs is that (in principle) \textit{any}
+score can be so generated, and \textit{every} IFS of this type generates some
+$G(f)$.
 
-A FA may be completely specified as a set of numerical parameters. Thus, any
+An IFS may be completely specified as a set of numerical parameters. Thus, any
 piece of note-based music may be approximated as closely as desired by a fixed
-size set of numerical parameters.
+size set of numerical parameters. Although there might be dozens or hundreds of
+numbers in such IFS parameters, each parameter set can effectively be
+represented as a single real or complex number by using a recursive indexing
+scheme such as a Hilbert index \cite{hamilton2006compact}. We call this number
+the \textit{effective parameter} of the IFS because the complete set of
+parameters can be recovered (given sufficient numerical precision) by decoding
+the index.
 
-Although there might be dozens or hundreds of numbers in such FA parameters,
-each parameter set can effectively be represented as a single real or complex
-number by using a recursive indexing scheme such as a Hilbert index
-\cite{hamilton2006compact}. We call this number the \textit{effective parameter}
-of the FA because the complete set of parameters can be recovered (given
-sufficient numerical precision) by decoding the index.
-
-Then, using the effective parameters, it is simple to compute a parametric map
-of all pieces within a given range of FAs, or to interpolate between two pieces
-by interpolating between their effective parameters. It is also, of course,
-possible to evolve pieces using the genetic algorithm on sets of actual
-parameters.
+Then, using the effective parameters, it is straightforward (if perhaps
+compute-intensive) to render a parametric map of all pieces within a given range
+of FAs, or to interpolate between two pieces by interpolating between their
+effective parameters. It is also, of course, possible to evolve pieces using the
+genetic algorithm on sets of actual parameters.
 
 The remainder of this paper develops the mathematical background in somewhat
-more detail; discusses the implementation of fractels, fractal approximations,
-Hilbert indices, and the genetic algorithm for FA parameters in the Silencio
-library for algorithmic composition in JavaScript; and finishes with examples of
-each of the three methods of algorithmic composition, implemented in Silencio
-and Csound.
+more detail; discusses the implementation of IFSs, Hilbert indices, and the
+genetic algorithm for IFS parameters in the Silencio library for algorithmic
+composition in JavaScript; and finishes with examples of each of the three
+methods of algorithmic composition, implemented in Silencio and Csound.
 
 \section{Mathematical Development}
 
 This section is not intended as a complete, self-contained exposition but rather
 as providing entry points for readers who have some exposure to mathematical
-music theory or fractal geometry. I have tried to supply references not only to
+music theory or fractal geometry. We have tried to supply references not only to
 original publications of ideas, but also to recent reviews or summaries.
 
 \subsection{Chord Spaces}
@@ -396,27 +403,23 @@ number of divisions of the octave.
 \item $T/R$ -- Transposition within a specified range $R$.
 \end{enumerate}
 
-\noindent From chord space, we construct a more complete \textit{score space} by
-adding:
+\noindent We supplement this chord space by adding two more dimensions:
 
 \begin{enumerate}[resume]
-\item $t$ -- time.
-\item $v$ -- octavewise revoicing (within some specified range) of the $PIT$
+\item $v$ -- Octavewise revoicing (within some specified range) of the $PIT$
 chord, through all permutations of the possible voicings.
 \item $a$ -- Voicewise re-arrangement of voices or instrument, through all
 permutations of the possible arrangements.
 \end{enumerate}
 
 \noindent Obviously not all dimensions of this odd parameter space are
-continuous. The purpose of score space is to permit composing by moving a
-single point through the space and thus controlling at once set class,
-inversion, transposition, voicing, and arrangement; another way of saying this
-is that any piece of note-based music can be represented by the graph of a
-vector-valued function of time,
+continuous. The purpose of chord space is to permit composing by moving a single
+point through the space and thus controlling at once set class, inversion,
+transposition, voicing, and arrangement; another way of saying this is that any
+piece of note-based music can be represented by the graph of a vector-valued
+function of time (Equation \eqref{score_graph}).
 
-$$\mathsf{G}(\mathsf{f}: t \mapsto P, I, T, v, a).$$
-
-By assigning each symmetry to an orthogonal dimension of score space, the
+By assigning each symmetry to an orthogonal dimension of chord space, the
 IFSs to be developed for composing are guaranteed to control the dimensions
 independently, \textit{e.g.}\ to generate arpeggiations without affecting
 chord type.
@@ -438,25 +441,24 @@ curve.\protect\footnotemark}
 \footnotetext{Image in \ref{fig:kochflake} licensed Creative
 Commons Attribution-ShareAlike 3.0 Unported.}
 
-One basic way to generate fractals is with the multiple copy reduction
+One basic method of generating fractals is with the multiple copy reduction
 machine (MCRM). Imagine a copier with more than one lens, each equipped with
-adjustments (sliding, shrinking, or rotating the image of the original). Make
-a copy, replace the original with the copy, and repeat to infinity. Just as
-with the snowflake curve, the final copy comes to occupy a definite fraction
-of the picture plane and thus is a fractal \cite{chaosandfractals}.
+adjustments (sliding, shrinking, or rotating the image of the original). Make a
+copy, replace the original with the copy, and repeat to infinity. Just as with
+the snowflake curve, the final copy comes to occupy a definite fraction of the
+picture plane and thus is a fractal \cite{chaosandfractals}.
 
 Mathematically, the MCRM is an iterated function system (IFS). Each lens
-represents an affine transformation of the plane. Each lens, chosen at random
-or in turns, transforms the original set, and the union of the transformations
+represents an affine transformation of the plane. Each lens, chosen at random or
+in turns, transforms the original set, and the union of the transformations
 replaces the original. More formally, an \emph{iterated function system (IFS)}
 is a topological space $\mathbb{X}$ with a finite set of continuous functions
-$f_{n}:\X\rightarrow \X$,
-$n=1,2,\dots,N$. If the functions or transformations are contractive, the
-Banach Fixed Point Theorem proves that iterating this process to infinity
-brings the original to a fixed point, the attractor of the IFS
-\cite{chaosandfractals, barnsley1985iterated, 10.2307/24893080,
-fractalseverywhere}. An \emph{attractor} of the IFS $\cal{F}$ is a set
-$A\in \cal{H}(\X)$ the set of all closed compact subsets of $\X$ such that
+$f_{n}:\X\rightarrow \X$, $n=1,2,\dots,N$. If the functions or transformations
+are contractive, the Banach Fixed Point Theorem proves that iterating this
+mapping to infinity brings the original to a fixed point, the attractor of the
+IFS \cite{chaosandfractals, barnsley1985iterated, 10.2307/24893080,
+fractalseverywhere}. An \emph{attractor} of the IFS $\cal{F}$ is a set $A\in
+\cal{H}(\X)$ the set of all closed compact subsets of $\X$ such that
 
 \begin{enumerate}
 \item $\cF(A)=A$, and
@@ -495,25 +497,30 @@ i = 1, \ldots, N\}$.
 \textit{The Collage Theorem is the key motivation for using IFSs in music
 composition}. The theorem proves that IFSs, while conceptually simple, are as
 musically powerful as one might like. The remainder of this paper concerns how
-to control this power, and how to explore the vast parameter space of IFSs in a
-\textit{musical} way.
+to explore the vast parameter space of IFSs in a \textit{musically intelligible}
+way.
 
 It would be possible to use IFS to generate sound grains on a grid; to generate
 notes on a grid; or to generate a path through a different chord space,
-\textit{e.g.} use Callender, Quinn, and Tymoczko's $OPC$ instead of $OPTIC$. We
-have chosen $OPTIC$ in order to work at a higher level of harmonic abstraction.
+\textit{e.g.} use Callender, Quinn, and Tymoczko's $OPC$ instead of $OPTIC$.
+Here, we have chosen $OPTIC$ in order to work at the highest level of harmonic
+abstraction.
 
 So, we have a piece as a sequence of points in score space, \textit{i.e.}, the
 graph of a function of time in that space. Graphs of functions, \textit{i.e.}
 fractal approximations, can be computed by a special kind of IFS associated with
-a \textit{Read-Bajraktarevi\'c} operator $\Phi$. Suppose we are given a finite
-family $\{l_n : X\to X \mid n = 1, \ldots, N\}$ of injective contractions with
-the following two properties:
+a \textit{Read-Bajraktarevi\'c} operator $\Phi$. The literature on fractal
+interpolation is extensive, and mainly concerned with interpolating a given set
+of data points; here, we do not use this capability, but rather focus on the use
+of IFSs to compose functions from scratch.
+
+Suppose we are given a finite family $\{l_n : X\to X \mid n = 1, \ldots, N\}$ of
+injective contractions with the following two properties:
 
 \begin{align}
 &X = \bigcup_{n=1}^N l_n(X);\label{union}\\
 &\Int (l_m(X))\cap \Int(l_n(X)) = \emptyset, \quad\forall\;m, n\in \{1,\ldots,
-N\}, m\neq n.\label{partition}
+N\}, m\neq n.
 \end{align}
 
 \noindent Here, $\Int (S)$ denotes the interior of a set $S$.
@@ -535,13 +542,15 @@ Equivalently, \eqref{RB} can also be written in the form
 (\Phi g \circ l_n) (x) := F_n (x, g(x)),\quad x\in X, \;n = 1, \ldots, N.
 \ee
 
-%\noindent The operator $\Phi$ is well-defined and since $g$ is bounded and each
-%$v_i$ contractive in the second variable, $\Phi g\in B(X,Y)$.
+\noindent The operator $\Phi$ is well-defined and since $g$ is bounded and each
+$v_i$ contractive in the second variable, $\Phi g\in B(X,Y)$.  In other words,
+each of the contractions in the RB operator applies to a disjoint subset of the
+domain of the bounded mapping, and contracts the range of the mapping.
 
-This obviously is an application of the Collage Theorem. Figure \ref{fig:fif}
-shows the graph of a  function computed by an RB operator consisting of three
-bilinear transformations (in the computer graphics sense, not the signal
-processing sense).
+The RB operator obviously is an application of the Collage Theorem. Figure
+\ref{fig:fif} shows the graph of a function computed by an RB operator
+consisting of three bilinear transformations (in the computer graphics sense,
+not the signal processing sense).
 
 \begin{figure}
 \centerline{\includegraphics[width = 0.5\textwidth]{interp}}
@@ -551,61 +560,59 @@ a fractal interpolation function.\protect\footnotemark}
 
 \footnotetext{Image in \ref{fig:fif} from \cite{barnsley2015bilinear}.}
 
-However, the flexibility of FAs can be increased by using a
-\textit{local iterated function system}. A local IFS is one in which the
-transformations in the IFS have the same co-domain, but not necessarily the
-same domain.
+The association of the RB operator $\Phi$ with the IFS of a score graph
+$G(f)$ is shown in this commutative diagram:
 
-The association of the RB operator $\Phi$ with the IFS of a score graph $\mathsf{G(f)}$ is
-shown in this commutation diagram:
+% \be\label{Phi}
+% \begin{CD}
+% X\times Y @>\cF_\Phi>> X\times X\\
+% @AAGA                  @AAGA\\
+% B(X,Y) @>\Phi>>  B(X,Y)
+% \end{CD}
+% The commutativity of the diagram (2.13) then holds with F Φ replaced by F and Φ
+% replaced by Φ F .
+% \ee
 
-\be
+\be\label{Phi}
 \begin{CD}
-X\times Y @>\cF_\Phi>> X\times X\\
+X\times Y @>\cF>> X\times X\\
 @AAGA                  @AAGA\\
-B(X,Y) @>\Phi>>  B(X,Y)
+B(X,Y) @>\Phi_\cF>>  B(X,Y)
 \end{CD}
 \ee
 
-\noindent where $G$ is the mapping $B(X,Y)\ni g\longmapsto G(g) = \{(x, g(x))\mid x\in X\}\in X\times Y$.
+\noindent where $G$ is the mapping $B(X,Y)\ni g\longmapsto G(g) = \{(x,
+g(x))\mid x\in X\}\in X\times Y$.
 
 Please note, and do not forget, that here we use the \textit{graph} of a bounded
 fractal function to represent a musical score, not the fractal function as such.
-Our purpose in using the RB operator is to ensure that we generate \textit{only} IFS
-that compute score graphs.
+Our purpose in using the RB operator is to ensure that we generate \textit{only}
+IFS that compute score graphs.
 
-The IFS that computes the graph of the fractal function can be expressed:
+Next, we exhibit the relation between the graph $G$ of the fixed point $f^*$ of
+the operator $\Phi$ given by \eqref{RB} and the local attractor of an associated
+contractive local IFS. To this end, we need to require that $\X$ is a closed
+subset of a complete metric space. Consider the complete metric space
+$\X\times\Y$ and define mappings $w_i:\X_i\times\Y\to\X\times\Y$ by \[ w_i (x,
+y) := (u_i (x), v_i (x,y)), \quad i\in \N_N. \]
 
-Next, we exhibit the relation between the graph $G$ of the fixed point $f^*$ of the operator $\Phi$ given by \eqref{RB} and the local attractor of an associated contractive local IFS. To this end, we need to require that $\X$ is a closed subset of a complete metric space. Consider the complete metric space $\X\times\Y$ and define mappings $w_i:\X_i\times\Y\to\X\times\Y$ by
-\[
-w_i (x, y) := (u_i (x), v_i (x,y)), \quad i\in \N_N.
-\]
+In this equation, the $u_i$ map the \emph{domain} t of the graph to each of the
+partitions of the domain, and the $v_i$ are shear transformations that rescale
+the \emph{range} of the graph. If the $v_i$ have the same domain, then we have a
+regular IFS; but if the $v_i$ have different domains but the same co-domain,
+then the family $\cW_\loc := \{\X\times\Y; (\X_i\times\Y, w_i)\st i\in \N_N\}$
+is a contractive \textit{local} IFS in the metric $d_\theta$ and the graph
+$G(f^*)$ of the local fractal function $f^*$ associated with the operator $\Phi$
+given by \eqref{Phi} is an attractor of $\cW_\loc$. Moreover,
 
-In this equation, the $u$ functions transform the graph in the direction of the
-\emph{domain} $t$ of the graph, and the $v$ functions transform the graph in the
-direction of the \emph{range} of the graph.
-
-The family $\cW_\loc := \{\X\times\Y; (\X_i\times\Y, w_i)\st i\in \N_N\}$ is a contractive local IFS in the metric $d_\theta$ and the graph $G(f^*)$ of the local fractal function $f^*$ associated with the operator $\Phi$ given by \eqref{Phi} is an attractor of $\cW_\loc$. Moreover,
 \be\label{GW}
 G(\Phi f^*) = \cW_\loc (G(f^*)),
 \ee
-where $\cW_\loc$ denotes the set-valued operator \eqref{hutchop} associated with the local IFS $\cW_\loc$.
 
+where $\cW_\loc$ denotes the set-valued operator \eqref{hutchop} associated with
+the local IFS $\cW_\loc$.
 
 \subsection{Hilbert Indices for Fractal Approximation Parameters}
-
-\section{Implementation Notes}
-
-See https://www.marksmath.org/scholarship/ReadBajPP.pdf.
-
-Any Hutchinson operator is an RB operator if its member affine transformations do not have overlapping domains.
-Many methods can be used to ensure this. Here, we adapt an algorithm that has been used to recursively compute
-Koch curves. A recursive function takes a list of bilinear transformations, a parent domain, a container for
-iterated points, and a limit of iteration (which can be an actual count of iterations, or a quantization interval).
-
-The contractions of the domain in each bilinear transformation are not given directly, but as a fraction of the
-parent domain. The translations of the domain in each bilinear transformation likewise are not given directly,
-but have added to them the implicit translation
 
 \section{Musical Examples}
 
@@ -634,15 +641,31 @@ wavelets.
 
 It also is interesting that Barnsley, Hegland, and Massopust
 \cite{2013arXiv1309.0972B} discuss how to derive fractal approximations of
-existing data sets. This implies that it is possible to automatically
-derive
-FA parameters for existing works of note-based music, and then to use the
-resulting parameter map or parametric interpolation to analyze the
-relationship between the works, or to compose new works intermediate in
-form
-between them.
+existing data sets. This implies that it is possible to automatically derive FA
+parameters for existing works of note-based music, and then to use the resulting
+parameter map or parametric interpolation to analyze the relationship between
+the works, or to compose new works intermediate in form between them.
 
 \section{Correspondence between Recursive Koch Constructions and Fractal Functions}
+
+The following pseudo-code generates a score from the Hilbert index of the IFS
+for a score graph. The IFS consists of u and i.
+
+\begin{lstlisting}
+\\ Decode Hilbert index to IFS...
+\\ Generate notes from the IFS.
+var score_generator = function(depth, iteration, time, chord_point, ifs, score) {
+    iteration = iteration + 1;
+    if (iteration > depth) {
+        var notes = to_notes(time, chord_point);
+        score.append(notes);
+        return;
+    }
+    // For each partition of the domain, shear the range, with possibly disjoint
+    // domains.
+}
+// Quantize and tie notes...
+\end{lstlisting}
 
 I used to make pieces using Koch constructions, either nested for loops, or recursive
 functions proceeding to a predefined depth.
@@ -668,6 +691,34 @@ The algorithm can proceed to just below the scale of the semitone. The produced 
 (notes) can then be quantized and overlapping notes joined.
 
 How can I prove the equivalence between RKCs and FFs? I will try to do that.
+
+\section{Notes while Writing}\
+
+Perhaps I need to throw out everything but the lack of overlapping (i.e. stick
+to shear and bilinear transformations). Then I can use the recursive Koch
+construction without worrying about seed and base functions and such.
+
+Use Bilinear Fractal Interpolation and Box Dimension, it corrects and generalizes.
+
+See https://www.marksmath.org/scholarship/ReadBajPP.pdf.
+
+Is the IFS associated with an RB operator always a local IFS? Not sure, but a
+local IFS is always associated with an RB operator.
+
+Possibly extended the commutative diagram with another rung for the Hilbert
+indices.
+
+Any Hutchinson operator is an RB operator if its member affine transformations
+do not have overlapping domains. Many methods can be used to ensure this. Here,
+we adapt an algorithm that has been used to recursively compute Koch curves. A
+recursive function takes a list of bilinear transformations, a parent domain, a
+container for iterated points, and a limit of iteration (which can be an actual
+count of iterations, or a quantization interval).
+
+The contractions of the domain in each bilinear transformation are not given
+directly, but as a fraction of the parent domain. The translations of the domain
+in each bilinear transformation likewise are not given directly, but have added
+to them the implicit translation
 
 \printbibliography
 \end{document}
