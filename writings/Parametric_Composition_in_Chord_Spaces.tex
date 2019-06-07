@@ -215,23 +215,23 @@ backref=true
 
 \begin{abstract}
 We present new methods for the parametric composition of musical scores in
-spaces with harmonic structure, extending our earlier work on generating scores
-with iterated function systems (IFSs). We define a score as the \textit{graph}
-of a score function that maps time to a succession of more or less fleeting
-chords, which are represented as points in a discrete space of chord symmetries.
-Such score graphs can be computed using special iterated function systems (IFS)
-that compute the graphs of fractal interpolation functions (FIFs), which are
-related to the Read-Bajraktarevi\'c operator. The Collage Theorem proves that
-any such graph may be approximated, as closely as desired, by such a IFS. One
-method of composing is then to manually construct these IFSs, or to evolve them
-using the genetic algorithm, and then to render the IFS to an actual score.
-Additionally, using Hilbert indexes, a single complex virtual parameter can be
-derived to represent each set (potentially dozens or more numbers) of the IFS
-parameters used to compute each score graph. Each virtual parameter may be
+spaces with harmonic structure, extending our earlier work on using iterated
+function systems (IFSs) to generate music. We define a score as the
+\textit{graph} of a function that maps time to a succession of more or less
+fleeting chords, which are represented as points in a discrete space of chord
+symmetries. Such score graphs can be computed using special iterated function
+systems (IFS) that compute the graphs of fractal interpolation functions (FIFs),
+which are related to the Read-Bajraktarevi\'c operator. The Collage Theorem
+proves that any such graph may be approximated, as closely as desired, by such a
+IFS. One method of composing is then to manually construct these IFSs, or to
+evolve them using the genetic algorithm, and then to render the IFS to an actual
+score. Additionally, using Hilbert indexes, a single complex virtual parameter
+can be derived to represent each set (potentially dozens or more numbers) of the
+IFS parameters used to compute each score graph. Each virtual parameter may be
 mapped to the score produced from the corresponding IFS, thus producing a
 parametric map of scores colored by some musical feature of interest. Other
 methods of composition are then to interactively explore such parametric maps,
-or to interpolate between different scores located in such a map.
+or to interpolate between two scores located in such a map.
 \end{abstract}
 
 %\lohead{Parametric Composition}
@@ -260,7 +260,7 @@ represent either sound, \textit{e.g.}\ in the form of a grid of sound grains
 (Gabor transform) \cite{obsessed}, or scores, \textit{e.g.}\ in the form of a
 grid of notes (piano roll) \cite{ifsmusic}.
 
-Here, we extend our previous work by generating scores in a special score space
+Here, we extend this work by generating scores in a special score space
 constructed from time and the basic symmetries of chord space identified by
 Callender, Quinn and Tymoczko \cite{callender:346}, along with revoicings and
 rearrangements. The dimensions of this score space are: time, set class (the
@@ -277,12 +277,11 @@ G(f: t \mapsto P, I, T, v, a).
 \ee
 
 
-\noindent Notes and chords do
-\textit{not} need to be confined to 12-tone equal temperament. One motivation
-for using this score space to compose is that different values on the chord
-dimensions of the space are clearly audible as harmonic differences. Another
-motivation is that, at any one point in time, there is one and only one
-``harmony.''
+\noindent Notes and chords do \textit{not} need to be confined to 12-tone equal
+temperament. One motivation for using this score space to compose is that
+different values on the chord dimensions of the space are clearly audible as
+harmonic differences. Another motivation is that, at any one point in time,
+there is one and only one ``harmony.''
 
 The score generators used here are \textit{iterated function systems} (IFSs)
 \cite{barnsley1985iterated, 10.2307/24893080, fractalseverywhere}. More
@@ -389,10 +388,10 @@ commonly used concept of what is a ``chord.''
   $OPTIC$ for trichords in 12TET.}
 \end{figure}
 
-Here, we do not directly use chord space for composing. Rather, we construct a parameter
-space in which each of the irreducible symmetries of chord space identified by
-Callender, Quinn, and Tymoczko is a separate dimension, on which a specific
-operation is indexed. These are:
+Here, we do not directly use chord space for composing. Rather, we construct a
+discrete space in which each of the irreducible symmetries of chords identified
+by Callender, Quinn, and Tymoczko is a separate dimension, on which the group
+elements of the symmetry are indexed. These dimensions are:
 
 \begin{enumerate}
 \item $P$ (Callender, Quinn, and Tymoczko's $OPTIC$ space) -- Set class, the
@@ -403,7 +402,7 @@ number of divisions of the octave.
 \item $T/R$ -- Transposition within a specified range $R$.
 \end{enumerate}
 
-\noindent We supplement this chord space by adding two more dimensions:
+\noindent We supplement this chord symmetry space by adding two more dimensions:
 
 \begin{enumerate}[resume]
 \item $v$ -- Octavewise revoicing (within some specified range) of the $PIT$
@@ -412,17 +411,16 @@ chord, through all permutations of the possible voicings.
 permutations of the possible arrangements.
 \end{enumerate}
 
-\noindent Obviously not all dimensions of this odd parameter space are
-continuous. The purpose of chord space is to permit composing by moving a single
-point through the space and thus controlling at once set class, inversion,
-transposition, voicing, and arrangement; another way of saying this is that any
-piece of note-based music can be represented by the graph of a vector-valued
-function of time (Equation \eqref{score_graph}).
+\noindent The purpose of chord symmetry space is to permit composing by moving a
+single point through the space and thus controlling at once set class,
+inversion, transposition, voicing, and arrangement; another way of saying this
+is that any piece of note-based music can be represented by the graph of chord
+symmetries as a vector-valued function of time (Equation \eqref{score_graph}).
 
-By assigning each symmetry to an orthogonal dimension of chord space, the
-IFSs to be developed for composing are guaranteed to control the dimensions
-independently, \textit{e.g.}\ to generate arpeggiations without affecting
-chord type.
+By assigning each symmetry to an orthogonal dimension of chord symmetry space,
+the IFSs to be developed for composing are guaranteed to control the dimensions
+independently, \textit{e.g.}\ to generate arpeggiations without affecting chord
+type.
 
 \subsection{Fractal Approximation}
 
@@ -441,18 +439,18 @@ curve.\protect\footnotemark}
 \footnotetext{Image in \ref{fig:kochflake} licensed Creative
 Commons Attribution-ShareAlike 3.0 Unported.}
 
-One basic method of generating fractals is with the multiple copy reduction
-machine (MCRM). Imagine a copier with more than one lens, each equipped with
-adjustments (sliding, shrinking, or rotating the image of the original). Make a
-copy, replace the original with the copy, and repeat to infinity. Just as with
-the snowflake curve, the final copy comes to occupy a definite fraction of the
+A paradigmatic method of generating fractals is multiple copy reduction machine
+(MCRM). Imagine a copier with more than one lens, each equipped with adjustments
+(sliding, shrinking, or rotating the image of the original). Make a copy,
+replace the original with the copy, and repeat to infinity. Just as with the
+snowflake curve, the final copy comes to occupy a definite fraction of the
 picture plane and thus is a fractal \cite{chaosandfractals}.
 
-Mathematically, the MCRM is an iterated function system (IFS). Each lens
-represents an affine transformation of the plane. Each lens, chosen at random or
-in turns, transforms the original set, and the union of the transformations
-replaces the original. More formally, an \emph{iterated function system (IFS)}
-is a topological space $\mathbb{X}$ with a finite set of continuous functions
+Mathematically, the MCRM is an iterated function system. Each lens represents an
+affine transformation of the plane. Each lens, chosen at random or in turns,
+transforms the original set, and the union of the transformations replaces the
+original. More formally, an \emph{iterated function system (IFS)} is a
+topological space $\mathbb{X}$ with a finite set of continuous functions
 $f_{n}:\X\rightarrow \X$, $n=1,2,\dots,N$. If the functions or transformations
 are contractive, the Banach Fixed Point Theorem proves that iterating this
 mapping to infinity brings the original to a fixed point, the attractor of the
@@ -495,7 +493,7 @@ d_\calH (M, A) < \frac{\varepsilon}{1-s},
 i = 1, \ldots, N\}$.
 
 \textit{The Collage Theorem is the key motivation for using IFSs in music
-composition}. The theorem proves that IFSs, while conceptually simple, are as
+composition}. The theorem proves that IFSs, although conceptually simple, are as
 musically powerful as one might like. The remainder of this paper concerns how
 to explore the vast parameter space of IFSs in a \textit{musically intelligible}
 way.
@@ -506,13 +504,13 @@ notes on a grid; or to generate a path through a different chord space,
 Here, we have chosen $OPTIC$ in order to work at the highest level of harmonic
 abstraction.
 
-So, we have a piece as a sequence of points in score space, \textit{i.e.}, the
-graph of a function of time in that space. Graphs of functions, \textit{i.e.}
-fractal approximations, can be computed by a special kind of IFS associated with
-a \textit{Read-Bajraktarevi\'c} operator $\Phi$. The literature on fractal
-interpolation is extensive, and mainly concerned with interpolating a given set
-of data points; here, we do not use this capability, but rather focus on the use
-of IFSs to compose functions from scratch.
+So, we have a piece as a sequence of points in chord symmetry space,
+\textit{i.e.}, the graph of a function of time in that space. Graphs of
+functions, \textit{i.e.} fractal approximations, can be computed by a special
+kind of IFS associated with a \textit{Read-Bajraktarevi\'c} operator $\Phi$. The
+literature on fractal interpolation is extensive, and mainly concerned with
+interpolating a given set of data points; here, we do not use this capability,
+but rather focus on the use of IFSs to compose functions from scratch.
 
 Suppose we are given a finite family $\{l_n : X\to X \mid n = 1, \ldots, N\}$ of
 injective contractions with the following two properties:
@@ -545,7 +543,8 @@ Equivalently, \eqref{RB} can also be written in the form
 \noindent The operator $\Phi$ is well-defined and since $g$ is bounded and each
 $v_i$ contractive in the second variable, $\Phi g\in B(X,Y)$.  In other words,
 each of the contractions in the RB operator applies to a disjoint subset of the
-domain of the bounded mapping, and contracts the range of the mapping.
+domain of the bounded mapping, and contracts the range of the mapping, e.g. by
+simple rescaling, by shearing, or a by a bilinear transformation.
 
 The RB operator obviously is an application of the Collage Theorem. Figure
 \ref{fig:fif} shows the graph of a function computed by an RB operator
