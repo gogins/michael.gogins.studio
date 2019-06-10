@@ -398,7 +398,7 @@ elements of the symmetry are indexed. These dimensions are:
 most abstract conception of a chord; all major and minor triads are equivalent.
 The number of elements in P depends upon the maximum number of voices and the
 number of divisions of the octave.
-\item $I$ -- Inversion.
+\item $I$ -- Inversion by the origin.
 \item $T/R$ -- Transposition within a specified range $R$.
 \end{enumerate}
 
@@ -479,10 +479,11 @@ $d_\calH$. Assume $M\in\calH(\X)$ and $\varepsilon > 0$. Assume $\cF := \{\X;
 f_1, \ldots, f_N\}$ is a contractive IFS such that
 
 \be\label{hutchop}
-d_\calH \left(M, \;\bigcup_{i=1}^N f_i (M) \right) < \varepsilon.
+d_\calH \left(M, \;\bigcup_{i=1}^N f_i (M) \right) < \varepsilon;
 \ee
 
-\noindent Then
+\noindent the union of contractions is called the \textit{Hutchinson operator}.
+Then
 
 \[
 d_\calH (M, A) < \frac{\varepsilon}{1-s},
@@ -543,8 +544,7 @@ Equivalently, \eqref{RB} can also be written in the form
 \noindent The operator $\Phi$ is well-defined and since $g$ is bounded and each
 $v_i$ contractive in the second variable, $\Phi g\in B(X,Y)$.  In other words,
 each of the contractions in the RB operator applies to a disjoint subset of the
-domain of the bounded mapping, and contracts the range of the mapping, e.g. by
-simple rescaling, by shearing, or a by a bilinear transformation.
+domain of the bounded mapping, and contracts the range of the mapping.
 
 The RB operator obviously is an application of the Collage Theorem. Figure
 \ref{fig:fif} shows the graph of a function computed by an RB operator
@@ -560,7 +560,7 @@ a fractal interpolation function.\protect\footnotemark}
 \footnotetext{Image in \ref{fig:fif} from \cite{barnsley2015bilinear}.}
 
 The relationship of the RB operator $\Phi$ to the IFS of a score graph
-$G(f)$ is shown in this commutative diagram:
+$G$ is shown in this commutative diagram:
 
 % \be\label{Phi}
 % \begin{CD}
@@ -588,12 +588,16 @@ represent a musical score, not the fractal function as such. Our purpose in
 using the RB operator is to ensure that we specify \textit{only} IFS that
 compute score graphs.
 
-Next, we exhibit the relation between the graph $G$ of the fixed point $f^*$ of
-the operator $\Phi$ given by \eqref{RB} and the local attractor of an associated
-contractive local IFS. To this end, we need to require that $\X$ is a closed
-subset of a complete metric space. Consider the complete metric space
-$\X\times\Y$ and define mappings $w_i:\X_i\times\Y\to\X\times\Y$ by \[ w_i (x,
-y) := (u_i (x), v_i (x,y)), \quad i\in \N_N. \]
+The concepts of fractal interpolation and the RB operator carry over to
+\textit{local} iterated functions, in which the transformations belonging to the
+Hutchinson operator may have different domains although they have the same
+co-domain. This provides more flexibility in construction of FIFs. Assume that
+$\X$ is a closed subset of a complete metric space. Consider the complete metric
+space $\X\times\Y$ and define mappings $w_i:\X_i\times\Y\to\X\times\Y$ by
+
+\be\label{IfsForFif}
+w_i (x, y) := (u_i (x), v_i (x,y)), \quad i\in \N_N.
+\ee
 
 In this equation, each $u_i$ maps the \emph{domain} t of the graph to one of the
 partitions of the domain, and the $v_i$ are shear transformations that rescale
@@ -608,11 +612,45 @@ given by \eqref{Phi} is an attractor of $\cW_\loc$. Moreover,
 G(\Phi f^*) = \cW_\loc (G(f^*)),
 \ee
 
-\noindent where $\cW_\loc$ denotes the set-valued operator \eqref{hutchop} associated with
+\noindent where $\cW_\loc$ denotes the Hutchinson operator \eqref{hutchop} associated with
 the local IFS $\cW_\loc$. Different transformations may then be used to
 transform different partitions of the domain.
 
-\subsection{Hilbert Indices for Fractal Approximation Parameters}
+\subsection{Parametric Maps for Fractal Approximations}
+
+In order to chart a parametric map over a range of fractal approximations, a
+simple procedure may be used. First, an order is defined for the parameters. Of
+course, two different FAs may have different numbers of mappings in their
+respective Hutchinson operators. We account for that by padding the shorter
+operator with zeros. Then, we acknowledge that the actual ordering is not
+significant as long as the different sets of parameters are laid out in the
+\textit{same} order. Here, that is ${t_i, s_i, y_i}$ for each mapping in the
+operator. We take the smaller of two parameters $W_{min}$ as the upper left
+corner of the map, and the larger of the two parameters $W_{max}$ as the lower
+right corner of the map. If we define a fixed number of interpolants between the
+corners, we may then use simple linear interpolation to locate any parameter
+between those corners. In other words, we divide up the map between the corners
+by $N$ intervals for the two most significant parameters. We then divide each
+square in the same way for the next two most significant parameters, and so on.
+The score graph is then computed for each of the points in the final map, the
+actual score is rendered from the score graph, and the parameter point is
+colored by some quantitative feature of the score. Alternatively, a thumbnail
+visual rendering of the score, a condensed piano roll, may be used (that is the
+approach used here).
+
+Then the $u_i$ in \eqref{IfsForFif} are implied by $t$ at each level of
+recursion, and the $v_i$ are implied by the $s_i$ and $y_i$ at each level of
+recursion.
+
+
+
+The data values must of course have a one-to-one correspondence with the index
+values. This is done by sorting the data values and ensuring that there are at
+least as many Hilbert values as data values.
+
+In the literature, the transformations used to construct Hutchinson operators
+for FIFs may take several forms. In the simplest form, they are simple
+translations and scalings.
 
 \section{Musical Examples}
 
