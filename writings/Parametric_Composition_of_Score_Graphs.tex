@@ -301,10 +301,9 @@ piece of note-based music may be approximated as closely as desired by a fixed
 size set of numerical parameters. Although there might be dozens or hundreds of
 numbers in such IFS parameters, each parameter set can effectively be
 represented as a single real or complex number by using a recursive indexing
-scheme such as a Hilbert index \cite{hamilton2006compact}. We call this number
-the \textit{effective parameter} of the IFS because the complete set of
-parameters can be recovered (given sufficient numerical precision) by decoding
-the index.
+scheme. We call this number the \textit{effective parameter} of the IFS because
+the complete set of parameters can be recovered (given sufficient numerical
+precision) by decoding the index.
 
 Then, using the effective parameters, it is straightforward (if perhaps
 compute-intensive) to render a parametric map of all pieces within a given range
@@ -313,8 +312,8 @@ effective parameters. It is also, of course, possible to evolve pieces using the
 genetic algorithm on sets of actual parameters.
 
 The remainder of this paper develops the mathematical background in somewhat
-more detail; discusses the implementation of IFSs, Hilbert indices, and the
-genetic algorithm for IFS parameters in the Silencio library for algorithmic
+more detail; discusses the implementation of IFSs, indexes for parameters, and
+the genetic algorithm for IFS parameters in the Silencio library for algorithmic
 composition in JavaScript; and finishes with examples of each of the three
 methods of algorithmic composition, implemented in Silencio and Csound.
 
@@ -616,64 +615,54 @@ interpolating functions to fit existing data points. But that is not our
 intention here. For the purposes of adapting this method for musical
 composition, we adopt from \cite{2012arXiv1209.3139B} one of the simpler and
 clearer transformations, the bilinear transformation, expressed with linear
-partitions of the domain as:
+partitions of the domain and a vector-valued range as:
 
 \be\label{bilinear}
-w_{i}(t,\mathbf{s}) :=(\frac{t_{i}-t_{i-1}}{t_{N}-t_{0}}\right)
-(t-t_{0}),\mathbf{a}_i+\mathbf{b}_i\frac{t_{i}-t_{i-1}}{t_{N}-t_{0}}+\mathbf{c}_i\mathbf{s}+\mathbf{d}_i+\frac{t_{i}-t_{i-1}}{t_{N}-t_{0}}\right)
-(t-t_{0})\mathbf{s}),
+w_{i}(t,\mathbf{s}) :=[t_{i-1} + \frac{t_{i}-t_{i-1}}{t_{N}-t_{0}}\right)
+(t-t_{0}),\mathbf{a}_i+\mathbf{b}_it+\mathbf{c}_i\mathbf{s}+\mathbf{d}_it
+\mathbf{s}],
 \ee
 
-\noindent $t$ is time and $\mathbf{s}$ is a point in chord symmetry space $\{P, I, T, v, a\}$, and
-so the parameters $\mathbf{a, b, c, d}$ are vector-valued. In
+\noindent $t$ is time and $\mathbf{s}$ is a point in chord symmetry space $\{P,
+I, T, v, a\}$, and so the parameters $\mathbf{a, b, c, d}$ are vector-valued. In
 \cite{2012arXiv1209.3139B} additional constraints are added that cause the
 interpolated sub-domains and ranges to fit neatly together as in Figure
 \ref{fig:fif} but, as we note, these are not used here.
 
 
-\subsection{Parametric Maps for Fractal Approximations}
+\subsection{Parametric Maps for Scores}
 
-In order to chart a parametric map over a range of fractal approximations, a
-simple procedure may be used. First, an order is defined for the parameters on
-the RHS of \eqref{bilinear}: simply $\{t, P, I, T, v, a\}$. Of course, two
-different FAs may have different numbers of mappings in their respective
-Hutchinson operators. We account for that by padding the shorter operator with
-zeros. Then, we acknowledge that the actual ordering is not significant as long
-as the different sets of parameters are laid out in the \textit{same} order.
-Here, that is ${t_i, s_i, y_i}$ for each mapping in the operator. We take the
-smaller of two parameters $W_{min}$ as the upper left corner of the map, and the
-larger of the two parameters $W_{max}$ as the lower right corner of the map. If
-we define a fixed number of interpolants between the corners, we may then use
-simple linear interpolation to locate any parameter between those corners. In
-other words, we divide up the map between the corners by $N$ intervals for the
-two most significant parameters. We then divide each square in the same way for
-the next two most significant parameters, and so on. The score graph is then
-computed for each of the points in the final map, the actual score is rendered
-from the score graph, and the parameter point is colored by some quantitative
-feature of the score. Alternatively, a thumbnail visual rendering of the score,
-a condensed piano roll, may be used; that is our approach here.
+In order to chart a 2-dimensional, rectangular bounded parametric map over a
+range of fractal approximations of score graphs, a simple recursive procedure
+may be used. First, we define an order for the parameters on the RHS of
+\eqref{bilinear}: simply $\{t, \mathbf{a, b, c, d}\}$. Similarly, within each
+Hutchinson operator, we order the transformations by the order of their
+parameters. The actual ordering is not significant as long as the different sets
+of parameters are laid out in the \textit{same} order. Of course, two different
+FAs may have different numbers of mappings in their respective Hutchinson
+operators. To account for that, we pad the shorter operator with zeros.  We take
+the smaller of two parameters $W_{min}$ as the upper left corner of the map, and
+the larger of the two parameters $W_{max}$ as the lower right corner of the map.
+If we define a fixed number of parameter points between the corners, we may then
+use simple linear interpolation to calculate any parameter point between those
+corners. To do this, we divide up the map between the corners by $N$ intervals
+for the two most significant parameters. We then divide each square in the same
+way for the next two most significant parameters, and so on. The score graph is
+then computed for each of the points in the final map, the actual score is
+rendered from the score graph, and the parameter point is colored by some
+quantitative feature of the score. Alternatively, a thumbnail visual rendering
+of the score, a condensed piano roll, may be used; that is our approach here.
 
-Then the $u_i$ in \eqref{IfsForFif} are implied by $t$ at each level of
-recursion, and the $v_i$ are implied by the $s_i$ and $y_i$ at each level of
-recursion.
-
-
-
-The data values must of course have a one-to-one correspondence with the index
-values. This is done by sorting the data values and ensuring that there are at
-least as many Hilbert values as data values.
-
-In the literature, the transformations used to construct Hutchinson operators
-for FIFs may take several forms. In the simplest form, they are simple
-translations and scalings.
+Needless to say, an arbitrary-precision library for floating-point arithmetic
+(such as the GNU MPFR \cite{Fousse:2007:MMB:1236463.1236468}) must be used to
+store the virtual parameters, which can encode more information than any native
+floating-point number format can contain.
 
 \section{Musical Examples}
 
 \subsection{Parametric Mapping}
 
-
 \subsection{Interpolating Between Pieces}
-
 
 \subsection{Using the Genetic Algorithm with Fractal Interpolation
 Functions}
@@ -701,23 +690,53 @@ the works, or to compose new works intermediate in form between them.
 
 \section{Correspondence between Recursive Koch Constructions and Fractal Functions}
 
-The following pseudo-code generates a score from the Hilbert index of the IFS
-for a score graph. The IFS consists of u and i.
+The following pseudo-code generates a score from the virtual parameter point of an IFS
+for a score graph.
 
 \begin{lstlisting}
-\\ Decode Hilbert index to IFS...
-\\ Generate notes from the IFS.
-var score_generator = function(depth, iteration, time, chord_point, ifs, score) {
-    iteration = iteration + 1;
-    if (iteration > depth) {
-        var notes = to_notes(time, chord_point);
-        score.append(notes);
+// From the upper and lower corners of the parametric map, the number of points
+// on the height and width of the map, and the maximum number of transformations
+// in a corner, derive the strides for each parameter.
+
+// Starting from the lower corner of the map, sum the strides on each real
+// parameter until the virtual parameter point has been reached, to derive the
+// final values of all parameters in the actual Hutchinson operator.
+
+// Recursively apply the Hutchinson operator to compute the FA for the score
+// graph. Recursion should stop when the target depth of recursion has been
+// reached. At that level of recursion, translate the point on the score graph
+// into a chord consisting of one or more notes with the appropriate octavewise
+// voicing and arrangement of voices, and add the notes of that chord to the
+// score. Skip transformations that are not local.
+
+var hutchinson = function(maximum_depth, current_depth, operator, t_min, t_max, point, score) {
+    current_depth = current_depth + 1;
+    if (current_depth >= maximum_depth) {
+        score.append(point_to_notes(time, point));
         return;
     }
-    // For each partition of the domain, shear the range, with possibly disjoint
-    // domains.
+    var first_x = 0;
+    var final_x = operator[operator.length - 1].t;
+    for (var transformation_index = 0; transformation_index < operator.length; transformation_index++) {
+        var transformation = operator[transformation_index];
+        var current_x = transformation.t;
+        // Partition the domain.
+        var current_t = point.t;
+        var next_t = prior_x + ((current_x - prior_x) / (final_x - first_x)) * (current_t - first_x);
+        // Apply the transformation.
+        if (transformation.local_to(transformation_index) {
+            var new_t = point.t
+            hutchinson(maximum_depth, current_depth, operator, local_t_min, local_t_max, point, score);
+        }
+    }
+
 }
-// Quantize and tie notes...
+
+// Quantize pitches to MIDI key numbers and voices to instrument numbers.
+
+// Join overlapping notes in the score.
+
+// Display a piano roll view of the score and play it using MIDI, Csound, etc.
 \end{lstlisting}
 
 I used to make pieces using Koch constructions, either nested for loops, or recursive
