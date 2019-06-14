@@ -27,8 +27,8 @@
 <script src='silencio/js/tinycolor.js'></script>
 <script src='silencio/js/Silencio.js'></script>
 <script src="silencio/js/TrackballControls.js"></script>
-<script src='silencio/js/ChordSpace.js'></script>
-<script type="text/javascript" src="silencio/js/dat.gui.js"></script>
+<script src='silencio/js/ChordSpace2.js'></script>
+<script src="silencio/js/dat.gui.js"></script>
 </head>
 <body style="background:black;">
 <canvas id="canvas" style="block;height:100vh;width:100vw">
@@ -61,14 +61,14 @@ var generate = function() {
     lsys.addRule('a3', 'F b2 b F a I v F F c F F F F F c2 aa V f c2 F F b2 a');
     lsys.addRule('xa3', 'F b2 b F a I v F F c F F F F F c2 aa i i V f c2 F F b2 a');
     lsys.addRule('Ja', 'J,2,0');
-    //lsys.addRule('Jb', 'J,2,4');  
-    lsys.addRule('Jb', 'J,2,2');  
-    lsys.addRule('b',  '+ f f f f f - -');    
+    //lsys.addRule('Jb', 'J,2,4');
+    lsys.addRule('Jb', 'J,2,2');
+    lsys.addRule('b',  '+ f f f f f - -');
     lsys.addRule('c',  '- f f f f f +');
-    lsys.addRule('b2', '+ f f f f -');    
+    lsys.addRule('b2', '+ f f f f -');
     lsys.addRule('c2', '- - f f f f + +');
-    lsys.addRule('b3', '- - f f f + +');    
-    var chord = ChordSpace.chordForName('DM9');      
+    lsys.addRule('b3', '- - f f f + +');
+    var chord = ChordSpace.chordForName('DM9');
     var t = new ChordSpace.Turtle(4.5, Math.PI/2, chord, chord);
     lsys.generate(4);
     lsys.write_score(t);
@@ -156,7 +156,7 @@ var generate = function() {
 // 64 = dB, out of range highlighted with red
 // 96 = dB, all colors
 // 256 = raw, out of range highlighted with red
-// 512 = raw, all colours    
+// 512 = raw, all colours
 var render = function(soundfile, post_process) {
     var csd = document.getElementById('csd').value;
     var csound_score = lsys.score.toCsoundScore();
@@ -455,7 +455,7 @@ window.onload = function() {
     add_slider(Flute, 'gk_ZakianFlute_level', -40, 40);
     var Pianoteq = gui.addFolder('Pianoteq');
     add_slider(Pianoteq, 'gk_PianoteqOut_level', -40, 40);
-    gui.revert();  
+    gui.revert();
     document.addEventListener("keydown", function (e) {
         var e_char = String.fromCharCode(e.keyCode || e.charCode);
         if (e.ctrlKey === true) {
@@ -491,7 +491,7 @@ var add_slider = function(gui_folder, token, minimum, maximum, name) {
     gui_folder.add(parameters, token, minimum, maximum).onChange(on_parameter_change);
 };
 
-window.addEventListener("unload", function(event) { 
+window.addEventListener("unload", function(event) {
     parameters.stop();
     nw_window.close();
 });
@@ -1214,7 +1214,7 @@ adamping linseg 0, 0.03, 1, p3 - 0.1, 1, 0.07, 0
 aleft = adamping * aleft * k_gain
 aright = adamping * aright * k_gain
 outleta "outleft", aleft
-outleta "outright", aright 
+outleta "outright", aright
 prints "Bower          i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
 ;printks "Bower          i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d l%9.4f r%9.4f\n", 1, p1, p2, p3, p4, p5, p7, active(p1), dbamp(rms(aleft)), dbamp(rms(aright))
 endin
@@ -1309,45 +1309,45 @@ prints "Controls on    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", 
 
     gk_Bower_level chnget "gk_Bower_level"
     gk_Bower_pressure chnget "gk_Bower_pressure"
-    
-    gk_Blower_grainDensity chnget "gk_Blower_grainDensity" 
-    gk_Blower_grainDuration chnget "gk_Blower_grainDuration" 
+
+    gk_Blower_grainDensity chnget "gk_Blower_grainDensity"
+    gk_Blower_grainDuration chnget "gk_Blower_grainDuration"
     gk_Blower_grainAmplitudeRange chnget "gk_Blower_grainAmplitudeRange"
     gk_Blower_grainFrequencyRange chnget "gk_Blower_grainFrequencyRange"
-    gk_Blower_level chnget "gk_Blower_level" 
-    
-    gk_Buzzer_harmonics chnget "gk_Buzzer_harmonics" 
-    gk_Buzzer_level chnget "gk_Buzzer_level" 
-    
-    gk_Droner_partial1 chnget "gk_Droner_partial1" 
-    gk_Droner_partial2 chnget "gk_Droner_partial2" 
-    gk_Droner_partial3 chnget "gk_Droner_partial3" 
-    gk_Droner_partial4 chnget "gk_Droner_partial4" 
-    gk_Droner_partial5 chnget "gk_Droner_partial5" 
-    gk_Droner_level chnget "gk_Droner_level" 
-    
-    gk_Phaser_ratio1 chnget "gk_Phaser_ratio1" 
-    gk_Phaser_ratio2 chnget "gk_Phaser_ratio2" 
-    gk_Phaser_index1 chnget "gk_Phaser_index1" 
-    gk_Phaser_index2 chnget "gk_Phaser_index2" 
-    gk_Phaser_level chnget "gk_Phaser_level" 
-    
-    gk_PianoteqOut_level chnget "gk_PianoteqOut_level" 
-    
-    gk_Shiner_level chnget "gk_Shiner_level" 
-    
+    gk_Blower_level chnget "gk_Blower_level"
+
+    gk_Buzzer_harmonics chnget "gk_Buzzer_harmonics"
+    gk_Buzzer_level chnget "gk_Buzzer_level"
+
+    gk_Droner_partial1 chnget "gk_Droner_partial1"
+    gk_Droner_partial2 chnget "gk_Droner_partial2"
+    gk_Droner_partial3 chnget "gk_Droner_partial3"
+    gk_Droner_partial4 chnget "gk_Droner_partial4"
+    gk_Droner_partial5 chnget "gk_Droner_partial5"
+    gk_Droner_level chnget "gk_Droner_level"
+
+    gk_Phaser_ratio1 chnget "gk_Phaser_ratio1"
+    gk_Phaser_ratio2 chnget "gk_Phaser_ratio2"
+    gk_Phaser_index1 chnget "gk_Phaser_index1"
+    gk_Phaser_index2 chnget "gk_Phaser_index2"
+    gk_Phaser_level chnget "gk_Phaser_level"
+
+    gk_PianoteqOut_level chnget "gk_PianoteqOut_level"
+
+    gk_Shiner_level chnget "gk_Shiner_level"
+
     gk_Sweeper_britel chnget "gk_Sweeper_britel"
-    gk_Sweeper_briteh chnget "gk_Sweeper_briteh" 
-    gk_Sweeper_britels chnget "gk_Sweeper_britels" 
-    gk_Sweeper_britehs chnget "gk_Sweeper_britehs" 
-    gk_Sweeper_level chnget "gk_Sweeper_level" 
-    
+    gk_Sweeper_briteh chnget "gk_Sweeper_briteh"
+    gk_Sweeper_britels chnget "gk_Sweeper_britels"
+    gk_Sweeper_britehs chnget "gk_Sweeper_britehs"
+    gk_Sweeper_level chnget "gk_Sweeper_level"
+
     gk_ZakianFlute_level chnget "gk_ZakianFlute_level"
 
-    gk_Reverb_feedback chnget "gk_Reverb_feedback" 
-    gk_Reverb2_feedback chnget "gk_Reverb2_feedback" 
-    gk_MasterOutput_level chnget "gk_MasterOutput_level" 
-    gk_overlap chnget "gk_overlap" 
+    gk_Reverb_feedback chnget "gk_Reverb_feedback"
+    gk_Reverb2_feedback chnget "gk_Reverb2_feedback"
+    gk_MasterOutput_level chnget "gk_MasterOutput_level"
+    gk_overlap chnget "gk_overlap"
     goto return_label
 off_label:
 prints "Controls off   i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
