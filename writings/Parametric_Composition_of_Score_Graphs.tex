@@ -642,14 +642,14 @@ operators. To account for that, we pad the shorter operator with zeros.
 
 We take the smaller of two parameters $W_{min}$ as the upper left corner of the
 map, and the larger of the two parameters $W_{max}$ as the lower right corner of
-the map. If we define a fixed number of parameter points between the corners, we
-may then use simple linear interpolation to calculate any parameter point
-between those corners. To do this, we divide up the map between the corners by
-$N$ intervals for the two most significant parameters. We then divide each
-square in the same way for the next two most significant parameters, and so on.
-The score graph is then computed for each of the points in the final map, the
-actual score is rendered from the score graph, and the parameter point is
-colored by some quantitative feature of the score. Alternatively, a thumbnail
+the map. If we define a fixed number on each side of parameter points between
+the corners, we may then use simple linear interpolation to calculate any
+parameter point between those corners. To do this, we divide up the map between
+the corners by $N$ intervals for the two most significant parameters. We then
+divide each square in the same way for the next two most significant parameters,
+and so on. The score graph is then computed for each of the points in the final
+map, the actual score is rendered from the score graph, and the parameter point
+is colored by some quantitative feature of the score. Alternatively, a thumbnail
 visual rendering of the score, a condensed piano roll, may be used; that is our
 approach here.
 
