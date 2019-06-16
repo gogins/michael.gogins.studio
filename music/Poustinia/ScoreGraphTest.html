@@ -51,27 +51,24 @@ window.onerror = function(message, url, line) {
 var generate = function() {
     var score_graph = new ScoreGraphs.ScoreGraph(4, 60, 36, 8, 120);
     console.log("score_graph: " + score_graph);
-    var a = [10,0,0,0];
-    var b = [10,0,0,0];
-    var c = [10,0,0,0];
-    var d = [10,0,0,0];
-    var a = [10,0,0,0];
-    var b = [10,0,0,0];
-    var c = [10,0,0,0];
-    var d = [10,0,0,0];
+    let a1 = [10,0,0,0,0];
+    let b1 = [10,0,0,0,0];
+    let c1 = [10,0,0,0,0];
+    let d1 = [10,0,0,0,0];
+    let t1 = new ScoreGraphs.BilinearTransformation(a1, b1, c1, d1)
     score_graph.add_transformation(0, t1);
-    var a = [10,1,0,0];
-    var b = [10,1,0,0];
-    var c = [10,1,0,0];
-    var d = [10,1,0,0];
-    var t2 = new ScoreGraphs.BilinearTransformation(a, b, c, d)
-    score_graph.add_transformation(1, t1);
-    var a = [10,0,0,0];
-    var b = [10,0,0,0];
-    var c = [10,0,0,0];
-    var d = [10,0,0,0];
-    var t3 = new ScoreGraphs.BilinearTransformation(a, b, c, d)
-    score_graph.add_transformation(2, t1);
+    let a2 = [10,1,0,0,0];
+    let b2 = [10,1,0,0,0];
+    let c2 = [10,1,0,0,0];
+    let d2 = [10,1,0,0,0];
+    let t2 = new ScoreGraphs.BilinearTransformation(a2, b2, c2, d2)
+    score_graph.add_transformation(1, t2);
+    let a3 = [10,0,0,0,0];
+    let b3 = [10,0,0,0,0];
+    let c3 = [10,0,0,0,0];
+    let d3 = [10,0,0,0,0];
+    var t3 = new ScoreGraphs.BilinearTransformation(a3, b3, c3, d3)
+    score_graph.add_transformation(2, t2);
     score_graph.generate(2, 12);
 };
 
