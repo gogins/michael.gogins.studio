@@ -20,7 +20,6 @@
 </style>
 </script>
 <script src='silencio/js/csound_loader.js'></script>
-<script src='silencio/js/canvas_wrapper.js'></script>
 <script src='silencio/js/sprintf.js'></script>
 <script src='silencio/js/numeric.js'></script>
 <script src="silencio/js/three.js"></script>
@@ -44,12 +43,39 @@ try {
 } catch(e) {
     console.log(e);
 }
-window.onerror = function (message, url, line) {
+window.onerror = function(message, url, line) {
   console.trace();
   csound.message(message + '\n' + url + '\n' + line + '\n');
-}
+};
 
 var generate = function() {
+    var score_graph = new ScoreGraphs.ScoreGraph(4, 60, 36, 8, 120);
+    console.log("score_graph: " + score_graph);
+    var a = [10,0,0,0];
+    var b = [10,0,0,0];
+    var c = [10,0,0,0];
+    var d = [10,0,0,0];
+    var a = [10,0,0,0];
+    var b = [10,0,0,0];
+    var c = [10,0,0,0];
+    var d = [10,0,0,0];
+    score_graph.add_transformation(0, t1);
+    var a = [10,1,0,0];
+    var b = [10,1,0,0];
+    var c = [10,1,0,0];
+    var d = [10,1,0,0];
+    var t2 = new ScoreGraphs.BilinearTransformation(a, b, c, d)
+    score_graph.add_transformation(1, t1);
+    var a = [10,0,0,0];
+    var b = [10,0,0,0];
+    var c = [10,0,0,0];
+    var d = [10,0,0,0];
+    var t3 = new ScoreGraphs.BilinearTransformation(a, b, c, d)
+    score_graph.add_transformation(2, t1);
+    score_graph.generate(2, 12);
+};
+
+var generate_old = function() {
   csound.message("generate()...\n");
   try {
     window.lsys = new ChordSpace.LSys();
