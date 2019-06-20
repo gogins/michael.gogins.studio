@@ -49,121 +49,33 @@ window.onerror = function(message, url, line) {
 };
 
 var generate = function() {
-    let score_graph = new ScoreGraphs.ScoreGraph(3, 60, 36, 8, 120);
-    console.log("score_graph: " + score_graph);
-    let chord = ChordSpace.chordForName("CM");
-    let pitv = score_graph.chord_space.fromChord(chord);
-    let P = pitv.P;
-    let Y1 = [P, 0, 0, 0, 0];
-    let s1 = [1, .5, .5, .5, .5];
-    let t1 = new ScoreGraphs.BilinearTransformation(0, Y1, s1);
-    score_graph.add_transformation(t1);
-    let Y2 = [P, 1, 5, 1, 0];
-    let s2 = [1, .5, .5, .75, .5];
-    let t2 = new ScoreGraphs.BilinearTransformation(1, Y2, s2);
-    score_graph.add_transformation(t2);
-    let Y3 = [P,0,-5,0,0];
-    let s3 = [1, .5, .5, .5, .75];
-    var t3 = new ScoreGraphs.BilinearTransformation(2, Y3, s3);
-    score_graph.add_transformation(t3);
-    score_graph.generate(2, 12);
-};
-
-var generate_old = function() {
-  csound.message("generate()...\n");
-  try {
-    window.lsys = new ChordSpace.LSys();
-    lsys.axiom = "- [ g f f I I I I a ] g a";
-    lsys.addRule('g',  'Ja b a3 c aa F F c2 a2 t,/,1.025 b2 K c2 g b2 t,*,1.025 T,5 F Jb F F c g a b g');
-    lsys.addRule('a',  'F b F a2 b a2 [ b3 F F f F [ c F F F F ] ] F F F Jb c2 a2 c F c F F F b2 Ja a2');
-    lsys.addRule('aa', '[ b3 F F F c3 f F F F F ] F b F a2 b I I I F F [ c2 F F F F F F ] F c2 a2 c F c F F b2 a2');
-    lsys.addRule('xaa', '[ b3 F F F c3 f F F F F ] F b F a2 b I I F F [ c2 F F F F F F ] F c2 a2 c F c F F b2 a2');
-    lsys.addRule('xa2', 'I F b F b a3 i i b2 f F F f c2 a3 c F c2 F b2 a3 i i c');
-    lsys.addRule('a3', 'F b2 b F a I v F F c F F F F F c2 aa V f c2 F F b2 a');
-    lsys.addRule('xa3', 'F b2 b F a I v F F c F F F F F c2 aa i i V f c2 F F b2 a');
-    lsys.addRule('Ja', 'J,2,0');
-    //lsys.addRule('Jb', 'J,2,4');
-    lsys.addRule('Jb', 'J,2,2');
-    lsys.addRule('b',  '+ f f f f f - -');
-    lsys.addRule('c',  '- f f f f f +');
-    lsys.addRule('b2', '+ f f f f -');
-    lsys.addRule('c2', '- - f f f f + +');
-    lsys.addRule('b3', '- - f f f + +');
-    var chord = ChordSpace.chordForName('DM9');
-    var t = new ChordSpace.Turtle(4.5, Math.PI/2, chord, chord);
-    lsys.generate(4);
-    lsys.write_score(t);
-    csound.message("Finding size of score...\n");
-    lsys.score.findScales();
-    csound.message("Rescaling score...\n");
-    lsys.score.setScale(3, 1, 7.9999);
-    //lsys.score.setScale(3, 8, 0);
-    lsys.score.setScale(4, 26, 72);
-    lsys.score.setScale(5, 60, 8);
-    lsys.score.setScale(7, 0, 1);
-    lsys.score.temper(12);
-    csound.message("Conforming to chords...\n");
-    lsys.conformToChords();
-    lsys.score.setDuration(12*60);
-    csound.message("Tieing overlapping notes...\n");
-    lsys.score.tieOverlaps(true);
-    lsys.score.sort();
-    // Fix up score before rendering.
-    var i;
-    var n = lsys.score.data.length;
-    var cutoff = 7 * 60 + 35;
-    var note;
-    for (i = n - 1; i >= 0; --i) {
-        note = lsys.score.data[i];
-        // Extend the notes at the end.
-        if ((note.time + note.duration) >= cutoff) {
-            note.duration = (note.duration + 2.5);
-        }
-        // Pianoteq notes should not cut off abruptly.
-        if (Math.round(note.channel) == 9) {
-            if (note.duration < .5) {
-                note.duration = .5;
-            }
-        }
+    try {
+        let score_graph = new ScoreGraphs.ScoreGraph(3, 60, 36, 8, 120);
+        window.score = score_graph.score;
+        console.log("score_graph: " + score_graph);
+        let chord = ChordSpace.chordForName("CM");
+        let pitv = score_graph.chord_space.fromChord(chord);
+        // All chords here will be major (or minor?) triads.
+        let P = pitv.P;
+        let Y1 = [P, 0, 0, 0, 0];
+        let s1 = [1, .5, .5, .5, .5];
+        let t1 = new ScoreGraphs.BilinearTransformation(0., Y1, s1);
+        score_graph.add_transformation(t1);
+        let Y2 = [P, 1, 5, 1, 0];
+        let s2 = [1, .5, .5, .75, .5];
+        let t2 = new ScoreGraphs.BilinearTransformation(1., Y2, s2);
+        score_graph.add_transformation(t2);
+        let Y3 = [P, 0,-5,0,0];
+        let s3 = [1, .5, .5, .5, .75];
+        var t3 = new ScoreGraphs.BilinearTransformation(2., Y3, s3);
+        score_graph.add_transformation(t3);
+        score_graph.generate(2, 10);
+        csound.message("Plotting score...\n");
+        score_graph.score.draw3D(document.getElementById("canvas"));
+        csound.message('Generated ' + lsys.score.data.length + ' notes.\n');
+    } catch(err) {
+      csound.message(err.name + ': ' + err.message + ' ' + err.line + '\n');
     }
-    // Pianoteq misbehaves if we start right at time 0.
-    for (var i = 0; i < lsys.score.data.length; i++) {
-        var event = lsys.score.data[i];
-        event.time = event.time + 1;
-    }
-    if (false) {
-        // Also if keys overlap.
-        for (var i = 0; i < lsys.score.data.length; i++) {
-            var event = lsys.score.data[i];
-            csound.message(event.toIStatement() + ' e: ' + event.end);
-            var channel = Math.floor(event.channel);
-            var key = event.key;
-            for (var j = i + 1; j < lsys.score.data.length; j++) {
-                var overlap = lsys.score.data[j];
-                var overlap_channel = Math.floor(overlap.channel);
-                var overlap_key = overlap.key;
-                if (key === overlap_key && channel === overlap_channel && channel === 2) {
-                    if (event.end > overlap.time) {
-                        var the_end = Math.max(event.end, overlap.end);
-                        csound.message('Correcting overlap for:');
-                        csound.message('  ' + event.toIStatement() + ' e: ' + event.end);
-                        csound.message('  ' + overlap.toIStatement() + ' e: ' + overlap.end);
-                        event.end = the_end;
-                        overlap.end = the_end;
-                        csound.message('to:');
-                        csound.message('  ' + event.toIStatement() + ' e: ' + event.end);
-                        csound.message('  ' + overlap.toIStatement() + ' e: ' + overlap.end + '\n');
-                     }
-                }
-            }
-        }
-    }
-    csound.message("Plotting score...\n");
-    lsys.score.draw3D(document.getElementById("canvas"));
-    csound.message('Generated ' + lsys.score.data.length + ' notes.\n');
-  } catch(err) {
-    csound.message(err.name + ': ' + err.message + ' ' + err.line + '\n');
-  }
 };
 
 // Message level for standard (terminal) output. Takes the sum of any of the following values:
@@ -180,7 +92,7 @@ var generate_old = function() {
 // 512 = raw, all colours
 var render = function(soundfile, post_process) {
     var csd = document.getElementById('csd').value;
-    var csound_score = lsys.score.toCsoundScore();
+    var csound_score = score.toCsoundScore();
     csound_score = csound_score.concat("\n</CsScore>");
     csd = csd.replace("</CsScore>", csound_score);
     csound.message("Playing...");
