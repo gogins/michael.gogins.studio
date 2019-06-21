@@ -72,7 +72,7 @@ var generate = function() {
         score_graph.generate(2, 10);
         csound.message("Plotting score...\n");
         score_graph.score.draw3D(document.getElementById("canvas"));
-        csound.message('Generated ' + lsys.score.data.length + ' notes.\n');
+        csound.message('Generated ' + score.data.length + ' notes.\n');
     } catch(err) {
       csound.message(err.name + ': ' + err.message + ' ' + err.line + '\n');
     }
@@ -152,7 +152,7 @@ var stop = function() {
 var updateScoreTime = function() {
     var score_time = csound.getScoreTime();
     setTimeout(updateScoreTime, 200);
-    lsys.score.progress3D(score_time);
+    score.progress3D(score_time);
 };
 
 var parameters = {
