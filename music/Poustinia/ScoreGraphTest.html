@@ -50,7 +50,7 @@ window.onerror = function(message, url, line) {
 
 var generate = function() {
     try {
-        let score_graph = new ScoreGraphs.ScoreGraph(3, 60, 36, 8, 120, true);
+        let score_graph = new ScoreGraphs.ScoreGraph(3, 60, 36, 8, 120, false);
         window.score = score_graph.score;
         console.log("score_graph: " + score_graph);
         let chord = ChordSpace.chordForName("DM");
@@ -68,18 +68,19 @@ var generate = function() {
         let t2 = new ScoreGraphs.BilinearTransformation(1., Y2, s2);
         score_graph.add_transformation(t2);
         let Y3 = [P, 1., -5., 0., 0.];
-        let s3 = [.5, .5, .5, .5, .75];
+        let s3 = [.5, .45, .5, .5, .75];
         var t3 = new ScoreGraphs.BilinearTransformation(2., Y3, s3);
         score_graph.add_transformation(t3);
-        let Y4 = [P, 0., -5., 0., 0.];
-        let s4 = [.5, .5, .5, .5, .75];
+        let Y4 = [P, 0., -5., 2., 0.];
+        let s4 = [.5, .005, .5, .5, .75];
         var t4 = new ScoreGraphs.BilinearTransformation(3., Y4, s4);
         score_graph.add_transformation(t3);
         // depth, timesteps
-        score_graph.generate(4, 10);
+        score_graph.generate(5, 20);
         csound.message("Plotting score...\n");
         score_graph.score.draw3D(document.getElementById("canvas"));
         csound.message('Generated ' + score.data.length + ' notes.\n');
+        console.log(score_graph.score.toCsoundScore());
     } catch(err) {
       csound.message(err.name + ': ' + err.message + ' ' + err.line + '\n');
     }
@@ -499,6 +500,42 @@ prealloc 7, 50
 prealloc 8, 20
 prealloc 9, 20
 
+gk_Buzzer_harmonics init 15
+gk_Buzzer_level init .5
+instr Buzzer
+insno = p1
+istart = p2
+iduration = p3
+ikey = p4
+ivelocity = p5
+iphase = p6
+ipan = p7
+iamp = ampdb(ivelocity) * 4
+iattack = i(gk_overlap)
+idecay = i(gk_overlap)
+isustain = p3 - i(gk_overlap)
+p3 = iattack + isustain + idecay
+;xtratim iattack + idecay
+kenvelope transegr 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
+ihertz = cpsmidinn(ikey)
+;asignal gbuzz kenvelope, ihertz, 3, gk_FirstHarmonic, gk_DistortFactor, gisine
+isine ftgenonce 0, 0, 65536, 10, 1
+gk_Harmonics = gk_Buzzer_harmonics
+asignal buzz kenvelope, ihertz, gk_Harmonics, isine
+asignal = asignal * 3
+;asignal vco2 kenvelope, ihertz, 12
+;asignal poscil3 kenvelope, ihertz, giharmonics
+;asignal distort asignal, gk_DistortFactor * .4, giwaveshaping
+aleft, aright pan2 asignal, ipan
+adamping linseg 0, 0.03, 1, p3 - 0.1, 1, 0.07, 0
+aleft = adamping * aleft
+aright = adamping * aright
+kgain = ampdb(gk_Buzzer_level)
+outleta "outleft", aleft * kgain
+outleta "outright", aright * kgain
+prints "Buzzer         i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
+endin
+
 //////////////////////////////////////////////
 // Original by Steven Yi.
 // Adapted by Michael Gogins.
@@ -696,42 +733,6 @@ kgain = ampdb(gk_Sweeper_level)
 outleta "outleft", aleft * kgain
 outleta "outright", aright * kgain
 prints "Sweeper        i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
-endin
-
-gk_Buzzer_harmonics init 15
-gk_Buzzer_level init .5
-instr Buzzer
-insno = p1
-istart = p2
-iduration = p3
-ikey = p4
-ivelocity = p5
-iphase = p6
-ipan = p7
-iamp = ampdb(ivelocity) * 4
-iattack = i(gk_overlap)
-idecay = i(gk_overlap)
-isustain = p3 - i(gk_overlap)
-p3 = iattack + isustain + idecay
-;xtratim iattack + idecay
-kenvelope transegr 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
-ihertz = cpsmidinn(ikey)
-;asignal gbuzz kenvelope, ihertz, 3, gk_FirstHarmonic, gk_DistortFactor, gisine
-isine ftgenonce 0, 0, 65536, 10, 1
-gk_Harmonics = gk_Buzzer_harmonics
-asignal buzz kenvelope, ihertz, gk_Harmonics, isine
-asignal = asignal * 3
-;asignal vco2 kenvelope, ihertz, 12
-;asignal poscil3 kenvelope, ihertz, giharmonics
-;asignal distort asignal, gk_DistortFactor * .4, giwaveshaping
-aleft, aright pan2 asignal, ipan
-adamping linseg 0, 0.03, 1, p3 - 0.1, 1, 0.07, 0
-aleft = adamping * aleft
-aright = adamping * aright
-kgain = ampdb(gk_Buzzer_level)
-outleta "outleft", aleft * kgain
-outleta "outright", aright * kgain
-prints "Buzzer         i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
 gk_Shiner_level init 0.5

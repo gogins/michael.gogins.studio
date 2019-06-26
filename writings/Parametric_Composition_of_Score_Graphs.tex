@@ -215,10 +215,10 @@ backref=true
 
 \begin{abstract}
 We present new methods, extending our earlier work on iterated function systems
-(IFSs) music, for using IFS to generate music in spaces with harmonic structure.
-We define a score as the \textit{graph} of a function that maps time to a
-succession of more or less fleeting chords, which are represented as points in a
-discrete space of chord symmetries. Such score graphs can be computed using
+(IFSs) music, for using IFSs to generate music in spaces with harmonic
+structure. We define a score as the \textit{graph} of a function that maps time
+to a succession of more or less fleeting chords, which are represented as points
+in a discrete space of chord symmetries. Such score graphs can be computed using
 special iterated function systems (IFS) that compute the graphs of fractal
 interpolation functions (FIFs), which are related to the Read-Bajraktarevi\'c
 operator. The Collage Theorem proves that any such graph may be approximated, as
@@ -263,18 +263,16 @@ Here, we extend this work by generating scores in a special score space
 constructed from time and the basic symmetries of chord space identified by
 Callender, Quinn and Tymoczko \cite{callender:346}, supplemented with revoicings
 and rearrangements. The dimensions of this score space are: time, set class (the
-most basic form of a  chord) $P$ (\textit{i.e.}, Callender \textit{et al.}'s
-$OPTIC$), inversion $I$, transposition $T$, octavewise revoicings $v$, and
-permutations of voices $a$. In this space, a piece of note-based music may be
+most basic form of a chord) $P$ (\textit{i.e.}, Callender \textit{et al.}'s
+$OPTIC$), inversion $I$, transposition $T$, octavewise revoicings $V$, and
+permutations of voices $A$. In this space, a piece of note-based music may be
 considered a succession of more or less fleeting chord points or, in other
 words, as the graph of a vector-valued function of time mapped to chord symmetry
 space, which we call a \textit{score graph} of a \textit{score function},
 
-
 \be \label{score_graph}
 G(f: t \mapsto P, I, T, v, a).
 \ee
-
 
 \noindent Notes and chords do \textit{not} need to be confined to 12-tone equal
 temperament. One motivation for using this space to compose is that different
@@ -292,9 +290,9 @@ interpolation function (FIF), or simply a \textit{fractal function}
 \cite{Barnsley1986, fractalseverywhere, navascues2014fractal}. (It is
 interesting that all continuous functions are fractal functions
 \cite{2016arXiv161001369B}.) Even more particularly, we use IFSs to compute
-score graphs $G(f)$. The advantage of such IFSs is that (in principle) \textit{any}
-score can be so generated, and \textit{every} IFS of this type generates some
-$G(f)$.
+score graphs $G(f)$. The advantage of such IFSs is that (in principle)
+\textit{any} score can be so generated, and \textit{every} IFS of this type
+generates some $G(f)$.
 
 An IFS may be completely specified as a set of numerical parameters. Thus, any
 piece of note-based music may be approximated as closely as desired by a fixed
@@ -383,7 +381,7 @@ commonly used concept of what is a ``chord.''
 \begin{figure}
 \centerline{\includegraphics[width = 0.25\textwidth]{opttic}}
 \caption{\label{fig:optic}
-  $OPTIC$ for trichords in 12TET.}
+$OPTIC$ for trichords in 12TET.}
 \end{figure}
 
 Here, we do not directly use chord space for composing. Rather, we construct a
@@ -403,9 +401,9 @@ number of divisions of the octave.
 \noindent We supplement this chord symmetry space with two more dimensions:
 
 \begin{enumerate}[resume]
-\item $v$ -- Octavewise revoicing (within some specified range) of the $PIT$
+\item $V$ -- Octavewise revoicing (within some specified range) of the $PIT$
 chord, through all permutations of the possible voicings.
-\item $a$ -- Voicewise re-arrangement of instruments for voices, through all
+\item $A$ -- Voicewise re-arrangement of instruments for voices, through all
 permutations of the possible arrangements.
 \end{enumerate}
 
@@ -503,8 +501,7 @@ So, we have a piece as a sequence of points in chord symmetry space,
 functions, \textit{i.e.} fractal approximations, can be computed by a special
 kind of IFS associated with a \textit{Read-Bajraktarevi\'c} operator $\Phi$. The
 literature on fractal interpolation is extensive, and mainly concerned with
-interpolating a given set of data points; here, we do not use this capability,
-but rather focus on the use of IFSs to compose functions from scratch.
+interpolating a given set of data points.
 
 Suppose we are given a finite family $\{l_n : X\to X \mid n = 1, \ldots, N\}$ of
 injective contractions with the following two properties:
@@ -622,23 +619,39 @@ w_{i}(t,\mathbf{s}) :=[t_{i-1} + \frac{t_{i}-t_{i-1}}{t_{N}-t_{0}})
 \ee
 
 \noindent $t$ is time and $\mathbf{s}$ is a point in chord symmetry space $\{P,
-I, T, v, a\}$, and so the parameters $\mathbf{a, b, c, d}$ are vector-valued. In
-\cite{2012arXiv1209.3139B} additional constraints are added that cause the
-interpolated sub-domains and ranges to fit neatly together as in Figure
-\ref{fig:fif} but, as we note, these are not used here.
+I, T, V, A\}$, and so the parameters $\mathbf{a, b, c, d}$ are vector-valued. In
+\cite{2012arXiv1209.3139B} the interpolated sub-domains and ranges are neatly
+fitted together (Figure \ref{fig:fif}) using Equation \eqref{bilinear2}, where
+$x$ is the time dimension of the score graph, $y$ is the chord symmetry
+dimension of the score graph, the $X$ are interpolation points for time, $Y$ are
+vector-valued interpolation points for $\{P, I, T, V, A\}$, and $s$ are
+vector-valued scaling factors that ensure contraction to the fixed point of the
+attractor, i.e.\ the score graph, and provide some control over the shape of the
+graph in between the interpolation points. Note that $N$ interpolation points
+define $N-1$ transformations in the Hutchinson operator.
 
+\be\label{bilinear2}
+\begin{align}
+w_{n} &  (x,y)= \left(X_{n-1}+ \left(  \frac{X_{n}-X_{n-1}}{X_{N}-X_{0}}\right)
+(x-X_{0}),Y_{n-1}+\left(  \frac{Y_{n}-Y_{n-1}}{X_{N}-X_{0}%
+}\right)  (x-X_{0})\right.\label{w}\\
+& \left. + \left[  s_{n-1}+\left(  \frac{s_{n}-s_{n-1}}{X_{N}-X_{0}}\right)
+(x-X_{0})\right]  \left[  y-Y_{0}-\left(  \frac{Y_{N}-Y_{0}}{X_{N}-X_{0}%
+}\right)  (x-X_{0})\right]\right)  .
+\end{align}
+\ee
 
 \subsection{Parametric Maps for Scores}
 
 In order to chart a 2-dimensional, rectangular bounded parametric map over a
 range of fractal approximations of score graphs, a simple recursive procedure
 may be used. First, we define an order for the parameters on the RHS of
-\eqref{bilinear}: simply $\{t, \mathbf{a, b, c, d}\}$. Similarly, within each
-Hutchinson operator, we order the transformations by the order of their
-parameters. The actual ordering is not significant as long as the different sets
-of parameters are laid out in the \textit{same} order. Of course, two different
-FAs may have different numbers of mappings in their respective Hutchinson
-operators. To account for that, we pad the shorter operator with zeros.
+\eqref{bilinear2}: simply $\{X, Y, s\}$. Similarly, within each Hutchinson
+operator, we order the transformations by the order of their parameters. The
+actual ordering is not significant as long as the different sets of parameters
+are laid out in the \textit{same} order. Of course, two different FAs may have
+different numbers of mappings in their respective Hutchinson operators. To
+account for that, we pad the shorter operator with zeros.
 
 We take the smaller of two parameters $W_{min}$ as the upper left corner of the
 map, and the larger of the two parameters $W_{max}$ as the lower right corner of
