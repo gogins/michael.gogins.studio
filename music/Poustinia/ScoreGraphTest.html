@@ -48,8 +48,9 @@ window.onerror = function(message, url, line) {
   csound.message(message + '\n' + url + '\n' + line + '\n');
 };
 
-var generate = function() {
+var test_constant_major_triad = function() {
     try {
+        csound.message("TEST CONSTANT MAJOR TRIAD\n")
         let score_graph = new ScoreGraphs.ScoreGraph(3, 60, 36, 8, 120, false);
         window.score = score_graph.score;
         console.log("score_graph: " + score_graph);
@@ -63,28 +64,190 @@ var generate = function() {
         let s1 = [.5, .5, .5, .5, .5];
         let t1 = new ScoreGraphs.BilinearTransformation(0., Y1, s1);
         score_graph.add_transformation(t1);
-        let Y2 = [P, 1., 5., 1., 0.];
-        let s2 = [.5, .5, .5, .75, .5];
+        let Y2 = [P, 0., 0., 0., 0.];
+        let s2 = [.5, .5, .5, .5, .5];
         let t2 = new ScoreGraphs.BilinearTransformation(1., Y2, s2);
         score_graph.add_transformation(t2);
-        let Y3 = [P, 1., -5., 0., 0.];
-        let s3 = [.5, .45, .5, .5, .75];
+        let Y3 = [P, 0., 0., 0., 0.];
+        let s3 = [.5, .5, .5, .5, .5];
         var t3 = new ScoreGraphs.BilinearTransformation(2., Y3, s3);
         score_graph.add_transformation(t3);
-        let Y4 = [P, 0., -5., 2., 0.];
-        let s4 = [.5, .005, .5, .5, .75];
+        let Y4 = [P, 0., 0., 0., 0.];
+        let s4 = [.5, .5, .5, .5, .5];
         var t4 = new ScoreGraphs.BilinearTransformation(3., Y4, s4);
         score_graph.add_transformation(t3);
         // depth, timesteps
-        score_graph.generate(5, 20);
+        score_graph.generate(6, 4);
         csound.message("Plotting score...\n");
-        score_graph.score.draw3D(document.getElementById("canvas"));
+        score.draw3D(document.getElementById("canvas"));
         csound.message('Generated ' + score.data.length + ' notes.\n');
-        console.log(score_graph.score.toCsoundScore());
+        console.log(score.toCsoundScore());
     } catch(err) {
       csound.message(err.name + ': ' + err.message + ' ' + err.line + '\n');
     }
 };
+
+var test_inversion = function() {
+    try {
+        csound.message("TEST INVERSION\n")
+        let score_graph = new ScoreGraphs.ScoreGraph(3, 60, 36, 8, 120, false);
+        window.score = score_graph.score;
+        console.log("score_graph: " + score_graph);
+        let chord = ChordSpace.chordForName("DM");
+        csound.message(chord.information() + "\n");
+        let pitv = score_graph.chord_space.fromChord(chord);
+        csound.message("pitv: " + pitv + " P: " + pitv.P + "\n");
+        // All chords here will be major (or minor?) triads.
+        let P = pitv.P;
+        let Y1 = [P, 0., 0., 0., 0.];
+        let s1 = [.5, .5, .5, .5, .5];
+        let t1 = new ScoreGraphs.BilinearTransformation(0., Y1, s1);
+        score_graph.add_transformation(t1);
+        let Y2 = [P, 1., 0., 0., 0.];
+        let s2 = [.5, .5, .5, .5, .5];
+        let t2 = new ScoreGraphs.BilinearTransformation(1., Y2, s2);
+        score_graph.add_transformation(t2);
+        let Y3 = [P, 0., 0., 0., 0.];
+        let s3 = [.5, .5, .5, .5, .5];
+        var t3 = new ScoreGraphs.BilinearTransformation(2., Y3, s3);
+        score_graph.add_transformation(t3);
+        let Y4 = [P, 0., 0., 0., 0.];
+        let s4 = [.5, .5, .5, .5, .5];
+        var t4 = new ScoreGraphs.BilinearTransformation(3., Y4, s4);
+        score_graph.add_transformation(t3);
+        // depth, timesteps
+        score_graph.generate(7, 4);
+        csound.message("Plotting score...\n");
+        score.draw3D(document.getElementById("canvas"));
+        csound.message('Generated ' + score.data.length + ' notes.\n');
+        console.log(score.toCsoundScore());
+    } catch(err) {
+      csound.message(err.name + ': ' + err.message + ' ' + err.line + '\n');
+    }
+};
+
+var test_transposition = function() {
+    try {
+        csound.message("TEST TRANSPOSITION\n")
+        let score_graph = new ScoreGraphs.ScoreGraph(3, 60, 36, 8, 120, false);
+        window.score = score_graph.score;
+        console.log("score_graph: " + score_graph);
+        let chord = ChordSpace.chordForName("DM");
+        csound.message(chord.information() + "\n");
+        let pitv = score_graph.chord_space.fromChord(chord);
+        csound.message("pitv: " + pitv + " P: " + pitv.P + "\n");
+        // All chords here will be major (or minor?) triads.
+        let P = pitv.P;
+        let Y1 = [P, 0., 0., 0., 0.];
+        let s1 = [.5, .5, .5, .5, .5];
+        let t1 = new ScoreGraphs.BilinearTransformation(0., Y1, s1);
+        score_graph.add_transformation(t1);
+        let Y2 = [P, 0., 2., 0., 0.];
+        let s2 = [.5, .5, .5, .5, .5];
+        let t2 = new ScoreGraphs.BilinearTransformation(1., Y2, s2);
+        score_graph.add_transformation(t2);
+        let Y3 = [P, 0., 0., 0., 0.];
+        let s3 = [.5, .5, .5, .5, .5];
+        var t3 = new ScoreGraphs.BilinearTransformation(2., Y3, s3);
+        score_graph.add_transformation(t3);
+        let Y4 = [P, 0., 0., 0., 0.];
+        let s4 = [.5, .5, .5, .5, .5];
+        var t4 = new ScoreGraphs.BilinearTransformation(3., Y4, s4);
+        score_graph.add_transformation(t3);
+        // depth, timesteps
+        score_graph.generate(7, 4);
+        csound.message("Plotting score...\n");
+        score.draw3D(document.getElementById("canvas"));
+        csound.message('Generated ' + score.data.length + ' notes.\n');
+        console.log(score.toCsoundScore());
+    } catch(err) {
+      csound.message(err.name + ': ' + err.message + ' ' + err.line + '\n');
+    }
+};
+
+var test_revoicing = function() {
+    try {
+        csound.message("TEST REVOICING\n")
+        let score_graph = new ScoreGraphs.ScoreGraph(3, 60, 36, 8, 120, false);
+        window.score = score_graph.score;
+        console.log("score_graph: " + score_graph);
+        let chord = ChordSpace.chordForName("DM");
+        csound.message(chord.information() + "\n");
+        let pitv = score_graph.chord_space.fromChord(chord);
+        csound.message("pitv: " + pitv + " P: " + pitv.P + "\n");
+        // All chords here will be major (or minor?) triads.
+        let P = pitv.P;
+        let Y1 = [P, 0., 0., 0., 0.];
+        let s1 = [.5, .5, .5, .5, .5];
+        let t1 = new ScoreGraphs.BilinearTransformation(0., Y1, s1);
+        score_graph.add_transformation(t1);
+        let Y2 = [P, 0., 0., 1., 0.];
+        let s2 = [.5, .5, .5, .5, .5];
+        let t2 = new ScoreGraphs.BilinearTransformation(1., Y2, s2);
+        score_graph.add_transformation(t2);
+        let Y3 = [P, 0., 0., 2., 0.];
+        let s3 = [.5, .5, .5, .5, .5];
+        var t3 = new ScoreGraphs.BilinearTransformation(2., Y3, s3);
+        score_graph.add_transformation(t3);
+        let Y4 = [P, 0., 0., -1., 0.];
+        let s4 = [.5, .5, .5, .5, .5];
+        var t4 = new ScoreGraphs.BilinearTransformation(3., Y4, s4);
+        score_graph.add_transformation(t3);
+        // depth, timesteps
+        score_graph.generate(7, 4);
+        csound.message("Plotting score...\n");
+        score.draw3D(document.getElementById("canvas"));
+        csound.message('Generated ' + score.data.length + ' notes.\n');
+        console.log(score.toCsoundScore());
+    } catch(err) {
+      csound.message(err.name + ': ' + err.message + ' ' + err.line + '\n');
+    }
+};
+
+var test_arrangement = function() {
+    try {
+        csound.message("TEST ARRANGEMENT\n")
+        let score_graph = new ScoreGraphs.ScoreGraph(3, 60, 36, [1,2,3,5], 120, true);
+        window.score = score_graph.score;
+        console.log("score_graph: " + score_graph);
+        let chord = ChordSpace.chordForName("DM");
+        csound.message(chord.information() + "\n");
+        let pitv = score_graph.chord_space.fromChord(chord);
+        csound.message("pitv: " + pitv + " P: " + pitv.P + "\n");
+        // All chords here will be major (or minor?) triads.
+        let P = pitv.P;
+        let Y1 = [P, 0., 0., 0., 40.];
+        let s1 = [.5, .5, .5, .5, .5];
+        let t1 = new ScoreGraphs.BilinearTransformation(0., Y1, s1);
+        score_graph.add_transformation(t1);
+        let Y2 = [P, 0., 0., 0., 50.];
+        let s2 = [.5, .5, .5, .5, .5];
+        let t2 = new ScoreGraphs.BilinearTransformation(1., Y2, s2);
+        score_graph.add_transformation(t2);
+        let Y3 = [P, 0., 0., 0., 60.];
+        let s3 = [.5, .5, .5, .5, .5];
+        var t3 = new ScoreGraphs.BilinearTransformation(2., Y3, s3);
+        score_graph.add_transformation(t3);
+        let Y4 = [P, 0., 0., 0., 70.];
+        let s4 = [.5, .5, .5, .5, .5];
+        var t4 = new ScoreGraphs.BilinearTransformation(3., Y4, s4);
+        score_graph.add_transformation(t3);
+        // depth, timesteps
+        score_graph.generate(7, 4);
+        csound.message("Plotting score...\n");
+        score.draw3D(document.getElementById("canvas"));
+        csound.message('Generated ' + score.data.length + ' notes.\n');
+        console.log(score.toCsoundScore());
+    } catch(err) {
+      csound.message(err.name + ': ' + err.message + ' ' + err.line + '\n');
+    }
+};
+
+//var generate = test_constant_major_triad;
+//var generate = test_inversion;
+//var generate = test_transposition;
+//var generate = test_revoicing;
+var generate = test_arrangement;
 
 // Message level for standard (terminal) output. Takes the sum of any of the following values:
 // 1 = note amplitude messages
@@ -104,7 +267,7 @@ var render = function(soundfile, post_process) {
     csound_score = csound_score.concat("\n</CsScore>");
     csd = csd.replace("</CsScore>", csound_score);
     csound.message("Playing...");
-    csound.setOption(sprintf('-m%d', 2 + 128 + 32));
+    csound.setOption(sprintf('-m195'));
     csound.setOption('--nodisplays');
     csound.setOption('-R');
     csound.setOption('-W');
