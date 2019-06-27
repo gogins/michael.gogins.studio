@@ -51,7 +51,7 @@ window.onerror = function(message, url, line) {
 var test_constant_major_triad = function() {
     try {
         csound.message("TEST CONSTANT MAJOR TRIAD\n")
-        let score_graph = new ScoreGraphs.ScoreGraph(3, 60, 36, 8, 120, false);
+        let score_graph = new ScoreGraphs.ScoreGraph(3, 60, 36, [3], 120, false);
         window.score = score_graph.score;
         console.log("score_graph: " + score_graph);
         let chord = ChordSpace.chordForName("DM");
@@ -90,7 +90,7 @@ var test_constant_major_triad = function() {
 var test_inversion = function() {
     try {
         csound.message("TEST INVERSION\n")
-        let score_graph = new ScoreGraphs.ScoreGraph(3, 60, 36, 8, 120, false);
+        let score_graph = new ScoreGraphs.ScoreGraph(3, 60, 36, [0], 120, false);
         window.score = score_graph.score;
         console.log("score_graph: " + score_graph);
         let chord = ChordSpace.chordForName("DM");
@@ -129,7 +129,7 @@ var test_inversion = function() {
 var test_transposition = function() {
     try {
         csound.message("TEST TRANSPOSITION\n")
-        let score_graph = new ScoreGraphs.ScoreGraph(3, 60, 36, 8, 120, false);
+        let score_graph = new ScoreGraphs.ScoreGraph(3, 60, 36, [1], 120, true);
         window.score = score_graph.score;
         console.log("score_graph: " + score_graph);
         let chord = ChordSpace.chordForName("DM");
@@ -168,7 +168,7 @@ var test_transposition = function() {
 var test_revoicing = function() {
     try {
         csound.message("TEST REVOICING\n")
-        let score_graph = new ScoreGraphs.ScoreGraph(3, 60, 36, 8, 120, false);
+        let score_graph = new ScoreGraphs.ScoreGraph(3, 60, 36, [4], 120, true);
         window.score = score_graph.score;
         console.log("score_graph: " + score_graph);
         let chord = ChordSpace.chordForName("DM");
@@ -284,10 +284,10 @@ var test_multiple = function() {
 
 //var generate = test_constant_major_triad;
 //var generate = test_inversion;
-//var generate = test_transposition;
+var generate = test_transposition;
 //var generate = test_revoicing;
 //var generate = test_arrangement;
-var generate = test_multiple;
+//var generate = test_multiple;
 
 // Message level for standard (terminal) output. Takes the sum of any of the following values:
 // 1 = note amplitude messages

@@ -215,15 +215,15 @@ backref=true
 
 \begin{abstract}
 We present new methods, extending our earlier work on iterated function systems
-(IFSs) music, for using IFSs to generate music in spaces with harmonic
-structure. We define a score as the \textit{graph} of a function that maps time
-to a succession of more or less fleeting chords, which are represented as points
-in a discrete space of chord symmetries. Such score graphs can be computed using
+(IFS) music, for using IFS to generate music in spaces with harmonic structure.
+We define a score as the \textit{graph} of a function that maps time to a
+succession of more or less fleeting chords, which are represented as points in a
+discrete space of chord symmetries. Such score graphs can be computed using
 special iterated function systems (IFS) that compute the graphs of fractal
 interpolation functions (FIFs), which are related to the Read-Bajraktarevi\'c
 operator. The Collage Theorem proves that any such graph may be approximated, as
 closely as desired, by such a IFS. One method of composing is then to manually
-construct these IFSs, or to evolve them using the genetic algorithm, and then to
+construct these IFS, or to evolve them using the genetic algorithm, and then to
 render the IFS to an actual score. Additionally, one complex virtual parameter
 can be derived to represent each set (potentially dozens or more numbers) of the
 IFS parameters used to compute each score graph. Each virtual parameter may be
@@ -271,26 +271,26 @@ words, as the graph of a vector-valued function of time mapped to chord symmetry
 space, which we call a \textit{score graph} of a \textit{score function},
 
 \be \label{score_graph}
-G(f: t \mapsto P, I, T, v, a).
+G(f: x \mapsto P, I, T, V, A),
 \ee
 
-\noindent Notes and chords do \textit{not} need to be confined to 12-tone equal
-temperament. One motivation for using this space to compose is that different
-values on the chord symmetry dimensions of the space are clearly audible as
-harmonic differences. Another motivation is that, at any one point in time,
-there is one and only one ``harmony.''
+\noindent where $x$ is time. Notes and chords do \textit{not} need to be
+confined to 12-tone equal temperament. One motivation for using this space to
+compose is that different values on the chord symmetry dimensions of the space
+are clearly audible as harmonic differences. Another motivation is that, at any
+one point in time, there is one and only one ``harmony.''
 
-The score generators used here are \textit{iterated function systems} (IFSs)
+The score generators used here are \textit{iterated function systems} (IFS)
 \cite{barnsley1985iterated, 10.2307/24893080, fractalseverywhere}. More
-particularly, our score generators are special IFSs where the contractive
+particularly, our score generators are special IFS where the contractive
 transformations that make up the IFS are constrained such that the IFS computes
 attractors that closely approximate the graphs of functions. The function for
 such a graph is called a \textit{fractal approximation} (FA) or fractal
 interpolation function (FIF), or simply a \textit{fractal function}
 \cite{Barnsley1986, fractalseverywhere, navascues2014fractal}. (It is
 interesting that all continuous functions are fractal functions
-\cite{2016arXiv161001369B}.) Even more particularly, we use IFSs to compute
-score graphs $G(f)$. The advantage of such IFSs is that (in principle)
+\cite{2016arXiv161001369B}.) Even more particularly, we use IFS to compute
+score graphs $G(f)$. The advantage of such IFS is that (in principle)
 \textit{any} score can be so generated, and \textit{every} IFS of this type
 generates some $G(f)$.
 
@@ -310,7 +310,7 @@ effective parameters. It is also, of course, possible to evolve pieces using the
 genetic algorithm on sets of actual parameters.
 
 The remainder of this paper develops the mathematical background in somewhat
-more detail; discusses the implementation of IFSs, indexes for parameters, and
+more detail; discusses the implementation of IFS, indexes for parameters, and
 the genetic algorithm for IFS parameters in the Silencio library for algorithmic
 composition in JavaScript; and finishes with examples of each of the three
 methods of algorithmic composition, implemented in Silencio and Csound.
@@ -484,10 +484,10 @@ d_\calH (M, A) < \frac{\varepsilon}{1-s},
 \max\{\mathrm{Lip}\,f_i\st
 i = 1, \ldots, N\}$.
 
-\textit{The Collage Theorem is the key motivation for using IFSs in music
-composition}. The theorem proves that IFSs, although conceptually simple, are as
+\textit{The Collage Theorem is the key motivation for using IFS in music
+composition}. The theorem proves that IFS, although conceptually simple, are as
 musically powerful as one might like. The remainder of this paper concerns how
-to explore the vast parameter space of IFSs in a \textit{musically intelligible}
+to explore the vast parameter space of IFS in a \textit{musically intelligible}
 way.
 
 It would be possible to use IFS to generate sound grains on a grid; to generate
@@ -606,52 +606,52 @@ used to transform different partitions of the domain.
 
 In the literature, a variety of transformations have been used for the $v_i$ in
 the FIF scheme. For the most part, these reflect the original intention of
-interpolating functions to fit existing data points. But that is not our
-intention here. For the purposes of adapting this method for musical
-composition, we adopt from \cite{2012arXiv1209.3139B} one of the simpler and
-clearer transformations, the bilinear transformation, expressed with linear
-partitions of the domain and a vector-valued range as:
+interpolating functions to fit existing data points. For the purposes of
+adapting this method for musical composition, we adopt from
+\cite{2012arXiv1209.3139B} one of the simpler and clearer transformations, the
+bilinear transformation, expressed with linear partitions of the domain and a
+vector-valued range as:
 
 \be\label{bilinear}
-w_{i}(t,\mathbf{s}) :=[t_{i-1} + \frac{t_{i}-t_{i-1}}{t_{N}-t_{0}})
-(t-t_{0}),\mathbf{a}_i+\mathbf{b}_it+\mathbf{c}_i\mathbf{s}+\mathbf{d}_it
-\mathbf{s}],
+w_{i}(x,\mathbf{y}) :=[x_{i-1} + \frac{x_{i}-x_{i-1}}{x_{N}-x_{0}})
+(x-x_{0}),\mathbf{a}_i+\mathbf{b}_ix+\mathbf{c}_i\mathbf{y}+\mathbf{d}_ix
+\mathbf{y}],
 \ee
 
-\noindent $t$ is time and $\mathbf{s}$ is a point in chord symmetry space $\{P,
+\noindent $x$ is time and $\mathbf{y}$ is a point in chord symmetry space $\{P,
 I, T, V, A\}$, and so the parameters $\mathbf{a, b, c, d}$ are vector-valued. In
-\cite{2012arXiv1209.3139B} the interpolated sub-domains and ranges are neatly
-fitted together (Figure \ref{fig:fif}) using Equation \eqref{bilinear2}, where
-$x$ is the time dimension of the score graph, $y$ is the chord symmetry
-dimension of the score graph, the $X$ are interpolation points for time, $Y$ are
-vector-valued interpolation points for $\{P, I, T, V, A\}$, and $s$ are
-vector-valued scaling factors that ensure contraction to the fixed point of the
-attractor, i.e.\ the score graph, and provide some control over the shape of the
-graph in between the interpolation points. Note that $N$ interpolation points
-define $N-1$ transformations in the Hutchinson operator.
+\cite{2012arXiv1209.3139B} Equation \eqref{bilinear} is solved for $\mathbf{a,
+b, c, d}$ using the interpolation data points to neatly fit together the
+sub-domains and ranges as in Figure \ref{fig:fif} with the following equation,
+where $x$ is the time dimension of the score graph, $\mathbf{y}$ is the chord
+symmetry dimension of the score graph, the $X$ are interpolation points for
+time, $\mathbf{Y}$ are vector-valued interpolation points for $\{P, I, T, V,
+A\}$, and $\mathbf{s}$ are vector-valued scaling factors that ensure contraction
+to the fixed point of the attractor, i.e.\ the score graph, and provide some
+control over the shape of the graph in between the interpolation points. Note
+that $N$ interpolation points define $N-1$ transformations in the Hutchinson
+operator.
 
-\be\label{bilinear2}
 \begin{align}
-w_{n} &  (x,y)= \left(X_{n-1}+ \left(  \frac{X_{n}-X_{n-1}}{X_{N}-X_{0}}\right)
-(x-X_{0}),Y_{n-1}+\left(  \frac{Y_{n}-Y_{n-1}}{X_{N}-X_{0}%
-}\right)  (x-X_{0})\right.\label{w}\\
-& \left. + \left[  s_{n-1}+\left(  \frac{s_{n}-s_{n-1}}{X_{N}-X_{0}}\right)
-(x-X_{0})\right]  \left[  y-Y_{0}-\left(  \frac{Y_{N}-Y_{0}}{X_{N}-X_{0}%
-}\right)  (x-X_{0})\right]\right)  .
+w_{i} &  (x,\mathbf{y})= \left(X_{i-1}+ \left(  \frac{X_{i}-X_{i-1}}{X_{N}-X_{0}}\right)
+(x-X_{0}),\mathbf{Y}_{i-1}+\left(  \frac{\mathbf{Y}_{i}-\mathbf{Y}_{i-1}}{X_{N}-X_{0}%
+}\right)  (x-X_{0})\right.\label{bilinear2}\\
+& \left. + \left[  \mathbf{s}_{i-1}+\left(  \frac{\mathbf{s}_{i}-\mathbf{s}_{i-1}}{X_{N}-X_{0}}\right)
+(x-X_{0})\right]  \left[  \mathbf{y}-\mathbf{Y}_{0}-\left(  \frac{\mathbf{Y}_{N}-\mathbf{Y}_{0}}{X_{N}-X_{0}%
+}\right)  (x-X_{0})\right]\right)  .\nonumber
 \end{align}
-\ee
 
 \subsection{Parametric Maps for Scores}
 
 In order to chart a 2-dimensional, rectangular bounded parametric map over a
 range of fractal approximations of score graphs, a simple recursive procedure
 may be used. First, we define an order for the parameters on the RHS of
-\eqref{bilinear2}: simply $\{X, Y, s\}$. Similarly, within each Hutchinson
-operator, we order the transformations by the order of their parameters. The
-actual ordering is not significant as long as the different sets of parameters
-are laid out in the \textit{same} order. Of course, two different FAs may have
-different numbers of mappings in their respective Hutchinson operators. To
-account for that, we pad the shorter operator with zeros.
+\eqref{bilinear2}: simply $\{X, \mathbf{Y}, \mathbf{s}\}$. Similarly, within
+each Hutchinson operator, we order the transformations by the order of their
+parameters. The actual ordering is not significant as long as the different sets
+of parameters are laid out in the \textit{same} order. Of course, two different
+FAs may have different numbers of mappings in their respective Hutchinson
+operators. To account for that, we pad the shorter operator with zeros.
 
 We take the smaller of two parameters $W_{min}$ as the upper left corner of the
 map, and the larger of the two parameters $W_{max}$ as the lower right corner of
