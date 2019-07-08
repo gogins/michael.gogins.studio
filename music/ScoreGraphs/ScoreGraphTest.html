@@ -19,6 +19,8 @@
     }
 </style>
 </script>
+<script>
+</script>
 <script src='silencio/js/csound_loader.js'></script>
 <script src='silencio/js/sprintf.js'></script>
 <script src='silencio/js/numeric.js'></script>
@@ -26,7 +28,7 @@
 <script src='silencio/js/tinycolor.js'></script>
 <script src='silencio/js/Silencio.js'></script>
 <script src="silencio/js/TrackballControls.js"></script>
-<script src='silencio/js/ChordSpace2.js'></script>
+<script src='silencio/js/ChordSpace.js'></script>
 <script src='silencio/js/ScoreGraphs.js'></script>
 <script src="silencio/js/dat.gui.js"></script>
 </head>
@@ -58,6 +60,7 @@ var test_constant_major_triad = function() {
         csound.message(chord.information() + "\n");
         let pitv = score_graph.chord_space.fromChord(chord);
         csound.message("pitv: " + pitv + " P: " + pitv.P + "\n");
+        csound.message(score_graph.chord_space.list() + "\n")
         // All chords here will be major (or minor?) triads.
         let P = pitv.P;
         let Y1 = [P, 0., 0., 0., 0.];
@@ -168,7 +171,7 @@ var test_transposition = function() {
 var test_revoicing = function() {
     try {
         csound.message("TEST REVOICING\n")
-        let score_graph = new ScoreGraphs.ScoreGraph(3, 60, 36, [4], 120, true);
+        let score_graph = new ScoreGraphs.ScoreGraph(3, 60, 36, [4], 300, true);
         window.score = score_graph.score;
         console.log("score_graph: " + score_graph);
         let chord = ChordSpace.chordForName("DM");
@@ -194,7 +197,7 @@ var test_revoicing = function() {
         var t4 = new ScoreGraphs.BilinearTransformation(3., Y4, s4);
         score_graph.add_transformation(t4);
         // depth, timesteps
-        score_graph.generate(7, 4);
+        score_graph.generate(2, 4);
         csound.message("Plotting score...\n");
         score.draw3D(document.getElementById("canvas"));
         csound.message('Generated ' + score.data.length + ' notes.\n');
@@ -206,7 +209,7 @@ var test_revoicing = function() {
 
 var test_arrangement = function() {
     try {
-        csound.message("TEST ARRANGEMENT\n")
+        csound.message("TEST ARRANGEMENT\n\n")
         let score_graph = new ScoreGraphs.ScoreGraph(3, 60, 36, [1,2,3,5], 120, true);
         window.score = score_graph.score;
         console.log("score_graph: " + score_graph);
@@ -246,33 +249,35 @@ var test_arrangement = function() {
 var test_multiple = function() {
     try {
         csound.message("TEST MULTIPLE\n")
-        let score_graph = new ScoreGraphs.ScoreGraph(4, 60, 36, [1,2,3,5], 120, true);
+        let score_graph = new ScoreGraphs.ScoreGraph(4, 60, 36, [0,1,2,3,4,5,6], 300, true);
+        ///let score_graph = new ScoreGraphs.ScoreGraph(4, 60, 36, [0], 300, true);
         window.score = score_graph.score;
         console.log("score_graph: " + score_graph);
         let chord = ChordSpace.chordForName("D7");
         csound.message(chord.information() + "\n");
         let pitv = score_graph.chord_space.fromChord(chord);
         csound.message("pitv: " + pitv + " P: " + pitv.P + "\n");
+        csound.message(score_graph.chord_space.list(true, true) + "\n")
         // All chords here will be major (or minor?) triads.
         let P = pitv.P;
-        let Y1 = [P, 0., 0., 0., 40.];
+        let Y1 = [P, 0., 0., 5., 0.];
         let s1 = [.5, .5, .5, .5, .5];
         let t1 = new ScoreGraphs.BilinearTransformation(0., Y1, s1);
         score_graph.add_transformation(t1);
-        let Y2 = [P, 1., 5., 100., 50.];
-        let s2 = [.05, .5, .5, .75, .5];
-        let t2 = new ScoreGraphs.BilinearTransformation(1., Y2, s2);
+        let Y2 = [P, 0., 2., 10., 0.];
+        let s2 = [.5, .5, .5, .5, .5];
+        let t2 = new ScoreGraphs.BilinearTransformation(1, Y2, s2);
         score_graph.add_transformation(t2);
-        let Y3 = [P, 1., 5., 0., 60.];
+        let Y3 = [52., 0., 7., 15., 0.];
         let s3 = [.5, .5, .5, .5, .5];
         var t3 = new ScoreGraphs.BilinearTransformation(2., Y3, s3);
         score_graph.add_transformation(t3);
-        let Y4 = [P, 0., 5., 39., 70.];
-        let s4 = [.5, .75, .5, .5, .5];
-        var t4 = new ScoreGraphs.BilinearTransformation(2.5, Y4, s4);
+        let Y4 = [P, 0., 0., 20., 0.];
+        let s4 = [.5, .5, .5, .5, .5];
+        var t4 = new ScoreGraphs.BilinearTransformation(3, Y4, s4);
         score_graph.add_transformation(t4);
         // depth, timesteps
-        score_graph.generate(7, 4);
+        score_graph.generate(7, 2, 1);
         csound.message("Plotting score...\n");
         score.draw3D(document.getElementById("canvas"));
         csound.message('Generated ' + score.data.length + ' notes.\n');
@@ -284,10 +289,10 @@ var test_multiple = function() {
 
 //var generate = test_constant_major_triad;
 //var generate = test_inversion;
-var generate = test_transposition;
+//var generate = test_transposition;
 //var generate = test_revoicing;
 //var generate = test_arrangement;
-//var generate = test_multiple;
+var generate = test_multiple;
 
 // Message level for standard (terminal) output. Takes the sum of any of the following values:
 // 1 = note amplitude messages
@@ -323,7 +328,7 @@ var render = function(soundfile, post_process) {
     csound.setMetadata("tracknumber", "1");
     csound.setMetadata("date", "2019");
     csound.setMetadata("publisher", "Irreducible Productions ASCAP");
-    csound.setMetadata("comment", "Lindenmayer system in chord space.");
+    csound.setMetadata("comment", "Graph of fractal approximation function in chord symmetry space.");
     csound.setMetadata("license", "CC BY-NC-SA");
     csound.setMetadata("genre", "Electroacoustic");
     if (soundfile === true) {
@@ -417,9 +422,8 @@ var parameters = {
 };
 
 var handleMessage = function(message) {
-    console.log(message);
-    var messages_textarea = document.getElementById("console");
-    var existing = messages_textarea.value;
+    let messages_textarea = document.getElementById("console");
+    let existing = messages_textarea.value;
     messages_textarea.value = existing + message;
     messages_textarea.scrollTop = messages_textarea.scrollHeight;
 }
@@ -432,7 +436,7 @@ var default_json = {
         "gk_overlap": 5.504950495049505,
         "gk_Reverb_feedback": 0.7731258840169731,
         "gk_Reverb2_feedback": 0.5691378592253228,
-        "gk_MasterOutput_level": -10,
+        "gk_MasterOutput_level": -20,
         "gi_FMWaterBell_attack": 0.002936276551436901,
         "gi_FMWaterBell_release": 0.022698875468554768,
         "gi_FMWaterBell_exponent": 12.544773011245312,
@@ -531,6 +535,7 @@ var default_json = {
 
 window.onload = function() {
     get_csound(handleMessage);
+    console.info = csound.message;
     try {
         var temporary_json = Silencio.restoreDatGuiJson(default_json);
         //default_json = temporary_json;
@@ -648,10 +653,10 @@ window.addEventListener("unload", function(event) {
 </CsOptions>
 <CsInstruments>
 ; Change to 96000 with 1 ksmps for final rendering.
-sr = 96000
+sr = 48000
 ksmps = 100
 nchnls = 2
-0dbfs = 5000000
+0dbfs = 15000000
 
 ; Ensure the same random stream for each rendering.
 ; rand, randh, randi, rnd(x) and birnd(x) are not affected by seed.
@@ -702,6 +707,29 @@ prealloc 6, 50
 prealloc 7, 50
 prealloc 8, 20
 prealloc 9, 20
+
+giPianoteq vstinit "/home/mkg/pianoteq_linux_v630/Pianoteq\ 6/amd64/Pianoteq\ 6.so", 1
+
+instr PianoteqNote
+i_instrument = p1
+i_time = p2
+i_duration = p3 + i(gk_overlap)
+p3 = i_duration
+i_midikey = p4 - 12
+i_midivelocity = p5
+i_phase = p6
+i_pan = p7
+i_depth = p8
+i_height = p9
+i_pitchclassset = p10
+i_homogeneity = p11
+i_pitchclass = i_midikey % 12
+i_hertz cpsmidinn i_midikey
+i_amplitude = ampdb(i_midivelocity)
+ichannel = 0
+vstnote giPianoteq, ichannel, i_midikey, i_midivelocity, i_duration
+prints "PIanoteqNote   i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
+endin
 
 gk_Buzzer_harmonics init 15
 gk_Buzzer_level init .5
@@ -1284,29 +1312,6 @@ outleta "outright", a_out_right
 prints "ZakianFlute    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
-giPianoteq vstinit "/home/mkg/pianoteq_linux_v630/Pianoteq\ 6/amd64/Pianoteq\ 6.so", 1
-
-instr PianoteqNote
-i_instrument = p1
-i_time = p2
-i_duration = p3 + i(gk_overlap)
-p3 = i_duration
-i_midikey = p4 - 12
-i_midivelocity = p5
-i_phase = p6
-i_pan = p7
-i_depth = p8
-i_height = p9
-i_pitchclassset = p10
-i_homogeneity = p11
-i_pitchclass = i_midikey % 12
-i_hertz cpsmidinn i_midikey
-i_amplitude = ampdb(i_midivelocity)
-ichannel = 0
-vstnote giPianoteq, ichannel, i_midikey, i_midivelocity, i_duration
-prints "PIanoteqNote   i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
-endin
-
 gk_Bower_midi_dynamic_range init 127
 gk_Bower_attack init .0125
 gk_Bower_release init .0125
@@ -1378,8 +1383,10 @@ ainleft init 0.0
 ainright init 0.0
 aoutleft, aoutright vstaudio giPianoteq, ainleft, ainright
 kgain = ampdb(gk_PianoteqOut_level)
-outleta "outleft", aoutleft * kgain * 1.33334
-outleta "outright", aoutright * kgain * 1.33334
+aoutleft = aoutleft * kgain   * 1.3333334
+aoutright = aoutright * kgain * 1.3333334
+outleta "outleft", aoutleft
+outleta "outright", aoutright
 prints "PianoteqOut    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
@@ -1500,7 +1507,7 @@ endin
 
 </CsInstruments>
 <CsScore>
-f 0 [ 7 * 60 + 45]
+f 0 [ 300 + 15 ]
 </CsScore>
 </CsoundSynthesizer>
 </textarea>

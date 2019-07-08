@@ -216,7 +216,7 @@ backref=true
 \begin{abstract}
 We present new methods, extending our earlier work on iterated function systems
 (IFS) music, for using IFS to generate music in spaces with harmonic structure.
-We define a score as the \textit{graph} of a function that maps time to a
+Here, we define a score as the \textit{graph} of a function that maps time to a
 succession of more or less fleeting chords, which are represented as points in a
 discrete space of chord symmetries. Such score graphs can be computed using
 special iterated function systems (IFS) that compute the graphs of fractal
@@ -385,9 +385,11 @@ $OPTIC$ for trichords in 12TET.}
 \end{figure}
 
 Here, we do not directly use chord space for composing. Rather, we construct a
-discrete space in which each of the irreducible symmetries of chords identified
-by Callender, Quinn, and Tymoczko is a separate dimension, on which the group
-elements of the symmetry are indexed. These dimensions are:
+space in which each of the irreducible symmetries of chords identified by
+Callender, Quinn, and Tymoczko is a separate dimension. We define the semitone
+as the generator of transposition, thus making this space discrete (and modeling
+12 TET). Then the group elements of each symmetry can be given integer indexes.
+These dimensions are:
 
 \begin{enumerate}
 \item $P$ (Callender, Quinn, and Tymoczko's $OPTIC$ space) -- Set class, the
@@ -398,13 +400,16 @@ number of divisions of the octave.
 \item $T/R$ -- Transposition within a specified range $R$.
 \end{enumerate}
 
-\noindent We supplement this chord symmetry space with two more dimensions:
+\noindent We supplement this chord symmetry space with additional (discrete)
+dimensions:
 
 \begin{enumerate}[resume]
 \item $V$ -- Octavewise revoicing (within some specified range) of the $PIT$
 chord, through all permutations of the possible voicings.
 \item $A$ -- Voicewise re-arrangement of instruments for voices, through all
 permutations of the possible arrangements.
+\item $L$ -- Dynamic levels, e.g. $\{0, p, \mathit{mf}, f\}$.
+\item $D$ -- Note durations, e.g. $\{0, 1/16, 1/8, 3/16, 1/4\}$.
 \end{enumerate}
 
 \noindent The purpose of chord symmetry space is to permit composing by moving a
@@ -499,12 +504,10 @@ abstraction.
 So, we have a piece as a sequence of points in chord symmetry space,
 \textit{i.e.}, the graph of a function of time in that space. Graphs of
 functions, \textit{i.e.} fractal approximations, can be computed by a special
-kind of IFS associated with a \textit{Read-Bajraktarevi\'c} operator $\Phi$. The
-literature on fractal interpolation is extensive, and mainly concerned with
-interpolating a given set of data points.
+kind of IFS associated with a \textit{Read-Bajraktarevi\'c} operator $\Phi$.
 
-Suppose we are given a finite family $\{l_n : X\to X \mid n = 1, \ldots, N\}$ of
-injective contractions with the following two properties:
+Assume a finite family $\{l_n : X\to X \mid n = 1, \ldots, N\}$ of injective
+contractions with the following properties:
 
 \begin{align}
 &X = \bigcup_{n=1}^N l_n(X);\label{union}\\
@@ -515,23 +518,23 @@ N\}, m\neq n.
 \noindent Here, $\Int (S)$ denotes the interior of a set $S$.
 
 Suppose that $(Y,d_Y)$ is a complete metric space with metric $d_Y$. A mapping
-$g:X\to Y$ is called \emph{bounded} (with respect to the metric $d_Y$) if
+$g:X\to Y$ is \emph{bounded} (with respect to the metric $d_Y$) if
 there exists an $M > 0$ so that for all $x_1, x_2\in X$, $d_Y(g(x_1),g(x_2)) <
-M$. Then the Read-Bajraktarevi\'c operator is defined as
+M$. Then the Read-Bajraktarevi\'c operator is
 
 \be\label{RB}
 \Phi g (x) := \sum\limits_{n=1}^N F_n (l_n^{-1} (x), g\circ l_n^{-1}
 (x))\,\chi_{l_n(X)}(x),
 \ee
 
-\noindent where $\chi_M$ denotes the characteristic function of a set $M$.
-Equivalently, \eqref{RB} can also be written in the form
+\noindent where $\chi_M$ is the characteristic function of a set $M$.
+Equivalently, \eqref{RB} can be written
 
 \be\label{3.3}
 (\Phi g \circ l_n) (x) := F_n (x, g(x)),\quad x\in X, \;n = 1, \ldots, N.
 \ee
 
-\noindent The operator $\Phi$ is well-defined and since $g$ is bounded and each
+\noindent Because operator $\Phi$ is well-defined, $g$ is bounded, and each
 $v_i$ contractive in the second variable, $\Phi g\in B(X,Y)$.  In other words,
 each of the contractions in the RB operator applies to a disjoint subset of the
 domain of the bounded mapping, and contracts the range of the mapping. Figure
@@ -605,7 +608,7 @@ associated with the local IFS $\cW_\loc$. Different transformations may then be
 used to transform different partitions of the domain.
 
 In the literature, a variety of transformations have been used for the $v_i$ in
-the FIF scheme. For the most part, these reflect the original intention of
+this FIF scheme. For the most part, these reflect the original intention of
 interpolating functions to fit existing data points. For the purposes of
 adapting this method for musical composition, we adopt from
 \cite{2012arXiv1209.3139B} one of the simpler and clearer transformations, the
@@ -618,19 +621,18 @@ w_{i}(x,\mathbf{y}) :=[x_{i-1} + \frac{x_{i}-x_{i-1}}{x_{N}-x_{0}})
 \mathbf{y}],
 \ee
 
-\noindent $x$ is time and $\mathbf{y}$ is a point in chord symmetry space $\{P,
-I, T, V, A\}$, and so the parameters $\mathbf{a, b, c, d}$ are vector-valued. In
-\cite{2012arXiv1209.3139B} Equation \eqref{bilinear} is solved for $\mathbf{a,
-b, c, d}$ using the interpolation data points to neatly fit together the
-sub-domains and ranges as in Figure \ref{fig:fif} with the following equation,
-where $x$ is the time dimension of the score graph, $\mathbf{y}$ is the chord
-symmetry dimension of the score graph, the $X$ are interpolation points for
-time, $\mathbf{Y}$ are vector-valued interpolation points for $\{P, I, T, V,
-A\}$, and $\mathbf{s}$ are vector-valued scaling factors that ensure contraction
-to the fixed point of the attractor, i.e.\ the score graph, and provide some
-control over the shape of the graph in between the interpolation points. Note
-that $N$ interpolation points define $N-1$ transformations in the Hutchinson
-operator.
+\noindent where $x$ is time and $\mathbf{y}$ is a point in chord symmetry space $\{P,
+I, T, V, A\}$, and so the parameters $\mathbf{a, b, c, d}$ are vector-valued.
+As in \cite{2012arXiv1209.3139B}, Equation \eqref{bilinear} is solved for
+$\mathbf{a, b, c, d}$ using the interpolation data points to neatly fit together
+the sub-domains and ranges (Figure \ref{fig:fif}) with the following
+equation, where $x$ is the time dimension of the score graph, $\mathbf{y}$ is
+the chord symmetry dimension of the score graph, the $X$ are interpolation
+points for time, $\mathbf{Y}$ are vector-valued interpolation points for $\{P,
+I, T, V, A\}$, and $\mathbf{s}$ are vector-valued scaling factors that ensure
+contraction to the fixed point of the attractor, i.e.\ the score graph, and
+provide some control over the shape of the graph between the interpolation
+points:
 
 \begin{align}
 w_{i} &  (x,\mathbf{y})= \left(X_{i-1}+ \left(  \frac{X_{i}-X_{i-1}}{X_{N}-X_{0}}\right)
@@ -640,6 +642,13 @@ w_{i} &  (x,\mathbf{y})= \left(X_{i-1}+ \left(  \frac{X_{i}-X_{i-1}}{X_{N}-X_{0}
 (x-X_{0})\right]  \left[  \mathbf{y}-\mathbf{Y}_{0}-\left(  \frac{\mathbf{Y}_{N}-\mathbf{Y}_{0}}{X_{N}-X_{0}%
 }\right)  (x-X_{0})\right]\right)  .\nonumber
 \end{align}
+
+Note that $N$ interpolation points define $N-1$ transformations in the
+Hutchinson operator. The interpolation points $\{I : (X_i, \mathbf{Y}_i,
+\mathbf{s}_i) \mid \mathbf{s} \in [0, 1), i \in 0, 1, 2, 3, \dots N\}$ will be
+exactly reproduced as specific chords at specific times $X_i$ in the score.
+Additional chords may also be generated depending on the scaling factors
+$\mathbf{s}_i$, the number of interpolation points, and so on.
 
 \subsection{Parametric Maps for Scores}
 
