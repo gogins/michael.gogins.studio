@@ -264,14 +264,16 @@ constructed from time and the basic symmetries of chord space identified by
 Callender, Quinn and Tymoczko \cite{callender:346}, supplemented with revoicings
 and rearrangements. The dimensions of this score space are: time, set class (the
 most basic form of a chord) $P$ (\textit{i.e.}, Callender \textit{et al.}'s
-$OPTIC$), inversion $I$, transposition $T$, octavewise revoicings $V$, and
-permutations of voices $A$. In this space, a piece of note-based music may be
-considered a succession of more or less fleeting chord points or, in other
-words, as the graph of a vector-valued function of time mapped to chord symmetry
-space, which we call a \textit{score graph} of a \textit{score function},
+$OPTIC$), inversion $I$, transposition $T$, octavewise revoicings $V$,
+permutations of instruments for voices $A$, permutations of dynamic levels for
+voices $L$, and permutations of note durations for voices $D$. In this space, a
+piece of note-based music may be considered a succession of more or less
+fleeting chord points or, in other words, as the graph of a vector-valued
+function of time mapped to chord symmetry space, which we call a \textit{score
+graph} of a \textit{score function},
 
 \be \label{score_graph}
-G(f: x \mapsto P, I, T, V, A),
+G(f: x \mapsto P, I, T, V, A, L, D),
 \ee
 
 \noindent where $x$ is time. Notes and chords do \textit{not} need to be
@@ -406,17 +408,20 @@ dimensions:
 \begin{enumerate}[resume]
 \item $V$ -- Octavewise revoicing (within some specified range) of the $PIT$
 chord, through all permutations of the possible voicings.
-\item $A$ -- Voicewise re-arrangement of instruments for voices, through all
-permutations of the possible arrangements.
-\item $L$ -- Dynamic levels, e.g. $\{0, p, \mathit{mf}, f\}$.
-\item $D$ -- Note durations, e.g. $\{0, 1/16, 1/8, 3/16, 1/4\}$.
+\item $A$ -- Arrangements of instruments for voices, through all
+k-permutations with repetition of the possible arrangements.
+\item $L$ -- Dynamic levels for voices, \emph{e.g.}\ $\{0, p, \mathit{mf}, f\}$, through
+all $k$-permutations with repetition of the possible levels.
+\item $D$ -- Note durations, \emph{e.g.}\ $\{0, 1/16, 1/8, 3/16, 1/4\}$, through all
+$k$-permutations with repetition of the possible durations.
 \end{enumerate}
 
 \noindent The purpose of chord symmetry space is to permit composing by moving a
 single point through the space and thus controlling at once set class,
-inversion, transposition, voicing, and arrangement; another way of saying this
-is that any piece of note-based music can be represented by the graph of chord
-symmetries as a vector-valued function of time (Equation \eqref{score_graph}).
+inversion, transposition, voicing, arrangement, dynamics, and note durations;
+another way of saying this is that any piece of note-based music can be
+represented by the graph of chord symmetries as a vector-valued function of time
+(Equation \eqref{score_graph}).
 
 \subsection{Fractal Approximation}
 
