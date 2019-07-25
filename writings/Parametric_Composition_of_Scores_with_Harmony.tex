@@ -208,21 +208,24 @@ backref=true
 \addbibresource{gogins.bib}
 \begin{document}
 
-\title{Parametric Composition of Score Graphs}
-\author{Michael Gogins \\ \texttt{michael.gogins@gmail.com}}
-\maketitle
+\title{Parametric Composition in Score Spaces with Harmony} \author{Michael
+Gogins \\ \texttt{michael.gogins@gmail.com}} \maketitle
 %\pagestyle{scrheadings}
 
 \begin{abstract}
 We present new methods, extending our earlier work on iterated function systems
-(IFS) music, for using IFS to generate music in spaces with harmonic structure.
-Here, we define a score as the \textit{graph} of a function that maps time to a
-succession of more or less fleeting chords, which are represented as points in a
-discrete space of chord symmetries. Such score graphs can be computed using
-special iterated function systems (IFS) that compute the graphs of fractal
-interpolation functions (FIFs), which are related to the Read-Bajraktarevi\'c
-operator. The Collage Theorem proves that any such graph may be approximated, as
-closely as desired, by such a IFS. One method of composing is then to manually
+(IFS) music, for using IFS to generate scores in spaces with harmony, that is,
+where each point in the space specifies not only a pitch, a time, and perhaps
+other properties, but also a harmony (interval, chord, or scale) to which that
+pitch belongs. As before, we generate scores as the attractors of IFS. However,
+we construct the Hutchinson operators for generating these attractors such that,
+in the time-harmony planes of the score space, the attractor is the graph of a
+function of time, adapting the mathematics of fractal interpolation functions
+(FIFs), which are related to the Read-Bajraktarevi\'c operator. In the other
+planes of the score space, the attractor may take any form. This helps to ensure
+that the composer and listener will hear a progression of harmony through time
+in the score. The Collage Theorem proves that any score may be approximated, as
+closely as desired, by such an IFS. One method of composing is then to manually
 construct these IFS, or to evolve them using the genetic algorithm, and then to
 render the IFS to an actual score. Additionally, one complex virtual parameter
 can be derived to represent each set (potentially dozens or more numbers) of the
@@ -234,8 +237,6 @@ or to interpolate between two scores located in such a map.
 \end{abstract}
 
 %\lohead{Parametric Composition}
-
-
 
 \section{Introduction}
 
@@ -261,40 +262,27 @@ grid of notes (piano roll) \cite{ifsmusic}.
 
 Here, we extend this work by generating scores in a special score space
 constructed from time and the basic symmetries of chord space identified by
-Callender, Quinn and Tymoczko \cite{callender:346}, supplemented with revoicings
-and rearrangements. The dimensions of this score space are: time, set class (the
-most basic form of a chord) $P$ (\textit{i.e.}, Callender \textit{et al.}'s
-$OPTIC$), inversion $I$, transposition $T$, octavewise revoicings $V$,
-permutations of instruments for voices $A$, permutations of dynamic levels for
-voices $L$, and permutations of note durations for voices $D$. In this space, a
-piece of note-based music may be considered a succession of more or less
-fleeting chord points or, in other words, as the graph of a vector-valued
-function of time mapped to chord symmetry space, which we call a \textit{score
-graph} of a \textit{score function},
-
-\be \label{score_graph}
-G(f: x \mapsto P, I, T, V, A, L, D),
-\ee
-
-\noindent where $x$ is time. Notes and chords do \textit{not} need to be
-confined to 12-tone equal temperament. One motivation for using this space to
-compose is that different values on the chord symmetry dimensions of the space
-are clearly audible as harmonic differences. Another motivation is that, at any
-one point in time, there is one and only one ``harmony.''
+Callender, Quinn and Tymoczko \cite{callender:346}, along with pitch, loudness,
+and other properties. The dimensions of this score space are: time $t$, set
+class (the most basic form of a chord) $P$ (\textit{i.e.}, Callender \textit{et
+al.}'s $OPTIC$), inversion $I$, and transposition $T$. The basis consisting of
+$t$, $P$, $I$, and $T$ defines the time-harmony planes, or harmony subspace,
+of the score space. One motivation for using this space to compose is that
+different points in the harmony subspace are clearly audible as harmonic
+differences. Another motivation is that we can use fractal interpolation within
+the harmony subspace to ensure that, at any one point in time, there is one and
+only one harmony.
 
 The score generators used here are \textit{iterated function systems} (IFS)
 \cite{barnsley1985iterated, 10.2307/24893080, fractalseverywhere}. More
 particularly, our score generators are special IFS where the contractive
-transformations that make up the IFS are constrained such that the IFS computes
-attractors that closely approximate the graphs of functions. The function for
-such a graph is called a \textit{fractal approximation} (FA) or fractal
-interpolation function (FIF), or simply a \textit{fractal function}
-\cite{Barnsley1986, fractalseverywhere, navascues2014fractal}. (It is
-interesting that all continuous functions are fractal functions
-\cite{2016arXiv161001369B}.) Even more particularly, we use IFS to compute
-score graphs $G(f)$. The advantage of such IFS is that (in principle)
-\textit{any} score can be so generated, and \textit{every} IFS of this type
-generates some $G(f)$.
+transformations that make up the IFS are constrained (within the harmonhy
+subspace only) such that the IFS computes attractors that closely approximate
+the graphs of functions. The function for such a graph is called a
+\textit{fractal approximation} (FA) or fractal interpolation function (FIF), or
+simply a \textit{fractal function} \cite{Barnsley1986, fractalseverywhere,
+navascues2014fractal}. (It is interesting that all continuous functions are
+fractal functions \cite{2016arXiv161001369B}.)
 
 An IFS may be completely specified as a set of numerical parameters. Thus, any
 piece of note-based music may be approximated as closely as desired by a fixed
