@@ -655,6 +655,23 @@ exactly reproduced as specific chords at specific times $X_i$ in the score.
 Additional chords may also be generated depending on the scaling factors
 $\mathbf{s}_i$, the number of interpolation points, and so on.
 
+\subsection{Pre-Processed Affine Transformations}
+
+We may wish to use a Hutchinson operator that consists of simple homogeneous
+affine transformation matrices. We must set to zero those elements that might
+rotate points in the time-harmony planes. We may pre-process those elements
+that subdivide the harmony planes  by time, according to a modification of
+that omits the scaling factor. Here,
+
+\begin{align}
+w_{i} &  (x,\mathbf{h})= \left(X_{i-1}+ \left(  \frac{X_{i}-X_{i-1}}{X_{N}-X_{0}}\right)
+(x-X_{0}),\mathbf{H}_{i-1}+\left(  \frac{\mathbf{H}_{i}-\mathbf{H}_{i-1}}{X_{N}-X_{0}%
+}\right)  (x-X_{0})\right.\label{affine}\\
+& \left. +   \mathbf{h}-\mathbf{H}_{0}-\left(  \frac{\mathbf{H}_{N}-\mathbf{H}_{0}}{X_{N}-X_{0}%
+}\right)  (x-X_{0})\right)  .\nonumber
+\end{align}
+
+
 \subsection{Parametric Maps for Scores}
 
 In order to chart a 2-dimensional, rectangular bounded parametric map over a

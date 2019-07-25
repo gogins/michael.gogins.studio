@@ -66,7 +66,7 @@ gkMasterLevel                   init                    1.5
                                 alwayson                "Reverberation"
                                 alwayson                "MasterOutput"
                                                                 
-gi_aeolus                       aeolus_init             "./stops-0.3.0", "Aeolus", "waves", 0, 7, 1
+gi_aeolus                       aeolus_init             "stops-0.3.0", "Aeolus", "waves", 0, 12, 0
 
                                 instr Aeolus_P 
                                 //////////////////////////////////////////////
@@ -115,10 +115,6 @@ gi_aeolus                       aeolus_init             "./stops-0.3.0", "Aeolus
                                 // By Michael Gogins.
                                 //////////////////////////////////////////////
                                 aeolus_preset           gi_aeolus, 0, 0
-                                ;aeolus_group_mode gi_aeolus, 0, 2
-                                ;aeolus_group_mode gi_aeolus, 1, 2
-                                ;aeolus_group_mode gi_aeolus, 2, 
-                                ;aeolus_stop gi_aeolus, 52
 a_out[]                         init                    2
 a_out                           aeolus_out              gi_aeolus
                                 out                     a_out
@@ -131,14 +127,6 @@ a_out                           aeolus_out              gi_aeolus
                                 //////////////////////////////////////////////
                                 // By Michael Gogins.
                                 ////////////////////////////////////2
-                                ;aeolus_group_mode gi_aeolus, 3, 2
-                                ;aeolus_stop gi_aeolus, 20
-                                ;aeolus_stop gi_aeolus, 23
-                                ;aeolus_stop gi_aeolus, 33
-                                ;aeolus_stop gi_aeolus, 38
-                                ;aeolus_stop gi_aeolus, 41
-                                ;aeolus_stop gi_aeolus, 46
-                                ;aeolus_stop gi_aeolus, 51//////////
 ainleft                         inleta                  "inleft"
 ainright                        inleta                  "inright"
 if (gkReverberationEnabled == 0) goto reverberation_if_label
@@ -287,19 +275,19 @@ qqq)
 
 (events (phasing .5) csound-seq 1)
 
-(defparameter *piano-part* 
-  (new fomus:part
-   :name "Piano"
-   :partid 0 
-   :instr '(:piano :staves 3)))
-(defparameter partids (make-hash-table))
-(setf (gethash 1 partids) 0)
-(setf (gethash 2 partids) 0)
-(setf (gethash 3 partids) 0)
-(defparameter voices (make-hash-table))
-(setf (gethash 1 voices) '(1 2 3 4))
-(setf (gethash 2 voices) '(1 2 3 4))
-(setf (gethash 3 voices) '(1 2 3 4))
+;(defparameter *piano-part* 
+;  (new fomus:part
+;   :name "Piano"
+;   :partid 0 
+;   :instr '(:piano :staves 3)))
+;(defparameter partids (make-hash-table))
+;(setf (gethash 1 partids) 0)
+;(setf (gethash 2 partids) 0)
+;(setf (gethash 3 partids) 0)
+;(defparameter voices (make-hash-table))
+;(setf (gethash 1 voices) '(1 2 3 4))
+;(setf (gethash 2 voices) '(1 2 3 4))
+;(setf (gethash 3 voices) '(1 2 3 4))
 ;(seq-to-lilypond csound-seq "Pange-Lingua.ly" *piano-part* partids voices)
 (seq-to-midifile csound-seq "Pange-Lingua.mid")
 
