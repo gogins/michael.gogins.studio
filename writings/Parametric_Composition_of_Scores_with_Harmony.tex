@@ -213,23 +213,24 @@ Gogins \\ \texttt{michael.gogins@gmail.com}} \maketitle
 %\pagestyle{scrheadings}
 
 \begin{abstract}
-We present new methods, extending our earlier work on iterated function systems
-(IFS) music, for using IFS to generate scores in spaces with harmony, that is,
+Extending our earlier work on iterated function systems (IFS) music, we present
+new methods for using IFS to generate scores in spaces with \emph{harmony},
 where each point in the space specifies not only a pitch, a time, and perhaps
-other properties, but also a harmony (interval, chord, or scale) to which that
-pitch belongs. As before, we generate scores as the attractors of IFS. However,
+other properties, but also an interval, chord, or scale to which that pitch
+belongs. As before, we generate scores as the attractors of IFS. However, here
 we construct the Hutchinson operators for generating these attractors such that,
 in the time-harmony planes of the score space, the attractor is the graph of a
-function of time, adapting the mathematics of fractal interpolation functions
-(FIFs), which are related to the Read-Bajraktarevi\'c operator. In the other
-planes of the score space, the attractor may take any form. This helps to ensure
-that the composer and listener will hear a progression of harmony through time
-in the score. The Collage Theorem proves that any score may be approximated, as
-closely as desired, by such an IFS. One method of composing is then to manually
-construct these IFS, or to evolve them using the genetic algorithm, and then to
-render the IFS to an actual score. Additionally, one complex virtual parameter
-can be derived to represent each set (potentially dozens or more numbers) of the
-IFS parameters used to compute each score graph. Each virtual parameter may be
+function of time, using the mathematics of fractal interpolation functions
+(FIFs) and the Read-Bajraktarevi\'c operator. In the other planes of the score
+space, the attractor may take any form. This helps to ensure that the composer
+and listener will hear the harmony as a linear progression through time, while
+permitting more complex transformations in other dimensions of the score. The
+Collage Theorem proves that any score may be approximated, as closely as
+desired, by such an IFS. One method of composing is then to manually construct
+these IFS, or to evolve them using the genetic algorithm, and then to render the
+IFS to an actual score. Additionally, one complex virtual parameter can be
+derived to represent each set (potentially dozens or more numbers) of the IFS
+parameters used to compute each score graph. Each virtual parameter may be
 mapped to the score produced from the corresponding IFS, thus producing a
 parametric map of scores colored by some musical feature of interest. Other
 methods of composition are then to interactively explore such parametric maps,
@@ -240,7 +241,7 @@ or to interpolate between two scores located in such a map.
 
 \section{Introduction}
 
-\lstset{language=c++,basicstyle=\ttfamily\tiny,commentstyle=\ttfamily\tiny,tabsize=2,breaklines,backgroundcolor=\color{LstColor},fontadjust=true,keepspaces=false,showstringspaces=false,moredelim=[is][\textbf]{\\emph\{}{\}}}.
+\lstset{language=c++,basicstyle=\ttfamily\tiny,commentstyle=\ttfamily\tiny,tabsize=2,breaklines,backgroundcolor=\color{LstColor},fontadjust=true,keepspaces=false,showstringspaces=false,moredelim=[is][\textbf]{\\emph\{}{\}}}
 
 In general, we define a \textit{score space} as a space in which a set of points
 represents a piece of music, \textit{e.g.}\ notes on the grand staff, punches in
@@ -260,29 +261,32 @@ represent either sound, \textit{e.g.}\ in the form of a grid of sound grains
 (Gabor transform) \cite{obsessed}, or scores, \textit{e.g.}\ in the form of a
 grid of notes (piano roll) \cite{ifsmusic}.
 
-Here, we extend this work by generating scores in a special score space
+Here, we extend that work by generating scores in a special score space
 constructed from time and the basic symmetries of chord space identified by
 Callender, Quinn and Tymoczko \cite{callender:346}, along with pitch, loudness,
 and other properties. The dimensions of this score space are: time $t$, set
 class (the most basic form of a chord) $P$ (\textit{i.e.}, Callender \textit{et
-al.}'s $OPTIC$), inversion $I$, and transposition $T$. The basis consisting of
-$t$, $P$, $I$, and $T$ defines the time-harmony planes, or harmony subspace,
-of the score space. One motivation for using this space to compose is that
-different points in the harmony subspace are clearly audible as harmonic
-differences. Another motivation is that we can use fractal interpolation within
-the harmony subspace to ensure that, at any one point in time, there is one and
-only one harmony.
+al.}'s $OPTIC$), inversion $I$, and transposition $T$. Dimensions $t$, $P$, $I$,
+and $T$ defines the time-harmony planes, or the basis of a harmony subspace of
+the score space. The other dimensions are $k$ pitch as real-valued MIDI numbers,
+$v$ loudness as real-valued MIDI velocity numbers, and instrument as real-valued
+MIDI channel numbers.
 
 The score generators used here are \textit{iterated function systems} (IFS)
 \cite{barnsley1985iterated, 10.2307/24893080, fractalseverywhere}. More
 particularly, our score generators are special IFS where the contractive
-transformations that make up the IFS are constrained (within the harmonhy
+transformations that make up the IFS are constrained (within the harmony
 subspace only) such that the IFS computes attractors that closely approximate
 the graphs of functions. The function for such a graph is called a
 \textit{fractal approximation} (FA) or fractal interpolation function (FIF), or
 simply a \textit{fractal function} \cite{Barnsley1986, fractalseverywhere,
 navascues2014fractal}. (It is interesting that all continuous functions are
-fractal functions \cite{2016arXiv161001369B}.)
+fractal functions \cite{2016arXiv161001369B}.) One motivation for using this
+space to compose is that different points in the harmony subspace are clearly
+audible as harmonic differences. Another motivation is that we can use fractal
+interpolation within the harmony subspace to ensure that, at any one point in
+time, there is one and only one harmony, although of course it may consist of
+any number of pitch-classes.
 
 An IFS may be completely specified as a set of numerical parameters. Thus, any
 piece of note-based music may be approximated as closely as desired by a fixed
@@ -381,35 +385,27 @@ as the generator of transposition, thus making this space discrete (and modeling
 12 TET). Then the group elements of each symmetry can be given integer indexes.
 These dimensions are:
 
-\begin{enumerate}
-\item $P$ (Callender, Quinn, and Tymoczko's $OPTIC$ space) -- Set class, the
+\begin{description}
+\item[$P$] Set class (Callender, Quinn, and Tymoczko's $OPTIC$), the
 most abstract conception of a chord; all major and minor triads are equivalent.
 The number of elements in P depends upon the maximum number of voices and the
 number of divisions of the octave.
-\item $I$ -- Inversion by the origin.
-\item $T/R$ -- Transposition within a specified range $R$.
-\end{enumerate}
+\item[$I$] Inversion (reflection by the origin).
+\item[$T$] Transposition \emph{modulo} the octave.
+\end{description}
 
-\noindent We supplement this chord symmetry space with additional (discrete)
-dimensions:
+\noindent We supplement this chord symmetry space with additional dimensions:
 
-\begin{enumerate}[resume]
-\item $V$ -- Octavewise revoicing (within some specified range) of the $PIT$
-chord, through all permutations of the possible voicings.
-\item $A$ -- Arrangements of instruments for voices, through all
-k-permutations with repetition of the possible arrangements.
-\item $L$ -- Dynamic levels for voices, \emph{e.g.}\ $\{0, p, \mathit{mf}, f\}$, through
-all $k$-permutations with repetition of the possible levels.
-\item $D$ -- Note durations, \emph{e.g.}\ $\{0, 1/16, 1/8, 3/16, 1/4\}$, through all
-$k$-permutations with repetition of the possible durations.
-\end{enumerate}
+\begin{description}[resume]
+\item[$t$] Time, in seconds.
+\item[$i$] Instrument, a real-valued instrument identifier, which at rendering
+time is rounded off to MIDI channel number.
+\item[$k$] Pitch, a real-valued MIDI key number, which at rendering time is
+adjusted to match the harmony at that time.
+\item[$v$] Loudness, a real-valued MIDI velocity number.
+\end{description}
 
-\noindent The purpose of chord symmetry space is to permit composing by moving a
-single point through the space and thus controlling at once set class,
-inversion, transposition, voicing, arrangement, dynamics, and note durations;
-another way of saying this is that any piece of note-based music can be
-represented by the graph of chord symmetries as a vector-valued function of time
-(Equation \eqref{score_graph}).
+\noindent In the following, we order these dimensions $\{t, P, I, T, i, k, v \}$.
 
 \subsection{Fractal Approximation}
 
@@ -494,8 +490,8 @@ notes on a grid; or to generate a path through a different chord space,
 Here, we have chosen $OPTIC$ in order to work at the highest level of harmonic
 abstraction.
 
-So, we have a piece as a sequence of points in chord symmetry space,
-\textit{i.e.}, the graph of a function of time in that space. Graphs of
+So, we have the harmony of a score as a sequence of points in chord symmetry
+space, \textit{i.e.}, the graph of a function of time in that space. Graphs of
 functions, \textit{i.e.} fractal approximations, can be computed by a special
 kind of IFS associated with a \textit{Read-Bajraktarevi\'c} operator $\Phi$.
 
@@ -568,9 +564,9 @@ B(X,Y) @>\Phi_\cF>>  B(X,Y)
 g(x))\mid x\in X\}\in X\times Y$.
 
 Please recall, here we use the \textit{graph} of a bounded fractal function to
-represent a musical score, not the fractal function as such. Our purpose in
-using the RB operator is to ensure that we specify \textit{only} IFS that
-compute score graphs.
+represent the harmonic progression of s musical score, not the fractal function
+as such. Our purpose in using the RB operator is to ensure that we specify
+\textit{only} IFS that compute harmonic progressions.
 
 The concepts of fractal interpolation and the RB operator carry over to
 \textit{local} iterated functions, in which the transformations belonging to the
@@ -615,15 +611,15 @@ w_{i}(x,\mathbf{y}) :=[x_{i-1} + \frac{x_{i}-x_{i-1}}{x_{N}-x_{0}})
 \ee
 
 \noindent where $x$ is time and $\mathbf{y}$ is a point in chord symmetry space $\{P,
-I, T, V, A\}$, and so the parameters $\mathbf{a, b, c, d}$ are vector-valued.
+I, T\}$, and so the parameters $\mathbf{a, b, c, d}$ are vector-valued.
 As in \cite{2012arXiv1209.3139B}, Equation \eqref{bilinear} is solved for
 $\mathbf{a, b, c, d}$ using the interpolation data points to neatly fit together
 the sub-domains and ranges (Figure \ref{fig:fif}) with the following
 equation, where $x$ is the time dimension of the score graph, $\mathbf{y}$ is
 the chord symmetry dimension of the score graph, the $X$ are interpolation
 points for time, $\mathbf{Y}$ are vector-valued interpolation points for $\{P,
-I, T, V, A\}$, and $\mathbf{s}$ are vector-valued scaling factors that ensure
-contraction to the fixed point of the attractor, i.e.\ the score graph, and
+I, T\}$, and $\mathbf{s}$ are vector-valued scaling factors that ensure
+contraction to the fixed point of the attractor, i.e.\ the harmony graph, and
 provide some control over the shape of the graph between the interpolation
 points:
 
@@ -645,25 +641,38 @@ $\mathbf{s}_i$, the number of interpolation points, and so on.
 
 \subsection{Using Affine Transformations}
 
-So far, we have defined our Hutchinson operator using equations for bilinear
-transformations derived from interpolation points, each a vector value at a
-time.
+We specify the Hutchinson operator for a score generator by starting with $N$
+interpolation points $I_i$ for the time-harmony function, which are entered as
+the time and harmony translation elements of $N$ homogeneous affine
+transformation matrices. Zeroes are entered for all matrix elements that would
+act to rotate in any of the time-harmony planes. The elements of the homogeneity
+vector are left unchanged. Any of the other elements may be given any value, as
+long as the Hutchinson operator derived from those interpolation points remains
+contractive.
 
-More power can be obtained by relaxing the assumption that the Hutchinson
-operator consists of bilinear transformations. More precisely, we must retain
-the bilinear form for transformations in the time-harmony planes, thus
-continuing to ensure that harmony is computed as a function of time, but permit
-additional types of transformations for the other planes in score space. This
-can be done by representing each transformation $w_{i}$ in the Hutchinson
-operator with an homogeneous affine transformation matrix $W_{i}$ in which the
-matrix elements that operate in the time-harmony planes are derived from the
-interpolation points for those dimensions, whereas all the other matrix elements
-are subject only to the requirement that they be contractive.
+\[
+  I_i=
+  \left[ {\begin{array}{cccccccc}
+     & 0 & 0 & 0 &   &   &   & t\\
+   0 &   &   &   &   &   &   & P\\
+   0 &   &   &   &   &   &   & I\\
+   0 &   &   &   &   &   &   & T\\
+     &   &   &   &   &   &   &  \\
+     &   &   &   &   &   &   &  \\
+     &   &   &   &   &   &   &  \\
+   0 & 0 & 0 & 0 & 0 & 0 & 0 & 1\\
+  \end{array} } \right]
+\]
 
-We also must constrain the Hutchinson operator to subdivide the time-harmony
-planes by time, according to a modification of Equation \eqref{bilinear2} that
-omits the scaling factors. For time-harmony points $(t,\mathbf{h})$, where the
-harmony dimensions $\mathbf{h}$ are $\{P, I, T \}$,
+Before applying the Hutchinson operator, the interpolation points are copied to
+new homogeneous affine transformation matrices $W_i$, and the elements for
+scaling and translating time and harmony in the $W_i$ are derived from the
+interpolation points for time and harmony that have been entered in the $I_i$,
+according to a modification of Equation \eqref{bilinear2} that omits the scaling
+factors (\emph{i.e.}, uses a plain shear transformation instead of the bilinear
+transformation). For time-harmony points $(t,\mathbf{h})$, where the harmony
+dimensions $\mathbf{h}$ are $\{P, I, T \}$, we constrain the Hutchinson operator
+to subdivide the time-harmony planes by time,
 
 \begin{align}
 w_{i} &  (t,\mathbf{h})= \left(T_{i-1}+ \left(  \frac{T_{i}-T_{i-1}}{T_{N}-T_{0}}\right)
@@ -673,14 +682,28 @@ w_{i} &  (t,\mathbf{h})= \left(T_{i-1}+ \left(  \frac{T_{i}-T_{i-1}}{T_{N}-T_{0}
 }\right)  (t-T_{0})\right)  .\nonumber
 \end{align}
 
-\noindent Then in matrix $W_i$ the translation of time is $T_{i-1}$, the scaling
-of time is $\left(  \frac{T_{i}-T_{i-1}}{T_{N}-T_{0}}\right)$, the translation
-of harmony is $\mathbf{H}_{i-1}$, and the scaling of harmony is
-$\frac{\mathbf{H}_{i}-\mathbf{H}_{i-1}}{T_{N}-T_{0}}$ (using a plain shear
-transformation instead of the bilinear transformation). We must also set to zero
-those elements of the matrices that might rotate points in the time-harmony
-planes. The other elements of the matrices may take any values as long as the
-Hutchinson operator is contractive.
+\noindent Note that $N-1$ Hutchinson operator transformations are derived from
+$N$ interpolation points. Then in matrix $W_i$ the translation of time is
+$T_{i-1}$, the scaling of time is $\left(
+\frac{T_{i}-T_{i-1}}{T_{N}-T_{0}}\right)$, the translation of harmony is
+$\mathbf{H}_{i-1}$, and the scaling of harmony is
+$\frac{\mathbf{H}_{i}-\mathbf{H}_{i-1}}{T_{N}-T_{0}}$. In matrix form:
+
+\[
+  W_i=
+  \left[ {\begin{array}{cccccccc}
+  \frac{I_{i,11}-I_{i-1,11}}{I_{N,11}-I_{0,11}}              & 0 & 0 & 0 &   &   &   & I_{i-1,18}\\
+   0 & \frac{I_{i,22}-I_{i-1,22}}{I_{N,22}-I_{0,22}}             &   &   &   &   &   & I_{i-1,28}\\
+   0 &   & \frac{I_{i,33}-I_{i-1,33}}{I_{N,133}-I_{0,33}}            &   &   &   &   & I_{i-1,38}\\
+   0 &   &   & \frac{I_{i,44}-I_{i-1,44}}{I_{N,44}-I_{0,44}}             &   &   &   & I_{i-1,48}\\
+     &   &   &   &                                                           &   &   &  \\
+     &   &   &   &                                                           &   &   &  \\
+     &   &   &   &                                                           &   &   &  \\
+   0 & 0 & 0 & 0 & 0                                                         & 0 & 0 & 1\\
+  \end{array} } \right].
+\]
+
+
 
 
 \subsection{Parametric Maps for Scores}
