@@ -221,10 +221,10 @@ belongs. As before, we generate scores as the attractors of IFS. However, here
 we construct the Hutchinson operators for generating these attractors such that,
 in the time-harmony planes of the score space, the attractor is the graph of a
 function of time, using the mathematics of fractal interpolation functions
-(FIFs) and the Read-Bajraktarevi\'c operator. In the other planes of the score
-space, the attractor may take any form. This helps to ensure that the composer
-and listener will hear the harmony as a linear progression through time, while
-permitting more complex transformations in other dimensions of the score. The
+(FIFs) and the Read-Bajraktarevi\'c operator. This helps to ensure that the
+composer and listener will hear the harmony as a linear progression through
+time. In the other planes of the score space, the attractor may take any form,
+which enables more complex transformations in other dimensions of the score. The
 Collage Theorem proves that any score may be approximated, as closely as
 desired, by such an IFS. One method of composing is then to manually construct
 these IFS, or to evolve them using the genetic algorithm, and then to render the
@@ -528,16 +528,15 @@ $v_i$ contractive in the second variable, $\Phi g\in B(X,Y)$.  In other words,
 each of the contractions in the RB operator applies to a disjoint subset of the
 domain of the bounded mapping, and contracts the range of the mapping. Figure
 \ref{fig:fif} shows the graph of a function computed by an RB operator
-consisting of three bilinear transformations (in the computer graphics sense,
-not the signal processing sense).
+consisting of three shear transformations.
 
 \begin{figure}
-\centerline{\includegraphics[width = 0.5\textwidth]{interp}}
-\caption{\label{fig:fif} Three bilinear transformations in
-a fractal interpolation function.\protect\footnotemark}
+\centerline{\includegraphics[width = 0.5\textwidth]{shearInterpolation}}
+\caption{\label{fig:fif}Fractal interpolation function based on three shear
+transformations.\protect\footnotemark}
 \end{figure}
 
-\footnotetext{Image in \ref{fig:fif} from \cite{barnsley2015bilinear}.}
+\footnotetext{Image in Figure \ref{fig:fif} from \cite{Dillon:2017}.}
 
 The relationship of the RB operator $\Phi$ to the IFS $\cF$ of a score graph
 $G$ is shown in this commutative diagram:
@@ -597,40 +596,10 @@ associated with the local IFS $\cW_\loc$. Different transformations may then be
 used to transform different partitions of the domain.
 
 In the literature, a variety of transformations have been used for the $v_i$ in
-this FIF scheme. For the most part, these reflect the original intention of
+this FIF scheme \cite{Navascues:2014}. For the most part, these reflect the original intention of
 interpolating functions to fit existing data points. For the purposes of
-adapting this method for musical composition, we adopt from
-\cite{2012arXiv1209.3139B} one of the simpler and clearer transformations, the
-bilinear transformation, expressed with linear partitions of the domain and a
-vector-valued range as:
-
-\be\label{bilinear}
-w_{i}(x,\mathbf{y}) :=[x_{i-1} + \frac{x_{i}-x_{i-1}}{x_{N}-x_{0}})
-(x-x_{0}),\mathbf{a}_i+\mathbf{b}_ix+\mathbf{c}_i\mathbf{y}+\mathbf{d}_ix
-\mathbf{y}],
-\ee
-
-\noindent where $x$ is time and $\mathbf{y}$ is a point in chord symmetry space $\{P,
-I, T\}$, and so the parameters $\mathbf{a, b, c, d}$ are vector-valued.
-As in \cite{2012arXiv1209.3139B}, Equation \eqref{bilinear} is solved for
-$\mathbf{a, b, c, d}$ using the interpolation data points to neatly fit together
-the sub-domains and ranges (Figure \ref{fig:fif}) with the following
-equation, where $x$ is the time dimension of the score graph, $\mathbf{y}$ is
-the chord symmetry dimension of the score graph, the $X$ are interpolation
-points for time, $\mathbf{Y}$ are vector-valued interpolation points for $\{P,
-I, T\}$, and $\mathbf{s}$ are vector-valued scaling factors that ensure
-contraction to the fixed point of the attractor, i.e.\ the harmony graph, and
-provide some control over the shape of the graph between the interpolation
-points:
-
-\begin{align}
-w_{i} &  (x,\mathbf{y})= \left(X_{i-1}+ \left(  \frac{X_{i}-X_{i-1}}{X_{N}-X_{0}}\right)
-(x-X_{0}),\mathbf{Y}_{i-1}+\left(  \frac{\mathbf{Y}_{i}-\mathbf{Y}_{i-1}}{X_{N}-X_{0}%
-}\right)  (x-X_{0})\right.\label{bilinear2}\\
-& \left. + \left[  \mathbf{s}_{i-1}+\left(  \frac{\mathbf{s}_{i}-\mathbf{s}_{i-1}}{X_{N}-X_{0}}\right)
-(x-X_{0})\right]  \left[  \mathbf{y}-\mathbf{Y}_{0}-\left(  \frac{\mathbf{Y}_{N}-\mathbf{Y}_{0}}{X_{N}-X_{0}%
-}\right)  (x-X_{0})\right]\right)  .\nonumber
-\end{align}
+adapting this method for musical composition, we use the original approach of
+subdividing the domain of the function between shear transformations.
 
 Note that $N$ interpolation points define $N-1$ transformations in the
 Hutchinson operator. The interpolation points $\{I : (X_i, \mathbf{Y}_i,
@@ -642,13 +611,14 @@ $\mathbf{s}_i$, the number of interpolation points, and so on.
 \subsection{Using Affine Transformations}
 
 We specify the Hutchinson operator for a score generator by starting with $N$
-interpolation points $I_i$ for the time-harmony function, which are entered as
-the time and harmony translation elements of $N$ homogeneous affine
-transformation matrices. Zeroes are entered for all matrix elements that would
-act to rotate in any of the time-harmony planes. The elements of the homogeneity
-vector are left unchanged. Any of the other elements may be given any value, as
-long as the Hutchinson operator derived from those interpolation points remains
-contractive.
+interpolation points $I_i$ for the time-harmony fractal interpolation function.
+Purely as a convenience, so that other matrix elements of the transformations
+may also be entered, we enter these as the time and harmony translation elements
+of $N$ homogeneous affine transformation matrices. Zeroes are entered for all
+matrix elements that would act to rotate in any of the time-harmony planes. The
+elements of the homogeneity vector are left unchanged. Any of the other elements
+may be given any value, as long as the Hutchinson operator derived from those
+interpolation points remains contractive.
 
 \[
   I_i=
@@ -667,20 +637,10 @@ contractive.
 Before applying the Hutchinson operator, the interpolation points are copied to
 new homogeneous affine transformation matrices $W_i$, and the elements for
 scaling and translating time and harmony in the $W_i$ are derived from the
-interpolation points for time and harmony that have been entered in the $I_i$,
-according to a modification of Equation \eqref{bilinear2} that omits the scaling
-factors (\emph{i.e.}, uses a plain shear transformation instead of the bilinear
-transformation). For time-harmony points $(t,\mathbf{h})$, where the harmony
-dimensions $\mathbf{h}$ are $\{P, I, T \}$, we constrain the Hutchinson operator
-to subdivide the time-harmony planes by time,
-
-\begin{align}
-w_{i} &  (t,\mathbf{h})= \left(T_{i-1}+ \left(  \frac{T_{i}-T_{i-1}}{T_{N}-T_{0}}\right)
-(t-T_{0}),\mathbf{H}_{i-1}+\left(  \frac{\mathbf{H}_{i}-\mathbf{H}_{i-1}}{T_{N}-T_{0}%
-}\right)  (t-T_{0})\right.\label{affine}\\
-& \left. +   \mathbf{h}-\mathbf{H}_{0}-\left(  \frac{\mathbf{H}_{N}-\mathbf{H}_{0}}{T_{N}-T_{0}%
-}\right)  (t-T_{0})\right)  .\nonumber
-\end{align}
+interpolation points for time and harmony as follows, where $B$ is a matrix
+whose rows consist of the points forming the corners of the time-harmony graph,
+and $T_i$ are matrices whose rows consist of the interpolation points. Because
+$B T_i = I_i$, $T_i = B^{-1} I_i$.
 
 \noindent Note that $N-1$ Hutchinson operator transformations are derived from
 $N$ interpolation points. Then in matrix $W_i$ the translation of time is
@@ -688,7 +648,6 @@ $T_{i-1}$, the scaling of time is $\left(
 \frac{T_{i}-T_{i-1}}{T_{N}-T_{0}}\right)$, the translation of harmony is
 $\mathbf{H}_{i-1}$, and the scaling of harmony is
 $\frac{\mathbf{H}_{i}-\mathbf{H}_{i-1}}{T_{N}-T_{0}}$. In matrix form:
-
 \[
   W_i=
   \left[ {\begin{array}{cccccccc}
