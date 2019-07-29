@@ -617,10 +617,11 @@ factors $s$, the number of interpolation points, and so on.
 
 \subsection{Using Affine Transformations}
 
-We may calculate the elements for $N-1$ homogeneous shear
-transformation matrices in the time-harmony subspace of the Hutchinson operator
-from the interpolation points \eqref{interpolationPoints} as follows
-\cite{Drakopoulos:2008:Curve}:
+We may calculate the elements for $N-1$ homogeneous shear transformation
+matrices in the time-harmony subspace of the Hutchinson operator from the $N$
+interpolation points \eqref{interpolationPoints} as follows. The transformation
+matrices are constrained such that $W_i I_0 = I_{i-1}$ and $W_i I_N = I_i$.
+Solving these constraints yields \cite{Manousopoulos:2008:Curve}:
 \[
   \scalemath{0.75}{
   W_i=
@@ -634,7 +635,7 @@ from the interpolation points \eqref{interpolationPoints} as follows
     k & &   &   &   &   &   &   &  \\
     v & &   &   &   &   &   &   &  \\
     i & &   &   &   &   &   &   &  \\
-      & & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1\\
+      & & 0 & 0 & 0 & 0 & 0 & 0 & 1\\
    }
    %\right]
    }.
@@ -650,16 +651,14 @@ homogeneous transformation matrices (not counting the homogeneity row),
 
 In order to chart a 2-dimensional, rectangular bounded parametric map over a
 range of fractal approximations of score graphs, a simple recursive procedure
-may be used. First, we define an order for the parameters on the RHS of
-\eqref{bilinear2}: simply $\{X, \mathbf{Y}, \mathbf{s}\}$. Similarly, within
-each Hutchinson operator, we order the transformations by the order of their
-parameters. The actual ordering is not significant as long as the different sets
-of parameters are laid out in the \textit{same} order. Of course, two different
-FAs may have different numbers of mappings in their respective Hutchinson
-operators. To account for that, we pad the shorter operator with zeros.
+may be used. First, we define an order the affine homogeneous matrices that make
+up the Hutchinson operators: simply the order of their elements. Of course, two
+different FAs may have different numbers of mappings in their respective
+Hutchinson operators. To account for that, we pad the shorter operator with
+zeros.
 
-We take the smaller of two parameters $W_{min}$ as the upper left corner of the
-map, and the larger of the two parameters $W_{max}$ as the lower right corner of
+We take the smaller of two parameters $H_{min}$ as the upper left corner of the
+map, and the larger of the two parameters $H_{max}$ as the lower right corner of
 the map. If we define a fixed number on each side of parameter points between
 the corners, we may then use simple linear interpolation to calculate any
 parameter point between those corners. To do this, we divide up the map between
