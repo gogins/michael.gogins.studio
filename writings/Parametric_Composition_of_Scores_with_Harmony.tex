@@ -22,6 +22,7 @@
 \usepackage{color}
 \usepackage{listings}
 \usepackage{supertabular}
+\usepackage{kbordermatrix}
 % definitions used by included articles, reproduced here for
 % educational benefit, and to minimize alterations needed to be made
 % in developing this sample file.
@@ -616,23 +617,27 @@ factors $s$, the number of interpolation points, and so on.
 
 \subsection{Using Affine Transformations}
 
-\boindent We may then calculate the elements for $N-1$ homogeneous shear
+We may calculate the elements for $N-1$ homogeneous shear
 transformation matrices in the time-harmony subspace of the Hutchinson operator
-from the interpolation points \eqref{interpolationPoints} as follows:
+from the interpolation points \eqref{interpolationPoints} as follows
+\cite{Drakopoulos:2008:Curve}:
 \[
   \scalemath{0.75}{
   W_i=
-  \left[ {\begin{array}{cccccccc}
-    \frac{t_i - t_{i-1}}{t_N - t_0}                           &            &   &   &   &   &   &  \frac{t_N t_{i-1} - t_0 t_i}{t_N - t_0}                               \\
-    \frac{P_i - P_{i-1} - s_{P,i} (P_N - P_0)}{t_N - t_0}     & s_{P,i}    &   &   &   &   &   &  \frac{t_N P_{i-1} - t_0 P_i - s_{P,i} (t_i P_0 - t_0 P_N)}{t_N - t_0} \\
-    &  \frac{I_i - I_{i-1} - s_{I,i} (I_N - I_0)}{t_N - t_0}  & s_{I,i}    &   &   &   &       &  \frac{t_N I_{i-1} - t_0 I_i - s_{I,i} (t_i I_0 - t_0 I_N)}{t_N - t_0} \\
-    &   & \frac{T_i - T_{i-1} - s_{T,i} (T_N - T_0)}{t_N - t_0} & s_{T,i}  &   &   &           &  \frac{t_N T_{i-1} - t_0 T_i - s_{T,i} (t_i T_0 - t_0 T_N)}{t_N - t_0} \\
-    &   &   &   &   &   &   &  \\
-    &   &   &   &   &   &   &  \\
-    &   &   &   &   &   &   &  \\
-    &   &   &   &   &   &   &  \\
-    0 & 0 & 0 & 0 & 0 & 0 & 0 & 1\\
-  \end{array} } \right]}.
+  %\left[
+  \kbordermatrix{
+      & t & P & I & T & k & v & i & & \\
+    t & \frac{t_i - t_{i-1}}{t_N - t_0}                           &            &   &   &   &   &   &  \frac{t_N t_{i-1} - t_0 t_i}{t_N - t_0}                               \\
+    P & \frac{P_i - P_{i-1} - s_{P,i} (P_N - P_0)}{t_N - t_0}     & s_{P,i}    &   &   &   &   &   &  \frac{t_N P_{i-1} - t_0 P_i - s_{P,i} (t_i P_0 - t_0 P_N)}{t_N - t_0} \\
+    I & &  \frac{I_i - I_{i-1} - s_{I,i} (I_N - I_0)}{t_N - t_0}  & s_{I,i}    &   &   &   &       &  \frac{t_N I_{i-1} - t_0 I_i - s_{I,i} (t_i I_0 - t_0 I_N)}{t_N - t_0} \\
+    T & &   & \frac{T_i - T_{i-1} - s_{T,i} (T_N - T_0)}{t_N - t_0} & s_{T,i}  &   &   &           &  \frac{t_N T_{i-1} - t_0 T_i - s_{T,i} (t_i T_0 - t_0 T_N)}{t_N - t_0} \\
+    k & &   &   &   &   &   &   &  \\
+    v & &   &   &   &   &   &   &  \\
+    i & &   &   &   &   &   &   &  \\
+      & & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1\\
+   }
+   %\right]
+   }.
 \]
 
 \noindent Once elements of these shear transformations have been computed from
