@@ -32,6 +32,7 @@
 \usepackage{amscd}     % commutative diagrams
 \usepackage{mathrsfs}  % This package allows the use of script letters. Type \mathscr to invoke math script.
 \usepackage{amsbsy}
+\newcommand\scalemath[2]{\scalebox{#1}{\mbox{\ensuremath{\displaystyle #2}}}}
 %\usepackage{scrpage2}
 \usepackage[pdftex,
 colorlinks=true,
@@ -222,15 +223,15 @@ we construct the Hutchinson operators for generating these attractors such that,
 in the time-harmony planes of the score space, the attractor is the graph of a
 function of time, using the mathematics of fractal interpolation functions
 (FIFs) and the Read-Bajraktarevi\'c operator. This helps to ensure that the
-composer and listener will hear the harmony as a linear progression through
-time. In the other planes of the score space, the attractor may take any form,
-which enables more complex transformations in other dimensions of the score. The
-Collage Theorem proves that any score may be approximated, as closely as
-desired, by such an IFS. One method of composing is then to manually construct
-these IFS, or to evolve them using the genetic algorithm, and then to render the
-IFS to an actual score. Additionally, one complex virtual parameter can be
-derived to represent each set (potentially dozens or more numbers) of the IFS
-parameters used to compute each score graph. Each virtual parameter may be
+composer and listener will hear the harmony in the score as a linear progression
+through time. In other planes of the score space, the attractor may take any
+form, which enables more complex transformations in the other dimensions of the
+space. The Collage Theorem proves that any score may be approximated, as closely
+as desired, by such an IFS. One method of composing is then to manually
+construct these IFS, or to evolve them using the genetic algorithm, and then to
+render the IFS to an actual score. Additionally, one complex virtual parameter
+can be derived to represent each set (potentially dozens or more numbers) of the
+IFS parameters used to compute each score graph. Each virtual parameter may be
 mapped to the score produced from the corresponding IFS, thus producing a
 parametric map of scores colored by some musical feature of interest. Other
 methods of composition are then to interactively explore such parametric maps,
@@ -474,7 +475,7 @@ Then
 d_\calH (M, A) < \frac{\varepsilon}{1-s},
 \]
 
-\noindent where $A$ is the attractor of the IFS and  and $s :=
+\noindent where $A$ is the attractor of the IFS and $s :=
 \max\{\mathrm{Lip}\,f_i\st
 i = 1, \ldots, N\}$.
 
@@ -578,7 +579,7 @@ metric space $\X\times\Y$ and define mappings $w_i:\X_i\times\Y\to\X\times\Y$ by
 w_i (x, y) := (u_i (x), v_i (x,y)), \quad i\in \N_N.
 \ee
 
-In this equation, each $u_i$ maps the \emph{domain} t of the graph to one of the
+In this equation, each $u_i$ maps the \emph{domain} of the graph to one of the
 partitions of the domain, and the $v_i$ are transformations that rescale
 the \emph{range} of the graph. If the $v_i$ have the same domain, then we have a
 regular IFS; but if the $v_i$ have different domains but the same co-domain,
@@ -596,61 +597,48 @@ associated with the local IFS $\cW_\loc$. Different transformations may then be
 used to transform different partitions of the domain.
 
 In the literature, a variety of transformations have been used for the $v_i$ in
-this FIF scheme \cite{Navascues:2014}. For the most part, these reflect the original intention of
+this FIF scheme. For the most part, these reflect the original intention of
 interpolating functions to fit existing data points. For the purposes of
 adapting this method for musical composition, we use the original approach of
-subdividing the domain of the function between shear transformations.
+subdividing the domain of the function between shear transformations
+\cite{Navascues:2014}.
 
 Note that $N$ interpolation points define $N-1$ transformations in the
-Hutchinson operator. The interpolation points $\{I : (X_i, \mathbf{Y}_i,
-\mathbf{s}_i) \mid \mathbf{s} \in [0, 1), i \in 0, 1, 2, 3, \dots N\}$ will be
-exactly reproduced as specific chords at specific times $X_i$ in the score.
-Additional chords may also be generated depending on the scaling factors
-$\mathbf{s}_i$, the number of interpolation points, and so on.
+Hutchinson operator. The interpolation points
+
+\be\label{interpolationPoints}\{I : (X_i, P_i, I_i, T_i,
+s_{P,i}, s_{I,i}, s_{T,i}) \mid s \in [0, 1), i \in 0, 1, 2, 3, \dots N \}
+\ee
+
+\noindent will be exactly reproduced as specific chords at specific times $X_i$
+in the score. Additional chords may also be generated depending on the scaling
+factors $s$, the number of interpolation points, and so on.
 
 \subsection{Using Affine Transformations}
 
-We specify the Hutchinson operator for a score generator by starting with $N$
-interpolation points $t_i, \mathbf{h}_i$ where $\mathbf{h}_i$ is vector-valued
-$\{h_P, h_I, h_T\}$, together with scaling factors $\mathbf{s}_i$, similiarly
-vector-valued, for the time-harmony fractal interpolation function. These
-scaling factors must have an absolute value less than 1 to ensure the
-contractivity of the Hutchinson operator. We may then derive the elements for
-$N-1$ homogeneous shear transformation matrices in the Hutchinson operator from
-these elements as follows:
-
-
+\boindent We may then calculate the elements for $N-1$ homogeneous shear
+transformation matrices in the time-harmony subspace of the Hutchinson operator
+from the interpolation points \eqref{interpolationPoints} as follows:
 \[
-  a_i = \frac{t_i - t_{i-1}}{t_N - t_0}
-\]
-\[
-  c_i = \frac{h_i - h_{i-1} - s_i (h_N - h_0)}{t_N - t_0}
-\]
-\[
-  e_i = \frac{t_N t_{i-1} - x_0 x_i}{t_N - t_0}
-\]
-\[
-  f_i = \frac{t_N h_{i-1} - t_0 h_i - s_i (x_i h_0 - t_0 h_N)}{t_N - t_0}
-\]
-\noindent Or, to spell it all out in full matrix form:
-\[
+  \scalemath{0.75}{
   W_i=
   \left[ {\begin{array}{cccccccc}
-  \frac{I_{i,11}-I_{i-1,11}}{I_{N,11}-I_{0,11}}              & 0 & 0 & 0 &   &   &   & I_{i-1,18}\\
-   0 & \frac{I_{i,22}-I_{i-1,22}}{I_{N,22}-I_{0,22}}             &   &   &   &   &   & I_{i-1,28}\\
-   0 &   & \frac{I_{i,33}-I_{i-1,33}}{I_{N,133}-I_{0,33}}            &   &   &   &   & I_{i-1,38}\\
-   0 &   &   & \frac{I_{i,44}-I_{i-1,44}}{I_{N,44}-I_{0,44}}             &   &   &   & I_{i-1,48}\\
-     &   &   &   &                                                           &   &   &  \\
-     &   &   &   &                                                           &   &   &  \\
-     &   &   &   &                                                           &   &   &  \\
-   0 & 0 & 0 & 0 & 0                                                         & 0 & 0 & 1\\
-  \end{array} } \right].
+    \frac{t_i - t_{i-1}}{t_N - t_0}                           &            &   &   &   &   &   &  \frac{t_N t_{i-1} - t_0 t_i}{t_N - t_0}                               \\
+    \frac{P_i - P_{i-1} - s_{P,i} (P_N - P_0)}{t_N - t_0}     & s_{P,i}    &   &   &   &   &   &  \frac{t_N P_{i-1} - t_0 P_i - s_{P,i} (t_i P_0 - t_0 P_N)}{t_N - t_0} \\
+    &  \frac{I_i - I_{i-1} - s_{I,i} (I_N - I_0)}{t_N - t_0}  & s_{I,i}    &   &   &   &       &  \frac{t_N I_{i-1} - t_0 I_i - s_{I,i} (t_i I_0 - t_0 I_N)}{t_N - t_0} \\
+    &   & \frac{T_i - T_{i-1} - s_{T,i} (T_N - T_0)}{t_N - t_0} & s_{T,i}  &   &   &           &  \frac{t_N T_{i-1} - t_0 T_i - s_{T,i} (t_i T_0 - t_0 T_N)}{t_N - t_0} \\
+    &   &   &   &   &   &   &  \\
+    &   &   &   &   &   &   &  \\
+    &   &   &   &   &   &   &  \\
+    &   &   &   &   &   &   &  \\
+    0 & 0 & 0 & 0 & 0 & 0 & 0 & 1\\
+  \end{array} } \right]}.
 \]
 
 \noindent Once elements of these shear transformations have been computed from
 the interpolation points and scaling factors, any other elements of these affine
-homogeneous transformation matrices (not counting the homogeneity row) may be
-entered with any value.
+homogeneous transformation matrices (not counting the homogeneity row),
+\emph{i.e.}\ the blank elements in $W_i$ above, may be entered with any value.
 
 
 \subsection{Parametric Maps for Scores}
