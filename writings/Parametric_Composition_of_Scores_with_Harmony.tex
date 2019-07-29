@@ -611,43 +611,28 @@ $\mathbf{s}_i$, the number of interpolation points, and so on.
 \subsection{Using Affine Transformations}
 
 We specify the Hutchinson operator for a score generator by starting with $N$
-interpolation points $I_i$ for the time-harmony fractal interpolation function.
-Purely as a convenience, so that other matrix elements of the transformations
-may also be entered, we enter these as the time and harmony translation elements
-of $N$ homogeneous affine transformation matrices. Zeroes are entered for all
-matrix elements that would act to rotate in any of the time-harmony planes. The
-elements of the homogeneity vector are left unchanged. Any of the other elements
-may be given any value, as long as the Hutchinson operator derived from those
-interpolation points remains contractive.
+interpolation points $t_i, \mathbf{h}_i$ where $\mathbf{h}_i$ is vector-valued
+$\{h_P, h_I, h_T\}$, together with scaling factors $\mathbf{s}_i$, similiarly
+vector-valued, for the time-harmony fractal interpolation function. These
+scaling factors must have an absolute value less than 1 to ensure the
+contractivity of the Hutchinson operator. We may then derive the elements for
+$N-1$ homogeneous shear transformation matrices in the Hutchinson operator from
+these elements as follows:
+
 
 \[
-  I_i=
-  \left[ {\begin{array}{cccccccc}
-     & 0 & 0 & 0 &   &   &   & t\\
-   0 &   &   &   &   &   &   & P\\
-   0 &   &   &   &   &   &   & I\\
-   0 &   &   &   &   &   &   & T\\
-     &   &   &   &   &   &   &  \\
-     &   &   &   &   &   &   &  \\
-     &   &   &   &   &   &   &  \\
-   0 & 0 & 0 & 0 & 0 & 0 & 0 & 1\\
-  \end{array} } \right]
+  a_i = \frac{t_i - t_{i-1}}{t_N - t_0}
 \]
-
-Before applying the Hutchinson operator, the interpolation points are copied to
-new homogeneous affine transformation matrices $W_i$, and the elements for
-scaling and translating time and harmony in the $W_i$ are derived from the
-interpolation points for time and harmony as follows, where $B$ is a matrix
-whose rows consist of the points forming the corners of the time-harmony graph,
-and $T_i$ are matrices whose rows consist of the interpolation points. Because
-$B T_i = I_i$, $T_i = B^{-1} I_i$.
-
-\noindent Note that $N-1$ Hutchinson operator transformations are derived from
-$N$ interpolation points. Then in matrix $W_i$ the translation of time is
-$T_{i-1}$, the scaling of time is $\left(
-\frac{T_{i}-T_{i-1}}{T_{N}-T_{0}}\right)$, the translation of harmony is
-$\mathbf{H}_{i-1}$, and the scaling of harmony is
-$\frac{\mathbf{H}_{i}-\mathbf{H}_{i-1}}{T_{N}-T_{0}}$. In matrix form:
+\[
+  c_i = \frac{h_i - h_{i-1} - s_i (h_N - h_0)}{t_N - t_0}
+\]
+\[
+  e_i = \frac{t_N t_{i-1} - x_0 x_i}{t_N - t_0}
+\]
+\[
+  f_i = \frac{t_N h_{i-1} - t_0 h_i - s_i (x_i h_0 - t_0 h_N)}{t_N - t_0}
+\]
+\noindent Or, to spell it all out in full matrix form:
 \[
   W_i=
   \left[ {\begin{array}{cccccccc}
@@ -662,7 +647,10 @@ $\frac{\mathbf{H}_{i}-\mathbf{H}_{i-1}}{T_{N}-T_{0}}$. In matrix form:
   \end{array} } \right].
 \]
 
-
+\noindent Once elements of these shear transformations have been computed from
+the interpolation points and scaling factors, any other elements of these affine
+homogeneous transformation matrices (not counting the homogeneity row) may be
+entered with any value.
 
 
 \subsection{Parametric Maps for Scores}
