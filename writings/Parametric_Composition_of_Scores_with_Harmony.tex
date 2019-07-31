@@ -269,15 +269,15 @@ Callender, Quinn and Tymoczko \cite{callender:346}, along with pitch, loudness,
 and other properties. The dimensions of this score space are: time $t$, set
 class (the most basic form of a chord) $P$ (\textit{i.e.}, Callender \textit{et
 al.}'s $OPTIC$), inversion $I$, and transposition $T$. Dimensions $t$, $P$, $I$,
-and $T$ defines the time-harmony planes, or the basis of a harmony subspace of
-the score space. The other dimensions are $k$ pitch as real-valued MIDI numbers,
-$v$ loudness as real-valued MIDI velocity numbers, and instrument as real-valued
-MIDI channel numbers.
+and $T$ defines the time-harmony planes, or the basis of a time-harmony subspace
+of the score space. The other dimensions are $k$ pitch as real-valued MIDI
+numbers, $v$ loudness as real-valued MIDI velocity numbers, and instrument as
+real-valued MIDI channel numbers.
 
 The score generators used here are \textit{iterated function systems} (IFS)
 \cite{barnsley1985iterated, 10.2307/24893080, fractalseverywhere}. More
 particularly, our score generators are special IFS where the contractive
-transformations that make up the IFS are constrained (within the harmony
+transformations that make up the IFS are constrained (within the time-harmony
 subspace only) such that the IFS computes attractors that closely approximate
 the graphs of functions. The function for such a graph is called a
 \textit{fractal approximation} (FA) or fractal interpolation function (FIF), or
@@ -286,8 +286,8 @@ navascues2014fractal}. (It is interesting that all continuous functions are
 fractal functions \cite{2016arXiv161001369B}.) One motivation for using this
 space to compose is that different points in the harmony subspace are clearly
 audible as harmonic differences. Another motivation is that we can use fractal
-interpolation within the harmony subspace to ensure that, at any one point in
-time, there is one and only one harmony, although of course it may consist of
+interpolation within the time-harmony subspace to ensure that, at any one point
+in time, there is one and only one harmony, although of course it may consist of
 any number of pitch-classes.
 
 An IFS may be completely specified as a set of numerical parameters. Thus, any
@@ -400,14 +400,14 @@ number of divisions of the octave.
 
 \begin{description}[resume]
 \item[$t$] Time, in seconds.
-\item[$i$] Instrument, a real-valued instrument identifier, which at rendering
-time is rounded off to MIDI channel number.
 \item[$k$] Pitch, a real-valued MIDI key number, which at rendering time is
 adjusted to match the harmony at that time.
 \item[$v$] Loudness, a real-valued MIDI velocity number.
+\item[$i$] Instrument, a real-valued instrument identifier, which at rendering
+time is rounded off to MIDI channel number.
 \end{description}
 
-\noindent In the following, we order these dimensions $\{t, P, I, T, i, k, v \}$.
+\noindent In the following, we order these dimensions $\{t, P, I, T, k, v, i\}$.
 
 \subsection{Fractal Approximation}
 
@@ -426,14 +426,14 @@ curve.\protect\footnotemark}
 \footnotetext{Image in \ref{fig:kochflake} licensed Creative
 Commons Attribution-ShareAlike 3.0 Unported.}
 
-A paradigmatic method of generating fractals is multiple copy reduction machine
-(MCRM). Imagine a copier with more than one lens, each equipped with adjustments
-(sliding, shrinking, or rotating the image of the original). Make a copy,
-replace the original with the copy, and repeat to infinity. Just as with the
-snowflake curve, the final copy comes to occupy a definite fraction of the
+A paradigmatic method of generating fractals is the multiple copy reduction
+machine (MCRM). Imagine a copier with more than one lens, each equipped with
+adjustments (sliding, shrinking, or rotating the image of the original). Make a
+copy, replace the original with the copy, and repeat to infinity. Just as with
+the snowflake curve, the final copy comes to occupy a definite fraction of the
 picture plane and thus is a fractal \cite{chaosandfractals}.
 
-Mathematically, the MCRM is an iterated function system. Each lens represents an
+Mathematically, an MCRM is an iterated function system. Each lens represents an
 affine transformation of the plane. Each lens, chosen at random or in turns,
 transforms the original set, and the union of the transformations replaces the
 original. More formally, an \emph{iterated function system (IFS)} is a
@@ -602,7 +602,7 @@ this FIF scheme. For the most part, these reflect the original intention of
 interpolating functions to fit existing data points. For the purposes of
 adapting this method for musical composition, we use the original approach of
 subdividing the domain of the function between shear transformations
-\cite{Navascues:2014}.
+\cite{navascues2014fractal}.
 
 Note that $N$ interpolation points define $N-1$ transformations in the
 Hutchinson operator. The interpolation points
@@ -622,8 +622,8 @@ matrices in the time-harmony subspace of the Hutchinson operator from the $N$
 interpolation points \eqref{interpolationPoints} as follows. The transformation
 matrices are constrained such that $W_i I_0 = I_{i-1}$ and $W_i I_N = I_i$.
 Solving these constraints yields \cite{Manousopoulos:2008:Curve}:
-\[
-  \scalemath{0.75}{
+\be\label{bigShear}
+  \scalemath{0.67}{
   W_i=
   %\left[
   \kbordermatrix{
@@ -639,13 +639,12 @@ Solving these constraints yields \cite{Manousopoulos:2008:Curve}:
    }
    %\right]
    }.
-\]
+\ee
 
-\noindent Once elements of these shear transformations have been computed from
-the interpolation points and scaling factors, any other elements of these affine
-homogeneous transformation matrices (not counting the homogeneity row),
-\emph{i.e.}\ the blank elements in $W_i$ above, may be entered with any value.
-
+\noindent Once the elements of these shear transformations have been computed
+from the interpolation points and scaling factors, any of the \emph{other}
+elements (\emph{i.e.}\ the blank elements in \eqref{bigShear} may be given any
+value.
 
 \subsection{Parametric Maps for Scores}
 
