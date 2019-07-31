@@ -271,8 +271,8 @@ class (the most basic form of a chord) $P$ (\textit{i.e.}, Callender \textit{et
 al.}'s $OPTIC$), inversion $I$, and transposition $T$. Dimensions $t$, $P$, $I$,
 and $T$ defines the time-harmony planes, or the basis of a time-harmony subspace
 of the score space. The other dimensions are $k$ pitch as real-valued MIDI
-numbers, $v$ loudness as real-valued MIDI velocity numbers, and instrument as
-real-valued MIDI channel numbers.
+numbers, $v$ loudness as real-valued MIDI velocity numbers, and $i$ instrument
+as real-valued MIDI channel numbers.
 
 The score generators used here are \textit{iterated function systems} (IFS)
 \cite{barnsley1985iterated, 10.2307/24893080, fractalseverywhere}. More
@@ -347,7 +347,6 @@ their $OPC$ orbifold $\left(\mathbb{R}/12\mathbb{Z}\right)^{n}/\mathcal{S}_{n}$
 equal temperament. In all cases $n$ is the the number of voices, and
 $\mathcal{S}$ is the symmetry group. $OPC$ is what musicians commonly mean by
 ``chord.''
-
 \begin{figure}
 \centerline{\includegraphics[width = 0.9\textwidth]{opc}}
 \caption{\label{fig:opc}
@@ -359,7 +358,6 @@ a single layer $\left(\mathbb{R}/12\mathbb{Z}\right)^{n-1}/\mathcal{S}_{n}$, in
 which points at 120 degrees rotation are equivalent (Figure \ref{fig:opttc}; to
 simplify the view, pitches are rounded by semitone). This is $OPTC$, which is
 what musicians normally mean by ``chord type.''
-
 \begin{figure}
 \centerline{\includegraphics[width = 0.5\textwidth]{opttc}}
 \caption{\label{fig:opttc}
@@ -373,7 +371,6 @@ $\left(\mathbb{R}/12\mathbb{Z}\right)^{n-1}/(\mathcal{S}_{n} \times
 \mathbb{Z}_{2})$ (Figure \ref{fig:optic}; again, rounded by semitone). This is
 $OPTIC$, which is what theorists mean by ``set class,'' and is the most abstract
 commonly used concept of what is a ``chord.''
-
 \begin{figure}
 \centerline{\includegraphics[width = 0.25\textwidth]{opttic}}
 \caption{\label{fig:optic}
@@ -386,7 +383,6 @@ Callender, Quinn, and Tymoczko is a separate dimension. We define the semitone
 as the generator of transposition, thus making this space discrete (and modeling
 12 TET). Then the group elements of each symmetry can be given integer indexes.
 These dimensions are:
-
 \begin{description}
 \item[$P$] Set class (Callender, Quinn, and Tymoczko's $OPTIC$), the
 most abstract conception of a chord; all major and minor triads are equivalent.
@@ -397,7 +393,6 @@ number of divisions of the octave.
 \end{description}
 
 \noindent We supplement this chord symmetry space with additional dimensions:
-
 \begin{description}[resume]
 \item[$t$] Time, in seconds.
 \item[$k$] Pitch, a real-valued MIDI key number, which at rendering time is
@@ -444,7 +439,6 @@ mapping to infinity brings the original to a fixed point, the attractor of the
 IFS \cite{chaosandfractals, barnsley1985iterated, 10.2307/24893080,
 fractalseverywhere}. An \emph{attractor} of the IFS $\cal{F}$ is a set $A\in
 \cal{H}(\X)$ the set of all closed compact subsets of $\X$ such that
-
 \begin{enumerate}
 \item $\cF(A)=A$, and
 \item there is an open set $U\subset \X$ such that $A\subset U$ and
@@ -464,17 +458,15 @@ metric space. $(\calH (\X), d_\calH)$ is the associated metric space based on
 the hyperspace of nonempty compact subsets of $\X$ with Hausdorff metric
 $d_\calH$. Assume $M\in\calH(\X)$ and $\varepsilon > 0$. Assume $\cF := \{\X;
 f_1, \ldots, f_N\}$ is a contractive IFS such that
-
 \be\label{hutchop}
 d_\calH \left(M, \;\bigcup_{i=1}^N f_i (M) \right) < \varepsilon;
 \ee
 
 \noindent the union of contractions is called the \textit{Hutchinson operator}.
 Then
-
-\[
+\be
 d_\calH (M, A) < \frac{\varepsilon}{1-s},
-\]
+\ee
 
 \noindent where $A$ is the attractor of the IFS and $s :=
 \max\{\mathrm{Lip}\,f_i\st
@@ -499,7 +491,6 @@ kind of IFS associated with a \textit{Read-Bajraktarevi\'c} operator $\Phi$.
 
 Assume a finite family $\{l_n : X\to X \mid n = 1, \ldots, N\}$ of injective
 contractions with the following properties:
-
 \begin{align}
 &X = \bigcup_{n=1}^N l_n(X);\label{union}\\
 &\Int (l_m(X))\cap \Int(l_n(X)) = \emptyset, \quad\forall\;m, n\in \{1,\ldots,
@@ -512,7 +503,6 @@ Suppose that $(Y,d_Y)$ is a complete metric space with metric $d_Y$. A mapping
 $g:X\to Y$ is \emph{bounded} (with respect to the metric $d_Y$) if
 there exists an $M > 0$ so that for all $x_1, x_2\in X$, $d_Y(g(x_1),g(x_2)) <
 M$. Then the Read-Bajraktarevi\'c operator is
-
 \be\label{RB}
 \Phi g (x) := \sum\limits_{n=1}^N F_n (l_n^{-1} (x), g\circ l_n^{-1}
 (x))\,\chi_{l_n(X)}(x),
@@ -520,7 +510,6 @@ M$. Then the Read-Bajraktarevi\'c operator is
 
 \noindent where $\chi_M$ is the characteristic function of a set $M$.
 Equivalently, \eqref{RB} can be written
-
 \be\label{3.3}
 (\Phi g \circ l_n) (x) := F_n (x, g(x)),\quad x\in X, \;n = 1, \ldots, N.
 \ee
@@ -542,7 +531,6 @@ transformations.\protect\footnotemark}
 
 The relationship of the RB operator $\Phi$ to the IFS $\cF$ of a score graph
 $G$ is shown in this commutative diagram:
-
 % \be\label{Phi}
 % \begin{CD}
 % X\times Y @>\cF_\Phi>> X\times X\\
@@ -552,7 +540,6 @@ $G$ is shown in this commutative diagram:
 % The commutativity of the diagram (2.13) then holds with F Φ replaced by F and Φ
 % replaced by Φ F .
 % \ee
-
 \be\label{Phi}
 \begin{CD}
 X\times Y @>\cF>> X\times X\\
@@ -575,7 +562,6 @@ Hutchinson operator may have different domains although they have the same
 co-domain. This provides more flexibility in the construction of FIFs. Assume
 that $\X$ is a closed subset of a complete metric space. Consider the complete
 metric space $\X\times\Y$ and define mappings $w_i:\X_i\times\Y\to\X\times\Y$ by
-
 \be\label{IfsForFif}
 w_i (x, y) := (u_i (x), v_i (x,y)), \quad i\in \N_N.
 \ee
@@ -588,7 +574,6 @@ then the family $\cW_\loc := \{\X\times\Y; (\X_i\times\Y, w_i)\st i\in \N_N\}$
 is a contractive \textit{local} IFS in the metric $d_\theta$ and the graph
 $G(f^*)$ of the local fractal function $f^*$ associated with the operator $\Phi$
 given by \eqref{Phi} is an attractor of $\cW_\loc$. Moreover,
-
 \be\label{GW}
 G(\Phi f^*) = \cW_\loc (G(f^*)),
 \ee
@@ -606,22 +591,27 @@ subdividing the domain of the function between shear transformations
 
 Note that $N$ interpolation points define $N-1$ transformations in the
 Hutchinson operator. The interpolation points
-
-\be\label{interpolationPoints}\{I : (X_i, P_i, I_i, T_i,
+\be\label{interpolationPoints}\{I : (t_i, P_i, I_i, T_i,
 s_{P,i}, s_{I,i}, s_{T,i}) \mid s \in [0, 1), i \in 0, 1, 2, 3, \dots N \}
 \ee
 
-\noindent will be exactly reproduced as specific chords at specific times $X_i$
+\noindent will be exactly reproduced as specific chords at specific times $t_i$
 in the score. Additional chords may also be generated depending on the scaling
 factors $s$, the number of interpolation points, and so on.
 
-\subsection{Using Affine Transformations}
+\subsection{Deriving Affine Transformations for the Hutchinson Operator}
+
+Here we use a Hutchinson operator \eqref{hutchop} that is composed of a set of
+homogeneous affine transformation matrices.
+%, some of which may be \emph{local} in
+%the sense of \eqref{GW}.
 
 We may calculate the elements for $N-1$ homogeneous shear transformation
 matrices in the time-harmony subspace of the Hutchinson operator from the $N$
-interpolation points \eqref{interpolationPoints} as follows. The transformation
-matrices are constrained such that $W_i I_0 = I_{i-1}$ and $W_i I_N = I_i$.
-Solving these constraints yields \cite{Manousopoulos:2008:Curve}:
+interpolation points \eqref{interpolationPoints} as follows.  The shear
+transformations and scalings are constrained such that $W_i(I_0) = I_{i-1}$ and
+$W_i(I_N) = I_i$ for every $i = 1, 2, \dots, N$. Solving these constraints
+yields \cite{Manousopoulos:2008:Curve}:
 \be\label{bigShear}
   \scalemath{0.67}{
   W_i=
@@ -630,12 +620,12 @@ Solving these constraints yields \cite{Manousopoulos:2008:Curve}:
       & t & P & I & T & k & v & i & & \\
     t & \frac{t_i - t_{i-1}}{t_N - t_0}                           &            &   &   &   &   &   &  \frac{t_N t_{i-1} - t_0 t_i}{t_N - t_0}                               \\
     P & \frac{P_i - P_{i-1} - s_{P,i} (P_N - P_0)}{t_N - t_0}     & s_{P,i}    &   &   &   &   &   &  \frac{t_N P_{i-1} - t_0 P_i - s_{P,i} (t_i P_0 - t_0 P_N)}{t_N - t_0} \\
-    I & &  \frac{I_i - I_{i-1} - s_{I,i} (I_N - I_0)}{t_N - t_0}  & s_{I,i}    &   &   &   &       &  \frac{t_N I_{i-1} - t_0 I_i - s_{I,i} (t_i I_0 - t_0 I_N)}{t_N - t_0} \\
-    T & &   & \frac{T_i - T_{i-1} - s_{T,i} (T_N - T_0)}{t_N - t_0} & s_{T,i}  &   &   &           &  \frac{t_N T_{i-1} - t_0 T_i - s_{T,i} (t_i T_0 - t_0 T_N)}{t_N - t_0} \\
-    k & &   &   &   &   &   &   &  \\
-    v & &   &   &   &   &   &   &  \\
-    i & &   &   &   &   &   &   &  \\
-      & & 0 & 0 & 0 & 0 & 0 & 0 & 1\\
+    I &   &  \frac{I_i - I_{i-1} - s_{I,i} (I_N - I_0)}{t_N - t_0}  & s_{I,i}    &   &   &   &       &  \frac{t_N I_{i-1} - t_0 I_i - s_{I,i} (t_i I_0 - t_0 I_N)}{t_N - t_0} \\
+    T &   &   & \frac{T_i - T_{i-1} - s_{T,i} (T_N - T_0)}{t_N - t_0} & s_{T,i}  &   &   &           &  \frac{t_N T_{i-1} - t_0 T_i - s_{T,i} (t_i T_0 - t_0 T_N)}{t_N - t_0} \\
+    k &   &   &   &   &   &   &   &  \\
+    v &   &   &   &   &   &   &   &  \\
+    i &   &   &   &   &   &   &   &  \\
+      & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1\\
    }
    %\right]
    }.
