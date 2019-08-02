@@ -31,8 +31,14 @@
 <script src='silencio/js/ChordSpace.js'></script>
 <script src='silencio/js/ScoreGraphs.js'></script>
 <script src="silencio/js/dat.gui.js"></script>
+<script src="silencio/js/matrix/matrix.js"></script>
 </head>
 <body style="background:black;">
+<script>
+//import Matrix from 'ml-matrix';
+const matrix = Matrix.ones(5, 5);
+console.log(matrix);
+</script>
 <canvas id="canvas" style="block;height:100vh;width:100vw">
 </canvas>
 <textarea id="console" style="position:absolute;left:1vw;top:1vw;width:50vw;height:98vh;color:SkyBlue;background-color:transparent;border:none;text-align:left;font-size:8.25px;overflow:auto;cursor:none;"></textarea>
