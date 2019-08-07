@@ -623,9 +623,9 @@ yields \cite{Manousopoulos:2008:Curve}:
   \kbordermatrix{
       & t & P & I & T & k & v & i & & \\
     t & \frac{t_i - t_{i-1}}{t_N - t_0}                           &            &   &   &   &   &   &  \frac{t_N t_{i-1} - t_0 t_i}{t_N - t_0}                               \\
-    P & \frac{P_i - P_{i-1} - s_{P,i} (P_N - P_0)}{t_N - t_0}     & s_{P,i}    &   &   &   &   &   &  \frac{t_N P_{i-1} - t_0 P_i - s_{P,i} (t_i P_0 - t_0 P_N)}{t_N - t_0} \\
-    I &   &  \frac{I_i - I_{i-1} - s_{I,i} (I_N - I_0)}{t_N - t_0}  & s_{I,i}    &   &   &   &       &  \frac{t_N I_{i-1} - t_0 I_i - s_{I,i} (t_i I_0 - t_0 I_N)}{t_N - t_0} \\
-    T &   &   & \frac{T_i - T_{i-1} - s_{T,i} (T_N - T_0)}{t_N - t_0} & s_{T,i}  &   &   &           &  \frac{t_N T_{i-1} - t_0 T_i - s_{T,i} (t_i T_0 - t_0 T_N)}{t_N - t_0} \\
+    P & \frac{P_i - P_{i-1}}{t_N - t_0} - s_{P,i} \frac{P_N - P_0}{t_N - t_0}     & s_{P,i}    &   &   &   &   &   &  \frac{t_N P_{i-1} - t_0 P_i}{t_N - t_0} - s_{P,i} \frac{t_i P_0 - t_0 P_N}{t_N - t_0} \\
+    I &   &  \frac{I_i - I_{i-1}}{t_N - t_0} - s_{I,i} \frac{I_N - I_0}{t_N - t_0}  & s_{I,i}    &   &   &   &       &  \frac{t_N I_{i-1} - t_0 I_i}{t_N - t_0} - s_{I,i} \frac{t_i I_0 - t_0 I_N}{t_N - t_0} \\
+    T &   &   & \frac{T_i - T_{i-1}}{t_N - t_0} - s_{T,i} \frac{T_N - T_0}{t_N - t_0}  & s_{T,i}  &   &   &           &  \frac{t_N T_{i-1} - t_0 T_i}{t_N - t_0} - s_{T,i} \frac{t_i T_0 - t_0 T_N}{t_N - t_0} \\
     k &   &   &   &   &   &   &   &  \\
     v &   &   &   &   &   &   &   &  \\
     i &   &   &   &   &   &   &   &  \\
@@ -639,6 +639,11 @@ yields \cite{Manousopoulos:2008:Curve}:
 from the interpolation points and scaling factors, any of the \emph{other}
 elements (\emph{i.e.}\ the blank elements in \eqref{bigShear} may be given any
 value.
+
+Furthermore, other homogeneous affine transformation matrices may be added to
+the Hutchinson operator as long as they are identity transformations for time
+and harmony. These transformations can be used, \emph[e.g.}\, to add different
+pitches to a chord.
 
 \subsection{Parametric Maps for Scores}
 
