@@ -29,14 +29,19 @@
 <script src='silencio/js/Silencio.js'></script>
 <script src="silencio/js/TrackballControls.js"></script>
 <script src='silencio/js/ChordSpace.js'></script>
-<script src='silencio/js/tf.js'></script>
+<script src='silencio/js/numeric.js'></script>
 <script src='silencio/js/HarmonyIFS.js'></script>
 <script src="silencio/js/dat.gui.js"></script>
 </head>
 <body style="background:black;">
 <script>
 let p = new HarmonyIFS.Point();
-console.log(p.to_string());
+let harmony_ifs = new HarmonyIFS.ScoreAttractor(4, 60, 36);
+harmony_ifs.add_interpolation_point(0, 22, 0, 1, .5, .5, .5);
+harmony_ifs.add_interpolation_point(1, 22, 0, 2, .5, .5, .5);
+harmony_ifs.add_interpolation_point(2, 22, 0, 0, .5, .5, .5);
+harmony_ifs.initialize_hutchinson_operator();
+
 </script>
 <canvas id="canvas" style="block;height:100vh;width:100vw">
 </canvas>
@@ -61,40 +66,19 @@ window.onerror = function(message, url, line) {
 
 var generate = function() {
     try {
-        let score_graph = new ScoreGraphs.ScoreGraph(5, 60, 36, [0,1,2,3,4,5,6], 300, true);
-        ///let score_graph = new ScoreGraphs.ScoreGraph(4, 60, 36, [0], 300, true);
-        window.score = score_graph.score;
-        console.log("score_graph: " + score_graph);
-        let chord = ChordSpace.chordForName("DM9");
-        csound.message(chord.information() + "\n");
-        let pitv = score_graph.chord_space.fromChord(chord);
-        csound.message("pitv: " + pitv + " P: " + pitv.P + "\n");
-        csound.message(score_graph.chord_space.list(true, true) + "\n")
-        // All chords here will be major (or minor?) triads.
-        let P = pitv.P;
-        let Y1 = [P, 0., 0., 45., 40., 80., 80.];
-        let s1 = [.05, .05, .75, .5, .5, .5, .5];
-        let t1 = new ScoreGraphs.BilinearTransformation(0., Y1, s1);
-        score_graph.add_transformation(t1);
-        let Y2 = [P, 1., 2., 53., 23., 81., 60.];
-        let s2 = [.05, .05, .75, .5, .5, .5, .5];
-        let t2 = new ScoreGraphs.BilinearTransformation(1.125, Y2, s2);
-        score_graph.add_transformation(t2);
-        let Y3 = [P+2., 0., 7., 75., 33., 80., 68.];
-        let s3 = [.05, .05, .75, .5, .5, .5, .5];
-        var t3 = new ScoreGraphs.BilinearTransformation(2.125, Y3, s3);
-        score_graph.add_transformation(t3);
-        let Y4 = [P, 0., 0., 29., 14., 69., 18.];
-        let s4 = [.05, .05, .75, .5, .5, .5, .5];
-        var t4 = new ScoreGraphs.BilinearTransformation(3, Y4, s4);
-        score_graph.add_transformation(t4);
-        // Depth, timesteps, duration factor.
-        //score_graph.generate(3, 4, 1); // 27
-        score_graph.generate(6, 4, 4); // 27
+        csound.message("Generating score...\n");
+        window.harmony_ifs = new HarmonyIFS.ScoreAttractor(4, 60, 36);
+        window.score = harmony_ifs.score;
+        harmony_ifs.add_interpolation_point(0, 22, 0, 1, .75, .5, .5);
+        harmony_ifs.add_interpolation_point(1, 22, 0, 2, .5, .5, .5);
+        harmony_ifs.add_interpolation_point(2, 22, 0, 7, .25, .5, .5);
+        harmony_ifs.add_interpolation_point(3, 22, 0, 0, .5, .5, .5);
+        harmony_ifs.initialize_hutchinson_operator();
+        // Add some additional transformation elements...
+        harmony_ifs.generate(3);
         csound.message("Plotting score...\n");
         score.draw3D(document.getElementById("canvas"));
-        csound.message('Generated ' + score.data.length + ' notes.\n');
-        score.setScale(5, 70, 9);
+        csound.message(sprintf("Generated %d notes.\n"), harmony_ifs.score.size());
         console.log(score.toCsoundScore());
     } catch(err) {
       csound.message(err.name + ': ' + err.message + ' ' + err.line + '\n');
