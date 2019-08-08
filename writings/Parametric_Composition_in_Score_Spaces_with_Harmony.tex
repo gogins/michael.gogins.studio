@@ -610,26 +610,27 @@ homogeneous affine transformation matrices.
 %, some of which may be \emph{local} in
 %the sense of \eqref{GW}.
 
-We may calculate the elements for $N-1$ homogeneous shear transformation
-matrices in the time-harmony subspace of the Hutchinson operator from $N$
-interpolation points \eqref{interpolationPoints} as follows.  The shear
-transformations and scalings are constrained such that $F_i(I_0) = I_{i-1}$ and
-$F_i(I_N) = I_i$ for every $i = 1, 2, \dots, N$. Solving these constraints
-yields \cite{Manousopoulos:2008:Curve}:
+Given $N$ interpolation points \eqref{interpolationPoints} in the time-harmony
+subspace of the time-harmony fractal interpolation function, we calculate the
+elements of $N-1$ homogeneous shear transformation matrices for the Hutchinson
+operator from the interpolation points as follows. The shear transformations and
+scalings are constrained to subdivide the domain of the function, such that
+$F_i(I_0) = I_{i-1}$ and $F_i(I_N) = I_i$ for every $i = 1, 2, \dots, N$.
+Solving these constraints yields \cite{Manousopoulos:2008:Curve}:
 \be\label{bigShear}
   \scalemath{0.67}{
   F_i=
   %\left[
   \kbordermatrix{
       & t & P & I & T & k & v & i & & \\
-    t & \frac{t_i - t_{i-1}}{t_N - t_0}                           &            &   &   &   &   &   &  \frac{t_N t_{i-1} - t_0 t_i}{t_N - t_0}                               \\
-    P & \frac{P_i - P_{i-1}}{t_N - t_0} - s_{P,i} \frac{P_N - P_0}{t_N - t_0}     & s_{P,i}    &   &   &   &   &   &  \frac{t_N P_{i-1} - t_0 P_i}{t_N - t_0} - s_{P,i} \frac{t_i P_0 - t_0 P_N}{t_N - t_0} \\
-    I &   &  \frac{I_i - I_{i-1}}{t_N - t_0} - s_{I,i} \frac{I_N - I_0}{t_N - t_0}  & s_{I,i}    &   &   &   &       &  \frac{t_N I_{i-1} - t_0 I_i}{t_N - t_0} - s_{I,i} \frac{t_i I_0 - t_0 I_N}{t_N - t_0} \\
-    T &   &   & \frac{T_i - T_{i-1}}{t_N - t_0} - s_{T,i} \frac{T_N - T_0}{t_N - t_0}  & s_{T,i}  &   &   &           &  \frac{t_N T_{i-1} - t_0 T_i}{t_N - t_0} - s_{T,i} \frac{t_i T_0 - t_0 T_N}{t_N - t_0} \\
-    k &   &   &   &   &   &   &   &  \\
-    v &   &   &   &   &   &   &   &  \\
-    i &   &   &   &   &   &   &   &  \\
-      & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1\\
+    t & \frac{t_i - t_{i-1}}{t_N - t_0}                                        &                &   &   &   &   &   &  \frac{t_N t_{i-1} - t_0 t_i}{t_N - t_0}                                               \\
+    P & \frac{P_i - P_{i-1}}{t_N - t_0} - s_{P,i} \frac{P_N - P_0}{t_N - t_0}  &  s_{P,i}       &   &   &   &   &   &  \frac{t_N P_{i-1} - t_0 P_i}{t_N - t_0} - s_{P,i} \frac{t_i P_0 - t_0 P_N}{t_N - t_0} \\
+    I & \frac{I_i - I_{i-1}}{t_N - t_0} - s_{I,i} \frac{I_N - I_0}{t_N - t_0}  &  &  s_{I,i}        &   &   &   &   &  \frac{t_N I_{i-1} - t_0 I_i}{t_N - t_0} - s_{I,i} \frac{t_i I_0 - t_0 I_N}{t_N - t_0} \\
+    T & \frac{T_i - T_{i-1}}{t_N - t_0} - s_{T,i} \frac{T_N - T_0}{t_N - t_0}  &  &  & s_{T,i}          &   &   &   &  \frac{t_N T_{i-1} - t_0 T_i}{t_N - t_0} - s_{T,i} \frac{t_i T_0 - t_0 T_N}{t_N - t_0} \\
+    k &                                                                        &                &   &   &   &   &   &                                                                                        \\
+    v &                                                                        &                &   &   &   &   &   &                                                                                        \\
+    i &                                                                        &                &   &   &   &   &   &                                                                                        \\
+      & 0                                                                      & 0              & 0 & 0 & 0 & 0 & 0 & 1                                                                                      \\
    }
    %\right]
    }.
@@ -637,12 +638,12 @@ yields \cite{Manousopoulos:2008:Curve}:
 
 \noindent Once the elements of these shear transformations have been computed
 from the interpolation points and scaling factors, any of the \emph{other}
-elements (\emph{i.e.}\ the blank elements in \eqref{bigShear} may be given any
+elements (\emph{i.e.}\ the blank elements in \eqref{bigShear}) may be given any
 value.
 
 Furthermore, other homogeneous affine transformation matrices may be added to
 the Hutchinson operator as long as they are identity transformations for time
-and harmony. These transformations can be used, \emph{e.g.}\, to add different
+and harmony. These transformations may be used, \emph{e.g.}, to add different
 pitches to a chord.
 
 \subsection{Parametric Maps for Scores}
