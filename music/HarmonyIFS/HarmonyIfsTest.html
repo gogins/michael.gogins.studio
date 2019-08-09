@@ -58,7 +58,7 @@ window.onerror = function(message, url, line) {
 var generate = function() {
     try {
         csound.message("Generating score...\n");
-        let harmony_ifs = new HarmonyIFS.ScoreAttractor(5, 60, 36, .001);
+        let harmony_ifs = new HarmonyIFS.ScoreAttractor(5, 60, 48, .001);
         let chord = ChordSpace.chordForName("CM9");
         console.log(chord.information)
         let chord_point = harmony_ifs.chord_space_group.fromChord(chord);
@@ -457,7 +457,7 @@ window.addEventListener("unload", function(event) {
 sr = 48000
 ksmps = 100
 nchnls = 2
-0dbfs = 15000000
+0dbfs = 800000
 
 ; Ensure the same random stream for each rendering.
 ; rand, randh, randi, rnd(x) and birnd(x) are not affected by seed.
@@ -508,6 +508,9 @@ prealloc 6, 50
 prealloc 7, 50
 prealloc 8, 20
 prealloc 9, 20
+prealloc 11, 1
+prealloc 12, 1
+prealloc 13, 1
 
 giPianoteq vstinit "/home/mkg/pianoteq_linux_v630/Pianoteq\ 6/amd64/Pianoteq\ 6.so", 1
 
@@ -1189,6 +1192,9 @@ aoutright = aoutright * kgain * 1.3333334
 outleta "outleft", aoutleft
 outleta "outright", aoutright
 prints "PianoteqOut    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
+prints "Waiting for PianoTeq to initialize...\n"
+ires system_i 1, {{ sleep 15
+}}, 0
 endin
 
 gk_Reverb_feedback init 0.975
