@@ -59,14 +59,16 @@ var generate = function() {
     try {
         csound.message("Generating score...\n");
         let harmony_ifs = new HarmonyIFS.ScoreAttractor(5, 60, 36, .001);
-        let chord = ChordSpace.chordForName("DM9");
+        let chord = ChordSpace.chordForName("CM9");
         console.log(chord.information)
         let chord_point = harmony_ifs.chord_space_group.fromChord(chord);
         window.score = harmony_ifs.score;
-        harmony_ifs.add_interpolation_point( 0, chord_point.P, 0,  0, .005, .5, .5);
-        harmony_ifs.add_interpolation_point(10, chord_point.P, 1,  2, .005, .5, .5);
-        harmony_ifs.add_interpolation_point(20, chord_point.P, 0, -5, .005, .5, .5);
-        harmony_ifs.add_interpolation_point(30, chord_point.P, 0,  0, .015, .5, .5);
+        csound.message(sprintf("\nP: %12.4f\n", chord_point.P));
+        // Must contract QUITE A BIT in order to converge to interpolation points!
+        harmony_ifs.add_interpolation_point( 0, chord_point.P, 1,  0, .001, .001, .001);
+        harmony_ifs.add_interpolation_point(10, chord_point.P, 1,  2, .001, .001, .001);
+        harmony_ifs.add_interpolation_point(20, chord_point.P, 1, -5, .001, .001, .001);
+        harmony_ifs.add_interpolation_point(30, chord_point.P, 1,  0, .001, .001, .001);
         harmony_ifs.initialize_hutchinson_operator();
         // Add some additional transformation elements to fill out chords with
         // actual voices.
@@ -121,7 +123,7 @@ var render = function(soundfile, post_process) {
     csound.setMetadata("artist", "Michael Gogins");
     csound.setMetadata("copyright", "Copyright 2019 by Michael Gogins");
     csound.setMetadata("performer", "Michael Gogins");
-    csound.setMetadata("title", "Score Graph Tests");
+    csound.setMetadata("title", "Harmony IFS Test");
     csound.setMetadata("album", "Silence");
     csound.setMetadata("track", "1");
     csound.setMetadata("tracknumber", "1");
@@ -131,11 +133,11 @@ var render = function(soundfile, post_process) {
     csound.setMetadata("license", "CC BY-NC-SA");
     csound.setMetadata("genre", "Electroacoustic");
     if (soundfile === true) {
-        csound.setOutput("ScoreGraphTests.wav", "wav", "float");
+        csound.setOutput("HarmonyIfsTest.wav", "wav", "float");
     } else {
         csound.setOutput("dac", "wav", "float");
     }
-    fs.writeFileSync("ScoreGraphTests-generated.csd", csd);
+    fs.writeFileSync("HarmonyIfsTest-generated.csd", csd);
     csound.compileCsdText(csd);
     csound.message("Rendering...");
     csound.start();
