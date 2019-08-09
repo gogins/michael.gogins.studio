@@ -34,15 +34,6 @@
 <script src="silencio/js/dat.gui.js"></script>
 </head>
 <body style="background:black;">
-<script>
-let p = new HarmonyIFS.Point();
-let harmony_ifs = new HarmonyIFS.ScoreAttractor(4, 60, 36);
-harmony_ifs.add_interpolation_point(0, 22, 0, 1, .5, .5, .5);
-harmony_ifs.add_interpolation_point(1, 22, 0, 2, .5, .5, .5);
-harmony_ifs.add_interpolation_point(2, 22, 0, 0, .5, .5, .5);
-harmony_ifs.initialize_hutchinson_operator();
-
-</script>
 <canvas id="canvas" style="block;height:100vh;width:100vw">
 </canvas>
 <textarea id="console" style="position:absolute;left:1vw;top:1vw;width:50vw;height:98vh;color:SkyBlue;background-color:transparent;border:none;text-align:left;font-size:8.25px;overflow:auto;cursor:none;"><textarea>
@@ -67,19 +58,35 @@ window.onerror = function(message, url, line) {
 var generate = function() {
     try {
         csound.message("Generating score...\n");
-        window.harmony_ifs = new HarmonyIFS.ScoreAttractor(4, 60, 36);
+        let harmony_ifs = new HarmonyIFS.ScoreAttractor(5, 60, 36, .001);
+        let chord = ChordSpace.chordForName("DM9");
+        console.log(chord.information)
+        let chord_point = harmony_ifs.chord_space_group.fromChord(chord);
         window.score = harmony_ifs.score;
-        harmony_ifs.add_interpolation_point(0, 22, 0, 1, .75, .5, .5);
-        harmony_ifs.add_interpolation_point(1, 22, 0, 2, .5, .5, .5);
-        harmony_ifs.add_interpolation_point(2, 22, 0, 7, .25, .5, .5);
-        harmony_ifs.add_interpolation_point(3, 22, 0, 0, .5, .5, .5);
+        harmony_ifs.add_interpolation_point( 0, chord_point.P, 0,  0, .005, .5, .5);
+        harmony_ifs.add_interpolation_point(10, chord_point.P, 1,  2, .005, .5, .5);
+        harmony_ifs.add_interpolation_point(20, chord_point.P, 0, -5, .005, .5, .5);
+        harmony_ifs.add_interpolation_point(30, chord_point.P, 0,  0, .015, .5, .5);
         harmony_ifs.initialize_hutchinson_operator();
-        // Add some additional transformation elements...
-        harmony_ifs.generate(3);
+        // Add some additional transformation elements to fill out chords with
+        // actual voices.
+        harmony_ifs.hutchinson_operator[0][4][4] =  0.85;
+        harmony_ifs.hutchinson_operator[0][4][7] = -1;
+        harmony_ifs.hutchinson_operator[1][4][4] =  0.85;
+        harmony_ifs.hutchinson_operator[1][4][7] =  1;
+        harmony_ifs.hutchinson_operator[2][4][4] =  0.85;
+        harmony_ifs.hutchinson_operator[2][4][7] = -1;
+        harmony_ifs.generate(8);
+        score.setDuration(180);
+        // Pianoteq misbehaves if we start right at time 0.
+        for (var i = 0; i < score.data.length; i++) {
+            var event = score.data[i];
+            event.time = event.time + 4;
+        }
         csound.message("Plotting score...\n");
         score.draw3D(document.getElementById("canvas"));
-        csound.message(sprintf("Generated %d notes.\n"), harmony_ifs.score.size());
-        console.log(score.toCsoundScore());
+        csound.message(sprintf("Generated %d notes.\n", harmony_ifs.score.size()));
+        console.log(score.toString());
     } catch(err) {
       csound.message(err.name + ': ' + err.message + ' ' + err.line + '\n');
       console.trace();
