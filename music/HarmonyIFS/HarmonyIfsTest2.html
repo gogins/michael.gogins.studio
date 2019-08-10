@@ -82,7 +82,11 @@ var generate = function() {
         harmony_ifs.hutchinson_operator[1][4][7] =  1;
         harmony_ifs.hutchinson_operator[2][4][4] =  0.85;
         harmony_ifs.hutchinson_operator[2][4][7] = -1;
-        harmony_ifs.generate(8);
+        transformation = numeric.identity(8);
+        transformation[4][4] = -.05;
+        transformation[4][7] = 1.125;
+        harmony_ifs.hutchinson_operator.push(transformation);
+        harmony_ifs.generate(7);
         score.setDuration(180);
         // Pianoteq misbehaves if we start right at time 0.
         for (var i = 0; i < score.data.length; i++) {
