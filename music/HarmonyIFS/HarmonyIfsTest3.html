@@ -46,7 +46,7 @@ var title = 'Harmony IFS Test 3'
 try {
     var fs = require("fs");
     var git = require('git-rev-sync');
-    var soundfile_name = sprintf("ScoreGraphTests-%s.wav",  git.short());
+    var soundfile_name = sprintf("HarmonyIfsTest3-%s.wav",  git.short());
 } catch(e) {
     console.log(e);
 }
@@ -84,14 +84,28 @@ var generate = function() {
         harmony_ifs.hutchinson_operator[2][4][7] = -1;
         harmony_ifs.hutchinson_operator[2][4][4] =  0.85;
         harmony_ifs.hutchinson_operator[2][4][7] = -1;
-        // Add a rotation in the velocity/key plane.
         let A = 45 * Math.PI / 180;
-        transformation = numeric.identity(8);
-        transformation[4][4] = Math.cos(A);
-        transformation[6][4] = - Math.sin(A);
-        transformation[4][6] = Math.cos(A);
-        transformation[6][6] = Math.sin(A);
-        harmony_ifs.hutchinson_operator.push(transformation);
+        // Add a rotation in the velocity/key plane.
+        let t = 0;
+        let P = 1;
+        let k = 4;
+        let v = 5;
+        let c = 6;
+        let rotation1 = numeric.identity(8);
+        rotation1[k][k] = Math.cos(A);
+        rotation1[k][v] = - Math.sin(A);
+        rotation1[v][k] = Math.sin(A);
+        rotation1[v][v] = Math.cos(A);
+        harmony_ifs.hutchinson_operator.push(rotation1);
+        // Add a rotation in the time/set-class plane.
+        let rotation2 = numeric.identity(8);
+        rotation2[t][t] = Math.cos(A);
+        rotation2[t][P] = - Math.sin(A);
+        rotation2[P][t] = Math.sin(A);
+        rotation2[P][P] = Math.cos(A);
+        // Uncomment this to see how rotating in the time-harmony plane breaks
+        // the fractal interpolation function.
+        // harmony_ifs.hutchinson_operator.push(rotation2);
         harmony_ifs.generate(7);
         score.setDuration(180);
         // Pianoteq misbehaves if we start right at time 0.
@@ -1329,7 +1343,7 @@ endin
 
 </CsInstruments>
 <CsScore>
-f 0 [ 300 + 15 ]
+f 0 [ 180 + 15 ]
 </CsScore>
 </CsoundSynthesizer>
 </textarea>

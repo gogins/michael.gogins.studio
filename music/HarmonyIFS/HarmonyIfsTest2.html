@@ -42,11 +42,11 @@
 </canvas>
 <textarea id="console" style="position:absolute;left:1vw;top:1vw;width:50vw;height:98vh;color:SkyBlue;background-color:transparent;border:none;text-align:left;font-size:8.25px;overflow:auto;cursor:none;"></textarea>
 <script>
-var title = 'Score Graph Tests'
+var title = 'Harmony IFS Test 2'
 try {
     var fs = require("fs");
     var git = require('git-rev-sync');
-    var soundfile_name = sprintf("ScoreGraphTests-%s.wav",  git.short());
+    var soundfile_name = sprintf("HarmonyIfsTest2-%s.wav",  git.short());
 } catch(e) {
     console.log(e);
 }
@@ -83,8 +83,8 @@ var generate = function() {
         harmony_ifs.hutchinson_operator[2][4][4] =  0.85;
         harmony_ifs.hutchinson_operator[2][4][7] = -1;
         transformation = numeric.identity(8);
-        transformation[4][4] = -.05;
-        transformation[4][7] = 1.125;
+        transformation[4][4] = -.9875;
+        transformation[4][7] = 1;
         harmony_ifs.hutchinson_operator.push(transformation);
         harmony_ifs.generate(7);
         score.setDuration(180);
@@ -1322,7 +1322,7 @@ endin
 
 </CsInstruments>
 <CsScore>
-f 0 [ 300 + 15 ]
+f 0 [ 180 + 15 ]
 </CsScore>
 </CsoundSynthesizer>
 </textarea>
