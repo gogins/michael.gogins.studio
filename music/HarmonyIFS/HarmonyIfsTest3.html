@@ -85,7 +85,8 @@ var generate = function() {
         harmony_ifs.hutchinson_operator[2][4][4] =  0.85;
         harmony_ifs.hutchinson_operator[2][4][7] = -1;
         let A = 45 * Math.PI / 180;
-        // Add a rotation in the velocity/key plane.
+        // Add a rotation in the velocity/key plane, and the key/instrument
+        // plane.
         let t = 0;
         let P = 1;
         let k = 4;
@@ -97,15 +98,21 @@ var generate = function() {
         rotation1[v][k] = Math.sin(A);
         rotation1[v][v] = Math.cos(A);
         harmony_ifs.hutchinson_operator.push(rotation1);
-        // Add a rotation in the time/set-class plane.
         let rotation2 = numeric.identity(8);
-        rotation2[t][t] = Math.cos(A);
-        rotation2[t][P] = - Math.sin(A);
-        rotation2[P][t] = Math.sin(A);
-        rotation2[P][P] = Math.cos(A);
+        rotation2[k][k] = Math.cos(A);
+        rotation2[k][c] = - Math.sin(A);
+        rotation2[c][k] = Math.sin(A);
+        rotation2[c][c] = Math.cos(A);
+        harmony_ifs.hutchinson_operator.push(rotation2);
+        // Add a rotation in the time/set-class plane.
+        let rotation3 = numeric.identity(8);
+        rotation3[t][t] = Math.cos(A);
+        rotation3[t][P] = - Math.sin(A);
+        rotation3[P][t] = Math.sin(A);
+        rotation3[P][P] = Math.cos(A);
         // Uncomment this to see how rotating in the time-harmony plane breaks
         // the fractal interpolation function.
-        // harmony_ifs.hutchinson_operator.push(rotation2);
+        // harmony_ifs.hutchinson_operator.push(rotation3);
         harmony_ifs.generate(7);
         score.setDuration(180);
         // Pianoteq misbehaves if we start right at time 0.
