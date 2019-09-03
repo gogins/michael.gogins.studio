@@ -60,7 +60,7 @@ var generate = function() {
         csound.message("Generating score...\n");
         let harmony_ifs = new HarmonyIFS.ScoreAttractor(5, 60, 48, .001);
         let chord = ChordSpace.chordForName("CM9");
-        console.log(chord.information)
+        csound.message(chord.information());
         let chord_point = harmony_ifs.chord_space_group.fromChord(chord);
         window.score = harmony_ifs.score;
         csound.message(sprintf("\nP: %12.4f\n", chord_point.P));

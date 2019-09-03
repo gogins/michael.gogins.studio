@@ -70,8 +70,8 @@ var generate = function() {
         // Must contract QUITE A BIT in order to converge to these interpolation points!
         // This is supposed to elaborate on IM9 - iim9 - V9 - IM9.
         harmony_ifs.add_interpolation_point( 0, chord_point.P,    1,  0, .001, .001, .001);
-        harmony_ifs.add_interpolation_point(10, chord_point.P,    0,  2, .001, .001, .001);
-        harmony_ifs.add_interpolation_point(20, dominant_point.P, 1, -5, .001, .001, .001);
+        harmony_ifs.add_interpolation_point(12, chord_point.P,    0,  2, .001, .001, .001);
+        harmony_ifs.add_interpolation_point(24, dominant_point.P, 1,  5, .001, .001, .001);
         harmony_ifs.add_interpolation_point(30, chord_point.P,    1,  0, .001, .001, .001);
         harmony_ifs.initialize_hutchinson_operator();
         // Add some additional transformation elements to fill out chords with
@@ -84,7 +84,7 @@ var generate = function() {
         harmony_ifs.hutchinson_operator[2][4][7] = -1;
         harmony_ifs.hutchinson_operator[2][4][4] =  0.85;
         harmony_ifs.hutchinson_operator[2][4][7] = -1;
-        let A = 45 * Math.PI / 180;
+        let A = 4 * Math.PI / 180;
         // Add a rotation in the velocity/key plane, and the key/instrument
         // plane.
         let t = 0;
