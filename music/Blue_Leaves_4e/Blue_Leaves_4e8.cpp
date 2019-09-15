@@ -59,8 +59,8 @@ int main(int argc, const char **argv)
 {
     csound::MusicModel model;
     // These fields determine output filenames and ID 3 tags.
-    model.setTitle("Blue Leaves 4e6");
-    model.setFilename("Blue_Leaves_4e6");
+    model.setTitle("Blue Leaves 4e8");
+    model.setFilename("Blue_Leaves_4e8");
     model.setAlbum("Silence");
     model.setArtist("Michael Gogins");
     model.setAuthor("Michael Gogins");
@@ -1112,7 +1112,8 @@ i_instrument                    =                       p1
 i_time                          =                       p2
 i_duration                      =                       p3
 i_midikey                       =                       p4
-                                if p2 > (60 * 3 + 15) && p2 < (60 * 3 + 45) then
+                                if ((p2 > ((60 * 3) + 15)) && (p2 < ((60 * 3) + 45))) then
+                                prints                   "Adjusting FMWaterBell loudness here..."
 p5                              =                       p5 + 5
                                 endif
 i_midivelocity                  =                       p5

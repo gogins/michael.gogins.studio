@@ -59,8 +59,8 @@ int main(int argc, const char **argv)
 {
     csound::MusicModel model;
     // These fields determine output filenames and ID 3 tags.
-    model.setTitle("Blue Leaves 4e6");
-    model.setFilename("Blue_Leaves_4e6");
+    model.setTitle("Blue Leaves 4e9");
+    model.setFilename("Blue_Leaves_4e9");
     model.setAlbum("Silence");
     model.setArtist("Michael Gogins");
     model.setAuthor("Michael Gogins");
@@ -134,7 +134,7 @@ int main(int argc, const char **argv)
         pen.note[csound::Event::INSTRUMENT] = 4.0 * 4.0 + double(depth % 4);
         pen.note[csound::Event::VELOCITY] =  2.0;
         pen.note[csound::Event::PAN] = -.875;
-        if (depth == 5) {
+        if (depth == 4) {
             pen.chord = pen.chord.K();
             chordsForTimes[pen.note.getTime()] = pen.chord;
         }
@@ -1112,7 +1112,7 @@ i_instrument                    =                       p1
 i_time                          =                       p2
 i_duration                      =                       p3
 i_midikey                       =                       p4
-                                if p2 > (60 * 3 + 15) && p2 < (60 * 3 + 45) then
+                                if ((p2 > ((60 * 3) + 15)) && (p2 < ((60 * 3) + 45))) then
 p5                              =                       p5 + 5
                                 endif
 i_midivelocity                  =                       p5

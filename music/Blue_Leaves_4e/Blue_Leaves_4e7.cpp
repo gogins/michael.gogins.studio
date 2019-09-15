@@ -59,8 +59,8 @@ int main(int argc, const char **argv)
 {
     csound::MusicModel model;
     // These fields determine output filenames and ID 3 tags.
-    model.setTitle("Blue Leaves 4e6");
-    model.setFilename("Blue_Leaves_4e6");
+    model.setTitle("Blue Leaves 4e7");
+    model.setFilename("Blue_Leaves_4e7");
     model.setAlbum("Silence");
     model.setArtist("Michael Gogins");
     model.setAuthor("Michael Gogins");
@@ -138,7 +138,6 @@ int main(int argc, const char **argv)
             pen.chord = pen.chord.K();
             chordsForTimes[pen.note.getTime()] = pen.chord;
         }
-        
         return pen;
     };
     generators.push_back(g4);
@@ -202,11 +201,12 @@ int main(int argc, const char **argv)
     std::cout << "Final duration:         " << score.getDuration() << std::endl;
 
     model.setCsoundOrchestra(R"(
+    
+#define USE_SPATIALIZATION #1#
 
 sr                              =                       96000
 ksmps                           =                       100
-nchnls                          =                       2
-0dbfs                           =                       1000
+nchnls                          =                       4
 iampdbfs                        init                    32768
                                 prints                  "Default amplitude at 0 dBFS:  %9.4f\n", iampdbfs
 idbafs                          init                    dbamp(iampdbfs)
@@ -218,17 +218,83 @@ idbaheadroom                    init                    idbafs - iheadroom
 iampheadroom                    init                    ampdb(idbaheadroom)
                                 prints                  "Amplitude at headroom:        %9.4f\n", iampheadroom
                                 prints                  "Balance so the overall amps at the end of performance -6 dbfs.\n"
+gi_radius                       init                     4
+
+; Picks a random point from the surface of a sphere of the given radius (i-rate).
+
+opcode random_point_from_sphere, kkk, i
+i_radius xin
+i_uniform_1 rnd 1
+i_uniform_2 rnd 1
+i_latitude = cosinv(2 * i_uniform_1 - 1) - $M_PI / 2
+i_longitude = 2 * $M_PI * i_uniform_2
+k_x = cos(i_latitude) * cos(i_longitude) * i_radius
+k_y = cos(i_latitude) * sin(i_longitude) * i_radius
+k_z = sin(i_latitude) * i_radius
+;prints "random pan: %9.4f depth: %9.4f height: %9.4f\n", k_y, k_x, k_z
+xout k_x, k_y, k_z
+endop
+
+; Move a point at k-rate in Cartesian coordinates from x1, y1, z1 to x2, y2, z2 
+; over a specified duration.
+
+opcode linear_move, kkk, kkkkkkk
+ix1, iy1, iz1, ix2, iy2, iz2, idur xin
+kx line ix1, idur, ix2
+ky line iy1, idur, iy2
+kz line iz1, idur, iz2
+xout kx, ky, kz
+endop
+
+; TODO: Paste code inline here.
+
+#include "silencio/patches/Spatialize1.inc"
+
+; 0 Ambisonic stereo with minimal distance cues
+; (possibly the best choice for efficiency in live performance).
+; 1 Ambisonic binaural with HRTF decoding (periphonic, a suitable choice
+;   for checking in stereophonic studio work).
+; 2 Ambisonic quadraphonic.
+; 3 Ambisonic pentaphonic or 5.0 (might work for 5.1, omit .1)
+; 4 Ambisonic octaphonic.
+; 5 Ambisonic cubic (periphonic, probably the best choice for concerts).
+
+
+gk_BformatDecoder_SpeakerRig    init                    2
+gk_BformatDecoder_MasterLevel   init                   12
+gk_Spatialize_SpeakerRigRadius  init                   10.0
+gk_SpatialReverb_ReverbDecay    init                    0.65
+gk_SpatialReverb_CutoffHz       init                    sr * .7
+gk_SpatialReverb_RandomDelayModulation init             0.2
+gk_LocalReverbByDistance_Wet    init                    0.5
+; This is a fraction of the speaker rig radius.
+gk_LocalReverbByDistance_FrontWall init                 1.9
+gk_LocalReverbByDistance_ReverbDecay init               0.5
+gk_LocalReverbByDistance_CutoffHz init                  sr * .9
+gk_LocalReverbByDistance_RandomDelayModulation init     0.2
+gk_DopplerByDistance_Mach       init                    340.29 * 6
+
+gi_PanningExpansion             init                    2
+
+#ifdef USE_SPATIALIZATION
+
+connect                         "SpatialReverb",        "outbformat",       "BformatDecoder",        "inbformat"
+
+alwayson "SpatialReverb"
+alwayson "BformatDecoder"
+
+#endif
 
 giFlatQ                         init                    sqrt(0.5)
-giseed				            init                    0.5
+giseed				            init                    .5
 
 gkHarpsichordGain               chnexport               "gkHarpsichordGain",            1
 gkHarpsichordGain               init                    1
 gkHarpsichordPan                chnexport               "gkHarpsichordPan",             1
-gkHarpsichordPan                init                    0.5
+gkHarpsichordPan                init                    .5
 
 gkChebyshevDroneCoefficient1    chnexport               "gkChebyshevDroneCoefficient1", 1
-gkChebyshevDroneCoefficient1    init                    0.5
+gkChebyshevDroneCoefficient1    init                    .5
 gkChebyshevDroneCoefficient2    chnexport               "gkChebyshevDroneCoefficient2", 1
 gkChebyshevDroneCoefficient3    chnexport               "gkChebyshevDroneCoefficient3", 1
 gkChebyshevDroneCoefficient4    chnexport               "gkChebyshevDroneCoefficient4", 1
@@ -238,18 +304,143 @@ gkChebyshevDroneCoefficient7    chnexport               "gkChebyshevDroneCoeffic
 gkChebyshevDroneCoefficient8    chnexport               "gkChebyshevDroneCoefficient8", 1
 gkChebyshevDroneCoefficient9    chnexport               "gkChebyshevDroneCoefficient9", 1
 gkChebyshevDroneCoefficient10   chnexport               "gkChebyshevDroneCoefficient10", 1
-gkChebyshevDroneCoefficient10   init                    0.05
+gkChebyshevDroneCoefficient10   init                    .05
 
 gkReverberationEnabled          chnexport               "gkReverberationEnabled", 1
 gkReverberationEnabled          init                    1
 gkReverberationDelay            chnexport               "gkReverberationDelay", 1
-gkReverberationDelay            init                    0.65
+gkReverberationDelay            init                    .325
 gkReverberationWet          	chnexport               "gkReverberationWet", 1
-gkReverberationWet          	init                    0.125
+gkReverberationWet          	init                    .15
 
 gkMasterLevel                   chnexport               "gkMasterLevel", 1
 gkMasterLevel                   init                    1.5
 
+#ifdef USE_SPATIALIZATION
+
+                                connect                 "BanchoffKleinBottle",  "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "BanchoffKleinBottle",  "out",          "SpatialReverb",        "in"
+                                connect                 "BandedWG",             "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "BandedWG",             "out",          "SpatialReverb",        "in"
+                                connect                 "BassModel",            "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "BassModel",            "out",          "SpatialReverb",        "in"
+                                connect                 "ChebyshevDrone",       "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "ChebyshevDrone",       "out",          "SpatialReverb",        "in"
+                                connect                 "ChebyshevMelody",      "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "ChebyshevMelody",      "out",          "SpatialReverb",        "in"
+                                connect                 "DelayedPluckedString", "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "DelayedPluckedString", "out",          "SpatialReverb",        "in"
+                                connect                 "EnhancedFMBell",       "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "EnhancedFMBell",       "out",          "SpatialReverb",        "in"
+                                connect                 "FenderRhodesModel",    "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "FenderRhodesModel",    "out",          "SpatialReverb",        "in"
+                                connect                 "FilteredSines",        "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "FilteredSines",        "out",          "SpatialReverb",        "in"
+                                connect                 "Flute",                "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "Flute",                "out",          "SpatialReverb",        "in"
+                                connect                 "FMModulatedChorus",    "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "FMModulatedChorus",    "out",          "SpatialReverb",        "in"
+                                connect                 "FMModerateIndex",      "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "FMModerateIndex",      "out",          "SpatialReverb",        "in"
+                                connect                 "FMModerateIndex2",     "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "FMModerateIndex2",     "out",          "SpatialReverb",        "in"
+                                connect                 "FMWaterBell",          "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "FMWaterBell",          "out",          "SpatialReverb",        "in"
+                                connect                 "Granular",             "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "Granular",             "out",          "SpatialReverb",        "in"
+                                connect                 "Guitar",               "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "Guitar",               "out",          "SpatialReverb",        "in"
+                                connect                 "Guitar2",              "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "Guitar2",              "out",          "SpatialReverb",        "in"
+                                connect                 "Harpsichord",          "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "Harpsichord",          "out",          "SpatialReverb",        "in"
+                                connect                 "HeavyMetalModel",      "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "HeavyMetalModel",      "out",          "SpatialReverb",        "in"
+                                connect                 "Hypocycloid",          "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "Hypocycloid",          "out",          "SpatialReverb",        "in"
+                                connect                 "KungModulatedFM",      "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "KungModulatedFM",      "out",          "SpatialReverb",        "in"
+                                connect                 "ModerateFM",          	"outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "ModerateFM",          	"out",          "SpatialReverb",        "in"
+                                connect                 "ModulatedFM",          "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "ModulatedFM",          "out",          "SpatialReverb",        "in"
+                                connect                 "Melody",               "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "Melody",               "out",          "SpatialReverb",        "in"
+                                connect                 "PlainPluckedString",   "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "PlainPluckedString",   "out",          "SpatialReverb",        "in"
+                                connect                 "PRCBeeThree",          "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "PRCBeeThree",          "out",          "SpatialReverb",        "in"
+                                connect                 "PRCBeeThreeDelayed",   "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "PRCBeeThreeDelayed",   "out",          "SpatialReverb",        "in"
+                                connect                 "PRCBowed",             "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "PRCBowed",             "out",          "SpatialReverb",        "in"
+                                connect                 "SpatialReverb",        "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "STKBandedWG",          "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "STKBandedWG",          "out",          "SpatialReverb",        "in"
+                                connect                 "STKBeeThree",          "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "STKBeeThree",          "out",          "SpatialReverb",        "in"
+                                connect                 "STKBlowBotl",          "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "STKBlowBotl",          "out",          "SpatialReverb",        "in"
+                                connect                 "STKBlowHole",          "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "STKBlowHole",          "out",          "SpatialReverb",        "in"
+                                connect                 "STKBowed",             "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "STKBowed",             "out",          "SpatialReverb",        "in"
+                                connect                 "STKClarinet",          "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "STKClarinet",          "out",          "SpatialReverb",        "in"
+                                connect                 "STKDrummer",           "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "STKDrummer",           "out",          "SpatialReverb",        "in"
+                                connect                 "STKFlute",             "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "STKFlute",             "out",          "SpatialReverb",        "in"
+                                connect                 "STKFMVoices",          "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "STKFMVoices",          "out",          "SpatialReverb",        "in"
+                                connect                 "STKHvyMetl",           "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "STKHvyMetl",           "out",          "SpatialReverb",        "in"
+                                connect                 "STKMandolin",          "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "STKMandolin",          "out",          "SpatialReverb",        "in"
+                                connect                 "STKModalBar",          "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "STKModalBar",          "out",          "SpatialReverb",        "in"
+                                connect                 "STKMoog",              "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "STKMoog",              "out",          "SpatialReverb",        "in"
+                                connect                 "STKPercFlut",          "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "STKPercFlut",          "out",          "SpatialReverb",        "in"
+                                connect                 "STKPlucked",           "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "STKPlucked",           "out",          "SpatialReverb",        "in"
+                                connect                 "STKResonate",          "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "STKResonate",          "out",          "SpatialReverb",        "in"
+                                connect                 "STKRhodey",            "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "STKRhodey",            "out",          "SpatialReverb",        "in"
+                                connect                 "STKSaxofony",          "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "STKSaxofony",          "out",          "SpatialReverb",        "in"
+                                connect                 "STKShakers",           "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "STKShakers",           "out",          "SpatialReverb",        "in"
+                                connect                 "STKSimple",            "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "STKSimple",            "out",          "SpatialReverb",        "in"
+                                connect                 "STKSitar",             "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "STKSitar",             "out",          "SpatialReverb",        "in"
+                                connect                 "STKTubeBell",          "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "STKTubeBell",          "out",          "SpatialReverb",        "in"
+                                connect                 "STKVoicForm",          "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "STKVoicForm",          "out",          "SpatialReverb",        "in"
+                                connect                 "STKWhistle",           "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "STKWhistle",           "out",          "SpatialReverb",        "in"
+                                connect                 "STKWurley",            "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "STKWurley",            "out",          "SpatialReverb",        "in"
+                                connect                 "StringPad",            "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "StringPad",            "out",          "SpatialReverb",        "in"
+                                connect                 "ToneWheelOrgan",       "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "ToneWheelOrgan",       "out",          "SpatialReverb",        "in"
+                                connect                 "TubularBellModel",     "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "TubularBellModel",     "out",          "SpatialReverb",        "in"
+                                connect                 "WaveguideGuitar",      "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "WaveguideGuitar",      "out",          "SpatialReverb",        "in"
+                                connect                 "Xing",                 "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "Xing",                 "out",          "SpatialReverb",        "in"
+                                connect                 "ZakianFlute",          "outbformat",   "BformatDecoder",       "inbformat"
+                                connect                 "ZakianFlute",          "out",          "SpatialReverb",        "in"
+                                
+#endif
+#ifndef USE_SPATIALIZATION
+                                
                                 connect                 "BanchoffKleinBottle",  "outleft", 	"Reverberation",        "inleft"
                                 connect                 "BanchoffKleinBottle",  "outright", "Reverberation",        "inright"
                                 connect                 "BandedWG",             "outleft", 	"Reverberation",        "inleft"
@@ -270,8 +461,8 @@ gkMasterLevel                   init                    1.5
                                 connect                 "FilteredSines",        "outright", "Reverberation",        "inright"
                                 connect                 "Flute",                "outleft", 	"Reverberation",        "inleft"
                                 connect                 "Flute",                "outright", "Reverberation",        "inright"
-                                connect                 "FMModulatedChorusing", "outleft", 	"Reverberation",        "inleft"
-                                connect                 "FMModulatedChorusing", "outright", "Reverberation",        "inright"
+                                connect                 "FMModulatedChorus",    "outleft", 	"Reverberation",        "inleft"
+                                connect                 "FMModulatedChorus",    "outright", "Reverberation",        "inright"
                                 connect                 "FMModerateIndex",      "outleft", 	"Reverberation",        "inleft"
                                 connect                 "FMModerateIndex",      "outright", "Reverberation",        "inright"
                                 connect                 "FMModerateIndex2",     "outleft", 	"Reverberation",        "inleft"
@@ -373,8 +564,8 @@ gkMasterLevel                   init                    1.5
                                 
                                 alwayson                "Reverberation"
                                 alwayson                "MasterOutput"
-
-;; Original Instruments
+                                
+#endif
 
                                 instr                   BanchoffKleinBottle
                                 //////////////////////////////////////////////
@@ -433,10 +624,24 @@ aoy                             =                       -ax * klfsinth * klfcosp
 aoutleft                        =                       aampenv * aox
 aoutright                       =                       aampenv * aoy
 
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-                                endin                                
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                endin
 
                                 instr                   BandedWG
                                 //////////////////////////////////////////////
@@ -464,9 +669,23 @@ adeclick                        linsegr                 0.0, iattack, 1.0, isust
 asignal                         STKBandedWG             ifrequency,1
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
 
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
                         
                                 instr                   BassModel
@@ -536,16 +755,29 @@ p3                              =                       isustain + iattack + ire
 adeclick                        linsegr                 0.0, iattack, 1.0, isustain, 1.0, irelease, 0.0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
 
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-                                endin                                
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                endin
 
                                 instr                   ChebyshevDrone
                                 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
                                 ; By Michael Gogins.
                                 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-                                ;pset                    0, 0, 3600
 i_instrument                    =                       p1
 i_time                          =                       p2
 i_duration                      =                       p3
@@ -560,7 +792,7 @@ i_homogeneity                   =                       p11
 ihertz                          =                       cpsmidinn(i_midikey)
 iamp                            =                       ampdb(i_midivelocity) * 6
 ; Level correction
-iamp                            =                       iamp * .5
+iamp                            =                       iamp * 1.5
 idampingattack                  =                       .01
 idampingrelease                 =                       .02
 idampingsustain                 =                       p3
@@ -577,9 +809,26 @@ adeclick                        linsegr                 0, idampingattack, 1, id
 asignal                         =                       asignal * aenvelope
 aoutleft, aoutright             pan2                    asignal * adeclick, i_pan
 
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+; k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top linear_move -7, -1, -1, 6, -4, 2, p3
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top linear_move -4, 7, 2, -4, 7, 2, p3
+
+#ifdef USE_SPATIALIZATION
+;k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   ChebyshevMelody
@@ -601,6 +850,8 @@ i_pitchclassset                 =                       p10
 i_homogeneity                   =                       p11
 iHz                             =                       cpsmidinn(i_midikey)
 iamplitude                      =                       ampdb(i_midivelocity) * 7.
+; Level correction.
+iamplitude                      =                       iamplitude * 2
 iattack                         =                       .01
 isustain                        =                       p3
 irelease                        =                       .01
@@ -643,9 +894,27 @@ asignal        		            balance         	    a8, a1
 asignal                         =                       asignal * iamplitude
 aoutleft, aoutright		        pan2			        asignal * adeclick, i_pan
 
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+
+;k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top linear_move -7, -1, -1, 6, -4, 2, p3
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top linear_move -8, 0, 0, 7, 0, 3, p3
+
+#ifdef USE_SPATIALIZATION
+;k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   DelayedPluckedString
@@ -696,9 +965,23 @@ asignal1                        butterhp                asignal, 32.0
 asignal2                        balance                 asignal1, asignal
 aoutleft, aoutright             pan2                    asignal2 * adeclick, i_pan
 
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   EnhancedFMBell
@@ -755,9 +1038,23 @@ aenvelope                       transeg                 1, idur, -3, 0
 asignal                         =                       aenvelope * (acar + arvb) ;+ anoise5
 aoutleft, aoutright             pan2                    asignal * adeclick, i_pan
 
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   FenderRhodesModel
@@ -799,9 +1096,23 @@ iamplitude                      =                       ampdb(i_midivelocity) * 
 asignal                         fmrhode                 iamplitude, ifrequency, iindex, icrossfade, ivibedepth, iviberate, ifn1, ifn2, ifn3, ifn4, ivibefn
 aoutleft, aoutright		        pan2			        asignal * adeclick, i_pan
 
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   FilteredSines
@@ -832,6 +1143,8 @@ i_duration                      =                       p3
 adeclick                        linsegr                  0.0, iattack, 1.0, isustain, 1.0, irelease, 0.0
 ip4                             =                       i_midivelocity
 idb                             =                       ampdb(i_midivelocity) * 4
+; Level correction.
+idb                             =                       idb * 4
 ibergeman                       ftgenonce               0, 0, 65536,     10,     0.28, 1, 0.74, 0.66, 0.78, 0.48, 0.05, 0.33, 0.12, 0.08, 0.01, 0.54, 0.19, 0.08, 0.05, 0.16, 0.01, 0.11, 0.3, 0.02, 0.2 ; Bergeman f1
 ip5                             =                       ibergeman
 ip3                             =                       i_duration
@@ -875,9 +1188,25 @@ a18                             =                       (a16 + a4) * irightgain 
 aoutleft                        =                       a17 * adeclick
 aoutright                       =                       a18 * adeclick
 
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+;k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top linear_move -7, -1, -1, 6, -4, 2, p3
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top linear_move -2, 7, 0, -2, 7, 0, p3
+#ifdef USE_SPATIALIZATION
+;k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   Flute
@@ -950,9 +1279,23 @@ a2                              oscili                  kamp, kfreq2, ikellyflut
 a3                              =                       a1 + a2 + anoise
 aoutleft, aoutright             pan2                    a3 * adeclick, i_pan
 
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   FMModerateIndex
@@ -992,9 +1335,26 @@ aoutb                           foscili                 1, ifrequencyb, icarrier
 asignal                         =                       (aouta + aoutb) * kindenv
 aoutleft, aoutright		        pan2			        asignal * iamplitude * adeclick, i_pan
 
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+;k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top linear_move -8, 0, 0, 7, 0, 3, p3
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top linear_move -8, 0, 0, 7, 0, 3, p3
+
+#ifdef USE_SPATIALIZATION
+;k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   FMModerateIndex2
@@ -1034,17 +1394,37 @@ aoutb                           foscili                 1, ifrequencyb, icarrier
 asignal                         =                       (aouta + aoutb) * kindenv
 aoutleft, aoutright		        pan2			        asignal * iamplitude * adeclick, i_pan
 
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
-                                instr                   FMModulatedChorusing
+gk_FMModulatedChorus_level      init                    0
+gi_FMModulatedChorus_attack     init                    0.003
+gi_FMModulatedChorus_release    init                    0.01
+gk_FMModulatedChorus_midi_dynamic_range init            127
+gi_FMModulatedChorus_ln         ftgen                   0, 0, 65536, -12, 20.0 ; Unscaled ln(I(x)) from 0 to 20.0.
+gi_FMModulatedChorus_cosine     ftgen                   0, 0, 65536, 11, 1 ; Cosine wave. Get that noise down on the most widely used table!
+gi_FMModulatedChorus_sine       ftgen                   0, 0, 65536, 10, 1
+                                instr                   FMModulatedChorus
                                 //////////////////////////////////////////////
                                 // Original by Thomas Kung.
                                 // Adapted by Michael Gogins.
                                 //////////////////////////////////////////////
-                                ;pset                    0, 0, 3600
 i_instrument                    =                       p1
 i_time                          =                       p2
 i_duration                      =                       p3
@@ -1060,10 +1440,10 @@ iattack                         =                       0.333333
 irelease                        =                       0.1
 isustain                        =                       p3
 p3                              =                       isustain + iattack + irelease
-adeclick                        linsegr                  0.0, iattack, 1.0, isustain, 1.0, irelease, 0.0
-iamplitude                      =                       ampdb(i_midikey) / 1200
-; Level correction
-iamplitude                      =                       iamplitude * .5
+adeclick                        linsegr                 0.0, iattack, 1.0, isustain, 1.0, irelease, 0.0
+iamplitude                      =                       ampdb(i_midikey) / 12
+; Level correction.
+iamplitude                      =                       iamplitude * 2
 ip6                             =                       0.3
 ip7                             =                       2.2
                                 ; shift it.
@@ -1072,34 +1452,51 @@ ishift                          =                       4.0 / 12000
 ipch                            =                       cpsmidinn(i_midikey)
                                 ; convert parameter 5 to oct.
 ioct                            =                       i_midikey
-kadsr                           linen                   1.0, iattack, irelease, 0.01
-kmodi                           linseg                  0, iattack, 5, isustain, 2, irelease, 0
+aadsr                           =                       adeclick
+amodi                           linseg                  0, iattack, 5, isustain, 2, irelease, 0
                                 ; r moves from ip6 to ip7 in p3 secs.
-kmodr                           linseg                  ip6, p3, ip7
-a1                              =                       kmodi * (kmodr - 1 / kmodr) / 2
+amodr                           linseg                  ip6, p3, ip7
+a1                              =                       amodi * (amodr - 1 / amodr) / 2
                                 ; a1*2 is argument normalized from 0-1.
 a1ndx                           =                       abs(a1 * 2 / 20)
-a2                              =                       kmodi * (kmodr + 1 / kmodr) / 2
+a2                              =                       amodi * (amodr + 1 / amodr) / 2
                                 ; Look up table is in f43, normalized index.
 iln                             ftgenonce               0, 0, 65536,     -12,    20.0 ; Unscaled ln(I(x)) from 0 to 20.0.
 a3                              tablei                  a1ndx, iln, 1
-icosine                         ftgenonce                   0, 0, 65536,    11,     1 ; Cosine wave. Get that noise down on the most widely used table!
+icosine                         ftgenonce               0, 0, 65536,    11,     1 ; Cosine wave. Get that noise down on the most widely used table!
 ao1                             oscili                  a1, ipch, icosine
 a4                              =                       exp(-0.5 * a3 + ao1)
                                 ; Cosine
 ao2                             oscili                  a2 * ipch, ipch, icosine
-isine                          ftgenonce                   2, 0, 65536,    10,     1
+isine                           ftgenonce               2, 0, 65536,    10,     1
                                 ; Final output left
-aoutl                           oscili                  1 * kadsr * a4, ao2 + cpsmidinn(ioct + ishift), isine
+aoutl                           oscili                  1 * aadsr * a4, ao2 + cpsmidinn(ioct + ishift), isine
                                 ; Final output right
-aoutr                           oscili                  1 * kadsr * a4, ao2 + cpsmidinn(ioct - ishift), isine
+aoutr                           oscili                  1 * aadsr * a4, ao2 + cpsmidinn(ioct - ishift), isine
 asignal                         =                       aoutl + aoutr
 asignal                         =                       asignal * iamplitude
 aoutleft, aoutright		        pan2			        asignal * adeclick, i_pan
 
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+;k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top linear_move -7, -1, -1, 6, -4, 2, p3
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top linear_move -7, 1, -1, 6, 4, 2, p3
+
+#ifdef USE_SPATIALIZATION
+;k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   FMWaterBell
@@ -1107,23 +1504,21 @@ aoutleft, aoutright		        pan2			        asignal * adeclick, i_pan
                                 // Original by Steven Yi.
                                 // Adapted by Michael Gogins.
                                 //////////////////////////////////////////////
-                                ;pset                    0, 0, 3600
 i_instrument                    =                       p1
 i_time                          =                       p2
 i_duration                      =                       p3
 i_midikey                       =                       p4
-                                if p2 > (60 * 3 + 15) && p2 < (60 * 3 + 45) then
-p5                              =                       p5 + 5
-                                endif
 i_midivelocity                  =                       p5
 i_phase                         =                       p6
-i_pan                           =                       5
+i_pan                           =                       p7
 i_depth                         =                       p8
 i_height                        =                       p9
 i_pitchclassset                 =                       p10
 i_homogeneity                   =                       p11
 ipch                            =                       cpsmidinn(i_midikey)
 iamplitude                      =                       ampdb(i_midivelocity) * 2.0
+; Level correction.
+iamplitude                      =                       iamplitude * 2
 ipch2                           =                       ipch
 kpchline 	                    line                    ipch, i_duration, ipch2
 iamp 	                        =                       2
@@ -1160,9 +1555,26 @@ p3                              =                       isustain + iattack + ire
 adeclick                        linsegr                 0.0, iattack, 1.0, isustain, 1.0, irelease, 0.0
 aoutleft, aoutright             pan2                    iamplitude * asignal * adeclick, i_pan
 
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+;k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top linear_move -7, -1, -1, 6, -4, 2, p3
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top linear_move -6, 7, 4, -6, 7, 4, p3
+
+#ifdef USE_SPATIALIZATION
+;k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   Granular
@@ -1184,7 +1596,7 @@ i_homogeneity                   =                       p11
 ifrequency                      =                       cpsmidinn(i_midikey)
 iamplitude                      =                       ampdb(i_midivelocity) / 175
 ; Level correction
-iamplitude                      =                       iamplitude * 1.5
+iamplitude                      =                       iamplitude * 3
                                 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
                                 ; f1  0 65536 1 "hahaha.aif" 0 4 0
                                 ; f2  0 1024  7 0 224 1 800 0
@@ -1229,9 +1641,26 @@ aoutr                           grain                   ip4,  ifqc,  idens, 100,
 aoutleft                        =                       aoutl * kamp * iamplitude
 aoutright                       =                       aoutr * kamp * iamplitude
 
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0);
+;k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top linear_move -7, -1, -1, 6, -4, 2, p3
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top linear_move -7, -1, -1, 6, -4, 2, p3
+
+#ifdef USE_SPATIALIZATION
+;k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   Guitar
@@ -1243,9 +1672,6 @@ i_instrument                    =                       p1
 i_time                          =                       p2
 i_duration                      =                       p3
 i_midikey                       =                       p4
-while i_midikey > 80 do
-    i_midikey = i_midikey - 12
-od
 i_midivelocity                  =                       p5
 i_phase                         =                       p6
 i_pan                           =                       p7
@@ -1259,8 +1685,19 @@ iattack                         =                       0.01
 isustain                        =                       p3
 irelease                        =                       0.05
 p3                              =                       isustain + iattack + irelease
+; Wrap too high notes down
+test_84:
+if p4 > 84 goto gt_84
+goto le_84
+gt_84:
+p4 = p4 - 12
+goto test_84
+le_84:
 adeclick                        linsegr                 0.0, iattack, 1.0, isustain, 1.0, irelease, 0.0
+ifrequency                      =                       cpsmidinn(p4)
 iamplitude                      =                       ampdb(p5) * 20
+; Level correction.
+iamplitude                      =                       iamplitude * 2
 kamp                            linsegr                 0.0, iattack, iamplitude, isustain, iamplitude, irelease, 0.0
 asigcomp                        pluck                   1, 440, 440, 0, 1
 asig                            pluck                   1, ifrequency, ifrequency, 0, 1
@@ -1273,9 +1710,26 @@ kenv                            =                       kexp - 1.0
 asignal                         =                       aout * kenv * kamp
 aoutleft, aoutright             pan2                    asignal * adeclick, i_pan
 
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+; k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top linear_move -7, -1, -1, 6, -4, 2, p3
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top linear_move -6, -7, 4, -6, -7, 4, p3
+
+#ifdef USE_SPATIALIZATION
+;k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   Guitar2
@@ -1287,9 +1741,6 @@ i_instrument                    =                       p1
 i_time                          =                       p2
 i_duration                      =                       p3
 i_midikey                       =                       p4
-while i_midikey > 89 do
-    i_midikey = i_midikey - 12
-od
 i_midivelocity                  =                       p5
 i_phase                         =                       p6
 i_pan                           =                       p7
@@ -1317,9 +1768,23 @@ asignal                         =                       aout * kenv
 asignal                         dcblock                 asignal
 aoutleft, aoutright		        pan2			        asignal * iamplitude * adeclick, i_pan
 
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr 			        Harpsichord
@@ -1356,9 +1821,23 @@ asignal			                =                       (apluck + aharp2) * iamplitude
 adeclick                        linsegr                 0, iattack, 1, isustain, 1, irelease, 0
 aoutleft, aoutright             pan2                    asignal * adeclick, ipan
 
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   HeavyMetalModel
@@ -1404,9 +1883,23 @@ asignal                         fmmetal                 0.1, ifrequency, iindex,
 asignal                         =                       asignal * iamplitude
 aoutleft, aoutright             pan2                    asignal * adeclick, i_pan
 
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   Hypocycloid
@@ -1472,9 +1965,23 @@ ileftgain                       =                       sqrt(2.0) / 2.0 * (cos(i
 aoutleft                        =                       aoutleft * ileftgain
 aoutright                       =                       aoutright * irightgain
 
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr			        ModerateFM
@@ -1518,9 +2025,23 @@ adeclick                        linsegr                 0, iattack, 1, isustain,
 asignal                         =                       asignal * iamplitude
 aoutleft, aoutright             pan2                    asignal * adeclick, i_pan
 
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr 			        ModulatedFM
@@ -1578,9 +2099,23 @@ aright                  	    poscil                  a4, ao2 + cpsoct(koct - ish
 asignal                         =                       (aleft + aright) * iamplitude
 aoutleft, aoutright             pan2                    asignal * adeclick, i_pan
 
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   PlainPluckedString
@@ -1612,9 +2147,23 @@ asignal2                        pluck                   1, ifrequency * 1.003, i
 asignal                         =                       (asignal1 + asignal2) * aenvelope
 aoutleft, aoutright		        pan2			        asignal * adeclick, i_pan
 
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   PRCBeeThree
@@ -1642,12 +2191,26 @@ asignal                         STKBeeThree             ifrequency, 1
 adeclick                        linsegr                 0.0, iattack, 1.0, isustain, 1.0, irelease, 0.0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
 
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
                                 
-                               instr                   PRCBeeThreeDelayed
+                                instr                   PRCBeeThreeDelayed
                                 //////////////////////////////////////////////////////
                                 // By Michael Gogins.
                                 //////////////////////////////////////////////////////
@@ -1687,9 +2250,23 @@ asignal2                        =                       adly1 + adly2
 adeclick                        linsegr                 0.0, iattack, 1.0, isustain, 1.0, irelease, 0.0
 aoutleft, aoutright             pan2                    asignal2 * iamplitude * adeclick, i_pan
 
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   PRCBowed
@@ -1723,9 +2300,23 @@ p3                              =                       isustain + iattack + ire
 adeclick                        linsegr                 0.0, iattack, 1.0, isustain, 1.0, irelease, 0.0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
 
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
                                 
                                 instr                   STKBandedWG
@@ -1755,10 +2346,24 @@ p3                              =                       isustain + iattack + ire
 adeclick                        linsegr                 0.0, iattack, 1.0, isustain, 1.0, irelease, 0.0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
 
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-                                endin                                
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                endin
                                 
                                 instr                   STKBeeThree
                                 //////////////////////////////////////////////
@@ -1789,10 +2394,24 @@ p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    aphased * iamplitude * adeclick, i_pan
 
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-                                endin                                
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                endin
 
                                 instr                   STKBlowBotl
                                 //////////////////////////////////////////////
@@ -1822,10 +2441,24 @@ p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
 
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-                                endin                                
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                endin
 
                                 instr                   STKBlowHole
                                 //////////////////////////////////////////////
@@ -1855,10 +2488,24 @@ p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
 
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-                                endin                                
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                endin
 
                                 instr                   STKBowed
                                 //////////////////////////////////////////////
@@ -1894,10 +2541,24 @@ p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
 
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-                                endin                                
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                endin
 
                                 instr                   STKClarinet
                                 //////////////////////////////////////////////
@@ -1927,10 +2588,24 @@ p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
 
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-                                endin                                
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                endin
 
                                 instr                   STKDrummer
                                 //////////////////////////////////////////////
@@ -1960,10 +2635,24 @@ p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
 
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-                                endin                                
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                endin
 
                                 instr                   STKFlute
                                 //////////////////////////////////////////////
@@ -1999,10 +2688,24 @@ p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
 
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-                                endin                                
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                endin
 
                                 instr                   STKFMVoices
                                 //////////////////////////////////////////////
@@ -2038,10 +2741,24 @@ p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
 
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-                                endin                                
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                endin
 
                                 instr                   STKHvyMetl
                                 //////////////////////////////////////////////
@@ -2077,10 +2794,24 @@ p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
 
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-                                endin                                
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                endin
 
                                 instr                   STKMandolin
                                 //////////////////////////////////////////////
@@ -2110,10 +2841,24 @@ p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
 
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-                                endin                                
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                endin
                                 
                                 instr                   STKModalBar
                                 //////////////////////////////////////////////
@@ -2160,12 +2905,26 @@ p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
 
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-                                endin                                
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                endin
                                 
-                                 instr                   STKMoog
+                                instr                   STKMoog
                                 //////////////////////////////////////////////
                                 // Original by Perry R. Cook.
                                 // Adapted by Michael Gogins.
@@ -2193,11 +2952,25 @@ p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
 
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-                                endin                                
-                                
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                endin
+
                                 instr                   STKPercFlut
                                 //////////////////////////////////////////////
                                 // Original by Perry R. Cook.
@@ -2226,10 +2999,24 @@ p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
 
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-                                endin                                
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                endin
                                 
                                 instr                   STKPlucked
                                 //////////////////////////////////////////////
@@ -2259,10 +3046,24 @@ p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
 
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-                                endin                                
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                endin
                                 
                                 instr                   STKResonate
                                 //////////////////////////////////////////////
@@ -2298,10 +3099,24 @@ p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
 
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-                                endin                                
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                endin
                                 
                                 instr                   STKRhodey
                                 //////////////////////////////////////////////
@@ -2331,10 +3146,24 @@ p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
 
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-                                endin                                
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                endin
                                 
                                 instr                   STKSaxofony
                                 //////////////////////////////////////////////
@@ -2372,10 +3201,24 @@ p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
 
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-                                endin                                
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                endin
 
                                 instr                   STKShakers
                                 //////////////////////////////////////////////
@@ -2435,10 +3278,24 @@ p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
 
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-                                endin                                
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                endin
 
                                 instr                   STKSimple
                                 //////////////////////////////////////////////
@@ -2473,10 +3330,24 @@ p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
 
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-                                endin                                
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                endin
 
                                 instr                   STKSitar
                                 //////////////////////////////////////////////
@@ -2506,10 +3377,24 @@ p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
 
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-                                endin                                
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                endin
 
                                 instr                   STKTubeBell
                                 //////////////////////////////////////////////
@@ -2539,10 +3424,24 @@ p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
 
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-                                endin                                
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                endin
 
                                 instr                   STKVoicForm
                                 //////////////////////////////////////////////
@@ -2572,10 +3471,24 @@ p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
 
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-                                endin                                
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                endin
 
                                 instr                   STKWhistle
                                 //////////////////////////////////////////////
@@ -2605,10 +3518,24 @@ p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
 
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-                                endin                                
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                endin
 
                                 instr                   STKWurley
                                 //////////////////////////////////////////////
@@ -2638,10 +3565,24 @@ p3                              =                       iduration
 adeclick                        linsegr                 0, idampingattack, 1, idampingsustain, 1, idampingrelease, 0
 aoutleft, aoutright             pan2                    asignal * iamplitude * adeclick, i_pan
 
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
-                                endin                                
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+                                endin
 
                                 instr                   StringPad
                                 //////////////////////////////////////////////
@@ -2684,9 +3625,23 @@ p3                              =                       isustain + iattack + ire
 adeclick                        linsegr                 0.0, iattack, 1.0, isustain, 1.0, irelease, 0.0
 aoutleft, aoutright             pan2                    asignal * adeclick, i_pan
 
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   ToneWheelOrgan
@@ -2746,9 +3701,23 @@ a8th                            oscili                  4, 8      * ifqc,  iwhee
 asignal                         =                       iamplitude * (asubfund + asub3rd + afund + a2nd + a3rd + a4th + a5th + a6th + a8th)
 aoutleft, aoutright             pan2                    asignal * adeclick, i_pan
 
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   TubularBellModel
@@ -2790,9 +3759,23 @@ ivibefn                         =                       icosine
 asignal                         fmbell                  1.0, ifrequency, iindex, icrossfade, ivibedepth, iviberate, ifn1, ifn2, ifn3, ifn4, ivibefn
 aoutleft, aoutright		        pan2	                asignal * iamplitude * adeclick, i_pan
 
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr                   WaveguideGuitar
@@ -2987,9 +3970,23 @@ aresbod                         filter2                 (afwdout + abkdout), 5, 
 asignal                         =                       (1500 * (afwav + abkwav + aresbod * .000000000000000000003)) ; * adeclick
 aoutleft, aoutright             pan2                    asignal * iamplitude, i_pan
 
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
                                 
                                 instr                   Xing
@@ -3049,9 +4046,23 @@ adeclick                        linsegr                 0, iattack, 1, isustain,
 asignal                         =                       asignal
 aoutleft, aoutright		        pan2			        asignal * adeclick, .875;ipan
 
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+#ifdef USE_SPATIALIZATION
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 instr			        ZakianFlute
@@ -3088,6 +4099,8 @@ i_pitchclassset                 =                       p10
 i_homogeneity                   =                       p11
 ifrequency                      =                       cpsmidinn(i_midikey)
 iamplitude                      =                       ampdb(i_midivelocity) * 4
+; Level correction.
+iamplitude                      =                       iamplitude * 2
 iattack                         =                       .25
 isustain                        =                       p3
 irelease                        =                       .33333333
@@ -3273,9 +4286,26 @@ p3                              =                       isustain + iattack + ire
 adeclick                        linsegr                 0.0, iattack, 1.0, isustain, 1.0, irelease, 0.0
 aoutleft, aoutright             pan2                    asignal * adeclick, i_pan
 
-                                outleta                 "outleft",  aoutleft
-                                outleta                 "outright", aoutright
-                                prints                  "instr %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
+a_signal                        =                       aoutleft + aoutright
+k_space_front_to_back           init                    rnd31(1,0,0)
+k_space_left_to_right           init                    rnd31(1,0,0)
+k_space_bottom_to_top           init                    rnd31(1,0,0)
+;k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top linear_move -7, -1, -1, 6, -4, 2, p3
+k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top linear_move -4, -7, 2, -4, -7, 2, p3
+
+#ifdef USE_SPATIALIZATION
+;k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top random_point_from_sphere gi_radius
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+                                prints                  "instr                 %4d t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f\n", p1, p2, p3, p4, p5, p7
                                 endin
 
                                 //////////////////////////////////////////////
@@ -3315,26 +4345,24 @@ aoutright                       =                       gkMasterLevel * ainright
 
                                 outs                    aoutleft, aoutright
                                 endin
-
-;; Original Instruments
-                                
+                              
             )");
-  
-    model.arrange( 1,  9,-12.00); 
-    model.arrange( 2, 16,  7.00);
-    ///model.arrange( 3, 14,  1.00); 
-    model.arrange( 3, 14,  0.00); 
-    model.arrange( 4,  5,  1.00);
-    model.arrange( 5, 57,  0.75);
-    model.arrange( 6, 15,  5.00);
-    model.arrange( 7, 16,  7.00);
-    model.arrange( 8, 16,  7.00);
-    model.arrange( 9, 13, -7.00);
-    model.arrange(10, 11,  3.00);
-    model.arrange(11, 14,  5.00); 
-    model.arrange(12,  4,  5.00);
-    
-    
+    model.arrange( 1,  9+3,-12.00); // Was 25.
+    model.arrange( 2, 16+3,  7.00);
+    model.arrange( 3, 14+3,  1.00); // Was 5.
+    model.arrange( 4,  5+3,  1.00);
+    model.arrange( 5, 57+3,  0.75);
+    model.arrange( 6, 15+3,  5.00);
+    model.arrange( 7, 16+3,  7.00);
+    model.arrange( 8, 16+3,  7.00);
+    model.arrange( 9, 13+3, -7.00);
+    model.arrange(10, 11+3, -1.00);
+    model.arrange(11, 14+3,  5.00); // Was 5.
+    model.arrange(12,  4+3,  5.00);
+    //auto csound_command = model.getCsoundCommand();
+    //csound_command.append("-m0 -+msg_color=0");
+    //model.setCsoundCommand(csound_command);
     model.processArgv(argc, argv);
+
 }
 
