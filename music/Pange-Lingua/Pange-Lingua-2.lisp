@@ -274,8 +274,8 @@ sync-seq)
 ;;    -cyclic subdivs (4 4 3 4 3) of half-note
 ;;    -summed across by [# new pits in each chd + poisson randomness]
 
-; (define sbranch3 (generic-branch #'tritone-func
-;		(slonim '(48 57) (norpt sopr))))
+(defparameter sbranch3-1 (generic-branch #'tritone-func
+		(slonim '(48 57) (norpt sopr))))
 
 (defparameter threept-seq (new seq :name "threept"))
 
@@ -305,7 +305,7 @@ sync-seq)
   (ferney '(2) '(4 4 3 4 3)
 	  (transp
 	   (map 'list #'+
-		(poissonvec 1.5 (length (flatter sbranch3)))
+		(poissonvec 1.5 (length (flatter sbranch3-1)))
 		(take-poly
 		 (smoothlist (flatter sbranch3))))
 	   1)))
@@ -381,11 +381,11 @@ sync-seq)
 ;; -- each chord's duration (* quarter) is determined by melint of 
 ;;    'avg-chdpit's in "sbranch1" & chords become tied lines.
 
-(defparameter jumpline-seq (new seq :name "jumpline"))
+(defparameter bigchor-seq (new seq :name "jumpline"))
 
-; (define sbranch2
-;     (generic-branch #'stravrot-func
-; 		    (mapcar (lambda (x) (transp '(0 -5 -10 -15) x)) (norpt sopr))))
+(defparameter sbranch2-1
+    (generic-branch #'stravrot-func
+		    (mapcar (lambda (x) (transp '(0 -5 -10 -15) x)) (norpt sopr))))
 
 (defparameter sbranch2
     '(((64 59 54 49) (66 59 56 49)) ((71 66 61 56) (71 64 61 54))
@@ -409,9 +409,9 @@ sync-seq)
       ((64 59 54 49) (63 56 54 49) (63 56 58 53)) ((68 63 58 53))
       ((66 61 56 51) (66 61 59 52)) ((64 59 54 49))))
 
-; (define sbranch1
-;     (generic-branch #'rgr-alldim1
-; 		    (slonim '(61 59 54) (norpt sopr))))
+(defparameter sbranch1-1
+    (generic-branch #'rgr-alldim1
+		    (slonim '(61 59 54) (norpt sopr))))
 
 (defparameter sbranch1
     '(((61 59 54 64) (61 57 54 64) (60 57 54 64) (64 57 54 59))
@@ -430,7 +430,7 @@ sync-seq)
        (62 64 58 67))
       ((62 67 57 64) (62 67 58 64) (62 67 58 65) (62 68 58 65) (61 68 58 65)
        (61 68 58 64))
-      ((61 63 58 68) (61 64 58 68) (61 65 58 68) (60 65 58 68)fa (63 65 58 68))
+      ((61 63 58 68) (61 64 58 68) (61 65 58 68) (60 65 58 68) (63 65 58 68))
       ((63 65 56 70) (63 65 56 71) (63 66 56 71) (62 66 56 71))
       ((61 66 56 71) (61 64 56 71) (61 64 55 71) (61 64 54 71))
       ((64 66 59 73) (64 67 59 73) (64 68 59 73) (65 68 59 73) (65 68 59 75))
@@ -465,17 +465,17 @@ sync-seq)
       ((73 92 71 66) (74 92 71 66) (74 92 71 64) (74 91 71 64) (74 91 70 64))
       ((74 91 69 64))))
 
-;; (events
-;;  (playchds->lines
-;;   (flatter sbranch2)
-;;    (transp
-;;     (mapcar #'abs
-;; 	    (melint
-;; 	     (mapcar #'avg-chdpit
-;; 		     (flatter sbranch1))))
-;;     1))
-;;  jumpline-seq)
-;;
+(events
+ (playchds->lines
+  (flatter sbranch2-1)
+   (transp
+    (mapcar #'abs
+	    (melint
+	     (mapcar #'avg-chdpit
+		     (flatter sbranch1-1))))
+    1))
+ bigchor-seq)
+
 
 ; variation I = 'longrot2'
 ; ?
@@ -532,7 +532,7 @@ sync-seq)
 		   (second tbass))))))
    out-seq)
    
-(render-with-csd out-seq aeolus-csd :velocity-scale 120 :csd-filename "Pange-Lingua-2.csd")
+(render-with-csd lope-seq aeolus-csd :velocity-scale 120 :csd-filename "Pange-Lingua-2.csd")
 (print "Finished.")
 (quit)
 
