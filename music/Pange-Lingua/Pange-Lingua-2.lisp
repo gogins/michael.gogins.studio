@@ -496,7 +496,7 @@ sync-seq)
 ;; BOTTOM LINE RHYTHM = 'dnbeats' applied to each strav figure, so long note (w/sopr)
 ;;                        starts each 'tlen' figure
 
-(defparameter out-seq (new seq :name "jumpline"))
+(defparameter out-seq (new seq :name "out-seq"))
 
 (events
  (let* ((pits
@@ -532,7 +532,7 @@ sync-seq)
 		   (second tbass))))))
    out-seq)
    
-(render-with-csd lope-seq aeolus-csd :velocity-scale 120 :csd-filename "Pange-Lingua-2.csd")
+(render-with-csd stun-seq aeolus-csd :velocity-scale 120 :csd-filename "Pange-Lingua-2.csd")
 (print "Finished.")
 (quit)
 
