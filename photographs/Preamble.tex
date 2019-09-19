@@ -6,7 +6,6 @@
 \usepackage{graphicx}
 \usepackage[T1]{fontenc}
 \usepackage{listings}
-\usepackage{hyperref}
 \usepackage{calc}
 \graphicspath{{/home/mkg/Dropbox/images/}}
 \clearscrheadfoot
@@ -15,6 +14,10 @@
 \cfoot[\pagemark]{}
 \pagestyle{scrheadings}
 \usepackage{lipsum}
+\usepackage[hidelinks=true,linktoc=all]{hyperref}
+\urlstyle{same}
+\usepackage[all]{hypcap}
+
 \makeatletter
 \newcommand{\shellcommand}[1]{\@@input"|#1"}
 \makeatother
@@ -33,6 +36,6 @@
 	\newpage
 	\begin{figure}
 		\includegraphics[width=\linewidth,height=\textheight,keepaspectratio]{#2}	
-		\captionlistentry[figure]{\protect\detokenize{#2} }
+		\captionlistentry[figure]{\url{\protect\detokenize{#2}}}
 	\end{figure} 
 }

@@ -12,7 +12,12 @@ If you wish to use this book or any of its contents for your own projects, or fo
 \maketitle
 
 \tableofcontents
-\listoffigures
+{
+	\setlength\emergencystretch{.95\textwidth}
+	\begin{flushleft}
+	\listoffigures
+	\end{flushleft}
+}
 
 \mainmatter
 \lstset{language=c++,basicstyle=\ttfamily\scriptsize,commentstyle=\ttfamily\tiny,tabsize=2,breaklines,fontadjust=true,keepspaces=false,showstringspaces=false,moredelim=[is][\textbf]{\\emph\{}{\}}}
