@@ -532,7 +532,11 @@ sync-seq)
 		   (second tbass))))))
    out-seq)
    
-(render-with-csd stun-seq aeolus-csd :velocity-scale 120 :csd-filename "Pange-Lingua-2.csd")
+(defparameter master-seq (new seq :name "master-seq"))
+
+(events (list pange-lingua out-seq) master-seq (list 1 26))
+   
+(render-with-csd master-seq aeolus-csd :velocity-scale 120 :csd-filename "Pange-Lingua-2.csd")
 (print "Finished.")
 (quit)
 

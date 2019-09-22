@@ -37,11 +37,15 @@ def omit(omitdirs, filepath):
             return True
         if filepath.find("TASCAM") != -1:
             return True
+        if filepath.find("process-palette") != -1:
+            return True
         if filepath.find(".CHK.wav") != -1:
             return True
         if filepath.find(".output.wav") != -1:
             return True
         if filepath.find(".wavuntagged.wav") != -1:
+            return True
+        if filepath.find("csound-extended") != -1:
             return True
     return False
 

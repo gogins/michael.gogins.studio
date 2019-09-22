@@ -87,6 +87,8 @@ CM = CsoundAC.Conversions_nameToM("CM")
 Em = CsoundAC.Conversions.nameToM("Em")
 BbM = CsoundAC.Conversions.nameToM("BbM")
 GM9 = CsoundAC.Conversions.nameToM("GM9")
+Ab9 = CsoundAC.Conversions.nameToM("Ab9")
+
 
 def readMeasure(number, pitches):
     scoreNode = CsoundAC.ScoreNode()
@@ -108,18 +110,18 @@ def buildTrack(sequence, channel, bass):
     print 'Building track for channel %3d bass %3d...' % (channel, bass)
     cumulativeTime = 1.0
     for i in xrange(1, 16):
+        factor = random.choice([0., 1., 2., 3.])
         for j in xrange(2, 6):
             pitches = random.choice([CM, Em, CM, Em, BbM, GM9, Ab9])
             repeatCount = 1 + int(random.random() * 12)
-            factor = random.choice([0., 1., 2., 3.])
             for k in xrange(repeatCount):
                 measure = readMeasure(minuetTable[j][i], pitches)
                 duration = measure.getScore().getDuration()
-                offset = factor * duration / 24.
+                offset = factor * duration / (22/7)
                 rescale = CsoundAC.Rescale()
                 rescale.setRescale(CsoundAC.Event.TIME, bool(1), bool(0), cumulativeTime + offset, 0)
                 rescale.setRescale(CsoundAC.Event.INSTRUMENT, bool(1), bool(0), channel, 0)
-                rescale.setRescale(CsoundAC.Event.KEY, bool(1), bool(0), float(bass), 48)
+                rescale.setRescale(CsoundAC.Event.KEY, bool(1), bool(1), float(bass), 48)
                 rescale.thisown = 0
                 rescale.addChild(measure)
                 print 'Repeat %4d of %4d at %8.3f with %3d notes of duration %7.3f at bass %7.3f...' %(k + 1, repeatCount, cumulativeTime, len(measure.getScore()), duration, bass)
