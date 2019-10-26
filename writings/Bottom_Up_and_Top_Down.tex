@@ -22,6 +22,7 @@
 \usepackage{color}
 \usepackage{listings}
 \usepackage{supertabular}
+\usepackage{kbordermatrix}
 % definitions used by included articles, reproduced here for
 % educational benefit, and to minimize alterations needed to be made
 % in developing this sample file.
@@ -32,6 +33,7 @@
 \usepackage{amscd}     % commutative diagrams
 \usepackage{mathrsfs}  % This package allows the use of script letters. Type \mathscr to invoke math script.
 \usepackage{amsbsy}
+\newcommand\scalemath[2]{\scalebox{#1}{\mbox{\ensuremath{\displaystyle #2}}}}
 %\usepackage{scrpage2}
 \usepackage[pdftex,
 colorlinks=true,
@@ -208,65 +210,25 @@ backref=true
 \addbibresource{gogins.bib}
 \begin{document}
 
-\title{Self-Consciousness a Fixed Point}
-\author{Michael Gogins \\ \texttt{michael.gogins@gmail.com}}
-\maketitle
+\title{Bottom Up and Top Down} \author{Michael
+Gogins \\ \texttt{michael.gogins@gmail.com}} \maketitle
 %\pagestyle{scrheadings}
 
-\begin{abstract}
-We first identify a family of philosophical arguments in which
-self-consciousness is explicitly or implicitly treated as a fixed point. What
-this means will be developed in detail. We then demonstrate that consciousness
-as a fixed point is not consistent with naturalism or mechanism.
-\end{abstract}
+Recently I have completed some projects that, in combination, I believe have given me a significantly deeper insight into some of the fundamental potentials of algorithmic composition. I have finally managed to formalize and implement my intuition of a universal method of parametric composition based on fractal functions in score space, in my own algorithmic composition system Silencio. I have implemented foreign function interfaces to Csound for existing algorithmic composition systems in Common Lisp (Common Music, OpenMusic, Drew Krause's code, and Slippery Chicken) and Haskell (Haskell School of Music, Euterpea, Kulitta, and Jazzkell). And, inspired by the music of Drew Krause and Donya Quick, I have composed some studies of my own along lines similar to theirs.
 
-%\lohead{Parametric Composition}
+Before going any further, I will state my hypothesis that algorithmic composition is of interest to people who already know how to compose only because of what mathematicians call computational irreducibility: the well known fact that what most algorithms do cannot be predicted just by reading and understanding them. You have to run them in order to really understand what they will do. Paradoxically, although it is obvious if you think about it, this is necessary if the algorithm is to augment or amplify the imagination of the composer.
+
+There are many, indeed there are \textit{too many}, algorithmic composition systems, most of which have not been used by anyone other than their authors or their authors' students. However, at the risk of over-simplifying, each of these systems falls into one of a few general categories. In the order of their invention:
+
+\begin{description}
+	\item[Bottom-up, or accretive.] The system contains a toolkit for generating and transforming musical materials. The tools in the kit are like the things composers already know how to do: generate a random process, sample from a collection, generate a harmony to accompany a melody by following textbook rules (or composer-specified rules), generate a counterpoint to accompany a cantus by following textbook rules (or composer-specified rules), vary or chop up materials, and so on. Irreducibility enters in by the algorithms performing so many steps that their results cannot be predicted in advance, from randomness, and from non-linearity. 
+	\item[Top-down, or fractal.] The system generates a fractal by applying a single transformation, such as an iterated function system, to some musical materials. This transformation, necessarily contractive, brings the materials to a fixed point or attractor, which is the piece. In reality, to map the generated fractal to a musical score, the algorithm must stop short of infinity, or a finite set of notes must be sampled from the attractor. Irreducibility enters in at the global level, from the non-linearity of the algorithm's generating kernel. I would say that methods of composition that map natural processes, images, and so on to music are also of this top-down type.
+	\item[Imitative, or machine learning.] The system uses pattern matching or statistics to learn how to compose the kind of music that the composer likes, based on a corpus. The composer, or somebody, has to train the system by providing feedback regarding elements of the corpus. Irreducibility enters in with the nonlinear mathematics of the neural networks used for learning.
+\end{description}
 
 
 
-\section{Introduction}
 
-\lstset{language=c++,basicstyle=\ttfamily\tiny,commentstyle=\ttfamily\tiny,tabsize=2,breaklines,backgroundcolor=\color{LstColor},fontadjust=true,keepspaces=false,showstringspaces=false,moredelim=[is][\textbf]{\\emph\{}{\}}}.
-
-In ordinary language, to say that I am self-conscious is to say \textit{that} I am conscious. There are a number of philosophical
-arguments, some historically important, some famous, some wrong, and some not
-refuted, that use this basic notion of self-consciousness as a starting point.
-
-To say that self-consciousness is a fixed point is to say that to be conscious
-that I am conscious does not involve recursion or an infinite regress.
-Phenomenologically, there is no difference between being self-conscious, and
-being conscious of being self-conscious. We will consider why this appearance
-might or might not reflect reality.
-
-Please note, to say that self-consciousness is a fixed point is not the same as
-the \textit{cogito}. But if self-consciousness is in reality a fixed point, that
-has a number of interesting implications, some of them quite important. Among
-them are that in self-consciousness there is no distinction between subject and
-object, there is in it no passage of time, and self-consciousness is of an
-irreducible simplicity, similar to or perhaps even identical with the divine
-simplicity ascribed to God.
-
-The main reason for affirming that self-consciousness is in reality a fixed
-point is the very apparent absurdity of affirming otherwise. If this appearance is a delusion
-or epiphenomenon, then how does one become conscious of this delusion? But there
-are other reasons to affirm it. Self-consciousness is adaptive. Whatever other
-reasons self-consciousness might have for existing, it undoubtedly is, or
-reflects, a biological adaptation that confers a selective advantage. This is
-evident not only among human beings, but, if the mirror test is a reliable
-indicator of self-consciousness, also among other higher animals, each at or
-near the top of the food chain in its environment, including other great apes,
-some cetaceans, and some birds.
-
-The adaptive function of self-consciousness is apparent, at least to some
-extent, in what organisms that lack it cannot do. They cannot use symbolic
-reasoning, they cannot solve abstract problems, and they cannot form voluntary
-social relationships. The facts of biology demonstrate, beyond any reasonable
-doubt, that self-consciousness confers, together with the ability to make and
-use tools, an overwhelming selective advantage.
-
-Self-consciousness is a fixed point in the sense that self-consciousness consists of being conscious \textit{that} one is conscious. The logic and phenemenology of this not so simple proposition bear close examination. However, at the root, if self-consciousness is not a fixed point, then the reality of self-consciousness would involve an actual infinite regress. But, if self-consciousness is a fixed point, then it is not consistent with mechanism or naturalism, in which all models of consciousness involve self-representation. To be perfectly clear, self-consciousness, in reality, is not an effect of self-representation although it seems likely to be a cause of self-representation.
-
-The fixed point of self-consciousness diagonalizes all mechanistic, computational, or naturalistic explanations of self-consciousness. Put states of consciousness in the rows and representations of consciousness in the columns.
 
 \printbibliography
 \end{document}

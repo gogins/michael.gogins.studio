@@ -1,9 +1,9 @@
 # Aeolus instrument definition file
-# Created by Aeolus-0.9.5 at Sun Jul 14 10:46:28 2019
+# Created by Aeolus-0.9.5 at Tue Oct 22 19:28:33 2019
 
 
 /instr/new
-/tuning 440.0 5
+/tuning 440.0 4
 
 # Keyboards
 #

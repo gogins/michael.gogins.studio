@@ -11,18 +11,19 @@ D:\Dropbox\Michael Gogins\Semblance\01-19991216a.wav
 
 '''
 
+import datetime
 import os
 import string
 import sys
 import time
 import traceback
 
-output = r'complete.m3u'
-spreadsheet = r'complete_soundfiles.tsv'
+output = r'complete-%s.m3u' % datetime.date.today()
+spreadsheet = r'complete_soundfiles-%s.tsv' % datetime.date.today()
 
-rootdirs = string.split('/home/mkg')
-omitdirs = string.split('Trash csound-extended-vst4cs Downloads jak_stretch Nancarrow_Renderings imparting_harmonies rawwaves orc eSupport attic Attic music-attic Examples Music MUSIC examples winabx csound-extended ssdir Hrabovsky')
-extensions = string.split('.wav .aif .aiff')
+rootdirs = '/home/mkg'.split()
+omitdirs = 'synthv-editor performance-mode Trash csound-extended-vst4cs Downloads jak_stretch Nancarrow_Renderings imparting_harmonies rawwaves orc eSupport attic Attic music-attic Examples Music MUSIC examples winabx csound-extended ssdir Hrabovsky'.split()
+extensions = '.wav .aif .aiff'.split()
 
 def omit(omitdirs, filepath):
     for omitdir in omitdirs:
@@ -63,7 +64,7 @@ def add(pathname):
                 if basename not in timesForBasenames:
                     timesForBasenames[basename] = {}
                 timesForBasenames[basename][filestat.st_ctime] = pathname
-                print pathname
+                print(pathname)
 
 for rootdir in rootdirs:
     for root, subdirs, files in os.walk(rootdir):
@@ -78,24 +79,21 @@ filecount = 0
 playlist = open(output, 'w')
 spreadsheet_output = open(spreadsheet, 'w')
 playlist.write('#EXTM3U\n')
-basenames = timesForBasenames.keys()
-basenames.sort()
+basenames = sorted(timesForBasenames.keys())
 for basename in basenames:
     timesAndPaths = timesForBasenames[basename]
-    times = timesAndPaths.keys()
-    times.sort()
+    times = sorted(timesAndPaths.keys())
     times.reverse()
     filecount = filecount + 1
     for tyme in times:
         timestring = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(tyme))
-        print '[%5d %s] %s' % (filecount, timestring, basename)
-        print '                           ', timesAndPaths[tyme]
+        print('[%5d %s] %s\n                            %s' % (filecount, timestring, basename, timesAndPaths[tyme]))
     playlist.write('#EXTINF:-1,%s\n' % basename)
     pathname = timesAndPaths[times[0]]
     playlist.write('%s\n' % pathname)
     spreadsheet_output.write('Michael Gogins\t%s\t%s\t%s\n' % (basename, pathname, timestring))
-    print
+    print()
 playlist.write('\n')
 
-print 'Finished with', filecount, 'files.'
+print('Finished with', filecount, 'files.')
 

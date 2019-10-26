@@ -7,7 +7,7 @@
 (defparameter aeolus-csd #>qqq>
 <CsoundSynthesizer>
 <CsOptions>
--m195 --displays --midi-key=4 --midi-velocity=5 -otest.wav
+-m195 --displays --midi-key=4 --midi-velocity=5 -oPange-Lingua-3.wav
 </CsOptions>
 <CsInstruments>
 sr = 96000
@@ -57,13 +57,15 @@ qqq)
 ; PRESETS, INPUT DATA, ETC.
 ; LOAD FIRST
 
-(defparameter pange-seq (import-events "data/lu0957b.mid" :meta-exclude t))
-;(print pange-seq)
-(print (format nil "Duration of pange-seq: ~$~%" (duration-seconds pange-seq)))
+(defparameter pange-seq (import-events "data/gregorian-pange-lingua.mid" :meta-exclude t))
+; (print pange-seq)
+;(print (format nil "Duration of pange-seq: ~$~%" (duration-seconds pange-seq)))
 
 (defparameter pange-lingua
-   (midi-in "data/lu0957b.mid"))
+   (midi-in "data/lu0957b.short.mid"))
 (defparameter pange-pits (nth 0 pange-lingua))
+(print pange-lingua)
+(quit)
 
 (defparameter pange-pits
     (not-flat (first pange-lingua)))
@@ -159,7 +161,7 @@ sync-seq)
 (print (format nil "Duration of sync-seq: ~$~%" (duration-seconds sync-seq)))
 
 (defparameter seq-list (list pange-seq dots-seq hiccup-seq sync-seq))
-(defparameter seq-times (list 0 196.96 (+ 196.96 142.5) (+ 196.96 142.5 79.75)))
+(defparameter seq-times (list 0 70.0 (+ 70 142.5) (+ 196.96 142.5 79.75)))
 
 (defparameter master-seq (new seq :name "master-seq"))
 
