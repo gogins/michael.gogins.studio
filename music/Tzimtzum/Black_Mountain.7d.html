@@ -1271,7 +1271,7 @@ endin
         "gk_Phaser_index1": 1,
         "gk_Phaser_index2": 0.30603060306030627,
         "gk_Phaser_level": 0.125,
-        "gk_Piano_level": -19,
+        "gk_Piano_level": -25, // -19,
         "gk_Shiner_level": 3.2043204320432395,
         "gk_Sweeper_britel": 1.2452729986356939,
         "gk_Sweeper_briteh": 0.5860108228873854,
@@ -1315,7 +1315,7 @@ endin
         "gk_Phaser_index1": 1,
         "gk_Phaser_index2": 0.3296310878741543,
         "gk_Phaser_level": -20.69945885563073,
-        "gk_Piano_level": -31,
+        "gk_Piano_level": -41, //-31,
         "gk_Shiner_level": -40,
         "gk_Sweeper_britel": 1.2452729986356939,
         "gk_Sweeper_briteh": 0.5860108228873854,
@@ -1401,8 +1401,8 @@ endin
 };
         window.onload = function() {
             try {
-                var temporary_json = Silencio.restoreDatGuiJson(default_json);
-                default_json = temporary_json;
+                //var temporary_json = Silencio.restoreDatGuiJson(default_json);
+                //default_json = temporary_json;
             } catch(e) {
             }
             gui = new dat.GUI({load: default_json, width: 300});
