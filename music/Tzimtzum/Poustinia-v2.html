@@ -37,8 +37,7 @@
 var title = 'Poustinia v2'
 
 var fs = require("fs");
-var git = require('git-rev-sync');
-var soundfile_name = sprintf("Poustinia-v2-%s.wav",  git.short());
+var soundfile_name = "Poustinia-v2.wav";
 
 window.onerror = function (message, url, line) {
   csound.message(message + '\n' + url + '\n' + line + '\n');
