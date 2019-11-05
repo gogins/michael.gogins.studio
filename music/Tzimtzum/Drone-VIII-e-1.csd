@@ -5,7 +5,7 @@ Copyright (C) 2014 by Michael Gogins.
 All rights reserved.
 </CsLicense>
 <CsOptions>
--odac -m227 --midi-key=4 --midi-velocity=5 -+id_artist=Michael_Gogins -+id_copyright=Copr_2014_Michael_Gogins -+id_title=Drone-VIII-e 
+-oRWDfo Drone-VIII-e-1.wav -m227 --midi-key=4 --midi-velocity=5 -+id_artist=Michael_Gogins -+id_copyright=Copr_2019_Michael_Gogins -+id_title=Drone-VIII-e-1 
 </CsOptions>
 <CsInstruments>
 sr = 96000
@@ -159,7 +159,7 @@ endin
 gkbritel init 0
 gkbriteh init 2.9
 gkbritels init .2 / 3
-gkbritehs init 2.5 / 2
+gkbritehs init 2.5 / 4
 gkSweeperLevel init 1
 gkSweeperEnabled init 1
 instr Sweeper
@@ -532,7 +532,7 @@ kdbright dbfsamp krmsright
 outvalue "kdbright", kdbright
 outs aleft, aright
 idate date
-Sfilename sprintf "Drone-VIII-e-%d.wav", idate
+Sfilename sprintf "Drone-VIII-e-1-%d.wav", idate
 prints sprintf("Filename: %s\n", Sfilename)
 fout Sfilename, 16, aleft, aright
 dispfft aleft + aright, 0.1, 2048, 0, 1
@@ -572,7 +572,6 @@ endin
 
 </CsInstruments>
 <CsScore>
-t 0 300
 f 0 430
 </CsScore>
 </CsoundSynthesizer>
@@ -596,7 +595,7 @@ f 0 430
   <g>253</g>
   <b>255</b>
  </bgcolor>
- <bsbObject type="BSBHSlider" version="2">
+ <bsbObject version="2" type="BSBHSlider">
   <objectName>gkDroner3</objectName>
   <x>184</x>
   <y>85</y>
@@ -608,13 +607,13 @@ f 0 430
   <midicc>0</midicc>
   <minimum>0.00000000</minimum>
   <maximum>1.00000000</maximum>
-  <value>0.67307692</value>
+  <value>0.58076923</value>
   <mode>lin</mode>
   <mouseControl act="jump">continuous</mouseControl>
   <resolution>-1.00000000</resolution>
   <randomizable group="0">false</randomizable>
  </bsbObject>
- <bsbObject type="BSBLabel" version="2">
+ <bsbObject version="2" type="BSBLabel">
   <objectName/>
   <x>19</x>
   <y>85</y>
@@ -643,7 +642,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBHSlider" version="2">
+ <bsbObject version="2" type="BSBHSlider">
   <objectName>gkDroner4</objectName>
   <x>184</x>
   <y>108</y>
@@ -661,7 +660,7 @@ f 0 430
   <resolution>-1.00000000</resolution>
   <randomizable group="0">false</randomizable>
  </bsbObject>
- <bsbObject type="BSBLabel" version="2">
+ <bsbObject version="2" type="BSBLabel">
   <objectName/>
   <x>19</x>
   <y>108</y>
@@ -690,7 +689,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBHSlider" version="2">
+ <bsbObject version="2" type="BSBHSlider">
   <objectName>gkDroner5</objectName>
   <x>184</x>
   <y>131</y>
@@ -708,7 +707,7 @@ f 0 430
   <resolution>-1.00000000</resolution>
   <randomizable group="0">false</randomizable>
  </bsbObject>
- <bsbObject type="BSBLabel" version="2">
+ <bsbObject version="2" type="BSBLabel">
   <objectName/>
   <x>19</x>
   <y>131</y>
@@ -737,7 +736,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBHSlider" version="2">
+ <bsbObject version="2" type="BSBHSlider">
   <objectName>gkDroner6</objectName>
   <x>184</x>
   <y>154</y>
@@ -755,7 +754,7 @@ f 0 430
   <resolution>-1.00000000</resolution>
   <randomizable group="0">false</randomizable>
  </bsbObject>
- <bsbObject type="BSBLabel" version="2">
+ <bsbObject version="2" type="BSBLabel">
   <objectName/>
   <x>19</x>
   <y>155</y>
@@ -784,7 +783,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBHSlider" version="2">
+ <bsbObject version="2" type="BSBHSlider">
   <objectName>gkDroner7</objectName>
   <x>184</x>
   <y>179</y>
@@ -802,7 +801,7 @@ f 0 430
   <resolution>-1.00000000</resolution>
   <randomizable group="0">false</randomizable>
  </bsbObject>
- <bsbObject type="BSBLabel" version="2">
+ <bsbObject version="2" type="BSBLabel">
   <objectName/>
   <x>19</x>
   <y>179</y>
@@ -831,7 +830,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBController" version="2">
+ <bsbObject version="2" type="BSBController">
   <objectName>gkReverbFeedback</objectName>
   <x>550</x>
   <y>37</y>
@@ -846,8 +845,8 @@ f 0 430
   <xMax>1.00000000</xMax>
   <yMin>0.00000000</yMin>
   <yMax>2.00000000</yMax>
-  <xValue>0.88866799</xValue>
-  <yValue>0.82352941</yValue>
+  <xValue>0.88469185</xValue>
+  <yValue>0.43137255</yValue>
   <type>crosshair</type>
   <pointsize>1</pointsize>
   <fadeSpeed>0.00000000</fadeSpeed>
@@ -864,7 +863,7 @@ f 0 430
    <b>0</b>
   </bgcolor>
  </bsbObject>
- <bsbObject type="BSBDisplay" version="2">
+ <bsbObject version="2" type="BSBDisplay">
   <objectName>gkDroner3</objectName>
   <x>442</x>
   <y>85</y>
@@ -874,7 +873,7 @@ f 0 430
   <visible>true</visible>
   <midichan>0</midichan>
   <midicc>0</midicc>
-  <label>0.673</label>
+  <label>0.581</label>
   <alignment>right</alignment>
   <font>Arial</font>
   <fontsize>15</fontsize>
@@ -893,7 +892,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBDisplay" version="2">
+ <bsbObject version="2" type="BSBDisplay">
   <objectName>gkDroner7</objectName>
   <x>443</x>
   <y>179</y>
@@ -922,7 +921,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBDisplay" version="2">
+ <bsbObject version="2" type="BSBDisplay">
   <objectName>gkDroner6</objectName>
   <x>443</x>
   <y>154</y>
@@ -951,7 +950,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBDisplay" version="2">
+ <bsbObject version="2" type="BSBDisplay">
   <objectName>gkDroner5</objectName>
   <x>443</x>
   <y>131</y>
@@ -980,7 +979,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBDisplay" version="2">
+ <bsbObject version="2" type="BSBDisplay">
   <objectName>gkDroner4</objectName>
   <x>443</x>
   <y>108</y>
@@ -1009,7 +1008,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBDisplay" version="2">
+ <bsbObject version="2" type="BSBDisplay">
   <objectName>gkReverbModulation</objectName>
   <x>973</x>
   <y>4</y>
@@ -1019,7 +1018,7 @@ f 0 430
   <visible>true</visible>
   <midichan>0</midichan>
   <midicc>0</midicc>
-  <label>0.824</label>
+  <label>0.431</label>
   <alignment>right</alignment>
   <font>Arial</font>
   <fontsize>15</fontsize>
@@ -1038,7 +1037,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBDisplay" version="2">
+ <bsbObject version="2" type="BSBDisplay">
   <objectName>gkReverbFeedback</objectName>
   <x>1060</x>
   <y>38</y>
@@ -1048,7 +1047,7 @@ f 0 430
   <visible>true</visible>
   <midichan>0</midichan>
   <midicc>0</midicc>
-  <label>0.889</label>
+  <label>0.885</label>
   <alignment>left</alignment>
   <font>Arial</font>
   <fontsize>15</fontsize>
@@ -1067,7 +1066,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBScope" version="2">
+ <bsbObject version="2" type="BSBScope">
   <objectName/>
   <x>548</x>
   <y>443</y>
@@ -1085,7 +1084,7 @@ f 0 430
   <dispy>1.00000000</dispy>
   <mode>0.00000000</mode>
  </bsbObject>
- <bsbObject type="BSBLabel" version="2">
+ <bsbObject version="2" type="BSBLabel">
   <objectName/>
   <x>551</x>
   <y>3</y>
@@ -1114,7 +1113,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBLabel" version="2">
+ <bsbObject version="2" type="BSBLabel">
   <objectName/>
   <x>19</x>
   <y>2</y>
@@ -1144,7 +1143,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBHSlider" version="2">
+ <bsbObject version="2" type="BSBHSlider">
   <objectName>gkDronerLevel</objectName>
   <x>184</x>
   <y>272</y>
@@ -1156,13 +1155,13 @@ f 0 430
   <midicc>0</midicc>
   <minimum>0.00000000</minimum>
   <maximum>10.00000000</maximum>
-  <value>4.59770115</value>
+  <value>3.52490421</value>
   <mode>lin</mode>
   <mouseControl act="jump">continuous</mouseControl>
   <resolution>-1.00000000</resolution>
   <randomizable group="0">false</randomizable>
  </bsbObject>
- <bsbObject type="BSBLabel" version="2">
+ <bsbObject version="2" type="BSBLabel">
   <objectName/>
   <x>19</x>
   <y>272</y>
@@ -1191,7 +1190,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBDisplay" version="2">
+ <bsbObject version="2" type="BSBDisplay">
   <objectName>gkDronerLevel</objectName>
   <x>443</x>
   <y>272</y>
@@ -1201,7 +1200,7 @@ f 0 430
   <visible>true</visible>
   <midichan>0</midichan>
   <midicc>0</midicc>
-  <label>4.598</label>
+  <label>3.525</label>
   <alignment>right</alignment>
   <font>Arial</font>
   <fontsize>15</fontsize>
@@ -1220,7 +1219,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBHSlider" version="2">
+ <bsbObject version="2" type="BSBHSlider">
   <objectName>gkSweeperLevel</objectName>
   <x>183</x>
   <y>357</y>
@@ -1232,13 +1231,13 @@ f 0 430
   <midicc>0</midicc>
   <minimum>0.00000000</minimum>
   <maximum>10.00000000</maximum>
-  <value>1.34099617</value>
+  <value>0.30651341</value>
   <mode>lin</mode>
   <mouseControl act="jump">continuous</mouseControl>
   <resolution>-1.00000000</resolution>
   <randomizable group="0">false</randomizable>
  </bsbObject>
- <bsbObject type="BSBLabel" version="2">
+ <bsbObject version="2" type="BSBLabel">
   <objectName/>
   <x>19</x>
   <y>357</y>
@@ -1267,7 +1266,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBDisplay" version="2">
+ <bsbObject version="2" type="BSBDisplay">
   <objectName>gkSweeperLevel</objectName>
   <x>442</x>
   <y>357</y>
@@ -1277,7 +1276,7 @@ f 0 430
   <visible>true</visible>
   <midichan>0</midichan>
   <midicc>0</midicc>
-  <label>1.341</label>
+  <label>0.307</label>
   <alignment>right</alignment>
   <font>Arial</font>
   <fontsize>15</fontsize>
@@ -1296,7 +1295,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBLabel" version="2">
+ <bsbObject version="2" type="BSBLabel">
   <objectName/>
   <x>19</x>
   <y>316</y>
@@ -1326,7 +1325,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBHSlider" version="2">
+ <bsbObject version="2" type="BSBHSlider">
   <objectName>gkgrainDensity</objectName>
   <x>184</x>
   <y>442</y>
@@ -1344,7 +1343,7 @@ f 0 430
   <resolution>-1.00000000</resolution>
   <randomizable group="0">false</randomizable>
  </bsbObject>
- <bsbObject type="BSBLabel" version="2">
+ <bsbObject version="2" type="BSBLabel">
   <objectName/>
   <x>19</x>
   <y>442</y>
@@ -1373,7 +1372,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBHSlider" version="2">
+ <bsbObject version="2" type="BSBHSlider">
   <objectName>gkgrainDuration</objectName>
   <x>184</x>
   <y>467</y>
@@ -1391,7 +1390,7 @@ f 0 430
   <resolution>-1.00000000</resolution>
   <randomizable group="0">false</randomizable>
  </bsbObject>
- <bsbObject type="BSBLabel" version="2">
+ <bsbObject version="2" type="BSBLabel">
   <objectName/>
   <x>19</x>
   <y>467</y>
@@ -1420,7 +1419,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBHSlider" version="2">
+ <bsbObject version="2" type="BSBHSlider">
   <objectName>gkgrainAmplitudeRange</objectName>
   <x>184</x>
   <y>492</y>
@@ -1438,7 +1437,7 @@ f 0 430
   <resolution>-1.00000000</resolution>
   <randomizable group="0">false</randomizable>
  </bsbObject>
- <bsbObject type="BSBLabel" version="2">
+ <bsbObject version="2" type="BSBLabel">
   <objectName/>
   <x>19</x>
   <y>492</y>
@@ -1467,7 +1466,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBHSlider" version="2">
+ <bsbObject version="2" type="BSBHSlider">
   <objectName>gkgrainFrequencyRange</objectName>
   <x>184</x>
   <y>517</y>
@@ -1485,7 +1484,7 @@ f 0 430
   <resolution>-1.00000000</resolution>
   <randomizable group="0">false</randomizable>
  </bsbObject>
- <bsbObject type="BSBLabel" version="2">
+ <bsbObject version="2" type="BSBLabel">
   <objectName/>
   <x>19</x>
   <y>517</y>
@@ -1514,7 +1513,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBHSlider" version="2">
+ <bsbObject version="2" type="BSBHSlider">
   <objectName>gkBlowerLevel</objectName>
   <x>184</x>
   <y>541</y>
@@ -1526,13 +1525,13 @@ f 0 430
   <midicc>0</midicc>
   <minimum>0.00000000</minimum>
   <maximum>10.00000000</maximum>
-  <value>0.41825095</value>
+  <value>0.38022814</value>
   <mode>lin</mode>
   <mouseControl act="jump">continuous</mouseControl>
   <resolution>-1.00000000</resolution>
   <randomizable group="0">false</randomizable>
  </bsbObject>
- <bsbObject type="BSBLabel" version="2">
+ <bsbObject version="2" type="BSBLabel">
   <objectName/>
   <x>19</x>
   <y>541</y>
@@ -1561,7 +1560,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBDisplay" version="2">
+ <bsbObject version="2" type="BSBDisplay">
   <objectName>gkgrainDensity</objectName>
   <x>445</x>
   <y>442</y>
@@ -1590,7 +1589,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBDisplay" version="2">
+ <bsbObject version="2" type="BSBDisplay">
   <objectName>gkBlowerLevel</objectName>
   <x>445</x>
   <y>541</y>
@@ -1600,7 +1599,7 @@ f 0 430
   <visible>true</visible>
   <midichan>0</midichan>
   <midicc>0</midicc>
-  <label>0.418</label>
+  <label>0.380</label>
   <alignment>right</alignment>
   <font>Arial</font>
   <fontsize>15</fontsize>
@@ -1619,7 +1618,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBDisplay" version="2">
+ <bsbObject version="2" type="BSBDisplay">
   <objectName>gkgrainFrequencyRange</objectName>
   <x>445</x>
   <y>517</y>
@@ -1648,7 +1647,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBDisplay" version="2">
+ <bsbObject version="2" type="BSBDisplay">
   <objectName>gkgrainAmplitudeRange</objectName>
   <x>445</x>
   <y>492</y>
@@ -1677,7 +1676,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBDisplay" version="2">
+ <bsbObject version="2" type="BSBDisplay">
   <objectName>gkgrainDuration</objectName>
   <x>445</x>
   <y>467</y>
@@ -1706,7 +1705,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBLabel" version="2">
+ <bsbObject version="2" type="BSBLabel">
   <objectName/>
   <x>19</x>
   <y>404</y>
@@ -1736,7 +1735,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBConsole" version="2">
+ <bsbObject version="2" type="BSBConsole">
   <objectName/>
   <x>548</x>
   <y>585</y>
@@ -1759,7 +1758,7 @@ f 0 430
    <b>255</b>
   </bgcolor>
  </bsbObject>
- <bsbObject type="BSBLabel" version="2">
+ <bsbObject version="2" type="BSBLabel">
   <objectName/>
   <x>550</x>
   <y>304</y>
@@ -1788,7 +1787,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBDisplay" version="2">
+ <bsbObject version="2" type="BSBDisplay">
   <objectName>gkMasterLevelLeft</objectName>
   <x>976</x>
   <y>304</y>
@@ -1817,7 +1816,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBLabel" version="2">
+ <bsbObject version="2" type="BSBLabel">
   <objectName/>
   <x>550</x>
   <y>271</y>
@@ -1847,7 +1846,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBHSlider" version="2">
+ <bsbObject version="2" type="BSBHSlider">
   <objectName>gkMasterLevelLeft</objectName>
   <x>715</x>
   <y>304</y>
@@ -1865,7 +1864,7 @@ f 0 430
   <resolution>-1.00000000</resolution>
   <randomizable group="0">false</randomizable>
  </bsbObject>
- <bsbObject type="BSBLabel" version="2">
+ <bsbObject version="2" type="BSBLabel">
   <objectName/>
   <x>550</x>
   <y>203</y>
@@ -1894,7 +1893,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBDisplay" version="2">
+ <bsbObject version="2" type="BSBDisplay">
   <objectName>gkReverbModulationFrequency</objectName>
   <x>972</x>
   <y>203</y>
@@ -1904,7 +1903,7 @@ f 0 430
   <visible>true</visible>
   <midichan>0</midichan>
   <midicc>0</midicc>
-  <label>0.560</label>
+  <label>1.139</label>
   <alignment>right</alignment>
   <font>Arial</font>
   <fontsize>15</fontsize>
@@ -1923,7 +1922,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBHSlider" version="2">
+ <bsbObject version="2" type="BSBHSlider">
   <objectName>gkReverbModulationFrequency</objectName>
   <x>715</x>
   <y>203</y>
@@ -1935,13 +1934,13 @@ f 0 430
   <midicc>0</midicc>
   <minimum>0.00000000</minimum>
   <maximum>5.00000000</maximum>
-  <value>0.55984556</value>
+  <value>1.13899614</value>
   <mode>lin</mode>
   <mouseControl act="jump">continuous</mouseControl>
   <resolution>-1.00000000</resolution>
   <randomizable group="0">false</randomizable>
  </bsbObject>
- <bsbObject type="BSBCheckBox" version="2">
+ <bsbObject version="2" type="BSBCheckBox">
   <objectName>gkDronerEnabled</objectName>
   <x>503</x>
   <y>2</y>
@@ -1956,7 +1955,7 @@ f 0 430
   <pressedValue>1</pressedValue>
   <randomizable group="0">false</randomizable>
  </bsbObject>
- <bsbObject type="BSBCheckBox" version="2">
+ <bsbObject version="2" type="BSBCheckBox">
   <objectName>gkSweeperEnabled</objectName>
   <x>504</x>
   <y>314</y>
@@ -1971,7 +1970,7 @@ f 0 430
   <pressedValue>1</pressedValue>
   <randomizable group="0">false</randomizable>
  </bsbObject>
- <bsbObject type="BSBCheckBox" version="2">
+ <bsbObject version="2" type="BSBCheckBox">
   <objectName>gkBlowerEnabled</objectName>
   <x>505</x>
   <y>403</y>
@@ -1986,7 +1985,7 @@ f 0 430
   <pressedValue>1</pressedValue>
   <randomizable group="0">false</randomizable>
  </bsbObject>
- <bsbObject type="BSBHSlider" version="2">
+ <bsbObject version="2" type="BSBHSlider">
   <objectName>gkBuzzerHarmonics</objectName>
   <x>184</x>
   <y>623</y>
@@ -1998,13 +1997,13 @@ f 0 430
   <midicc>0</midicc>
   <minimum>0.00000000</minimum>
   <maximum>20.00000000</maximum>
-  <value>2.05323194</value>
+  <value>5.55133080</value>
   <mode>lin</mode>
   <mouseControl act="jump">continuous</mouseControl>
   <resolution>-1.00000000</resolution>
   <randomizable group="0">false</randomizable>
  </bsbObject>
- <bsbObject type="BSBLabel" version="2">
+ <bsbObject version="2" type="BSBLabel">
   <objectName/>
   <x>19</x>
   <y>623</y>
@@ -2033,7 +2032,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBHSlider" version="2">
+ <bsbObject version="2" type="BSBHSlider">
   <objectName>gkBuzzerLevel</objectName>
   <x>184</x>
   <y>648</y>
@@ -2045,13 +2044,13 @@ f 0 430
   <midicc>0</midicc>
   <minimum>0.00000000</minimum>
   <maximum>10.00000000</maximum>
-  <value>0.49429658</value>
+  <value>0.11406844</value>
   <mode>lin</mode>
   <mouseControl act="jump">continuous</mouseControl>
   <resolution>-1.00000000</resolution>
   <randomizable group="0">false</randomizable>
  </bsbObject>
- <bsbObject type="BSBLabel" version="2">
+ <bsbObject version="2" type="BSBLabel">
   <objectName/>
   <x>19</x>
   <y>648</y>
@@ -2080,7 +2079,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBDisplay" version="2">
+ <bsbObject version="2" type="BSBDisplay">
   <objectName>gkBuzzerHarmonics</objectName>
   <x>445</x>
   <y>623</y>
@@ -2090,7 +2089,7 @@ f 0 430
   <visible>true</visible>
   <midichan>0</midichan>
   <midicc>0</midicc>
-  <label>2.053</label>
+  <label>5.551</label>
   <alignment>right</alignment>
   <font>Arial</font>
   <fontsize>15</fontsize>
@@ -2109,7 +2108,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBDisplay" version="2">
+ <bsbObject version="2" type="BSBDisplay">
   <objectName>gkBuzzerLevel</objectName>
   <x>445</x>
   <y>648</y>
@@ -2119,7 +2118,7 @@ f 0 430
   <visible>true</visible>
   <midichan>0</midichan>
   <midicc>0</midicc>
-  <label>0.494</label>
+  <label>0.114</label>
   <alignment>right</alignment>
   <font>Arial</font>
   <fontsize>15</fontsize>
@@ -2138,7 +2137,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBLabel" version="2">
+ <bsbObject version="2" type="BSBLabel">
   <objectName/>
   <x>19</x>
   <y>585</y>
@@ -2168,7 +2167,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBCheckBox" version="2">
+ <bsbObject version="2" type="BSBCheckBox">
   <objectName>gkBuzzerEnabled</objectName>
   <x>505</x>
   <y>584</y>
@@ -2183,7 +2182,7 @@ f 0 430
   <pressedValue>1</pressedValue>
   <randomizable group="0">false</randomizable>
  </bsbObject>
- <bsbObject type="BSBLabel" version="2">
+ <bsbObject version="2" type="BSBLabel">
   <objectName/>
   <x>550</x>
   <y>364</y>
@@ -2212,7 +2211,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBDisplay" version="2">
+ <bsbObject version="2" type="BSBDisplay">
   <objectName>gkMasterLevelRight</objectName>
   <x>976</x>
   <y>364</y>
@@ -2241,7 +2240,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBHSlider" version="2">
+ <bsbObject version="2" type="BSBHSlider">
   <objectName>gkMasterLevelRight</objectName>
   <x>715</x>
   <y>364</y>
@@ -2259,7 +2258,7 @@ f 0 430
   <resolution>-1.00000000</resolution>
   <randomizable group="0">false</randomizable>
  </bsbObject>
- <bsbObject type="BSBLabel" version="2">
+ <bsbObject version="2" type="BSBLabel">
   <objectName/>
   <x>550</x>
   <y>227</y>
@@ -2288,7 +2287,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBDisplay" version="2">
+ <bsbObject version="2" type="BSBDisplay">
   <objectName>gkReverbWet</objectName>
   <x>972</x>
   <y>227</y>
@@ -2298,7 +2297,7 @@ f 0 430
   <visible>true</visible>
   <midichan>0</midichan>
   <midicc>0</midicc>
-  <label>0.656</label>
+  <label>0.826</label>
   <alignment>right</alignment>
   <font>Arial</font>
   <fontsize>15</fontsize>
@@ -2317,7 +2316,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBHSlider" version="2">
+ <bsbObject version="2" type="BSBHSlider">
   <objectName>gkReverbWet</objectName>
   <x>715</x>
   <y>227</y>
@@ -2329,13 +2328,13 @@ f 0 430
   <midicc>0</midicc>
   <minimum>0.00000000</minimum>
   <maximum>1.00000000</maximum>
-  <value>0.65637066</value>
+  <value>0.82625483</value>
   <mode>lin</mode>
   <mouseControl act="jump">continuous</mouseControl>
   <resolution>-1.00000000</resolution>
   <randomizable group="0">false</randomizable>
  </bsbObject>
- <bsbObject type="BSBHSlider" version="2">
+ <bsbObject version="2" type="BSBHSlider">
   <objectName>gkDroner8</objectName>
   <x>184</x>
   <y>203</y>
@@ -2353,7 +2352,7 @@ f 0 430
   <resolution>-1.00000000</resolution>
   <randomizable group="0">false</randomizable>
  </bsbObject>
- <bsbObject type="BSBLabel" version="2">
+ <bsbObject version="2" type="BSBLabel">
   <objectName/>
   <x>19</x>
   <y>203</y>
@@ -2382,7 +2381,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBHSlider" version="2">
+ <bsbObject version="2" type="BSBHSlider">
   <objectName>gkDroner1</objectName>
   <x>184</x>
   <y>38</y>
@@ -2400,7 +2399,7 @@ f 0 430
   <resolution>-1.00000000</resolution>
   <randomizable group="0">false</randomizable>
  </bsbObject>
- <bsbObject type="BSBLabel" version="2">
+ <bsbObject version="2" type="BSBLabel">
   <objectName/>
   <x>19</x>
   <y>38</y>
@@ -2429,7 +2428,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBHSlider" version="2">
+ <bsbObject version="2" type="BSBHSlider">
   <objectName>gkDroner2</objectName>
   <x>184</x>
   <y>61</y>
@@ -2447,7 +2446,7 @@ f 0 430
   <resolution>-1.00000000</resolution>
   <randomizable group="0">false</randomizable>
  </bsbObject>
- <bsbObject type="BSBLabel" version="2">
+ <bsbObject version="2" type="BSBLabel">
   <objectName/>
   <x>19</x>
   <y>61</y>
@@ -2476,7 +2475,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBDisplay" version="2">
+ <bsbObject version="2" type="BSBDisplay">
   <objectName>gkDroner8</objectName>
   <x>442</x>
   <y>203</y>
@@ -2505,7 +2504,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBDisplay" version="2">
+ <bsbObject version="2" type="BSBDisplay">
   <objectName>gkDroner2</objectName>
   <x>443</x>
   <y>61</y>
@@ -2534,7 +2533,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBDisplay" version="2">
+ <bsbObject version="2" type="BSBDisplay">
   <objectName>gkDroner1</objectName>
   <x>443</x>
   <y>38</y>
@@ -2563,7 +2562,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBHSlider" version="2">
+ <bsbObject version="2" type="BSBHSlider">
   <objectName>gkDroner9</objectName>
   <x>184</x>
   <y>226</y>
@@ -2581,7 +2580,7 @@ f 0 430
   <resolution>-1.00000000</resolution>
   <randomizable group="0">false</randomizable>
  </bsbObject>
- <bsbObject type="BSBLabel" version="2">
+ <bsbObject version="2" type="BSBLabel">
   <objectName/>
   <x>19</x>
   <y>226</y>
@@ -2610,7 +2609,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBDisplay" version="2">
+ <bsbObject version="2" type="BSBDisplay">
   <objectName>gkDroner9</objectName>
   <x>442</x>
   <y>226</y>
@@ -2639,7 +2638,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBHSlider" version="2">
+ <bsbObject version="2" type="BSBHSlider">
   <objectName>gkDroner10</objectName>
   <x>184</x>
   <y>249</y>
@@ -2657,7 +2656,7 @@ f 0 430
   <resolution>-1.00000000</resolution>
   <randomizable group="0">false</randomizable>
  </bsbObject>
- <bsbObject type="BSBLabel" version="2">
+ <bsbObject version="2" type="BSBLabel">
   <objectName/>
   <x>19</x>
   <y>249</y>
@@ -2686,7 +2685,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBDisplay" version="2">
+ <bsbObject version="2" type="BSBDisplay">
   <objectName>gkDroner10</objectName>
   <x>442</x>
   <y>249</y>
@@ -2715,7 +2714,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>1</borderwidth>
  </bsbObject>
- <bsbObject type="BSBController" version="2">
+ <bsbObject version="2" type="BSBController">
   <objectName>kdbleft</objectName>
   <x>715</x>
   <y>334</y>
@@ -2730,7 +2729,7 @@ f 0 430
   <xMax>0.00000000</xMax>
   <yMin>-90.00000000</yMin>
   <yMax>0.00000000</yMax>
-  <xValue>-46.50959149</xValue>
+  <xValue>-38.95329349</xValue>
   <yValue>-22.40886286</yValue>
   <type>fill</type>
   <pointsize>1</pointsize>
@@ -2748,7 +2747,7 @@ f 0 430
    <b>0</b>
   </bgcolor>
  </bsbObject>
- <bsbObject type="BSBController" version="2">
+ <bsbObject version="2" type="BSBController">
   <objectName>kdbright</objectName>
   <x>715</x>
   <y>394</y>
@@ -2763,7 +2762,7 @@ f 0 430
   <xMax>0.00000000</xMax>
   <yMin>-90.00000000</yMin>
   <yMax>0.00000000</yMax>
-  <xValue>-33.58193259</xValue>
+  <xValue>-55.38261679</xValue>
   <yValue>-22.40886286</yValue>
   <type>fill</type>
   <pointsize>1</pointsize>
@@ -2781,7 +2780,7 @@ f 0 430
    <b>0</b>
   </bgcolor>
  </bsbObject>
- <bsbObject type="BSBDisplay" version="2">
+ <bsbObject version="2" type="BSBDisplay">
   <objectName>kdbleft</objectName>
   <x>976</x>
   <y>334</y>
@@ -2791,7 +2790,7 @@ f 0 430
   <visible>true</visible>
   <midichan>0</midichan>
   <midicc>0</midicc>
-  <label>-46.510</label>
+  <label>-38.953</label>
   <alignment>right</alignment>
   <font>Arial</font>
   <fontsize>15</fontsize>
@@ -2810,7 +2809,7 @@ f 0 430
   <borderradius>1</borderradius>
   <borderwidth>0</borderwidth>
  </bsbObject>
- <bsbObject type="BSBDisplay" version="2">
+ <bsbObject version="2" type="BSBDisplay">
   <objectName>kdbright</objectName>
   <x>976</x>
   <y>394</y>
@@ -2820,7 +2819,7 @@ f 0 430
   <visible>true</visible>
   <midichan>0</midichan>
   <midicc>0</midicc>
-  <label>-33.582</label>
+  <label>-55.383</label>
   <alignment>right</alignment>
   <font>Arial</font>
   <fontsize>15</fontsize>
