@@ -68,6 +68,11 @@
             </tr>
     </table>
     <textarea class="code" id="orc" hidden rows=24 cols=80>
+<CsoundSynthesizer>
+<CsOptions>
+-dm195
+</CsOptions>
+<CsInstruments>
 
 sr = 96000
 ksmps = 100
@@ -1031,6 +1036,13 @@ instances active p1
 prints "StopPerform    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", p1, p2, p3, p4, p5, p7, instances
 exitnow
 endin
+
+</CsInstruments>
+<CsScore>
+f 0 [ 9 * 60 + 10 ]
+</CsScore>
+</CsoundSynthesizer>
+
     </textarea>
     <script>
         try {
@@ -1038,7 +1050,8 @@ endin
           csound.message(text + '\n' + url + '\n' + line + '\n');
           console.trace();
         }
-        var title = 'Black Mountain 7d';
+        var soundfile_name = "Black_Mountain.7d-1.wav";
+        var title = 'Black Mountain 7d-1';
         var context = null;
         var lsys = null;
         var startTime = 0;
@@ -1160,7 +1173,7 @@ endin
             csound.message('Generated ' + lsys.score.data.length + ' notes.\n');
             context = lsys.score.draw3D(canvas);
             lsys.score.add(9 * 60 + 15, 1, 144, 999);
-            lsys.score.sendToCsound(csound);
+            //lsys.score.sendToCsound(csound);
         }
         function csoundMessage(text) {
             var Log_cell = document.getElementById('Log_cell');
@@ -1187,6 +1200,100 @@ endin
             setTimeout(updateTimeCell, .02);
             lsys.score.progress3D(score_time);
         };
+        
+        // Message level for standard (terminal) output. Takes the sum of any of the following values:
+        // 1 = note amplitude messages
+        // 2 = samples out of range message
+        // 4 = warning messages
+        // 128 = print benchmark information
+        // And exactly one of these to select note amplitude format:
+        // 0 = raw amplitudes, no colours
+        // 32 = dB, no colors
+        // 64 = dB, out of range highlighted with red
+        // 96 = dB, all colors
+        // 256 = raw, out of range highlighted with red
+        // 512 = raw, all colours    
+        /*
+            Play: function() {
+                Silencio.saveDatGuiJson(gui);
+                csound.stop();
+                csound.setMessageCallback(csoundMessage);
+                csound.compileOrc(document.getElementById('orc').value);
+                csound.setOption('-m0');
+                //csound.setOption('-j3');
+                csound.setOption('--nodisplays');
+                csound.setOption('-odac');
+                generate();
+                gui.revert();
+                csound.start();
+                csound.perform();
+                start_time_seconds = new Date().getTime() / 1000.0;
+                startTime = csound.getScoreTime();
+                setTimeout(updateTimeCell, 0);
+            },
+
+        */
+        var render = function(soundfile, post_process) {
+            var csd = document.getElementById('orc').value;
+            var csound_score = lsys.score.toCsoundScore();
+            csound_score = csound_score.concat("\n</CsScore>");
+            csd = csd.replace("</CsScore>", csound_score);
+            Silencio.saveDatGuiJson(gui);
+            csound.stop();
+            csound.setMessageCallback(csoundMessage);
+            csound.message("Playing...");
+            csound.setOption(sprintf('-m%d', 2 + 128 + 32));
+            csound.setOption('--nodisplays');
+            csound.setOption('--keep-sorted-score');
+            csound.setOption('-R');
+            csound.setOption('-W');
+            csound.setOption('-f');
+            csound.setOption('-o' + soundfile_name);
+            //csound.setOption('-odac');
+            csound.setMetadata("artist", "Michael Gogins");
+            csound.setMetadata("copyright", "Copyright 2019 by Michael Gogins");
+            csound.setMetadata("performer", "Michael Gogins");
+            csound.setMetadata("title", "Black Mountain 7d-1");
+            csound.setMetadata("album", "Tzimtzum");
+            csound.setMetadata("track", "1");
+            csound.setMetadata("tracknumber", "1");
+            csound.setMetadata("date", "2019");
+            csound.setMetadata("publisher", "Irreducible Productions ASCAP");
+            csound.setMetadata("comment", "Lindenmayer system in chord space.");
+            csound.setMetadata("license", "CC BY-NC-SA");
+            csound.setMetadata("genre", "Electroacoustic");
+             if (soundfile === true) {
+                csound.setOutput("Black_Mountain.7d-1.wav", "wav", "float");
+            } else {
+                csound.setOutput("dac", "wav", "float");
+            }
+            if (typeof fs != 'undefined') {
+                fs.writeFileSync("Black_Mountain.7d-1-generated.csd", csd);
+            }
+            csound.compileCsdText(csd);
+            csound.message("Rendering...");
+            csound.start();
+            if (post_process == true) {
+                csound.performAndPostProcess();
+            } else {
+                csound.perform();
+            }
+            ///updateScoreTime();
+        }
+
+        var render_audio = function() {
+            render(false, false);
+        }
+
+        var render_soundfile = function() {
+            render(true, false);
+        }
+
+        var render_soundfile_and_postprocess = function() {
+            render(true, true);
+        }
+                
+        
         var parameters = {
             gk_Bower_pressure: 0.25,
             gk_Bower_level: 0.5,
@@ -1232,30 +1339,11 @@ endin
             gk_overlap: 0.05,
             gk_FM_Clang_preset: 1,
             gk_FM_Clang_level: 0,
-            Play: function() {
-                Silencio.saveDatGuiJson(gui);
-                csound.stop();
-                csound.setMessageCallback(csoundMessage);
-                csound.compileOrc(document.getElementById('orc').value);
-                csound.setOption('-m0');
-                ///csound.setOption('-j3');
-                csound.setOption('--nodisplays');
-                csound.setOption('-odac');
-                generate();
-                gui.revert();
-                csound.start();
-                csound.perform();
-                start_time_seconds = new Date().getTime() / 1000.0;
-                startTime = csound.getScoreTime();
-                setTimeout(updateTimeCell, 0);
-            },
-            Developer_tools: function() {
-                nwgui.Window.get().showDevTools();
-            },
-            Stop: function() {
-                Silencio.saveDatGuiJson(gui);
-                csound.stop();
-            },
+            generate: window.generate,
+            render_audio: window.render_audio,
+            render_soundfile: window.render_soundfile,
+            render_soundfile_and_postprocess: window.render_soundfile_and_postprocess,
+            stop: window.stop,
             Close: function() {
                 csound.stop();
                 Silencio.saveDatGuiJson(gui);
@@ -1268,8 +1356,8 @@ endin
     "Default": {
       "0": {
         "gk_overlap": 2.8396989919068556,
-        "gk_Reverb_Feedback": 0.8962799943206012,
-        "gk_Reverb2_Feedback": 0.8519096975720566,
+        "gk_Reverb_Feedback": 0.85,
+        "gk_Reverb2_Feedback": 0.8,
         "gk_MasterOutput_level": 16.32429797719947,
         "gk_FM_Clang_preset": 9,
         "gk_FM_Clang_level": 6,
@@ -1435,10 +1523,11 @@ endin
             }
             gui = new dat.GUI({load: default_json, width: 300});
             gui.remember(parameters);
-            gui.add(parameters, 'Play').name('Play [Ctrl-P]');
-            gui.add(parameters, 'Stop').name('Stop [Ctrl-S]');
-            gui.add(parameters, 'Developer_tools').name('Debug');
-            gui.add(parameters, 'Close').name('Close').name('Exit [Ctrl-X]');
+            gui.add(parameters, 'generate').name('Generate [Ctrl-G]');
+            gui.add(parameters, 'render_audio').name('Render audio [Ctrl-A]');
+            gui.add(parameters, 'render_soundfile').name('Render soundfile');
+            gui.add(parameters, 'render_soundfile_and_postprocess').name('Render/post [Ctrl-P]');
+            gui.add(parameters, 'stop').name('Stop [Ctrl-S]');
             var Master = gui.addFolder('Master effects');
             add_slider(Master, 'gk_overlap', 0, 20);
             add_slider(Master, 'gk_Reverb_Feedback', 0, 1);
