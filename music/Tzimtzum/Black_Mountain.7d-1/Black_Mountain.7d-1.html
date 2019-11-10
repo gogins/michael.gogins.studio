@@ -1272,13 +1272,14 @@ f 0 [ 9 * 60 + 10 ]
             }
             csound.compileCsdText(csd);
             csound.message("Rendering...");
+            gui.revert();
             csound.start();
             if (post_process == true) {
                 csound.performAndPostProcess();
             } else {
                 csound.perform();
             }
-            ///updateScoreTime();
+            updateScoreTime();
         }
 
         var render_audio = function() {
@@ -1293,6 +1294,11 @@ f 0 [ 9 * 60 + 10 ]
             render(true, true);
         }
                 
+        var updateScoreTime = function() {
+            var score_time = csound.getScoreTime();
+            setTimeout(updateScoreTime, 200);
+            lsys.score.progress3D(score_time);
+        };
         
         var parameters = {
             gk_Bower_pressure: 0.25,
