@@ -31,7 +31,7 @@ year = '2019'
 license = 'ASCAP'
 publisher = 'Irreducible Productions, ASCAP'
 notes = 'Electroacoustic Music'
-album = '-'
+album = 'Tzimtzum'
 track = '-'
 
 directory, basename = os.path.split(filepath)
@@ -113,6 +113,6 @@ mp4_command = '''ffmpeg -y -loop 1 -framerate 2 -i "%s" -i "%s" -c:v libx264 -pr
 mp4_command = mp4_command.replace('\\', '/')
 print 'mp4_command:            ', mp4_command
 subprocess.call(mp4_command, shell=True)
-subprocess.call('rm *wavuntagged.wav')
+subprocess.call('rm *wavuntagged.mp4')
 print
 

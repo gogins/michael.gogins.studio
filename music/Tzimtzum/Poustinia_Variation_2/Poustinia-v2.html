@@ -35,10 +35,13 @@
 <textarea id="console" style="position:absolute;left:1vw;top:1vw;width:50vw;height:98vh;color:SkyBlue;background-color:transparent;border:none;text-align:left;font-size:8.25px;overflow:auto;cursor:none;"></textarea>
 <script>
 var title = 'Poustinia v2'
-
-var fs = require("fs");
-var soundfile_name = "Poustinia-v2.wav";
-
+try {
+    var fs = require("fs");
+    var git = require('git-rev-sync');
+    var soundfile_name = sprintf("Poustinia-v2-%s.wav",  git.short());
+} catch(e) {
+    console.log(e);
+}
 window.onerror = function (message, url, line) {
   csound.message(message + '\n' + url + '\n' + line + '\n');
   console.trace();
@@ -152,7 +155,7 @@ var generate = function() {
 // 96 = dB, all colors
 // 256 = raw, out of range highlighted with red
 // 512 = raw, all colours    
-var play = function() {
+var render = function(soundfile, post_process) {
     var csd = document.getElementById('csd').value;
     var csound_score = lsys.score.toCsoundScore();
     csound_score = csound_score.concat("\n</CsScore>");
@@ -161,6 +164,7 @@ var play = function() {
     csound.setOption(sprintf('-m%d', 2 + 128 + 32));
     //csound.setOption('-j3');
     csound.setOption('--nodisplays');
+    csound.setOption('--keep-sorted-score');
     csound.setOption('-R');
     csound.setOption('-W');
     csound.setOption('-f');
@@ -178,12 +182,35 @@ var play = function() {
     csound.setMetadata("comment", "Lindenmayer system in chord space.");
     csound.setMetadata("license", "CC BY-NC-SA");
     csound.setMetadata("genre", "Electroacoustic");
-    csound.setOutput("Poustinia-v4.wav", "wav", "float");
-    fs.writeFileSync("Poustinia-v4-generated.csd", csd);
+     if (soundfile === true) {
+        csound.setOutput("Poustinia-v2.wav", "wav", "float");
+    } else {
+        csound.setOutput("dac", "wav", "float");
+    }
+    if (typeof fs != 'undefined') {
+        fs.writeFileSync("Poustinia-v2-generated.csd", csd);
+    }
     csound.compileCsdText(csd);
+    csound.message("Rendering...");
     csound.start();
-    csound.performAndPostProcess();
+    if (post_process == true) {
+        csound.performAndPostProcess();
+    } else {
+        csound.perform();
+    }
     updateScoreTime();
+}
+
+var render_audio = function() {
+    render(false, false);
+}
+
+var render_soundfile = function() {
+    render(true, false);
+}
+
+var render_soundfile_and_postprocess = function() {
+    render(true, true);
 }
 
 var stop = function() {
@@ -240,7 +267,9 @@ var parameters = {
     gk_MasterOutput_level: .4,
     gk_overlap: 0.05,
     generate: window.generate,
-    play: window.play,
+    render_audio: window.render_audio,
+    render_soundfile: window.render_soundfile,
+    render_soundfile_and_postprocess: window.render_soundfile_and_postprocess,
     stop: window.stop,
 };
 
@@ -369,8 +398,10 @@ window.onload = function() {
     }
     gui.remember(parameters);
     gui.add(parameters, 'generate').name('Generate [Ctrl-G]');
-    gui.add(parameters, 'play').name('Play [Ctrl-P]');
-    gui.add(parameters, 'stop').name('Stop {Ctrl-S]');
+    gui.add(parameters, 'render_audio').name('Render audio [Ctrl-A]');
+    gui.add(parameters, 'render_soundfile').name('Render soundfile');
+    gui.add(parameters, 'render_soundfile_and_postprocess').name('Render/post [Ctrl-P]');
+    gui.add(parameters, 'stop').name('Stop [Ctrl-S]');
     var Master = gui.addFolder('Master');
     add_slider(Master, 'gk_overlap', 0, 20);
     add_slider(Master, 'gk_Reverb_feedback', 0, 1);

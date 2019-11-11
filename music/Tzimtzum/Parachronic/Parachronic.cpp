@@ -69,7 +69,7 @@ int main(int argc, const char **argv)
     // These fields determine output filenames and ID 3 tags.
     model.setTitle("Parachronic");
     model.setFilename("Parachronic");
-    model.setAlbum("Silence");
+    model.setAlbum("Tzimtzum");
     model.setArtist("Michael Gogins");
     model.setAuthor("Michael Gogins");
     model.setCopyright("(C) 2018 by Michael Gogins");
