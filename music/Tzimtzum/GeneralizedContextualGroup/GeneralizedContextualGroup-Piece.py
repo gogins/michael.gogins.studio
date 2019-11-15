@@ -30,7 +30,7 @@ x   /home/mkg/Dropbox/2009-ICMC-MKG/mkg-2009-02-03-b.py:27
 x   /home/mkg/Dropbox/2009-ICMC-MKG/mkg-2009-02-03-c.py:28
 x   /home/mkg/Dropbox/2009-ICMC-MKG/mkg-2009-02-03-d.py:28
 x   /home/mkg/Dropbox/2010-ICMC-MKG/60x60/mkg-2009-12-30-1.py:707
-    /home/mkg/Dropbox/2010-ICMC-MKG/60x60/mkg-2009-12-30-10.py:674
+x   /home/mkg/Dropbox/2010-ICMC-MKG/60x60/mkg-2009-12-30-10.py:674
     /home/mkg/Dropbox/2010-ICMC-MKG/60x60/mkg-2009-12-30-11.py:674
     /home/mkg/Dropbox/2010-ICMC-MKG/60x60/mkg-2009-12-30-12.py:674
     /home/mkg/Dropbox/2010-ICMC-MKG/60x60/mkg-2009-12-30-2.py:707
@@ -45,11 +45,11 @@ x   /home/mkg/Dropbox/2010-ICMC-MKG/60x60/mkg-2009-12-30-1.py:707
 x   /home/mkg/Dropbox/2010-ICMC-MKG/mkg-2009-09-14-o/mkg-2009-09-14-o-1.py:707
     /home/mkg/Dropbox/2010-ICMC-MKG/mkg-2009-09-14-o/mkg-2009-09-14-o.py:707
     /home/mkg/Dropbox/2014-Vanderbilt_Planetarium-MKG/mkg-2009-09-14-o-1.py:707
-    /home/mkg/Dropbox/music/mkg-2010-03-16-e/mkg-2010-03-16-e-1.py:451
+x   /home/mkg/Dropbox/music/mkg-2010-03-16-e/mkg-2010-03-16-e-1.py:451
     /home/mkg/Dropbox/music/mkg-2010-03-16-e/mkg-2010-03-16-e.py:384
     /home/mkg/Dropbox/music/mkg-2010-06-07-1/mkg-2010-06-07-1.py:786
-    /home/mkg/Dropbox/studio/mkg-2009-09-14-o.py:707
-    /home/mkg/Dropbox/studio/mkg-2009-09-14-r.py:707
+x   /home/mkg/Dropbox/studio/mkg-2009-09-14-o.py:707
+x   /home/mkg/Dropbox/studio/mkg-2009-09-14-r.py:707
     /home/mkg/Dropbox/studio/mkg-2009-09-14-s.py:728
     /home/mkg/Dropbox/studio/01_workshop/mkg-2008-12-14-a.py:27
     /home/mkg/Dropbox/studio/01_workshop/mkg-2008-12-14-b.py:27
@@ -60,13 +60,158 @@ x   /home/mkg/Dropbox/2010-ICMC-MKG/mkg-2009-09-14-o/mkg-2009-09-14-o-1.py:707
     /home/mkg/Dropbox/studio/01_workshop/mkg-2009-01-01-a.py:27
     /home/mkg/Dropbox/studio/01_workshop/mkg-2009-01-10-a.py:27
     /home/mkg/Dropbox/studio/01_workshop/mkg-2009-01-10-b.py:27
-    /home/mkg/Dropbox/studio/01_workshop/mkg-2009-01-10-c.py:27
-    /home/mkg/michael.gogins.studio/music/Tzimtzum/GeneralizedContextualGroup/GeneralizedContextualGroup-Piece.py:28
+x   /home/mkg/Dropbox/studio/01_workshop/mkg-2009-01-10-c.py:27
+N/A /home/mkg/michael.gogins.studio/music/Tzimtzum/GeneralizedContextualGroup/GeneralizedContextualGroup-Piece.py:28
 N/A /home/mkg/michael.gogins.studio/music/Tzimtzum/GeneralizedContextualGroup/mkg-2009-01-10-b-1.py:28
-x   /home/mkg/michael.gogins.studio/music/Tzimtzum/GeneralizedContextualGroup/mkg-2009-01-10-b.py:27
+x   /home/mkg/michael.gogins.studio/music/Tzimtzum/GeneralizedContextualGroup/mkg-2009-01-10        # -b.py:27
 '''
 
 class Composition(object):
+    def generate(self):
+        self.sequence = CsoundAC.Sequence()
+        self.model.addChild(self.sequence)
+        self.generate11()
+        self.generate10()
+        #~ self.generate9()
+        #~ self.generate8()
+        #~ self.generate7()
+        #~ self.generate6()
+        #~ self.generate5()
+        #~ self.generate4()
+        #~ self.generate3()
+        #~ self.generate2()
+        #~ self.generate1()
+        print
+    def generate11(self):
+        # mkg-2009-09-14-r
+        gcg = GeneralizedContextualGroup.GeneralizedContextualGroup()
+        gcg.thisown = 0
+        
+        gcg.avoidParallelFifths=True
+        # Ends on Cm9.
+        gcg.setAxiom('pcs1 V+47 WC R45 a3 seq R50 a4 seq R55 a3 seq R60 a4 seq R65 a3 ')
+        gcg.addRule('pcs1', 'P(0,4,7,11,14)')
+
+        gcg.addRule('a3',   'a3k a3q a3 a3')
+        gcg.addRule('a3k',  'K  WV')
+        gcg.addRule('a3q',  'Q2 K D/1.25 WV Q7 D*1.25 WC')
+
+        gcg.addRule('a4',   'L*2 a4k a4q D/1.25 a4 D/1.25 a4 D*1.25 D*1.25 L/2')
+        gcg.addRule('a4k',  'K  WV')
+        gcg.addRule('a4q',  'Q4 WV Q4 K V+4 WC')
+
+        gcg.addRule('seq',  'L/5 D/6 Q-1 WV Q-1 WV Q-1 WV Q-1 L*5 D*6')
+
+        gcg.setIterationCount(2)
+        gcg.debug = True
+        gcg.generate()
+        rescale = CsoundAC.Rescale()
+        rescale.thisown = 0
+        ### rescale.setRescale( CsoundAC.Event.TIME,       True, False, (1.0 / 40.0), 120    )
+        rescale.setRescale( CsoundAC.Event.TIME,       True, False,  4,           120    )
+        rescale.setRescale( CsoundAC.Event.INSTRUMENT, True, False,  1,             3.99 )
+        rescale.setRescale( CsoundAC.Event.KEY,        True, False, 37,            36    )
+        rescale.setRescale( CsoundAC.Event.VELOCITY,   True, True,  43,            17    )
+        rescale.setRescale( CsoundAC.Event.PAN,        True, True,   0.05,          0.9  )
+        rescale.addChild(gcg)
+        self.sequence.addChild(rescale)
+        print
+        
+    def generate10(self):
+        # mkg-2009-09-14-o
+        gcg = GeneralizedContextualGroup.GeneralizedContextualGroup()
+        gcg.thisown = 0
+        # Ends on Cm9.
+        gcg.setAxiom('pcs1 V+47 WC R45 a3 Q5 R50 a4 R55 a3 R60 a4 R65 a3 ')
+        gcg.addRule('pcs1', 'P(0,4,7,11,14)')
+
+        gcg.addRule('a3',   'a3k a3q a3 a3')
+        gcg.addRule('a3k',  'K  WV')
+        gcg.addRule('a3q',  'Q3 K D/1.25 WV Q3 V+1 D*1.25 WC')
+
+        gcg.addRule('a4',   'L*2 a4k a4q D/1.25 a4 D/1.25  a4 D*1.25 D*1.25 L/2')
+        gcg.addRule('a4k',  'K  WV')
+        gcg.addRule('a4q',  'Q4 WV Q4 K V+4 WC')
+
+        ### gcg.setIterationCount(2)
+        gcg.setIterationCount(4)
+        gcg.debug = True
+        gcg.generate()
+        rescale = CsoundAC.Rescale()
+        rescale.thisown = 0
+        ### rescale.setRescale( CsoundAC.Event.TIME,       True, False, (1.0 / 40.0), 120    )
+        rescale.setRescale( CsoundAC.Event.TIME,       True, False,  1,           120    )
+        rescale.setRescale( CsoundAC.Event.INSTRUMENT, True, False,  1,             3.99 )
+        rescale.setRescale( CsoundAC.Event.KEY,        True, False, 37,            36    )
+        rescale.setRescale( CsoundAC.Event.VELOCITY,   True, True,  43,            17    )
+        rescale.setRescale( CsoundAC.Event.PAN,        True, True,   0.05,          0.9  )
+        rescale.addChild(gcg)
+        self.sequence.addChild(rescale)
+        print
+            
+    def generate9(self):
+        # mkg-2009-01-10-c
+        gcg = GeneralizedContextualGroup.GeneralizedContextualGroup()
+        gcg.thisown = 0
+        gcg.setAxiom('S(0,3,7,11,14) R48 WV B')
+        gcg.addRule('A', 'V+8 K WV Q7 K D-1.5 WC V+9 WC V-7 WC V+11 A D-3 B D+3 D+1.5 L+ K WV A L- Q7 WV A')
+        gcg.addRule('B', 'V+8 WC V-7 WC V+8 WC V-7 WC V+8 WC V-7 WC B B B K WV V+8 WC V-7 WC B B B Q7 WV V+8 WC V-7 WC B B B')
+        gcg.setIterationCount(3)
+        gcg.debug = True
+        gcg.generate()
+        random = CsoundAC.Random()
+        random.thisown = 0
+        random.createDistribution("uniform_real")
+        random.setElement(7, 11, 1)
+        rescale = CsoundAC.Rescale()
+        rescale.thisown = 0
+        # rescale.setRescale( CsoundAC.Event.TIME,       True, False,  1,     120    )
+        rescale.setRescale( CsoundAC.Event.TIME,       True,  False,  4,     120    )
+        rescale.setRescale( CsoundAC.Event.DURATION,   False, False,  0.25,    1.0  )
+        rescale.setRescale( CsoundAC.Event.INSTRUMENT, True,  False,  1,       0    )
+        rescale.setRescale( CsoundAC.Event.KEY,        True,  False, 48,       36   )
+        rescale.setRescale( CsoundAC.Event.VELOCITY,   True,  True,  15,       12   )
+        rescale.setRescale( CsoundAC.Event.PAN,        True,  True,  -0.875,   1.75 )
+        # random.addChild(lindenmayer)
+        rescale.addChild(gcg)
+        self.sequence.addChild(rescale)
+        print
+
+    def generate8(self):
+        # mkg-2009-12-30-10
+        gcg = GeneralizedContextualGroup.GeneralizedContextualGroup()
+        gcg.avoidParallelFifths = True
+
+        gcg.setAxiom('pcs1 R66 WC V+11 WC V-2 WC a3 dd a4 dd L*2 a3 L/2 arp1 dd K D*1.875 L/4 a4 arp2 dd dd')
+        gcg.addRule( 'pcs1', 'P(0,4,7,14)')
+
+        gcg.addRule('a3',   'a3k a3q a3 a3 ') 
+        gcg.addRule('a3k',  'K  arp WV WC ')
+        gcg.addRule('a3q',  'Q7     WV K D/1.245 WV arp1 V+2 D*1.25 V+5 WC WC ')
+
+        gcg.addRule('a4',   'L*2 a4k a4q D/1.28 a4 arp a3 D/1.25 a3k a4 D*1.25 D*1.25 L/2 WC ')
+        gcg.addRule('a4k',  'K  WV ')
+        gcg.addRule('a4q',  'Q3 WV K V+1 WC')
+        
+        gcg.addRule('arp',  'V+18 WC V-21 WC ') 
+        gcg.addRule('arp1', 'L/2 D/2.125 Q5 WV Q5 WV Q5 WV Q5 WV D*2.125 L*2') 
+        gcg.addRule('arp2', 'L/2 D/2.125 Q5 WV Q5 WV Q5 WV Q5 WV Q5 WV Q5 WV D*2.125 L*2') 
+        gcg.addRule('dd',   'WV WV ') 
+
+        gcg.setIterationCount(3)
+        gcg.debug = True
+        gcg.generate()
+        rescale = CsoundAC.Rescale()
+        ### rescale.setRescale( CsoundAC.Event.TIME,       True, False, (1.0 / 40.0), 120     )
+        rescale.setRescale( CsoundAC.Event.TIME,       True, False, 4,            120     )
+        rescale.setRescale( CsoundAC.Event.INSTRUMENT, True, True,  1,              0     )
+        rescale.setRescale( CsoundAC.Event.KEY,        True, False, 37,            36     )
+        rescale.setRescale( CsoundAC.Event.VELOCITY,   True, True,  25,            40     )
+        rescale.setRescale( CsoundAC.Event.PAN,        True, True,  -0.9,           1.8   )
+        rescale.addChild(gcg)
+        self.sequence.addChild(rescale)
+        print
+
     def generate7(self):
         # mkg-2009-12-30-1
         gcg = GeneralizedContextualGroup.GeneralizedContextualGroup()
@@ -361,20 +506,7 @@ class Composition(object):
         rescale.addChild(gcg)
         self.sequence.addChild(rescale)
         print
-    
-    def generate(self):
-        self.sequence = CsoundAC.Sequence()
-        self.model.addChild(self.sequence)
-        self.generate7()
-        self.generate6()
-        self.generate5()
-        self.generate4()
-        self.generate3()
-        self.generate2()
-        self.generate1()
-        print
-        
-        
+
     def arrange(self):
         print('CREATING CSOUND ARRANGEMENT...')
         print
