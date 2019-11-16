@@ -68,10 +68,12 @@ x   /home/mkg/michael.gogins.studio/music/Tzimtzum/GeneralizedContextualGroup/mk
 
 class Composition(object):
     def generate(self):
+        # mkg-2009-09-14-s        
         self.sequence = CsoundAC.Sequence()
         self.model.addChild(self.sequence)
-        self.generate11()
-        self.generate10()
+        self.generate12()
+        #~ self.generate11()
+        #~ self.generate10()
         #~ self.generate9()
         #~ self.generate8()
         #~ self.generate7()
@@ -82,6 +84,38 @@ class Composition(object):
         #~ self.generate2()
         #~ self.generate1()
         print
+    def generate12(self):
+        gcg = GeneralizedContextualGroup.GeneralizedContextualGroup()
+        gcg.thisown = 0
+        gcg.avoidParallelFifths=True
+        gcg.setAxiom('pcs1 V+47 WC R48 a3 seq a4 seq a3 seq a4 seq a3 ')
+        gcg.addRule('pcs1', 'P(0,4,7,11,14)')
+
+        gcg.addRule('a3',   'a3k a3q a3 a3')
+        gcg.addRule('a3k',  'K  WV')
+        gcg.addRule('a3q',  'Q2 K D/1.25 WV Q7 D*1.25 WC')
+
+        gcg.addRule('a4',   'L*2 a4k a4q D/1.25 a4 D/1.25 a4 D*1.25 D*1.25 L/2')
+        gcg.addRule('a4k',  'K  WV')
+        gcg.addRule('a4q',  'Q4 WV Q4 K V+4 WC')
+
+        gcg.addRule('seq',  'L/5 D/2 Q-1 WV Q-1 WV Q-1 WV Q-1 L*5 D*2')
+
+        gcg.setIterationCount(7)
+        gcg.debug = True
+        gcg.generate()
+        rescale = CsoundAC.Rescale()
+        rescale.thisown = 0
+        ### rescale.setRescale( CsoundAC.Event.TIME,       True, False, (1.0 / 40.0), 120    )
+        rescale.setRescale( CsoundAC.Event.TIME,       True, False,  4,           120    )
+        rescale.setRescale( CsoundAC.Event.INSTRUMENT, True, True,   1,             0    )
+        rescale.setRescale( CsoundAC.Event.KEY,        True, False, 42,            36    )
+        rescale.setRescale( CsoundAC.Event.VELOCITY,   True, True,  43,            17    )
+        rescale.setRescale( CsoundAC.Event.PAN,        True, True,   0.05,          0.9  )
+        rescale.addChild(gcg)
+        self.sequence.addChild(rescale)
+        print
+
     def generate11(self):
         # mkg-2009-09-14-r
         gcg = GeneralizedContextualGroup.GeneralizedContextualGroup()
