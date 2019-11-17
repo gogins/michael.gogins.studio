@@ -54,12 +54,12 @@ x   /home/mkg/Dropbox/studio/mkg-2009-09-14-s.py:728
     /home/mkg/Dropbox/studio/01_workshop/mkg-2008-12-14-a.py:27
     /home/mkg/Dropbox/studio/01_workshop/mkg-2008-12-14-b.py:27
     /home/mkg/Dropbox/studio/01_workshop/mkg-2008-12-17-a.py:27
-    /home/mkg/Dropbox/studio/01_workshop/mkg-2008-12-24-a.py:27
-    /home/mkg/Dropbox/studio/01_workshop/mkg-2008-12-25-a.py:27
+x   /home/mkg/Dropbox/studio/01_workshop/mkg-2008-12-24-a.py:27
+x   /home/mkg/Dropbox/studio/01_workshop/mkg-2008-12-25-a.py:27
 x   /home/mkg/Dropbox/studio/01_workshop/mkg-2008-12-25-b.py:27
-    /home/mkg/Dropbox/studio/01_workshop/mkg-2009-01-01-a.py:27
-    /home/mkg/Dropbox/studio/01_workshop/mkg-2009-01-10-a.py:27
-    /home/mkg/Dropbox/studio/01_workshop/mkg-2009-01-10-b.py:27
+x   /home/mkg/Dropbox/studio/01_workshop/mkg-2009-01-01-a.py:27
+x   /home/mkg/Dropbox/studio/01_workshop/mkg-2009-01-10-a.py:27
+x   /home/mkg/Dropbox/studio/01_workshop/mkg-2009-01-10-b.py:27
 x   /home/mkg/Dropbox/studio/01_workshop/mkg-2009-01-10-c.py:27
 N/A /home/mkg/michael.gogins.studio/music/Tzimtzum/GeneralizedContextualGroup/GeneralizedContextualGroup-Piece.py:28
 N/A /home/mkg/michael.gogins.studio/music/Tzimtzum/GeneralizedContextualGroup/mkg-2009-01-10-b-1.py:28
@@ -71,7 +71,11 @@ class Composition(object):
         # mkg-2009-09-14-s        
         self.sequence = CsoundAC.Sequence()
         self.model.addChild(self.sequence)
-        self.generate14()
+        self.generate18()
+        #~ self.generate17()
+        #~ self.generate16()
+        #~ self.generate15()
+        #~ self.generate14()
         #~ self.generate13()
         #~ self.generate12()
         #~ self.generate11()
@@ -86,6 +90,117 @@ class Composition(object):
         #~ self.generate2()
         #~ self.generate1()
         print
+        
+    def generate18(self):
+        # mkg-2009-12-24-a
+        gcg = GeneralizedContextualGroup.GeneralizedContextualGroup()
+        gcg.thisown = 0
+        gcg.setAxiom('S(0,4,7,10) R36 V+ V+8 WV V-6 WV B')
+        gcg.addRule('B', 'B Q2 WV V+2 W Q2 WV V+1 W V+3 V+ WV V-3 Q7 WV D- WV Q5 D+ D+ WV K D- D- B D+')
+        gcg.setIterationCount(7)
+        gcg.debug = True
+        gcg.generate()
+        random = CsoundAC.Random()
+        random.thisown = 0
+        random.createDistribution("uniform_real")
+        random.setElement(7, 11, 1)
+        rescale = CsoundAC.Rescale()
+        rescale.thisown = 0
+        ### rescale.setRescale( CsoundAC.Event.TIME,       1, 0,  1,     120    )
+        rescale.setRescale( CsoundAC.Event.TIME,       True,  False,  4,     120    )
+        rescale.setRescale( CsoundAC.Event.DURATION,   False, False,  0.25,    1.0  )
+        rescale.setRescale( CsoundAC.Event.INSTRUMENT, True,  False,  1,       0    )
+        rescale.setRescale( CsoundAC.Event.KEY,        True,  False, 42,       36   )
+        rescale.setRescale( CsoundAC.Event.VELOCITY,   True,  True,  30,       12   )
+        rescale.setRescale( CsoundAC.Event.PAN,        True,  True,  -0.875,   1.75 )
+        # random.addChild(lindenmayer)
+        rescale.addChild(gcg)
+        self.sequence.addChild(rescale)
+        print
+        
+        
+    def generate17(self):
+        # mkg-2009-12-25-a
+        gcg = GeneralizedContextualGroup.GeneralizedContextualGroup()
+        gcg.thisown = 0
+        gcg.setAxiom('S(0,4,7) R36 WC A')
+        gcg.addRule('A', 'K WC Q7 K WC A')
+        gcg.setIterationCount(9)
+        gcg.debug = True
+        gcg.generate()
+        random = CsoundAC.Random()
+        random.thisown = 0
+        random.createDistribution("uniform_real")
+        random.setElement(7, 11, 1)
+        rescale = CsoundAC.Rescale()
+        rescale.thisown = 0
+        ### rescale.setRescale( CsoundAC.Event.TIME,       True, False,  1,     120    )
+        rescale.setRescale( CsoundAC.Event.TIME,       True,  False,  4,     120    )
+        rescale.setRescale( CsoundAC.Event.DURATION,   False, False,  0.25,    1.0  )
+        rescale.setRescale( CsoundAC.Event.INSTRUMENT, True,  False,  1,       0    )
+        rescale.setRescale( CsoundAC.Event.KEY,        True,  False, 60,       36   )
+        rescale.setRescale( CsoundAC.Event.VELOCITY,   True,  True,  30,       12   )
+        rescale.setRescale( CsoundAC.Event.PAN,        True,  True,  -0.875,   1.75 )
+        # random.addChild(lindenmayer)
+        rescale.addChild(gcg)
+        self.model.addChild(rescale)
+        print
+        
+    def generate16(self):
+        # mkg-2009-01-01-a
+        gcg = GeneralizedContextualGroup.GeneralizedContextualGroup()
+        gcg.thisown = 0
+        gcg.setAxiom('S(0,4,7,10,14) R36 WV A')
+        gcg.addRule('A', 'V+8 K WV Q7 K D-2 WC V+9 WC V-7 WC V+11 A D+2 L- A L+ Q2 WV A')
+        gcg.setIterationCount(5)
+        gcg.debug = True
+        gcg.generate()
+        random = CsoundAC.Random()
+        random.thisown = 0
+        random.createDistribution("uniform_real")
+        random.setElement(7, 11, 1)
+        rescale = CsoundAC.Rescale()
+        rescale.thisown = 0
+        ### rescale.setRescale( CsoundAC.Event.TIME,       True, False,  1,     120    )
+        rescale.setRescale( CsoundAC.Event.TIME,       True,  False,  4,     120    )
+        rescale.setRescale( CsoundAC.Event.DURATION,   False, False,  0.25,    1.0  )
+        rescale.setRescale( CsoundAC.Event.INSTRUMENT, True,  False,  1,       0    )
+        rescale.setRescale( CsoundAC.Event.KEY,        True,  False, 60,       36   )
+        rescale.setRescale( CsoundAC.Event.VELOCITY,   True,  True,  15,       12   )
+        rescale.setRescale( CsoundAC.Event.PAN,        True,  True,  -0.875,   1.75 )
+        # random.addChild(lindenmayer)
+        rescale.addChild(gcg)
+        self.sequence.addChild(rescale)
+        print
+
+    
+    def generate15(self):
+        # mkg-2009-01-10-a
+        gcg = GeneralizedContextualGroup.GeneralizedContextualGroup()
+        gcg.thisown = 0
+        gcg.setAxiom('S(0,3,7,11,14) R36 WV A')
+        gcg.addRule('A', 'V+8 K WV Q7 K D-1.5 WC V+9 WC V-7 WC V+11 A D+1.5 L+ K WV A L- Q7 WV A')
+        gcg.setIterationCount(5)
+        gcg.debug = True
+        gcg.generate()
+        random = CsoundAC.Random()
+        random.thisown = 0
+        random.createDistribution("uniform_real")
+        random.setElement(7, 11, 1)
+        rescale = CsoundAC.Rescale()
+        rescale.thisown = 0
+        ### rescale.setRescale( CsoundAC.Event.TIME,       True, False,  1,     120    )
+        rescale.setRescale( CsoundAC.Event.TIME,       True,  False,  4,     120    )
+        rescale.setRescale( CsoundAC.Event.DURATION,   False, False,  0.25,    1.0  )
+        rescale.setRescale( CsoundAC.Event.INSTRUMENT, True,  False,  1,       0    )
+        rescale.setRescale( CsoundAC.Event.KEY,        True,  False, 60,       36   )
+        rescale.setRescale( CsoundAC.Event.VELOCITY,   True,  True,  15,       12   )
+        rescale.setRescale( CsoundAC.Event.PAN,        True,  True,  -0.875,   1.75 )
+        # random.addChild(lindenmayer)
+        rescale.addChild(gcg)
+        self.sequence.addChild(rescale)
+        print
+
         
     def generate14(self):
         # mkg-2009-01-10-b
