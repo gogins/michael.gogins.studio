@@ -184,7 +184,7 @@ class Composition(object):
         gcg.thisown = 0
         gcg.setAxiom('S(0,3,7,11,14) R36 WV A')
         ###gcg.addRule('A', 'V+8 K WV Q7 K D-1.5 WC V+9 WC V-7 WC V+11 A D+1.5 L+ K WV A L- Q7 WV A WV ')
-        gcg.addRule('A', 'V+8 K WV Q7 K D-1.5 WC V+9 WC V-7 WC V+11 A D+1.5 L+ K WV A L- Q-7 WV A T-2 WV ')
+        gcg.addRule('A', 'V+8 K WV Q7 K D-1.5 WC V+9 WC V-7 WC V+11 A D+1.5 L+ K WV A L- Q-7 WV A T-2 WV WV ')
         ###gcg.setIterationCount(5)
         gcg.setIterationCount(3)
         gcg.debug = True
@@ -196,7 +196,7 @@ class Composition(object):
         rescale = CsoundAC.Rescale()
         rescale.thisown = 0
         ### rescale.setRescale( CsoundAC.Event.TIME,       True, False,  1,     120    )
-        rescale.setRescale( CsoundAC.Event.TIME,       True,  False,  5,     120    )
+        rescale.setRescale( CsoundAC.Event.TIME,       True,  False,  3,     120    )
         rescale.setRescale( CsoundAC.Event.DURATION,   False, False,  0.25,    1.0  )
         ###rescale.setRescale( CsoundAC.Event.INSTRUMENT, True,  False,  1,       0    )
         rescale.setRescale( CsoundAC.Event.INSTRUMENT, True,  True,   1,       0    )
@@ -466,15 +466,9 @@ class Composition(object):
         gcg = GeneralizedContextualGroup.GeneralizedContextualGroup()
         gcg.thisown = 0
     ### gcg.setAxiom('R48 D/4 pcs1 ar1 a1 c dD+ pcs2 ar2 a2 c dD- pcs3 ar3 a3 c pcs4 ar4 a4 c a4 pcs3 c dD- ar3 a3 c pcs2 ar2 a2 c pcs1 dD+ ar1 a1 c c')
-        gcg.setAxiom('R48 D/4 pcs1     T3 c dD+ pcs2 ar2 a2 c dD- pcs3 ar3    c pcs4 ar4 a4 c    pcs3 c dD- ar3 a3 c pcs2 ar2      pcs1 dD+ ar1 T-1 d ')
-        #gcg.addRule('dD+',  'D*1.01 dD+')
-        #gcg.addRule('dD-',  'D/1.01 dD-')
+        gcg.setAxiom('R48 D/4 pcs1     T5 c dD+ pcs2     a2 c dD- pcs3        c pcs4     a4 c    pcs3 c dD-     a3 c pcs2 ar2      pcs1 dD+     T-1 d ')
         gcg.addRule('dL+',  'L*1.02 dL+')
         gcg.addRule('dL-',  'L/1.02 dL-')
-        gcg.addRule('ar1',  'I0=0 I1=1  I2=10 I3=11 I4=4 I5=5')
-        gcg.addRule('ar2',  'I0=0 I1=1  I2=2  I3=3  I4=4 I5=5')
-        gcg.addRule('ar3',  'I0=2 I1=3  I2=12 I3=13 I4=4 I5=5')
-        gcg.addRule('ar4',  'I0=2 I1=12 I2=4  I3=15 I4=3 I5=3')
         gcg.addRule('c',    'd d')
         # Quartal
         gcg.addRule('pcs1', 'P(0,5,10,15)')
@@ -488,17 +482,16 @@ class Composition(object):
         gcg.addRule('a1',   'ck1 dD- cq1 a1 a1')
         gcg.addRule('ck1',  'K     WV      WV      WV      WV      WV      WV      WV      WV ')
         gcg.addRule('cq1',  'Q7 K  WV      WV      WV      WV      WV      WV      WV      WV ')
-        ###gcg.addRule('a2',   'dL+ ck2 dL- cq2 a2 a2')
         gcg.addRule('ck2',  'K     WV      WV      WV dD+  WV V+8  WC      WC      WC      WC ')
         gcg.addRule('cq2',  'Q1 K  WV      WV      WV dD-  WV V+8  WV      WV      WV      WV ')
         gcg.addRule('a3',   'ck3 dL+ cq3 dL- a3 a3 ')
         gcg.addRule('ck3',  'K     WV      WV V+5  WC      WC V+1  WC dL-  WC V+5  WC      WC ')
         gcg.addRule('cq3',  'Q5 K  WV      WV V+5  WC      WC Q7   WV dL+  WV V+5  WC      WC ')
-        ###gcg.addRule('a4',   'ck4 dD- cq4 a4 dD+ a4')
         gcg.addRule('ck4',  'K     WV V+1  WC V+1  WC V+1  WC V+1  WC V+1  WC V+1  WC V+1  WC ')
         gcg.addRule('cq4',  'Q3 K  WV V+1  WV V+1  WC      WC V+1  WC V+1  WC V+1  WC V+1  WC ')
         gcg.setIterationCount(5)
         gcg.debug = True
+        gcg.generate()
         gcg.generate()
         random = CsoundAC.Random()
         random.thisown = 0
@@ -507,7 +500,7 @@ class Composition(object):
         rescale = CsoundAC.Rescale()
         rescale.thisown = 0
         ### rescale.setRescale( CsoundAC.Event.TIME,       1, 0,  1,     120    )
-        rescale.setRescale( CsoundAC.Event.TIME,       True,  False,  6,     120    )
+        rescale.setRescale( CsoundAC.Event.TIME,       True,  False,  4,     120    )
         rescale.setRescale( CsoundAC.Event.DURATION,   False, False,  0.25,    1.0  )
         rescale.setRescale( CsoundAC.Event.INSTRUMENT, True,  True,   3,       0    )
         rescale.setRescale( CsoundAC.Event.KEY,        True,  False, 39,       36   )
@@ -786,7 +779,7 @@ endin
         print('RENDERING...')
         print
         self.model.setCsoundCommand(self.csoundCommand)
-        self.model.setCsoundScoreHeader("f 0 300\n")
+        self.model.setCsoundScoreHeader("f 0 303\n")
         ### self.score.setDuration(9. * 60.)
         self.model.generate()
         print(self.model.getScore().getCsoundScore())
