@@ -466,7 +466,7 @@ class Composition(object):
         gcg = GeneralizedContextualGroup.GeneralizedContextualGroup()
         gcg.thisown = 0
     ### gcg.setAxiom('R48 D/4 pcs1 ar1 a1 c dD+ pcs2 ar2 a2 c dD- pcs3 ar3 a3 c pcs4 ar4 a4 c a4 pcs3 c dD- ar3 a3 c pcs2 ar2 a2 c pcs1 dD+ ar1 a1 c c')
-        gcg.setAxiom('R48 D/4 pcs1     T5 c dD+ pcs2     a2 c dD- pcs3        c pcs4     a4 c    pcs3 c dD-     a3 c pcs2          pcs1 dD+      d ')
+        gcg.setAxiom('R48 D/4 pcs1     T5 c dD+ pcs2     a2 c dD- pcs3        c pcs4     a4 c    pcs4 c dD-     a3 c pcs2          pcs1 dD+      d ')
         gcg.addRule('dL+',  'L*1.02 dL+')
         gcg.addRule('dL-',  'L/1.02 dL-')
         gcg.addRule('c',    'd d')
