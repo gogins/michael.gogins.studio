@@ -486,8 +486,8 @@ class Composition(object):
         gcg.addRule('cq2',  'Q1 K  WV      WV      WV dD-  WV V+1  WV      WV      WV      WV ')
         gcg.addRule('a3',   'ck3 dL+ cq3 dL- a3 cq3 a3 ')
         gcg.addRule('ck3',  'K     WV      WV V+1  WC      WC V-1  WC dL-  WC V+2  WC      WC ')
-        gcg.addRule('cq3',  'Q5 K  WV      WV V+2  WC      WC Q7   WV dL+  WV V+1  WC      WV ')
-        gcg.addRule('ck4',  'K     WV V+1  WC V-2  WC V+1  WC V+1  WC V+3  WC V+1  WC V+1  WC ')
+        gcg.addRule('cq3',  'Q5 K  WV      WV V+2  WC      WC Q7   WV dL+  WV V+8  WC      WV ')
+        gcg.addRule('ck4',  'K     WV V+1  WC V-2  WC V+1  WC V+1  WC V*3  WC V+1  WC V+1  WC ')
         gcg.addRule('cq4',  'Q3 K  WV V+1  WV V+1  WC      WC V+1  WC V+1  WC V+1  WC V+2  WC ')
         gcg.setIterationCount(5)
         gcg.debug = True
@@ -737,7 +737,7 @@ nchnls = 2
 
 alwayson "aeolus_output"
 
-gi_aeolus aeolus_init "stops-0.3.0", "Aeolus", "waves", 0, 20, 0
+gi_aeolus aeolus_init "stops-0.3.0", "Aeolus", "waves", 0, 30, 0
 
 instr aeolus_note, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
 insnum = floor(p1)
