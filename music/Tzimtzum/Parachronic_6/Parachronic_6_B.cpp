@@ -67,11 +67,12 @@ int main(int argc, const char **argv)
 {
     csound::MusicModel model;
     // These fields determine output filenames and ID 3 tags.
-    model.setTitle("\"Parachronic_6_B\"");
+    model.setTitle("Parachronic_6_B");
     model.setFilename("Parachronic_6_B");
     model.setAlbum("Silence");
-    model.setArtist("\"Michael Gogins\"");
-    model.setCopyright("\"(C) 2018 by Michael Gogins\"");
+    model.setArtist("Michael Gogins");
+    model.setAuthor("Michael Gogins");
+    model.setCopyright("(C) 2019 by Michael Gogins");
 
     std::vector<std::function<csound::Event(const csound::Event &, int, csound::Score &, csound::VoiceleadingNode &)>> generators;
 
