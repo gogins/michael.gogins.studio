@@ -397,10 +397,10 @@ gkMasterLevel                   init                    1.5
                                 alwayson                "ParametricEq2"
                                 alwayson                "MasterOutput"
 
-#include "BanchoffKleinBottle.inc"
-#include "BandedWG.inc"                               
-#include "BassModel.inc"                        
-#include "ChebyshevPoly.inc"
+#include "silencio/patches/BanchoffKleinBottle.inc"
+#include "silencio/patches/BandedWG.inc"                               
+#include "silencio/patches/BassModel.inc"                        
+#include "silencio/patches/ChebyshevPoly.inc"
 
                                 instr                   ChebyshevMelody
                                 ///////////////////////////////////////////////////////

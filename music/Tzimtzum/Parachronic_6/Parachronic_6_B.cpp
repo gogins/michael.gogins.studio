@@ -69,7 +69,7 @@ int main(int argc, const char **argv)
     // These fields determine output filenames and ID 3 tags.
     model.setTitle("Parachronic_6_B");
     model.setFilename("Parachronic_6_B");
-    model.setAlbum("Silence");
+    model.setAlbum("Tzimtzum");
     model.setArtist("Michael Gogins");
     model.setAuthor("Michael Gogins");
     model.setCopyright("(C) 2019 by Michael Gogins");
@@ -109,6 +109,12 @@ int main(int argc, const char **argv)
         pen[csound::Event::VELOCITY] =      2.0;                        
         pen[csound::Event::PAN] =           .675;
         score.append(pen);
+        if (depth == 2) {
+            voiceleadingNode.Q(pen[csound::Event::TIME], -5);
+        }
+        if (depth == 3) {
+            voiceleadingNode.K(pen[csound::Event::TIME]);
+        }
         return pen;
     };
     generators.push_back(g2);
@@ -134,17 +140,12 @@ int main(int argc, const char **argv)
         if (depth <= 0) {
             return pen;
         }
-        pen[csound::Event::TIME] =          (pen[csound::Event::TIME] *   0.7900) +  0.2800;
+        //pen[csound::Event::TIME] =          (pen[csound::Event::TIME] *   0.7900) +  0.2800;
+        pen[csound::Event::TIME] =          (pen[csound::Event::TIME] *   0.7900) -  0.2800;
         pen[csound::Event::KEY] =           (pen[csound::Event::KEY]  *   0.5100) -  4.2500;
         pen[csound::Event::INSTRUMENT] =    4.0 * 4.5 + double(depth % 4);
         pen[csound::Event::VELOCITY] =      2.0;
         pen[csound::Event::PAN] =           -.875;
-        if (depth == 2) {
-            voiceleadingNode.Q(pen[csound::Event::TIME], -5);
-        }
-        if (depth == 3) {
-            voiceleadingNode.K(pen[csound::Event::TIME]);
-        }
         return pen;
     };
     generators.push_back(g4);
