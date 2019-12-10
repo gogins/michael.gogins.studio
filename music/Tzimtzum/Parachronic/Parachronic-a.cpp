@@ -3443,7 +3443,8 @@ prints "MasterOutput   i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", 
     model.arrange( 8, 16,  7.00);
     model.arrange( 9, 13, 54.00);
     model.arrange(10, 11,  3.00);
-    model.arrange(11, 14,  5.00); 
+    ///model.arrange(11, 14,  5.00); 
+    model.arrange(11, 14,  6.50); 
     model.arrange(12,  4, 64.00);
     model.processArgv(argc, argv);
 }
