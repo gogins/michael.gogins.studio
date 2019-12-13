@@ -5,7 +5,7 @@ Copyright (C) 2014 by Michael Gogins.
 All rights reserved.
 </CsLicense>
 <CsOptions>
--oRWDfo Drone-VIII-e-1.wav -m227 --midi-key=4 --midi-velocity=5 -+id_artist=Michael_Gogins -+id_copyright=Copr_2019_Michael_Gogins -+id_title=Drone-VIII-e-1 
+-RWDfo Drone-VIII-e-1.wav -m227 --midi-key=4 --midi-velocity=5 -+id_artist=Michael_Gogins -+id_copyright=Copr_2019_Michael_Gogins -+id_title=Drone-VIII-e-1 
 </CsOptions>
 <CsInstruments>
 sr = 96000
@@ -534,8 +534,8 @@ outs aleft, aright
 idate date
 Sfilename sprintf "Drone-VIII-e-1-%d.wav", idate
 prints sprintf("Filename: %s\n", Sfilename)
-fout Sfilename, 16, aleft, aright
-dispfft aleft + aright, 0.1, 2048, 0, 1
+//fout Sfilename, 16, aleft, aright
+//dispfft aleft + aright, 0.1, 2048, 0, 1
 endin
 
 instr Controls
@@ -572,7 +572,7 @@ endin
 
 </CsInstruments>
 <CsScore>
-f 0 430
+f 0 [6 * 60 + 33]
 </CsScore>
 </CsoundSynthesizer>
 

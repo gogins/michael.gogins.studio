@@ -211,6 +211,7 @@ int main(int argc, const char **argv)
     score.tieOverlappingNotes(true);
     score.sort();
     std::cout << "Final duration:         " << score.getDuration() << std::endl;
+    model.setCsoundScoreHeader("i 999 [ 9 * 60 + 57 ] .1\n");
 
     model.setCsoundOrchestra(R"(
 
@@ -404,6 +405,8 @@ gkMasterLevel                   init                    1.5
                                 alwayson                "ParametricEq1"
                                 alwayson                "ParametricEq2"
                                 alwayson                "MasterOutput"
+                                
+scoreline_i "999 597 .1\n"
 
 gk_BanchoffKleinBottle_level init 0
 gi_BanchoffKleinBottle_attack init 0.003
@@ -3430,6 +3433,11 @@ aoutleft                        =                       gkMasterLevel * ainleft
 aoutright                       =                       gkMasterLevel * ainright
                                 outs                    aoutleft, aoutright
 prints "MasterOutput   i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
+                                endin
+                                
+                                instr 999
+prints "ExitNow        i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
+                                exitnow
                                 endin
                                 
             )");

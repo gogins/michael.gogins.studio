@@ -1369,9 +1369,14 @@ prints "Controls off   i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", 
 return_label:
 endin
 
+instr exitnow
+prints "exitnow        i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
+    exitnow
+endin
+
 </CsInstruments>
 <CsScore>
-f 0 [ 7 * 60 + 45]
+i "exitnow" [11 * 60 + 7 ] .1
 </CsScore>
 </CsoundSynthesizer>
 </textarea>

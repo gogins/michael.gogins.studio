@@ -44,6 +44,7 @@ cd_quality_filename = '%s.cd.wav' % label
 mp3_filename = '%s.mp3' % label
 mp4_filename = '%s.mp4' % label
 flac_filename = '%s.flac' % label
+print 'Album:                  ', album
 print 'Original file:          ', filepath
 print 'Basename:               ', basename
 print 'Author:                 ', author
@@ -64,7 +65,7 @@ bext_description       = notes
 bext_originator        = author
 bext_orig_ref          = basename
 #bext_umid              = xxx
-#bext_orig_date         = xxx
+#bext_orig_date         = xxx 
 #bext_orig_time         = xxx
 #bext_coding_hist       = xxx
 #bext_time_ref          = xxx
