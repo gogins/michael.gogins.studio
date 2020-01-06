@@ -1,5 +1,6 @@
 (require :asdf)
 (load "~/quicklisp/setup.lisp")
+(ql:quickload "clmath")
 (ql:quickload "cm2")
 (ql:quickload :nudruz)
 (in-package :cm)
