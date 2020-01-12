@@ -34,67 +34,11 @@
 </canvas>
 <textarea id="console" style="position:absolute;left:1vw;top:1vw;width:50vw;height:98vh;color:SkyBlue;background-color:transparent;border:none;text-align:left;font-size:8.25px;overflow:auto;cursor:none;"></textarea>
 <script>
-/*
-Panning does not seem to be correct.
-
-Try swapping left and right inlets to reverbs. That swaps the panning. So far 
-so good.
-
-Try adding left and right inlets, see if the reverbs have inherent panning 
-problems. That's correct.
-
-So it must be just where random pans ended up. Try a different random seed. 
-Also try panning within a narrower angle.
-
-instr FMWaterBell uses instrument number 1
-instr Phaser uses instrument number 2
-instr Droner uses instrument number 3
-instr Sweeper uses instrument number 4
-instr Buzzer uses instrument number 5
-instr Shiner uses instrument number 6
-instr Blower uses instrument number 7
-instr ZakianFlute uses instrument number 8
-
-Oh my God, I made a fundametal error. I do not round insnos 
-so that the fractional insnos generated from rational numbers 
-in the score generation process produce notes that are combined!
-
-Nope, that doesn't seem to help.
-
-How best to pan these? Probably in a a random scatter within 
-intervals set roughly thus:
-
-Left
-
-    Shiner
-
-    Blower
-
-    FMWaterBell
-    
-Right
-
-
-The following do not seem to be used:
-
-instr PianoteqNote uses instrument number 9
-instr Bower uses instrument number 10
-instr PianoteqOut uses instrument number 11
-instr Reverbsc uses instrument number 12
-instr Reverbsc2 uses instrument number 13
-
-instr Reverb uses instrument number 14
-instr Reverb2 uses instrument number 15
-instr ParametricEQ uses instrument number 16
-instr MasterOutput uses instrument number 17
-instr Controls uses instrument number 18
-instr exitnow uses instrument number 19
-*/
-var title = 'Poustinia v6'
+var title = 'Poustinia v5a'
 try {
     var fs = require("fs");
     var git = require('git-rev-sync');
-    var soundfile_name = sprintf("Poustinia-v6%s.wav",  git.short());
+    var soundfile_name = sprintf("Poustinia-v5a-%s.wav",  git.short());
 } catch(e) {
     console.log(e);
 }
@@ -195,11 +139,6 @@ var generate = function() {
     // Reassign Pianoteq to FMWaterBell.
     for (var i = 0; i < lsys.score.data.length; i++) {
         var event = lsys.score.data[i];
-        event.channel = Math.round(event.channel);
-        let random_variable = Math.random();
-        random_variable *= .7;
-        random_variable += .15;
-        event.pan = event.pan + random_variable
         if (event.channel >= 9 && event.channel < 10) {
             event.channel = 1;
             csound.message('Reassigned...');
@@ -240,24 +179,24 @@ var render = function(soundfile, post_process) {
     csound.setOption('-o' + soundfile_name);
     //csound.setOption('-odac');
     csound.setMetadata("artist", "Michael Gogins");
-    csound.setMetadata("copyright", "Copyright 2020 by Michael Gogins");
+    csound.setMetadata("copyright", "Copyright 2019 by Michael Gogins");
     csound.setMetadata("performer", "Mike Gogins");
-    csound.setMetadata("title", "Poustinia Variation 6");
-    csound.setMetadata("album", "Silence");
+    csound.setMetadata("title", "Poustinia Variation 5a");
+    csound.setMetadata("album", "Tzimtzum");
     csound.setMetadata("track", "1");
     csound.setMetadata("tracknumber", "1");
-    csound.setMetadata("date", "2020");
+    csound.setMetadata("date", "2019");
     csound.setMetadata("publisher", "Irreducible Productions ASCAP");
     csound.setMetadata("comment", "Lindenmayer system in chord space.");
     csound.setMetadata("license", "CC BY-NC-SA");
     csound.setMetadata("genre", "Electroacoustic");
      if (soundfile === true) {
-        csound.setOutput("Poustinia-v6.wav", "wav", "float");
+        csound.setOutput("Poustinia-v5a.wav", "wav", "float");
     } else {
         csound.setOutput("dac", "wav", "float");
     }
     if (typeof fs != 'undefined') {
-        fs.writeFileSync("Poustinia-v6-generated.csd", csd);
+        fs.writeFileSync("Poustinia-v5a-generated.csd", csd);
     }
     csound.compileCsdText(csd);
     csound.message("Rendering...");
@@ -620,15 +559,15 @@ alwayson "MasterOutput"
 
 gk_overlap init 4.5
 
-;;;prealloc 1, 50
-;;;prealloc 2, 50
-;;;prealloc 3, 50
-;;;prealloc 4, 50
-;;;prealloc 5, 50
-;;;prealloc 6, 50
-;;;prealloc 7, 50
-;;;prealloc 8, 20
-;;;prealloc 9, 20
+prealloc 1, 50
+prealloc 2, 50
+prealloc 3, 50
+prealloc 4, 50
+prealloc 5, 50
+prealloc 6, 50
+prealloc 7, 50
+prealloc 8, 20
+prealloc 9, 20
 
 //////////////////////////////////////////////
 // Original by Steven Yi.
@@ -641,7 +580,7 @@ gi_FMWaterBell_sustain init 20
 gi_FMWaterBell_sustain_level init .1
 gk_FMWaterBell_index init .5
 gk_FMWaterBell_crossfade init .5
-gk_FMWaterBell_vibrato_depth init 0.
+gk_FMWaterBell_vibrato_depth init 0.05
 gk_FMWaterBell_vibrato_rate init 6
 gk_FMWaterBell_midi_dynamic_range init 127
 gi_FMWaterBell_cosine ftgen 0, 0, 65536, 11, 1
@@ -678,7 +617,7 @@ a_envelope linsegr 0, gi_FMWaterBell_attack, 1, i_sustain, 1, gi_FMWaterBell_rel
 ; a_envelope transegr 0, gi_FMWaterBell_attack, 12, 1, i_sustain, 12, gi_FMWaterBell_sustain_level, gi_FMWaterBell_release, 12, 0
 a_signal = a_signal * i_amplitude * a_envelope * k_gain
 ;_signal = a_signal * i_amplitude * k_gain
-a_out_left, a_out_right pan2 a_signal, p7
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 prints "FMWaterBell    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
@@ -710,7 +649,7 @@ khertz = ihertz
 ifunction1 = isine
 ifunction2 = isine
 a1,a2 crosspm gk_Phaser_ratio1, gk_Phaser_ratio2, gk_Phaser_index1, gk_Phaser_index2, khertz, ifunction1, ifunction2
-aleft, aright pan2 a1+a2, p7
+aleft, aright pan2 a1+a2, ipan
 adamping linseg 0, 0.03, 1, p3 - 0.1, 1, 0.07, 0
 aleft = adamping * aleft * kenvelope
 aright = adamping * aright * kenvelope
@@ -761,7 +700,7 @@ ihertz = cpsmidinn(ikey)
 asignal poscil3 1, ihertz, gi_Droner_sine
 asignal chebyshevpoly asignal, 0, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10
 asignal = asignal * kenvelope * 10
-aleft, aright pan2 asignal, p7
+aleft, aright pan2 asignal, ipan
 adamping linseg 0, 0.03, 1, p3 - 0.1, 1, 0.07, 0
 aleft = adamping * aleft
 aright = adamping * aright
@@ -816,7 +755,7 @@ a1 ntrpol a1, arm, kmix
 kpanrte jspline 5, 0.05, 0.1
 kpandep jspline 0.9, 0.2, 0.4
 kpan poscil3 kpandep, kpanrte, gisine
-a1,a2 pan2 a1, p7
+a1,a2 pan2 a1, kpan
 irnd01 = unirand(0.1)
 a1 delay a1, irnd01
 irnd011 = unirand(0.11)
@@ -860,7 +799,7 @@ asignal = asignal * 3
 ;asignal vco2 kenvelope, ihertz, 12
 ;asignal poscil3 kenvelope, ihertz, giharmonics
 ;asignal distort asignal, gk_DistortFactor * .4, giwaveshaping
-aleft, aright pan2 asignal, p7
+aleft, aright pan2 asignal, ipan
 adamping linseg 0, 0.03, 1, p3 - 0.1, 1, 0.07, 0
 aleft = adamping * aleft
 aright = adamping * aright
@@ -889,7 +828,7 @@ kenvelope transegr 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iam
 ihertz = cpsmidinn(ikey)
 gk_Harmonics = 1 * 20
 asignal vco2 kenvelope * 4, ihertz, 12
-aleft, aright pan2 asignal, p7
+aleft, aright pan2 asignal, ipan
 adamping linseg 0, 0.03, 1, p3 - 0.1, 1, 0.07, 0
 aleft = adamping * aleft
 aright = adamping * aright
@@ -1209,7 +1148,7 @@ a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_s
 outletv "outbformat", a_bsignal
 outleta "out", a_spatial_reverb_send
 #else
-a_out_left, a_out_right pan2 a_signal, p7
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
@@ -1285,7 +1224,7 @@ kvibamp = 0
 iminfreq = 30
 isine ftgenonce 0,0,65536,10,1
 aSig wgbow kamp,kfreq,gk_Bower_pressure,krat,kvibf,kvibamp,isine,iminfreq
-aleft, aright pan2 aSig / 7, p7
+aleft, aright pan2 aSig / 7, k_space_left_to_right
 adamping linseg 0, 0.03, 1, p3 - 0.1, 1, 0.07, 0
 aleft = adamping * aleft * k_gain
 aright = adamping * aright * k_gain
@@ -1318,7 +1257,7 @@ endin
 gk_Reverb_feedback init 0.975
 gi_Reverb_delay_modulation init 0.875
 gk_Reverb_frequency_cutoff init 15000
-instr Reverbsc
+instr Reverb
 aleft init 0
 aright init 0
 aleft inleta "inleft"
@@ -1333,7 +1272,7 @@ endin
 gk_Reverb2_feedback init 0.975
 gi_Reverb2_delay_modulation init 0.875
 gk_Reverb2_frequency_cutoff init 15000
-instr Reverbsc2
+instr Reverb2
 aleft init 0
 aright init 0
 aleft inleta "inleft"
@@ -1344,62 +1283,6 @@ outleta "outleft", aleft
 outleta "outright", aright
 prints "Reverb2        i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", p1, p2, p3, p4, p5, p7, active(p1)
 endin
-
-                                instr                   Reverb
-                                //////////////////////////////////////////////
-                                // By Michael Gogins.
-                                //////////////////////////////////////////////
-ainleft                         inleta                  "inleft"
-ainright                        inleta                  "inright"
-;asum = (ainleft + ainright) * .5
-;ainleft = asum
-;ainright = asum
-
-; Emulate reverbsc parameters:
-
-; gkReverberationEnabled        chnexport               "gkReverberationEnabled", 1
-; gkReverberationEnabled        init                    1
-; gkReverberationDelay          chnexport               "gkReverberationDelay", 1
-; gkReverberationDelay          init                    0.65
-; gkReverberationWet          	chnexport               "gkReverberationWet", 1
-; gkReverberationWet          	init                    0.125
-
-; Trying to emulate reverbsc parameters in the original piece. Some of these are internal to reverbsc's C code.
-
-aoutleft, aoutright             MVerb                   ainleft, ainright, "Huge Hall", "wet", .25, "FB", .85, "random", 1, "rslow", 1.1, "rfast", 3.8, "rmax", .00015, "print", 1., "DFact", .85
-
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
-prints "Reverberation  i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
-                                endin
-
-                                instr                   Reverb2
-                                //////////////////////////////////////////////
-                                // By Michael Gogins.
-                                //////////////////////////////////////////////
-ainleft                         inleta                  "inleft"
-ainright                        inleta                  "inright"
-;asum = (ainleft + ainright) * .5
-;ainleft = asum
-;ainright = asum
-
-; Emulate reverbsc parameters:
-
-; gkReverberationEnabled        chnexport               "gkReverberationEnabled", 1
-; gkReverberationEnabled        init                    1
-; gkReverberationDelay          chnexport               "gkReverberationDelay", 1
-; gkReverberationDelay          init                    0.65
-; gkReverberationWet          	chnexport               "gkReverberationWet", 1
-; gkReverberationWet          	init                    0.125
-
-; Trying to emulate reverbsc parameters in the original piece. Some of these are internal to reverbsc's C code.
-
-aoutleft, aoutright             MVerb                   ainleft, ainright, "Huge Hall", "wet", .25, "FB", .85, "random", 1, "rslow", 1.1, "rfast", 3.8, "rmax", .000001, "print", 1., "DFact", .85
-
-                                outleta                 "outleft", aoutleft
-                                outleta                 "outright", aoutright
-prints "Reverberation  i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
-                                endin
 
 gk_CenterHz init 200
 gk_Gain init 1
@@ -1420,7 +1303,7 @@ aleft inleta "inleft"
 aright inleta "inright"
 kgain = ampdb(gk_MasterOutput_level)
 outs aleft * kgain, aright * kgain
-; fout "Poustinia-v6.wav", 16, aleft, aright
+; fout "Poustinia-v4.wav", 16, aleft, aright
 prints "MasterOutput   i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
@@ -1476,8 +1359,8 @@ prints "Controls on    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", 
     
     gk_ZakianFlute_level chnget "gk_ZakianFlute_level"
 
-///    gk_Reverb_feedback chnget "gk_Reverb_feedback" 
-///    gk_Reverb2_feedback chnget "gk_Reverb2_feedback" 
+    gk_Reverb_feedback chnget "gk_Reverb_feedback" 
+    gk_Reverb2_feedback chnget "gk_Reverb2_feedback" 
     gk_MasterOutput_level chnget "gk_MasterOutput_level" 
     gk_overlap chnget "gk_overlap" 
     goto return_label
