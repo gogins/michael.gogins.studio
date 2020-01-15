@@ -46,20 +46,30 @@ problems. That's correct.
 So it must be just where random pans ended up. Try a different random seed. 
 Also try panning within a narrower angle.
 
+That helps a bit, but it's still lopsided.
+
 instr FMWaterBell uses instrument number 1
+Bass thumps and also high chimes/bells.
+
 instr Phaser uses instrument number 2
+This is the glitchy, sandpapery one.
+
 instr Droner uses instrument number 3
+
 instr Sweeper uses instrument number 4
+
 instr Buzzer uses instrument number 5
+Third to sound, clarinet-like.
+
 instr Shiner uses instrument number 6
+This is the first instrument that sounds, flute-like.
+For some reason, the first 3 notes don't seem to sound 
+or to become active instances. OK, it was duration 0 notes.
+
 instr Blower uses instrument number 7
+Granulated wash/pad. Is it low notes that make the glitches at 3' 15"? No.
+
 instr ZakianFlute uses instrument number 8
-
-Oh my God, I made a fundametal error. I do not round insnos 
-so that the fractional insnos generated from rational numbers 
-in the score generation process produce notes that are combined!
-
-Nope, that doesn't seem to help.
 
 How best to pan these? Probably in a a random scatter within 
 intervals set roughly thus:
@@ -85,10 +95,9 @@ instr Reverbsc2 uses instrument number 13
 
 instr Reverb uses instrument number 14
 instr Reverb2 uses instrument number 15
-instr ParametricEQ uses instrument number 16
-instr MasterOutput uses instrument number 17
-instr Controls uses instrument number 18
-instr exitnow uses instrument number 19
+instr MasterOutput uses instrument number 16
+instr Controls uses instrument number 17
+instr exitnow uses instrument number 18
 */
 var title = 'Poustinia v6'
 try {
@@ -116,13 +125,13 @@ var generate = function() {
     lsys.addRule('a3', 'F b2 b F a I v F F c F F F F F c2 aa V f c2 F F b2 a');
     lsys.addRule('xa3', 'F b2 b F a I v F F c F F F F F c2 aa i i V f c2 F F b2 a');
     lsys.addRule('Ja', 'J,2,0');
-    //lsys.addRule('Jb', 'J,2,4');  
     lsys.addRule('Jb', 'J,2,2');  
     lsys.addRule('b',  '+ f f f f f - -');    
     lsys.addRule('c',  '- f f f f f +');
     lsys.addRule('b2', '+ f f f f -');    
     lsys.addRule('c2', '- - f f f f + +');
     lsys.addRule('b3', '- - f f f + +');    
+    ///lsys.addRule('b3', '- - f f f f + +');    
     var chord = ChordSpace.chordForName('CM9');      
     var t = new ChordSpace.Turtle(4.5, Math.PI/2, chord, chord);
     lsys.generate(4);
@@ -153,11 +162,8 @@ var generate = function() {
         if ((note.time + note.duration) >= cutoff) {
             note.duration = (note.duration + 2.5);
         }
-        // Pianoteq notes should not cut off abruptly.
-        if (Math.round(note.channel) == 9) {
-            if (note.duration < .5) {
-                note.duration = .5;
-            }
+        if (note.duration < .5) {
+            note.duration = .5;
         }
     }
     // Pianoteq misbehaves if we start right at time 0.
@@ -192,19 +198,22 @@ var generate = function() {
             }
         }
     }
-    // Reassign Pianoteq to FMWaterBell.
+    // Reassign Pianoteq to FMWaterBell,
+    // randomize pans
     for (var i = 0; i < lsys.score.data.length; i++) {
         var event = lsys.score.data[i];
         event.channel = Math.round(event.channel);
         let random_variable = Math.random();
-        random_variable *= .7;
-        random_variable += .15;
+        random_variable *= .6;
+        random_variable += .2;
         event.pan = event.pan + random_variable
         if (event.channel >= 9 && event.channel < 10) {
             event.channel = 1;
-            csound.message('Reassigned...');
+            csound.message('Reassigned...\n');
         }
     }    
+    // Shorten duration preserving corrections...
+    lsys.score.setDuration(9*60);
     csound.message("Plotting score...\n");
     lsys.score.draw3D(document.getElementById("canvas"));
     csound.message('Generated ' + lsys.score.data.length + ' notes.\n');
@@ -242,7 +251,7 @@ var render = function(soundfile, post_process) {
     csound.setMetadata("artist", "Michael Gogins");
     csound.setMetadata("copyright", "Copyright 2020 by Michael Gogins");
     csound.setMetadata("performer", "Mike Gogins");
-    csound.setMetadata("title", "Poustinia Variation 6");
+    csound.setMetadata("title", "Poustinia Variation 6-2");
     csound.setMetadata("album", "Silence");
     csound.setMetadata("track", "1");
     csound.setMetadata("tracknumber", "1");
@@ -252,12 +261,12 @@ var render = function(soundfile, post_process) {
     csound.setMetadata("license", "CC BY-NC-SA");
     csound.setMetadata("genre", "Electroacoustic");
      if (soundfile === true) {
-        csound.setOutput("Poustinia-v6.wav", "wav", "float");
+        csound.setOutput("Poustinia-v6-2.wav", "wav", "float");
     } else {
         csound.setOutput("dac", "wav", "float");
     }
     if (typeof fs != 'undefined') {
-        fs.writeFileSync("Poustinia-v6-generated.csd", csd);
+        fs.writeFileSync("Poustinia-v6-2-generated.csd", csd);
     }
     csound.compileCsdText(csd);
     csound.message("Rendering...");
@@ -578,7 +587,7 @@ window.addEventListener("unload", function(event) {
 sr = 96000
 ksmps = 100
 nchnls = 2
-0dbfs = 5000000
+0dbfs = 10000000
 
 ; Ensure the same random stream for each rendering.
 ; rand, randh, randi, rnd(x) and birnd(x) are not affected by seed.
@@ -620,15 +629,15 @@ alwayson "MasterOutput"
 
 gk_overlap init 4.5
 
-;;;prealloc 1, 50
-;;;prealloc 2, 50
-;;;prealloc 3, 50
-;;;prealloc 4, 50
-;;;prealloc 5, 50
-;;;prealloc 6, 50
-;;;prealloc 7, 50
-;;;prealloc 8, 20
-;;;prealloc 9, 20
+prealloc 1, 50
+prealloc 2, 50
+prealloc 3, 50
+prealloc 4, 50
+prealloc 5, 50
+prealloc 6, 50
+prealloc 7, 50
+prealloc 8, 20
+prealloc 9, 20
 
 //////////////////////////////////////////////
 // Original by Steven Yi.
@@ -690,6 +699,7 @@ gk_Phaser_ratio2 init 1/3
 gk_Phaser_index1 init 1
 gk_Phaser_index2 init 0.0125
 gk_Phaser_level init 0.5
+gi_Phaser_sine ftgen 0,0,65537,10,1
 instr Phaser
 insno = p1
 istart = p2
@@ -707,9 +717,9 @@ kenvelope transeg 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp
 ihertz = cpsmidinn(ikey)
 isine ftgenonce 0,0,65536,10,1
 khertz = ihertz
-ifunction1 = isine
-ifunction2 = isine
-a1,a2 crosspm gk_Phaser_ratio1, gk_Phaser_ratio2, gk_Phaser_index1, gk_Phaser_index2, khertz, ifunction1, ifunction2
+ifunction1 = gi_Phaser_sine
+ifunction2 = gi_Phaser_sine
+a1,a2 crosspmi gk_Phaser_ratio1, gk_Phaser_ratio2, gk_Phaser_index1, gk_Phaser_index2, khertz, ifunction1, ifunction2
 aleft, aright pan2 a1+a2, p7
 adamping linseg 0, 0.03, 1, p3 - 0.1, 1, 0.07, 0
 aleft = adamping * aleft * kenvelope
@@ -1366,7 +1376,7 @@ ainright                        inleta                  "inright"
 
 ; Trying to emulate reverbsc parameters in the original piece. Some of these are internal to reverbsc's C code.
 
-aoutleft, aoutright             MVerb                   ainleft, ainright, "Huge Hall", "wet", .25, "FB", .85, "random", 1, "rslow", 1.1, "rfast", 3.8, "rmax", .00015, "print", 1., "DFact", .85
+aoutleft, aoutright             MVerb                   ainleft, ainright, "Huge Hall", "wet", .5, "FB", .95, "random", 1, "rslow", 1.1, "rfast", 3.8, "rmax", .00015, "print", 1., "DFact", .95
 
                                 outleta                 "outleft", aoutleft
                                 outleta                 "outright", aoutright
@@ -1394,33 +1404,20 @@ ainright                        inleta                  "inright"
 
 ; Trying to emulate reverbsc parameters in the original piece. Some of these are internal to reverbsc's C code.
 
-aoutleft, aoutright             MVerb                   ainleft, ainright, "Huge Hall", "wet", .25, "FB", .85, "random", 1, "rslow", 1.1, "rfast", 3.8, "rmax", .000001, "print", 1., "DFact", .85
+aoutleft, aoutright             MVerb                   ainleft, ainright, "Huge Hall", "wet", .5, "FB", .95, "random", 1, "rslow", 1.1, "rfast", 3.8, "rmax", .000001, "print", 1., "DFact", .95
 
                                 outleta                 "outleft", aoutleft
                                 outleta                 "outright", aoutright
 prints "Reverberation  i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
                                 endin
-
-gk_CenterHz init 200
-gk_Gain init 1
-gk_Q init 0.7071067 ; sqrt(.5)
-instr ParametricEQ
-aleft inleta "inleft"
-aright inleta "inright"
-aleft pareq aleft, gk_CenterHz, ampdb(gk_Gain), gk_Q, 0
-aright pareq aright, gk_CenterHz, ampdb(gk_Gain), gk_Q, 0
-outleta "outleft", aleft
-outleta "outright", aright
-prints "ParametricEQ   i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
-endin
-
+                                
 gk_MasterOutput_level init .5
 instr MasterOutput
 aleft inleta "inleft"
 aright inleta "inright"
 kgain = ampdb(gk_MasterOutput_level)
 outs aleft * kgain, aright * kgain
-; fout "Poustinia-v6.wav", 16, aleft, aright
+; fout "Poustinia-v6-2.wav", 16, aleft, aright
 prints "MasterOutput   i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
 endin
 

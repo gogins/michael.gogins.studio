@@ -46,20 +46,30 @@ problems. That's correct.
 So it must be just where random pans ended up. Try a different random seed. 
 Also try panning within a narrower angle.
 
+That helps a bit, but it's still lopsided.
+
 instr FMWaterBell uses instrument number 1
+Bass thumps and also high chimes/bells.
+
 instr Phaser uses instrument number 2
+This is the glitchy, sandpapery one.
+
 instr Droner uses instrument number 3
+
 instr Sweeper uses instrument number 4
+
 instr Buzzer uses instrument number 5
+Third to sound, clarinet-like.
+
 instr Shiner uses instrument number 6
+This is the first instrument that sounds, flute-like. For some reason, the 
+first 3 notes don't seem to sound or to become active instances. OK, it was 
+duration 0 notes. Fixed that.
+
 instr Blower uses instrument number 7
+Granulated wash/pad. Is it low notes that make the glitches at 3' 15"? No.
+
 instr ZakianFlute uses instrument number 8
-
-Oh my God, I made a fundametal error. I do not round insnos 
-so that the fractional insnos generated from rational numbers 
-in the score generation process produce notes that are combined!
-
-Nope, that doesn't seem to help.
 
 How best to pan these? Probably in a a random scatter within 
 intervals set roughly thus:
@@ -85,16 +95,15 @@ instr Reverbsc2 uses instrument number 13
 
 instr Reverb uses instrument number 14
 instr Reverb2 uses instrument number 15
-instr ParametricEQ uses instrument number 16
-instr MasterOutput uses instrument number 17
-instr Controls uses instrument number 18
-instr exitnow uses instrument number 19
+instr MasterOutput uses instrument number 16
+instr Controls uses instrument number 17
+instr exitnow uses instrument number 18
 */
-var title = 'Poustinia v6'
+var title = 'Poustinia v6-5'
 try {
     var fs = require("fs");
     var git = require('git-rev-sync');
-    var soundfile_name = sprintf("Poustinia-v6%s.wav",  git.short());
+    var soundfile_name = sprintf("Poustinia-v6-5%s.wav",  git.short());
 } catch(e) {
     console.log(e);
 }
@@ -116,13 +125,16 @@ var generate = function() {
     lsys.addRule('a3', 'F b2 b F a I v F F c F F F F F c2 aa V f c2 F F b2 a');
     lsys.addRule('xa3', 'F b2 b F a I v F F c F F F F F c2 aa i i V f c2 F F b2 a');
     lsys.addRule('Ja', 'J,2,0');
-    //lsys.addRule('Jb', 'J,2,4');  
     lsys.addRule('Jb', 'J,2,2');  
-    lsys.addRule('b',  '+ f f f f f - -');    
-    lsys.addRule('c',  '- f f f f f +');
+    ///lsys.addRule('b',  '+ f f f f f - -');    
+    ///lsys.addRule('c',  '- f f f f f +');
+    lsys.addRule('b',  '+ f f f f F f - -');    
+    lsys.addRule('c',  '- f f F f f f +');
     lsys.addRule('b2', '+ f f f f -');    
+    ///lsys.addRule('c2', '- - f f f f + +');
     lsys.addRule('c2', '- - f f f f + +');
     lsys.addRule('b3', '- - f f f + +');    
+    ///lsys.addRule('b3', '- - f f f f + +');    
     var chord = ChordSpace.chordForName('CM9');      
     var t = new ChordSpace.Turtle(4.5, Math.PI/2, chord, chord);
     lsys.generate(4);
@@ -131,9 +143,10 @@ var generate = function() {
     lsys.score.findScales();
     csound.message("Rescaling score...\n");
     lsys.score.setScale(3, 1, 8.125);
-    //lsys.score.setScale(3, 8, 0);
+    //lsys.score.setScale(3, 3, 0);
     lsys.score.setScale(4, 24, 72);
-    lsys.score.setScale(5, 60, 8);
+    ///lsys.score.setScale(5, 60, 8);
+    lsys.score.setScale(5, 60, 9);
     lsys.score.setScale(7, 0, 1);
     lsys.score.temper(12);
     csound.message("Conforming to chords...\n");
@@ -153,11 +166,8 @@ var generate = function() {
         if ((note.time + note.duration) >= cutoff) {
             note.duration = (note.duration + 2.5);
         }
-        // Pianoteq notes should not cut off abruptly.
-        if (Math.round(note.channel) == 9) {
-            if (note.duration < .5) {
-                note.duration = .5;
-            }
+        if (note.duration < .5) {
+            note.duration = .5;
         }
     }
     // Pianoteq misbehaves if we start right at time 0.
@@ -192,19 +202,26 @@ var generate = function() {
             }
         }
     }
-    // Reassign Pianoteq to FMWaterBell.
+    // Reassign Pianoteq to FMWaterBell,
+    // randomize pans
     for (var i = 0; i < lsys.score.data.length; i++) {
         var event = lsys.score.data[i];
         event.channel = Math.round(event.channel);
         let random_variable = Math.random();
-        random_variable *= .7;
-        random_variable += .15;
+        random_variable *= .6;
+        random_variable += .2;
         event.pan = event.pan + random_variable
         if (event.channel >= 9 && event.channel < 10) {
             event.channel = 1;
-            csound.message('Reassigned...');
+            csound.message('Reassigned...\n');
         }
     }    
+    // Shorten duration preserving corrections...
+    lsys.score.setDuration(9*60);
+    // Bring in final notes.
+    let size = lsys.score.data.length;
+    lsys.score.data[size - 1].time = (lsys.score.data[size - 1].time - 12.);
+    lsys.score.data[size - 2].time = (lsys.score.data[size - 2].time - 12.);
     csound.message("Plotting score...\n");
     lsys.score.draw3D(document.getElementById("canvas"));
     csound.message('Generated ' + lsys.score.data.length + ' notes.\n');
@@ -242,7 +259,7 @@ var render = function(soundfile, post_process) {
     csound.setMetadata("artist", "Michael Gogins");
     csound.setMetadata("copyright", "Copyright 2020 by Michael Gogins");
     csound.setMetadata("performer", "Mike Gogins");
-    csound.setMetadata("title", "Poustinia Variation 6");
+    csound.setMetadata("title", "Poustinia Variation 6-5");
     csound.setMetadata("album", "Silence");
     csound.setMetadata("track", "1");
     csound.setMetadata("tracknumber", "1");
@@ -252,12 +269,12 @@ var render = function(soundfile, post_process) {
     csound.setMetadata("license", "CC BY-NC-SA");
     csound.setMetadata("genre", "Electroacoustic");
      if (soundfile === true) {
-        csound.setOutput("Poustinia-v6.wav", "wav", "float");
+        csound.setOutput("Poustinia-v6-5.wav", "wav", "float");
     } else {
         csound.setOutput("dac", "wav", "float");
     }
     if (typeof fs != 'undefined') {
-        fs.writeFileSync("Poustinia-v6-generated.csd", csd);
+        fs.writeFileSync("Poustinia-v6-5-generated.csd", csd);
     }
     csound.compileCsdText(csd);
     csound.message("Rendering...");
@@ -318,7 +335,7 @@ var parameters = {
     gk_Droner_partial3: 0.1,
     gk_Droner_partial4: 0.1,
     gk_Droner_partial5: 0.1,
-    gk_Droner_level: 0.5,
+    gk_Droner_level: 30,
     gk_Phaser_ratio1: 1,
     gk_Phaser_ratio2: .3333334,
     gk_Phaser_index1: 1,
@@ -369,12 +386,12 @@ var default_json = {
         "gk_FMWaterBell_index": 1.1401499375260309,
         "gk_FMWaterBell_vibrato_depth": 0.2897954989209742,
         "gk_FMWaterBell_vibrato_rate": 4.762100503545371,
-        "gk_FMWaterBell_level": 37.0,
+        "gk_FMWaterBell_level": 35.0,
         "gk_Phaser_ratio1": 1,
-        "gk_Phaser_ratio2": 0.3333334,
+        "gk_Phaser_ratio2": 5./3.,
         "gk_Phaser_index1": 1,
         "gk_Phaser_index2": 2,
-        "gk_Phaser_level": 14.608203677510609,
+        "gk_Phaser_level": 10,
         "gk_Bower_pressure": 3.050919377652051,
         "gk_Bower_level": -12.677504515770458,
         "gk_Droner_partial1": 0.11032374600527997,
@@ -382,20 +399,20 @@ var default_json = {
         "gk_Droner_partial3": 0.11921634014172572,
         "gk_Droner_partial4": 0.06586077532305128,
         "gk_Droner_partial5": 0.6616645824649159,
-        "gk_Droner_level": 0.8392385716270638,
+        "gk_Droner_level": 10.,
         "gk_Sweeper_britel": 0.2773844231570179,
         "gk_Sweeper_briteh": 3.382178217821782,
         "gk_Sweeper_britels": 0.19575671852899576,
         "gk_Sweeper_britehs": 0.8837340876944837,
-        "gk_Sweeper_level": 7.366336633663366,
+        "gk_Sweeper_level": 9,
         "gk_Buzzer_harmonics": 2.608203677510608,
-        "gk_Buzzer_level": 24.74681753889675,
+        "gk_Buzzer_level": 27.56,
         "gk_Shiner_level": 16.056577086280058,
         "gk_Blower_grainDensity": 79.99177885109444,
         "gk_Blower_grainDuration": 0.2,
         "gk_Blower_grainAmplitudeRange": 87.88408180043162,
         "gk_Blower_grainFrequencyRange": 30.596081700708627,
-        "gk_Blower_level": -2,
+        "gk_Blower_level": 2,
         "gk_ZakianFlute_level": 0,
         "gk_PianoteqOut_level": 14.5
       }
@@ -578,7 +595,7 @@ window.addEventListener("unload", function(event) {
 sr = 96000
 ksmps = 100
 nchnls = 2
-0dbfs = 5000000
+0dbfs = 10000000
 
 ; Ensure the same random stream for each rendering.
 ; rand, randh, randi, rnd(x) and birnd(x) are not affected by seed.
@@ -620,15 +637,15 @@ alwayson "MasterOutput"
 
 gk_overlap init 4.5
 
-;;;prealloc 1, 50
-;;;prealloc 2, 50
-;;;prealloc 3, 50
-;;;prealloc 4, 50
-;;;prealloc 5, 50
-;;;prealloc 6, 50
-;;;prealloc 7, 50
-;;;prealloc 8, 20
-;;;prealloc 9, 20
+prealloc 1, 50
+prealloc 2, 50
+prealloc 3, 50
+prealloc 4, 50
+prealloc 5, 50
+prealloc 6, 50
+prealloc 7, 50
+prealloc 8, 20
+prealloc 9, 20
 
 //////////////////////////////////////////////
 // Original by Steven Yi.
@@ -644,15 +661,12 @@ gk_FMWaterBell_crossfade init .5
 gk_FMWaterBell_vibrato_depth init 0.
 gk_FMWaterBell_vibrato_rate init 6
 gk_FMWaterBell_midi_dynamic_range init 127
-gi_FMWaterBell_cosine ftgen 0, 0, 65536, 11, 1
+gi_FMWaterBell_cosine ftgen 0, 0, 65537, 11, 1
 instr FMWaterBell
 i_instrument = p1
 i_time = p2
 i_duration = p3
-; One of the envelopes in this instrument should be releasing, and use this:
-i_sustain = 1000
-;xtratim gi_FMWaterBell_attack + gi_FMWaterBell_release
-p3 = p3 + gi_FMWaterBell_attack + gi_FMWaterBell_release
+i_sustain = p3 - (gi_FMWaterBell_attack + gi_FMWaterBell_release)
 i_midi_key = p4
 i_midi_dynamic_range = i(gk_FMWaterBell_midi_dynamic_range)
 i_midi_velocity = p5 * i_midi_dynamic_range / 127 + (63.6 - i_midi_dynamic_range / 2)
@@ -672,12 +686,8 @@ i_normalization = ampdb(-i_level_correction) / 2
 i_amplitude = ampdb(i_midi_velocity) * i_normalization * 1.6
 k_gain = ampdb(gk_FMWaterBell_level)
 a_signal fmbell	1, i_frequency, gk_FMWaterBell_index, gk_FMWaterBell_crossfade, gk_FMWaterBell_vibrato_depth, gk_FMWaterBell_vibrato_rate, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine ;, gi_FMWaterBell_sustain
-;a_envelope linsegr 0, gi_FMWaterBell_attack, 1, i_sustain, gi_FMWaterBell_sustain_level, gi_FMWaterBell_release, 0
 a_envelope linsegr 0, gi_FMWaterBell_attack, 1, i_sustain, 1, gi_FMWaterBell_release, 0
-; ares transegr ia, idur, itype, ib [, idur2] [, itype] [, ic] ...
-; a_envelope transegr 0, gi_FMWaterBell_attack, 12, 1, i_sustain, 12, gi_FMWaterBell_sustain_level, gi_FMWaterBell_release, 12, 0
 a_signal = a_signal * i_amplitude * a_envelope * k_gain
-;_signal = a_signal * i_amplitude * k_gain
 a_out_left, a_out_right pan2 a_signal, p7
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
@@ -690,6 +700,7 @@ gk_Phaser_ratio2 init 1/3
 gk_Phaser_index1 init 1
 gk_Phaser_index2 init 0.0125
 gk_Phaser_level init 0.5
+gi_Phaser_sine ftgen 0,0,65537,10,1
 instr Phaser
 insno = p1
 istart = p2
@@ -705,11 +716,11 @@ isustain = p3 - i(gk_overlap)
 p3 = iattack + isustain + idecay
 kenvelope transeg 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
 ihertz = cpsmidinn(ikey)
-isine ftgenonce 0,0,65536,10,1
+isine ftgenonce 0,0,65537,10,1
 khertz = ihertz
-ifunction1 = isine
-ifunction2 = isine
-a1,a2 crosspm gk_Phaser_ratio1, gk_Phaser_ratio2, gk_Phaser_index1, gk_Phaser_index2, khertz, ifunction1, ifunction2
+ifunction1 = gi_Phaser_sine
+ifunction2 = gi_Phaser_sine
+a1,a2 crosspmi gk_Phaser_ratio1, gk_Phaser_ratio2, gk_Phaser_index1, gk_Phaser_index2, khertz, ifunction1, ifunction2
 aleft, aright pan2 a1+a2, p7
 adamping linseg 0, 0.03, 1, p3 - 0.1, 1, 0.07, 0
 aleft = adamping * aleft * kenvelope
@@ -726,7 +737,7 @@ gk_Droner_partial3 init .1
 gk_Droner_partial4 init .1
 gk_Droner_partial5 init .1
 gk_Droner_level init 0.5
-gi_Droner_sine ftgen 0, 0, 65536, 10, 1, 0, .02
+gi_Droner_sine ftgen 0, 0, 65537, 10, 1, 0, .02
 instr Droner
 insno = p1
 istart = p2
@@ -785,13 +796,12 @@ ivelocity = p5
 iphase = p6
 ipan = p7
 iamp = ampdb(ivelocity)
-gisine ftgenonce 0, 0, 65536, 10, 1
-gioctfn ftgenonce 0, 0, 65536, -19, 1, 0.5, 270, 0.5
+gisine ftgenonce 0, 0, 65537, 10, 1
+gioctfn ftgenonce 0, 0, 65537, -19, 1, 0.5, 270, 0.5
 iattack = i(gk_overlap)
 idecay = i(gk_overlap)
 isustain = p3 - i(gk_overlap)
 p3 = iattack + isustain + idecay
-;xtratim iattack + idecay
 kenvelope transeg 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
 ihertz = cpsmidinn(ikey)
 icps = ihertz
@@ -849,17 +859,12 @@ iattack = i(gk_overlap)
 idecay = i(gk_overlap)
 isustain = p3 - i(gk_overlap)
 p3 = iattack + isustain + idecay
-;xtratim iattack + idecay
 kenvelope transegr 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
 ihertz = cpsmidinn(ikey)
-;asignal gbuzz kenvelope, ihertz, 3, gk_FirstHarmonic, gk_DistortFactor, gisine
-isine ftgenonce 0, 0, 65536, 10, 1
+isine ftgenonce 0, 0, 65537, 10, 1
 gk_Harmonics = gk_Buzzer_harmonics
 asignal buzz kenvelope, ihertz, gk_Harmonics, isine
 asignal = asignal * 3
-;asignal vco2 kenvelope, ihertz, 12
-;asignal poscil3 kenvelope, ihertz, giharmonics
-;asignal distort asignal, gk_DistortFactor * .4, giwaveshaping
 aleft, aright pan2 asignal, p7
 adamping linseg 0, 0.03, 1, p3 - 0.1, 1, 0.07, 0
 aleft = adamping * aleft
@@ -884,7 +889,6 @@ iattack = i(gk_overlap)
 idecay = i(gk_overlap)
 isustain = p3 - i(gk_overlap)
 p3 = iattack + isustain + idecay
-;xtratim iattack + idecay
 kenvelope transegr 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
 ihertz = cpsmidinn(ikey)
 gk_Harmonics = 1 * 20
@@ -903,7 +907,7 @@ gk_Blower_grainDensity init 150
 gk_Blower_grainDuration init 0.2
 gk_Blower_grainAmplitudeRange init 100
 gk_Blower_grainFrequencyRange init .033
-gk_Blower_level init 0.5
+gk_Blower_level init 2
 instr Blower
 i_time = p2
 i_duration = p3
@@ -918,7 +922,7 @@ i_homogeneity = p11
 ifrequency = cpsmidinn(i_midikey)
 iamplitude = ampdb(i_midivelocity) / 200
  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
- ; f1 0 65536 1 "hahaha.aif" 0 4 0
+ ; f1 0 65537 1 "hahaha.aif" 0 4 0
  ; f2 0 1024 7 0 224 1 800 0
  ; f3 0 8192 7 1 8192 -1
  ; f4 0 1024 7 0 512 1 512 0
@@ -935,8 +939,8 @@ iamplitude = ampdb(i_midivelocity) / 200
  ; i1 26.5 13.5 1100 6.09 . 4 .121 150 1.5
  ; i1 30.7 9.3 900 8.05 . 4 .014 150 2.5
  ; i1 34.2 8.8 700 10.02 . 4 .14 150 1.6
-igrtab ftgenonce 0, 0, 65536, 10, 1, .3, .1, 0, .2, .02, 0, .1, .04
-iwintab ftgenonce 0, 0, 65536, 10, 1, 0, .5, 0, .33, 0, .25, 0, .2, 0, .167
+igrtab ftgenonce 0, 0, 65537, 10, 1, .3, .1, 0, .2, .02, 0, .1, .04
+iwintab ftgenonce 0, 0, 65537, 10, 1, 0, .5, 0, .33, 0, .25, 0, .2, 0, .167
 iHz = ifrequency
 ihertz = iHz
 ip4 = iamplitude
@@ -968,7 +972,6 @@ idecay = i(gk_overlap) * 2
 isustain = p3 - i(gk_overlap) * 2
 p3 = iattack + isustain + idecay
 kenvelope transegr 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
-; kamp linseg 0, ifade, 1, idur - 2 * ifade, 1, ifade, 0
 kamp = kenvelope
 ; Amp Fqc Dense AmpOff PitchOff GrDur GrTable WinTable MaxGrDur
 aoutl grain ip4, ifqc, gk_Blower_grainDensity, gk_Blower_grainAmplitudeRange,  gk_Blower_grainFrequencyRange, gk_Blower_grainDuration, igrtab, iwintab, 5
@@ -1015,19 +1018,19 @@ kHz = k(iHz)
 aenvelope transeg 1.0, 20.0, -10.0, 0.05
 ip3 = (p3 < 3.0 ? p3 : 3.0)
 if2 ftgenonce 0, 0, 16, -2, 40, 40, 80, 160, 320, 640, 1280, 2560, 5120, 10240, 10240
-if26 ftgenonce 0, 0, 65536, -10, 2000, 489, 74, 219, 125, 9, 33, 5, 5
-if27 ftgenonce 0, 0, 65536, -10, 2729, 1926, 346, 662, 537, 110, 61, 29, 7
-if28 ftgenonce 0, 0, 65536, -10, 2558, 2012, 390, 361, 534, 139, 53, 22, 10, 13, 10
-if29 ftgenonce 0, 0, 65536, -10, 12318, 8844, 1841, 1636, 256, 150, 60, 46, 11
-if30 ftgenonce 0, 0, 65536, -10, 1229, 16, 34, 57, 32
-if31 ftgenonce 0, 0, 65536, -10, 163, 31, 1, 50, 31
-if32 ftgenonce 0, 0, 65536, -10, 4128, 883, 354, 79, 59, 23
-if33 ftgenonce 0, 0, 65536, -10, 1924, 930, 251, 50, 25, 14
-if34 ftgenonce 0, 0, 65536, -10, 94, 6, 22, 8
-if35 ftgenonce 0, 0, 65536, -10, 2661, 87, 33, 18
-if36 ftgenonce 0, 0, 65536, -10, 174, 12
-if37 ftgenonce 0, 0, 65536, -10, 314, 13
-iwtsin ftgenonce 0, 0, 65536, 10, 1
+if26 ftgenonce 0, 0, 65537, -10, 2000, 489, 74, 219, 125, 9, 33, 5, 5
+if27 ftgenonce 0, 0, 65537, -10, 2729, 1926, 346, 662, 537, 110, 61, 29, 7
+if28 ftgenonce 0, 0, 65537, -10, 2558, 2012, 390, 361, 534, 139, 53, 22, 10, 13, 10
+if29 ftgenonce 0, 0, 65537, -10, 12318, 8844, 1841, 1636, 256, 150, 60, 46, 11
+if30 ftgenonce 0, 0, 65537, -10, 1229, 16, 34, 57, 32
+if31 ftgenonce 0, 0, 65537, -10, 163, 31, 1, 50, 31
+if32 ftgenonce 0, 0, 65537, -10, 4128, 883, 354, 79, 59, 23
+if33 ftgenonce 0, 0, 65537, -10, 1924, 930, 251, 50, 25, 14
+if34 ftgenonce 0, 0, 65537, -10, 94, 6, 22, 8
+if35 ftgenonce 0, 0, 65537, -10, 2661, 87, 33, 18
+if36 ftgenonce 0, 0, 65537, -10, 174, 12
+if37 ftgenonce 0, 0, 65537, -10, 314, 13
+iwtsin ftgenonce 0, 0, 65537, 10, 1
 ; parameters
 ; p4 overall amplitude scaling factor
 ip4 init i_amplitude
@@ -1199,7 +1202,6 @@ a_signal balance afilt, asig
 i_attack = .002
 i_sustain = p3
 i_release = 0.01
-xtratim i_attack + i_sustain + i_release
 a_declicking linsegr 0, i_attack, 1, i_sustain, 1, i_release, 0
 a_signal = a_signal * i_amplitude * a_declicking * k_gain
 #ifdef USE_SPATIALIZATION
@@ -1272,7 +1274,6 @@ iattack = i(gk_overlap)
 idecay = i(gk_overlap)
 isustain = p3 - i(gk_overlap)
 p3 = iattack + isustain + idecay
-;xtratim iattack + idecay
 iamp = i_amplitude
 kenvelope transegr 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
 ihertz = cpsmidinn(i_midi_key)
@@ -1283,7 +1284,7 @@ krat rspline 0.006,0.988,1,4
 kvibf = 4.5
 kvibamp = 0
 iminfreq = 30
-isine ftgenonce 0,0,65536,10,1
+isine ftgenonce 0,0,65537,10,1
 aSig wgbow kamp,kfreq,gk_Bower_pressure,krat,kvibf,kvibamp,isine,iminfreq
 aleft, aright pan2 aSig / 7, p7
 adamping linseg 0, 0.03, 1, p3 - 0.1, 1, 0.07, 0
@@ -1366,7 +1367,7 @@ ainright                        inleta                  "inright"
 
 ; Trying to emulate reverbsc parameters in the original piece. Some of these are internal to reverbsc's C code.
 
-aoutleft, aoutright             MVerb                   ainleft, ainright, "Huge Hall", "wet", .25, "FB", .85, "random", 1, "rslow", 1.1, "rfast", 3.8, "rmax", .00015, "print", 1., "DFact", .85
+aoutleft, aoutright             MVerb                   ainleft, ainright, "Huge Hall", "wet", .5, "FB", .95, "random", 1, "rslow", 1.1, "rfast", 3.8, "rmax", .00015, "print", 1., "DFact", .95
 
                                 outleta                 "outleft", aoutleft
                                 outleta                 "outright", aoutright
@@ -1394,33 +1395,20 @@ ainright                        inleta                  "inright"
 
 ; Trying to emulate reverbsc parameters in the original piece. Some of these are internal to reverbsc's C code.
 
-aoutleft, aoutright             MVerb                   ainleft, ainright, "Huge Hall", "wet", .25, "FB", .85, "random", 1, "rslow", 1.1, "rfast", 3.8, "rmax", .000001, "print", 1., "DFact", .85
+aoutleft, aoutright             MVerb                   ainleft, ainright, "Huge Hall", "wet", .5, "FB", .95, "random", 1, "rslow", 1.1, "rfast", 3.8, "rmax", .000001, "print", 1., "DFact", .95
 
                                 outleta                 "outleft", aoutleft
                                 outleta                 "outright", aoutright
 prints "Reverberation  i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
                                 endin
-
-gk_CenterHz init 200
-gk_Gain init 1
-gk_Q init 0.7071067 ; sqrt(.5)
-instr ParametricEQ
-aleft inleta "inleft"
-aright inleta "inright"
-aleft pareq aleft, gk_CenterHz, ampdb(gk_Gain), gk_Q, 0
-aright pareq aright, gk_CenterHz, ampdb(gk_Gain), gk_Q, 0
-outleta "outleft", aleft
-outleta "outright", aright
-prints "ParametricEQ   i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
-endin
-
+                                
 gk_MasterOutput_level init .5
 instr MasterOutput
 aleft inleta "inleft"
 aright inleta "inright"
 kgain = ampdb(gk_MasterOutput_level)
 outs aleft * kgain, aright * kgain
-; fout "Poustinia-v6.wav", 16, aleft, aright
+; fout "Poustinia-v6-5.wav", 16, aleft, aright
 prints "MasterOutput   i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
@@ -1493,7 +1481,7 @@ endin
 
 </CsInstruments>
 <CsScore>
-i "exitnow" [11 * 60 + 7 ] .1
+i "exitnow" [9 * 60 ] .1
 </CsScore>
 </CsoundSynthesizer>
 </textarea>
