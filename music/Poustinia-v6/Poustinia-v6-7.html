@@ -99,11 +99,11 @@ instr MasterOutput uses instrument number 16
 instr Controls uses instrument number 17
 instr exitnow uses instrument number 18
 */
-var title = 'Poustinia v6-5'
+var title = 'Poustinia v6-7'
 try {
     var fs = require("fs");
     var git = require('git-rev-sync');
-    var soundfile_name = sprintf("Poustinia-v6-5%s.wav",  git.short());
+    var soundfile_name = sprintf("Poustinia-v6-7%s.wav",  git.short());
 } catch(e) {
     console.log(e);
 }
@@ -259,7 +259,7 @@ var render = function(soundfile, post_process) {
     csound.setMetadata("artist", "Michael Gogins");
     csound.setMetadata("copyright", "Copyright 2020 by Michael Gogins");
     csound.setMetadata("performer", "Mike Gogins");
-    csound.setMetadata("title", "Poustinia Variation 6-5");
+    csound.setMetadata("title", "Poustinia Variation 6-7");
     csound.setMetadata("album", "Silence");
     csound.setMetadata("track", "1");
     csound.setMetadata("tracknumber", "1");
@@ -269,12 +269,12 @@ var render = function(soundfile, post_process) {
     csound.setMetadata("license", "CC BY-NC-SA");
     csound.setMetadata("genre", "Electroacoustic");
      if (soundfile === true) {
-        csound.setOutput("Poustinia-v6-5.wav", "wav", "float");
+        csound.setOutput("Poustinia-v6-7.wav", "wav", "float");
     } else {
         csound.setOutput("dac", "wav", "float");
     }
     if (typeof fs != 'undefined') {
-        fs.writeFileSync("Poustinia-v6-5-generated.csd", csd);
+        fs.writeFileSync("Poustinia-v6-7-generated.csd", csd);
     }
     csound.compileCsdText(csd);
     csound.message("Rendering...");
@@ -1414,7 +1414,7 @@ aleft inleta "inleft"
 aright inleta "inright"
 kgain = ampdb(gk_MasterOutput_level)
 outs aleft * kgain, aright * kgain
-; fout "Poustinia-v6-5.wav", 16, aleft, aright
+; fout "Poustinia-v6-7.wav", 16, aleft, aright
 prints "MasterOutput   i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
@@ -1487,7 +1487,7 @@ endin
 
 </CsInstruments>
 <CsScore>
-i "exitnow" [9 * 60 ] .1
+i "exitnow" [9 * 60 + 5 ] .1
 </CsScore>
 </CsoundSynthesizer>
 </textarea>

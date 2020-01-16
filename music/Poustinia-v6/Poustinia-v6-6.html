@@ -99,11 +99,11 @@ instr MasterOutput uses instrument number 16
 instr Controls uses instrument number 17
 instr exitnow uses instrument number 18
 */
-var title = 'Poustinia v6-5'
+var title = 'Poustinia v6-6'
 try {
     var fs = require("fs");
     var git = require('git-rev-sync');
-    var soundfile_name = sprintf("Poustinia-v6-5%s.wav",  git.short());
+    var soundfile_name = sprintf("Poustinia-v6-6%s.wav",  git.short());
 } catch(e) {
     console.log(e);
 }
@@ -259,7 +259,7 @@ var render = function(soundfile, post_process) {
     csound.setMetadata("artist", "Michael Gogins");
     csound.setMetadata("copyright", "Copyright 2020 by Michael Gogins");
     csound.setMetadata("performer", "Mike Gogins");
-    csound.setMetadata("title", "Poustinia Variation 6-5");
+    csound.setMetadata("title", "Poustinia Variation 6-6");
     csound.setMetadata("album", "Silence");
     csound.setMetadata("track", "1");
     csound.setMetadata("tracknumber", "1");
@@ -269,12 +269,12 @@ var render = function(soundfile, post_process) {
     csound.setMetadata("license", "CC BY-NC-SA");
     csound.setMetadata("genre", "Electroacoustic");
      if (soundfile === true) {
-        csound.setOutput("Poustinia-v6-5.wav", "wav", "float");
+        csound.setOutput("Poustinia-v6-6.wav", "wav", "float");
     } else {
         csound.setOutput("dac", "wav", "float");
     }
     if (typeof fs != 'undefined') {
-        fs.writeFileSync("Poustinia-v6-5-generated.csd", csd);
+        fs.writeFileSync("Poustinia-v6-6-generated.csd", csd);
     }
     csound.compileCsdText(csd);
     csound.message("Rendering...");
@@ -1322,10 +1322,10 @@ outleta "outright", aoutright * kgain * 1.33334
 prints "PianoteqOut    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
-gk_Reverb_feedback init 0.975
+gk_Reverb_feedback init 0.8
 gi_Reverb_delay_modulation init 0.875
 gk_Reverb_frequency_cutoff init 15000
-instr Reverbsc
+instr Reverb
 aleft init 0
 aright init 0
 aleft inleta "inleft"
@@ -1337,10 +1337,10 @@ outleta "outright", aright
 prints "Reverb         i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
-gk_Reverb2_feedback init 0.975
+gk_Reverb2_feedback init 0.8
 gi_Reverb2_delay_modulation init 0.875
 gk_Reverb2_frequency_cutoff init 15000
-instr Reverbsc2
+instr Reverb2
 aleft init 0
 aright init 0
 aleft inleta "inleft"
@@ -1352,7 +1352,7 @@ outleta "outright", aright
 prints "Reverb2        i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
-                                instr                   Reverb
+                                instr                   Reverbx
                                 //////////////////////////////////////////////
                                 // By Michael Gogins.
                                 //////////////////////////////////////////////
@@ -1373,14 +1373,14 @@ ainright                        inleta                  "inright"
 
 ; Trying to emulate reverbsc parameters in the original piece. Some of these are internal to reverbsc's C code.
 
-aoutleft, aoutright             MVerb                   ainleft, ainright, "Huge Hall", "wet", .5, "FB", .975, "random", 1, "rslow", 1.1, "rfast", 3.8, "rmax", .00015, "print", 1., "DFact", .75
+aoutleft, aoutright             MVerb                   ainleft, ainright, "Huge Hall", "wet", .5, "FB", .95, "random", 1, "rslow", 1.1, "rfast", 3.8, "rmax", .00015, "print", 1., "DFact", .95
 
                                 outleta                 "outleft", aoutleft
                                 outleta                 "outright", aoutright
 prints "Reverberation  i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
                                 endin
 
-                                instr                   Reverb2
+                                instr                   Reverbx2
                                 //////////////////////////////////////////////
                                 // By Michael Gogins.
                                 //////////////////////////////////////////////
@@ -1401,7 +1401,7 @@ ainright                        inleta                  "inright"
 
 ; Trying to emulate reverbsc parameters in the original piece. Some of these are internal to reverbsc's C code.
 
-aoutleft, aoutright             MVerb                   ainleft, ainright, "Huge Hall", "wet", .5, "FB", .975, "random", 1, "rslow", 1.1, "rfast", 3.8, "rmax", .000001, "print", 1., "DFact", .75
+aoutleft, aoutright             MVerb                   ainleft, ainright, "Huge Hall", "wet", .5, "FB", .95, "random", 1, "rslow", 1.1, "rfast", 3.8, "rmax", .000001, "print", 1., "DFact", .95
 
                                 outleta                 "outleft", aoutleft
                                 outleta                 "outright", aoutright
@@ -1414,7 +1414,7 @@ aleft inleta "inleft"
 aright inleta "inright"
 kgain = ampdb(gk_MasterOutput_level)
 outs aleft * kgain, aright * kgain
-; fout "Poustinia-v6-5.wav", 16, aleft, aright
+; fout "Poustinia-v6-6.wav", 16, aleft, aright
 prints "MasterOutput   i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
