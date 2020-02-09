@@ -37,8 +37,7 @@
 var title = 'Poustinia v5a'
 try {
     var fs = require("fs");
-    var git = require('git-rev-sync');
-    var soundfile_name = sprintf("Poustinia-v5a-%s.wav",  git.short());
+    var soundfile_name = sprintf("Poustinia-v5a.wav");
 } catch(e) {
     console.log(e);
 }
@@ -1155,7 +1154,7 @@ outleta "outright", a_out_right
 prints "ZakianFlute    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
-giPianoteq vstinit "/home/mkg/pianoteq_linux_v630/Pianoteq\ 6/amd64/Pianoteq\ 6.so", 1
+giPianoteq vstinit "/home/mkg/Pianoteq\ 6/amd64/Pianoteq\ 6.so", 1
 
 instr PianoteqNote
 i_instrument = p1
