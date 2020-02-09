@@ -384,7 +384,7 @@ var default_json = {
  "0": {
  "gk_overlap": 5.504950495049505,
  "gk_MVerb_feedback": 0.975,
- "gk_ReverbSC_feedback": 0.8,
+ "gk_ReverbSC_feedback": 0.85,
  "gk_MasterOutput_level": -10,
  "gi_FMWaterBell_attack": 0.002936276551436901,
  "gi_FMWaterBell_release": 0.022698875468554768,
@@ -400,7 +400,7 @@ var default_json = {
  "gk_Phaser_ratio2": 5./3.,
  "gk_Phaser_index1": 1,
  "gk_Phaser_index2": 2,
- "gk_Phaser_level": 10,
+ "gk_Phaser_level": 14,
  "gk_Bower_pressure": 3.050919377652051,
  "gk_Bower_level": -12.677504515770458,
  "gk_Droner_partial1": 0.11032374600527997,
@@ -413,10 +413,10 @@ var default_json = {
  "gk_Sweeper_briteh": 3.382178217821782,
  "gk_Sweeper_britels": 0.19575671852899576,
  "gk_Sweeper_britehs": 0.8837340876944837,
- "gk_Sweeper_level": 9,
+ "gk_Sweeper_level": 10,
  "gk_Buzzer_harmonics": 2.608203677510608,
  "gk_Buzzer_level": 27.56,
- "gk_Shiner_level": 16.056577086280058,
+ "gk_Shiner_level": 16,
  "gk_Blower_grainDensity": 79.99177885109444,
  "gk_Blower_grainDuration": 0.2,
  "gk_Blower_grainAmplitudeRange": 87.88408180043162,
@@ -1344,10 +1344,9 @@ outleta  "outleft", aoutleft
 outleta  "outright", aoutright
 prints "R%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
-    
 
-gk_ReverbSC_feedback init 0.75
-gi_ReverbSC_delay_modulation init 0.275
+gk_ReverbSC_feedback init 0.85
+gi_ReverbSC_delay_modulation init 0.35
 gk_ReverbSC_frequency_cutoff init 15000
 instr ReverbSC
 ainleft inleta "inleft"
