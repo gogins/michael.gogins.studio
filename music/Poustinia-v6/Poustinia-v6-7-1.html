@@ -132,7 +132,8 @@ var generate = function() {
  //lsys.score.setScale(3, 3, 0);
  lsys.score.setScale(4, 24, 72);
  ///lsys.score.setScale(5, 60, 8);
- lsys.score.setScale(5, 60, 9);
+ ///lsys.score.setScale(5, 60, 9);
+ lsys.score.setScale(5, 60, 11);
  lsys.score.setScale(7, 0, 1);
  lsys.score.temper(12);
  csound.message("Conforming to chords...\n");
@@ -210,13 +211,16 @@ var generate = function() {
  lsys.score.data[size - 2].time = (lsys.score.data[size - 2].time - 12.);
  if (true) {
  let start_shortening = 240;
- let old_end_shortening = 297;
+ ///let old_end_shortening = 297;
+ let old_end_shortening = 290;;
  let old_duration = old_end_shortening - start_shortening;
  let new_end_shortening = 270;
  let new_duration = new_end_shortening - start_shortening;
  let shrinkage = new_duration / old_duration;
  for (var i = 0; i < lsys.score.data.length; i++) {
   var event = lsys.score.data[i];
+  // Try transposing without changing interval structure.
+  event.key += 1;
   if (event.time >= old_end_shortening) {
   let old_time = event.time;
   let old_end = event.end;
@@ -601,7 +605,7 @@ window.addEventListener("unload", function(event) {
 </CsOptions>
 <CsInstruments>
 ; Change to 96000 with 1 ksmps for final rendering.
-sr = 48000
+sr = 96000
 ksmps = 100
 nchnls = 2
 0dbfs = 10000000
