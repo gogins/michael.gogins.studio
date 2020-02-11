@@ -1,604 +1,631 @@
 <html>
+
 <head>
-<style>
- ::-webkit-scrollbar
- {
- width:10px;
- }
- ::-webkit-scrollbar-track-piece
- {
- background-color:transparent;
- }
- ::-webkit-scrollbar-corner
- {
- background-color:transparent;
- }
-.dg {
- font-family: Monaco, sans-serif;
- font-size:8pt;
- }
-</style>
-<script src='silencio/js/csound_loader.js'></script>
-<script src='silencio/js/canvas_wrapper.js'></script>
-<script src='silencio/js/sprintf.js'></script>
-<script src='silencio/js/numeric.js'></script>
-<script src="silencio/js/three.js"></script>
-<script src='silencio/js/tinycolor.js'></script>
-<script src='silencio/js/Silencio.js'></script>
-<script src="silencio/js/TrackballControls.js"></script>
-<script src='silencio/js/ChordSpace.js'></script>
-<script type="text/javascript" src="silencio/js/dat.gui.js"></script>
+    <style>
+        ::-webkit-scrollbar
+         {
+         width:10px;
+         }
+         ::-webkit-scrollbar-track-piece
+         {
+         background-color:transparent;
+         }
+         ::-webkit-scrollbar-corner
+         {
+         background-color:transparent;
+         }
+        .dg {
+         font-family: Monaco, sans-serif;
+         font-size:8pt;
+         }
+    </style>
+    <script src='silencio/js/csound_loader.js'></script>
+    <script src='silencio/js/canvas_wrapper.js'></script>
+    <script src='silencio/js/sprintf.js'></script>
+    <script src='silencio/js/numeric.js'></script>
+    <script src="silencio/js/three.js"></script>
+    <script src='silencio/js/tinycolor.js'></script>
+    <script src='silencio/js/Silencio.js'></script>
+    <script src="silencio/js/TrackballControls.js"></script>
+    <script src='silencio/js/ChordSpace.js'></script>
+    <script type="text/javascript" src="silencio/js/dat.gui.js"></script>
 </head>
+
 <body style="background:black;">
-<canvas id="canvas" style="block;height:100vh;width:100vw">
+    <canvas id="canvas" style="block;height:100vh;width:100vw">
 </canvas>
-<textarea id="console" style="position:absolute;left:1vw;top:1vw;width:50vw;height:98vh;color:SkyBlue;background-color:transparent;border:none;text-align:left;font-size:8.25px;overflow:auto;cursor:none;"></textarea>
-<script>
-/*
-Panning does not seem to be correct.
-
-Try swapping left and right inlets to reverbs. That swaps the panning. So far 
-so good.
-
-Try adding left and right inlets, see if the reverbs have inherent panning 
-problems. That's correct.
-
-So it must be just where random pans ended up. Try a different random seed. 
-Also try panning within a narrower angle.
-
-That helps a bit, but it's still lopsided.
-
-instr FMWaterBell uses instrument number 1
-Bass thumps and also high chimes/bells.
-
-instr Phaser uses instrument number 2
-This is the glitchy, sandpapery one.
-
-instr Droner uses instrument number 3
-
-instr Sweeper uses instrument number 4
-
-instr Buzzer uses instrument number 5
-Third to sound, clarinet-like.
-
-instr Shiner uses instrument number 6
-This is the first instrument that sounds, flute-like. For some reason, the 
-first 3 notes don't seem to sound or to become active instances. OK, it was 
-duration 0 notes. Fixed that.
-
-instr Blower uses instrument number 7
-Granulated wash/pad. Is it low notes that make the glitches at 3' 15"? No.
-
-instr ZakianFlute uses instrument number 8
-
-How best to pan these? Probably in a a random scatter within 
-intervals set roughly thus:
-
-Left
-
- Shiner
-
- Blower
-
- FMWaterBell
- 
-Right
-
-*/
-var title = 'Poustinia v6-7-1'
-
-try {
- var fs = require("fs");
- var soundfile_name = sprintf("Poustinia-v6-7-1.wav");
-} catch(e) {
- console.log(e);
-}
-window.onerror = function (message, url, line) {
- csound.message(message + '\n' + url + '\n' + line + '\n');
- console.trace();
-}
-
-var generate = function() {
- csound.message("generate()...\n");
- try {
- window.lsys = new ChordSpace.LSys();
- lsys.axiom = "- [ g f f I I I I a ] g a";
- lsys.addRule('g', 'Ja b a3 c aa F F c2 a2 t,/,1.025 b2 K c2 g b2 t,*,1.025 T,5 F Jb F F c g a b g');
- lsys.addRule('a', 'F b F a2 b a2 [ b3 F F f F [ c F F F F ] ] F F F Jb c2 a2 c F c F F F b2 Ja a2');
- lsys.addRule('aa', '[ b3 F F F c3 f F F F F ] F b F a2 b I I I F F [ c2 F F F F F F ] F c2 a2 c F c F F b2 a2');
- lsys.addRule('xaa', '[ b3 F F F c3 f F F F F ] F b F a2 b I I F F [ c2 F F F F F F ] F c2 a2 c F c F F b2 a2');
- lsys.addRule('xa2', 'I F b F b a3 i i b2 f F F f c2 a3 c F c2 F b2 a3 i i c');
- lsys.addRule('a3', 'F b2 b F a I v F F c F F F F F c2 aa V f c2 F F b2 a');
- lsys.addRule('xa3', 'F b2 b F a I v F F c F F F F F c2 aa i i V f c2 F F b2 a');
- lsys.addRule('Ja', 'J,2,0');
- lsys.addRule('Jb', 'J,2,2'); 
- ///lsys.addRule('b', '+ f f f f f - -'); 
- ///lsys.addRule('c', '- f f f f f +');
- lsys.addRule('b', '+ f f f f F f - -'); 
- lsys.addRule('c', '- f f F f f f +');
- lsys.addRule('b2', '+ f f f f -'); 
- ///lsys.addRule('c2', '- - f f f f + +');
- lsys.addRule('c2', '- - f f f f + +');
- lsys.addRule('b3', '- - f f f + +'); 
- ///lsys.addRule('b3', '- - f f f f + +'); 
- var chord = ChordSpace.chordForName('CM9'); 
- var t = new ChordSpace.Turtle(4.5, Math.PI/2, chord, chord);
- lsys.generate(4);
- lsys.write_score(t);
- csound.message("Finding size of score...\n");
- lsys.score.findScales();
- csound.message("Rescaling score...\n");
- lsys.score.setScale(3, 1, 8.125);
- //lsys.score.setScale(3, 3, 0);
- lsys.score.setScale(4, 24, 72);
- ///lsys.score.setScale(5, 60, 8);
- ///lsys.score.setScale(5, 60, 9);
- lsys.score.setScale(5, 60, 11);
- lsys.score.setScale(7, 0, 1);
- lsys.score.temper(12);
- csound.message("Conforming to chords...\n");
- lsys.conformToChords();
- lsys.score.setDuration(12*60);
- csound.message("Tieing overlapping notes...\n");
- lsys.score.tieOverlaps(true);
- lsys.score.sort();
- // Fix up score before rendering.
- var i;
- var n = lsys.score.data.length;
- var cutoff = 7 * 60 + 35;
- var note;
- for (i = n - 1; i >= 0; --i) {
- note = lsys.score.data[i];
- // Extend the notes at the end.
- if ((note.time + note.duration) >= cutoff) {
-  note.duration = (note.duration + 2.5);
- }
- if (note.duration < .5) {
-  note.duration = .5;
- }
- }
- // Pianoteq misbehaves if we start right at time 0.
- for (var i = 0; i < lsys.score.data.length; i++) {
- var event = lsys.score.data[i];
- event.time = event.time + 2;
- }
- if (false) {
- // Also if keys overlap.
- for (var i = 0; i < lsys.score.data.length; i++) {
-  var event = lsys.score.data[i];
-  csound.message(event.toIStatement() + ' e: ' + event.end);
-  var channel = Math.floor(event.channel);
-  var key = event.key;
-  for (var j = i + 1; j < lsys.score.data.length; j++) {
-  var overlap = lsys.score.data[j];
-  var overlap_channel = Math.floor(overlap.channel);
-  var overlap_key = overlap.key;
-  if (key === overlap_key && channel === overlap_channel && channel === 2) {
-   if (event.end > overlap.time) {
-   var the_end = Math.max(event.end, overlap.end);
-   csound.message('Correcting overlap for:');
-   csound.message(' ' + event.toIStatement() + ' e: ' + event.end);
-   csound.message(' ' + overlap.toIStatement() + ' e: ' + overlap.end);
-   event.end = the_end;
-   overlap.end = the_end;
-   csound.message('to:');
-   csound.message(' ' + event.toIStatement() + ' e: ' + event.end);
-   csound.message(' ' + overlap.toIStatement() + ' e: ' + overlap.end + '\n');
-   }
-  }
-  }
- }
- }
- // Reassign Pianoteq to FMWaterBell,
- // randomize pans
- for (var i = 0; i < lsys.score.data.length; i++) {
- var event = lsys.score.data[i];
- event.channel = Math.round(event.channel);
- let random_variable = Math.random();
- random_variable *= .6;
- random_variable += .2;
- event.pan = event.pan + random_variable
- if (event.channel >= 9 && event.channel < 10) {
-  event.channel = 1;
-  csound.message('Reassigned...\n');
- }
- } 
- // Shorten duration preserving corrections...
- lsys.score.setDuration(9*60);
- // Bring in final notes.
- let size = lsys.score.data.length;
- lsys.score.data[size - 1].time = (lsys.score.data[size - 1].time - 12.);
- lsys.score.data[size - 2].time = (lsys.score.data[size - 2].time - 12.);
- if (true) {
- let start_shortening = 240;
- ///let old_end_shortening = 297;
- let old_end_shortening = 290;;
- let old_duration = old_end_shortening - start_shortening;
- let new_end_shortening = 270;
- let new_duration = new_end_shortening - start_shortening;
- let shrinkage = new_duration / old_duration;
- for (var i = 0; i < lsys.score.data.length; i++) {
-  var event = lsys.score.data[i];
-  // Try transposing without changing interval structure.
-  event.key += 1;
-  if (event.time >= old_end_shortening) {
-  let old_time = event.time;
-  let old_end = event.end;
-  event.time = event.time - start_shortening;
-  if (old_time < old_end_shortening) {
-   event.time = event.time * shrinkage;
-   if (old_end < old_end_shortening) {
-   event.duration = event.duration * shrinkage;
-   } 
-  }
-  event.time = event.time + start_shortening;
-  }
- }
- }
- csound.message("Plotting score...\n");
- lsys.score.draw3D(document.getElementById("canvas"));
- csound.message('Generated ' + lsys.score.data.length + ' notes.\n');
- } catch(err) {
- csound.message(err.name + ': ' + err.message + ' ' + err.line + '\n');
- }
-};
-
-// Message level for standard (terminal) output. Takes the sum of any of the following values:
-// 1 = note amplitude messages
-// 2 = samples out of range message
-// 4 = warning messages
-// 128 = print benchmark information
-// And exactly one of these to select note amplitude format:
-// 0 = raw amplitudes, no colours
-// 32 = dB, no colors
-// 64 = dB, out of range highlighted with red
-// 96 = dB, all colors
-// 256 = raw, out of range highlighted with red
-// 512 = raw, all colours 
-var render = function(soundfile, post_process) {
- var csd = document.getElementById('csd').value;
- var csound_score = lsys.score.toCsoundScore();
- csound_score = csound_score.concat("\n</CsScore>");
- csd = csd.replace("</CsScore>", csound_score);
- csound.message("Playing...");
- csound.setOption(sprintf('-m%d', 2 + 128 + 32));
- csound.setOption('--nodisplays');
- csound.setOption('--keep-sorted-score');
- csound.setOption('-R');
- csound.setOption('-W');
- csound.setOption('-f');
- csound.setOption('-o' + soundfile_name);
- //csound.setOption('-odac');
- csound.setMetadata("artist", "Michael Gogins");
- csound.setMetadata("copyright", "Copyright 2020 by Michael Gogins");
- csound.setMetadata("performer", "Mike Gogins");
- csound.setMetadata("title", "Poustinia Variation 6-7");
- csound.setMetadata("album", "Silence");
- csound.setMetadata("track", "1");
- csound.setMetadata("tracknumber", "1");
- csound.setMetadata("date", "2020");
- csound.setMetadata("publisher", "Irreducible Productions ASCAP");
- csound.setMetadata("comment", "Lindenmayer system in chord space.");
- csound.setMetadata("license", "CC BY-NC-SA");
- csound.setMetadata("genre", "Electroacoustic");
- if (soundfile === true) {
- csound.setOutput("Poustinia-v6-7-1.wav", "wav", "float");
- } else {
- csound.setOutput("dac", "wav", "float");
- }
- if (typeof fs != 'undefined') {
- fs.writeFileSync("Poustinia-v6-7-1-generated.csd", csd);
- }
- csound.compileCsdText(csd);
- csound.message("Rendering...");
- csound.start();
- if (post_process == true) {
- csound.performAndPostProcess();
- } else {
- csound.perform();
- }
- updateScoreTime();
-}
-
-var render_audio = function() {
- render(false, false);
-}
-
-var render_soundfile = function() {
- render(true, false);
-}
-
-var render_soundfile_and_postprocess = function() {
- render(true, true);
-}
-
-var stop = function() {
- Silencio.saveDatGuiJson(gui);
- csound.stop();
-}
-
-var updateScoreTime = function() {
- var score_time = csound.getScoreTime();
- setTimeout(updateScoreTime, 200);
- lsys.score.progress3D(score_time);
-};
-
-var parameters = {
- gk_FMWaterBell_level: 15,
- gi_FMWaterBell_attack: 0.002,
- gi_FMWaterBell_release: 0.01,
- gi_FMWaterBell_exponent: 15,
- gi_FMWaterBell_sustain: 20,
- gi_FMWaterBell_sustain_level: .1,
- gk_FMWaterBell_index: .5,
- gk_FMWaterBell_crossfade: .5,
- gk_FMWaterBell_vibrato_depth: 0.05,
- gk_FMWaterBell_vibrato_rate: 6,
- gk_Bower_level: 0.5,
- gk_Bower_pressure: 0.25,
- gk_Blower_grainDensity: .150,
- gk_Blower_grainDuration: .2,
- gk_Blower_grainAmplitudeRange: .1,
- gk_Blower_grainFrequencyRange: .033,
- gk_Blower_level: 0.5,
- gk_Buzzer_harmonics: 15,
- gk_Buzzer_level: 0.5,
- gk_Droner_partial1: 0.1,
- gk_Droner_partial2: 0.1,
- gk_Droner_partial3: 0.1,
- gk_Droner_partial4: 0.1,
- gk_Droner_partial5: 0.1,
- gk_Droner_level: 30,
- gk_Phaser_ratio1: 1,
- gk_Phaser_ratio2: .3333334,
- gk_Phaser_index1: 1,
- gk_Phaser_index2: .0125,
- gk_Phaser_level: 0.5,
- gk_PianoteqOut_level: 0.5,
- gk_Shiner_level: 0.5,
- gk_Sweeper_britel: 0,
- gk_Sweeper_briteh: 2.9,
- gk_Sweeper_britels: .2 / 3,
- gk_Sweeper_britehs: 2.5 / 2,
- gk_Sweeper_level: 0.5,
- gk_ZakianFlute_level: 0,
- gk_MVerb_feedback: .975,
- gk_ReverbSC_feedback: .8,
- gk_MasterOutput_level: .4,
- gk_overlap: 0.05,
- generate: window.generate,
- render_audio: window.render_audio,
- render_soundfile: window.render_soundfile,
- render_soundfile_and_postprocess: window.render_soundfile_and_postprocess,
- stop: window.stop,
-};
-
-var handleMessage = function(message) {
- console.log(message);
- var messages_textarea = document.getElementById("console");
- var existing = messages_textarea.value;
- messages_textarea.value = existing + message;
- messages_textarea.scrollTop = messages_textarea.scrollHeight;
-}
-
-var default_json = {
- "preset": "Default",
- "remembered": {
- "Default": {
- "0": {
- "gk_overlap": 5.504950495049505,
- "gk_MVerb_feedback": 0.975,
- "gk_ReverbSC_feedback": 0.85,
- "gk_MasterOutput_level": -10,
- "gi_FMWaterBell_attack": 0.002936276551436901,
- "gi_FMWaterBell_release": 0.022698875468554768,
- "gi_FMWaterBell_exponent": 12.544773011245312,
- "gi_FMWaterBell_sustain": 5.385256143273636,
- "gi_FMWaterBell_sustain_level": 0.08267388588088297,
- "gk_FMWaterBell_crossfade": 0.48250728862973763,
- "gk_FMWaterBell_index": 1.1401499375260309,
- "gk_FMWaterBell_vibrato_depth": 0.2897954989209742,
- "gk_FMWaterBell_vibrato_rate": 4.762100503545371,
- "gk_FMWaterBell_level": 35., 
- "gk_Phaser_ratio1": 1,
- "gk_Phaser_ratio2": 5./3.,
- "gk_Phaser_index1": 1,
- "gk_Phaser_index2": 2,
- "gk_Phaser_level": 14,
- "gk_Bower_pressure": 3.050919377652051,
- "gk_Bower_level": -12.677504515770458,
- "gk_Droner_partial1": 0.11032374600527997,
- "gk_Droner_partial2": 0.4927052938724468,
- "gk_Droner_partial3": 0.11921634014172572,
- "gk_Droner_partial4": 0.06586077532305128,
- "gk_Droner_partial5": 0.6616645824649159,
- "gk_Droner_level": 10.,
- "gk_Sweeper_britel": 0.2773844231570179,
- "gk_Sweeper_briteh": 3.382178217821782,
- "gk_Sweeper_britels": 0.19575671852899576,
- "gk_Sweeper_britehs": 0.8837340876944837,
- "gk_Sweeper_level": 10,
- "gk_Buzzer_harmonics": 2.608203677510608,
- "gk_Buzzer_level": 27.56,
- "gk_Shiner_level": 16,
- "gk_Blower_grainDensity": 79.99177885109444,
- "gk_Blower_grainDuration": 0.2,
- "gk_Blower_grainAmplitudeRange": 87.88408180043162,
- "gk_Blower_grainFrequencyRange": 30.596081700708627,
- "gk_Blower_level": 4,
- "gk_ZakianFlute_level": 0,
- "gk_PianoteqOut_level": 14.5
- }
- }
- },
- "closed": false,
- "folders": {
- "Master": {
- "preset": "Default",
- "closed": true,
- "folders": {}
- },
- "FMWaterBell": {
- "preset": "Default",
- "closed": false,
- "folders": {}
- },
- "Phaser": {
- "preset": "Default",
- "closed": true,
- "folders": {}
- },
- "Bower": {
- "preset": "Default",
- "closed": true,
- "folders": {}
- },
- "Droner": {
- "preset": "Default",
- "closed": false,
- "folders": {}
- },
- "Sweeper": {
- "preset": "Default",
- "closed": false,
- "folders": {}
- },
- "Buzzer": {
- "preset": "Default",
- "closed": false,
- "folders": {}
- },
- "Shiner": {
- "preset": "Default",
- "closed": false,
- "folders": {}
- },
- "Blower": {
- "preset": "Default",
- "closed": false,
- "folders": {}
- },
- "Pianoteq": {
- "preset": "Default",
- "closed": false,
- "folders": {}
- }
- }
-};
-
-window.onload = function() {
- get_csound(handleMessage);
- try {
- var temporary_json = Silencio.restoreDatGuiJson(default_json);
- //default_json = temporary_json;
- gui = new dat.GUI({load: default_json, width: 300});
- csound.message("Restored Csound instrument parameters.\n");
- } catch(e) {
- csound.message("Failed to restore Csound instrument parameters.\n");
- gui = new dat.GUI({width: 400});
- }
- gui.remember(parameters);
- gui.add(parameters, 'generate').name('Generate [Ctrl-G]');
- gui.add(parameters, 'render_audio').name('Render audio [Ctrl-A]');
- gui.add(parameters, 'render_soundfile').name('Render soundfile');
- gui.add(parameters, 'render_soundfile_and_postprocess').name('Render/post [Ctrl-P]');
- gui.add(parameters, 'stop').name('Stop [Ctrl-S]');
- var Master = gui.addFolder('Master');
- add_slider(Master, 'gk_overlap', 0, 20);
- add_slider(Master, 'gk_MVerb_feedback', 0, 1);
- add_slider(Master, 'gk_ReverbSC_feedback', 0, 1);
- add_slider(Master, 'gk_MasterOutput_level', -40, 40);
- var FMWaterBell = gui.addFolder('FMWaterBell');
- add_slider(FMWaterBell, 'gi_FMWaterBell_attack', 0, .1);
- add_slider(FMWaterBell, 'gi_FMWaterBell_release', 0, .1);
- add_slider(FMWaterBell, 'gi_FMWaterBell_exponent', -30, 30);
- add_slider(FMWaterBell, 'gi_FMWaterBell_sustain', 0, 20);
- add_slider(FMWaterBell, 'gi_FMWaterBell_sustain_level', 0, 1);
- add_slider(FMWaterBell, 'gk_FMWaterBell_crossfade', 0, 1);
- add_slider(FMWaterBell, 'gk_FMWaterBell_index', 0, 15);
- add_slider(FMWaterBell, 'gk_FMWaterBell_vibrato_depth', 0, 10);
- add_slider(FMWaterBell, 'gk_FMWaterBell_vibrato_rate', 0, 10);
- add_slider(FMWaterBell, 'gk_FMWaterBell_level',-40, 40);
- var Phaser = gui.addFolder('Phaser');
- add_slider(Phaser, 'gk_Phaser_ratio1', 0, 5);
- add_slider(Phaser, 'gk_Phaser_ratio2', 0, 5);
- add_slider(Phaser, 'gk_Phaser_index1', 0, 15);
- add_slider(Phaser, 'gk_Phaser_index2', 0, 15);
- add_slider(Phaser, 'gk_Phaser_level', -40, 40);
- var Bower = gui.addFolder('Bower');
- add_slider(Bower, 'gk_Bower_pressure', 0, 5);
- add_slider(Bower, 'gk_Bower_level', -40, 40);
- var Droner = gui.addFolder('Droner');
- add_slider(Droner, 'gk_Droner_partial1', 0, 1);
- add_slider(Droner, 'gk_Droner_partial2', 0, 1);
- add_slider(Droner, 'gk_Droner_partial3', 0, 1);
- add_slider(Droner, 'gk_Droner_partial4', 0, 1);
- add_slider(Droner, 'gk_Droner_partial5', 0, 1);
- add_slider(Droner, 'gk_Droner_level', -40, 40);
- var Sweeper = gui.addFolder('Sweeper');
- add_slider(Sweeper, 'gk_Sweeper_britel', 0, 4);
- add_slider(Sweeper, 'gk_Sweeper_briteh', 0, 4);
- add_slider(Sweeper, 'gk_Sweeper_britels', 0, 4);
- add_slider(Sweeper, 'gk_Sweeper_britehs', 0, 4);
- add_slider(Sweeper, 'gk_Sweeper_level', -40, 40);
- var Buzzer = gui.addFolder('Buzzer');
- add_slider(Buzzer, 'gk_Buzzer_harmonics', 0, 20);
- add_slider(Buzzer, 'gk_Buzzer_level', -40, 40);
- var Shiner = gui.addFolder('Shiner');
- add_slider(Shiner, 'gk_Shiner_level', -40, 40);
- var Blower = gui.addFolder('Blower');
- add_slider(Blower, 'gk_Blower_grainDensity', 0, 400);
- add_slider(Blower, 'gk_Blower_grainDuration', 0, .5);
- add_slider(Blower, 'gk_Blower_grainAmplitudeRange', 0, 400);
- add_slider(Blower, 'gk_Blower_grainFrequencyRange', 0, 100);
- add_slider(Blower, 'gk_Blower_level', -40, 40);
- var Flute = gui.addFolder('Zakian Flute');
- add_slider(Flute, 'gk_ZakianFlute_level', -40, 40);
- var Pianoteq = gui.addFolder('Pianoteq');
- add_slider(Pianoteq, 'gk_PianoteqOut_level', -40, 40);
- gui.revert(); 
- document.addEventListener("keydown", function (e) {
- var e_char = String.fromCharCode(e.keyCode || e.charCode);
- if (e.ctrlKey === true) {
-  if (e_char === 'H') {
-  var console = document.getElementById("console");
-  if (console.style.display === "none") {
-   console.style.display = "block";
-  } else {
-   console.style.display = "none";
-  }
-  gui.closed = true;
-  gui.closed = false;
-  } else if (e_char === 'G') {
-  generate();
-  } else if (e_char === 'P') {
-  parameters.play();
-  } else if (e_char === 'S') {
-  parameters.stop();
-  }
- }
- });
-};
-
-var gk_update = function(name, value) {
- var numberValue = parseFloat(value);
- csound.setControlChannel(name, numberValue);
-}
-
-var add_slider = function(gui_folder, token, minimum, maximum, name) {
- var on_parameter_change = function(value) {
- gk_update(token, value);
- };
- gui_folder.add(parameters, token, minimum, maximum).onChange(on_parameter_change);
-};
-
-window.addEventListener("unload", function(event) { 
- parameters.stop();
- nw_window.close();
-});
-
-</script>
-<textarea class="code" id="csd" hidden rows=24 cols=80>
+    <textarea id="console" style="position:absolute;left:1vw;top:1vw;width:50vw;height:98vh;color:SkyBlue;background-color:transparent;border:none;text-align:left;font-size:8.25px;overflow:auto;cursor:none;"></textarea>
+    <script>
+        /*
+        Panning does not seem to be correct.
+        
+        Try swapping left and right inlets to reverbs. That swaps the panning. So far 
+        so good.
+        
+        Try adding left and right inlets, see if the reverbs have inherent panning 
+        problems. That's correct.
+        
+        So it must be just where random pans ended up. Try a different random seed. 
+        Also try panning within a narrower angle.
+        
+        That helps a bit, but it's still lopsided.
+        
+        instr FMWaterBell uses instrument number 1
+        Bass thumps and also high chimes/bells.
+        
+        instr Phaser uses instrument number 2
+        This is the glitchy, sandpapery one.
+        
+        instr Droner uses instrument number 3
+        
+        instr Sweeper uses instrument number 4
+        
+        instr Buzzer uses instrument number 5
+        Third to sound, clarinet-like.
+        
+        instr Shiner uses instrument number 6
+        This is the first instrument that sounds, flute-like. For some reason, the 
+        first 3 notes don't seem to sound or to become active instances. OK, it was 
+        duration 0 notes. Fixed that.
+        
+        instr Blower uses instrument number 7
+        Granulated wash/pad. Is it low notes that make the glitches at 3' 15"? No.
+        
+        instr ZakianFlute uses instrument number 8
+        
+        How best to pan these? Probably in a a random scatter within 
+        intervals set roughly thus:
+        
+        Left
+        
+         Shiner
+        
+         Blower
+        
+         FMWaterBell
+         
+        Right
+        
+        */
+        var title = 'Poustinia v6-7-1'
+        
+        try {
+         var fs = require("fs");
+         var soundfile_name = sprintf("Poustinia-v6-7-1.wav");
+        } catch(e) {
+         console.log(e);
+        }
+        window.onerror = function (message, url, line) {
+         csound.message(message + '\n' + url + '\n' + line + '\n');
+         console.trace();
+        }
+        
+        var generate = function() {
+         csound.message("generate()...\n");
+         try {
+         window.lsys = new ChordSpace.LSys();
+         lsys.axiom = "- [ g f f I I I I a ] g a";
+         lsys.addRule('g', 'Ja b a3 c aa F F c2 a2 t,/,1.025 b2 K c2 g b2 t,*,1.025 T,5 F Jb F F c g a b g');
+         lsys.addRule('a', 'F b F a2 b a2 [ b3 F F f F [ c F F F F ] ] F F F Jb c2 a2 c F c F F F b2 Ja a2');
+         lsys.addRule('aa', '[ b3 F F F c3 f F F F F ] F b F a2 b I I I F F [ c2 F F F F F F ] F c2 a2 c F c F F b2 a2');
+         lsys.addRule('xaa', '[ b3 F F F c3 f F F F F ] F b F a2 b I I F F [ c2 F F F F F F ] F c2 a2 c F c F F b2 a2');
+         lsys.addRule('xa2', 'I F b F b a3 i i b2 f F F f c2 a3 c F c2 F b2 a3 i i c');
+         lsys.addRule('a3', 'F b2 b F a I v F F c F F F F F c2 aa V f c2 F F b2 a');
+         lsys.addRule('xa3', 'F b2 b F a I v F F c F F F F F c2 aa i i V f c2 F F b2 a');
+         lsys.addRule('Ja', 'J,2,0');
+         lsys.addRule('Jb', 'J,2,2'); 
+         ///lsys.addRule('b', '+ f f f f f - -'); 
+         ///lsys.addRule('c', '- f f f f f +');
+         lsys.addRule('b', '+ f f f f F f - -'); 
+         lsys.addRule('c', '- f f F f f f +');
+         lsys.addRule('b2', '+ f f f f -'); 
+         ///lsys.addRule('c2', '- - f f f f + +');
+         lsys.addRule('c2', '- - f f f f + +');
+         lsys.addRule('b3', '- - f f f + +'); 
+         ///lsys.addRule('b3', '- - f f f f + +'); 
+         var chord = ChordSpace.chordForName('CM9'); 
+         var t = new ChordSpace.Turtle(4.5, Math.PI/2, chord, chord);
+         lsys.generate(4);
+         lsys.write_score(t);
+         csound.message("Finding size of score...\n");
+         lsys.score.findScales();
+         csound.message("Rescaling score...\n");
+         lsys.score.setScale(3, 1, 8.125);
+         //lsys.score.setScale(3, 3, 0);
+         lsys.score.setScale(4, 24, 72);
+         ///lsys.score.setScale(5, 60, 8);
+         ///lsys.score.setScale(5, 60, 9);
+         lsys.score.setScale(5, 60, 11);
+         lsys.score.setScale(7, 0, 1);
+         lsys.score.temper(12);
+         csound.message("Conforming to chords...\n");
+         lsys.conformToChords();
+         lsys.score.setDuration(12*60);
+         csound.message("Tieing overlapping notes...\n");
+         lsys.score.tieOverlaps(true);
+         lsys.score.sort();
+         // Fix up score before rendering.
+         var i;
+         var n = lsys.score.data.length;
+         var cutoff = 7 * 60 + 35;
+         var note;
+         for (i = n - 1; i >= 0; --i) {
+         note = lsys.score.data[i];
+         // Extend the notes at the end.
+         if ((note.time + note.duration) >= cutoff) {
+          note.duration = (note.duration + 2.5);
+         }
+         if (note.duration < .5) {
+          note.duration = .5;
+         }
+         }
+         // Pianoteq misbehaves if we start right at time 0.
+         for (var i = 0; i < lsys.score.data.length; i++) {
+         var event = lsys.score.data[i];
+         event.time = event.time + 2;
+         }
+         if (false) {
+         // Also if keys overlap.
+         for (var i = 0; i < lsys.score.data.length; i++) {
+          var event = lsys.score.data[i];
+          csound.message(event.toIStatement() + ' e: ' + event.end);
+          var channel = Math.floor(event.channel);
+          var key = event.key;
+          for (var j = i + 1; j < lsys.score.data.length; j++) {
+          var overlap = lsys.score.data[j];
+          var overlap_channel = Math.floor(overlap.channel);
+          var overlap_key = overlap.key;
+          if (key === overlap_key && channel === overlap_channel && channel === 2) {
+           if (event.end > overlap.time) {
+           var the_end = Math.max(event.end, overlap.end);
+           csound.message('Correcting overlap for:');
+           csound.message(' ' + event.toIStatement() + ' e: ' + event.end);
+           csound.message(' ' + overlap.toIStatement() + ' e: ' + overlap.end);
+           event.end = the_end;
+           overlap.end = the_end;
+           csound.message('to:');
+           csound.message(' ' + event.toIStatement() + ' e: ' + event.end);
+           csound.message(' ' + overlap.toIStatement() + ' e: ' + overlap.end + '\n');
+           }
+          }
+          }
+         }
+         }
+         // Reassign Pianoteq to FMWaterBell,
+         // randomize pans
+         for (var i = 0; i < lsys.score.data.length; i++) {
+         var event = lsys.score.data[i];
+         event.channel = Math.round(event.channel);
+         let random_variable = Math.random();
+         random_variable *= .6;
+         random_variable += .2;
+         event.pan = event.pan + random_variable
+         if (event.channel >= 9 && event.channel < 10) {
+          event.channel = 1;
+          csound.message('Reassigned...\n');
+         }
+         } 
+         // Shorten duration preserving corrections...
+         lsys.score.setDuration(9*60);
+         // Bring in final notes.
+         let size = lsys.score.data.length;
+         lsys.score.data[size - 1].time = (lsys.score.data[size - 1].time - 12.);
+         lsys.score.data[size - 2].time = (lsys.score.data[size - 2].time - 12.);
+         if (true) {
+         let start_shortening = 4*60+40;
+         let old_end_shortening = 4*60+57;
+         let old_duration = old_end_shortening - start_shortening;
+         let new_end_shortening = old_end_shortening - 18;
+         let new_duration = new_end_shortening - start_shortening;
+         let shrinkage = new_duration / old_duration;
+         for (var i = 0; i < lsys.score.data.length; i++) {
+          var event = lsys.score.data[i];
+          // Try transposing without changing interval structure.
+          event.key += 1;
+          if (event.time >= old_end_shortening) {
+          let old_time = event.time;
+          let old_end = event.end;
+          event.time = event.time - start_shortening;
+          if (old_time < old_end_shortening) {
+           event.time = event.time * shrinkage;
+           if (old_end < old_end_shortening) {
+           event.duration = event.duration * shrinkage;
+           } 
+          }
+          event.time = event.time + start_shortening;
+          }
+         }
+         }
+         if (false) {
+         let start_shortening = 4*60+40;
+         ///let old_end_shortening = 4*60+48;
+         let old_end_shortening = 290;;
+         let old_duration = old_end_shortening - start_shortening;
+         let new_end_shortening = 270;
+         let new_duration = new_end_shortening - start_shortening;
+         let shrinkage = new_duration / old_duration;
+         for (var i = 0; i < lsys.score.data.length; i++) {
+          var event = lsys.score.data[i];
+          // Try transposing without changing interval structure.
+          event.key += 1;
+          if (event.time >= old_end_shortening) {
+          let old_time = event.time;
+          let old_end = event.end;
+          event.time = event.time - start_shortening;
+          if (old_time < old_end_shortening) {
+           event.time = event.time * shrinkage;
+           if (old_end < old_end_shortening) {
+           event.duration = event.duration * shrinkage;
+           } 
+          }
+          event.time = event.time + start_shortening;
+          }
+         }
+         }
+                  
+         csound.message("Plotting score...\n");
+         lsys.score.draw3D(document.getElementById("canvas"));
+         csound.message('Generated ' + lsys.score.data.length + ' notes.\n');
+         } catch(err) {
+         csound.message(err.name + ': ' + err.message + ' ' + err.line + '\n');
+         }
+        };
+        
+        // Message level for standard (terminal) output. Takes the sum of any of the following values:
+        // 1 = note amplitude messages
+        // 2 = samples out of range message
+        // 4 = warning messages
+        // 128 = print benchmark information
+        // And exactly one of these to select note amplitude format:
+        // 0 = raw amplitudes, no colours
+        // 32 = dB, no colors
+        // 64 = dB, out of range highlighted with red
+        // 96 = dB, all colors
+        // 256 = raw, out of range highlighted with red
+        // 512 = raw, all colours 
+        var render = function(soundfile, post_process) {
+         var csd = document.getElementById('csd').value;
+         var csound_score = lsys.score.toCsoundScore();
+         csound_score = csound_score.concat("\n</CsScore>");
+         csd = csd.replace("</CsScore>", csound_score);
+         csound.message("Playing...");
+         csound.setOption(sprintf('-m%d', 2 + 128 + 32));
+         csound.setOption('--nodisplays');
+         csound.setOption('--keep-sorted-score');
+         csound.setOption('-R');
+         csound.setOption('-W');
+         csound.setOption('-f');
+         csound.setOption('-o' + soundfile_name);
+         //csound.setOption('-odac');
+         csound.setMetadata("artist", "Michael Gogins");
+         csound.setMetadata("copyright", "Copyright 2020 by Michael Gogins");
+         csound.setMetadata("performer", "Mike Gogins");
+         csound.setMetadata("title", "Poustinia Variation 6-7");
+         csound.setMetadata("album", "Silence");
+         csound.setMetadata("track", "1");
+         csound.setMetadata("tracknumber", "1");
+         csound.setMetadata("date", "2020");
+         csound.setMetadata("publisher", "Irreducible Productions ASCAP");
+         csound.setMetadata("comment", "Lindenmayer system in chord space.");
+         csound.setMetadata("license", "CC BY-NC-SA");
+         csound.setMetadata("genre", "Electroacoustic");
+         if (soundfile === true) {
+         csound.setOutput("Poustinia-v6-7-1.wav", "wav", "float");
+         } else {
+         csound.setOutput("dac", "wav", "float");
+         }
+         if (typeof fs != 'undefined') {
+         fs.writeFileSync("Poustinia-v6-7-1-generated.csd", csd);
+         }
+         csound.compileCsdText(csd);
+         csound.message("Rendering...");
+         csound.start();
+         if (post_process == true) {
+         csound.performAndPostProcess();
+         } else {
+         csound.perform();
+         }
+         updateScoreTime();
+        }
+        
+        var render_audio = function() {
+         render(false, false);
+        }
+        
+        var render_soundfile = function() {
+         render(true, false);
+        }
+        
+        var render_soundfile_and_postprocess = function() {
+         render(true, true);
+        }
+        
+        var stop = function() {
+         Silencio.saveDatGuiJson(gui);
+         csound.stop();
+        }
+        
+        var updateScoreTime = function() {
+         var score_time = csound.getScoreTime();
+         setTimeout(updateScoreTime, 200);
+         lsys.score.progress3D(score_time);
+        };
+        
+        var parameters = {
+         gk_FMWaterBell_level: 15,
+         gi_FMWaterBell_attack: 0.002,
+         gi_FMWaterBell_release: 0.01,
+         gi_FMWaterBell_exponent: 15,
+         gi_FMWaterBell_sustain: 20,
+         gi_FMWaterBell_sustain_level: .1,
+         gk_FMWaterBell_index: .5,
+         gk_FMWaterBell_crossfade: .5,
+         gk_FMWaterBell_vibrato_depth: 0.05,
+         gk_FMWaterBell_vibrato_rate: 6,
+         gk_Bower_level: 0.5,
+         gk_Bower_pressure: 0.25,
+         gk_Blower_grainDensity: .150,
+         gk_Blower_grainDuration: .2,
+         gk_Blower_grainAmplitudeRange: .1,
+         gk_Blower_grainFrequencyRange: .033,
+         gk_Blower_level: 0.5,
+         gk_Buzzer_harmonics: 15,
+         gk_Buzzer_level: 0.5,
+         gk_Droner_partial1: 0.1,
+         gk_Droner_partial2: 0.1,
+         gk_Droner_partial3: 0.1,
+         gk_Droner_partial4: 0.1,
+         gk_Droner_partial5: 0.1,
+         gk_Droner_level: 30,
+         gk_Phaser_ratio1: 1,
+         gk_Phaser_ratio2: .3333334,
+         gk_Phaser_index1: 1,
+         gk_Phaser_index2: .0125,
+         gk_Phaser_level: 0.5,
+         gk_PianoteqOut_level: 0.5,
+         gk_Shiner_level: 0.5,
+         gk_Sweeper_britel: 0,
+         gk_Sweeper_briteh: 2.9,
+         gk_Sweeper_britels: .2 / 3,
+         gk_Sweeper_britehs: 2.5 / 2,
+         gk_Sweeper_level: 0.5,
+         gk_ZakianFlute_level: 0,
+         gk_MVerb_feedback: .975,
+         gk_ReverbSC_feedback: .8,
+         gk_MasterOutput_level: .4,
+         gk_overlap: 0.05,
+         generate: window.generate,
+         render_audio: window.render_audio,
+         render_soundfile: window.render_soundfile,
+         render_soundfile_and_postprocess: window.render_soundfile_and_postprocess,
+         stop: window.stop,
+        };
+        
+        var handleMessage = function(message) {
+         console.log(message);
+         var messages_textarea = document.getElementById("console");
+         var existing = messages_textarea.value;
+         messages_textarea.value = existing + message;
+         messages_textarea.scrollTop = messages_textarea.scrollHeight;
+        }
+        
+        var default_json = {
+         "preset": "Default",
+         "remembered": {
+         "Default": {
+         "0": {
+         "gk_overlap": 5.504950495049505,
+         "gk_MVerb_feedback": 0.975,
+         "gk_ReverbSC_feedback": 0.85,
+         "gk_MasterOutput_level": -10,
+         "gi_FMWaterBell_attack": 0.002936276551436901,
+         "gi_FMWaterBell_release": 0.022698875468554768,
+         "gi_FMWaterBell_exponent": 12.544773011245312,
+         "gi_FMWaterBell_sustain": 5.385256143273636,
+         "gi_FMWaterBell_sustain_level": 0.08267388588088297,
+         "gk_FMWaterBell_crossfade": 0.48250728862973763,
+         "gk_FMWaterBell_index": 1.1401499375260309,
+         "gk_FMWaterBell_vibrato_depth": 0.2897954989209742,
+         "gk_FMWaterBell_vibrato_rate": 4.762100503545371,
+         "gk_FMWaterBell_level": 35., 
+         "gk_Phaser_ratio1": 1,
+         "gk_Phaser_ratio2": 5./3.,
+         "gk_Phaser_index1": 1,
+         "gk_Phaser_index2": 2,
+         "gk_Phaser_level": 14,
+         "gk_Bower_pressure": 3.050919377652051,
+         "gk_Bower_level": -12.677504515770458,
+         "gk_Droner_partial1": 0.11032374600527997,
+         "gk_Droner_partial2": 0.4927052938724468,
+         "gk_Droner_partial3": 0.11921634014172572,
+         "gk_Droner_partial4": 0.06586077532305128,
+         "gk_Droner_partial5": 0.6616645824649159,
+         "gk_Droner_level": 10.,
+         "gk_Sweeper_britel": 0.2773844231570179,
+         "gk_Sweeper_briteh": 3.382178217821782,
+         "gk_Sweeper_britels": 0.19575671852899576,
+         "gk_Sweeper_britehs": 0.8837340876944837,
+         "gk_Sweeper_level": 10,
+         "gk_Buzzer_harmonics": 2.608203677510608,
+         "gk_Buzzer_level": 27.56,
+         "gk_Shiner_level": 16,
+         "gk_Blower_grainDensity": 79.99177885109444,
+         "gk_Blower_grainDuration": 0.2,
+         "gk_Blower_grainAmplitudeRange": 87.88408180043162,
+         "gk_Blower_grainFrequencyRange": 30.596081700708627,
+         "gk_Blower_level": 4,
+         "gk_ZakianFlute_level": 0,
+         "gk_PianoteqOut_level": 14.5
+         }
+         }
+         },
+         "closed": false,
+         "folders": {
+         "Master": {
+         "preset": "Default",
+         "closed": true,
+         "folders": {}
+         },
+         "FMWaterBell": {
+         "preset": "Default",
+         "closed": false,
+         "folders": {}
+         },
+         "Phaser": {
+         "preset": "Default",
+         "closed": true,
+         "folders": {}
+         },
+         "Bower": {
+         "preset": "Default",
+         "closed": true,
+         "folders": {}
+         },
+         "Droner": {
+         "preset": "Default",
+         "closed": false,
+         "folders": {}
+         },
+         "Sweeper": {
+         "preset": "Default",
+         "closed": false,
+         "folders": {}
+         },
+         "Buzzer": {
+         "preset": "Default",
+         "closed": false,
+         "folders": {}
+         },
+         "Shiner": {
+         "preset": "Default",
+         "closed": false,
+         "folders": {}
+         },
+         "Blower": {
+         "preset": "Default",
+         "closed": false,
+         "folders": {}
+         },
+         "Pianoteq": {
+         "preset": "Default",
+         "closed": false,
+         "folders": {}
+         }
+         }
+        };
+        
+        window.onload = function() {
+         get_csound(handleMessage);
+         try {
+         var temporary_json = Silencio.restoreDatGuiJson(default_json);
+         //default_json = temporary_json;
+         gui = new dat.GUI({load: default_json, width: 300});
+         csound.message("Restored Csound instrument parameters.\n");
+         } catch(e) {
+         csound.message("Failed to restore Csound instrument parameters.\n");
+         gui = new dat.GUI({width: 400});
+         }
+         gui.remember(parameters);
+         gui.add(parameters, 'generate').name('Generate [Ctrl-G]');
+         gui.add(parameters, 'render_audio').name('Render audio [Ctrl-A]');
+         gui.add(parameters, 'render_soundfile').name('Render soundfile');
+         gui.add(parameters, 'render_soundfile_and_postprocess').name('Render/post [Ctrl-P]');
+         gui.add(parameters, 'stop').name('Stop [Ctrl-S]');
+         var Master = gui.addFolder('Master');
+         add_slider(Master, 'gk_overlap', 0, 20);
+         add_slider(Master, 'gk_MVerb_feedback', 0, 1);
+         add_slider(Master, 'gk_ReverbSC_feedback', 0, 1);
+         add_slider(Master, 'gk_MasterOutput_level', -40, 40);
+         var FMWaterBell = gui.addFolder('FMWaterBell');
+         add_slider(FMWaterBell, 'gi_FMWaterBell_attack', 0, .1);
+         add_slider(FMWaterBell, 'gi_FMWaterBell_release', 0, .1);
+         add_slider(FMWaterBell, 'gi_FMWaterBell_exponent', -30, 30);
+         add_slider(FMWaterBell, 'gi_FMWaterBell_sustain', 0, 20);
+         add_slider(FMWaterBell, 'gi_FMWaterBell_sustain_level', 0, 1);
+         add_slider(FMWaterBell, 'gk_FMWaterBell_crossfade', 0, 1);
+         add_slider(FMWaterBell, 'gk_FMWaterBell_index', 0, 15);
+         add_slider(FMWaterBell, 'gk_FMWaterBell_vibrato_depth', 0, 10);
+         add_slider(FMWaterBell, 'gk_FMWaterBell_vibrato_rate', 0, 10);
+         add_slider(FMWaterBell, 'gk_FMWaterBell_level',-40, 40);
+         var Phaser = gui.addFolder('Phaser');
+         add_slider(Phaser, 'gk_Phaser_ratio1', 0, 5);
+         add_slider(Phaser, 'gk_Phaser_ratio2', 0, 5);
+         add_slider(Phaser, 'gk_Phaser_index1', 0, 15);
+         add_slider(Phaser, 'gk_Phaser_index2', 0, 15);
+         add_slider(Phaser, 'gk_Phaser_level', -40, 40);
+         var Bower = gui.addFolder('Bower');
+         add_slider(Bower, 'gk_Bower_pressure', 0, 5);
+         add_slider(Bower, 'gk_Bower_level', -40, 40);
+         var Droner = gui.addFolder('Droner');
+         add_slider(Droner, 'gk_Droner_partial1', 0, 1);
+         add_slider(Droner, 'gk_Droner_partial2', 0, 1);
+         add_slider(Droner, 'gk_Droner_partial3', 0, 1);
+         add_slider(Droner, 'gk_Droner_partial4', 0, 1);
+         add_slider(Droner, 'gk_Droner_partial5', 0, 1);
+         add_slider(Droner, 'gk_Droner_level', -40, 40);
+         var Sweeper = gui.addFolder('Sweeper');
+         add_slider(Sweeper, 'gk_Sweeper_britel', 0, 4);
+         add_slider(Sweeper, 'gk_Sweeper_briteh', 0, 4);
+         add_slider(Sweeper, 'gk_Sweeper_britels', 0, 4);
+         add_slider(Sweeper, 'gk_Sweeper_britehs', 0, 4);
+         add_slider(Sweeper, 'gk_Sweeper_level', -40, 40);
+         var Buzzer = gui.addFolder('Buzzer');
+         add_slider(Buzzer, 'gk_Buzzer_harmonics', 0, 20);
+         add_slider(Buzzer, 'gk_Buzzer_level', -40, 40);
+         var Shiner = gui.addFolder('Shiner');
+         add_slider(Shiner, 'gk_Shiner_level', -40, 40);
+         var Blower = gui.addFolder('Blower');
+         add_slider(Blower, 'gk_Blower_grainDensity', 0, 400);
+         add_slider(Blower, 'gk_Blower_grainDuration', 0, .5);
+         add_slider(Blower, 'gk_Blower_grainAmplitudeRange', 0, 400);
+         add_slider(Blower, 'gk_Blower_grainFrequencyRange', 0, 100);
+         add_slider(Blower, 'gk_Blower_level', -40, 40);
+         var Flute = gui.addFolder('Zakian Flute');
+         add_slider(Flute, 'gk_ZakianFlute_level', -40, 40);
+         var Pianoteq = gui.addFolder('Pianoteq');
+         add_slider(Pianoteq, 'gk_PianoteqOut_level', -40, 40);
+         gui.revert(); 
+         document.addEventListener("keydown", function (e) {
+         var e_char = String.fromCharCode(e.keyCode || e.charCode);
+         if (e.ctrlKey === true) {
+          if (e_char === 'H') {
+          var console = document.getElementById("console");
+          if (console.style.display === "none") {
+           console.style.display = "block";
+          } else {
+           console.style.display = "none";
+          }
+          gui.closed = true;
+          gui.closed = false;
+          } else if (e_char === 'G') {
+          generate();
+          } else if (e_char === 'P') {
+          parameters.play();
+          } else if (e_char === 'S') {
+          parameters.stop();
+          }
+         }
+         });
+        };
+        
+        var gk_update = function(name, value) {
+         var numberValue = parseFloat(value);
+         csound.setControlChannel(name, numberValue);
+        }
+        
+        var add_slider = function(gui_folder, token, minimum, maximum, name) {
+         var on_parameter_change = function(value) {
+         gk_update(token, value);
+         };
+         gui_folder.add(parameters, token, minimum, maximum).onChange(on_parameter_change);
+        };
+        
+        window.addEventListener("unload", function(event) { 
+         parameters.stop();
+         nw_window.close();
+        });
+    </script>
+    <textarea class="code" id="csd" hidden rows=24 cols=80>
 <CsoundSynthesizer>
 <CsOptions>
 -dm195
@@ -1234,8 +1261,8 @@ a_out_left, a_out_right pan2 a_signal, p7
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
-prints "%-24.24s i, nstrstr(p1), nstrstr(p1), p1, %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
-endin
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+eendin
 
 giPianoteq vstinit "/home/mkg/Pianoteq\ 6/amd64/Pianoteq\ 6.so", 1
 
@@ -1447,4 +1474,5 @@ i "exitnow" [9 * 60 + 5 ] .1
 </CsoundSynthesizer>
 </textarea>
 </body>
+
 </html>
