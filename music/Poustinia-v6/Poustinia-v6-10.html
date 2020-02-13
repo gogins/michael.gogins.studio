@@ -74,7 +74,7 @@ var generate = function () {
         csound.message("Finding size of score...\n");
         lsys.score.findScales();
         csound.message("Rescaling score...\n");
-        lsys.score.setScale(3, 1, 55.999);
+        lsys.score.setScale(3, 1, 1.4999);
         //lsys.score.setScale(3, 3, 0);
         lsys.score.setScale(4, 24, 72);
         ///lsys.score.setScale(5, 60, 8);
@@ -361,12 +361,28 @@ nchnls = 2
 ;seed 818145
 seed 88818145
 
+// These must be initialized here to be in scope for both 
+// the note and the audio patches.
+
+gi_Fluidsynth fluidEngine 0, 0
+gi_FluidSteinway fluidLoad "Steinway_C.sf2", gi_Fluidsynth, 1
+fluidProgramSelect gi_Fluidsynth, 0, gi_FluidSteinway, 0, 1
+
+gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 6/amd64/Pianoteq\ 6.so", 0
+vstinfo gi_Pianoteq 
+
 alwayson "PianoteqOut"
+alwayson "PianoOutFluidsynth"
 alwayson "MVerb"
 alwayson "ReverbSC"
 alwayson "MasterOutput"
 
 // Watch out for 8, 1, 17, and 47.
+
+gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 6/amd64/Pianoteq\ 6.so", 0
+
+#include "PianoNoteFluidsynth.inc"
+#include "PianoNotePianoteq.inc"
 
 #include "BanchoffKleinBottle.inc"
 #include "BandedWG.inc"
@@ -410,8 +426,6 @@ alwayson "MasterOutput"
 #include "Night2.inc"
 #include "Phaser.inc"
 #include "PhysicalModel2.inc"
-#include "PianoNoteFluidsynth.inc"
-#include "PianoNotePianoteq.inc"
 #include "Plucked.inc"
 #include "PulseWidthModulation.inc"
 #include "RampSaw.inc"
@@ -564,8 +578,8 @@ connect "YiString", "outright", "ReverbSC", "inright"
 connect "ZakianFlute", "outleft", "ReverbSC", "inleft"
 connect "ZakianFlute", "outright", "ReverbSC", "inright"
 
-connect "FluidAudio", "outleft", "ReverbSC", "inleft"
-connect "FluidAudio", "outright", "ReverbSC", "inright"
+connect "PianoOutFluidsynth", "outleft", "ReverbSC", "inleft"
+connect "PianoOutFluidsynth", "outright", "ReverbSC", "inright"
 connect "PianoOut", "outleft", "ReverbSC", "inleft"
 connect "PianoOut", "outright", "ReverbSC", "inright"
 connect "ReverbSC", "outleft", "MVerb", "inleft"
@@ -585,8 +599,6 @@ gk_MVerb_DFact init .5
 gk_Reverb_feedback init 0.75
 gi_Reverb_delay_modulation init 0.0875
 gk_Reverb_frequency_cutoff init 15000
-
-i
 
 instr exitnow
 prints "exitnow i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
