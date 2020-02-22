@@ -38,6 +38,7 @@
     <script>
 var title = 'Poustinia v6-10'
 var nwgui = require('nw.gui');
+ 
 try {
     var fs = require("fs");
     var soundfile_name = sprintf("Poustinia-v6-10.wav");
@@ -54,27 +55,26 @@ var generate = function () {
     csound.message("generate()...\n");
     try {
         window.lsys = new ChordSpace.LSys();
-        lsys.axiom = "- [ a [ g f f I I I I aa ] g a ]";
-        lsys.addRule('g', 'Ja b b b a3 c aa F F c2 a2 t,/,1.025 b2 K c2 g b2 t,*,1.025 T,5 F Jb F F c g a b g');
-        lsys.addRule('a', 'F b F a2 b a2 [ b3 F F f F [ c F - F - g F i F ] ] F F F Jb c2 a2 c F c F F F b2 Ja a2');
-        lsys.addRule('aa', '[ b3 F + F F c3 f i F  b b b F f f f F F ] F b F a2 b I I I a b + + F F [ c2 F F I F F F F ] F c2 a2 c F c F F b2 a2');
-        lsys.addRule('a3', 'F b2 b F a + b I v F F c i i i i F F F F F c2 aa V f c2 F F b2 a');
+        lsys.axiom = "- [ a + [ g f f I I I I aa ] g a ]";
+        lsys.addRule('g', 'Ja b a3 c aa F F c2 a2 t,/,1.025 b2 K - c2 g b2 t,*,1.025 T,5 F Jb F F c g a b g');
+        lsys.addRule('a', 'F b F a2 b a2 [ b3 F F f F [ c F F g F i F ] ] F F F Jb c2 a2 c F c F F F b2 Ja a2');
+        lsys.addRule('aa', '[ b3 F F F c3 f i F F F F ] F b F a2 b I I I a b F F [ c2 F F I F F F F ] F c2 a2 c F c F F b2 a2');
+        lsys.addRule('a3', 'F b2 b F a + b I v F F c F F F F F c2 aa V f c2 F F b2 a');
         lsys.addRule('Ja', 'J,2,0');
         lsys.addRule('Jb', 'J,2,2');
-        lsys.addRule('b', '+ f f f f F f f [ a ] f F  ');
+        lsys.addRule('b', '+ f f f f F f - -');
         lsys.addRule('c', '- f f F f f f +');
         lsys.addRule('b2', '+ f f f f -');
-        lsys.addRule('c2', '- - f f f + +');
+        lsys.addRule('c2', '- - f f f f + +');
         lsys.addRule('b3', '- - f f f + +');
         var chord = ChordSpace.chordForName('CM9');
-        var t = new ChordSpace.Turtle(1, Math.PI / 6, chord, chord);
-        lsys.generate(4
-        );
+        var t = new ChordSpace.Turtle(1.5, Math.PI / 4, chord, chord);
+        lsys.generate(4);
         lsys.write_score(t);
         csound.message("Finding size of score...\n");
         lsys.score.findScales();
         csound.message("Rescaling score...\n");
-        lsys.score.setScale(3, 1, 56);
+        lsys.score.setScale(3, 1, 1.4999);
         //lsys.score.setScale(3, 3, 0);
         lsys.score.setScale(4, 24, 72);
         ///lsys.score.setScale(5, 60, 8);
@@ -211,7 +211,6 @@ var render = function (soundfile, post_process) {
     csound.setOption('-W');
     csound.setOption('-f');
     csound.setOption('-o' + soundfile_name);
-    csound.setOption('-Otest.log');
     //csound.setOption('-odac');
     csound.setMetadata("artist", "Michael Gogins");
     csound.setMetadata("copyright", "Copyright 2020 by Michael Gogins");
@@ -353,7 +352,7 @@ window.addEventListener("unload", function (event) {
 sr = 48000
 ksmps = 100
 nchnls = 2
-0dbfs = 100
+0dbfs = 1000
 
 ; Ensure the same random stream for each rendering.
 ; rand, randh, randi, rnd(x) and birnd(x) are not affected by seed.
@@ -453,7 +452,7 @@ gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 6/amd64/Pianoteq\ 6.so", 0
 #include "TerrainMappedSquarish.inc"
 #include "ToneWheelOrgan.inc"
 #include "TubularBell.inc"
-//#include "WaveTerrain.inc"
+#include "WaveTerrain.inc"
 #include "WGPluck.inc"
 #include "Xing.inc"
 #include "YiString.inc"

@@ -36,11 +36,11 @@
 </canvas>
     <textarea id="console" style="position:absolute;left:1vw;top:1vw;width:50vw;height:98vh;color:SkyBlue;background-color:transparent;border:none;text-align:left;font-size:8.25px;overflow:auto;cursor:none;"></textarea>
     <script>
-var title = 'Poustinia v6-10'
+var title = 'Poustinia v7'
 var nwgui = require('nw.gui');
 try {
     var fs = require("fs");
-    var soundfile_name = sprintf("Poustinia-v6-10.wav");
+    var soundfile_name = sprintf("Poustinia-v7.wav");
 }
 catch (e) {
     console.log(e);
@@ -54,27 +54,17 @@ var generate = function () {
     csound.message("generate()...\n");
     try {
         window.lsys = new ChordSpace.LSys();
-        lsys.axiom = "- [ a [ g f f I I I I aa ] g a ]";
-        lsys.addRule('g', 'Ja b b b a3 c aa F F c2 a2 t,/,1.025 b2 K c2 g b2 t,*,1.025 T,5 F Jb F F c g a b g');
-        lsys.addRule('a', 'F b F a2 b a2 [ b3 F F f F [ c F - F - g F i F ] ] F F F Jb c2 a2 c F c F F F b2 Ja a2');
-        lsys.addRule('aa', '[ b3 F + F F c3 f i F  b b b F f f f F F ] F b F a2 b I I I a b + + F F [ c2 F F I F F F F ] F c2 a2 c F c F F b2 a2');
-        lsys.addRule('a3', 'F b2 b F a + b I v F F c i i i i F F F F F c2 aa V f c2 F F b2 a');
-        lsys.addRule('Ja', 'J,2,0');
-        lsys.addRule('Jb', 'J,2,2');
-        lsys.addRule('b', '+ f f f f F f f [ a ] f F  ');
-        lsys.addRule('c', '- f f F f f f +');
-        lsys.addRule('b2', '+ f f f f -');
-        lsys.addRule('c2', '- - f f f + +');
-        lsys.addRule('b3', '- - f f f + +');
+        lsys.axiom = "- [ a [ b T,5 f f I I I I T,3 a ] b a ]";
+        lsys.addRule('a', 'F b F b [ F C F f K i F i i F - F - F i K F ] F F F F c F F F ');
+        lsys.addRule('b', '+ f C f f C f F f f [ a ] f C F -');
         var chord = ChordSpace.chordForName('CM9');
-        var t = new ChordSpace.Turtle(1, Math.PI / 6, chord, chord);
-        lsys.generate(4
-        );
+        var t = new ChordSpace.Turtle(1, Math.PI / 8, chord, chord);
+        lsys.generate(12);
         lsys.write_score(t);
         csound.message("Finding size of score...\n");
         lsys.score.findScales();
         csound.message("Rescaling score...\n");
-        lsys.score.setScale(3, 1, 56);
+        lsys.score.setScale(3, 1, 0);
         //lsys.score.setScale(3, 3, 0);
         lsys.score.setScale(4, 24, 72);
         ///lsys.score.setScale(5, 60, 8);
@@ -84,7 +74,7 @@ var generate = function () {
         lsys.score.temper(12);
         csound.message("Conforming to chords...\n");
         lsys.conformToChords();
-        lsys.score.setDuration(12 * 60);
+        lsys.score.setDuration(9 * 60);
         csound.message("Tieing overlapping notes...\n");
         lsys.score.tieOverlaps(true);
         lsys.score.sort();
@@ -226,13 +216,13 @@ var render = function (soundfile, post_process) {
     csound.setMetadata("license", "CC BY-NC-SA");
     csound.setMetadata("genre", "Electroacoustic");
     if (soundfile === true) {
-        csound.setOutput("Poustinia-v6-10.wav", "wav", "float");
+        csound.setOutput("Poustinia-v7.wav", "wav", "float");
     }
     else {
         csound.setOutput("dac", "wav", "float");
     }
     if (typeof fs != 'undefined') {
-        fs.writeFileSync("Poustinia-v6-10-generated.csd", csd);
+        fs.writeFileSync("Poustinia-v7-generated.csd", csd);
     }
     csound.compileCsdText(csd);
     csound.message("Rendering...");
@@ -372,7 +362,7 @@ fluidProgramSelect gi_Fluidsynth, 0, gi_FluidSteinway, 0, 1
 gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 6/amd64/Pianoteq\ 6.so", 0
 vstinfo gi_Pianoteq 
 
-alwayson "PianoteqOut"
+alwayson "PianoOutPianoteq"
 alwayson "PianoOutFluidsynth"
 alwayson "MVerb"
 alwayson "ReverbSC"
@@ -382,8 +372,8 @@ alwayson "MasterOutput"
 
 gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 6/amd64/Pianoteq\ 6.so", 0
 
-#include "PianoNoteFluidsynth.inc"
 #include "PianoNotePianoteq.inc"
+#include "PianoNoteFluidsynth.inc"
 
 #include "BanchoffKleinBottle.inc"
 #include "BandedWG.inc"
@@ -581,8 +571,8 @@ connect "ZakianFlute", "outright", "ReverbSC", "inright"
 
 connect "PianoOutFluidsynth", "outleft", "ReverbSC", "inleft"
 connect "PianoOutFluidsynth", "outright", "ReverbSC", "inright"
-connect "PianoOut", "outleft", "ReverbSC", "inleft"
-connect "PianoOut", "outright", "ReverbSC", "inright"
+connect "PianoOutPianoteq", "outleft", "ReverbSC", "inleft"
+connect "PianoOutPianoteq", "outright", "ReverbSC", "inright"
 connect "ReverbSC", "outleft", "MVerb", "inleft"
 connect "ReverbSC", "outright", "MVerb", "inright"
 connect "MVerb", "outleft", "MasterOutput", "inleft"
@@ -608,7 +598,7 @@ endin
 
 </CsInstruments>
 <CsScore>
-i "exitnow" [9 * 60 + 5 ] .1
+;;; i "exitnow" [9 * 60 + 5 ] .1
 </CsScore>
 </CsoundSynthesizer>
 </textarea>
