@@ -54,12 +54,13 @@ var generate = function () {
     csound.message("generate()...\n");
     try {
         window.lsys = new ChordSpace.LSys();
-        lsys.axiom = "- [ a [ b T,5 f f I I I I T,3 a ] b a ]";
-        lsys.addRule('a', 'F b F b [ F C F f K i F i i F - F - F i K F ] F F F F c F F F ');
-        lsys.addRule('b', '+ f C f f C f F f f [ a ] f C F -');
+        lsys.axiom = "- - a";
+        lsys.rules["a"] = "C K a F F + f f - a 1 F F [ + f f f - F F F F F ] - f f + a F F";
+        lsys.rules["1"] = "[ 2 ] 1 ";
+        lsys.rules["2"] = "f T,5 C [ f F f F F F F F - - F F  - f f = F F F F F F [ 2 ] ] 1 f"
         var chord = ChordSpace.chordForName('CM9');
-        var t = new ChordSpace.Turtle(1, Math.PI / 8, chord, chord);
-        lsys.generate(12);
+        var t = new ChordSpace.Turtle(1, Math.PI / 4.0025, chord, chord);
+        lsys.generate(7);
         lsys.write_score(t);
         csound.message("Finding size of score...\n");
         lsys.score.findScales();
