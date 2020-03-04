@@ -3,11 +3,16 @@
 \usepackage{etoolbox}
 \usepackage[final]{grffile}
 \usepackage{graphicx}
+\usepackage{rotating}
 \usepackage[T1]{fontenc}
 \usepackage{listings}
 \usepackage{calc}
 \graphicspath{{/home/mkg/Dropbox/images/}}
-\pagestyle{plain}
+\clearscrheadfoot
+\ohead{\pagemark}
+\ihead{\headmark}
+\cfoot[\pagemark]{}
+\pagestyle{scrheadings}
 \usepackage{lipsum}
 \usepackage[hidelinks=true,linktoc=all]{hyperref}
 \urlstyle{same}
@@ -29,8 +34,8 @@
 	\noindent #3
 	\lstinputlisting{|"exiftool -@ tags '/home/mkg/Dropbox/images/#2'"} 
 	\newpage
-	\begin{figure}
+	\begin{sidewaysfigure}
 		\includegraphics[width=\linewidth,height=\textheight,keepaspectratio]{#2}	
 		\captionlistentry[figure]{\url{\protect\detokenize{#2}}}
-	\end{figure} 
+	\end{sidewaysfigure} 
 }

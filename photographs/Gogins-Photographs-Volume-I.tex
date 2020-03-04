@@ -1,10 +1,25 @@
-\input {Preamble}
-\begin{document}
+\documentclass[10pt,landscape,oneside]{book}
+\usepackage{caption}
+\usepackage{etoolbox}
+\usepackage[final]{grffile}
+\usepackage{graphicx}
+\usepackage{fancyvrb}
+\usepackage[T1]{fontenc}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{calc}
+\graphicspath{{/home/mkg/Dropbox/images/}}
+\pagestyle{headings}
+\usepackage{lipsum}
+\usepackage[hidelinks=true,linktoc=all]{hyperref}
+\urlstyle{same}
+\usepackage[all]{hypcap}\begin{document}
 \frontmatter
 \title{Selected Photographs}
 \author{Michael Gogins \\ \texttt{michael.gogins@gmail.com}}
-\subtitle{Volume I}
-\dedication{This book is for Mick.}
+%\subtitle{Volume I}
+%\dedication{This book is for Mick.}
+.
 \newpage
 \noindent This book is copyright 2019 by Michael Gogins, all rights reserved. The contents of this book are licensed under the terms of the Creative Commons \href{https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode}{\textbf{Attribution-NonCommercial-NoDerivatives 4.0 International} } license. In short, you may use, print, and copy this book or any of its contents for your own personal use, but you may not use this book or any of its contents as part of your own projects, or for commercial purposes.
 
@@ -16,7 +31,6 @@ If you wish to use this book or any of its contents for your own projects, or fo
 
 \mainmatter
 \pagestyle{headings}
-\lstset{language=c++,basicstyle=\ttfamily\scriptsize,commentstyle=\ttfamily\tiny,tabsize=2,breaklines,fontadjust=true,keepspaces=false,showstringspaces=false,moredelim=[is][\textbf]{\\emph\{}{\}}}
 
 \chapter{Introduction}
 

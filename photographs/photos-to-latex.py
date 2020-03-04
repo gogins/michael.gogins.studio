@@ -19,7 +19,9 @@ import traceback
 
 image_root = "/home/mkg/Dropbox/images/"
 
-manifest = """c-2013-03-12_12-07-24.jpg|This is a scan of the first picture I took that I actually liked, a 35 mm slide. It was in 1968 in the back yard of my father's girlfriend Doreen's house in Taylorsville, Utah, just after sunset. I believe this was Christmas Day.
+output_filename = "PhotographsContent1.tex"
+
+manifest = """c-2013-03-12_12-07-24.pdf|This is a scan of the first picture I took that I actually liked, a 35 mm slide. It was in 1968 in the back yard of my father's girlfriend Doreen's house in Taylorsville, Utah, just after sunset. I believe this was Christmas Day.
 Mick, Wendy, Jane, Michael XMas.jpg|Scan of a slide of my grandfather Milton (Mick) Swensen, my sister Wendy, my grandmother Jane, and myself, Murray, Utah, Christmas or New Years 1968 I think.
 renamed/c 2013-03-11_04-41-39.1.jpg|Scan of a slide of Elaine Constable, to whom I was briefly married, First Avenue stairs, Salt Lake City, Utah, 1971.
 renamed/c 2013-03-11_04-41-41.1.jpg|Scan of a slide, sidewalk leaves, South Temple Street, Salt Lake City, Utah, 1972.
@@ -71,8 +73,7 @@ SM-950U/20180216_201359.jpg|Recoleta, Buenos Aires, Argentina."""
 
 names_for_tags = {}
 
-tags_ = '''Filename,file_name
-Date taken,datetime_original
+tags_ = '''Date,datetime_original
 GPS longitude,gps_longitude
 GPS latitude,gps_latitude
 Make,make
@@ -100,37 +101,54 @@ for photo in photos:
     pathname = r"" + pathname
     with open(pathname, 'rb') as image:
         image_with_metadata = Image(image)
-        image_with_metadata["file_name"] = filename
+        orientation = "None"
+        try:
+            orientation = str(image_with_metadata.get("orientation"))
+        except:
+            pass
+        print(orientation)
+        width = 0
+        height = 0
+        try:
+            width = int(str(image_with_metadata.get("pixel_x_dimension")))
+            height = int(str(image_with_metadata.get("pixel_y_dimension")))
+        except:
+            pass
         stringio.write(r'''
-\KOMAoptions{pagesize}
 \clearpage
-\recalctypearea
-\newpage
-\noindent
 ''')
+        stringio.write(r'''
+\noindent ''' + caption)
+        stringio.write(r'''
+
+\begin{lstlisting}
+''')
+        #stringio.write(r"Filename: " + filename)
+        #stringio.write("\n\n")
         for tag in tags:
             try:
-                stringio.write(names_for_tags[tag])
-                stringio.write(": ")
-                stringio.write(str(image_with_metadata.get(tag)))
-                stringio.write("\\\\ \n")
+                value = r"" + str(image_with_metadata.get(tag))
+                if value != "None":
+                    stringio.write(r"" + names_for_tags[tag])
+                    stringio.write(r": ")
+                    stringio.write(value)
+                    stringio.write("\n")
             except:
                 pass
-    stringio.write(r'''
+        stringio.write(r'''
+\end{lstlisting}
+
 \clearpage
-\recalctypearea
-\newpage
-\noindent
-\begin{figure}
-    \includegraphics[width=\linewidth,height=\textheight,keepaspectratio]{''')
+\includegraphics[''')
+    #if width < height:
+    #    stringio.write(r"angle=-90,")
+    stringio.write(r'''width=\linewidth,height=\textheight,keepaspectratio]{''')
     stringio.write(r"" + pathname + "}")
     stringio.write("\n")
-    stringio.write(r'''    \captionlistentry[figure]{\url{\protect\detokenize{''')
-    stringio.write(r"" + caption + "}}}")
-    stringio.write('''
-\end{figure}
-''')
 
 print(stringio.getvalue())
+
+output = open(output_filename, 'w')
+output.write(stringio.getvalue())
                     
     
