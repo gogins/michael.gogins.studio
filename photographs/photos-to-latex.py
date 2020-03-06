@@ -12,6 +12,7 @@ relative pathname to image, followed by optional pipe symbol and caption text.
 import exif
 from exif import Image
 import io
+import os
 import os.path
 import string
 import subprocess
@@ -20,7 +21,7 @@ import traceback
 
 image_root = "/home/mkg/Dropbox/images/"
 
-output_filename = "PhotographsContent1.tex"
+output_filename = "/home/mkg/michael.gogins.studio/photographs/PhotographsContent1.tex"
 
 manifest = """c-2013-03-12_12-07-24.jpg|This is a scan of the first picture I took that I actually liked, a 35 mm slide. It was in 1968 in the back yard of my father's girlfriend Doreen's house in Taylorsville, Utah, just after sunset. I believe this was Christmas Day.
 Mick,_Wendy,_Jane,_Michael_XMas.jpg|Scan of a slide of my grandfather Milton (Mick) Swensen, my sister Wendy, my grandmother Jane, and myself, Murray, Utah, Christmas or New Years 1968 I think.
@@ -94,10 +95,14 @@ for line in lines:
     tags.append(tag)
     
 def bounding_box(pathname):
+    dir = os.path.dirname(pathname)
+    filename = os.path.basename(pathname)
+    os.chdir(dir)
+    result = subprocess.run(["extractbb", filename])
     result = subprocess.run(["extractbb", "-O", pathname], encoding='utf-8', stdout=subprocess.PIPE)
     result = result.stdout.split("\n")
     result = result[2].split()
-    return ', bb= 0 0 {} {}'.format(str(result[3]), str(result[4]))    
+    return ',bb= 0 0 {} {}'.format(str(result[3]), str(result[4]))    
     
 stringio = io.StringIO()
     
@@ -123,7 +128,8 @@ for photo in photos:
         except:
             pass
         stringio.write(r'''
-
+\clearpage
+\onecolumn
 \noindent ''' + caption)
         stringio.write(r'''
 \begin{lstlisting}
@@ -141,32 +147,15 @@ for photo in photos:
             except:
                 pass
         stringio.write(r'''\end{lstlisting}
-''')
-        if width > height:
-            stringio.write(r'''
-\begin{landscape}
-''')
-        else:
-            stringio.write(r'''
 \clearpage
 ''')
         stringio.write('''
 \includegraphics[''')
         stringio.write(r'''width=\linewidth,height=\textheight,keepaspectratio''')
-        #bb = ",bb=0 0 " + str(height) + " " + str(width)
         stringio.write(bb)
         stringio.write(r''']{''');
         stringio.write(r"" + pathname + "}")
-        if width > height:
-            stringio.write(r'''
-\end{landscape}
-
-''')
-        else:
-            stringio.write('''
-\clearpage
-''')
-    
+ 
     
 print(stringio.getvalue())
 
