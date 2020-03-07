@@ -1,4 +1,4 @@
-\documentclass[10pt,letter,oneside]{book}
+\documentclass[10pt,letter,oneside]{scrbook}
 \usepackage[landscape]{geometry}
 \usepackage{caption}
 \usepackage{etoolbox}
@@ -14,7 +14,7 @@
 \pagestyle{headings}
 \usepackage{lipsum}
 \usepackage{url}
-\usepackage{hyperref}
+\usepackage[hidelinks=true,linktoc=all]{hyperref}
 \urlstyle{same}
 \usepackage[all]{hypcap}
 \setlength{\parindent}{0em}
@@ -41,9 +41,11 @@ This book is for Mick.
 \end{centering}
 
 \tableofcontents
-%\listoffigures
+\listoffigures
 
 \mainmatter
+\lstset{language=c++,basicstyle=\ttfamily\scriptsize,commentstyle=\ttfamily\tiny,tabsize=2,breaklines,fontadjust=true,keepspaces=false,showstringspaces=false,moredelim=[is][\textbf]{\\emph\{}{\}}}
+
 \pagestyle{headings}
 \twocolumn
 \chapter{Introduction}

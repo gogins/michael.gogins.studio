@@ -1,46 +1,68 @@
-\input{Preamble}
+\documentclass[10pt,letter,oneside]{scrbook}
+\usepackage[landscape]{geometry}
+\usepackage{caption}
+\usepackage{etoolbox}
+\usepackage[final]{grffile}
+\usepackage{graphicx}
+\usepackage{fancyvrb}
+\usepackage[T1]{fontenc}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{lscape}
+\usepackage{calc}
+\graphicspath{{/home/mkg/Dropbox/images/}}
+\pagestyle{headings}
+\usepackage{lipsum}
+\usepackage{url}
+\usepackage[hidelinks=true,linktoc=all]{hyperref}
+\urlstyle{same}
+\usepackage[all]{hypcap}
+\setlength{\parindent}{0em}
+\setlength{\parskip}{1ex}
 \begin{document}
-\frontmatter
-\title{Selected Photographs}
-\author{Michael Gogins \\ \texttt{michael.gogins@gmail.com}}
-\subtitle{Volume III}
-\dedication{This book is for Mick.}
-\newpage
-\noindent This book is copyright 2019 by Michael Gogins, all rights reserved. The contents of this book are licensed under the terms of the Creative Commons \href{https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode}{\textbf{Attribution-NonCommercial-NoDerivatives 4.0 International} } license. In short, you may use, print, and copy this book or any of its contents for your own personal use, but you may not use this book or any of its contents as part of your own projects, or for commercial purposes.
-
-If you wish to use this book or any of its contents for your own projects, or for commercial purposes, for example to re-publish or to exhibit in a gallery, please contact me directly.
-\maketitle
-
-\tableofcontents
-{
-	\setlength\emergencystretch{.5\textwidth}
-	\raggedright
+	\frontmatter
+	\onecolumn
+	
+	\title{Selected Photographs \\ Volume III}
+	\author{Michael Gogins \\ \texttt{michael.gogins@gmail.com}}
+	
+	\maketitle
+	
+	\clearpage
+	\noindent This book and all images therein are copyright 2020 by Michael Gogins, all rights reserved. The contents of this book are licensed under the terms of the Creative Commons \href{https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode}{\textbf{Attribution-NonCommercial-NoDerivatives 4.0 International} } license. 
+	
+	In short, you may use, print, and copy this book or any of its contents for your own personal use, but you may not use this book or any of its contents as part of your own projects, or for commercial purposes.
+	
+	If you wish to use this book or any of its contents for your own projects, or for commercial purposes, for example to re-publish or to exhibit in a gallery, please contact me directly.
+	
+	\clearpage
+	\begin{centering}
+		This book is for Mick.
+	\end{centering}
+	
+	\tableofcontents
 	\listoffigures
-}
-
-\mainmatter
-\lstset{language=c++,basicstyle=\ttfamily\scriptsize,commentstyle=\ttfamily\tiny,tabsize=2,breaklines,fontadjust=true,keepspaces=false,showstringspaces=false,moredelim=[is][\textbf]{\\emph\{}{\}}}
-
-\chapter{Photographs}
-
-\input{Photographs}
-
-
-\photopage {renamed/[0000-00-00 00-00-00][2004-11-06-a 006][OLYMPUS CORPORATION][C8080WZ][32bd997e981ec382127ad8d842056cee].1.jpg}{}
-\photopage {renamed/[2004-11-14 18-33-35][2004-11-14-a 063][OLYMPUS CORPORATION][C8080WZ][705f111e8b2d48a3ecc6d8f978a61c4a].1.jpg}{Ansonia Hotel, Upper West Side, New York City.}
-\photopage {renamed/[2004-11-20 10-13-21][2004-11-20-a 002][OLYMPUS CORPORATION][C8080WZ][23c3e981749af0ee300f75db2df49108].1.jpg}{Child's coin-operated ride, Midtown, New York City.}
-\photopage [portrait] {renamed/[2004-11-21 17-49-19][2004-11-20-b 032][OLYMPUS CORPORATION][C8080WZ][dc1eb86703708f0708c64ae019649286].1.jpg}{Engagement party, Far Rockaway, New York City.}
-\photopage {renamed/[2005-01-01 15-18-51][2005-01-01a 040][OLYMPUS CORPORATION][C8080WZ][7cd839dea926d2896e5e25ac0f953d86].1.jpg}{Grass, near our farm, Bovina, New York.}
-\photopage {renamed/[2005-02-27 17-52-28][2005-02-28a 076][OLYMPUS CORPORATION][C8080WZ][16fe16a27c2a7a83a412361ee51b1fc3].1.jpg}{The bride and her mother, New York City.}
-\photopage {renamed/[2005-05-04 18-12-56][2005-05-17a 034][OLYMPUS CORPORATION][C8080WZ][9ea0d5501307d278cf1540585cc93ee7].1.jpg}{New Jersey from Riverside Park, Manhattan.}
-\photopage [portrait] {renamed/[2005-07-10 11-00-02][2005-07-10-a 078][OLYMPUS CORPORATION][C8080WZ][3ff8464df29df1e432d383066b6ed034].1.jpg}{Bois de Boulogne, Paris, France.}
-\photopage {renamed/[2005-09-18 16-54-27][2005-10-02-a 039][OLYMPUS CORPORATION][C8080WZ][0c5523990779fd3d8f95d97b30ce3d6a].1.jpg}{Stuff from our garden, Bovina, New York.}
-\photopage {renamed/[2005-11-05 15-53-17][2005-11-14a 001][OLYMPUS CORPORATION][C8080WZ][1d8262316a9e715755f56e20342e1e7e].1.jpg}{Heidi with her hens on our farm, Bovina, New York.}
-\photopage {renamed/[2012-12-22 20-12-45][DSC00769][SONY][DSC-RX100][db9a668105910211c6b8acb0fc6bd46a].1.jpg}{Pacific ocean, coast of Northern California.}
-\photopage {renamed/[2012-12-23 19-03-09][DSC00815][SONY][DSC-RX100][70a88e537b25517647ea99b868a5d9cb].1.jpg}{Stream, I think in Sonoma County, Northern California.}
-\photopage {renamed/[2012-12-24 23-21-17][DSC00831][SONY][DSC-RX100][5ea80573303c03ed7c7cdaadf4c0aed9].1.jpg}{Little girl with Penbo toy, Christmas, Albany, California.}
-\photopage {renamed/[2012-12-26 20-49-59][DSC00874][SONY][DSC-RX100][0c48cdd6a2b2def3f2c76d0621e9c6d5].1.jpg}{Christmas decoration, Albany, California.}
-\photopage {renamed/[2013-02-09 16-21-34][DSC00931][SONY][DSC-RX100][80fcb5529dfea18d2971cf84cd6533e9].1.jpg}{Big snowfall attracting sledders, Central Park, New York City.}
-\photopage {renamed/[2005-01-01 13-25-04][2005-01-01a 033][OLYMPUS CORPORATION][C8080WZ][0cc4f0247f0e89d45a4571526d87358d].1.jpg}{}
-
+	
+	\mainmatter
+	\lstset{language=c++,basicstyle=\ttfamily\scriptsize,commentstyle=\ttfamily\tiny,tabsize=2,breaklines,fontadjust=true,keepspaces=false,showstringspaces=false,moredelim=[is][\textbf]{\\emph\{}{\}}}
+	
+	\pagestyle{headings}
+	\twocolumn
+	\chapter{Introduction}
+	
+	This book contains my selection of pictures from a lifetime of taking photographs. I have never been a professional, but I was and am committed to the art of photography. I am a ``street photographer`` open to abstraction. I shoot what catches my eye and I prize beauty. When I take pictures of people, I often prefer they don't notice. My reason for doing photography is to see more clearly what God has created.
+	
+	These pictures were variously taken with 35 mm film cameras, a variety of digital cameras, and smartphones. They were taken in ny native state of Utah, other states including Washington, California, and New York, and countries around the world. I have tended to use the sharpest possible camera that is small enough to carry with me at all times. For some years now I have been using the Sony RX100 series. Increasingly, however, I am finding that my smartphone is a real camera.
+	
+	The images are all in natural color. They are all shot as far as possible without image manipulation; in a few cases, I have leveled horizons or removed spots. I shoot in JPEG rather than RAW. Selected metadata from the photographs is printed. If the photograph is a digital scan of a 35 mm slide, the creation date is the date of that scan. Captions are sporadic and cryptic, to say the least.
+	
+	All pictures are included in the full resolution with which they were taken. Thus, you can zoom into any image to see more detail. Pictures copied out of this book will also be in full resolution. As the file size of this book would otherwise become unmanageable thanks to the use of uncompressed images, it has been split into a number of volumes. Even so, the files are huge. However, they do enable the reader to zoom into the images in full detail or to extract them for printing at high resolution. I invite the reader to copy pictures out of this book for printing and viewing, but not for commercial use or re-publication. 
+	
+	If I take more pictures that I think are good enough to be in this book, I will add new volumes.
+	
+	\chapter{Photographs}
+	
+	\input {PhotographsContent3}
+	
 \end{document}
+

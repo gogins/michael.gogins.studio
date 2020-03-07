@@ -1,22 +1,24 @@
-\documentclass[11pt,chapterprefix=true,pagesize=letter]{scrbook}
+\documentclass[10pt,letter,oneside]{scrbook}
+\usepackage[landscape]{geometry}
 \usepackage{caption}
 \usepackage{etoolbox}
 \usepackage[final]{grffile}
 \usepackage{graphicx}
-\usepackage{rotating}
+\usepackage{fancyvrb}
 \usepackage[T1]{fontenc}
+\usepackage{fancyhdr}
 \usepackage{listings}
+\usepackage{lscape}
 \usepackage{calc}
 \graphicspath{{/home/mkg/Dropbox/images/}}
-\clearscrheadfoot
-\ohead{\pagemark}
-\ihead{\headmark}
-\cfoot[\pagemark]{}
-\pagestyle{scrheadings}
+\pagestyle{headings}
 \usepackage{lipsum}
+\usepackage{url}
 \usepackage[hidelinks=true,linktoc=all]{hyperref}
 \urlstyle{same}
 \usepackage[all]{hypcap}
+\setlength{\parindent}{0em}
+\setlength{\parskip}{1ex}
 
 \makeatletter
 \newcommand{\shellcommand}[1]{\@@input"|#1"}
@@ -34,8 +36,8 @@
 	\noindent #3
 	\lstinputlisting{|"exiftool -@ tags '/home/mkg/Dropbox/images/#2'"} 
 	\newpage
-	\begin{sidewaysfigure}
+	\begin{figure}
 		\includegraphics[width=\linewidth,height=\textheight,keepaspectratio]{#2}	
 		\captionlistentry[figure]{\url{\protect\detokenize{#2}}}
-	\end{sidewaysfigure} 
+	\end{figure} 
 }
