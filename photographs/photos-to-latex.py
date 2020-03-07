@@ -21,7 +21,7 @@ import traceback
 
 image_root = "/home/mkg/Dropbox/images/"
 
-output_filename1 = "/home/mkg/michael.gogins.studio/photographs/PhotographsContent1.tex"
+output_filename1 = "/home/mkg/michael.gogins.studio/photographs/Gogins-Photographs-Content-I.tex"
 
 manifest1 = """c-2013-03-12_12-07-24.jpg|This is a scan of the first picture I took that I actually liked, a 35 mm slide. It was in 1968 in the back yard of my father's girlfriend Doreen's house in Taylorsville, Utah, just after sunset. I believe this was Christmas Day.
 Mick,_Wendy,_Jane,_Michael_XMas.jpg|Scan of a slide of my grandfather Milton (Mick) Swensen, my sister Wendy, my grandmother Jane, and myself, Murray, Utah, Christmas or New Years 1968 I think.
@@ -73,7 +73,7 @@ DSC09755.JPG|Merry-go-round on the boardwalk in Tel Aviv, Israel.
 Heidi_in_Central_Park.jpg|My wife Heidi, in Central Park, New York City, before we were married.
 SM-950U/20180216_201359.jpg|Recoleta, Buenos Aires, Argentina."""
 
-output_filename2 = "/home/mkg/michael.gogins.studio/photographs/PhotographsContent2.tex"
+output_filename2 = "/home/mkg/michael.gogins.studio/photographs/Gogins-Photographs-Content-II.tex"
 
 manifest2 = """SM-950U/20190411_114936.jpg|
 SM-950U/20190409_150209.jpg|
@@ -126,7 +126,7 @@ renamed/[2009-03-29_13-58-00][IMG_3991][Canon][Canon_PowerShot_G7][0e450e9db9908
 renamed/[2013-03-10_16-46-34][DSC01069][SONY][DSC-RX100][9efc31162858a51f6e3e6332aca8a187].1.jpg|Toy display, Borough Park, Brooklyn, New York.
 renamed/[2013-05-01_19-26-15][DSC01348][SONY][DSC-RX100][56ee9f69d83e82ba490c944db6e32d55].1.jpg|Collectibles shop, Greenwich Village, New York City."""
 
-output_filename3 = "/home/mkg/michael.gogins.studio/photographs/PhotographsContent3.tex"
+output_filename3 = "/home/mkg/michael.gogins.studio/photographs/Gogins-Photographs-Content-III.tex"
 
 manifest3 = """renamed/[0000-00-00_00-00-00][2004-11-06-a_006][OLYMPUS_CORPORATION][C8080WZ][32bd997e981ec382127ad8d842056cee].1.jpg|
 renamed/[2004-11-14_18-33-35][2004-11-14-a_063][OLYMPUS_CORPORATION][C8080WZ][705f111e8b2d48a3ecc6d8f978a61c4a].1.jpg|Ansonia Hotel, Upper West Side, New York City.
