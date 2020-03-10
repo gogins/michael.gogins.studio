@@ -137,6 +137,7 @@ renamed/[2008-10-05_16-30-49][2008-10-08-a_224][Canon][Canon_PowerShot_G7][0c153
 renamed/[2008-11-06_14-58-54][2008-11-06-a_009][Canon][Canon_PowerShot_G7][f914cb79e53df3fcf69ea4e106b6c87a].1.jpg|The Wasatch Front above Farmington Bay Wildlife Refuge, Utah.
 renamed/[2008-11-06_18-25-11][2008-11-06-a_021][Canon][Canon_PowerShot_G7][0730ea6941897f8e7f8d09d6fd3f97db].1.jpg|Cache Valley, Utah and Wyoming.
 renamed/[2008-12-21_14-06-33][2008-12-31-a_160][Canon][Canon_PowerShot_G7][b6f135162a820b2797a244d53cc44f9c].1.jpg|Merry-go-round, London.
+renamed/[2008-12-22_07-05-02][2008-12-31-a_180][Canon][Canon_PowerShot_G7][523e76a47e69497f0b7dba8603f25ba0].1.jpg|The Thames and the City from the SunGard office, Docklands, London, United Kingdom.
 renamed/[2008-12-23_09-26-06][2008-12-31-a_267][Canon][Canon_PowerShot_G7][41ac1582c91cfedfde1ab1587ca14521].1.jpg|Professor John ffitch, maintainer of Csound, in his office at the University of Bath, United Kingdom.
 renamed/[2008-12-29_10-10-04][2008-12-31-a_420][Canon][Canon_PowerShot_G7][ebcc482203fb0d3473d03c974f1a1cdd].1.jpg|South Devon, United Kingdom.
 renamed/[2008-12-31_07-31-46][2008-12-31-a_484][Canon][Canon_PowerShot_G7][38bf2d0396733e566a720cbdc4f03c57].1.jpg|Cliffs near Lyme Regis, South Devon, United Kingdom.
@@ -170,7 +171,17 @@ renamed/[2011-02-08_18-21-39][2011-02-08-a_050][Canon][Canon_PowerShot_G7][38e83
 renamed/[2011-02-08_18-38-12][2011-02-08-a_072][Canon][Canon_PowerShot_G7][ce60756d3575aaa0b08a879e15ebb57c].1.jpg|The clock at Frank Music Company, Manhattan.
 renamed/[2011-02-21_17-54-51][2011-05-14-a_001][Canon][Canon_PowerShot_G7][cb9c35d724dd9f0712aa1bab9e66d0fc].1.jpg|The Brooklyn Queens Expressway from the Brooklyn Promenade, New York City.
 renamed/[2011-05-09_11-17-01][2011-05-14-a_129][Canon][Canon_PowerShot_G7][f29fae70bf90f2099852d54e352e9321].1.jpg|County Cork, Republic of Ireland.
-renamed/[2011-05-13_06-45-45][2011-05-14-a_271][Canon][Canon_PowerShot_G7][bca07c4456f7f17eeb51157fbd098157].1.jpg|Coast of County Kerry, Republic of Ireland.
+renamed/[2011-05-12_12-34-26][2011-05-14-a_232][Canon][Canon_PowerShot_G7][8d3e0ac248557479b1fd69d9029dc91b].1.jpg|Coast of County Clare, Republic of Ireland.
+renamed/[2011-05-13_06-45-45][2011-05-14-a_271][Canon][Canon_PowerShot_G7][bca07c4456f7f17eeb51157fbd098157].1.jpg|Coast of County Clare, Republic of Ireland.
+renamed/[2011-05-14_06-27-49][IMG_6471][Canon][Canon_PowerShot_G7][dc0c0ca690934f38911a539107163abf].1.jpg|Landscape in the Republic of Ireland.
+renamed/[2011-05-17_07-45-22][IMG_6533][Canon][Canon_PowerShot_G7][c893864643271647f38f052a1a77cdfa].1.jpg|Landscape in the Republic of Ireland.
+renamed/[2011-05-19_14-35-29][IMG_6664][Canon][Canon_PowerShot_G7][9c0b29dda7d027da86515d89a92b8e23].1.jpg|Coastline, Republic of Ireland.
+renamed/[2011-06-25_17-51-48][2011-09-18-a_064][Canon][Canon_PowerShot_G7][93b7a99e6dc2e89de3ec33d769275178].1.jpg|Woods near Pepacton Reservoir, Delaware County, New York, United States.
+renamed/[2011-06-25_18-32-46][2011-09-18-a_091][Canon][Canon_PowerShot_G7][2d89b7a332ed302da2fe585871c0805c].1.jpg|Pepacton Reservoir, Delaware County, New York, from the causeway.
+renamed/[2011-09-17_13-06-30][2011-09-18-a_221][Canon][Canon_PowerShot_G7][fd8df3e316e38bd7c1e68d2f18d7182d].1.jpg|David Brossart's drafting table, Swarthmore, Pennsylvania, United States.
+renamed/[2011-11-24_11-39-47][2012-02-04-a_189][Canon][Canon_PowerShot_G7][a621a7fc131faa0f7d1a6121a1e3f3a6].1.jpg|Looking across our field at Robert Bindler's farm, Crescent Valley, Bovina, Delaware County, New York.
+renamed/[2011-11-26_16-56-01][2012-02-04-a_224][Canon][Canon_PowerShot_G7][027083a682303e7de7035fa76743510f].1.jpg|Model trees, Tom Grove's house, Delaware County, New York.
+renamed/[2011-12-25_15-53-48][2012-02-04-a_242][Canon][Canon_PowerShot_G7][e9aba7cd07ab337f4dc297c2fbf7dad8].1.jpg|Getting ready to put out a firer, Paul DePinto's house, Chatham, New Jersey, United States.
 renamed/[2012-12-22_20-12-45][DSC00769][SONY][DSC-RX100][db9a668105910211c6b8acb0fc6bd46a].1.jpg|Pacific ocean, coast of Northern California.
 renamed/[2012-12-23_19-03-09][DSC00815][SONY][DSC-RX100][70a88e537b25517647ea99b868a5d9cb].1.jpg|Stream, I think in Sonoma County, Northern California.
 renamed/[2012-12-24_23-21-17][DSC00831][SONY][DSC-RX100][5ea80573303c03ed7c7cdaadf4c0aed9].1.jpg|Little girl with Penbo toy, Christmas, Albany, California.
