@@ -85,12 +85,17 @@ renamed/c_2013-03-11_04-41-47.1.jpg|Scan of a slide of Memory Grove Park, Salt L
 Heidi_in_Central_Park.jpg|Scan of a slide of my wife Heidi, in Central Park, New York City, before we were married, 1996.
 Scan7.jpg|Scan of a slide of the Roman Forum, 2001.
 renamed/[2002-01-01_00-00-00][PICT0060][Minolta_Co_Ltd][DiMAGE_F100][b0b62f51d659715fac87c1c3938d742f].1.jpg|Matrioshka dolls, Park Avenue, New York City.
-PICT0010.JPG|Our neighbor Robert Bindler at his farm, Crescent Valley, Bovina Center, New York.
 2004-04-13-b_010.jpg|
+PICT0018.JPG|Flowers, Connecticut, United States.
+renamed/[2002-08-03_18-20-36][PICT0021][Minolta_Co_Ltd][DiMAGE_F100][4900c836b547772b89c08c30df77c9b2].1.jpg|Antique firearms, Delaware County Historical Society, Delhi, Delaware County, New York, United States.
+PICT0014a.JPG|Heidi on our grass at the farm, Crescent Valley Road, Bovina Center, Delaware County, New York, United States.
+PICT0010.JPG|Our neighbor Robert Bindler at his farm, Crescent Valley, Bovina Center, New York.
+renamed/[2002-01-01_00-00-00][2004-10-12-a_008][Minolta_Co_Ltd][DiMAGE_F100][33e98d430688f40e0eac873100ade7ec].1.jpg|Eggs from Heidi's chickens, our farm, Crescent Valley Road, Bovina Center, Delaware County, New York, United States.
 renamed/[0000-00-00_00-00-00][2004-11-06-a_006][OLYMPUS_CORPORATION][C8080WZ][32bd997e981ec382127ad8d842056cee].1.jpg|
 renamed/[2004-11-14_18-33-35][2004-11-14-a_063][OLYMPUS_CORPORATION][C8080WZ][705f111e8b2d48a3ecc6d8f978a61c4a].1.jpg|Ansonia Hotel, Upper West Side, New York City.
 renamed/[2004-11-20_10-13-21][2004-11-20-a_002][OLYMPUS_CORPORATION][C8080WZ][23c3e981749af0ee300f75db2df49108].1.jpg|Child's coin-operated ride, Midtown, New York City.
 renamed/[2004-11-21_17-49-19][2004-11-20-b_032][OLYMPUS_CORPORATION][C8080WZ][dc1eb86703708f0708c64ae019649286].1.jpg|Engagement party, Far Rockaway, New York City.
+renamed/[2004-11-25_13-02-49][2004-11-25-a_030][OLYMPUS_CORPORATION][C8080WZ][2f11ebf07a71a53cec60a4b8684e8087].1.jpg|Central Park, Manhattan.
 renamed/[2004-11-28_16-10-30][2004-12-01-a_036][OLYMPUS_CORPORATION][C8080WZ][20e4fe68a5b13e344f512392d6025cac].1.jpg|Sky from our farm, Crescent Valley, Bovina Center, New York.
 2004-12-18a_023.jpg|
 2004-12-18a_026.jpg|
@@ -197,29 +202,29 @@ renamed/[2013-05-01_19-26-15][DSC01348][SONY][DSC-RX100][56ee9f69d83e82ba490c944
 renamed/[2013-05-04_17-12-41][DSC01369][SONY][DSC-RX100][9e7a4d6d5c4f82bfcc6bbd790e50c6eb].1.jpg|Sidewalk, Manhattan.
 renamed/[2013-05-04_17-14-11][DSC01373][SONY][DSC-RX100][0eddf9ff1723848933d116c125fa2b0b].1.jpg|Store window, Upper Broadway, Manhattan.
 renamed/[2013-05-05_17-16-14][DSC01413][SONY][DSC-RX100][5f3351ccaa5fd4aa7a5f50ee1c090aa5].1.jpg|Sundays the Great Organ recital, Cathedral of St. John the Divine, Upper West Side, Manhattan.
+DSC01359.JPG|Flowers for sale, Chinatown, New York City.
 renamed/[2013-05-31_16-57-03][20130531_165704][SAMSUNG][SGH-M919][cf88030da0b1b576bfa17d44f654c18c].1.jpg|Midtown Comics, Manhattan.
 renamed/[2013-05-31_18-08-04][20130531_180805][SAMSUNG][SGH-M919][00cfd7d37b282684945b92e579a37c7d].1.jpg|Sidewalk, Manhattan.
-renamed/[2013-07-15_18-20-48][20130715_182048][SAMSUNG][SGH-M919][f8a2cbe9f4010f99239ad31246607263].1.jpg|
-renamed/[2013-08-25_20-18-56][DSC01584][SONY][DSC-RX100][4ae2d8386a6cf0b557a273974c9bdfa2].1.jpg|Delaware County, New York, United States.
-renamed/[2013-10-26_16-03-19][DSC01780][SONY][DSC-RX100][df7e924ad414154b9dd786615c3e42c5].1.jpg|Juno Kang, Producing Music with Csound, International Csound Conference, Boston, Massachusetts, United States.
-DSC01372.JPG|Store window, Upper West Side, New York City.
-DSC01359.JPG|Flowers for sale, Chinatown, New York City.
 20130604_134331.jpg|A remnant of Music Row in Manhattan.
 20130619_080155.jpg|Central Park, Manhattan.
 20130626_080014.jpg|Bethesda Fountain, Central Park, New York City, on my way to or from work.
+renamed/[2013-07-15_18-20-48][20130715_182048][SAMSUNG][SGH-M919][f8a2cbe9f4010f99239ad31246607263].1.jpg|
+renamed/[2013-08-25_20-18-56][DSC01584][SONY][DSC-RX100][4ae2d8386a6cf0b557a273974c9bdfa2].1.jpg|Delaware County, New York, United States.
 DSC01577.JPG|The old ice cream stand in Stamford, New York. Replaced by a newer (but not quite as friendly and funky) version.
+renamed/[2013-10-26_16-03-19][DSC01780][SONY][DSC-RX100][df7e924ad414154b9dd786615c3e42c5].1.jpg|Juno Kang, Producing Music with Csound, International Csound Conference, Boston, Massachusetts, United States.
 DSC01723.JPG|Computer music luminaries Richard Boulanger (left) and Jean-Claude Risset, and their spouses, at the 2nd International Csound Conference, Berklee School of Music, Boston.
-DSC02503.JPG|Magazine covers, Girona, Spain.
-DSC02654.JPG|
 DSC02089.JPG|Naval gun, the Castillo, Barcelona, Spain.
 DSC02492.JPG|Girls on the train, Spain.
-DSC02857.JPG|The Father offering the Son, Narbonne, France.
+DSC02503.JPG|Magazine covers, Girona, Spain.
+DSC02654.JPG|
 DSC02788.JPG|View from a Cathar castle, Languedoc, France.
+DSC02857.JPG|The Father offering the Son, Narbonne, France.
 DSC02910.JPG|Christmas carnival in Carcassone, France.
 DSC03275.JPG|Christmas scene, Chatham, New Jersey.
 DSC09755.JPG|Merry-go-round on the boardwalk in Tel Aviv, Israel.
 renamed/[2016-07-22_19-15-20][DSC00365][SONY][DSC-RX100][5fa29079ce1388e440851a65ae601eb8].1.jpg|Drain, Bovina Creamery, Bovina Center, New York.
 renamed/[2016-09-09_19-02-13][DSC00615][SONY][DSC-RX100][017d30847041035aeaa5c80728795dc7].1.jpg|Garret, Greenwich Village, New York City.
+XT_1585/Camera/IMG_20161006_135310102_TOP.jpg|Heidi at Bodrum, Upper West Side, Manhattan.
 renamed/[2016-10-25_17-21-56][DSC00805][SONY][DSC-RX100][8e062614d3bbed5885ffb2648f83724e].1.jpg|Quebec City, Quebec, Canada.
 renamed/[2016-11-04_16-28-55][DSC00837][SONY][DSC-RX100][48fcaa6370377afea6e483ef14f9efcd].1.jpg|Museum of the City of New-York, New York City.
 renamed/[2016-11-05_17-39-25][DSC00875][SONY][DSC-RX100][4f803edb1d9ac20236123e7787e8f734].1.jpg|New York Harbor from Carroll Gardens, Brooklyn, New York.
