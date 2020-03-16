@@ -132,7 +132,7 @@ renamed/[2007-10-21_11-22-00][2007-10-22-a_124][OLYMPUS_IMAGING_CORP__][u760S760
 renamed/[2007-12-07_13-15-18][PC070125][OLYMPUS_IMAGING_CORP__][u760S760_______][9482ade77febe36bfbd18d7b646d61c6].1.jpg|New York City, self-titled.
 renamed/[2007-12-22_10-35-52][2007-12-30-a_001][Canon][Canon_PowerShot_G7][6d463a8c423b2c353a456ec0598e7983].1.jpg|San Francisco Bay from the Berkeley hills.
 renamed/[2008-01-19_20-35-25][P1190200][OLYMPUS_IMAGING_CORP__][u760S760_______][105b77651b262a04653436810bd24652].1.jpg|George and Carole Silvers' doll house, Crescent Valley, Bovina Center, New York.
-renamed/[2008-09-17_18-17-05][2008-10-08-a_155][Canon][Canon_PowerShot_G7][ee38a79382b5c26b0004e134a62a0620].1.jpg|Tenth Avenue, Manhattan, New York City.
+renamed/[2008-09-17_18-17-05][2008-10-08-a_155][Canon][Canon_PowerShot_G7][ee38a79382b5c26b0004e134a62a0620].1.jpg|Tenth Avenue, Manhattan.
 renamed/[2008-10-05_16-30-49][2008-10-08-a_224][Canon][Canon_PowerShot_G7][0c153b55498ecb3c12bfe1d4fa0ceaaf].1.jpg|My father, Heidi, my stepbrother Scott Fechner, and his wife Claudia, Brighton, Utah.
 renamed/[2008-11-06_14-58-54][2008-11-06-a_009][Canon][Canon_PowerShot_G7][f914cb79e53df3fcf69ea4e106b6c87a].1.jpg|The Wasatch Front above Farmington Bay Wildlife Refuge, Utah.
 renamed/[2008-11-06_18-25-11][2008-11-06-a_021][Canon][Canon_PowerShot_G7][0730ea6941897f8e7f8d09d6fd3f97db].1.jpg|Cache Valley, Utah and Wyoming.
@@ -182,15 +182,26 @@ renamed/[2011-09-17_13-06-30][2011-09-18-a_221][Canon][Canon_PowerShot_G7][fd8df
 renamed/[2011-11-24_11-39-47][2012-02-04-a_189][Canon][Canon_PowerShot_G7][a621a7fc131faa0f7d1a6121a1e3f3a6].1.jpg|Looking across our field at Robert Bindler's farm, Crescent Valley, Bovina, Delaware County, New York.
 renamed/[2011-11-26_16-56-01][2012-02-04-a_224][Canon][Canon_PowerShot_G7][027083a682303e7de7035fa76743510f].1.jpg|Model trees, Tom Grove's house, Delaware County, New York.
 renamed/[2011-12-25_15-53-48][2012-02-04-a_242][Canon][Canon_PowerShot_G7][e9aba7cd07ab337f4dc297c2fbf7dad8].1.jpg|Getting ready to put out a firer, Paul DePinto's house, Chatham, New Jersey, United States.
+renamed/[2012-12-01_20-35-07][DSC00384][SONY][DSC-RX100][4fa6f0b4f10c858a18f704169c179a65].1.jpg|Manhattan.
 renamed/[2012-12-22_20-12-45][DSC00769][SONY][DSC-RX100][db9a668105910211c6b8acb0fc6bd46a].1.jpg|Pacific ocean, coast of Northern California.
 renamed/[2012-12-23_19-03-09][DSC00815][SONY][DSC-RX100][70a88e537b25517647ea99b868a5d9cb].1.jpg|Stream, I think in Sonoma County, Northern California.
 renamed/[2012-12-24_23-21-17][DSC00831][SONY][DSC-RX100][5ea80573303c03ed7c7cdaadf4c0aed9].1.jpg|Little girl with Penbo toy, Christmas, Albany, California.
 renamed/[2012-12-26_20-49-59][DSC00874][SONY][DSC-RX100][0c48cdd6a2b2def3f2c76d0621e9c6d5].1.jpg|Christmas decoration, Albany, California.
 renamed/[2013-02-09_16-21-34][DSC00931][SONY][DSC-RX100][80fcb5529dfea18d2971cf84cd6533e9].1.jpg|Big snowfall attracting sledders, Central Park, New York City.
+renamed/[2013-02-17_13-48-24][DSC00976][SONY][DSC-RX100][7ccb75659d59d4bb0ac1da97ec1c3b5e].1.jpg|Fracking protest, Washington, D.C., United States.
 renamed/[2013-03-10_16-46-34][DSC01069][SONY][DSC-RX100][9efc31162858a51f6e3e6332aca8a187].1.jpg|Toy display, Borough Park, Brooklyn, New York.
+renamed/[2013-03-31_13-55-35][DSC01114][SONY][DSC-RX100][b0aaf10ef0b5fec8f50f178b9b3577d4].1.jpg|Floor in the Truscott/Benelli house, Delaware County, New York, United States.
 DSC01131.JPG|
 DSC01240.JPG|
 renamed/[2013-05-01_19-26-15][DSC01348][SONY][DSC-RX100][56ee9f69d83e82ba490c944db6e32d55].1.jpg|Collectibles shop, Greenwich Village, New York City.
+renamed/[2013-05-04_17-12-41][DSC01369][SONY][DSC-RX100][9e7a4d6d5c4f82bfcc6bbd790e50c6eb].1.jpg|Sidewalk, Manhattan.
+renamed/[2013-05-04_17-14-11][DSC01373][SONY][DSC-RX100][0eddf9ff1723848933d116c125fa2b0b].1.jpg|Store window, Upper Broadway, Manhattan.
+renamed/[2013-05-05_17-16-14][DSC01413][SONY][DSC-RX100][5f3351ccaa5fd4aa7a5f50ee1c090aa5].1.jpg|Sundays the Great Organ recital, Cathedral of St. John the Divine, Upper West Side, Manhattan.
+renamed/[2013-05-31_16-57-03][20130531_165704][SAMSUNG][SGH-M919][cf88030da0b1b576bfa17d44f654c18c].1.jpg|Midtown Comics, Manhattan.
+renamed/[2013-05-31_18-08-04][20130531_180805][SAMSUNG][SGH-M919][00cfd7d37b282684945b92e579a37c7d].1.jpg|Sidewalk, Manhattan.
+renamed/[2013-07-15_18-20-48][20130715_182048][SAMSUNG][SGH-M919][f8a2cbe9f4010f99239ad31246607263].1.jpg|
+renamed/[2013-08-25_20-18-56][DSC01584][SONY][DSC-RX100][4ae2d8386a6cf0b557a273974c9bdfa2].1.jpg|Delaware County, New York, United States.
+renamed/[2013-10-26_16-03-19][DSC01780][SONY][DSC-RX100][df7e924ad414154b9dd786615c3e42c5].1.jpg|Juno Kang, Producing Music with Csound, International Csound Conference, Boston, Massachusetts, United States.
 DSC01372.JPG|Store window, Upper West Side, New York City.
 DSC01359.JPG|Flowers for sale, Chinatown, New York City.
 20130604_134331.jpg|A remnant of Music Row in Manhattan.
@@ -221,7 +232,8 @@ RX100M5/100MSDCF/DSC06552.JPG|Chinese Garden, Dunedin, New Zealand.
 RX100/100MSDCF/DSC06643.JPG|Southern Alps from Lake Wakatipu, Glenorchy, South Island, New Zealand.
 SM-950U/20190407_154615.jpg|Back country road, South Island, New Zealand.
 SM-950U/20190409_150209.jpg|
-SM-950U/20190411_114936.jpg|"""
+SM-950U/20190411_114936.jpg|
+"""
 
 output_filename2 = "/home/mkg/michael.gogins.studio/photographs/Gogins-Photographs-Content-II.tex"
 
@@ -318,7 +330,7 @@ renamed/[2007-10-21_11-22-00][2007-10-22-a_124][OLYMPUS_IMAGING_CORP__][u760S760
 renamed/[2007-12-07_13-15-18][PC070125][OLYMPUS_IMAGING_CORP__][u760S760_______][9482ade77febe36bfbd18d7b646d61c6].1.jpg|New York City, self-titled.
 renamed/[2007-12-22_10-35-52][2007-12-30-a_001][Canon][Canon_PowerShot_G7][6d463a8c423b2c353a456ec0598e7983].1.jpg|San Francisco Bay from the Berkeley hills.
 renamed/[2008-01-19_20-35-25][P1190200][OLYMPUS_IMAGING_CORP__][u760S760_______][105b77651b262a04653436810bd24652].1.jpg|George and Carole Silvers' doll house, Crescent Valley, Bovina Center, New York.
-renamed/[2008-09-17_18-17-05][2008-10-08-a_155][Canon][Canon_PowerShot_G7][ee38a79382b5c26b0004e134a62a0620].1.jpg|Manhattan, New York City.
+renamed/[2008-09-17_18-17-05][2008-10-08-a_155][Canon][Canon_PowerShot_G7][ee38a79382b5c26b0004e134a62a0620].1.jpg|Manhattan.
 renamed/[2008-10-05_16-30-49][2008-10-08-a_224][Canon][Canon_PowerShot_G7][0c153b55498ecb3c12bfe1d4fa0ceaaf].1.jpg|My father, Heidi, my stepbrother Scott Fechner, and his wife Claudia, Brighton, Utah.
 renamed/[2008-11-06_14-58-54][2008-11-06-a_009][Canon][Canon_PowerShot_G7][f914cb79e53df3fcf69ea4e106b6c87a].1.jpg|The Wasatch Front above Farmington Bay Wildlife Refuge, Utah.
 renamed/[2008-11-06_18-25-11][2008-11-06-a_021][Canon][Canon_PowerShot_G7][0730ea6941897f8e7f8d09d6fd3f97db].1.jpg|Cache Valley, Utah and Wyoming.
@@ -391,7 +403,11 @@ def process(manifest, output_filename):
     stringio = io.StringIO()
     photos = manifest.split("\n")
     for photo in photos:
-        filename, caption = photo.split("|")
+        try:
+            filename, caption = photo.split("|")
+        except:
+            print("I*** Missed: " + pathname + "\n");
+            next
         pathname = os.path.join(image_root, filename)
         basename = os.path.basename(pathname)
         pathname = r"" + pathname

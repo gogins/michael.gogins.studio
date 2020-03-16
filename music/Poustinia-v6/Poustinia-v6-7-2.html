@@ -19,7 +19,6 @@
          font-size:8pt;
          }
     </style>
-    <script src='silencio/js/csound_loader.js'></script>
     <script src='silencio/js/sprintf.js'></script>
     <script src='silencio/js/numeric.js'></script>
     <script src="silencio/js/three.js"></script>
@@ -31,8 +30,45 @@
 </head>
 
 <body style="background:black;">
+    <script>
+        var handleMessage = function(message) {
+            console.log(message);
+            var messages_textarea = document.getElementById("console");
+            var existing = messages_textarea.value;
+            messages_textarea.value = existing + message;
+            messages_textarea.scrollTop = messages_textarea.scrollHeight;
+        }
+        // These are the ways Csound can be instantiated in a JavaScript context.
+        if (typeof csound !== 'undefined') {
+            // (1) Injected (e.g. by Csound for Android or CsoundQt).
+            csound.message("\nCsound already exists in the JavaScript context: version " + csound.getVersion());
+        } else {
+            // (2) By 'require' as in csound.node.
+            try {
+                var csound = require('csound.node');
+                csound.setMessageCallback(handleMessage);
+                csound.message('\ncsound.node has been loaded: version ' + csound.GetVersion() + '\n');
+            // (3) By csound.js in WebAssembly.
+            } catch (err) {
+                try {
+                    console.warn(err.message);
+                    console.info("Trying to load Csound for WebAssembly...");
+                    var head = document.getElementsByTagName('head')[0];
+                    var script = document.createElement('script');
+                    script.src = "/csound.js";
+                    script.type = 'text/javascript';
+                    head.appendChild(script);
+                    var moduleDidLoad = function() {
+                        csound.message("\nCsound for WebAssembly has been loaded; Csound functions may now be called.");
+                    }
+                } catch (err1) {
+                    console.warn(err1.message);
+                }
+            }
+        }
+    </script>
     <canvas id="canvas" style="block;height:100vh;width:100vw">
-</canvas>
+    </canvas>
     <textarea id="console" style="position:absolute;left:1vw;top:1vw;width:50vw;height:98vh;color:SkyBlue;background-color:transparent;border:none;text-align:left;font-size:8.25px;overflow:auto;cursor:none;"></textarea>
     <script>
         /*
@@ -86,11 +122,13 @@
         Right
         
         */
-        var title = 'Poustinia v6-7-1'
+        var page = window.location.pathname.split("/").pop();
+        console.log("Current file: " + page);
+        var title = page;
         
         try {
          var fs = require("fs");
-         var soundfile_name = sprintf("Poustinia-v6-7-1.wav");
+         var soundfile_name = sprintf("%s.wav", title);
         } catch(e) {
          console.log(e);
         }
@@ -283,48 +321,56 @@
         // 256 = raw, out of range highlighted with red
         // 512 = raw, all colours 
         var render = function(soundfile, post_process) {
-         var csd = document.getElementById('csd').value;
-         var csound_score = lsys.score.toCsoundScore();
-         csound_score = csound_score.concat("\n</CsScore>");
-         csd = csd.replace("</CsScore>", csound_score);
-         csound.message("Playing...");
-         csound.setOption(sprintf('-m%d', 2 + 128 + 32));
-         csound.setOption('--nodisplays');
-         csound.setOption('--keep-sorted-score');
-         csound.setOption('-R');
-         csound.setOption('-W');
-         csound.setOption('-f');
-         csound.setOption('-o' + soundfile_name);
-         //csound.setOption('-odac');
-         csound.setMetadata("artist", "Michael Gogins");
-         csound.setMetadata("copyright", "Copyright 2020 by Michael Gogins");
-         csound.setMetadata("performer", "Mike Gogins");
-         csound.setMetadata("title", "Poustinia Variation 6-7");
-         csound.setMetadata("album", "Silence");
-         csound.setMetadata("track", "1");
-         csound.setMetadata("tracknumber", "1");
-         csound.setMetadata("date", "2020");
-         csound.setMetadata("publisher", "Irreducible Productions ASCAP");
-         csound.setMetadata("comment", "Lindenmayer system in chord space.");
-         csound.setMetadata("license", "CC BY-NC-SA");
-         csound.setMetadata("genre", "Electroacoustic");
-         if (soundfile === true) {
-         csound.setOutput("Poustinia-v6-7-1.wav", "wav", "float");
-         } else {
-         csound.setOutput("dac", "wav", "float");
-         }
-         if (typeof fs != 'undefined') {
-         fs.writeFileSync("Poustinia-v6-7-1-generated.csd", csd);
-         }
-         csound.compileCsdText(csd);
-         csound.message("Rendering...");
-         csound.start();
-         if (post_process == true) {
-         csound.performAndPostProcess();
-         } else {
-         csound.perform();
-         }
-         updateScoreTime();
+        var csd = document.getElementById('csd').value;
+        var csound_score = lsys.score.toCsoundScore();
+        csound_score = csound_score.concat("\n</CsScore>");
+        csd = csd.replace("</CsScore>", csound_score);
+        csound.message("Playing...");
+        csound.setOption(sprintf('-m%d', 2 + 128 + 32));
+        csound.setOption('--nodisplays');
+        csound.setOption('--keep-sorted-score');
+        csound.setOption('-R');
+        csound.setOption('-W');
+        csound.setOption('-f');
+        csound.setOption('-o' + soundfile_name);
+        //csound.setOption('-odac');
+        try {
+            csound.setMetadata("artist", "Michael Gogins");
+            csound.setMetadata("copyright", "Copyright 2020 by Michael Gogins");
+            csound.setMetadata("performer", "Mike Gogins");
+            csound.setMetadata("title", title);
+            csound.setMetadata("album", "Silence");
+            csound.setMetadata("track", "1");
+            csound.setMetadata("tracknumber", "1");
+            csound.setMetadata("date", "2020");
+            csound.setMetadata("publisher", "Irreducible Productions ASCAP");
+            csound.setMetadata("comment", "Lindenmayer system in chord space.");
+            csound.setMetadata("license", "CC BY-NC-SA");
+            csound.setMetadata("genre", "Electroacoustic");
+        } catch (e) {
+            csound.message(e);
+        }
+        if (soundfile === true) {
+            csound.setOutput(title + ".wav", "wav", "float");
+        } else {
+            csound.setOutput("dac", "wav", "float");
+        }
+        if (typeof fs != 'undefined') {
+            fs.writeFileSync(title + "-generated.csd", csd);
+        }
+        csound.compileCsdText(csd);
+        csound.message("Rendering...");
+        csound.start();
+        if (post_process == true) {
+            try {
+                csound.performAndPostProcess();
+            } catch (x) {
+                csound.message(x);
+            }
+        } else {
+            csound.perform();
+        }
+        updateScoreTime();
         }
         
         var render_audio = function() {
@@ -399,14 +445,6 @@
          render_soundfile_and_postprocess: window.render_soundfile_and_postprocess,
          stop: window.stop,
         };
-        
-        var handleMessage = function(message) {
-         console.log(message);
-         var messages_textarea = document.getElementById("console");
-         var existing = messages_textarea.value;
-         messages_textarea.value = existing + message;
-         messages_textarea.scrollTop = messages_textarea.scrollHeight;
-        }
         
         var default_json = {
          "preset": "Default",
@@ -514,8 +552,7 @@
         };
         
         window.onload = function() {
-         get_csound(handleMessage);
-         try {
+        try {
          var temporary_json = Silencio.restoreDatGuiJson(default_json);
          //default_json = temporary_json;
          gui = new dat.GUI({load: default_json, width: 300});
@@ -1369,7 +1406,7 @@ instr  MVerb
 ainleft  inleta  "inleft"
 ainright  inleta  "inright"
 aoutleft, aoutright MVerb  ainleft, ainright, "Huge Hall", "wet", .5, "FB", gk_MVerb_feedback, "random", 1, "rslow", 1.1, "rfast", 3.8, "rmax", .0005, "print", 1., "DFact", .75
-printks "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d l%9.4f r%9.4f\n", 1, nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1), dbamp(rms(aoutleft)), dbamp(rms(aoutright))
+; printks "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d l%9.4f r%9.4f\n", 1, nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1), dbamp(rms(aoutleft)), dbamp(rms(aoutright))
 outleta  "outleft", aoutleft
 outleta  "outright", aoutright
 prints "R%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
@@ -1383,7 +1420,7 @@ ainleft inleta "inleft"
 ainright inleta "inright"
 ; aoutL, aoutR reverbsc ainL, ainR, kfblvl, kfco[, israte[, ipitchm[, iskip]]]
 aoutleft, aoutright reverbsc ainleft, ainright, gk_ReverbSC_feedback, gk_ReverbSC_frequency_cutoff, sr, gi_ReverbSC_delay_modulation
-printks "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d l%9.4f r%9.4f\n", 1, nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1), dbamp(rms(aoutleft)), dbamp(rms(aoutright))
+; printks "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d l%9.4f r%9.4f\n", 1, nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1), dbamp(rms(aoutleft)), dbamp(rms(aoutright))
 outleta "outleft", aoutleft
 outleta "outright", aoutright
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
