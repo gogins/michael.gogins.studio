@@ -38,7 +38,7 @@ renamed/c_2013-03-11_04-41-39.1.jpg|Scan of a slide of Elaine Constable, to whom
 renamed/c_2013-03-11_04-41-41.1.jpg|Scan of a slide, sidewalk leaves, South Temple Street, Salt Lake City, Utah, 1972.
 renamed/c_2013-03-11_04-41-44.1.jpg|Scan of a slide, Capitol Hill, Salt Lake City, Utah, 1972.
 renamed/c_2013-03-11_04-41-51.1.jpg|Scan of a slide, dry cleaners around the corner from where I lived after separating from Elaine, Salt Lake City, Utah, 1972.
-c_2016-04-06_21-05-56.1.jpg|Scan of a slide of the Deep Creek Mountains, western Utah, 1972 or so.
+renamed/c_2016-04-06_21-05-56.1_v1.jpg|Scan of a slide of the Deep Creek Mountains, western Utah, 1972 or so.
 renamed/c_2013-03-11_04-42-07.1.jpg|Scan of a slide, Riverside Park, New York City, 1972.
 renamed/c_2013-03-11_04-26-22.1.jpg|Scan of a slide taken while hitchiking across the country, 1972 I think.
 renamed/c_2013-03-11_04-41-49.1.jpg|Scan of a slide, coin laundromat, Third Avenue, Salt Lake City, Utah, 1972 or so.
@@ -69,7 +69,7 @@ renamed/c_2013-03-11_04-42-28.1.jpg|Scan of a slide, from the summit of Mount Wh
 renamed/c_2013-03-11_04-42-27.1.jpg|Scan of a slide. The rounded summit at one o'clock high is Mount Whitney, Sierra Nevada Mountains, California, probably 1975.
 renamed/c_2013-03-11_04-42-26.1.jpg|Scan of a slide, near Alvarado Street, Los Angeles, California, mid to late 1970s.
 renamed/c_2013-03-11_04-42-23.1.jpg|Scan of a slide, movie theater on Broadway, downtown Los Angeles, probably 1974 or 1975.
-renamed/c_2013-03-11_04-42-18.1.jpg|Scan of a siide, through the window of a motel room, Santa Monica, California, probably 1974 or 1975.
+renamed/c_2013-03-11_04-42-18.1.jpg|Scan of a slide, through the window of a motel room, Santa Monica, California, probably 1974 or 1975.
 renamed/c_2013-03-11_04-42-17.1.jpg|Scan of a slide, my girlfriend Penny Suess, supermarket parking lot on Lincoln Boulevard, Venice Beach, California, probably 1975.
 renamed/c_2013-03-11_04-42-15.1.jpg|Scan of a slide, Penny's apartment, Santa Monica, California, probably 1975.
 renamed/c_2013-03-11_04-42-13.1.jpg|Scan of a slide, Penny's apartment, Santa Monica, California, probably 1975.
@@ -99,21 +99,21 @@ renamed/[2004-11-25_13-02-49][2004-11-25-a_030][OLYMPUS_CORPORATION][C8080WZ][2f
 renamed/[2004-11-28_16-10-30][2004-12-01-a_036][OLYMPUS_CORPORATION][C8080WZ][20e4fe68a5b13e344f512392d6025cac].1.jpg|Sky from our farm, Crescent Valley, Bovina Center, New York.
 2004-12-18a_023.jpg|
 2004-12-18a_026.jpg|
-2005-02-28a_002.jpg|The only riding stable in Brooklyn.
-2005-05-17a_042.jpg|Riverside Park and Hudson River, Manhattan.
-2005-07-09-a_100.jpg|
-2005-10-02-a_020.jpg|An old tree on our farm in Bovina, New York.
-2005-10-10a_053.jpg|A leaf on the road at our farm, Crescent Valley, Bovina Center, Delaware County, New York.
 renamed/[2005-01-01_13-25-04][2005-01-01a_033][OLYMPUS_CORPORATION][C8080WZ][0cc4f0247f0e89d45a4571526d87358d].1.jpg|
 renamed/[2005-01-01_15-18-51][2005-01-01a_040][OLYMPUS_CORPORATION][C8080WZ][7cd839dea926d2896e5e25ac0f953d86].1.jpg|Grass, near our farm, Bovina, New York.
+2005-02-28a_002.jpg|The only riding stable in Brooklyn.
 renamed/[2005-02-27_17-52-28][2005-02-28a_076][OLYMPUS_CORPORATION][C8080WZ][16fe16a27c2a7a83a412361ee51b1fc3].1.jpg|The bride and her mother, New York City.
 renamed/[2005-02-27_20-05-01][2005-02-28a_258][OLYMPUS_CORPORATION][C8080WZ][4f662313298f585db64d537fb3542cf2].1.jpg|Bride leaving her wedding, New York City.
 renamed/[2005-05-04_18-12-56][2005-05-17a_034][OLYMPUS_CORPORATION][C8080WZ][9ea0d5501307d278cf1540585cc93ee7].1.jpg|New Jersey from Riverside Park, Manhattan.
+2005-05-17a_042.jpg|Riverside Park and Hudson River, Manhattan.
 renamed/[2005-06-17_18-10-15][2005-06-26a_010][OLYMPUS_CORPORATION][C8080WZ][f92166a5bea3a09f42dbcf667cf23b49].1.jpg|Statue of Jose Marti, Central Park South, New York City.
 renamed/[2005-07-09_06-36-44][2005-07-09-a_043][OLYMPUS_CORPORATION][C8080WZ][2f611944a86ca4656f65d7ea48a9cd7b].1.jpg|Fountain at the palace of Versailles, France.
 renamed/[2005-07-10_03-55-25][2005-07-10-a_041][OLYMPUS_CORPORATION][C8080WZ][5621556dc949240eadaf07aea4bca647].1.jpg|Postcards for sale, Paris, France.
 renamed/[2005-07-10_11-00-02][2005-07-10-a_078][OLYMPUS_CORPORATION][C8080WZ][3ff8464df29df1e432d383066b6ed034].1.jpg|Bois de Boulogne, Paris, France.
+2005-07-09-a_100.jpg|
+2005-10-02-a_020.jpg|An old tree on our farm in Bovina, New York.
 renamed/[2005-09-18_16-54-27][2005-10-02-a_039][OLYMPUS_CORPORATION][C8080WZ][0c5523990779fd3d8f95d97b30ce3d6a].1.jpg|Stuff from our garden, Bovina, New York.
+2005-10-10a_053.jpg|A leaf on the road at our farm, Crescent Valley, Bovina Center, Delaware County, New York.
 renamed/[2005-10-02_10-37-50][2005-10-02-a_041][OLYMPUS_CORPORATION][C8080WZ][03e111f120127f552da99ed99f49002a].1.jpg|Kitsch for sale, New York City.
 2005-10-10a_048.jpg|Hillside in autumn on our farm, Crescent Valley, Bovina Center, New York.
 renamed/[2005-11-05_15-53-17][2005-11-14a_001][OLYMPUS_CORPORATION][C8080WZ][1d8262316a9e715755f56e20342e1e7e].1.jpg|Heidi with her hens on our farm, Bovina, New York.
@@ -149,10 +149,10 @@ renamed/[2008-12-31_07-31-46][2008-12-31-a_484][Canon][Canon_PowerShot_G7][38bf2
 renamed/[2008-12-31_09-09-29][2008-12-31-a_503][Canon][Canon_PowerShot_G7][0f63698c9866de49fa6e38e09624f92c].1.jpg|South Devon, United Kingdom.
 renamed/[2009-03-07_15-38-21][2009-03-08-a_155][Canon][Canon_PowerShot_G7][ba84389a7d29f0486b303577b05ce949].1.jpg|Gene Bertoncini.
 renamed/[2009-03-08_08-57-25][2009-03-08-a_259][Canon][Canon_PowerShot_G7][2f6839f9261e9e527d5f901023ac8267].1.jpg|Eggs from Heidi's hens, in our kitchen in Manhattan.
-renamed/[2009-03-29_19-11-08][IMG_4016_2)][Canon][Canon_PowerShot_G7][adeb220d561845d5406081b8dbb4e0e9].1.jpg|My father's sisters Corinne and Ginger, Heidi, and Corinne's husband Herb, in Florida.
 renamed/[2009-03-27_14-37-47][IMG_3933_2)][Canon][Canon_PowerShot_G7][06fe0850c7fde687debf1190e8a6347b].1.jpg|Florida.
 renamed/[2009-03-29_13-58-00][IMG_3991][Canon][Canon_PowerShot_G7][0e450e9db99082f2bd8fecfaf333953f].1.jpg|In my father's sister's home, Florida.
 renamed/[2009-03-29_16-33-11][IMG_3998_2)][Canon][Canon_PowerShot_G7][d1f87e4ff942e2fee95a04206b38b641].1.jpg|My father's sister's husband Herb, who had been a jet engine mechanic, in his model shop at home in Florida.
+renamed/[2009-03-29_19-11-08][IMG_4016_2)][Canon][Canon_PowerShot_G7][adeb220d561845d5406081b8dbb4e0e9].1.jpg|My father's sisters Corinne and Ginger, Heidi, and Corinne's husband Herb, in Florida.
 renamed/[2009-03-30_18-57-34][IMG_4062][Canon][Canon_PowerShot_G7][773fb2e2e258cc766b12443d48ce0044].1.jpg|South (I think) Carolina coast.
 renamed/[2009-04-01_13-33-33][IMG_4121_2)][Canon][Canon_PowerShot_G7][2c5ef7982116c1a37230654d5e6fa9a0].1.jpg|Charleston, South Carolina.
 renamed/[2009-04-03_09-00-29][IMG_4154_2)][Canon][Canon_PowerShot_G7][88231ee6052d4ad5a8700bc2a0291f5f].1.jpg|Swamp, I think in South Carolina.
@@ -185,8 +185,11 @@ renamed/[2011-06-25_17-51-48][2011-09-18-a_064][Canon][Canon_PowerShot_G7][93b7a
 renamed/[2011-06-25_18-32-46][2011-09-18-a_091][Canon][Canon_PowerShot_G7][2d89b7a332ed302da2fe585871c0805c].1.jpg|Pepacton Reservoir, Delaware County, New York, from the causeway.
 renamed/[2011-09-17_13-06-30][2011-09-18-a_221][Canon][Canon_PowerShot_G7][fd8df3e316e38bd7c1e68d2f18d7182d].1.jpg|David Brossart's drafting table, Swarthmore, Pennsylvania, United States.
 renamed/[2011-11-24_11-39-47][2012-02-04-a_189][Canon][Canon_PowerShot_G7][a621a7fc131faa0f7d1a6121a1e3f3a6].1.jpg|Looking across our field at Robert Bindler's farm, Crescent Valley, Bovina, Delaware County, New York.
-renamed/[2011-11-26_16-56-01][2012-02-04-a_224][Canon][Canon_PowerShot_G7][027083a682303e7de7035fa76743510f].1.jpg|Model trees, Tom Grove's house, Delaware County, New York.
 renamed/[2011-12-25_15-53-48][2012-02-04-a_242][Canon][Canon_PowerShot_G7][e9aba7cd07ab337f4dc297c2fbf7dad8].1.jpg|Getting ready to put out a firer, Paul DePinto's house, Chatham, New Jersey, United States.
+renamed/[2011-11-26_16-56-01][2012-02-04-a_224][Canon][Canon_PowerShot_G7][027083a682303e7de7035fa76743510f].1.jpg|Model trees, Tom Grove's house, Delaware County, New York.
+renamed/[2012-05-19_13-18-59][2012-08-28-a_102][Canon][Canon_PowerShot_G7][78c06147355e4d72efda4c1c31428540].1.jpg|Fabric store, United States.
+renamed/[2012-06-23_18-49-52][2012-08-28-a_196][Canon][Canon_PowerShot_G7][19aca482b447723ddb8b32aa8fde177c].1.jpg|Cape Horn Road, Bovina, Delaware County, New York, United States.
+renamed/[2012-09-22_14-35-18][IMG_7717][Canon][Canon_PowerShot_G7][54c87ddeaafbb5e65382e70b5965f336].1.jpg|Oak leaf, Manhattan.
 renamed/[2012-12-01_20-35-07][DSC00384][SONY][DSC-RX100][4fa6f0b4f10c858a18f704169c179a65].1.jpg|Manhattan.
 renamed/[2012-12-22_20-12-45][DSC00769][SONY][DSC-RX100][db9a668105910211c6b8acb0fc6bd46a].1.jpg|Pacific ocean, coast of Northern California.
 renamed/[2012-12-23_19-03-09][DSC00815][SONY][DSC-RX100][70a88e537b25517647ea99b868a5d9cb].1.jpg|Stream, I think in Sonoma County, Northern California.
@@ -209,10 +212,10 @@ renamed/[2013-05-31_18-08-04][20130531_180805][SAMSUNG][SGH-M919][00cfd7d37b2826
 20130619_080155.jpg|Central Park, Manhattan.
 20130626_080014.jpg|Bethesda Fountain, Central Park, New York City, on my way to or from work.
 renamed/[2013-07-15_18-20-48][20130715_182048][SAMSUNG][SGH-M919][f8a2cbe9f4010f99239ad31246607263].1.jpg|
-renamed/[2013-08-25_20-18-56][DSC01584][SONY][DSC-RX100][4ae2d8386a6cf0b557a273974c9bdfa2].1.jpg|Delaware County, New York, United States.
 DSC01577.JPG|The old ice cream stand in Stamford, New York. Replaced by a newer (but not quite as friendly and funky) version.
-renamed/[2013-10-26_16-03-19][DSC01780][SONY][DSC-RX100][df7e924ad414154b9dd786615c3e42c5].1.jpg|Juno Kang, Producing Music with Csound, International Csound Conference, Boston, Massachusetts, United States.
+renamed/[2013-08-25_20-18-56][DSC01584][SONY][DSC-RX100][4ae2d8386a6cf0b557a273974c9bdfa2].1.jpg|Delaware County, New York, United States.
 DSC01723.JPG|Computer music luminaries Richard Boulanger (left) and Jean-Claude Risset, and their spouses, at the 2nd International Csound Conference, Berklee School of Music, Boston.
+renamed/[2013-10-26_16-03-19][DSC01780][SONY][DSC-RX100][df7e924ad414154b9dd786615c3e42c5].1.jpg|Juno Kang, Producing Music with Csound, International Csound Conference, Boston, Massachusetts, United States.
 DSC02089.JPG|Naval gun, the Castillo, Barcelona, Spain.
 DSC02492.JPG|Girls on the train, Spain.
 DSC02503.JPG|Magazine covers, Girona, Spain.
@@ -221,7 +224,7 @@ DSC02788.JPG|View from a Cathar castle, Languedoc, France.
 DSC02857.JPG|The Father offering the Son, Narbonne, France.
 DSC02910.JPG|Christmas carnival in Carcassone, France.
 DSC03275.JPG|Christmas scene, Chatham, New Jersey.
-DSC09755.JPG|Merry-go-round on the boardwalk in Tel Aviv, Israel.
+renamed/[2016-04-06_13-12-31][DSC09755][SONY][DSC-RX100][e50c7c9f3d613f58ac154f7a991c9cd9].1.jpg|Merry-go-round on the boardwalk in Tel Aviv, Israel.
 renamed/[2016-07-22_19-15-20][DSC00365][SONY][DSC-RX100][5fa29079ce1388e440851a65ae601eb8].1.jpg|Drain, Bovina Creamery, Bovina Center, New York.
 renamed/[2016-09-09_19-02-13][DSC00615][SONY][DSC-RX100][017d30847041035aeaa5c80728795dc7].1.jpg|Garret, Greenwich Village, New York City.
 XT_1585/Camera/IMG_20161006_135310102_TOP.jpg|Heidi at Bodrum, Upper West Side, Manhattan.
@@ -232,6 +235,27 @@ renamed/[2016-11-05_16-35-08][DSC00850][SONY][DSC-RX100][11d702afddf23ab11cc11b7
 RX100/100MSDCF/DSC00956.JPG|Lower East Side, Manhattan.
 XT_1585/Camera/IMG_20170310_145854935.jpg|
 SM-950U/20180216_201359.jpg|Recoleta, Buenos Aires, Argentina.
+RX100/100MSDCF/DSC03861_v1.JPG|Andes, border of Argentina and Chile.
+RX100/100MSDCF/DSC04018.JPG|Volcan Orsono, Andes, Chile.
+RX100/100MSDCF/DSC04065_v2.JPG|Andes, border of Argentina and Chile.
+RX100/100MSDCF/DSC04084.JPG|Lago Nahuel Nuapi, Argentina.
+RX100/100MSDCF/DSC04140.JPG|Reliquary, Museo de Arte Hispanoamericano Isaac Fernandez Blanco, Buenos Aires, Argentina.
+RX100/100MSDCF/DSC04154.JPG|Queen of Heaven, Museo de Arte Hispanoamericano Isaac Fernandez Blanco, Buenos Aires, Argentina.
+SM-950U/20180324_153614.jpg|Day of Remembrance for those murdered by the junta, Buenos Aires, Argentina. We should all remember what the parents of these people did to restore democracy to their country.
+RX100/100MSDCF/DSC04199.JPG|Street in the jewelry district, Buenos Aires, Argentina.
+RX100/100MSDCF/DSC04286.JPG|Marsh dwelling family coming to town, Tigre, Argentina.
+RX100/100MSDCF/DSC04324.JPG|Iguassu Falls, Argentina.
+RX100/100MSDCF/DSC04324.JPG|Milon Restaurant, Lower East Side, Manhattan.
+RX100/100MSDCF/DSC05122.JPG|Thank you, Price Chopper supermaraket, Delhi, Delaware County, New York.
+RX100/100MSDCF/DSC05143.JPG|Field Days, Margaretville, Delaware County, New York.
+RX100/100MSDCF/DSC05149.JPG|Midway, Field Days, Margaretville, Delaware County, New York.
+RX100/100MSDCF/DSC05312.JPG|Downtown from the Lower East Side, Manhattan.
+RX100/100MSDCF/DSC05497.JPG|Midtown from a ferry boat, East River, Manhattan.
+RX100/100MSDCF/DSC05619.JPG|Deysenroth farm, County Road 18, Delaware County, New York.
+RX100/100MSDCF/DSC05620.JPG|Barn cats, Deysenroth farm, County Road 18, Delaware County, New York.
+RX100/100MSDCF/DSC05625.JPG|Toys in barn, Deysenroth farm, County Road 18, Delaware County, New York.
+RX100/100MSDCF/DSC05663.JPG|Chinatown, Manhattan.
+SM-950U/20180827_182514_v1.jpg|The Great Lawn, Central Park, Manhattan.
 RX100M5/100MSDCF/DSC06075.JPG|
 RX100M5/100MSDCF/DSC06552.JPG|Chinese Garden, Dunedin, New Zealand.
 RX100/100MSDCF/DSC06643.JPG|Southern Alps from Lake Wakatipu, Glenorchy, South Island, New Zealand.
