@@ -224,7 +224,25 @@ DSC02788.JPG|View from a Cathar castle, Languedoc, France.
 DSC02857.JPG|The Father offering the Son, Narbonne, France.
 DSC02910.JPG|Christmas carnival in Carcassone, France.
 DSC03275.JPG|Christmas scene, Chatham, New Jersey.
+renamed/[2015-03-08_17-28-50][DSC06763][SONY][DSC-RX100][46fc7496604e86e85ed28d2fe4f9e64a].1.jpg|Merry-go-round, Brooklyn.
+renamed/[2015-04-17_13-40-13][DSC06923][SONY][DSC-RX100][d43eceacdecc22ff832a89b6a324d594].1.jpg|Manhattan.
+renamed/[2015-04-29_19-39-45][DSC07000][SONY][DSC-RX100][1444fbe85ed97c111e7a532ca1439139].1.jpg|Back of townhouse, Promenade, Brooklyn Heights, New York City.
+renamed/[2015-08-18_20-15-27][DSC07740][SONY][DSC-RX100][c7d4475d947dd60634501b11f43ecf48].1.jpg|The Great Lawn at twilight, Central Park, Manhattan.
+renamed/[2015-08-21_17-17-16][DSC07793][SONY][DSC-RX100][8a234110be08c3df8154b7b8222d75b4].1.jpg|SeaGlass merry-go-round, Battery Park, Manhattan.
+renamed/[2015-09-06_13-57-21][DSC07863][SONY][DSC-RX100][45dee3e2efcb41b3e551caccc6059e9f].1.jpg|Dairy Princesses at Bovina Farm Day, Crescent Valley Road, Bovina, Delaware County, New York.
+renamed/[2016-02-18_08-19-25][DSC08412][SONY][DSC-RX100][178906581e848291326540903c59bf48].1.jpg|Man praying, Wailing Wall, Temple Mount, Jerusalem.
+renamed/[2016-02-27_09-07-25][DSC08613][SONY][DSC-RX100][c5c679d04fac75bfe885d041f49caef9].1.jpg|Girls on a swing, beach, Tel Aviv, Israel.
+renamed/[2016-02-29_08-14-30][DSC08629][SONY][DSC-RX100][d4d3bedd1554b07e430bb028fffd457b].1.jpg|Fabric store window, Tel Aviv, Israel.
+renamed/[2016-02-29_09-18-19][DSC08650][SONY][DSC-RX100][b4e489b25d253bdadc1071f3067922f2].1.jpg|Soccer balls for sale, Tel Aviv, Israel.
+renamed/[2016-03-07_09-41-22][DSC08886][SONY][DSC-RX100][37eb4ec0f23d126845085ec0939a1ed8].1.jpg|This shop used to be a grocery run by my sister and her husband, Safed, Israel.
+renamed/[2016-03-11_18-22-12][DSC08998][SONY][DSC-RX100][75b433239a69d9a48f0a87bbc76622a7].1.jpg|My neice Rivka, my wife Heidi, my sister Wendy, my nephew Emanuel, Tel Aviv, Israel.
+renamed/[2016-03-13_13-07-33][DSC09060][SONY][DSC-RX100][cd66ab077431ed470565be60e90aaf13].1_v1.jpg|House, Haifa, Israel.
+renamed/[2016-03-15_11-15-05][DSC09253][SONY][DSC-RX100][f4e88d78f3a566e5db5a1acf7c67623c].1.jpg|Ships in the ridings, Crusader walls, Akko, Israel.
+renamed/[2016-03-16_10-28-58][DSC09313][SONY][DSC-RX100][784f65227b15304bb58a3e8303b329e8].1.jpg|Sea of Galilee, Israel.
+renamed/[2016-03-29_08-08-23][DSC09661][SONY][DSC-RX100][4f343954bc8d52ead742dcf976abcb10].1.jpg|Mt. Scopus, no-man's land, East Jerusalem, Israel.
 renamed/[2016-04-06_13-12-31][DSC09755][SONY][DSC-RX100][e50c7c9f3d613f58ac154f7a991c9cd9].1.jpg|Merry-go-round on the boardwalk in Tel Aviv, Israel.
+renamed/[2016-04-07_15-33-39][DSC09844][SONY][DSC-RX100][4f68343a482dbc4c0fce97ef08c2e2ea].1.jpg|Window in the house of my sister's son Michael Mesguich, Ashdod, Israel.
+renamed/[2016-04-14_16-58-19][DSC09991][SONY][DSC-RX100][31303283474ee78193594d1e2d49458e].1.jpg|Convenience store, Tel Aviv, Israel.
 renamed/[2016-07-22_19-15-20][DSC00365][SONY][DSC-RX100][5fa29079ce1388e440851a65ae601eb8].1.jpg|Drain, Bovina Creamery, Bovina Center, New York.
 renamed/[2016-09-09_19-02-13][DSC00615][SONY][DSC-RX100][017d30847041035aeaa5c80728795dc7].1.jpg|Garret, Greenwich Village, New York City.
 XT_1585/Camera/IMG_20161006_135310102_TOP.jpg|Heidi at Bodrum, Upper West Side, Manhattan.
@@ -241,21 +259,21 @@ RX100/100MSDCF/DSC04065_v2.JPG|Andes, border of Argentina and Chile.
 RX100/100MSDCF/DSC04084.JPG|Lago Nahuel Nuapi, Argentina.
 RX100/100MSDCF/DSC04140.JPG|Reliquary, Museo de Arte Hispanoamericano Isaac Fernandez Blanco, Buenos Aires, Argentina.
 RX100/100MSDCF/DSC04154.JPG|Queen of Heaven, Museo de Arte Hispanoamericano Isaac Fernandez Blanco, Buenos Aires, Argentina.
-SM-950U/20180324_153614.jpg|Day of Remembrance for those murdered by the junta, Buenos Aires, Argentina. We should all remember what the parents of these people did to restore democracy to their country.
+SM-950U/20180324_153614.jpg|Day of Remembrance for those murdered by the junta, Buenos Aires, Argentina. We should all remember what the Argentine people did to restore democracy to their country.
 RX100/100MSDCF/DSC04199.JPG|Street in the jewelry district, Buenos Aires, Argentina.
 RX100/100MSDCF/DSC04286.JPG|Marsh dwelling family coming to town, Tigre, Argentina.
 RX100/100MSDCF/DSC04324.JPG|Iguassu Falls, Argentina.
-RX100/100MSDCF/DSC04324.JPG|Milon Restaurant, Lower East Side, Manhattan.
-RX100/100MSDCF/DSC05122.JPG|Thank you, Price Chopper supermaraket, Delhi, Delaware County, New York.
+RX100/100MSDCF/DSC04927.JPG|Milon Restaurant, Lower East Side, Manhattan.
+RX100/100MSDCF/DSC05122.JPG|Thank you, Price Chopper supermarket, Delhi, Delaware County, New York.
 RX100/100MSDCF/DSC05143.JPG|Field Days, Margaretville, Delaware County, New York.
 RX100/100MSDCF/DSC05149.JPG|Midway, Field Days, Margaretville, Delaware County, New York.
 RX100/100MSDCF/DSC05312.JPG|Downtown from the Lower East Side, Manhattan.
+SM-950U/20180827_182514_v1.jpg|The Great Lawn, Central Park, Manhattan.
 RX100/100MSDCF/DSC05497.JPG|Midtown from a ferry boat, East River, Manhattan.
 RX100/100MSDCF/DSC05619.JPG|Deysenroth farm, County Road 18, Delaware County, New York.
 RX100/100MSDCF/DSC05620.JPG|Barn cats, Deysenroth farm, County Road 18, Delaware County, New York.
 RX100/100MSDCF/DSC05625.JPG|Toys in barn, Deysenroth farm, County Road 18, Delaware County, New York.
 RX100/100MSDCF/DSC05663.JPG|Chinatown, Manhattan.
-SM-950U/20180827_182514_v1.jpg|The Great Lawn, Central Park, Manhattan.
 RX100M5/100MSDCF/DSC06075.JPG|
 RX100M5/100MSDCF/DSC06552.JPG|Chinese Garden, Dunedin, New Zealand.
 RX100/100MSDCF/DSC06643.JPG|Southern Alps from Lake Wakatipu, Glenorchy, South Island, New Zealand.

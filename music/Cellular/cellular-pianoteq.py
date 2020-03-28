@@ -45,7 +45,7 @@ print
 print 'Set "rendering" to:     "soundfile" or "audio".'
 print 'Set "playback" to:      True (default) or False.'
 print
-rendering = 'audio'
+rendering = 'soundfile'
 playback = True
 print 'Rendering option:       %s' % rendering
 print 'Play after rendering:   %s' % playback
@@ -84,6 +84,7 @@ def reverse_enumeration(L):
       yield index, L[index]
 
 CM = CsoundAC.Conversions_nameToM("CM")
+Am9 = CsoundAC.Conversions_nameToM("Am9")
 Em = CsoundAC.Conversions.nameToM("Em")
 BbM = CsoundAC.Conversions.nameToM("BbM")
 GM9 = CsoundAC.Conversions.nameToM("GM9")
@@ -113,6 +114,7 @@ def buildTrack(sequence, channel, bass):
         factor = random.choice([0., 1., 2., 3.])
         for j in xrange(2, 6):
             pitches = random.choice([CM, Em, CM, Em, BbM, GM9, Ab9])
+            pitches = random.choice([GM9, Am9])
             repeatCount = 1 + int(random.random() * 12)
             for k in xrange(repeatCount):
                 measure = readMeasure(minuetTable[j][i], pitches)
@@ -153,7 +155,7 @@ ksmps           =               64
 nchnls          =               2
 0dbfs           =               1
 
-gi_pianoteq     vstinit         "/home/mkg/pianoteq_linux_v630/Pianoteq\ 6/amd64/Pianoteq\ 6.so", 0
+gi_pianoteq     vstinit         "/home/mkg/Pianoteq\ 6/amd64/Pianoteq\ 6.so", 0
                 vstinfo         gi_pianoteq
 
                 instr 1, 2, 3, 4, 5, 6

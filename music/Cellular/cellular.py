@@ -41,7 +41,7 @@ print
 print 'Set "rendering" to:     "cd", "preview" (default), or "audio".'
 print 'Set "playback" to:      True (default) or False.'
 print
-rendering = 'audio'
+rendering = 'cd'
 playback = True
 print 'Rendering option:       %s' % rendering
 print 'Play after rendering:   %s' % playback
