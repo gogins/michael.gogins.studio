@@ -45,13 +45,13 @@ print
 print 'Set "rendering" to:     "soundfile" or "audio".'
 print 'Set "playback" to:      True (default) or False.'
 print
-rendering = 'soundfile'
+rendering = 'audio'
 playback = True
 print 'Rendering option:       %s' % rendering
 print 'Play after rendering:   %s' % playback
 commandsForRendering = {
     'soundfile':    'csound -r 96000 -k 100 -m195 -+msg_color=0 -RWZdfo %s' % (soundfileName),
-    'audio':        'csound -r 48000 -k 100 -m0   -+msg_color=0 -RWZdfo %s' % (dacName),
+    'audio':        'csound -r 44100 -k 100 -m0   -+msg_color=0 -3o %s' % (dacName),
 }
 csoundCommand = commandsForRendering[rendering]
 print 'Csound command line:    %s' % csoundCommand
@@ -150,7 +150,7 @@ print
 csoundOrchestra = \
 '''
 
-sr              =               48000
+sr              =               44100
 ksmps           =               64
 nchnls          =               2
 0dbfs           =               1

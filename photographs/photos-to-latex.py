@@ -108,9 +108,9 @@ renamed/[2005-05-04_18-12-56][2005-05-17a_034][OLYMPUS_CORPORATION][C8080WZ][9ea
 2005-05-17a_042.jpg|Riverside Park and Hudson River, Manhattan.
 renamed/[2005-06-17_18-10-15][2005-06-26a_010][OLYMPUS_CORPORATION][C8080WZ][f92166a5bea3a09f42dbcf667cf23b49].1.jpg|Statue of Jose Marti, Central Park South, New York City.
 renamed/[2005-07-09_06-36-44][2005-07-09-a_043][OLYMPUS_CORPORATION][C8080WZ][2f611944a86ca4656f65d7ea48a9cd7b].1.jpg|Fountain at the palace of Versailles, France.
+2005-07-09-a_100.jpg|
 renamed/[2005-07-10_03-55-25][2005-07-10-a_041][OLYMPUS_CORPORATION][C8080WZ][5621556dc949240eadaf07aea4bca647].1.jpg|Postcards for sale, Paris, France.
 renamed/[2005-07-10_11-00-02][2005-07-10-a_078][OLYMPUS_CORPORATION][C8080WZ][3ff8464df29df1e432d383066b6ed034].1.jpg|Bois de Boulogne, Paris, France.
-2005-07-09-a_100.jpg|
 2005-10-02-a_020.jpg|An old tree on our farm in Bovina, New York.
 renamed/[2005-09-18_16-54-27][2005-10-02-a_039][OLYMPUS_CORPORATION][C8080WZ][0c5523990779fd3d8f95d97b30ce3d6a].1.jpg|Stuff from our garden, Bovina, New York.
 2005-10-10a_053.jpg|A leaf on the road at our farm, Crescent Valley, Bovina Center, Delaware County, New York.
@@ -249,24 +249,43 @@ XT_1585/Camera/IMG_20161006_135310102_TOP.jpg|Heidi at Bodrum, Upper West Side, 
 renamed/[2016-10-25_17-21-56][DSC00805][SONY][DSC-RX100][8e062614d3bbed5885ffb2648f83724e].1.jpg|Quebec City, Quebec, Canada.
 renamed/[2016-11-04_16-28-55][DSC00837][SONY][DSC-RX100][48fcaa6370377afea6e483ef14f9efcd].1.jpg|Museum of the City of New-York, New York City.
 renamed/[2016-11-05_17-39-25][DSC00875][SONY][DSC-RX100][4f803edb1d9ac20236123e7787e8f734].1.jpg|New York Harbor from Carroll Gardens, Brooklyn, New York.
+renamed/[2016-11-05_17-46-07][DSC00884][SONY][DSC-RX100][bff212101c13d1a1ae1d21e281d44b85].1.jpg|Red Hook, Brooklyn, New York.
 renamed/[2016-11-05_16-35-08][DSC00850][SONY][DSC-RX100][11d702afddf23ab11cc11b780ffba4de].1.jpg|Wall, Williamsburg, Brooklyn, New York City.
+renamed/[2016-12-08_15-38-18][DSC00974][SONY][DSC-RX100][9068c44ac64153e42b398c79885992c7].1.jpg|Chinatown, Manhattan.
 RX100/100MSDCF/DSC00956.JPG|Lower East Side, Manhattan.
+RX100/100MSDCF/DSC01064.JPG|Melbourne, Australia.
+RX100/100MSDCF/DSC01171.JPG|Barber shop, Brunswick East, Melbourne, Australia.
+RX100/100MSDCF/DSC01306.JPG|Harbor, Hobart, Tasmania.
+RX100/100MSDCF/DSC01356.JPG|Toby mugs, village restaurant, Tasmania.
+RX100/100MSDCF/DSC01359.JPG|Landscape on the way to Wineglass Bay, Tasmania.
 XT_1585/Camera/IMG_20170310_145854935.jpg|
-SM-950U/20180216_201359.jpg|Recoleta, Buenos Aires, Argentina.
-RX100/100MSDCF/DSC03861_v1.JPG|Andes, border of Argentina and Chile.
+RX100/100MSDCF/DSC01572.JPG|Sunset on Port Philip Bay from Hampton, Melbourne, Australia.
+RX100/100MSDCF/DSC01622.JPG|Bluffs along Great Ocean Road, Australia.
+RX100/100MSDCF/DSC01681.JPG|Farmlands, Victoria, Australia.
+RX100/100MSDCF/DSC01705.JPG|Commuter train station, Melbourne, Australia.
+RX100/100MSDCF/DSC01980.JPG|Mara Helmuth after a concert at the New York City Festival of Electroacoustic Music.
+SM-950U/20180216_201312_v1.jpg|View from our terrace, Recoleta, Buenos Aires, Argentina.
+SM-950U/20180216_201359.jpg|View from our terrace, Recoleta, Buenos Aires, Argentina.
+RX100/100MSDCF/DSC03726.JPG|Collectibles shop window, Retiro, Buenos Aires, Argentina.
+RX100/100MSDCF/DSC03861_v1.JPG|Cerro Tronador, Andes, border of Argentina and Chile.
+RX100/100MSDCF/DSC03889.JPG|Mountain above Rio Negro, Puella, Patagonia, Chile.
+RX100/100MSDCF/DSC03912.JPG|Stream bed near Puella, Patagonia, Chile.
 RX100/100MSDCF/DSC04018.JPG|Volcan Orsono, Andes, Chile.
-RX100/100MSDCF/DSC04065_v2.JPG|Andes, border of Argentina and Chile.
+RX100/100MSDCF/DSC04065_v2.JPG|Cerro Tronador, Andes, border of Argentina and Chile.
 RX100/100MSDCF/DSC04084.JPG|Lago Nahuel Nuapi, Argentina.
 RX100/100MSDCF/DSC04140.JPG|Reliquary, Museo de Arte Hispanoamericano Isaac Fernandez Blanco, Buenos Aires, Argentina.
 RX100/100MSDCF/DSC04154.JPG|Queen of Heaven, Museo de Arte Hispanoamericano Isaac Fernandez Blanco, Buenos Aires, Argentina.
 SM-950U/20180324_153614.jpg|Day of Remembrance for those murdered by the junta, Buenos Aires, Argentina. We should all remember what the Argentine people did to restore democracy to their country.
 RX100/100MSDCF/DSC04199.JPG|Street in the jewelry district, Buenos Aires, Argentina.
+RX100/100MSDCF/DSC04235.JPG|Teatro Colon, Buenos Aires, Argentina.
 RX100/100MSDCF/DSC04286.JPG|Marsh dwelling family coming to town, Tigre, Argentina.
-RX100/100MSDCF/DSC04324.JPG|Iguassu Falls, Argentina.
+RX100/100MSDCF/DSC04453.JPG|Rooftops from our terrace, Recoleta, Buenos Aires, Argentina.
+RX100/100MSDCF/DSC04741.JPG|Fun Time, Brooklyn, New York City.
 RX100/100MSDCF/DSC04927.JPG|Milon Restaurant, Lower East Side, Manhattan.
 RX100/100MSDCF/DSC05122.JPG|Thank you, Price Chopper supermarket, Delhi, Delaware County, New York.
 RX100/100MSDCF/DSC05143.JPG|Field Days, Margaretville, Delaware County, New York.
 RX100/100MSDCF/DSC05149.JPG|Midway, Field Days, Margaretville, Delaware County, New York.
+RX100/100MSDCF/DSC05239.JPG|Useful clothing, Lower East Side, Manhattan.
 RX100/100MSDCF/DSC05312.JPG|Downtown from the Lower East Side, Manhattan.
 SM-950U/20180827_182514_v1.jpg|The Great Lawn, Central Park, Manhattan.
 RX100/100MSDCF/DSC05497.JPG|Midtown from a ferry boat, East River, Manhattan.
@@ -274,13 +293,16 @@ RX100/100MSDCF/DSC05619.JPG|Deysenroth farm, County Road 18, Delaware County, Ne
 RX100/100MSDCF/DSC05620.JPG|Barn cats, Deysenroth farm, County Road 18, Delaware County, New York.
 RX100/100MSDCF/DSC05625.JPG|Toys in barn, Deysenroth farm, County Road 18, Delaware County, New York.
 RX100/100MSDCF/DSC05663.JPG|Chinatown, Manhattan.
+RX100/100MSDCF/DSC05784.JPG|Early gear used for making electronic music, exhibit at the Performing Arts Library, Lincoln Center, Manhattan.
 RX100M5/100MSDCF/DSC06075.JPG|
 RX100M5/100MSDCF/DSC06552.JPG|Chinese Garden, Dunedin, New Zealand.
 RX100/100MSDCF/DSC06643.JPG|Southern Alps from Lake Wakatipu, Glenorchy, South Island, New Zealand.
+SM-950U/20190406_154218.jpg|Southern Alps, South Island, New Zealand.
 SM-950U/20190407_154615.jpg|Back country road, South Island, New Zealand.
+SM-950U/20190408_171520.jpg|Trail, Southern Alps, South Island, New Zealand.
 SM-950U/20190409_150209.jpg|
 SM-950U/20190411_114936.jpg|
-"""
+SM-950U/20191122_141030.jpg|San Simeon, California, United States."""
 
 output_filename2 = "/home/mkg/michael.gogins.studio/photographs/Gogins-Photographs-Content-II.tex"
 
