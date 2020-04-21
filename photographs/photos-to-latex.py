@@ -224,6 +224,32 @@ DSC02788.JPG|View from a Cathar castle, Languedoc, France.
 DSC02857.JPG|The Father offering the Son, Narbonne, France.
 DSC02910.JPG|Christmas carnival in Carcassone, France.
 DSC03275.JPG|Christmas scene, Chatham, New Jersey.
+renamed/[2014-01-30_13-36-32][DSC03287][SONY][DSC-RX100][91cb585a410b303c6fb8971e6853dcf6].1_v1.jpg|New York Public Library, Bryant Square, Manhattan. Statue of Beauty, by Frederick MacMonnies, modeled by Audrey Munson.
+renamed/[2014-03-08_19-21-03][DSC03426][SONY][DSC-RX100][e705ef61a6376e1a4d7c571d25d5a1f2].1.jpg|Flushing, Queens, New York City.
+renamed/[2014-07-17_08-34-49][DSC04261][SONY][DSC-RX100][d6fe17819b66ddbc3a7ab3ba87e0dc46].1.jpg|Juice wagon, Columbus Circle, Manhattan.
+renamed/[2014-07-19_20-15-33][DSC04309][SONY][DSC-RX100][15d6cbab12cf97e714ccfb15e52c20b5].1.jpg|Flowers grown by Bob Reiter and Judith Lamb, on their terrace, Hamden, Delaware County, New York, United States.
+renamed/[2014-07-26_19-29-03][DSC04425][SONY][DSC-RX100][4a7ea281a713be8e25852b9d5f58f9f1].1.jpg|Bill Carpenter and Cheryl Randall, Saratoga Springs, New York, United States.
+renamed/[2014-08-01_19-58-36][DSC04456][SONY][DSC-RX100][187af7f204efd4075ae20c12ca60dbb2].1.jpg|Tourists and blossoming trees, Clinton, Manhattan.
+renamed/[2014-08-14_20-52-21][DSC04632][SONY][DSC-RX100][26f00f9760401269963a1c3b62c83b5e].1.jpg|Promenade, Brooklyn Heights, New York City.
+renamed/[2014-08-14_20-53-37][DSC04636][SONY][DSC-RX100][a538bdb99bae29800444fa671f9888f2].1.jpg|Promenade, Brooklyn Heights, New York City.
+renamed/[2014-08-22_08-34-41][DSC04729][SONY][DSC-RX100][cdb097b4c38f14ec58828f0f8fd123c2].1.jpg|Water on marble coping, Midtown Manhattan.
+renamed/[2014-08-28_18-19-43][DSC04791][SONY][DSC-RX100][f5d954d8fd97d77214089daab3f7d8a4].1_v1.jpg|Subway train crossing the Manhattan Bridge, from Dumbo, Brooklyn, New York City.
+renamed/[2014-08-28_19-42-59][DSC04808][SONY][DSC-RX100][c041647721e94be0bf09f7b61a144a78].1.jpg|Downtown Manhattan from Brooklyn Heights, Brooklyn, New York City.
+renamed/[2014-09-14_05-31-18][DSC04978][SONY][DSC-RX100][6d75ecaf41c2213fd546ee00b93113a4].1.jpg|Capitoline Museum, the Campodiglio, Rome, Italy.
+renamed/[2014-09-14_18-46-45][DSC05082][SONY][DSC-RX100][ec0a6ab0d6242869a5a0418a72016eaf].1.jpg|Dance club under a bridge, Trastevere. Rome, Italy.
+renamed/[2014-09-15_07-37-23][DSC05105][SONY][DSC-RX100][aa06be3e379d6916c8e06deb5dbb7463].1.jpg|Sky in a park, Trastevere, Rome, Italy.
+renamed/[2014-09-15_08-47-51][DSC05134][SONY][DSC-RX100][694b831dddf88c95573a295237976132].1.jpg|Lip of a fountain in a park, Trastevere, Rome, Italy.
+renamed/[2014-09-15_16-33-34][DSC05197][SONY][DSC-RX100][cd322780068d919e28f5478ac93b5b12].1.jpg|Costume jewelry display, Trastevere, Rome, Italy.
+renamed/[2014-09-16_12-57-24][DSC05291][SONY][DSC-RX100][81205f4e155e5a889d64f047f27a76b6].1.jpg|Naples, Italy.
+renamed/[2014-09-17_03-36-11][DSC05308][SONY][DSC-RX100][23572344b03d7d175dc751a729d9d963].1.jpg|Naples, Italy.
+renamed/[2014-09-17_05-36-56][DSC05340][SONY][DSC-RX100][a16926ad5e0f19e4e5114b1c38cc7ec6].1.jpg|Naples, Italy.
+renamed/[2014-09-17_05-44-49][DSC05352][SONY][DSC-RX100][9f25e8dabacfed81043845a9c27f721e].1.jpg|Posters on wall, Naples, Italy.
+renamed/[2014-09-17_08-48-50][DSC05372][SONY][DSC-RX100][5366088b596d6dcf1e04f115996ab946].1.jpg|Heidi photographing the owners and staff of Ristorante Pizzeria da Nicola, Agerola, Italy. Talk about pizza and spaghetti! Very highly recommended.
+renamed/[2014-09-19_09-39-20][DSC05542][SONY][DSC-RX100][07635e033555b70daf28671aea233026].1.jpg|Amalfi Coast, Italy.
+renamed/[2014-09-25_12-52-14][DSC05821][SONY][DSC-RX100][153fa880ed2e5310df21060cdd5fa683].1.jpg|Harbor, Naples, from ferry to Sicily.
+renamed/[2014-09-29_14-49-59][DSC05982][SONY][DSC-RX100][17d604fefb0d4dd500632bc01334e7af].1.jpg|Piazza del Duomo, Syracuse, Sicily.
+renamed/[2014-10-04_09-56-41][DSC06265][SONY][DSC-RX100][b8352396242c7ed023425812ef812b94].1.jpg|Merry-go-round, park, Rome.
+renamed/[2014-10-04_16-28-45][DSC06320][SONY][DSC-RX100][fcbbee70429861d27230bd94d0f830a2].1_v1.jpg|The study of our hosts at the Bed & Breakfast Arco del Lauro, Rome, Italy.
 renamed/[2015-03-08_17-28-50][DSC06763][SONY][DSC-RX100][46fc7496604e86e85ed28d2fe4f9e64a].1.jpg|Merry-go-round, Brooklyn.
 renamed/[2015-04-17_13-40-13][DSC06923][SONY][DSC-RX100][d43eceacdecc22ff832a89b6a324d594].1.jpg|Manhattan.
 renamed/[2015-04-29_19-39-45][DSC07000][SONY][DSC-RX100][1444fbe85ed97c111e7a532ca1439139].1.jpg|Back of townhouse, Promenade, Brooklyn Heights, New York City.

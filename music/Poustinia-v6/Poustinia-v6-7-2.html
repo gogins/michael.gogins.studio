@@ -41,7 +41,7 @@
         // These are the ways Csound can be instantiated in a JavaScript context.
         if (typeof csound !== 'undefined') {
             // (1) Injected (e.g. by Csound for Android or CsoundQt).
-            csound.message("\nCsound already exists in the JavaScript context: version " + csound.getVersion());
+            csound.message("\nCsound already exists in the JavaScript context: version " + csound.getVersion() + '\n');
         } else {
             // (2) By 'require' as in csound.node.
             try {
