@@ -27,7 +27,7 @@ These are presentation slides from some talks on computer music that I have give
 
 Slides from a talk about algorithmic composition that I gave at the National University of Quilmes in Buenos Aires.
 
-### [Csound and HTML5](https://gogins.github.io/michael.gogins.studio/live_talks/csound_with_html5.html)
+### [Csound with HTML5](https://gogins.github.io/michael.gogins.studio/live_talks/csound_with_html5.html)
 
 Slides from a talk about my implementations of csound.node, my build of Csound for WebAssembly, and my Csound for Android app.
 
