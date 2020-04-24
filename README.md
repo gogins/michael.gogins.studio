@@ -23,11 +23,11 @@ An interactive piece of visual music. The user controls various parameters of Ho
 
 These are presentation slides from some talks on computer music that I have given, or plan to give. The slides are viewable in Web browsers. I call these "live talks" because the slides contain Csound pieces that run in the browser (and can be edited in the browser) without any external software being required.
 
-### [Algorithmic Composition](https://gogins.github.io/michael.gogins.studio/algorithmic_composition.html) 
+### [Algorithmic Composition](https://gogins.github.io/michael.gogins.studio/docs/algorithmic_composition.html) 
 
 Slides from a talk about algorithmic composition that I gave at the National University of Quilmes in Buenos Aires.
 
-### [Csound with HTML5](https://gogins.github.io/michael.gogins.studio/csound_with_html5.html)
+### [Csound with HTML5](https://gogins.github.io/michael.gogins.studio/docs/csound_with_html5.html)
 
 Slides from a talk about my implementations of csound.node, my build of Csound for WebAssembly, and my Csound for Android app.
 
