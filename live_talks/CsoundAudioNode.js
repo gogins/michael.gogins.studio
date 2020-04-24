@@ -16,44 +16,123 @@
 // import csound_audio_processor_module from 'CsoundAudioProcessor.js';
 
 class CsoundAudioNode extends AudioWorkletNode {
-    constructor(context, options) {
+    resolveCleanup(result) {
+        return result;
+    }
+    resolveCompileCsdText(result) {
+        this.message_callback("[" + window.performance.now() + " resolveCompileCsdText with: " + result + ", " + this + "]\n");
+        return result;
+    }
+    resolveReadScore(result) {
+        return result;
+    }
+    resolveReset() {
+        return;
+    }
+    resolveCompileOrc(result) {
+        return result;
+    }
+    resolveStop() {
+        return;
+    }
+    async onMessage(event) {
+            let data = event.data;
+            switch(data[0]) {
+                case "Message":
+                    if (this.message_callback != null) {
+                        this.message_callback(data[1]);
+                    } else {
+                        console.log(data[1]);
+                    }
+                    break;
+                // Some Csound API calls should be serializable, i.e. 
+                // synchronous. These cases resolve promises (above) from those calls.
+                case "CleanupResult":
+                    // this.message_callback("[" + window.performance.now() + " Received CleanupResult with: " + data[1] + ".]\n");
+                    this.resolveCleanup(data[1]);
+                    break;
+                case "CompileOrcResult":
+                    // this.message_callback("[" + window.performance.now() + " Received CompileOrcResult with: " + data[1] + ".]\n");
+                    this.resolveCompileOrc(data[1]);
+                    break;
+                case "CompileCsdTextResult":
+                    // this.message_callback("[" + window.performance.now() + " Received CompileCsdTextResult with: " + data[1] + ".]\n");
+                    this.resolveCompileCsdText(data[1]);
+                    break;
+                case "ReadScoreResult":
+                    // this.message_callback("[" + window.performance.now() + " Received ReadScoreResult with: " + data[1] + ".]\n");
+                    this.resolveReadScore(data[1]);
+                    break;
+                case "ResetResult":
+                    // this.message_callback("[" + window.performance.now() + " Received ResetResult.]\n");
+                    this.resolveReset();
+                    break;
+                case "StopResult":
+                    // this.message_callback("[" + window.performance.now() + " Received StopResult.]\n");
+                    this.resolveStop();
+                    break;
+            };
+    };
+    constructor(context, message_callback_, options) {
         options = options || {};
         options.numberOfInputs  = 1;
         options.numberOfOutputs = 1;
         options.outputChannelCount = [context.destination.channelCount];
         super(context, 'csound-audio-processor', options);
+        this.message_callback = message_callback_;
+        this.message_callback("CsoundAudioNode constructor...\n");
         this.reset_();
-        this.port.onmessage = (event) => {
-            let data = event.data;
-            switch(data[0]) {
-                case "Start":
-                    //this.start();
-                    break;
-                case "Message":
-                    console.log(data[1]);
-                    break;
-            }
-        }
+        this.CompileCsdTextPromise = null;
+        this.CompileOrcPromise = null;
+        this.StopPromise = null;
+        this.CleanupPromise = null;
+        this.ReadScorePromise = null;
+        this.ResetPromise = null;
+        this.port.onmessage = this.onMessage.bind(this);
         this.port.start();
     }
     reset_() {
         this.is_playing = false;
         this.is_realtime = false;
-        this.microphoneNode = null;
+        this.userMediaAudioInputNode = null;
         this.input = null;
         this.output = null;
     }
-    Cleanup() {
-        this.port.postMessage(["Cleanup"]);
+    async Cleanup() {
+        // this.message_callback("[" + window.performance.now() + " Cleanup.]\n");
+        let promise = new Promise((resolve, reject) => {
+            // Not exactly intuitive!
+            this.resolveCleanup = resolve;
+            this.port.postMessage(["Cleanup"]);
+        });
+        let result = await promise;
+        // this.message_callback("[" + window.performance.now() + " Cleanup resolved with: " + result + ".]\n");
+        return result;
     }
     CompileCsd(filename) {
         this.port.postMessage(["CompileCsd", filename]);
     };
-    CompileCsdText(csd) {
-        this.port.postMessage(["CompileCsdText", csd]);
+    async CompileCsdText(csd) {
+        // this.message_callback("[" + window.performance.now() + " CompileCsdText.]\n");
+        let promise = new Promise((resolve, reject) => {
+            // Not exactly intuitive!
+            this.resolveCompileCsdText = resolve;
+            this.port.postMessage(["CompileCsdText", csd]);
+        });
+        let result = await promise;
+        // this.message_callback("[" + window.performance.now() + " CompileCsdText resolved with: " + result + ".]\n");
+        return result;
     };
-    CompileOrc(orc) {
-        this.port.postMessage(["CompileOrc", orc]);
+    async CompileOrc(orc) {
+        // this.message_callback("[" + window.performance.now() + " CompileOrc.]\n");
+        let promise = new Promise((resolve, reject) => {
+            // Not exactly intuitive!
+            this.resolveCompileOrc = resolve;
+            this.port.postMessage(["CompileOrc", orc]);
+        });
+        let result = await promise;
+        // this.message_callback("[" + window.performance.now() + " CompileOrc resolved with: " + result + ".]\n");
+        return result;
     };
     Destroy() {
         this.port.postMessage(["Destroy"]);
@@ -119,6 +198,7 @@ class CsoundAudioNode extends AudioWorkletNode {
         this.port.postMessage(["Message", text]);
     };
     Perform() {
+        // this.message_callback("[" + window.performance.now() + " Perform.]\n");
         this.port.postMessage(["Perform"]);
     };
     /**
@@ -137,11 +217,26 @@ class CsoundAudioNode extends AudioWorkletNode {
     PerformOrc(options, orc, sco) {
         this.port.postMessage(["PerformOrc", options, orc, sco]);
     }
-    ReadScore(score) {
-        this.port.postMessage(["ReadScore", score]);
+    async ReadScore(score) {
+        // this.message_callback("[" + window.performance.now() + " ReadScore.]\n");
+        let promise = new Promise((resolve, reject) => {
+            // Not exactly intuitive!
+            this.resolveReadScore = resolve;
+            this.port.postMessage(["ReadScore", score]);
+        });
+        let result = await promise;
+        // this.message_callback("[" + window.performance.now() + " ReadScore resolved with: " + result + ".]\n");
+        return result;
     };
-    Reset() {
-        this.port.postMessage(["Reset"]);
+    async Reset() {
+        // this.message_callback("[" + window.performance.now() + " Reset.]\n");
+        let promise = new Promise((resolve, reject) => {
+            // Not exactly intuitive!
+            this.resolveReset = resolve;
+            this.port.postMessage(["Reset"]);
+        });
+        await promise;
+        // this.message_callback("[" + window.performance.now() + " Reset resolved.]\n");
     };
     RewindScore() {
         this.port.postMessage(["RewindScore"]);
@@ -156,10 +251,14 @@ class CsoundAudioNode extends AudioWorkletNode {
         this.input = name;
         this.port.postMessage(["SetInput", name]);
     };
+    SetMessageCallback(message_callback_) {
+        this.message_callback = message_callback_;
+    }
     SetOption(option) {
         if (option.startsWith("-odac")) {
             this.output = option.substr(2);
-        } else if (option.startsWith("-iadc")) {
+        }
+        if (option.startsWith("-iadc")) {
             this.input = option.substr(2);
         }
         this.port.postMessage(["SetOption", option]);
@@ -177,71 +276,77 @@ class CsoundAudioNode extends AudioWorkletNode {
     SetStringChannel(name, value) {
         this.port.postMessage(["SetStringChannel", name, value]);
     };
-    // Wiring into Web Audio graph here in the upper half, 
-    // wiring within Csound down in the lower half.
-    Start() {
+    // Wiring into Web Audio graph is up here in the upper half, 
+    // wiring within Csound is down in the lower half.
+    async Start() {
+        // this.message_callback("[" + window.performance.now() + " Start.]\n");
         try {
-            let onMidiEvent = function(event) {
-                this.port.postMessage(["MidiEvent", event.data[0], event.data[1], event.data[2]]);
-            };
-            let midiSuccess = function(midiInterface) {
-                let inputs = midiInterface.inputs.values();
-                console.log("MIDI input initialized...\n");
-                for (let input = inputs.next(); input && !input.done; input = inputs.next()) {
-                    input = input.value;
-                    console.log("Input: " + input.name + "\n");
-                    input.onmidimessage = onMidiEvent;
-                }
-            };
-            let midiFail = function(error) {
-                console.log("MIDI failed to start, error:" + error);
-            };
+            let device_list = await navigator.mediaDevices.enumerateDevices();
+            var message_callback_ = this.message_callback;
+            var index = 0;
+            var input_connected = false;
+            var print_device = function(device) {
+                message_callback_(index + " " + device.kind + ": " + device.label + "\n");
+                index++;
+            };     
+            device_list.forEach(print_device);
+            this.message_callback("WebAudio frames per second:         " +  this.context.sampleRate + "\n");
+            this.message_callback("WebAudio maximum output channels:   " +  this.context.destination.maxChannelCount + "\n");
+            this.connect(this.context.destination);
             if (navigator.requestMIDIAccess) {
-                navigator.requestMIDIAccess().then(midiSuccess, midiFail);
-            } else {
-                console.log("MIDI not supported in this context.");
+              let midi_access = await navigator.requestMIDIAccess();
+              const inputs = midi_access.inputs.values();
+              var post_message = this.postMessage;
+              for (let entry of midi_access.inputs) {
+                  var port_ = entry[1];
+                  message_callback_("MIDI port: type: " + port_.type + "  manufacturer: " + port_.manufacturer + " name: " + port_.name +
+                      " version: " + port_.version + "\n");
+                  // Using the MessagePort for this is probably not good enough.
+                  port_.onmidimessage = function(event) {
+                      post_message(["MidiEvent", event.data[0], event.data[1], event.data[2]]);
+                  };
+              }
+              for (let entry of midi_access.outputs) {
+                  var port_ = entry[1];
+                  message_callback_( "MIDI port: type: " + port_.type + " manufacturer: " + port_.manufacturer + " name: " + port_.name +
+                    " version: " + port_.version + "\n");
+              }
             }
-            if (this.input !== null) {
-                if (this.input.startsWith("adc")) {
-                    window.navigator = window.navigator || {};
-                    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || null;
-                    if (navigator.getUserMedia === null) {
-                        console.log("Audio input not supported in this context.");
-                    } else {
-                        function onSuccess(stream) {
-                            this.microphoneNode = audioContext.createMediaStreamSource(stream);
-                            console.log("Audio input initialized.\n");
-                        };
-                        function onFailure(error) {
-                            this.microphoneNode = null;
-                            console.log("Could not initialise audio input, error:" + error + "\n");
-                        };
-                        navigator.getUserMedia({
-                            audio: true
-                        }, onSuccess, onFailure);
-                    }
-                    if (this.microphoneNode !== null) {
-                        this.microphoneNode.connect(this);
-                    }
-                }
+            // Try to obtain the Web browser audio input, if available.
+            // Not to be confused with any other audio input interfaces on the 
+            // computer, which are inputs in the device list above!
+            try {
+                this.message_callback("Trying to open browser audio input...\n")
+                let stream = await navigator.mediaDevices.getUserMedia({audio: true});
+                this.userMediaAudioInputNode = this.context.createMediaStreamSource(stream);
+                this.message_callback("WebAudio UserMedia outputs:         " +  this.userMediaAudioInputNode.numberOfOutputs + "\n");
+                this.userMediaAudioInputNode.connect(this);
+                this.message_callback("Audio input initialized.\n");
+            } catch (e) {
+                this.message_callback(e + "\n");
             }
-            this.disconnect();
             this.port.postMessage(["Start"]);
-            this.connect(audioContext.destination);
             this.is_playing = true;
         } catch (e) {
-            console.log(e);
+            this.message_callback(e);
         }
     }
-    Stop() {
-        this.port.postMessage(["Stop"]);
-        if (this.microphoneNode !== null) {
-            this.microphoneNode.stop();
-            this.microphoneNode.disconnect(this);
-        }
-        this.disconnect();
-        this.reset_();
-    };
+    async Stop() {
+        this.message_callback("[" + window.performance.now() + " Stop.]\n");
+        let promise = new Promise((resolve, reject) => {
+            // Not exactly intuitive!
+            this.resolveStop = resolve;
+            this.port.postMessage(["Stop"]);
+            if (this.userMediaAudioInputNode !== null) {
+                ///this.userMediaAudioInputNode.stop();
+                this.userMediaAudioInputNode.disconnect(this);
+            }
+            this.disconnect();
+            this.reset_();
+        });
+        await promise;
+        this.message_callback("[" + window.performance.now() + " Stop resolved.]\n");
+    }
     TableGet(number, index) {
         this.port.postMessage(["TableGet", number, index]);
     }
