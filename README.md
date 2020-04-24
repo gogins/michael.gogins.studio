@@ -9,7 +9,7 @@ This is my Git repository, intended to serve as my creative studio for computer 
 
 ## Live Talks
 
-Here are some presentation slides from talks on computer music that I have given, or plan to give. These slides are viewable in Web browsers. I call them "live talks" because the slides contain Csound pieces that run in the browser without any external software being required.
+These are presentation slides from some talks on computer music that I have given, or plan to give. The slides are viewable in Web browsers. I call these "live talks" because the slides contain Csound pieces that run in the browser (and can be edited in the browser) without any external software being required.
 
 ### [Algorithmic Composition](https://gogins.github.io/michael.gogins.studio/live_talks/algorithmic_composition.html) 
 
@@ -17,11 +17,11 @@ Slides from a talk about algorithmic composition that I gave at the National Uni
 
 ### [Csound and HTML5](https://gogins.github.io/michael.gogins.studio/live_talks/csound_with_html5.html)
 
-Slides from a talk about my implementation of csound.node, my build of Csound for WebAssembly, and my Csound for Android app.
+Slides from a talk about my implementations of csound.node, my build of Csound for WebAssembly, and my Csound for Android app.
 
 ## External Resources
 
-Many of these works use Csound and extensions of Csound. These can be found in the open source [csound-extended repository](https://github.com/gogins/csound-extended).
+Many of these works use Csound and extensions of Csound. These can be found in the open source [csound] and [csound-extended](https://github.com/gogins/csound-extended) GitHub repositories.
 
 ## Guiding Principles
 
