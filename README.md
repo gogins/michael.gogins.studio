@@ -13,7 +13,7 @@ I am publishing here a number of online compositions of visual music, interactiv
 
 Some of these pieces play indefinitely, some accept user interaction, and some just play and stop.
 
-### (Scrims v2)[https://gogins.github.io/csound-extended/scrims.html)
+### [Scrims v2](https://gogins.github.io/csound-extended/scrims.html)
 
 An interactive piece of visual music. The user controls various parameters of Hopalong fractals, how they are mapped to music notes, their chords and chord progressions, and parameters of the Csound instruments.
 
