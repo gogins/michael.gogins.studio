@@ -7,7 +7,17 @@ michael /dot/ gogins /at/ gmail /dot/ com
 
 This is my Git repository, intended to serve as my creative studio for computer music and other projects. All materials found herein are copyright by Michael Gogins, and are licensed under the terms of the [Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International license (CC BY-NC-ND 4.0)](https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode). This permits you to download these works and share them with others as long as you credit me, but nobody is allowed to change these works in any way, or to use them commercially, without my express written permission.
 
-Here is a [live talk](https://gogins.github.io/michael.gogins.studio/live_talks/algorithmic_composition.html), viewable and playable in the browser, that I gave at the National University of Quilmes in Buenos Aires.
+## Live Talks
+
+Here are some presentation slides from talks on computer music that I have given, or plan to give. These slides are viewable in Web browsers. I call them "live talks" because the slides contain Csound pieces that run in the browser without any external software being required.
+
+### [Algorithmic Composition](https://gogins.github.io/michael.gogins.studio/live_talks/algorithmic_composition.html) 
+
+Slides from a talk about algorithmic composition that I gave at the National University of Quilmes in Buenos Aires.
+
+### [Csound and HTML5](https://gogins.github.io/michael.gogins.studio/live_talks/csound_with_html5.html)
+
+Slides from a talk about my implementation of csound.node, my build of Csound for WebAssembly, and my Csound for Android app.
 
 ## External Resources
 

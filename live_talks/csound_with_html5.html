@@ -1799,7 +1799,7 @@ e 5
                 <section>
                 <h3>Implementation</h3>
                 <ul>
-                    <li>Csound is built as a "native addon" for Node.js, but is used primarily in NW.js.
+                    <li>Csound is built as a "native addon" for Node.js, even though used primarily in NW.js.
                     <li>The Napi namespace abstracts the unstable v8 API.
                     <li>Regular node-gyp is used to build csound.node.
                     <li>Defining an interface:
@@ -1835,7 +1835,7 @@ NODE_API_MODULE(csound, Initialize)
                 <h3><a href="http://webassembly.org/" target="_blank">WebAssembly</a></h3>
                 <ul>
                     <li><i>WebAssembly</i> is a new Web standard for running compiled code on the Web.
-                    <li>JavaScript is fast, but WebAssembly can run <i>just as fast as C</i>.
+                    <li>JavaScript is fast, but WebAssembly can run <i>about as fast as C</i>.
                     <li>WebAssembly can be compiled from source code written in C, C++, Rust, and more.
                     <li>WebAssembly modules with JavaScript APIs can, of course, call each other.
                     <li>WebAssembly <i>might</i> turn out to be a new universal computing platform.
@@ -1960,7 +1960,7 @@ EMSCRIPTEN_BINDINGS(csound_web_audio) {
         return CsoundThreaded::CompileCsdText(csd_text);
     }
                 </textarea>
-                <li>CsoundOboe is added to WebKit's JavaScript context.
+                <li>CsoundOboe is then added to WebKit's JavaScript context.
                 <textarea class="hljs" style="display: block;margin-left:auto; margin-right: auto;" rows=14 cols=120>
 csound_oboe = new CsoundOboe();
 String driver_value = PreferenceManager
@@ -2005,7 +2005,7 @@ html_tab.addJavascriptInterface(csound_oboe, "csound");
                     <li>Use only essential features of the Csound API (listed above).
                     <li>Use csound_loader.js to safely load Csound on all platforms.
                     <li>Code for running and stopping Csound should be in async functions or expressions 
-                    to enable async/await constructs to serialize Csound API calls:
+                    so that async/await constructs can serialize Csound API calls:
                     <textarea class="hljs" style="display: block;margin-left:auto; margin-right: auto;" rows=12 cols=120>
 function Play() {
     (async () => {
