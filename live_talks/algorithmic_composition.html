@@ -20,25 +20,11 @@
 			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
 			document.getElementsByTagName( 'head' )[0].appendChild( link );
 		</script>
-        <script type="text/javascript" src="silencio/js/jquery.js"></script>
-        <script src="csound_extended.js"></script>
-        <script>
-            try {
-                csound = require('csound.node');
-                console.log('csound:', csound);
-                var nwgui = require('nw.gui');
-                var nw_window = nwgui.Window.get();
-                nw_window.on('close', function() {
-                    console.log('Closing down...');
-                this.close(true);
-                });
-            } catch (err) {
-                ///alert(err);
-                console.log(err.message);
-            }
-        </script> 
+        <script type="text/javascript" src="js/jquery.js"></script>
 	</head>
 	<body>
+        <script src="js/CsoundAudioNode.js"></script>
+        <script src="js/csound_loader.js"></script>
 		<div class="reveal">
 			<div class="slides">
             
@@ -160,40 +146,27 @@
     <h3>Csound/HTML5</h3>
     <div id="Oblivion">
     <script>
-    var handleMessage = function(message) {
+    var csound_message_callback_1 = function(message) {
         var messages_textarea = document.getElementById("console");
         var existing = messages_textarea.value;
         messages_textarea.value = existing + message;
         messages_textarea.scrollTop = messages_textarea.scrollHeight;        
     };
-    var onPlayClick = function() {
-        console.log = handleMessage;
-        try {
-            csound = require('csound.node');
-            console.log('Using csound.node:', csound, "\n");
-        } catch (e) {
-            console.log('Using csound for WebAssembly:', csound, "\n");
-        }
-        if (typeof csound === 'undefined') {
-            console.log("Csound is not yet loaded, wait a bit...");
-            return;
-        }
-        var csd = document.getElementById('csd').value;
-        if (typeof csound.SetMessageCallback !== 'undefined') {
-            csound.SetMessageCallback(handleMessage);
-        }
-        csound.Stop();
-        csound.Reset();
-        csound.CompileCsdText(csd);
-        csound.Start();
-        csound.Perform();
+    async function onPlayClick_1() {
+        let csound = get_csound(csound_message_callback_1)
+        let csd = document.getElementById("csd_1").value;
+        await csound.CompileCsdText(csd);
+        await csound.Start();
+        await csound.Perform();
     };
-    var onPlayStop = function() {
-        csound.Stop();
-        csound.Reset();
-    };
+    async function onPlayStop_1() {
+        let csound = get_csound(csound_message_callback_1)
+        await csound.Stop();
+        await csound.Cleanup();
+        await csound.Reset();
+     };
     </script>
-    <textarea id='csd' class="hljs" style="display: block;margin-left:auto; margin-right: auto;" rows=20 cols=100>
+    <textarea id='csd_1' class="hljs" style="display: block;margin-left:auto; margin-right: auto;" rows=20 cols=100>
 <CsoundSynthesizer>
 <CsOptions>
 -odac -m35 -d
@@ -1804,8 +1777,8 @@ e 5
     <br>
     <textarea id='console' class="hljs" style="display: block;margin-left:auto; margin-right: auto;" rows=5 cols=100>
     </textarea>
-    <input id="play" type="button" value="Play" onclick="onPlayClick()">
-    <input id="stop" type="button" value="Stop" onclick="onPlayStop()">
+    <input id="play" type="button" value="Play" onclick="onPlayClick_1()">
+    <input id="stop" type="button" value="Stop" onclick="onPlayStop_1()">
     </div>
                 </section>
 
@@ -1852,7 +1825,7 @@ e 5
     <p><i>y</i> &larr; 4 <i>y c</i> (1 - <i>y</i>)
     <p>
     <script>
-    var chaos_handleMessage = function(message) {
+    var chaos_csound_message_callback = function(message) {
         var messages_textarea = document.getElementById("chaos_console");
         var existing = messages_textarea.value;
         messages_textarea.value = existing + message;
@@ -1860,7 +1833,7 @@ e 5
     };
     var chaos_timeout = null;
     var chaos_onPlayClick = function() {
-        console.log = chaos_handleMessage;
+        console.log = chaos_csound_message_callback;
         try {
             csound = require('csound.node');
             console.log('Using csound.node:', csound, "\n");
@@ -1873,7 +1846,7 @@ e 5
         }
         var csd = document.getElementById('chaos_csd').value;
         if (typeof csound.SetMessageCallback !== 'undefined') {
-            csound.SetMessageCallback(chaos_handleMessage);
+            csound.SetMessageCallback(chaos_csound_message_callback);
         }
         csound.Stop();
         csound.Reset();
