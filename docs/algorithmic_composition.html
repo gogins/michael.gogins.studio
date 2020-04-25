@@ -1875,9 +1875,9 @@ e 5
             return;
         }
         clearInterval(chaos_timeout);
-        wait csound.Stop();
-        wait csound.Cleanup();
-        wait csound.Reset();
+        await csound.Stop();
+        await csound.Cleanup();
+        await csound.Reset();
     };
     </script>
     <textarea id='chaos_csd' class="hljs" style="display: block;margin-left:auto; margin-right: auto;" rows=10 cols=100>
@@ -1888,8 +1888,9 @@ e 5
 <CsInstruments>
 
 sr = 48000
-ksmps = 200
+ksmps = 128
 nchnls = 2
+nchnls_i = 1
 0dbfs = 4
 
 prealloc "Guitar", 4
