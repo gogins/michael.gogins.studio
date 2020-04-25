@@ -20,7 +20,7 @@
 			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
 			document.getElementsByTagName( 'head' )[0].appendChild( link );
 		</script>
-        <script type="text/javascript" src="js/jquery.js"></script>
+        <script src="js/jquery.js"></script>
 	</head>
 	<body>
         <script src="CsoundAudioNode.js"></script>
@@ -175,7 +175,7 @@
     <textarea id='csd_1' class="hljs" style="display: block;margin-left:auto; margin-right: auto;" rows=20 cols=100>
 <CsoundSynthesizer>
 <CsOptions>
--odac -m35 -d
+-m195 -d -odac:plughw:1,0
 </CsOptions>
 <CsInstruments>
 
@@ -1848,14 +1848,16 @@ e 5
         await csound.CompileCsdText(csd);
         await csound.Start();
         await csound.Perform();
-        var c = 0.0;
         var y = 0.5;
         var y1 = y;
         var interval = 0.25;
         var iteration = 0;
         var insno = 1;
         chaos_timeout = setInterval(function() {
-            c = csound.GetControlChannel('gk_chaos_c');
+            let slider = $('#gk_chaos_c');
+            let c = parseFloat(slider.val());
+            let slider_output = $('#gk_chaos_c_output');
+            slider_output.val(c);
             y1 = 4.0 * c * y * (1.0 - y);
             y = y1;
             if (y === 0) {
@@ -1883,7 +1885,7 @@ e 5
     <textarea id='chaos_csd' class="hljs" style="display: block;margin-left:auto; margin-right: auto;" rows=10 cols=100>
 <CsoundSynthesizer>
 <CsOptions>
--odac -m35 -d
+-m195 -d -odac:plughw:1,0
 </CsOptions>
 <CsInstruments>
 
@@ -2636,17 +2638,6 @@ recurrent(generators, transitions, 9, 0, pen, score, voiceleadingNode);
 			});
             Reveal.configure({ autoPlayMedia: true });            
 		</script>
-        
-<script>
-$(document).ready(function() {
-    $('input').on('input', function(event) {
-        var slider_value = parseFloat(event.target.value);
-        csound.setControlChannel(event.target.id, slider_value);
-        var output_selector = '#' + event.target.id + '_output';
-        $(output_selector).val(slider_value);
-    });
-});
-</script>
-        
+                
 	</body>
 </html>
