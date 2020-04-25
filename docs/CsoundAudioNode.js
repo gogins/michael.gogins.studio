@@ -154,7 +154,7 @@ class CsoundAudioNode extends AudioWorkletNode {
         this.port.postMessage(["GetAPIVersion"]);
     };
     GetControlChannel(name) {
-        this.port.postMessage(["GetControlChannel", name]);
+        return this.port.postMessage(["GetControlChannel", name]);
     };
     GetCurrentTimeSamples() {
         this.port.postMessage(["GetCurrentTimeSamples"]);
