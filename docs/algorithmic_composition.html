@@ -1839,27 +1839,15 @@ e 5
         messages_textarea.scrollTop = messages_textarea.scrollHeight;        
     };
     var chaos_timeout = null;
-    var chaos_onPlayClick = function() {
-        console.log = chaos_csound_message_callback;
-        try {
-            csound = require('csound.node');
-            console.log('Using csound.node:', csound, "\n");
-        } catch (e) {
-            console.log('Using csound for WebAssembly:', csound, "\n");
-        }
-        if (typeof csound === 'undefined') {
-            console.log("Csound is not yet loaded, wait a bit...");
+    var chaos_onPlayClick = async function() {
+        let csound = get_csound(chaos_csound_message_callback);
+        if (csound == null) {
             return;
         }
         var csd = document.getElementById('chaos_csd').value;
-        if (typeof csound.SetMessageCallback !== 'undefined') {
-            csound.SetMessageCallback(chaos_csound_message_callback);
-        }
-        csound.Stop();
-        csound.Reset();
-        csound.CompileCsdText(csd);
-        csound.Start();
-        csound.Perform();
+        await csound.CompileCsdText(csd);
+        await csound.Start();
+        await csound.Perform();
         var c = 0.0;
         var y = 0.5;
         var y1 = y;
@@ -1879,13 +1867,17 @@ e 5
             iteration = iteration + 1;
             var ievent = "i " + insno + " 0.0 " + duration + " " + key + " 70.0 0.0 0.5 \n";
             csound.InputMessage(ievent);
-            // console.log(ievent);
          }, interval * 1000);
     };
-    var chaos_onPlayStop = function() {
+    var chaos_onPlayStop = async function() {
+        let csound = get_csound(chaos_csound_message_callback);
+        if (csound == null) {
+            return;
+        }
         clearInterval(chaos_timeout);
-        csound.Stop();
-        csound.Reset();
+        wait csound.Stop();
+        wait csound.Cleanup();
+        wait csound.Reset();
     };
     </script>
     <textarea id='chaos_csd' class="hljs" style="display: block;margin-left:auto; margin-right: auto;" rows=10 cols=100>
