@@ -23,14 +23,17 @@ class CsoundAudioNode extends AudioWorkletNode {
         this.message_callback("[" + window.performance.now() + " resolveCompileCsdText with: " + result + ", " + this + "]\n");
         return result;
     }
+    resolveCompileOrc(result) {
+        return result;
+    }
+    resolveGetControlChannel(result) {
+        return result;
+    }
     resolveReadScore(result) {
         return result;
     }
     resolveReset() {
         return;
-    }
-    resolveCompileOrc(result) {
-        return result;
     }
     resolveStop() {
         return;
@@ -58,6 +61,10 @@ class CsoundAudioNode extends AudioWorkletNode {
                 case "CompileCsdTextResult":
                     // this.message_callback("[" + window.performance.now() + " Received CompileCsdTextResult with: " + data[1] + ".]\n");
                     this.resolveCompileCsdText(data[1]);
+                    break;
+                case "GetControlChannelResult":
+                     // this.message_callback("[" + window.performance.now() + " Received GetControlChannelResult with: " + data[1] + ".]\n");
+                    this.resolveGetControlChannel(data[1]);
                     break;
                 case "ReadScoreResult":
                     // this.message_callback("[" + window.performance.now() + " Received ReadScoreResult with: " + data[1] + ".]\n");
