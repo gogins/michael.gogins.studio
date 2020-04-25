@@ -1839,7 +1839,7 @@ e 5
         messages_textarea.scrollTop = messages_textarea.scrollHeight;        
     };
     var chaos_timeout = null;
-    var chaos_onPlayClick = async function() {
+    async function chaos_onPlayClick() {
         let csound = get_csound(chaos_csound_message_callback);
         if (csound == null) {
             return;
@@ -1869,7 +1869,7 @@ e 5
             csound.InputMessage(ievent);
          }, interval * 1000);
     };
-    var chaos_onPlayStop = async function() {
+    async function chaos_onPlayStop() {
         let csound = get_csound(chaos_csound_message_callback);
         if (csound == null) {
             return;
@@ -1980,7 +1980,6 @@ outleta "outright", a_out_right
 #endif
 prints "Xing           i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
 endin
-
 
 gk_Harpsichord_level init -2
 gk_Harpsichord_pick init .275
