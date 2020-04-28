@@ -385,7 +385,7 @@ if (typeof console === 'undefined') {
 
     /**
      * Csound pfields are:
-     * p1 Instrument number
+     * p1 Instrument number (positive is note on, negative is note off)
      * p2 Time (seconds)
      * p3 Duration (seconds)
      * p4 MIDI key
@@ -396,8 +396,14 @@ if (typeof console === 'undefined') {
      * p9 Phase (radians)
      */
     Event.prototype.toIStatement = function() {
-        var text = 'i';
+        let text;
         let insno = this.data[3];// + this.id;
+        if (insno >= 0) {
+            text = 'i ';
+        } else {
+            insno = -1.0 * insno;
+            text = 'd ';
+        }
         text = text.concat(' ', insno.toFixed(6)); // p1
         text = text.concat(' ', this.data[0].toFixed(6)); // p2
         text = text.concat(' ', this.data[1].toFixed(6)); // p3
