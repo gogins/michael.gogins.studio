@@ -96,40 +96,40 @@ sr = 48000
 ksmps = 128
 nchnls = 2
 nchnls_i = 1
-0dbfs = 1
+0dbfs = .01
 
-connect "Blower", "outleft", "ReverbSC", "inleft"
-connect "Blower", "outright", "ReverbSC", "inright"
-connect "Bower", "outleft", "ReverbSC", "inleft"
-connect "Bower", "outright", "ReverbSC", "inright"
-connect "Buzzer", "outleft", "ReverbSC", "inleft"
-connect "Buzzer", "outright", "ReverbSC", "inright"
-connect "Droner", "outleft", "ReverbSC", "inleft"
-connect "Droner", "outright", "ReverbSC", "inright"
-connect "FMModerate2", "outleft", "ReverbSC", "inleft"
-connect "FMModerate2", "outright", "ReverbSC", "inright"
-connect "Harpsichord", "outleft", "ReverbSC", "inleft"
-connect "Harpsichord", "outright", "ReverbSC", "inright"
-connect "Phaser", "outleft", "ReverbSC", "inleft"
-connect "Phaser", "outleft", "ReverbSC", "inright"
-connect "Plucked", "outright", "ReverbSC", "inleft"
-connect "Plucked", "outleft", "ReverbSC", "inright"
-connect "Rhodes", "outleft", "ReverbSC", "inleft"
-connect "Rhodes", "outright", "ReverbSC", "inright"
-connect "Sweeper", "outleft", "ReverbSC", "inleft"
-connect "Sweeper", "outright", "ReverbSC", "inright"
-connect "Shiner", "outleft", "ReverbSC", "inleft"
-connect "Shiner", "outright", "ReverbSC", "inright"
-connect "Xing", "outleft", "ReverbSC", "inleft"
-connect "Xing", "outright", "ReverbSC", "inright"
-connect "YiString", "outleft", "ReverbSC", "inleft"
-connect "YiString", "outright", "ReverbSC", "inright"
+connect "Blower", "outleft", "Reverb", "inleft"
+connect "Blower", "outright", "Reverb", "inright"
+connect "Bower", "outleft", "Reverb", "inleft"
+connect "Bower", "outright", "Reverb", "inright"
+connect "Buzzer", "outleft", "Reverb", "inleft"
+connect "Buzzer", "outright", "Reverb", "inright"
+connect "Droner", "outleft", "Reverb", "inleft"
+connect "Droner", "outright", "Reverb", "inright"
+connect "FMModerate2", "outleft", "Reverb", "inleft"
+connect "FMModerate2", "outright", "Reverb", "inright"
+connect "Harpsichord", "outleft", "Reverb", "inleft"
+connect "Harpsichord", "outright", "Reverb", "inright"
+connect "Phaser", "outleft", "Reverb", "inleft"
+connect "Phaser", "outleft", "Reverb", "inright"
+connect "Plucked", "outright", "Reverb", "inleft"
+connect "Plucked", "outleft", "Reverb", "inright"
+connect "Rhodes", "outleft", "Reverb", "inleft"
+connect "Rhodes", "outright", "Reverb", "inright"
+connect "Sweeper", "outleft", "Reverb", "inleft"
+connect "Sweeper", "outright", "Reverb", "inright"
+connect "Shiner", "outleft", "Reverb", "inleft"
+connect "Shiner", "outright", "Reverb", "inright"
+connect "Xing", "outleft", "Reverb", "inleft"
+connect "Xing", "outright", "Reverb", "inright"
+connect "YiString", "outleft", "Reverb", "inleft"
+connect "YiString", "outright", "Reverb", "inright"
 connect "YiString", "chorusleft", "SolinaChorus", "inleft"
 connect "YiString", "chorusright", "SolinaChorus", "inright"
-connect "SolinaChorus", "outleft", "ReverbSC", "inleft"
-connect "SolinaChorus", "outright", "ReverbSC", "inright"
-connect "ReverbSC", "outleft", "MasterOutput", "inleft"
-connect "ReverbSC", "outright", "MasterOutput", "inright"
+connect "SolinaChorus", "outleft", "Reverb", "inleft"
+connect "SolinaChorus", "outright", "Reverb", "inright"
+connect "Reverb", "outleft", "MasterOutput", "inleft"
+connect "Reverb", "outright", "MasterOutput", "inright"
 
 gk_Plucked_level init 0
 instr Plucked
@@ -965,10 +965,6 @@ instr Controls
     gk_Shiner_level chnget "gk_Shiner_level"
     gk_Shiner_attack chnget "gk_Shiner_attack"
     gk_Shiner_release chnget "gk_Shiner_release"
-    gk_SolinaChorus_chorus_lfo1_hz init .18
-    gk_SolinaChorus_chorus_lfo1_amp init .6
-    gk_SolinaChorus_chorus_lfo2_hz init 6
-    gk_SolinaChorus_chorus_lfo2_amp init .2
     gk_Sweeper_attack chnget "gk_Sweeper_attack"
     gk_Sweeper_release chnget "gk_Sweeper_release"
     gk_Sweeper_britel chnget "gk_Sweeper_britel"
@@ -1045,25 +1041,26 @@ endin
 gk_Reverb_feedback init 0.975
 gi_Reverb_delay_modulation init 0.875
 gk_Reverb_frequency_cutoff init 15000
-instr ReverbSC
+instr Reverb
 ainL inleta "inleft"
 ainR inleta "inright"
-aleftout init 0
-arightout init 0
-; aoutL, aoutR reverbsc ainL, ainR, kfblvl, kfco[, israte[, ipitchm[, iskip]]]
+aoutL init 0
+aoutR init 0
+; aoutL, aoutR Reverb ainL, ainR, kfblvl, kfco[, israte[, ipitchm[, iskip]]]
 
-;; MUST BE POKING CODE MEMORY, reverbsc doesn't work in this piece AT ALL!!!
+;; MUST BE POKING CODE MEMORY, Reverb doesn't work in this piece AT ALL!!!
 
-; aleftout, arightout reverbsc aleftin, arightin, gk_Reverb_feedback, gk_Reverb_frequency_cutoff, 48000, gi_Reverb_delay_modulation
+; aleftout, arightout Reverb aleftin, arightin, gk_Reverb_feedback, gk_Reverb_frequency_cutoff, 48000, gi_Reverb_delay_modulation
 
 aoutL, aoutR freeverb ainL, ainR, gi_Reverb_delay_modulation, gk_Reverb_frequency_cutoff ;[, iSRate[, iSkip]]
-outleta "outleft", aoutL * 1000
-outleta "outright", aoutR * 1000
+outleta "outleft", aoutL
+outleta "outright", aoutR
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
 gk_MasterOutput_level init 0
 gS_MasterOutput_filename init ""
+
 instr MasterOutput
 aleft inleta "inleft"
 aright inleta "inright"
@@ -1089,9 +1086,9 @@ endin
 </CsInstruments>
 <CsScore>
 f 0 3600
-;i "Controls" 0 3600
-;i "SolinaChorus" 0 3600
-i "ReverbSC" 0 3600
+i "Controls" 0 3600
+i "SolinaChorus" 0 3600
+i "Reverb" 0 3600
 i "MasterOutput" 0 3600
 </CsScore>
 </CsoundSynthesizer>
@@ -1199,7 +1196,6 @@ i "MasterOutput" 0 3600
             var toolbar, compileButton, fullscreenButton, compileTimer, errorLines = [];
             var code, canvas, gl, buffer, currentProgram, vertexPosition, screenVertexPosition, panButton;
             var parameters = {
-                instruments: 12.9,
                 frames_per_second: 30,
                 startTime: Date.now(),
                 time: 0,
@@ -1211,75 +1207,75 @@ i "MasterOutput" 0 3600
                 screenWidth: 0,
                 screenHeight: 0,
                 duration: 4,
-            "gk_Blower_grainDensity": 0.15,
-            "gk_Blower_grainDuration": 0.2,
-            "gk_Blower_grainAmplitudeRange": 0.1,
-            "gk_Blower_grainFrequencyRange": 0.033,
-            "gk_Blower_level": 0,
-            "gk_Bower_attack": 0.0125,
-            "gk_Bower_release": 0.25,
-            "gk_Bower_pressure": 0.25,
-            "gk_Bower_level": 0,
-            "gk_Buzzer_attack": .125,
-            "gk_Buzzer_release": .25,
-            "gk_Buzzer_harmonics": 15,
-            "gk_Buzzer_level": 0,
-            "gk_Droner_partial1": 0.1,
-            "gk_Droner_partial2": 0.1,
-            "gk_Droner_partial3": 0.1,
-            "gk_Droner_partial4": 0.1,
-            "gk_Droner_partial5": 0.1,
-            "gk_Droner_partial6": 0.1,
-            "gk_Droner_partial7": 0.1,
-            "gk_Droner_partial8": 0.1,
-            "gk_Droner_partial9": 0.1,
-            "gk_Droner_partial10": 0.1,
-            "gk_Droner_waveform": 0,
-            "gk_Droner_level": 0,
-            "gi_FMModerate2_index": 2,
-            "gi_FMModerate2_carrier": 1,
-            "gi_FMModerate2_modulator": 4,
-            "gi_FMModerate2_fmamplitude": 9,
-            "gk_FMModerate2_level": 0,
-            "gk_Harpsichord_level": 0,
-            "gk_MasterOutput_level": 15.906627761567321,
-            "gk_Phaser_attack": .125,
-            "gk_Phaser_release": .125,
-            "gk_Phaser_ratio1": 1,
-            "gk_Phaser_ratio2": 0.3333334,
-            "gk_Phaser_index1": 1,
-            "gk_Phaser_index2": 0.0125,
-            "gk_Phaser_level": 0,
-            "gk_Rhodes_level": 0,
-            "gk_Reverb_feedback": 0.75,
-            "gi_Reverb_delay_modulation": 0.27761567319716546,
-            "gk_Reverb_frequency_cutoff": 15000,
-            "gk_Sweeper_attack": .125,
-            "gk_Sweeper_release": .25,
-            "gk_Sweeper_britel": 0,
-            "gk_Sweeper_briteh": 2.9,
-            "gk_Sweeper_britels": 0.06666666666666667,
-            "gk_Sweeper_britehs": 1.25,
-            "gk_Sweeper_level": 0,
-            "gk_Xing_level": 0,
-            "gk_YiString_reverb_send": 1,
-            "gk_YiString_chorus_send": 0,
-            "gk_YiString_level": 0,
-            "gk_Shiner_attack": .0125,
-            "gk_Shiner_release": .0125,
-            "gk_Shiner_level": 0.5,
-            Play: function() {
-                    (async () => {
-                        let csound = get_csound(csound_message_callback);
-                        Silencio.saveDatGuiJson(gui);
-                        var csd = document.getElementById('csd').value;
-                        await csound.CompileCsdText(csd);
-                        await csound.Start();
-                        is_playing = true;
-                        gui.revert();
-                        start_time_seconds = new Date().getTime() / 1000.0;
-                        await csound.Perform();
-                    })();
+                gk_Blower_grainDensity: 0.15,
+                gk_Blower_grainDuration: 0.2,
+                gk_Blower_grainAmplitudeRange: 0.1,
+                gk_Blower_grainFrequencyRange: 0.033,
+                gk_Blower_level: 0,
+                gk_Bower_attack: 0.0125,
+                gk_Bower_release: 0.25,
+                gk_Bower_pressure: 0.25,
+                gk_Bower_level: 0,
+                gk_Buzzer_attack: .125,
+                gk_Buzzer_release: .25,
+                gk_Buzzer_harmonics: 15,
+                gk_Buzzer_level: 0,
+                gk_Droner_partial1: 0.1,
+                gk_Droner_partial2: 0.1,
+                gk_Droner_partial3: 0.1,
+                gk_Droner_partial4: 0.1,
+                gk_Droner_partial5: 0.1,
+                gk_Droner_partial6: 0.1,
+                gk_Droner_partial7: 0.1,
+                gk_Droner_partial8: 0.1,
+                gk_Droner_partial9: 0.1,
+                gk_Droner_partial10: 0.1,
+                gk_Droner_waveform: 0,
+                gk_Droner_level: 0,
+                gi_FMModerate2_index: 2,
+                gi_FMModerate2_carrier: 1,
+                gi_FMModerate2_modulator: 4,
+                gi_FMModerate2_fmamplitude: 9,
+                gk_FMModerate2_level: 0,
+                gk_Harpsichord_level: 0,
+                gk_MasterOutput_level: 15.906627761567321,
+                gk_Phaser_attack: .125,
+                gk_Phaser_release: .125,
+                gk_Phaser_ratio1: 1,
+                gk_Phaser_ratio2: 0.3333334,
+                gk_Phaser_index1: 1,
+                gk_Phaser_index2: 0.0125,
+                gk_Phaser_level: 0,
+                gk_Rhodes_level: 0,
+                gk_Reverb_feedback: 0.75,
+                gi_Reverb_delay_modulation: 0.27761567319716546,
+                gk_Reverb_frequency_cutoff: 15000,
+                gk_Sweeper_attack: .125,
+                gk_Sweeper_release: .25,
+                gk_Sweeper_britel: 0,
+                gk_Sweeper_briteh: 2.9,
+                gk_Sweeper_britels: 0.06666666666666667,
+                gk_Sweeper_britehs: 1.25,
+                gk_Sweeper_level: 0,
+                gk_Xing_level: 0,
+                gk_YiString_reverb_send: 1,
+                gk_YiString_chorus_send: 0,
+                gk_YiString_level: 0,
+                gk_Shiner_attack: .0125,
+                gk_Shiner_release: .0125,
+                gk_Shiner_level: 0.5,
+                Play: function() {
+                        (async () => {
+                            let csound = get_csound(csound_message_callback);
+                            Silencio.saveDatGuiJson(gui);
+                            var csd = document.getElementById('csd').value;
+                            await csound.CompileCsdText(csd);
+                            await csound.Start();
+                            is_playing = true;
+                            gui.revert();
+                            start_time_seconds = new Date().getTime() / 1000.0;
+                            await csound.Perform();
+                        })();
                 },
                 Stop: function() {
                     (async () => {
@@ -1396,7 +1392,7 @@ i "MasterOutput" 0 3600
             var surface = { centerX: 0, centerY: 0, width: 1, height: 1, isPanning: false, isZooming: false, lastX: 0, lastY: 0 },
             frontTarget, backTarget, screenProgram, getWebGL, resizer = {}, compileOnChangeCode = true;
             function csound_message_callback(message) {
-                console.log(message);
+                //console.log(message);
                 var messages_textarea = document.getElementById("console");
                 var existing = messages_textarea.value;
                 messages_textarea.value = existing + message;
@@ -1834,6 +1830,7 @@ i "MasterOutput" 0 3600
 
             var value_threshold = .95;
             var instrument_count = 12.9;
+            var instances_per_instrument = 4.;
             var range = 72;
             var bass = 28;
             var dynamic_range = 6.0;
@@ -1883,28 +1880,42 @@ i "MasterOutput" 0 3600
             // original note, conformed or not.
             
             var turnoff_map = new Map();
+            
+            var make_insno = function(x) {
+                let insno = ((x / gl.drawingBufferWidth) * instrument_count) + 1;
+                let insbase = Math.floor(insno);
+                let instag = insno - insbase;
+                instag = instag * instances_per_instrument;
+                instag = Math.floor(instag);
+                instag = instag / instances_per_instrument;
+                insno = insbase + instag;
+                return insno;
+           }
+           
+           var make_key = function(y) {
+               let key = Math.floor((y / gl.drawingBufferHeight) * range + bass);
+               return key;
+           }
 
             var create_on_event = function(x, y, h, v) {
-                let insno = Math.floor(((x / gl.drawingBufferWidth) * instrument_count) + 1);
+                let insno = make_insno(x);
                 let tyme = 0.;
                 let duration = parameters.duration * -1.0; 
-                let key = Math.floor((y / gl.drawingBufferHeight) * range + bass);
+                let key = make_key(y);
                 let chord_key = ChordSpace.conformPitchToChord(key, chord, false);
                 let velocity = Math.floor(v * dynamic_range + softest);
                 let ypan = 0.;
                 let xpan = Math.random();
-                //insno = insno + (key / 1000);
                 let turnoff_key = [insno, key];
                 let istatement = sprintf("i %9.4f %9.4f %9.4f %9.4f %9.4f %9.4f\n", insno, tyme, duration, chord_key, ypan, xpan);
                 let dstatement = sprintf("d %9.4f %9.4f %9.4f %9.4f %9.4f %9.4f\n", insno, tyme, 0,        chord_key, ypan, xpan);
                 csound.InputMessage(istatement);
-                turnoff_map.set(turnoff_key, dstatement)    ;
+                turnoff_map.set(turnoff_key, dstatement);
             }
 
             var create_off_event = function(x, y, h, v) {
-                let insno = Math.floor(((x / gl.drawingBufferWidth) * instrument_count) + 1);
-                let key = Math.floor((y / gl.drawingBufferHeight) * range + bass);
-                //insno = insno + (key / 1000);
+                let insno = make_insno(x);
+                let key = make_key(y);
                 let turnoff_key = [insno, key];
                 if (turnoff_map.has(turnoff_key)) {
                     let dstatement = map.get(turnoff_key);
