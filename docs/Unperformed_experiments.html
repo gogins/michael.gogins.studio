@@ -1818,7 +1818,7 @@ i "MasterOutput" 0 3600
                 createRenderTargets();
             }
 
-            var old_pixels = null;
+            var old_pixels = new Uint8Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4);
             var new_pixels = new Uint8Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4);
 
             // https://www.opengl.org/sdk/docs/man/html/glReadPixels.xhtml
@@ -1999,10 +1999,13 @@ i "MasterOutput" 0 3600
                 gl.bindFramebuffer(gl.FRAMEBUFFER, null);
                 gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
                 gl.drawArrays(gl.TRIANGLES, 0, 6);
-                old_pixels = new_pixels.slice();
-                // Use pixel buffer objects here?
+                // Just keep swapping the pixel arrays.
+                let temp_pixels = old_pixels;
+                old_pixels = new_pixels;
+                new_pixels = temp_pixels;
                 gl.readPixels(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight, gl.RGBA, gl.UNSIGNED_BYTE, new_pixels);
                 send_events();
+                
                 var current_time_seconds = new Date().getTime() / 1000.0;
                 var score_time = current_time_seconds - start_time_seconds;
                 score_time_cell.innerHTML = score_time.toFixed(3);
