@@ -19,6 +19,10 @@ Click on _Play_ once to load Csound, and then click on _Play_ again to play the 
 
 An interactive piece of visual music. The user controls various parameters of Hopalong fractals, how they are mapped to music notes, their chords and chord progressions, and parameters of the Csound instruments.
 
+### [Unperformed Experiments Have No Results](https://gogins.github.io/csound-extended/Unperformed_experiments.html)
+
+An interactive piece of visual music. The user controls various parameters of a display of interfering sine patterns, which are sparsely mapped to musical notes. Try a duration of -1 for a fixed number of notes, or a positive duration for any number of notes of that duration -- but they can really pile up! Try changing tempo, reverb, and so on.
+
 ## Live Talks
 
 These are presentation slides from some talks on computer music that I have given, or plan to give. The slides are viewable in Web browsers. I call these "live talks" because the slides contain Csound pieces that run in the browser (and can be edited in the browser) without any external software being required.
