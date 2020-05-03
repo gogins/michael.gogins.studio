@@ -36,7 +36,7 @@ midiFilename = title + '.mid'
 print 'MIDI filename:          %s' % midiFilename
 soundfileName = title + '.wav'
 print 'Soundfile name:         %s' % soundfileName
-dacName = 'dac'
+dacName = 'dac:plughw:1,0'
 print 'Audio output name:      %s' % dacName
 print
 
@@ -51,7 +51,7 @@ print 'Rendering option:       %s' % rendering
 print 'Play after rendering:   %s' % playback
 commandsForRendering = {
     'soundfile':    'csound -r 96000 -k 100 -m195 -+msg_color=0 -RWZdfo %s' % (soundfileName),
-    'audio':        'csound -r 44100 -k 100 -m0   -+msg_color=0 -3o %s' % (dacName),
+    'audio':        'csound -r 48000 -k 128 -m0   -+msg_color=0 -o%s' % (dacName),
 }
 csoundCommand = commandsForRendering[rendering]
 print 'Csound command line:    %s' % csoundCommand
@@ -83,15 +83,7 @@ def reverse_enumeration(L):
    for index in reversed(xrange(len(L))):
       yield index, L[index]
 
-CM = CsoundAC.Conversions_nameToM("CM")
-Am9 = CsoundAC.Conversions_nameToM("Am9")
-Em = CsoundAC.Conversions.nameToM("Em")
-BbM = CsoundAC.Conversions.nameToM("BbM")
-GM9 = CsoundAC.Conversions.nameToM("GM9")
-Ab9 = CsoundAC.Conversions.nameToM("Ab9")
-
-
-def readMeasure(number, pitches):
+def readMeasure(number):
     scoreNode = CsoundAC.ScoreNode()
     scoreNode.thisown = 0
     filename = 'M' + str(number) + '.mid'
@@ -99,7 +91,6 @@ def readMeasure(number, pitches):
     score.load(filename)
     # Remove false notes.
     for i, event in reverse_enumeration(score):
-        event.setPitches(pitches)
         if event.getChannel() < 0:
             score.remove(i)
     #print score.getCsoundScore()
@@ -107,17 +98,18 @@ def readMeasure(number, pitches):
     print 'Read "%s" with duration %9.4f.' % (filename, score.getDuration())
     return scoreNode
 
-def buildTrack(sequence, channel, bass):
+def buildTrack(voiceleadingNode, sequence, channel, bass):
     print 'Building track for channel %3d bass %3d...' % (channel, bass)
     cumulativeTime = 1.0
     for i in xrange(1, 16):
         factor = random.choice([0., 1., 2., 3.])
         for j in xrange(2, 6):
-            pitches = random.choice([CM, Em, CM, Em, BbM, GM9, Ab9])
-            pitches = random.choice([GM9, Am9])
+            chord = random.choice(["CM7", "Em7", "CM9", "Em7", "BbM", "GM9", "Ab9"])
+            voiceleadingNode.C(cumulativeTime, chord);
+            # chord = random.choice([GM9, Am9])
             repeatCount = 1 + int(random.random() * 12)
             for k in xrange(repeatCount):
-                measure = readMeasure(minuetTable[j][i], pitches)
+                measure = readMeasure(minuetTable[j][i])
                 duration = measure.getScore().getDuration()
                 offset = factor * duration / (22/7)
                 rescale = CsoundAC.Rescale()
@@ -131,27 +123,29 @@ def buildTrack(sequence, channel, bass):
                 cumulativeTime = cumulativeTime + duration
 
 sequence = CsoundAC.Rescale()
+voiceleadingNode = CsoundAC.VoiceleadingNode()
 model.setAuthor("Michael Gogins")
 model.setArtist("Michael Gogins")
 model.setTitle("Cellular, for Computer Piano")
-model.addChild(sequence)
+voiceleadingNode.addChild(sequence);
+model.addChild(voiceleadingNode)
 model.setConformPitches(bool(1))
 sequence.setRescale(CsoundAC.Event.VELOCITY,   bool(1), bool(1), 60, 12)
 sequence.setRescale(CsoundAC.Event.INSTRUMENT, bool(1), bool(1),  1,  5)
 #sequence.setRescale(CsoundAC.Event.TIME,       bool(1), bool(1),  1, 1700)
-buildTrack(sequence, 1, 24)
-buildTrack(sequence, 2, 36)
-buildTrack(sequence, 3, 36)
-buildTrack(sequence, 4, 48)
-buildTrack(sequence, 5, 48)
+buildTrack(voiceleadingNode, sequence, 1, 24)
+buildTrack(voiceleadingNode, sequence, 2, 36)
+buildTrack(voiceleadingNode, sequence, 3, 36)
+buildTrack(voiceleadingNode, sequence, 4, 48)
+buildTrack(voiceleadingNode, sequence, 5, 48)
 
 print 'CREATING CSOUND ORCHESTRA...'
 print
 csoundOrchestra = \
 '''
 
-sr              =               44100
-ksmps           =               64
+sr              =               48000
+ksmps           =               128
 nchnls          =               2
 0dbfs           =               1
 
