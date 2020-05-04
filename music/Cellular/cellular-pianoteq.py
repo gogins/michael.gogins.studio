@@ -97,16 +97,30 @@ def readMeasure(number):
     score.setDuration(random.choice([2, 3, 4, 6, 8]) / 1.5)
     print 'Read "%s" with duration %9.4f.' % (filename, score.getDuration())
     return scoreNode
+    
+t2 =  lambda chord : chord.T(2)
+t5 =  lambda chord : chord.T(5)
+t9 =  lambda chord : chord.T(9)
+k0 =  lambda chord : chord.K()
+k2 =  lambda chord : chord.K().T(2)
+k5 =  lambda chord : chord.K().T(5)
+k9 =  lambda chord : chord.K().T(9)
+k10 = lambda chord : chord.K().T(10)  
+
+chord = CsoundAC.chordForName("CM")
+print("Chord:\n{}".format(chord.information()))
+print("k0:\n{}".format(k0(chord).information()))
 
 def buildTrack(voiceleadingNode, sequence, channel, bass):
+    global chord
     print 'Building track for channel %3d bass %3d...' % (channel, bass)
     cumulativeTime = 1.0
     for i in xrange(1, 16):
         factor = random.choice([0., 1., 2., 3.])
         for j in xrange(2, 6):
-            chord = random.choice(["CM7", "Em7", "CM9", "Em7", "BbM", "GM9", "Ab9"])
-            voiceleadingNode.C(cumulativeTime, chord);
-            # chord = random.choice([GM9, Am9])
+            transformation = random.choice([t2, t5, t9, k0, k2, k5, k9, k10])
+            chord = transformation(chord)
+            voiceleadingNode.C(cumulativeTime, chord.name());
             repeatCount = 1 + int(random.random() * 12)
             for k in xrange(repeatCount):
                 measure = readMeasure(minuetTable[j][i])
