@@ -62,6 +62,10 @@ print
 model = CsoundAC.MusicModel()
 score = model.getScore()
 
+print 'RANDOM SEED...'
+print
+random.Random(293829)
+
 print 'CREATING MUSIC MODEL...'
 print
 
@@ -98,16 +102,18 @@ def readMeasure(number):
     print 'Read "%s" with duration %9.4f.' % (filename, score.getDuration())
     return scoreNode
     
-t2 =  lambda chord : chord.T(2)
-t5 =  lambda chord : chord.T(5)
-t9 =  lambda chord : chord.T(9)
-k0 =  lambda chord : chord.K()
-k2 =  lambda chord : chord.K().T(2)
-k5 =  lambda chord : chord.K().T(5)
-k9 =  lambda chord : chord.K().T(9)
-k10 = lambda chord : chord.K().T(10)  
+t2  = lambda chord : chord.T(2)
+t5  = lambda chord : chord.T(5)
+t7  = lambda chord : chord.T(7)
+t9  = lambda chord : chord.T(9)
+t10 = lambda chord : chord.T(10)
+k0  = lambda chord : chord.K()
+k2  = lambda chord : chord.K().T(2)
+k5  = lambda chord : chord.K().T(5)
+k7  = lambda chord : chord.K().T(7)
+k10 = lambda chord : chord.K().T(10)
 
-chord = CsoundAC.chordForName("CM")
+chord = CsoundAC.chordForName("EM")
 print("Chord:\n{}".format(chord.information()))
 print("k0:\n{}".format(k0(chord).information()))
 
@@ -116,16 +122,18 @@ def buildTrack(voiceleadingNode, sequence, channel, bass):
     print 'Building track for channel %3d bass %3d...' % (channel, bass)
     cumulativeTime = 1.0
     for i in xrange(1, 16):
-        factor = random.choice([0., 1., 2., 3.])
+        factor = random.choice([1., 2., 3.])
         for j in xrange(2, 6):
-            transformation = random.choice([t2, t5, t9, k0, k2, k5, k9, k10])
-            chord = transformation(chord)
-            voiceleadingNode.C(cumulativeTime, chord.name());
+            if (channel == 1):
+                transformation = random.choice([t2, t5, t7, t9, t10, k0, k2, k5, k7, k10])
+                chord = transformation(chord)
+                voiceleadingNode.chord(chord, cumulativeTime)
             repeatCount = 1 + int(random.random() * 12)
             for k in xrange(repeatCount):
                 measure = readMeasure(minuetTable[j][i])
                 duration = measure.getScore().getDuration()
                 offset = factor * duration / (22/7)
+                #offset = 0
                 rescale = CsoundAC.Rescale()
                 rescale.setRescale(CsoundAC.Event.TIME, bool(1), bool(0), cumulativeTime + offset, 0)
                 rescale.setRescale(CsoundAC.Event.INSTRUMENT, bool(1), bool(0), channel, 0)
@@ -143,7 +151,7 @@ model.setArtist("Michael Gogins")
 model.setTitle("Cellular, for Computer Piano")
 voiceleadingNode.addChild(sequence);
 model.addChild(voiceleadingNode)
-model.setConformPitches(bool(1))
+#model.setConformPitches(bool(1))
 sequence.setRescale(CsoundAC.Event.VELOCITY,   bool(1), bool(1), 60, 12)
 sequence.setRescale(CsoundAC.Event.INSTRUMENT, bool(1), bool(1),  1,  5)
 #sequence.setRescale(CsoundAC.Event.TIME,       bool(1), bool(1),  1, 1700)
