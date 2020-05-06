@@ -97,6 +97,8 @@ print("ii_to_V: \n" + ii_to_V.information())
 vii_to_V = vii.K()
 print("vii_to_V: \n" + vii_to_V.information())
 print("GOING BACK TOWARDS I...")
+ii_to_I = ii.K().T(10)
+print("ii_to_I: \n" + ii_to_I.information())
 vi_to_I6 = vi.K().T(7)
 print("vi_to_I6: \n" + vi_to_I6.information())
 IV_to_I = IV.T(7)
@@ -110,7 +112,8 @@ print("V_to_IV6: \n" + V_to_IV6.information())
 vii_to_I = vii.K().T(5)
 print("vii_to_I: \n" + vii_to_I.information())
 print('''
-Hence the lambdas for this irreducible set of transformations are:
+Hence the lambdas for this irreducible set of transformations are
+(think about weighting these):  
 ''')
 t2  = lambda chord : chord.T(2)
 t5  = lambda chord : chord.T(5)

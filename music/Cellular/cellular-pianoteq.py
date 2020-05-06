@@ -121,21 +121,21 @@ def buildTrack(voiceleadingNode, sequence, channel, bass):
     global chord
     print 'Building track for channel %3d bass %3d...' % (channel, bass)
     cumulativeTime = 1.0
+    tempo = 1.0
     for i in xrange(1, 16):
         factor = random.choice([1., 2., 3.])
         for j in xrange(2, 6):
-            if (channel == 1):
-                transformation = random.choice([t2, t5, t7, t9, t10, k0, k2, k5, k7, k10])
-                chord = transformation(chord)
-                voiceleadingNode.chord(chord, cumulativeTime)
             repeatCount = 1 + int(random.random() * 12)
             for k in xrange(repeatCount):
+                if (channel == 1):
+                    transformation = random.choice([t2, t5, t7, t9, t10, k0, k2, k5, k7, k10])
+                    chord = transformation(chord)
+                    voiceleadingNode.chord(chord, cumulativeTime)
                 measure = readMeasure(minuetTable[j][i])
-                duration = measure.getScore().getDuration()
-                offset = factor * duration / (22/7)
-                #offset = 0
+                duration = measure.getScore().getDuration() * tempo
+                measure.getScore().setDuration(duration)
                 rescale = CsoundAC.Rescale()
-                rescale.setRescale(CsoundAC.Event.TIME, bool(1), bool(0), cumulativeTime + offset, 0)
+                rescale.setRescale(CsoundAC.Event.TIME, bool(1), bool(0), cumulativeTime, 0)
                 rescale.setRescale(CsoundAC.Event.INSTRUMENT, bool(1), bool(0), channel, 0)
                 rescale.setRescale(CsoundAC.Event.KEY, bool(1), bool(1), float(bass), 48)
                 rescale.thisown = 0
@@ -143,6 +143,7 @@ def buildTrack(voiceleadingNode, sequence, channel, bass):
                 print 'Repeat %4d of %4d at %8.3f with %3d notes of duration %7.3f at bass %7.3f...' %(k + 1, repeatCount, cumulativeTime, len(measure.getScore()), duration, bass)
                 sequence.addChild(rescale)
                 cumulativeTime = cumulativeTime + duration
+            tempo = random.choice([1/3, 1/2, 2/3, 1, 3/2, 2, 3])
 
 sequence = CsoundAC.Rescale()
 voiceleadingNode = CsoundAC.VoiceleadingNode()
