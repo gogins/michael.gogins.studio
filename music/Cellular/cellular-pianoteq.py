@@ -7,9 +7,9 @@ Mozart's musical dice game is taken apart and put back together along the
 lines of Terry Riley's "In C" using Python, and realized using Csound with
 the Pianoteq synthesized piano.
 '''
-print __doc__
+print(__doc__)
 print
-print 'IMPORTING REQUIRED MODULES...'
+print('IMPORTING REQUIRED MODULES...')
 print
 import CsoundAC
 import os
@@ -20,53 +20,53 @@ import string
 import sys
 import traceback
 
-print 'CREATING FILENAMES...'
+print('CREATING FILENAMES...')
 print
 scriptFilename = sys.argv[0]
-print 'Full Python script:     %s' % scriptFilename
+print('Full Python script:     %s' % scriptFilename)
 title, exte = os.path.splitext(os.path.basename(scriptFilename))
-print 'Base Python script:     %s' % title
+print('Base Python script:     %s' % title)
 directory = os.path.dirname(scriptFilename)
 if len(directory):
-    print 'Working directory:      %s' % directory
+    print('Working directory:      %s' % directory)
     os.chdir(directory)
-print 'Working directory:      %s' % directory
+print('Working directory:      %s' % directory)
 orcFilename = title + '.orc'
 midiFilename = title + '.mid'
-print 'MIDI filename:          %s' % midiFilename
+print('MIDI filename:          %s' % midiFilename)
 soundfileName = title + '.wav'
-print 'Soundfile name:         %s' % soundfileName
+print('Soundfile name:         %s' % soundfileName)
 dacName = 'dac:plughw:1,0'
-print 'Audio output name:      %s' % dacName
+print('Audio output name:      %s' % dacName)
 print
 
-print 'SETTING RENDERING AND PLAYBACK OPTIONS...'
+print('SETTING RENDERING AND PLAYBACK OPTIONS...')
 print
-print 'Set "rendering" to:     "soundfile" or "audio".'
-print 'Set "playback" to:      True (default) or False.'
+print('Set "rendering" to:     "soundfile" or "audio".')
+print('Set "playback" to:      True (default) or False.')
 print
 rendering = 'audio'
 playback = True
-print 'Rendering option:       %s' % rendering
-print 'Play after rendering:   %s' % playback
+print('Rendering option:       %s' % rendering)
+print('Play after rendering:   %s' % playback)
 commandsForRendering = {
     'soundfile':    'csound -r 96000 -k 100 -m195 -+msg_color=0 -RWZdfo %s' % (soundfileName),
     'audio':        'csound -r 48000 -k 128 -m0   -+msg_color=0 -o%s' % (dacName),
 }
 csoundCommand = commandsForRendering[rendering]
-print 'Csound command line:    %s' % csoundCommand
+print('Csound command line:    %s' % csoundCommand)
 print
 
-print 'CREATING GLOBAL OBJECTS...'
+print('CREATING GLOBAL OBJECTS...')
 print
 model = CsoundAC.MusicModel()
 score = model.getScore()
 
-print 'RANDOM SEED...'
+print('RANDOM SEED...')
 print
-random.Random(293829)
+random.Random(29389)
 
-print 'CREATING MUSIC MODEL...'
+print('CREATING MUSIC MODEL...')
 print
 
 minuetTable = {}
@@ -97,53 +97,54 @@ def readMeasure(number):
     for i, event in reverse_enumeration(score):
         if event.getChannel() < 0:
             score.remove(i)
-    #print score.getCsoundScore()
+    #print(score.getCsoundScore()
     score.setDuration(random.choice([2, 3, 4, 6, 8]) / 1.5)
-    print 'Read "%s" with duration %9.4f.' % (filename, score.getDuration())
+    print('Read "%s" with duration %9.4f.' % (filename, score.getDuration()))
     return scoreNode
     
-t2  = lambda chord : chord.T(2)
-t5  = lambda chord : chord.T(5)
-t7  = lambda chord : chord.T(7)
-t9  = lambda chord : chord.T(9)
-t10 = lambda chord : chord.T(10)
-k0  = lambda chord : chord.K()
-k2  = lambda chord : chord.K().T(2)
-k5  = lambda chord : chord.K().T(5)
-k7  = lambda chord : chord.K().T(7)
-k10 = lambda chord : chord.K().T(10)
+t2  = lambda chord : chord.T(2).eOP()
+t5  = lambda chord : chord.T(5).eOP()
+t7  = lambda chord : chord.T(7).eOP()
+t9  = lambda chord : chord.T(9).eOP()
+t10 = lambda chord : chord.T(10).eOP()
+k0  = lambda chord : chord.K().eOP()
+k2  = lambda chord : chord.K().eOP().T(2).eOP()
+k5  = lambda chord : chord.K().eOP().T(5).eOP()
+k7  = lambda chord : chord.K().eOP().T(7).eOP()
+k10 = lambda chord : chord.K().eOP().T(10).eOP()
 
-chord = CsoundAC.chordForName("EM")
+chord = CsoundAC.chordForName("BM")
 print("Chord:\n{}".format(chord.information()))
 print("k0:\n{}".format(k0(chord).information()))
 
 def buildTrack(voiceleadingNode, sequence, channel, bass):
     global chord
-    print 'Building track for channel %3d bass %3d...' % (channel, bass)
+    print('Building track for channel %3d bass %3d...' % (channel, bass))
     cumulativeTime = 1.0
-    tempo = 1.0
+    tempo = 2
     for i in xrange(1, 16):
         factor = random.choice([1., 2., 3.])
         for j in xrange(2, 6):
             repeatCount = 1 + int(random.random() * 12)
             for k in xrange(repeatCount):
-                if (channel == 1):
-                    transformation = random.choice([t2, t5, t7, t9, t10, k0, k2, k5, k7, k10])
+                if True:
+                    transformation = random.choice([t2, t5, t7, t9, t10, k0, k2, k5, k7, k10]) #, weights=[1, 5, 2, 1, 1, 3, 3, 1, 1, 1])
+                    #transformation = random.choice([t2, t5, t7, t9, t10, k0])
                     chord = transformation(chord)
                     voiceleadingNode.chord(chord, cumulativeTime)
                 measure = readMeasure(minuetTable[j][i])
                 duration = measure.getScore().getDuration() * tempo
                 measure.getScore().setDuration(duration)
-                rescale = CsoundAC.Rescale()
+                rescale = CsoundAC.Rescale() 
                 rescale.setRescale(CsoundAC.Event.TIME, bool(1), bool(0), cumulativeTime, 0)
                 rescale.setRescale(CsoundAC.Event.INSTRUMENT, bool(1), bool(0), channel, 0)
                 rescale.setRescale(CsoundAC.Event.KEY, bool(1), bool(1), float(bass), 48)
                 rescale.thisown = 0
                 rescale.addChild(measure)
-                print 'Repeat %4d of %4d at %8.3f with %3d notes of duration %7.3f at bass %7.3f...' %(k + 1, repeatCount, cumulativeTime, len(measure.getScore()), duration, bass)
+                print('Repeat %4d of %4d at %8.3f with %3d notes of duration %7.3f at bass %7.3f...' %(k + 1, repeatCount, cumulativeTime, len(measure.getScore()), duration, bass))
                 sequence.addChild(rescale)
                 cumulativeTime = cumulativeTime + duration
-            tempo = random.choice([1/3, 1/2, 2/3, 1, 3/2, 2, 3])
+            #tempo = 1 #random.choice([1/3, 1/2, 2/3, 1, 3/2, 2, 3])
 
 sequence = CsoundAC.Rescale()
 voiceleadingNode = CsoundAC.VoiceleadingNode()
@@ -152,17 +153,23 @@ model.setArtist("Michael Gogins")
 model.setTitle("Cellular, for Computer Piano")
 voiceleadingNode.addChild(sequence);
 model.addChild(voiceleadingNode)
-#model.setConformPitches(bool(1))
 sequence.setRescale(CsoundAC.Event.VELOCITY,   bool(1), bool(1), 60, 12)
 sequence.setRescale(CsoundAC.Event.INSTRUMENT, bool(1), bool(1),  1,  5)
-#sequence.setRescale(CsoundAC.Event.TIME,       bool(1), bool(1),  1, 1700)
+
+# Will want:
+# Steinway
+# Cimbalom
+# Harpsichord
+# Clavichord
+
 buildTrack(voiceleadingNode, sequence, 1, 24)
-buildTrack(voiceleadingNode, sequence, 2, 36)
+buildTrack(voiceleadingNode, sequence, 2, 24)
+buildTrack(voiceleadingNode, sequence, 3, 36)
 buildTrack(voiceleadingNode, sequence, 3, 36)
 buildTrack(voiceleadingNode, sequence, 4, 48)
 buildTrack(voiceleadingNode, sequence, 5, 48)
 
-print 'CREATING CSOUND ORCHESTRA...'
+print('CREATING CSOUND ORCHESTRA...')
 print
 csoundOrchestra = \
 '''
@@ -172,35 +179,93 @@ ksmps           =               128
 nchnls          =               2
 0dbfs           =               1
 
-gi_pianoteq     vstinit         "/home/mkg/Pianoteq\ 6/amd64/Pianoteq\ 6.so", 0
-                vstinfo         gi_pianoteq
+gi_pianoteq1     vstinit         "/home/mkg/Pianoteq\ 6/amd64/Pianoteq\ 6.so", 0
+                vstinfo         gi_pianoteq1
 
-                instr 1, 2, 3, 4, 5, 6
+                instr 1, 2
 i_midichannel   init            0
-                vstnote         gi_pianoteq, i_midichannel, p4, p5, p3
+                vstnote         gi_pianoteq1, i_midichannel, p4, p5, p3
                 prints          "Pianoteq:    Channel: %3d Time: %9.4f Duration: %9.4f Key: %9.4f Velocity: %9.4f\\n", p1, p2, p3, p4, p5
                 endin
 
-                instr PianoOutput
+                instr PianoOutput1
+; Should be "D4 Daily Practice".
+vstprogset gi_pianoteq1, 0
+; Sustain off.
+vstparamset gi_pianoteq1, 0, 0
+; Reverb off.
+vstparamset gi_pianoteq1, 72, 0
 a_blankinput    init            0
-a_left, a_right   vstaudio      gi_pianoteq, a_blankinput, a_blankinput
+a_left, a_right   vstaudio      gi_pianoteq1, a_blankinput, a_blankinput
+a_signal        =               a_left + a_right
+a_left, a_right  pan2            a_signal/3, .9
                 outs            a_left, a_right
                 prints          "PianoOutput: Channel: %3d Time: %9.4f Duration: %9.4f\\n", p1, p2, p3
                 endin
-                alwayson "PianoOutput"
+                alwayson "PianoOutput1"
+
+gi_pianoteq2     vstinit         "/home/mkg/Pianoteq\ 6/amd64/Pianoteq\ 6.so", 0
+                vstinfo         gi_pianoteq2
+
+                instr 3, 4
+i_midichannel   init            0
+                vstnote         gi_pianoteq2, i_midichannel, p4, p5, p3
+                prints          "Pianoteq:    Channel: %3d Time: %9.4f Duration: %9.4f Key: %9.4f Velocity: %9.4f\\n", p1, p2, p3, p4, p5
+                endin
+
+                instr PianoOutput2
+; Should be "D4 Daily Practice".
+vstprogset gi_pianoteq2, 10
+; Sustain off.
+vstparamset gi_pianoteq2, 0, 0
+; Reverb off.
+vstparamset gi_pianoteq2, 72, 0
+a_blankinput    init            0
+a_left, a_right   vstaudio      gi_pianoteq2, a_blankinput, a_blankinput
+a_signal        =               a_left + a_right
+a_left, a_right  pan2            a_signal/2, .1
+                outs            a_left, a_right
+                prints          "PianoOutput: Channel: %3d Time: %9.4f Duration: %9.4f\\n", p1, p2, p3
+                endin
+                alwayson "PianoOutput2"
+
+gi_pianoteq3     vstinit         "/home/mkg/Pianoteq\ 6/amd64/Pianoteq\ 6.so", 0
+                vstinfo         gi_pianoteq3
+
+                instr 5, 6
+i_midichannel   init            0
+                vstnote         gi_pianoteq3, i_midichannel, p4, p5, p3
+                prints          "Pianoteq:    Channel: %3d Time: %9.4f Duration: %9.4f Key: %9.4f Velocity: %9.4f\\n", p1, p2, p3, p4, p5
+                endin
+
+                instr PianoOutput3
+; Should be "D4 Daily Practice".
+vstprogset gi_pianoteq3, 30
+; Sustain off.
+vstparamset gi_pianoteq3, 0, 0
+; Reverb off.
+vstparamset gi_pianoteq3, 72, 0
+a_blankinput    init            0
+a_left, a_right   vstaudio      gi_pianoteq3, a_blankinput, a_blankinput
+a_signal        =               a_left + a_right
+a_left, a_right  pan2            a_signal, .5
+                outs            a_left, a_right
+                prints          "PianoOutput: Channel: %3d Time: %9.4f Duration: %9.4f\\n", p1, p2, p3
+                endin
+                alwayson "PianoOutput3"
 '''
 
-print 'CREATING CSOUND ARRANGEMENT...'
+print('CREATING CSOUND ARRANGEMENT...')
 print
 model.setCsoundOrchestra(csoundOrchestra)
 model.setCsoundCommand(csoundCommand)
 
-print 'RENDERING...'
+print('RENDERING...')
 print
 model.generate()
-print score.getCsoundScore()
+print(score.getCsoundScore())
 score.save(midiFilename)
 model.perform()
 
-print 'FINISHED.'
+print('FINISHED.')
 print
