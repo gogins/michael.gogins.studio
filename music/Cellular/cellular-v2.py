@@ -1,11 +1,6 @@
 '''
-Cellular, for Computer Piano
-
-Copyright (C) 2019 by Michael Gogins
-
-Mozart's musical dice game is taken apart and put back together along the
-lines of Terry Riley's "In C" using Python, and realized using Csound with
-the Pianoteq synthesized piano.
+Copyright (C) 2005 by Michael Gogins.
+All rights reserved.
 '''
 print(__doc__)
 print
@@ -60,7 +55,6 @@ print
 print('CREATING GLOBAL OBJECTS...')
 print
 model = CsoundAC.MusicModel()
-score = model.getScore()
 
 print('RANDOM SEED...')
 print
@@ -70,7 +64,6 @@ print('CREATING MUSIC MODEL...')
 print
 
 minuetTable = {}
-# This is Mozart's original minuet table for his musical dice game.
 minuetTable[ 2] = { 1: 96,  2: 22,  3:141,  4: 41,  5:105,  6:122,  7: 11,  8: 30,  9: 70, 10:121, 11: 26, 12:  9, 13:112, 14: 49, 15:109, 16: 14}
 minuetTable[ 3] = { 1: 32,  2:  6,  3:128,  4: 63,  5:146,  6: 46,  7:134,  8: 81,  9:117, 10: 39, 11:126, 12: 56, 13:174, 14: 18, 15:116, 16: 83}
 minuetTable[ 4] = { 1: 69,  2: 95,  3:158,  4: 13,  5:153,  6: 55,  7:110,  8: 24,  9: 66, 10:139, 11: 15, 12:132, 13: 73, 14: 58, 15:145, 16: 79}
@@ -83,25 +76,35 @@ minuetTable[10] = { 1: 98,  2:142,  3: 42,  4:156,  5: 75,  6:129,  7: 62,  8:12
 minuetTable[11] = { 1:  3,  2: 87,  3:165,  4: 61,  5:135,  6: 47,  7:147,  8: 33,  9:102, 10:  4, 11: 31, 12:164, 13:144, 14: 59, 15:173, 16: 78}
 minuetTable[12] = { 1: 54,  2:130,  3: 10,  4:103,  5: 28,  6: 37,  7:106,  8:  5,  9: 35, 10: 20, 11:108, 12: 92, 13: 12, 14:124, 15: 44, 16:131}
 
+random.seed()
+
+duration = 1.25
+repetitions = []
+for i in xrange(16 * 4):
+    repetitions.append(1 + int(random.random() * 6.0))     
+
+for i in xrange(6):
+    random.shuffle(repetitions)
+    print repetitions
+    
 def reverse_enumeration(L):
    for index in reversed(xrange(len(L))):
-      yield index, L[index]
+      yield index, L[index]    
 
 def readMeasure(number):
     scoreNode = CsoundAC.ScoreNode()
+    score_ = scoreNode.getScore()
     scoreNode.thisown = 0
     filename = 'M' + str(number) + '.mid'
-    score = scoreNode.getScore()
-    score.load(filename)
+    print 'Reading "%s"' % (filename)
+    score_.load(filename)
     # Remove false notes.
-    for i, event in reverse_enumeration(score):
+    for i, event in reverse_enumeration(score_):
         if event.getChannel() < 0:
-            score.remove(i)
-    #print(score.getCsoundScore()
-    score.setDuration(random.choice([2, 3, 4, 6, 8]) / 1.5)
-    print('Read "%s" with duration %9.4f.' % (filename, score.getDuration()))
+            score_.remove(i)
+    print(score_.getCsoundScore())
     return scoreNode
-    
+
 t2  = lambda chord : chord.T(2).eOP()
 t5  = lambda chord : chord.T(5).eOP()
 t7  = lambda chord : chord.T(7).eOP()
@@ -113,56 +116,67 @@ k5  = lambda chord : chord.K().eOP().T(5).eOP()
 k7  = lambda chord : chord.K().eOP().T(7).eOP()
 k10 = lambda chord : chord.K().eOP().T(10).eOP()
 
-chord = CsoundAC.chordForName("BM")
+chord = CsoundAC.chordForName("Db9")
 print("Chord:\n{}".format(chord.information()))
 print("k0:\n{}".format(k0(chord).information()))
 
-def buildTrack(voiceleadingNode, sequence, channel, bass):
+def buildTrack(voiceleadingNode, sequence, channel, gain, timeoffset, pan, add=0.0):
     global chord
-    print('Building track for channel %3d bass %3d...' % (channel, bass))
-    cumulativeTime = 1.0
-    tempo = 2
-    for i in xrange(1, 16):
-        factor = random.choice([1., 2., 3.])
+    print 'Building track for channel %3d gain %3d...' % (channel, gain)
+    cumulativeTime = timeoffset
+    random.shuffle(repetitions)
+    m = 0
+    for i in xrange(0, 16):
         for j in xrange(2, 6):
-            repeatCount = 1 + int(random.random() * 12)
-            tempo = random.randrange(100, 300, 25) / 100.
+            if True:
+                transformation = random.choice([t2, t5, t7, t9, t10, k0, k2, k5, k7, k10]) #, weights=[1, 5, 2, 1, 1, 3, 3, 1, 1, 1])
+                #transformation = random.choice([t2, t5, t7, t9, t10, k0])
+                chord = transformation(chord)
+                voiceleadingNode.chord(chord, cumulativeTime)
+            repeatCount = repetitions[m]
+            m = m + 1
             for k in xrange(repeatCount):
-                if True:
-                    transformation = random.choice([t2, t5, t7, t9, t10, k0, k2, k5, k7, k10]) #, weights=[1, 5, 2, 1, 1, 3, 3, 1, 1, 1])
-                    #transformation = random.choice([t2, t5, t7, t9, t10, k0])
-                    chord = transformation(chord)
-                    voiceleadingNode.chord(chord, cumulativeTime)
-                measure = readMeasure(minuetTable[j][i])
-                duration = measure.getScore().getDuration() * tempo
-                measure.getScore().setDuration(duration)
-                rescale = CsoundAC.Rescale() 
-                rescale.setRescale(CsoundAC.Event.TIME, bool(1), bool(0), cumulativeTime, 0)
-                rescale.setRescale(CsoundAC.Event.INSTRUMENT, bool(1), bool(0), channel, 0)
-                rescale.setRescale(CsoundAC.Event.KEY, bool(1), bool(1), float(bass), 48)
+                measure = readMeasure(minuetTable[j][i+1])
+                rescale = CsoundAC.Rescale()
+                rescale.setRescale(CsoundAC.Event.TIME,         bool(1), bool(0), cumulativeTime, 0)
+                rescale.setRescale(CsoundAC.Event.INSTRUMENT,   bool(1), bool(1), channel, 0)
+                rescale.setRescale(CsoundAC.Event.VELOCITY,     bool(1), bool(0), gain, 0)
+                rescale.setRescale(CsoundAC.Event.PAN,          bool(1), bool(1), pan, 0)
+                rescale.setRescale(CsoundAC.Event.KEY,          bool(1), bool(0), add, 0)
                 rescale.thisown = 0
                 rescale.addChild(measure)
-                print('Repeat %4d of %4d at %8.3f with %3d notes of duration %7.3f at bass %7.3f...' %(k + 1, repeatCount, cumulativeTime, len(measure.getScore()), duration, bass))
+                print 'Repeat %4d of %4d at %8.3f with %3d notes of duration %7.3f...' %(k + 1, repeatCount, cumulativeTime, len(measure.getScore()), duration)
                 sequence.addChild(rescale)
                 cumulativeTime = cumulativeTime + duration
-            #tempo = 1 #random.choice([1/3, 1/2, 2/3, 1, 3/2, 2, 3])
 
-sequence = CsoundAC.Rescale()
+print 'Generating score...'
+filename = 'track2'
+csound.setFilename(filename)
+model.setConformPitches(True)
 voiceleadingNode = CsoundAC.VoiceleadingNode()
-model.setAuthor("Michael Gogins")
-model.setArtist("Michael Gogins")
-model.setTitle("Cellular, for Computer Piano")
-voiceleadingNode.addChild(sequence);
 model.addChild(voiceleadingNode)
-sequence.setRescale(CsoundAC.Event.VELOCITY,   bool(1), bool(1), 60, 12)
-sequence.setRescale(CsoundAC.Event.INSTRUMENT, bool(1), bool(1),  1,  5)
+rescale = CsoundAC.Rescale()
+rescale.thisown = 0
+voiceleadingNode.addChild(rescale)
+rescale.setRescale(CsoundAC.Event.KEY,        bool(1), bool(0), 36, 60)
+rescale.setRescale(CsoundAC.Event.VELOCITY,   bool(1), bool(1), 45, 18)
+#rescale.setRescale(CsoundAC.Event.PITCHES,    bool(1), bool(1), CsoundAC.Conversions_nameToM("Db major"), 0)
+# rescale.setRescale(CsoundAC.Event.TIME,       bool(1), bool(1),  0, 700)
+rescale.setRescale(CsoundAC.Event.DURATION,   bool(1), bool(1),  0.25, 1.5)
 
-buildTrack(voiceleadingNode, sequence, 1, 24)
-buildTrack(voiceleadingNode, sequence, 2, 24)
-buildTrack(voiceleadingNode, sequence, 3, 36)
-buildTrack(voiceleadingNode, sequence, 4, 36)
-buildTrack(voiceleadingNode, sequence, 5, 48)
-buildTrack(voiceleadingNode, sequence, 6, 48)
+timeoffset = (duration * 6.0) / 4.0
+#instr 1 ; FluidSynth Steinway 51
+#instr 2 ; FluidSynth General MIDI 52
+#instr 3 ; Harpsichord, James Kelley 7
+#instr 4 ; Heavy metal model, Perry Cook 8 
+#instr 5,6 ; Xing by Andrew Horner 9
+#for instrument in [51,53,39,8,9]: #in xrange(55, 56):
+
+buildTrack(voiceleadingNode, rescale, 1, 0, timeoffset * 0.0, 0)
+buildTrack(voiceleadingNode, rescale, 1, 0, timeoffset * 0.0, 0)
+buildTrack(voiceleadingNode, rescale, 2, 8, timeoffset * 2.0,-.75, 12.0)
+buildTrack(voiceleadingNode, rescale, 2, 8, timeoffset * 2.0,.75, 12.0)
+buildTrack(voiceleadingNode, rescale, 3, 16, timeoffset * 2.0,-.5, 24.0)
 
 print('CREATING CSOUND ORCHESTRA...')
 print
@@ -258,9 +272,51 @@ model.setCsoundCommand(csoundCommand)
 print('RENDERING...')
 print
 model.generate()
-print(score.getCsoundScore())
-score.save(midiFilename)
+print(model.getScore().getCsoundScore())
+#score.save(midiFilename)
 model.perform()
 
 print('FINISHED.')
 print
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
