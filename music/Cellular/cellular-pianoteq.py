@@ -99,7 +99,7 @@ def readMeasure(number):
             score.remove(i)
     #print(score.getCsoundScore()
     score.setDuration(random.choice([2, 3, 4, 6, 8]) / 1.5)
-    print('Read "%s" with duration %9.4f.' % (filename, score.getDuration()))
+    #print('Read "%s" with duration %9.4f.' % (filename, score.getDuration()))
     return scoreNode
     
 t2  = lambda chord : chord.T(2).eOP()
@@ -113,13 +113,11 @@ k5  = lambda chord : chord.K().eOP().T(5).eOP()
 k7  = lambda chord : chord.K().eOP().T(7).eOP()
 k10 = lambda chord : chord.K().eOP().T(10).eOP()
 
-chord = CsoundAC.chordForName("BM")
-print("Chord:\n{}".format(chord.information()))
-print("k0:\n{}".format(k0(chord).information()))
 
 def buildTrack(voiceleadingNode, sequence, channel, bass):
-    global chord
-    print('Building track for channel %3d bass %3d...' % (channel, bass))
+    chord = CsoundAC.chordForName("DbM9")
+    scale = CsoundAC.Scale("Db major")
+    #print('Building track for channel %3d bass %3d...' % (channel, bass))
     cumulativeTime = 1.0
     tempo = 2
     for i in xrange(1, 16):
@@ -128,10 +126,12 @@ def buildTrack(voiceleadingNode, sequence, channel, bass):
             repeatCount = 1 + int(random.random() * 12)
             tempo = random.randrange(100, 300, 25) / 100.
             for k in xrange(repeatCount):
-                if True:
-                    transformation = random.choice([t2, t5, t7, t9, t10, k0, k2, k5, k7, k10]) #, weights=[1, 5, 2, 1, 1, 3, 3, 1, 1, 1])
-                    #transformation = random.choice([t2, t5, t7, t9, t10, k0])
-                    chord = transformation(chord)
+                if channel == 1:
+                    # Repetitions are weights.
+                    progression = random.choice([-2, -4, -6, -2, -4, -6, -8, -10, -12, -2, -4, -6, -8, -10, -12, 1, 2, 3, 4, 6, 6, 6])
+                    #chord = transformation(chord)
+                    chord = scale.transpose(chord, progression)
+                    print("{:9.4f} by {:4}: {}".format(cumulativeTime, progression, chord.eOP().name()))
                     voiceleadingNode.chord(chord, cumulativeTime)
                 measure = readMeasure(minuetTable[j][i])
                 duration = measure.getScore().getDuration() * tempo
@@ -142,7 +142,7 @@ def buildTrack(voiceleadingNode, sequence, channel, bass):
                 rescale.setRescale(CsoundAC.Event.KEY, bool(1), bool(1), float(bass), 48)
                 rescale.thisown = 0
                 rescale.addChild(measure)
-                print('Repeat %4d of %4d at %8.3f with %3d notes of duration %7.3f at bass %7.3f...' %(k + 1, repeatCount, cumulativeTime, len(measure.getScore()), duration, bass))
+                #print('Repeat %4d of %4d at %8.3f with %3d notes of duration %7.3f at bass %7.3f...' %(k + 1, repeatCount, cumulativeTime, len(measure.getScore()), duration, bass))
                 sequence.addChild(rescale)
                 cumulativeTime = cumulativeTime + duration
             #tempo = 1 #random.choice([1/3, 1/2, 2/3, 1, 3/2, 2, 3])
