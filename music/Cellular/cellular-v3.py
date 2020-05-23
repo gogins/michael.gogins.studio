@@ -429,6 +429,7 @@ gk_MVerb_print init 1
 gk_MVerb_DFact init .5
 
 gk_ChebyshevMelody_level init 5
+gk_ZakianFlute_level init 10
 gk_PianoOutPianoteq_level init -3
 gk_FMWaterBell_level init 10
 gk_PianoOutFluidsynth_level init -1
