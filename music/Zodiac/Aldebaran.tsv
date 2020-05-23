@@ -1,0 +1,49 @@
+#
+#   VizieR Astronomical Server: http://cdsweb.u-strasbg.fr	2004-12-14T03:07:01
+#   Explanations and Statistics of UCDs:			See LINK below
+#   In case of problem, please report to:	question@simbad.u-strasbg.fr
+#    (link)
+#
+#Coosys	J2000:	eq_FK5 2000
+#INFO	Ref=Vxml7196
+#INFO	Target=068.980161+16.509301,bm=60.000000/60.
+
+#RESOURCE=1280
+#Name: I/280A
+#Title:	All-sky Compiled Catalogue of 2.5 million stars (Kharchenko 2001)
+#Table	I_280A_ascc01:
+#Name: I/280A/ascc01
+#Title:	The all-sky catalogue of 2.5million stars
+#Coosys	J2000_1991.250:	eq_FK5 2000_1991.250
+#Column	recno	(I8)	Record number within the original table (starting from 1)        (link)	[ucd=RECORD]
+#Column	RAJ2000	(F12.8)	Right Ascension J2000.0, epoch 1991.25        (link)	[ucd=POS_EQ_RA_MAIN]
+#Column	DEJ2000	(F12.8)	Declination J2000.0, epoch 1991.25	[ucd=POS_EQ_DEC_MAIN]
+#Column	Plx	(F7.2)	? Trigonometric parallax	[ucd=POS_PARLX_TRIG]
+#Column	e_Plx	(F6.2)	? Standard error in Plx	[ucd=ERROR]
+#Column	pmRA	(F8.2)	Proper Motion in RA*cos(DE)	[ucd=POS_EQ_PMRA]
+#Column	pmDE	(F8.2)	Proper Motion in Declination	[ucd=POS_EQ_PMDEC]
+#Column	Bmag	(F6.3)	? B magnitude in Johnson system	[ucd=PHOT_JHN_B]
+#Column	Vmag	(F6.3)	? V magnitude in Johnson system	[ucd=PHOT_JHN_V]
+#Column	SpType	(A12)	Spectral type in MK or HD system	[ucd=SPECT_TYPE_MK]
+#Column	TYC1	(I4)	? TYC1 number from Tycho-2        (link)	[ucd=ID_ALTERNATIVE]
+#Column	TYC2	(I5)	? TYC2 number from Tycho-2        (link)	[ucd=ID_ALTERNATIVE]
+#Column	TYC3	(I1)	? TYC3 number from Tycho-2	[ucd=ID_ALTERNATIVE]
+
+recno	RAJ2000	DEJ2000	Plx	e_Plx	pmRA	pmDE	Bmag	Vmag	SpType	TYC1	TYC2	TYC3
+	deg	deg	mas	mas	mas/yr	mas/yr	mag	mag
+--------	------------	------------	-------	------	--------	--------	------	------	------------	----	-----	-
+  838711	 68.98000196	+16.50976164	  49.65	  0.94	   63.01	 -189.51	 2.511	 0.945	K5III       	1266	 1416	1
+  838708	 68.95870504	+16.41690518	 -16.29	 54.40	  -35.23	  -17.52	11.416	10.588	            	1266	  541	1
+  838697	 68.87884350	+16.48804100	       	      	  -11.20	   -8.37	      	11.449
+  838691	 68.78252663	+16.47314511	       	      	    4.31	  -27.30	11.268	10.829	            	1266	   11	1
+  838725	 69.12909443	+16.33196608	   1.60	 21.20	   -1.26	  -14.59	10.907	 9.398	            	1266	  455	1
+  838731	 69.16777134	+16.27824364	       	      	   -7.08	   -4.30	11.664	11.032	            	1266	 1080	1
+  838726	 69.14290406	+16.78682094	   9.39	 21.50	  -13.71	   -6.15	 9.871	 9.220	            	1266	   23	1
+  838668	 68.62487700	+16.51367600	       	      	  -11.52	  -15.55	11.063	10.870	F
+  838665	 68.62187700	+16.51959000	       	      	  -15.23	   -7.99	11.563	11.539
+  838722	 69.12488321	+16.18122866	  62.09	 46.40	    0.44	  -39.86	11.009	10.364	            	1266	  227	1
+  838699	 68.89075668	+16.14478108	  -3.70	  6.80	   13.67	  -33.90	 8.798	 7.697	G5          	1266	  987	1
+  838698	 68.88893110	+16.96341827	  29.10	 33.90	   47.67	  -37.27	10.851	10.219	F8          	1270	   17	1
+  838658	 68.50913843	+16.73934398	 -21.50	 19.10	   -0.82	   -4.50	 9.898	 9.544	A0          	1266	  972	1
+  838685	 68.74422677	+16.99488119	   8.05	  0.93	   -3.95	  -81.14	 8.464	 7.177	K3III       	1270	  189	1
+

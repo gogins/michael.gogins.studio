@@ -20,21 +20,22 @@ import string
 import sys
 import traceback
 
+print('CREATING GLOBAL OBJECTS...')
+print
+model = CsoundAC.MusicModel()
+score = model.getScore()
+
 print('CREATING FILENAMES...')
 print
 scriptFilename = sys.argv[0]
 print('Full Python script:     %s' % scriptFilename)
 title, exte = os.path.splitext(os.path.basename(scriptFilename))
-print('Base Python script:     %s' % title)
-directory = os.path.dirname(scriptFilename)
-if len(directory):
-    print('Working directory:      %s' % directory)
-    os.chdir(directory)
-print('Working directory:      %s' % directory)
-orcFilename = title + '.orc'
-midiFilename = title + '.mid'
-print('MIDI filename:          %s' % midiFilename)
-soundfileName = title + '.wav'
+model.setTitle(title)
+model.setArtist("Michael Gogins")
+model.setAuthor("Michael Gogins")
+model.setYear("2020")
+model.generateAllNames()
+soundfileName = model.getOutputSoundfileFilepath()
 print('Soundfile name:         %s' % soundfileName)
 dacName = 'dac:plughw:1,0'
 print('Audio output name:      %s' % dacName)
@@ -45,7 +46,7 @@ print
 print('Set "rendering" to:     "soundfile" or "audio".')
 print('Set "playback" to:      True (default) or False.')
 print
-rendering = 'audio'
+rendering = 'soundfile'
 playback = True
 print('Rendering option:       %s' % rendering)
 print('Play after rendering:   %s' % playback)
@@ -56,11 +57,6 @@ commandsForRendering = {
 csoundCommand = commandsForRendering[rendering]
 print('Csound command line:    %s' % csoundCommand)
 print
-
-print('CREATING GLOBAL OBJECTS...')
-print
-model = CsoundAC.MusicModel()
-score = model.getScore()
 
 print('RANDOM SEED...')
 print
@@ -156,9 +152,6 @@ def buildTrack(voiceleadingNode, sequence, channel, bass, time_offset, pan):
 
 sequence = CsoundAC.Rescale()
 voiceleadingNode = CsoundAC.VoiceleadingNode()
-model.setAuthor("Michael Gogins")
-model.setArtist("Michael Gogins")
-model.setTitle("Cellular")
 voiceleadingNode.addChild(sequence);
 model.addChild(voiceleadingNode)
 sequence.setRescale(CsoundAC.Event.VELOCITY,   bool(1), bool(1), 60, 12)
@@ -429,7 +422,7 @@ gk_MVerb_print init 1
 gk_MVerb_DFact init .5
 
 gk_ChebyshevMelody_level init 5
-gk_ZakianFlute_level init 10
+gk_ZakianFlute_level init 8
 gk_PianoOutPianoteq_level init -3
 gk_FMWaterBell_level init 10
 gk_PianoOutFluidsynth_level init -1
@@ -449,8 +442,9 @@ model.setCsoundCommand(csoundCommand)
 print('RENDERING...')
 print
 model.generate()
-score.save(midiFilename)
-model.perform()
+score.save(model.getMidifileFilepath())
+model.performMaster()
+model.translateMaster()
 
 print('FINISHED.')
 print

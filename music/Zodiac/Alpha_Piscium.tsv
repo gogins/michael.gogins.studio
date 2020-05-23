@@ -1,0 +1,63 @@
+#
+#   VizieR Astronomical Server: http://cdsweb.u-strasbg.fr	2004-12-14T03:04:59
+#   Explanations and Statistics of UCDs:			See LINK below
+#   In case of problem, please report to:	question@simbad.u-strasbg.fr
+#    (link)
+#
+#Coosys	J2000:	eq_FK5 2000
+#INFO	Ref=Vxml6524
+#INFO	Target=030.511751+02.763759,bm=60.000000/60.
+
+#RESOURCE=1280
+#Name: I/280A
+#Title:	All-sky Compiled Catalogue of 2.5 million stars (Kharchenko 2001)
+#Table	I_280A_ascc01:
+#Name: I/280A/ascc01
+#Title:	The all-sky catalogue of 2.5million stars
+#Coosys	J2000_1991.250:	eq_FK5 2000_1991.250
+#Column	recno	(I8)	Record number within the original table (starting from 1)        (link)	[ucd=RECORD]
+#Column	RAJ2000	(F12.8)	Right Ascension J2000.0, epoch 1991.25        (link)	[ucd=POS_EQ_RA_MAIN]
+#Column	DEJ2000	(F12.8)	Declination J2000.0, epoch 1991.25	[ucd=POS_EQ_DEC_MAIN]
+#Column	Plx	(F7.2)	? Trigonometric parallax	[ucd=POS_PARLX_TRIG]
+#Column	e_Plx	(F6.2)	? Standard error in Plx	[ucd=ERROR]
+#Column	pmRA	(F8.2)	Proper Motion in RA*cos(DE)	[ucd=POS_EQ_PMRA]
+#Column	pmDE	(F8.2)	Proper Motion in Declination	[ucd=POS_EQ_PMDEC]
+#Column	Bmag	(F6.3)	? B magnitude in Johnson system	[ucd=PHOT_JHN_B]
+#Column	Vmag	(F6.3)	? V magnitude in Johnson system	[ucd=PHOT_JHN_V]
+#Column	SpType	(A12)	Spectral type in MK or HD system	[ucd=SPECT_TYPE_MK]
+#Column	TYC1	(I4)	? TYC1 number from Tycho-2        (link)	[ucd=ID_ALTERNATIVE]
+#Column	TYC2	(I5)	? TYC2 number from Tycho-2        (link)	[ucd=ID_ALTERNATIVE]
+#Column	TYC3	(I1)	? TYC3 number from Tycho-2	[ucd=ID_ALTERNATIVE]
+
+recno	RAJ2000	DEJ2000	Plx	e_Plx	pmRA	pmDE	Bmag	Vmag	SpType	TYC1	TYC2	TYC3
+	deg	deg	mas	mas	mas/yr	mas/yr	mag	mag
+--------	------------	------------	-------	------	--------	--------	------	------	------------	----	-----	-
+ 1097153	 30.51166929	+02.76376048	  23.45	  1.05	   35.57	   -2.19	 4.056	 4.077	A2          	  40	 1338	1
+ 1097152	 30.51115344	+02.76383790	  23.45	  1.05	   36.23	  -17.05	 5.325	 5.095	A2          	  40	 1338	2
+ 1097169	 30.61128895	+02.81587955	  20.76	  1.27	   37.56	   -9.98	 8.831	 8.178	F8          	  40	  236	1
+ 1097144	 30.45684669	+02.87191989	  13.40	  1.32	  -69.02	 -202.97	 9.103	 8.551	G0          	  40	  272	1
+ 1097164	 30.57800412	+02.58832742	       	      	    2.42	  -12.09	11.769	11.475	            	  40	   33	1
+ 1097178	 30.67219815	+02.93495634	       	      	   26.52	   -8.59	11.946	10.768	            	  40	  319	1
+ 1097189	 30.75283500	+02.76243118	   3.77	  1.29	   14.75	   -3.30	 9.696	 8.101	K0          	  40	  203	1
+ 1097147	 30.48807364	+02.48803082	       	      	    5.52	  -16.99	11.891	11.146	            	  37	    5	1
+ 1097177	 30.67157835	+02.47957340	       	      	   24.02	   -9.09	12.741	12.444	            	  37	   55	1
+ 1097207	 30.84008996	+02.83168740	  16.29	 55.50	    6.17	    2.80	11.909	10.891	            	  40	  250	1
+ 1097204	 30.83324805	+02.60964457	  -8.80	 35.70	    1.71	  -15.56	11.250	10.642	            	  40	   65	1
+ 1097104	 30.15908850	+02.84425000	       	      	   14.50	    8.07	      	12.759
+ 1097146	 30.47912256	+03.12518806	   4.90	 15.89	   92.63	  -48.46	 9.654	 9.194	G0          	  40	  439	1
+ 1097213	 30.87754549	+02.78628513	       	      	    1.82	  -19.69	11.797	11.209	            	  40	  219	1
+ 1097107	 30.18221808	+02.50107895	       	      	    4.41	   -7.21	12.363	11.398	            	  40	    5	1
+ 1097112	 30.21601477	+02.44831840	-108.09	 44.09	  -34.96	  -25.55	11.542	10.730	            	  37	  100	1
+ 1097156	 30.51410437	+02.32232611	       	      	    3.92	  -12.49	13.387	12.018	            	  37	  302	1
+ 1097205	 30.83640815	+03.09039381	       	      	   21.82	  -10.49	12.972	12.695	            	  40	  418	1
+ 1097171	 30.63484115	+02.30568409	  71.19	 60.20	   42.66	   51.92	11.326	10.540	            	  37	  326	1
+ 1097198	 30.78255615	+03.16293957	  -5.00	 20.70	   29.04	  -39.89	10.191	 9.632	F8          	  40	  392	1
+ 1097176	 30.66803340	+02.29936626	       	      	   -3.47	    1.00	12.718	12.461	            	  37	  341	1
+ 1097214	 30.87980920	+02.43942875	       	      	  119.32	   49.20	12.105	11.423	            	  37	  109	1
+ 1097117	 30.23065006	+03.18249353	  23.60	 31.79	   17.96	   -1.89	10.948	10.436	F8          	  40	  357	1
+ 1097208	 30.84372644	+02.36716248	       	      	   21.82	   30.10	12.339	11.600	            	  37	  218	1
+ 1097232	 30.98910514	+02.54711143	 -13.89	 33.20	   -3.68	  -10.70	11.143	10.286	            	  40	   47	1
+ 1097119	 30.24222750	+03.25904700	       	      	    5.60	  -12.22	      	12.458
+ 1097092	 30.03760293	+03.09763527	  31.95	  0.95	  231.15	 -253.55	 6.501	 5.874	G2IV        	  40	 1337	1
+ 1097221	 30.91742118	+02.28949007	       	      	   76.02	  -42.69	12.500	11.547	            	  37	  351	1
+
