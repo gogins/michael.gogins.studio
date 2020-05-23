@@ -50,8 +50,8 @@ playback = True
 print('Rendering option:       %s' % rendering)
 print('Play after rendering:   %s' % playback)
 commandsForRendering = {
-    'soundfile':    'csound -r 48000 -k 128 -m195 -+msg_color=0 -RWZdfo %s' % (soundfileName),
-    'audio':        'csound -r 48000 -k 128 -m0   -+msg_color=0 -o%s' % (dacName),
+    'soundfile':    'csound -d -r 48000 -k 128 -m195 -+msg_color=0 -RWZdfo %s' % (soundfileName),
+    'audio':        'csound -d -r 48000 -k 128 -m195 -+msg_color=0 -o%s' % (dacName),
 }
 csoundCommand = commandsForRendering[rendering]
 print('Csound command line:    %s' % csoundCommand)
@@ -69,8 +69,8 @@ random.Random(29389)
 print('CREATING MUSIC MODEL...')
 print
 
-minuetTable = {}
 # This is Mozart's original minuet table for his musical dice game.
+minuetTable = {}
 minuetTable[ 2] = { 1: 96,  2: 22,  3:141,  4: 41,  5:105,  6:122,  7: 11,  8: 30,  9: 70, 10:121, 11: 26, 12:  9, 13:112, 14: 49, 15:109, 16: 14}
 minuetTable[ 3] = { 1: 32,  2:  6,  3:128,  4: 63,  5:146,  6: 46,  7:134,  8: 81,  9:117, 10: 39, 11:126, 12: 56, 13:174, 14: 18, 15:116, 16: 83}
 minuetTable[ 4] = { 1: 69,  2: 95,  3:158,  4: 13,  5:153,  6: 55,  7:110,  8: 24,  9: 66, 10:139, 11: 15, 12:132, 13: 73, 14: 58, 15:145, 16: 79}
@@ -86,6 +86,15 @@ minuetTable[12] = { 1: 54,  2:130,  3: 10,  4:103,  5: 28,  6: 37,  7:106,  8:  
 def reverse_enumeration(L):
    for index in reversed(range(len(L))):
       yield index, L[index]
+      
+duration = 1.5
+repetitions = []
+for i in range(16 * 4):
+    repetitions.append(1 + int(random.random() * 6.0))     
+
+for i in range(6):
+    random.shuffle(repetitions)
+    print("repetitions: {}".format(repetitions))
 
 def readMeasure(number):
     scoreNode = CsoundAC.ScoreNode()
@@ -97,42 +106,48 @@ def readMeasure(number):
     for i, event in reverse_enumeration(score):
         if event.getChannel() < 0:
             score.remove(i)
-    #print(score.getCsoundScore()
     #score.setDuration(random.choice([2, 3, 4, 6, 8]))
-    #print('Read "%s" with duration %9.4f.' % (filename, score.getDuration()))
+    #print('Read "%s" with duration %9.3f.' % (filename, score.getDuration()))
     return scoreNode
 
-def buildTrack(voiceleadingNode, sequence, channel, bass):
-    chord = CsoundAC.chordForName("DbM7")
-    scale = CsoundAC.Scale("Db major")
+def buildTrack(voiceleadingNode, sequence, channel, bass, time_offset, pan):
+    global repetitions
+    tempo = 1.5
+    scale = CsoundAC.Scale("A major")
+    chord = scale.chord(1, 4)
     #print('Building track for channel %3d bass %3d...' % (channel, bass))
-    cumulativeTime = 1.0
-    tempo = 2
+    cumulativeTime = 1.0 + time_offset
     for i in range(1, 16):
-        factor = random.choice([1., 2., 3.])
+        m = 0
         for j in range(2, 6):
-            repeatCount = 1 + int(random.random() * 12)
-            #tempo = random.randrange(100, 300, 25) / 30.
+            repeatCount = repetitions[m]
+            m = m + 1
+            #tempo = random.randrange(100, 300, 25) / 100.
             scales = scale.modulations(chord)
-            if (len(scales) > 0):
+            scale_count = len(scales)
+            random_index = random.randint(0, scale_count)
+            if (scale_count > 1):
+                index = random.randint(0, scale_count - 1)
+                print("index: {}".format(index))
                 for s in scales:
-                    print("Possible modulation: {} {}".format(s.toString(), s.name()))
+                    print("Possible modulation at: {:9.4f} {} {}".format(cumulativeTime, s.toString(), s.name()))
                     scale = s
             for k in range(repeatCount):
-                if channel == 1:
+                if channel == 2:
                     # Repetitions are weights.
-                    progression = random.choice([-2, -2, -2, -4, 4, 3])
+                    progression = random.choice([-2, -2, -2, -4, -10, 4, 1])
                     #chord = transformation(chord)
                     chord = scale.transpose_degrees(chord, progression)
                     print("{:9.4f} by {:4}: {}".format(cumulativeTime, progression, chord.eOP().name()))
                     voiceleadingNode.chord(chord, cumulativeTime)
-                measure = readMeasure(minuetTable[j][i])
+                measure = readMeasure(minuetTable[j][i+1])
                 duration = measure.getScore().getDuration() * tempo
                 measure.getScore().setDuration(duration)
                 rescale = CsoundAC.Rescale() 
                 rescale.setRescale(CsoundAC.Event.TIME, bool(1), bool(0), cumulativeTime, 0)
                 rescale.setRescale(CsoundAC.Event.INSTRUMENT, bool(1), bool(1), channel, 0)
                 rescale.setRescale(CsoundAC.Event.KEY, bool(1), bool(1), float(bass), 48)
+                rescale.setRescale(CsoundAC.Event.PAN, bool(1), bool(0), float(pan), 0)
                 rescale.thisown = 0
                 rescale.addChild(measure)
                 #print('Repeat %4d of %4d at %8.3f with %3d notes of duration %7.3f at bass %7.3f...' %(k + 1, repeatCount, cumulativeTime, len(measure.getScore()), duration, bass))
@@ -143,27 +158,20 @@ sequence = CsoundAC.Rescale()
 voiceleadingNode = CsoundAC.VoiceleadingNode()
 model.setAuthor("Michael Gogins")
 model.setArtist("Michael Gogins")
-model.setTitle("Cellular, for Computer Piano")
+model.setTitle("Cellular")
 voiceleadingNode.addChild(sequence);
 model.addChild(voiceleadingNode)
 sequence.setRescale(CsoundAC.Event.VELOCITY,   bool(1), bool(1), 60, 12)
-#sequence.setRescale(CsoundAC.Event.INSTRUMENT, bool(1), bool(1),  1,  5)
+#sequence.setRescale(CsoundAC.Event.INSTRUMENT, bool(1), bool(1),  2,  4.99)
 
-'''
-buildTrack(voiceleadingNode, sequence,  1, 24)
-buildTrack(voiceleadingNode, sequence, 41, 24)
-buildTrack(voiceleadingNode, sequence, 27, 36)
-buildTrack(voiceleadingNode, sequence, 44, 36)
-buildTrack(voiceleadingNode, sequence, 53, 48)
-buildTrack(voiceleadingNode, sequence, 55, 48)
-'''
-buildTrack(voiceleadingNode, sequence, 17, 24)
-buildTrack(voiceleadingNode, sequence, 29, 24)
-buildTrack(voiceleadingNode, sequence, 17, 36)
-buildTrack(voiceleadingNode, sequence,  1, 36)
-buildTrack(voiceleadingNode, sequence, 17, 48)
-buildTrack(voiceleadingNode, sequence, 29, 48)
+timeoffset = (duration * 6.0) / 4.0
 
+buildTrack(voiceleadingNode, sequence,  2, 34, timeoffset * 0.0, 1/7)
+buildTrack(voiceleadingNode, sequence, 56, 34, timeoffset * 1.0, 2/7)
+buildTrack(voiceleadingNode, sequence, 27, 34, timeoffset * 2.0, 3/7)
+buildTrack(voiceleadingNode, sequence, 29, 34, timeoffset * 4.0, 4/7)
+buildTrack(voiceleadingNode, sequence, 17, 34, timeoffset * 5.0, 5/7)
+buildTrack(voiceleadingNode, sequence,  1, 34, timeoffset * 3.0, 6/7)
 
 print('CREATING CSOUND ORCHESTRA...')
 print
@@ -172,13 +180,11 @@ orc = '''
 sr = 48000
 ksmps = 128
 nchnls = 2
-0dbfs = 1
+0dbfs = 3
 
 ; Ensure the same random stream for each rendering.
 ; rand, randh, randi, rnd(x) and birnd(x) are not affected by seed.
 
-;seed 81814
-;seed 818145
 seed 88818145
 
 // These must be initialized here to be in scope for both 
@@ -191,7 +197,7 @@ fluidProgramSelect gi_Fluidsynth, 0, gi_FluidSteinway, 0, 1
 gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 6/amd64/Pianoteq\ 6.so", 0
 vstinfo gi_Pianoteq 
 
-alwayson "PianoteqOut"
+alwayson "PianoOutPianoteq"
 alwayson "PianoOutFluidsynth"
 ;alwayson "MVerb"
 alwayson "ReverbSC"
@@ -402,6 +408,8 @@ connect "ZakianFlute", "outright", "ReverbSC", "inright"
 
 connect "PianoOutFluidsynth", "outleft", "ReverbSC", "inleft"
 connect "PianoOutFluidsynth", "outright", "ReverbSC", "inright"
+connect "PianoOutPianoteq", "outleft", "ReverbSC", "inleft"
+connect "PianoOutPianoteq", "outright", "ReverbSC", "inright"
 connect "PianoOut", "outleft", "ReverbSC", "inleft"
 connect "PianoOut", "outright", "ReverbSC", "inright"
 ;connect "ReverbSC", "outleft", "MVerb", "inleft"
@@ -420,8 +428,13 @@ gk_MVerb_rmax init .0005
 gk_MVerb_print init 1
 gk_MVerb_DFact init .5
 
-gk_PianoOutFluidsynth_level init -7
-gk_Harpsichord_level init -5
+gk_ChebyshevMelody_level init 5
+gk_PianoOutPianoteq_level init -3
+gk_FMWaterBell_level init 10
+gk_PianoOutFluidsynth_level init -1
+gk_Harpsichord_level init 4
+gk_Rhodes_level init 12
+gk_Reverb_wet init 0.25
 gk_Reverb_feedback init 0.85
 gi_Reverb_delay_modulation init 0.0875
 gk_Reverb_frequency_cutoff init 15000
@@ -435,10 +448,6 @@ model.setCsoundCommand(csoundCommand)
 print('RENDERING...')
 print
 model.generate()
-score = model.getScore()
-for i in range(score.size()):
-    score[i].setPan(random.random())
-print(score.getCsoundScore())
 score.save(midiFilename)
 model.perform()
 
