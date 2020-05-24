@@ -322,6 +322,13 @@ connect "Xanadu3", "outright", "ReverbSC", "inright"
 connect "ReverbSC", "outleft", "MasterOutput", "inleft"
 connect "ReverbSC", "outright", "MasterOutput", "inright"
 
+;           Insno           Delay   Pitch mod   Cutoff  Wet
+alwayson    "ReverbSC",     .48,    .005,       16000,  .25
+
+;           Insno Start     Fadeout  Clip
+alwayson    "MasterOutput", .004,    .1,      2
+
+
 opcode NoteOn, ikii, iii
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; General purpose instrument control UDO.
@@ -710,8 +717,8 @@ icutoff = p6
 iwet = p7
 idry = 1 - iwet
 aoutleft, aoutright reverbsc ainleft, ainright, idelay, icutoff, sr, ipitchmod
-outleta "outleft", ainleft
-outleta "outright", ainright
+outleta "outleft", aoutleft
+outleta "outright", aoutright
 endin
 
 instr MasterOutput ; Master output
@@ -742,24 +749,10 @@ prints "instr %4d t %9.4f d %9.4f gain %9.4f fade %9.4f clip %9.4f\\n", p1, p2, 
 endin
 '''
 
-csoundScoreHeader = \
-'''
-; MASTER EFFECT CONTROLS
-
-; Reverb.
-; Insno Start   Dur Delay   Pitch mod   Cutoff  Wet
-i 210   0       -1      0.48    0.005   16000   .25
-
-; Master output.
-; Insno Start   Dur     Gain    Fadeout  Clip
-i 220   0       -1      .004     0.1      2
-'''
-
 print('CREATING CSOUND ARRANGEMENT...')
 print
 
 model.setCsoundOrchestra(csoundOrchestra)
-model.setCsoundScoreHeader(csoundScoreHeader)
 model.setCsoundCommand(csoundCommand)
 
 print('RENDERING...')

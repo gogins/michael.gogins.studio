@@ -3,30 +3,29 @@ Cellular, for Computer Piano
 
 Copyright (C) 2019 by Michael Gogins
 
-Mozart's musical dice game is taken apart and put back together along the
-lines of Terry Riley's "In C" using Python, and realized using Csound with
+Mozart's musical dice game of 1787 is taken apart and put back together along 
+the lines of Terry Riley's "In C" using Python, re-harmonized using the 
+CsoundAC.Scale class, and rendered with a built-in Csound orchestra that 
 the Pianoteq synthesized piano.
 '''
 print(__doc__)
-print
-print('IMPORTING REQUIRED MODULES...')
-print
 import CsoundAC
 import os
 import random
-random.seed(839)
+random.seed(29389)
 import signal
 import string
 import sys
 import traceback
 
-print('CREATING GLOBAL OBJECTS...')
+print('Set "rendering" to:     "soundfile" or "audio".')
 print
+rendering = 'audio'
+
+
 model = CsoundAC.MusicModel()
 score = model.getScore()
 
-print('CREATING FILENAMES...')
-print
 scriptFilename = sys.argv[0]
 print('Full Python script:     %s' % scriptFilename)
 title, exte = os.path.splitext(os.path.basename(scriptFilename))
@@ -41,28 +40,13 @@ dacName = 'dac:plughw:1,0'
 print('Audio output name:      %s' % dacName)
 print
 
-print('SETTING RENDERING AND PLAYBACK OPTIONS...')
-print
-print('Set "rendering" to:     "soundfile" or "audio".')
-print('Set "playback" to:      True (default) or False.')
-print
-rendering = 'soundfile'
-playback = True
 print('Rendering option:       %s' % rendering)
-print('Play after rendering:   %s' % playback)
 commandsForRendering = {
     'soundfile':    'csound -d -r 48000 -k 128 -m195 -+msg_color=0 -RWZdfo %s' % (soundfileName),
-    'audio':        'csound -d -r 48000 -k 128 -m195 -+msg_color=0 -o%s' % (dacName),
+    'audio':        'csound -d -r 48000 -k 128 -m195 -+msg_color=0 -o%s'       % (dacName),
 }
 csoundCommand = commandsForRendering[rendering]
 print('Csound command line:    %s' % csoundCommand)
-print
-
-print('RANDOM SEED...')
-print
-random.Random(29389)
-
-print('CREATING MUSIC MODEL...')
 print
 
 # This is Mozart's original minuet table for his musical dice game.
@@ -82,12 +66,14 @@ minuetTable[12] = { 1: 54,  2:130,  3: 10,  4:103,  5: 28,  6: 37,  7:106,  8:  
 def reverse_enumeration(L):
    for index in reversed(range(len(L))):
       yield index, L[index]
-      
-duration = 1.5
+   
+# These individually varied repetitions are the process used by Terry Riley's 
+# "In C."      
 repetitions = []
 for i in range(16 * 4):
     repetitions.append(1 + int(random.random() * 6.0))     
 
+# However, we ensure that each track lasts as long as the others.
 for i in range(6):
     random.shuffle(repetitions)
     print("repetitions: {}".format(repetitions))
@@ -102,39 +88,46 @@ def readMeasure(number):
     for i, event in reverse_enumeration(score):
         if event.getChannel() < 0:
             score.remove(i)
-    #score.setDuration(random.choice([2, 3, 4, 6, 8]))
-    #print('Read "%s" with duration %9.3f.' % (filename, score.getDuration()))
     return scoreNode
 
 def buildTrack(voiceleadingNode, sequence, channel, bass, time_offset, pan):
     global repetitions
-    tempo = 1.5
-    scale = CsoundAC.Scale("A major")
+    tempo = 3/2
+    scale = CsoundAC.Scale("D major")
     chord = scale.chord(1, 4)
-    #print('Building track for channel %3d bass %3d...' % (channel, bass))
     cumulativeTime = 1.0 + time_offset
     for i in range(1, 16):
         m = 0
         for j in range(2, 6):
             repeatCount = repetitions[m]
             m = m + 1
-            #tempo = random.randrange(100, 300, 25) / 100.
             scales = scale.modulations(chord)
             scale_count = len(scales)
-            random_index = random.randint(0, scale_count)
+            count = 0
+            # When we pick a number of repetitions for a measure, we see if 
+            # if the current chord can be a pivot chord, and if so, we choose 
+            # of the possible modulations to perform.
             if (scale_count > 1):
-                index = random.randint(0, scale_count - 1)
-                print("index: {}".format(index))
+                random_index = random.randint(0, scale_count -1)
                 for s in scales:
                     print("Possible modulation at: {:9.4f} {} {}".format(cumulativeTime, s.toString(), s.name()))
-                    scale = s
+                    if count == random_index:
+                        scale = s  
+                        print("             Chose modulation to: {} {}".format(scale.toString(), scale.name()))
+                    count = count + 1
+                print(" ")
             for k in range(repeatCount):
                 if channel == 2:
-                    # Repetitions are weights.
-                    progression = random.choice([-2, -2, -2, -4, -10, 4, 1])
-                    #chord = transformation(chord)
-                    chord = scale.transpose_degrees(chord, progression)
-                    print("{:9.4f} by {:4}: {}".format(cumulativeTime, progression, chord.eOP().name()))
+                    # Once the scale is chosen, we perform root progressions 
+                    # within the scale; away from the tonic is multiples of -2
+                    # scale degrees, back to the tonic is multiples of 1 scale 
+                    # degree with a preference for 4 (as used by V to I). 
+                    # These root progressions are weighted.
+                    progression = random.choices([-2, -4, -6, -8, -10, -12, 3, 6], [10, 3, 2, 1, 1, 1, 8, 3], k=1)
+                    steps = progression[0]
+                    print("choice: {} steps: {}".format(progression, steps))
+                    chord = scale.transpose_degrees(chord, steps)
+                    print("{:9.4f} by {:4}: {}".format(cumulativeTime, steps, chord.eOP().name()))
                     voiceleadingNode.chord(chord, cumulativeTime)
                 measure = readMeasure(minuetTable[j][i+1])
                 duration = measure.getScore().getDuration() * tempo
@@ -146,7 +139,6 @@ def buildTrack(voiceleadingNode, sequence, channel, bass, time_offset, pan):
                 rescale.setRescale(CsoundAC.Event.PAN, bool(1), bool(0), float(pan), 0)
                 rescale.thisown = 0
                 rescale.addChild(measure)
-                #print('Repeat %4d of %4d at %8.3f with %3d notes of duration %7.3f at bass %7.3f...' %(k + 1, repeatCount, cumulativeTime, len(measure.getScore()), duration, bass))
                 sequence.addChild(rescale)
                 cumulativeTime = cumulativeTime + duration
 
@@ -155,8 +147,8 @@ voiceleadingNode = CsoundAC.VoiceleadingNode()
 voiceleadingNode.addChild(sequence);
 model.addChild(voiceleadingNode)
 sequence.setRescale(CsoundAC.Event.VELOCITY,   bool(1), bool(1), 60, 12)
-#sequence.setRescale(CsoundAC.Event.INSTRUMENT, bool(1), bool(1),  2,  4.99)
 
+duration = 1.5
 timeoffset = (duration * 6.0) / 4.0
 
 buildTrack(voiceleadingNode, sequence,  2, 34, timeoffset * 0.0, 1/7)
@@ -166,8 +158,6 @@ buildTrack(voiceleadingNode, sequence, 29, 34, timeoffset * 4.0, 4/7)
 buildTrack(voiceleadingNode, sequence, 17, 34, timeoffset * 5.0, 5/7)
 buildTrack(voiceleadingNode, sequence,  1, 34, timeoffset * 3.0, 6/7)
 
-print('CREATING CSOUND ORCHESTRA...')
-print
 orc = '''
 ; Change to 96000 with 1 ksmps for final rendering.
 sr = 48000
@@ -426,7 +416,7 @@ gk_ZakianFlute_level init 8
 gk_PianoOutPianoteq_level init -3
 gk_FMWaterBell_level init 10
 gk_PianoOutFluidsynth_level init -1
-gk_Harpsichord_level init 4
+gk_Harpsichord_level init 6
 gk_Rhodes_level init 12
 gk_Reverb_wet init 0.25
 gk_Reverb_feedback init 0.85
@@ -434,17 +424,10 @@ gi_Reverb_delay_modulation init 0.0875
 gk_Reverb_frequency_cutoff init 15000
 '''
 
-print('CREATING CSOUND ARRANGEMENT...')
-print
 model.setCsoundOrchestra(orc)
 model.setCsoundCommand(csoundCommand)
-
-print('RENDERING...')
-print
 model.generate()
 score.save(model.getMidifileFilepath())
 model.performMaster()
-model.translateMaster()
-
-print('FINISHED.')
-print
+if rendering == 'soundfile':
+    model.translateMaster()
