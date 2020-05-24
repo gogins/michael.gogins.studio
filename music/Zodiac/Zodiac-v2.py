@@ -24,15 +24,24 @@ Cage in that I assign different different harmonies to each constellation.
 Thus, my piece is not atonal but quasi-tonal.
 
 Version 2 of this piece uses the CsoundAC.Scale class to generate the 
-harmony.
+harmony. Each of the constellations is in a different key, and within 
+each constellation, there is a separate chord progression.
 
 Copyright (C) 2014-2020 by Michael Gogins.
 All rights reserved.
 
 '''
 print(__doc__)
-print('IMPORTING REQUIRED MODULES...')
+
+print('Set "rendering" to:     "soundfile" or "audio".')
+rendering = 'soundfile'
+print('Rendering option:       \"%s\"' % rendering)
 print
+print('Set dac_name for system.')
+dac_name = "dac:plughw:1,0"
+print('dac_name:               \"{}\"'.format(dac_name))
+print
+
 import CsoundAC
 import os
 import random
@@ -43,46 +52,27 @@ import traceback
 
 CsoundAC.System_setMessageLevel(15)
 
-print('CREATING FILENAMES...')
-print
 scriptFilename = sys.argv[0]
-print('Full Python script:     %s' % scriptFilename)
-title, exte = os.path.splitext(os.path.basename(scriptFilename))
-print('Base Python script:     %s' % title)
-directory = os.path.dirname(scriptFilename)
-if len(directory):
-    print('Working directory:      %s' % directory)
-    os.chdir(directory)
-print('Working directory:      %s' % directory)
-midiFilename = title + '.mid'
-print('MIDI filename:          %s' % midiFilename)
-csdFilename = title + '.csd'
-print('Csound file     :       %s' % csdFilename)
-dacName = 'dac'
-print('Audio output name:      %s' % dacName)
-print
+print('Full Python script:     \"%s\"' % scriptFilename)
+title, ext = os.path.splitext(os.path.basename(scriptFilename))
 
-print('SETTING RENDERING AND PLAYBACK OPTIONS...')
-print
-print('Set "rendering" to:     "master", "preview" (default), or "audio".')
-print('Set "playback" to:      True (default) or False.')
-print
-rendering = 'master'
-playback = True
-print('Rendering option:       %s' % rendering)
-print('Play after rendering:   %s' % playback)
+model = CsoundAC.MusicModel()
+model.setTitle("Zodiac-v2")
+model.setAuthor("Michael Gogins")
+model.setArtist("Michael Gogins")
+print("")
+model.generateAllNames()
+print("")
+CsoundAC.System_setMessageLevel(3)
+
+score = model.getScore()
+
 commandsForRendering = {
-    'cd':       'csound --sample-accurate -r 44100 -k 44100 -+msg_color=0 -dm227 -RWZdfo %s.cd.wav' % (title),
-    'master':   'csound --sample-accurate -r 96000 -k 96000 -+msg_color=0 -dm227 -RWZdfo %s.master.wav' % (title),
-    'preview':  'csound --sample-accurate -r 44100 -k 100   -+msg_color=0 -dm227 -RWZdfo %s.preview.wav' % (title),
-    'audio':    'csound --sample-accurate -r 44100 -k 4410  -+msg_color=0 -dm227 -RWZdfo %s' % (dacName),
+    'soundfile':    '--sample-accurate -r 96000 --ksmps=128 -+msg_color=0 -dm227 -RWZdfo %s' % (model.getOutputSoundfileFilepath()),
+    'audio':        '--sample-accurate -r 48000 --ksmps=128 -+msg_color=0 -dm227 -o %s' % (dac_name),
 }
 csoundCommand = commandsForRendering[rendering]
-print('Csound command line:    %s' % csoundCommand)
-print
 
-print('CREATING GLOBAL OBJECTS...')
-print
 model = CsoundAC.MusicModel()
 model.setTitle("Zodiac-v2")
 model.setAuthor("Michael Gogins")
@@ -90,69 +80,90 @@ model.setArtist("Michael Gogins")
 model.generateAllNames()
 score = model.getScore()
 
-print('CREATING MUSIC MODEL...')
-print
-
-print('Specifying star catalogs to use...')
 sections = []
 # 0         1      2         3     4      5        6              7     8      9
-# Filename, start, duration, bass, range, softest, dynamic range, left, width, pitch-class set
+# Filename, start, duration, bass, range, softest, dynamic range, left, width, list of root progressions
 time = 0.
 duration = 30.
 print('Pisces...')
-sections.append(['Alpha_Piscium.tsv',       time, duration, 36., 60., 60., 15., .1, .9, 'Cm11'])
+sections.append(['Alpha_Piscium.tsv',       time, duration, 36., 60., 60., 15., .1, .9, [-2, -2, -8, 2, -2, 3]])
 time = time + duration + 4
 duration = 30.
 print('Aries...')
-sections.append(['Alpha_Arietis.tsv',       time, duration, 36., 60., 60., 15., .1, .9, 'DM9'])
+sections.append(['Alpha_Arietis.tsv',       time, duration, 36., 60., 60., 15., .1, .9, [-2, -2, -8, 2, -2, 3]])
 time = time + duration + 4
 duration = 30.
 print('Taurus...')
-sections.append(['Aldebaran.tsv',           time, duration, 36., 60., 60., 15., .1, .9, 'Ab9'])
+sections.append(['Aldebaran.tsv',           time, duration, 36., 60., 60., 15., .1, .9, [-2, -12, -8, 2, -2, 3]])
 time = time + duration + 4
 duration = 30.
 print('Gemini...')
-sections.append(['Pollux.tsv',              time, duration, 36., 60., 60., 15., .1, .9, 'Fm7b5'])
+sections.append(['Pollux.tsv',              time, duration, 36., 60., 60., 15., .1, .9, [-2, -2, -8, 2, -2, 3]])
 time = time + duration + 4
 duration = 30.
 print('Cancer...')
-sections.append(['Alpha_Cancri.tsv',        time, duration, 36., 60., 60., 15., .1, .9, 'E7b9'])
+sections.append(['Alpha_Cancri.tsv',        time, duration, 36., 60., 60., 15., .1, .9, [-2, -2, -8, 2, -2, 3]])
 time = time + duration + 4
 duration = 30.
 print('Virgo...')
-sections.append(['Spica.tsv',               time, duration, 36., 60., 60., 15., .1, .9, '''A7#11'''])
+sections.append(['Spica.tsv',               time, duration, 36., 60., 60., 15., .1, .9, [-2, -2, -2, 2, -2, 3]])
 time = time + duration + 4
 duration = 30.
 print('Libra...')
-sections.append(['Alpha_Libris.tsv',        time, duration, 36., 60., 60., 15., .1, .9, 'D7b9'])
+sections.append(['Alpha_Libris.tsv',        time, duration, 36., 60., 60., 15., .1, .9, [-2, -2, -8, 2, -2, 1]])
 time = time + duration + 4
 duration = 30.
 print('Scorpio...')
-sections.append(['Alpha_Scorpii.tsv',       time, duration, 36., 60., 60., 15., .1, .9, 'Gm9'])
+sections.append(['Alpha_Scorpii.tsv',       time, duration, 36., 60., 60., 15., .1, .9, [-2, -2, -8, 2, -2, 1]])
 time = time + duration + 4
 duration = 30.
 print('Ophiuchus...')
-sections.append(['Rasalhague.tsv',          time, duration, 36., 60., 60., 15., .1, .9, 'Am9'])
+sections.append(['Rasalhague.tsv',          time, duration, 36., 60., 60., 15., .1, .9, [-2, -10, -2, -8, 2, -2, 3]])
 time = time + duration + 4
 duration = 30.
 print('Sagittarius...')
-sections.append(['Rukbat.tsv',              time, duration, 36., 60., 60., 15., .1, .9, 'D11'])
+sections.append(['Rukbat.tsv',              time, duration, 36., 60., 60., 15., .1, .9, [-2, -2, -8, 2, -2, 3]])
 time = time + duration + 4
 duration = 30.
 print('Capricorn...')
-sections.append(['Alpha_Capricornis.tsv',   time, duration, 36., 60., 60., 15., .1, .9, 'G9#5'])
+sections.append(['Alpha_Capricornis.tsv',   time, duration, 36., 60., 60., 15., .1, .9, [-12, -12, -8, 2, -2, 3]])
 time = time + duration + 4
 duration = 30.
 print('Aquarius...')
-sections.append(['Alpha_Aquarii.tsv',       time, duration, 36., 60., 60., 15., .1, .9, 'G9'])
+sections.append(['Alpha_Aquarii.tsv',       time, duration, 36., 60., 60., 15., .1, .9, [-2, -2, -8, 2, -2, 3]])
 time = time + duration + 4
 duration = 30.
 print('Leo...')
-sections.append(['Regulus.tsv',             time, duration, 36., 60., 60., 15., .1, .9, 'CM13'])
+sections.append(['Regulus.tsv',             time, duration, 36., 60., 60., 15., .1, .9, [-2, -6, 3, -2 -2, -8, 2, -2, 3]])
 
 instrumentsForSpectralTypes = {' ':0, 'O':1, 'B':2, 'A':3, 'F':4, 'G':5, 'K':6, 'M':7}
 
-def readCatalog(section):
+scale = CsoundAC.Scale("D major")
+chord = scale.chord(1, 4)
+
+'''
+Given a scale and chord, if the chord also exists in one or more other keys,
+returns a random choice from those other keys.
+'''
+def modulate(scale, chord):
+    modulations = scale.modulations(chord)
+    new_key = scale
+    count = len(modulations)
+    new_key_index = 0
+    if count > 0:
+        index = 0
+        new_key_index = random.randint(0, count - 1)
+        for modulation in modulations:
+            print("Possible modulation: {} {} {}".format(index, modulation.toString(), modulation.name()))
+            if index == new_key_index:
+                new_key = modulation
+            index = index + 1
+        print("              Chose: {} {} {}".format(new_key_index, new_key.toString(), new_key.name()))
+    return new_key
+
+def readCatalog(section, voiceleadingNode):
+    global scale
+    global chord
     print('SECTION', section)
     score = CsoundAC.ScoreNode()
     score.thisown = 0
@@ -217,14 +228,21 @@ def readCatalog(section):
             rescale.setRescale(CsoundAC.Event.KEY,       True, True, key,       range)
             rescale.setRescale(CsoundAC.Event.VELOCITY,  True, True, lowest,    dynamicRange)
             rescale.setRescale(CsoundAC.Event.PHASE,     True, True, leftmost,  width)
+            # Now generate the harmony as a function of scoreDuration and add the chords.
+            progression = section[9]
+            secondsPerChord = scoreDuration / len(progression)
+            chordTime = scoreTime
+            for steps in progression:
+                chord = scale.transpose_degrees(chord, steps)
+                print("Time: {:9.4f} chord: {} name: {}".format(chordTime, chord.toString(), chord.eOP().name()))
+                voiceleadingNode.chord(chord, chordTime)
+                chordTime = chordTime + secondsPerChord
             rescale.addChild(score)
+            scale = modulate(scale, chord)
             return rescale
 
-print('Assembling sections into a piece inside a master Rescale node...')
 rescale = CsoundAC.Rescale()
 model.addChild(rescale)
-#rescale.setRescale(CsoundAC.Event.INSTRUMENT, True, True,  2.0,  0.0)
-#rescale.setRescale(CsoundAC.Event.INSTRUMENT, True, True,  1.0,  7.0)
 rescale.setRescale(CsoundAC.Event.INSTRUMENT, True, True,  1.0,  7.0)
 rescale.setRescale(CsoundAC.Event.DURATION,   True, True,  6.0,  8.0)
 rescale.setRescale(CsoundAC.Event.VELOCITY,   True, True, 60.0,  8.0)
@@ -232,15 +250,12 @@ sectionNumber = 0
 for section in sections:
     sectionNumber = sectionNumber + 1
     print("Section %3d: %s" % (sectionNumber, section))
-    subscore = readCatalog(section)
     voiceleadingNode = CsoundAC.VoiceleadingNode()
     voiceleadingNode.thisown = 0
-    voiceleadingNode.C(0., section[9])
+    subscore = readCatalog(section, voiceleadingNode)
     voiceleadingNode.addChild(subscore)
     rescale.addChild(voiceleadingNode)
 
-print('CREATING CSOUND ORCHESTRA...')
-print
 csoundOrchestra = '''
 
 sr = 48000
@@ -717,6 +732,8 @@ icutoff = p6
 iwet = p7
 idry = 1 - iwet
 aoutleft, aoutright reverbsc ainleft, ainright, idelay, icutoff, sr, ipitchmod
+aoutleft = aoutleft * iwet + aoutleft * idry
+aoutright = aoutright * iwet + aoutleft * idry
 outleta "outleft", aoutleft
 outleta "outright", aoutright
 endin
@@ -749,17 +766,11 @@ prints "instr %4d t %9.4f d %9.4f gain %9.4f fade %9.4f clip %9.4f\\n", p1, p2, 
 endin
 '''
 
-print('CREATING CSOUND ARRANGEMENT...')
-print
-
 model.setCsoundOrchestra(csoundOrchestra)
 model.setCsoundCommand(csoundCommand)
-
-print('RENDERING...')
-print
 model.generate()
 model.createCsoundScore()
-csd = model.getCsoundOrchestra()
-print("csd:\n{}\n".format(csd))
-model.render()
+model.performMaster()
+if rendering == 'soundfile':
+    model.translateMaster()
 
