@@ -30,17 +30,11 @@ each constellation, there is a separate chord progression.
 Copyright (C) 2014-2020 by Michael Gogins.
 All rights reserved.
 
-TODO
-
-Better envelope for Xing.
-Fix FM Bell.
-Check pitch on Grain.
-
 '''
 print(__doc__)
 
 print('Set "rendering" to:     "soundfile" or "audio".')
-rendering = 'audio'
+rendering = 'soundfile'
 print('Rendering option:       \"%s\"' % rendering)
 print
 print('Set dac_name for system.')
@@ -68,6 +62,7 @@ model = CsoundAC.MusicModel()
 model.setTitle("Zodiac-v2")
 model.setAuthor("Michael Gogins")
 model.setArtist("Michael Gogins")
+model.setYear("2020")
 print("")
 model.generateAllNames()
 print("")
@@ -76,8 +71,8 @@ CsoundAC.System_setMessageLevel(3)
 score = model.getScore()
 
 commandsForRendering = {
-    'soundfile':    '--sample-accurate -r 96000 --ksmps=128 -+msg_color=0 -dm227 -RWZdfo %s' % (model.getOutputSoundfileFilepath()),
-    'audio':        '--sample-accurate -r 48000 --ksmps=128 -+msg_color=0 -dm227 -o %s' % (dac_name),
+    'soundfile':    '--sample-accurate -r 96000 --ksmps=20  -+msg_color=0 -dm227 -RWZdfo %s' % (model.getOutputSoundfileFilepath()),
+    'audio':        '--sample-accurate -r 48000 --ksmps=128 -+msg_color=0 -dm227      -o %s' % (dac_name),
 }
 csoundCommand = commandsForRendering[rendering]
 
@@ -94,11 +89,11 @@ sections = []
 time = 0.
 duration = 30.
 print('Pisces...')
-sections.append(['Alpha_Piscium.tsv',       time, duration, 36., 60., 60., 15., .1, .9, [-2, -2, -8, 2, -2, 3]])
+sections.append(['Alpha_Piscium.tsv',       time, duration, 36., 60., 60., 15., .1, .9, [-2, -2, -8, 2, -2, 1]])
 time = time + duration + 4
 duration = 30.
 print('Aries...')
-sections.append(['Alpha_Arietis.tsv',       time, duration, 36., 60., 60., 15., .1, .9, [-2, -2, -8, 2, -2, 3]])
+sections.append(['Alpha_Arietis.tsv',       time, duration, 36., 60., 60., 15., .1, .9, [-2, -2, -8, 3, -2, 1]])
 time = time + duration + 4
 duration = 30.
 print('Taurus...')
@@ -118,27 +113,27 @@ sections.append(['Spica.tsv',               time, duration, 36., 60., 60., 15., 
 time = time + duration + 4
 duration = 30.
 print('Libra...')
-sections.append(['Alpha_Libris.tsv',        time, duration, 36., 60., 60., 15., .1, .9, [-2, -2, -8, 2, -2, 1]])
+sections.append(['Alpha_Libris.tsv',        time, duration, 36., 60., 60., 15., .1, .9, [-2, -4, -8, 2, -4, 3]])
 time = time + duration + 4
 duration = 30.
 print('Scorpio...')
-sections.append(['Alpha_Scorpii.tsv',       time, duration, 36., 60., 60., 15., .1, .9, [-2, -2, -8, 2, -2, 1]])
+sections.append(['Alpha_Scorpii.tsv',       time, duration, 36., 60., 60., 15., .1, .9, [-2, -2, -8, 2, -2, 3]])
 time = time + duration + 4
 duration = 30.
 print('Ophiuchus...')
-sections.append(['Rasalhague.tsv',          time, duration, 36., 60., 60., 15., .1, .9, [-2, -10, -2, -8, 2, -2, 3]])
+sections.append(['Rasalhague.tsv',          time, duration, 36., 60., 60., 15., .1, .9, [-2, -10, -2, -8, 3, -2, 3]])
 time = time + duration + 4
 duration = 30.
 print('Sagittarius...')
-sections.append(['Rukbat.tsv',              time, duration, 36., 60., 60., 15., .1, .9, [-2, -2, -8, 2, -2, 3]])
+sections.append(['Rukbat.tsv',              time, duration, 36., 60., 60., 15., .1, .9, [-6, -2, -8, 2, -2, 3]])
 time = time + duration + 4
 duration = 30.
 print('Capricorn...')
-sections.append(['Alpha_Capricornis.tsv',   time, duration, 36., 60., 60., 15., .1, .9, [-12, -12, -8, 2, -2, 3]])
+sections.append(['Alpha_Capricornis.tsv',   time, duration, 36., 60., 60., 15., .1, .9, [-12, -12, -8, 3, -2, 3]])
 time = time + duration + 4
 duration = 30.
 print('Aquarius...')
-sections.append(['Alpha_Aquarii.tsv',       time, duration, 36., 60., 60., 15., .1, .9, [-2, -2, -8, 2, -2, 3]])
+sections.append(['Alpha_Aquarii.tsv',       time, duration, 36., 60., 60., 15., .1, .9, [-2, -2, -8, 2, -2, 1]])
 time = time + duration + 4
 duration = 30.
 print('Leo...')
@@ -150,7 +145,7 @@ scale = CsoundAC.Scale("D major")
 chord = scale.chord(1, 4)
 
 '''
-Given a scale and chord, if the chord also exists in one or more other keys,
+Given a scale and chord, if that chord also exists in one or more other keys,
 returns a random choice from those other keys.
 '''
 def modulate(scale, chord):
@@ -175,6 +170,10 @@ def readCatalog(section, voiceleadingNode):
     print('SECTION', section)
     score = CsoundAC.ScoreNode()
     score.thisown = 0
+    # Put the section into a Rescale node to position it in the piece.
+    rescale = CsoundAC.Rescale()
+    rescale.thisown = 0
+    rescale.addChild(score)
     f = open(section[0])
     # Read the file until we run into '--'
     # which marks the last line of non-data.
@@ -207,9 +206,6 @@ def readCatalog(section, voiceleadingNode):
                     instrument = 8
                 score.getScore().append(time, velocity * 0.001, 144.0, instrument, key, velocity, 0.0, pan)
             print(score.getScore().toString())
-            # Put the section into a Rescale node to position it in the piece.
-            rescale = CsoundAC.Rescale()
-            rescale.thisown = 0
             scoreTime = section[1]
             scoreDuration = section[2]
             shortest = 4.0
@@ -245,9 +241,11 @@ def readCatalog(section, voiceleadingNode):
                 print("Time: {:9.4f} chord: {} name: {}".format(chordTime, chord.toString(), chord.eOP().name()))
                 voiceleadingNode.chord(chord, chordTime)
                 chordTime = chordTime + secondsPerChord
-            rescale.addChild(score)
             scale = modulate(scale, chord)
             return rescale
+
+# Where the constellations overlap, the score could get bitonal. To minimize 
+# that, we put the chords _outside_ the collection of constellations.
 
 rescale = CsoundAC.Rescale()
 model.addChild(rescale)
@@ -271,204 +269,31 @@ ksmps = 128
 nchnls = 2
 0dbfs = 1
 
-;           Insno           Delay   Pitch mod   Cutoff  Wet
-alwayson    "ReverbSC",     .48,    .005,       16000,  .25
-
-;           Insno Start     Fadeout  Clip
-alwayson    "MasterOutput", .004,    .1,      2
-
-massign 0, 7
-massign 1, 7
-
-gi2fqc init cpspch(7.09)
-gi3fqc init cpspch(10.0)
-giseed init 0.5
-
-; Waveform for the string-pad
-giwave ftgen 1, 0, 65537, 10, 1, .5, .33, 0.25, .0, 0.1, .1, 0.1
-gisine ftgen 2, 0, 65537, 10, 1
-giwtsin init gisine
-giharpsichord ftgen 0, 0, 65537, 7, -1, 1024, 1, 1024, -1 ; Kelley harpsichord.
-gicosine ftgen 0, 0, 65537, 11, 1 ; Cosine wave. Get that noise down on the most widely used table!
-giexponentialrise ftgen 0, 0, 65537, 5, .001, 513, 1 ; Exponential rise.
-githirteen ftgen 0, 0, 65537, 9, 1, .3, 0
-giln ftgen 0, 0, 65537, -12, 20.0 ; Unscaled ln(I(x)) from 0 to 20.0.
-gibergeman ftgen 0, 0, 65537, 10, .28, 1, .74, .66, .78, .48, .05, .33, 0.12, .08, .01, .54, 0.19, .08, .05, 0.16, .01, 0.11, .3, .02, 0.2 ; Bergeman f1
-gicookblank ftgen 0, 0, 65537, 10, 0 ; Blank wavetable for some Cook FM opcodes.
-gicook3 ftgen 0, 0, 65537, 10, 1, .4, 0.2, 0.1, 0.1, .05
-gikellyflute ftgen 0, 0, 65537, 10, 1, 0.25, 0.1 ; Kelley flute.
-gichebychev ftgen 0, 0, 65537, -7, -1, 150, 0.1, 110, 0, 252, 0
-giffitch1 ftgen 0, 0, 65537, 10, 1
-giffitch2 ftgen 0, 0, 65537, 5, 1, 1024, .01
-giffitch3 ftgen 0, 0, 65537, 5, 1, 1024, .001
- ; Rotor Tables
-gitonewheel1 ftgen 0, 0, 65537, 10, 1, .02, .01
-gitonewheel2 ftgen 0, 0, 65537, 10, 1, 0, 0.2, 0, 0.1, 0, .05, 0, .02
- ; Rotating Speaker Filter Envelopes
-gitonewheel3 ftgen 0, 0, 65537, 7, 0, 110, 0, 18, 1, 18, 0, 110, 0
-gitonewheel4 ftgen 0, 0, 65537, 7, 0, 80, 0.2, 16, 1, 64, 1, 16, 0.2, 80, 0
- ; Distortion Tables
-gitonewheel5 ftgen 0, 0, 65537, 8, -.8, 336, -.78, 800, -.7, 5920, .7, 800, .78, 336, .8
-gitonewheel6 ftgen 0, 0, 65537, 8 -.8, 336, -.76, 3000, -.7, 1520, .7, 3000, .76, 336, .8
- ; Table for Reed Physical Model
-gireedtable ftgen 0, 0, 256, 7, 1, 80, 1, 156, -1, 40, -1
- ; Tables for simple granular synthesis
-gigrtab ftgen 0, 0, 65537, 10, 1, 0.3, .1, 0, .2, .02, 0, .1, .04
-giwintab ftgen 0, 0, 65537, 10, 1, 0, .5, 0, .33, 0, .25, 0, .2, 0, .167
- ; Tables for waveshaping drone
-giharmonics ftgen 0, 0, 65537, 10, 1, 0, 2, 0, 0, 1
-gidistortion ftgen 0, 0, 65537, 13, 1, 1, 0, 1, 0, 1
- ; Tables for Lee Zakian flute
-gif1  ftgen 0, 0, 65537, 10, 1
-gif2  ftgen 0, 0, 16, -2, 40, 40, 80, 160, 320, 640, 1280, 2560, 5120, 10240, 10240
-gif26 ftgen 0, 0, 65537, -10, 2000, 489, 74, 219, 125, 9, 33, 5, 5
-gif27 ftgen 0, 0, 65537, -10, 2729, 1926, 346, 662, 537, 110, 61, 29, 7
-gif28 ftgen 0, 0, 65537, -10, 2558, 2012, 390, 361, 534, 139, 53, 22, 10, 13, 10
-gif29 ftgen 0, 0, 65537, -10, 12318, 8844, 1841, 1636, 256, 150, 60, 46, 11
-gif30 ftgen 0, 0, 65537, -10, 1229, 16, 34, 57, 32
-gif31 ftgen 0, 0, 65537, -10, 163, 31, 1, 50, 31
-gif32 ftgen 0, 0, 65537, -10, 4128, 883, 354, 79, 59, 23
-gif33 ftgen 0, 0, 65537, -10, 1924, 930, 251, 50, 25, 14
-gif34 ftgen 0, 0, 65537, -10, 94, 6, 22, 8
-gif35 ftgen 0, 0, 65537, -10, 2661, 87, 33, 18
-gif36 ftgen 0, 0, 65537, -10, 174, 12
-gif37 ftgen 0, 0, 65537, -10, 314, 13
+alwayson    "ReverbSC"
+alwayson    "MasterOutput"
 
 connect "Harpsichord", "outleft", "ReverbSC", "inleft"
 connect "Harpsichord", "outright", "ReverbSC", "inright"
-;connect "FilteredChorus", "outleft", "ReverbSC", "inleft"
-;connect "FilteredChorus", "outright", "ReverbSC", "inright"
-;connect "FilteredChorus2", "outleft", "ReverbSC", "inleft"
-;connect "FilteredChorus2", "outright", "ReverbSC", "inright"
-;;;connect "Eight", "outleft", "ReverbSC", "inleft"
-;connect "Eight", "outright", "ReverbSC", "inright"
+connect "FilteredSines2", "outleft", "ReverbSC", "inleft"
+connect "FilteredSines2", "outright", "ReverbSC", "inright"
+connect "FilteredSines3", "outleft", "ReverbSC", "inleft"
+connect "FilteredSines3", "outright", "ReverbSC", "inright"
+connect "Blower", "outleft", "ReverbSC", "inleft"
+connect "Blower", "outright", "ReverbSC", "inright"
 connect "FMBell", "outleft", "ReverbSC", "inleft"
 connect "FMBell", "outright", "ReverbSC", "inright"
-;connect "FMModerate", "outleft", "ReverbSC", "inleft"
-;connect "FMModerate", "outright", "ReverbSC", "inright"
+connect "FMModerate", "outleft", "ReverbSC", "inleft"
+connect "FMModerate", "outright", "ReverbSC", "inright"
 connect "Xing", "outleft", "ReverbSC", "inleft"
 connect "Xing", "outright", "ReverbSC", "inright"
-;connect "Xanadu3", "outleft", "ReverbSC", "inleft"
-;connect "Xanadu3", "outright", "ReverbSC", "inright"
+connect "FMModulatedChorus", "outleft", "ReverbSC", "inleft"
+connect "FMModulatedChorus", "outright", "ReverbSC", "inright"
 connect "ReverbSC", "outleft", "MasterOutput", "inleft"
 connect "ReverbSC", "outright", "MasterOutput", "inright"
 
-opcode NoteOn, ikii, iii
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; General purpose instrument control UDO.
-; Returns the pitch at i-rate, the pitch at k-rate
-; (with addition of smoothed MIDI pitch bend, if any),
-; decibels full scale scaled from MIDI velocity,
-; and the amplitude scaled such that 127 == 0 dBFS.
-;
-; If an instrument is balanced, then its solo peak
-; amplitude at MIDI velocity 127 should be exactly
-; 0 dBFS. If the instrument is too loud (or too soft)
-; at velocity 127, set imeasuredDBFS to the peak level
-; reported by Csound; e.g. for the following messsage:
-;
-; rtevent: T 12.257 TT 12.257 M: +3.35 +3.60
-; number of samples out of range: 511 552
-;
-; set the imeasuredDBFS parameter in the NoteOn call
-; in the instrument to 3.6. This will noprmalize the
-; instrument.
-ikey,ivelocity,idecibels xin
-; Convert MIDI key number to cycles per second.
-iHz = cpsmidinn(ikey)
-; Modify with MIDI pitch bend, if any.
-kpitchbend pchbend -6.0, +6.0
-kpitchbend = kpitchbend + 6.0
-iinitialpb init i(kpitchbend)
-;print(iinitialpb
-; Smooth out the stepping in the MIDI control signal.
-ksmoothbend port kpitchbend, 0.125, iinitialpb
-kKey = ikey + ksmoothbend
-kHz = cpsmidinn(kKey)
-; ratio = pow(10, dB / 20)
-iratio = pow(10, idecibels / 20)
-iamplitude = ampdb(ivelocity) * iratio
-; print(ivelocity, idecibels, iamplitude, iratio
-xout iHz, kHz, iamplitude, ivelocity
-endop
-
-opcode Modulation, k, j
-; Returns +- one octave of pitch bend in MIDI
-; key numbers.
-kpitchbend init 0
-xout kpitchbend
-endop
-
-opcode AR, ia, iiii
-; Outputs new p3, arate envelope for
-; attack time,
-; attack level,
-; release time (should usually be p3),
-; slope exponent.
-; Handles real-time by indefinitely extending
-; sustain time and p3.
-iat,ial,irt,islope xin
-ip3 = p3;iat + irt
-aenvelope transeg 0.0, iat, islope, ial, irt, islope, 0.0
-xout ip3, aenvelope
-endop
-
-opcode ASR, ia, iiiiii
-; Outputs new p3, arate envelope for
-; attack time,
-; attack level,
-; sustain time (should usually be p3),
-; sustain level,
-; release time,
-; slope exponent.
-; Handles real-time by indefinitely extending
-; sustain time and p3.
-iat,ial,ist,isl,irt,islope xin
-ip3 = iat + ist + irt
-aenvelope transeg 0.0, iat, islope, ial, ist, islope, isl, irt, islope, 0.0
-xout ip3, aenvelope
-endop
-
-opcode ADSR, ia, iiiiiiii
-; Outputs new p3, arate envelope for
-; attack time,
-; attack level,
-; decay time,
-; decay level,
-; sustain time (should usually be p3),
-; sustain level,
-; release time,
-; release level,
-; slope exponent.
-; Handles real-time by indefinitely extending
-; sustain time and p3.
-iat,ial,idt,idl,ist,irt,irl,islope xin
-ip3 = p3;iat + idt + ist + irt
-aenvelope transeg 0.0, iat, islope, ial, idt, islope, idl, ist, islope, irl, irt, islope, 0.0
-xout ip3, aenvelope
-endop
-
-;instr Harpsichord ; James Kelley
-;iHz,kHz,iamplitude,idB NoteOn p4, p5, 60
-;p3=10
-;adamping linseg 0, .003, 1, p3 - .008, 1, .005, 0
-;aenvelope transeg 1.0, 40.0, -19.0, 0.0
-;apluck pluck iamplitude, kHz, iHz, 0, 1
-;apluck = apluck * aenvelope
-;aharp poscil3 aenvelope, kHz, giharpsichord
-;aharp2 balance apluck, aharp
-;asignal = (apluck + aharp2) * iamplitude
-;aleft, aright pan2 asignal, p7
-;outleta "outleft", aleft * adamping
-;outleta "outright", aright * adamping
-;prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
-;endin
-
+gk_Harpsichord_level init -15
 gk_Harpsichord_midi_dynamic_range init 127
-gk_Harpsichord_level init 30
-gk_Harpsichord_pick init .075
-gk_Harpsichord_reflection init .5
-gk_Harpsichord_pluck init .75
+gi_Harpsichord_harptable ftgen 0, 0, 65537, 7, -1, 1024, 1, 1024, -1
 instr Harpsichord
 i_instrument = p1
 i_time = p2
@@ -489,167 +314,282 @@ i_amplitude = ampdb(i_midi_velocity) * i_normalization
 k_gain = ampdb(gk_Harpsichord_level)
 iHz = cpsmidinn(i_midi_key)
 kHz = k(iHz)
-aenvelope transeg 1.0, 40.0, -19.0, 0.0
-k_amplitude = 1
+aenvelope transeg 1.0, 40.0, -25.0, 0.0
 apluck pluck i_amplitude, kHz, iHz, 0, 1
-iharptable ftgenonce 0, 0, 65536, 7, -1, 1024, 1, 1024, -1
-aharp poscil aenvelope, kHz, iharptable
+aharp poscil aenvelope, kHz, gi_Harpsichord_harptable
 aharp2 balance apluck, aharp
-a_signal	= (apluck + aharp2)
+a_signal	= (apluck + aharp2) * aenvelope
 i_attack = .002
 i_sustain = p3
 i_release = 0.01
 xtratim i_attack + i_release
 a_declicking linsegr 0, i_attack, 1, i_sustain, 1, i_release, 0
 a_signal = a_signal * a_declicking * k_gain
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
 a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
+#endif
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
-
-instr FilteredChorus
-adamping linseg 0, .003, 1, p3 - .008, 1, .005, 0
-iHz,kHz,iamplitude,idB NoteOn p4, p5, 62
+gk_FilteredSines2_level init 0
+gi_FilteredSines2_attack init 1
+gi_FilteredSines2_release init 1
+gi_FilteredSines2_bergeman ftgen 0, 0, 65537, 10, .28, 1, .74, .66, .78, .48, .05, .33, 0.12, .08, .01, .54, 0.19, .08, .05, 0.16, .01, 0.11, .3, .02, 0.2
+instr FilteredSines2
+; Author: Michael Bergeman
+; Modified by: Michael Gogins
+xtratim gi_FilteredSines2_attack + gi_FilteredSines2_release
+i_instrument = p1
+i_time = p2
+i_duration = p3
+i_midi_key = p4
+i_midi_velocity = p5
+k_space_front_to_back = p6
+k_space_left_to_right = p7
+k_space_bottom_to_top = p8
+i_phase = p9
+i_overall_amps = 166
+i_normalization = ampdb(-i_overall_amps) / 2
+i_amplitude = ampdb(i_midi_velocity) * i_normalization
+i_frequency = cpsmidinn(i_midi_key)
+k_gain = ampdb(gk_FilteredSines2_level)
+kHz = k(i_frequency)
 koctave = octcps(kHz)
+iattack init gi_FilteredSines2_attack
+isustain init p3
+irelease init gi_FilteredSines2_release
 idb = 1.5
-ip5 = gibergeman
-ip3 = p3
+ip5 = gi_FilteredSines2_bergeman
+ip3 = 5.0
 ip6 = 0.9
 ip7 = 1.4
 kp8 = cpsoct(koctave - .01)
 kp9 = cpsoct(koctave + .01)
 isc = idb * .333
-ak1 line 40,ip3,800
-ak2 line 440,ip3,220
-;ak3 linen isc,ip6,ip3,ip7
-ak3 linseg 0, ip6, isc, ip3 - (ip6 + ip7), isc, 0
-ak4 line 800,ip3,40
-ak5 line 220,ip3,440
-;ak6 linen isc,ip6,ip3,ip7
-ak6 linseg 0, ip6, isc, ip3 - (ip6 + ip7), isc, 0
-a5 poscil3 ak3,kp8,ip5
-a6 poscil3 ak3,kp8*.999,ip5
-a7 poscil3 ak3,kp8*1.001,ip5
-a1=a5+a6+a7
-a8 poscil3 ak6,kp9,ip5
-a9 poscil3 ak6,kp9*.999,ip5
-a10 oscil3 ak6,kp9*1.001,ip5
-a11=a8+a9+a10
-a2 butterbp a1,ak1,40
-a3 butterbp a2,ak5,ak2*.8
-a4 balance a3,a1
-a12 butterbp a11,ak4,40
-a13 butterbp a12,ak2,ak5*.8
-a14 balance a13,a11
-;outs a4,a14
-outleta "outleft", a4 * adamping * iamplitude
-outleta "outright", a14 * adamping * iamplitude
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
-endin
-
-instr FilteredChorus2 ; Michael Bergeman
-adamping linseg 0, .003, 1, p3 - .008, 1, .005, 0
-iHz,kHz,iamplitude,idB NoteOn p4, p5, -6
-koctave = octcps(kHz)
-idb = 1.5
-ip5 = gibergeman
-ip3 = p3
-ip6 = 0.9
-ip7 = 1.4
-kp8 = cpsoct(koctave - .01)
-kp9 = cpsoct(koctave + .01)
-isc = idb * .333
-ak1 linseg 40, ip3, 800, p3, 800, 0.06, 0.0
-ak2 linseg 440, ip3, 220, p3, 220, 0.06, 0.0
-ak3 linseg 0.0, ip6, 800, ip7, 200.0, p3, 200, 0.06, 0.0
-ak4 linseg 800, ip3, 40, p3, 40, 0.06, 0.0
-ak5 linseg 220, ip3, 440, p3, 440, 0.06, 0.0
-ak6 linseg isc, ip6, p3, ip7, p3, 0.06, 0.0
-ak7 linseg 0.0, ip6, 1, ip7, .3, p3, .1, 0.06, 0.0
-a5 poscil3 ak3, kp8, ip5
-a6 poscil3 ak3, kp8 * 0.999, ip5
-a7 poscil3 ak3, kp8 * 1.001, ip5
+k1 linseg 40, ip3, 800, p3, 800, 0.06, 0.0
+k2 linseg 440, ip3, 220, p3, 220, 0.06, 0.0
+k3 linseg 0.0, ip6, 800, ip7, 200.0, p3, 200, 0.06, 0.0
+k4 linseg 800, ip3, 40, p3, 40, 0.06, 0.0
+k5 linseg 220, ip3, 440, p3, 440, 0.06, 0.0
+k6 linseg isc, ip6, p3, ip7, p3, 0.06, 0.0
+k7 linseg 0.0, ip6, 1, ip7, .3, p3, .1, 0.06, 0.0
+a5 poscil k3, kp8, ip5
+a6 poscil k3, kp8 * 0.999, ip5
+a7 poscil k3, kp8 * 1.001, ip5
 a1 = a5 + a6 + a7
-a8 poscil3 ak6, kp9, ip5
-a9 poscil3 ak6, kp9 * 0.999, ip5
-a10 poscil3 ak6, kp9 * 1.001, ip5
+a8 poscil k6, kp9, ip5
+a9 poscil k6, kp9 * 0.999, ip5
+a10 poscil k6, kp9 * 1.001, ip5
 a11 = a8 + a9 + a10
-a2 butterbp a1, ak1, 40
-a3 butterbp a2, ak5, ak2 * 0.8
+a2 butterbp a1, k1, 40
+a3 butterbp a2, k5, k2 * 0.8
 a4 balance a3, a1
-a12 butterbp a11, ak4, 40
-a13 butterbp a12, ak2, ak5 * 0.8
+a12 butterbp a11, k4, 40
+a13 butterbp a12, k2, k5 * 0.8
 a14 balance a13, a11
 a15 reverb2 a4, 5, 0.3
 a16 reverb2 a4, 4, 0.2
-a17 = (a15 + a4) * ak7
-a18 = (a16 + a4) * ak7
-asignal = (a17 + a18) * iamplitude
-aleft, aright pan2 asignal, p7
-outleta "outleft", aleft * adamping
-outleta "outright", aright * adamping
+a17 = (a15 + a4) * k7
+a18 = (a16 + a4) * k7
+a_signal = (a17 + a18)
+i_attack = .002
+i_sustain = p3
+i_release = 0.01
+a_declicking linsegr 0, i_attack, 1, i_sustain, 1, i_release, 0
+a_signal = a_signal * i_amplitude * a_declicking * k_gain * 1.88
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
-instr FMModerate ; FM moderate index 3, Michael Gogins
-adamping linseg 0, .003, 1, p3 - .008, 1, .005, 0
-iHz,kHz,iamplitude,idB NoteOn p4, p5, 62
+gk_FilteredSines3_level init 0
+gi_FilteredSines3_attack init 1
+gi_FilteredSines3_release init 1
+gi_FilteredSines3_bergeman ftgen 0, 0, 65537, 10, .28, 1, .74, .66, .78, .48, .05, .33, 0.12, .08, .01, .54, 0.19, .08, .05, 0.16, .01, 0.11, .3, .02, 0.2
+instr FilteredSines3
+; Author: Michael Bergeman
+; Modified by: Michael Gogins
+xtratim gi_FilteredSines3_attack + gi_FilteredSines3_release
+i_instrument = p1
+i_time = p2
+i_duration = p3
+i_midi_key = p4
+i_midi_velocity = p5
+k_space_front_to_back = p6
+k_space_left_to_right = p7
+k_space_bottom_to_top = p8
+i_phase = p9
+i_overall_amps = 166
+i_normalization = ampdb(-i_overall_amps) / 2
+i_amplitude = ampdb(i_midi_velocity) * i_normalization
+i_frequency = cpsmidinn(i_midi_key)
+k_gain = ampdb(gk_FilteredSines3_level)
+kHz = k(i_frequency)
+koctave = octcps(kHz)
+iattack init gi_FilteredSines3_attack
+isustain init p3
+irelease init gi_FilteredSines3_release
+idb = 1.5
+ip5 = gi_FilteredSines3_bergeman
+ip3 = 5.0
+ip6 = 0.9
+ip7 = 1.4
+kp8 = cpsoct(koctave - .011)
+kp9 = cpsoct(koctave + .009)
+isc = idb * .333
+k1 linseg 40, ip3, 800, p3, 800, 0.06, 0.0
+k2 linseg 440, ip3, 220, p3, 220, 0.06, 0.0
+k3 linseg 0.0, ip6, 800, ip7, 200.0, p3, 200, 0.06, 0.0
+k4 linseg 800, ip3, 40, p3, 40, 0.06, 0.0
+k5 linseg 220, ip3, 440, p3, 440, 0.06, 0.0
+k6 linseg isc, ip6, p3, ip7, p3, 0.06, 0.0
+k7 linseg 0.0, ip6, 1, ip7, .3, p3, .1, 0.06, 0.0
+a5 poscil k3, kp8, ip5
+a6 poscil k3, kp8 * 0.999, ip5
+a7 poscil k3, kp8 * 1.001, ip5
+a1 = a5 + a6 + a7
+a8 poscil k6, kp9, ip5
+a9 poscil k6, kp9 * 0.999, ip5
+a10 poscil k6, kp9 * 1.001, ip5
+a11 = a8 + a9 + a10
+a2 butterbp a1, k1, 40
+a3 butterbp a2, k5, k2 * 0.8
+a4 balance a3, a1
+a12 butterbp a11, k4, 40
+a13 butterbp a12, k2, k5 * 0.8
+a14 balance a13, a11
+a15 reverb2 a4, 5, 0.3
+a16 reverb2 a4, 4, 0.2
+a17 = (a15 + a4) * k7
+a18 = (a16 + a4) * k7
+a_signal = (a17 + a18)
+i_attack = .002
+i_sustain = p3
+i_release = 0.01
+a_declicking linsegr 0, i_attack, 1, i_sustain, 1, i_release, 0
+a_signal = a_signal * i_amplitude * a_declicking * k_gain * 1.88
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+endin
+
+gk_FMModerate_level init 6
+gk_FMModerate_midi_dynamic_range init 127
+gi_FMModerate_cosine ftgen 0, 0, 65537, 11, 1
+instr FMModerate
+; Authors: Michael Gogins
+i_instrument = p1
+i_time = p2
+i_duration = p3
+i_midi_key = p4
+i_midi_dynamic_range = i(gk_Harpsichord_midi_dynamic_range)
+i_midi_velocity = p5 * i_midi_dynamic_range / 127 + (63.6 - i_midi_dynamic_range / 2)
+k_space_front_to_back = p6
+k_space_left_to_right = p7
+k_space_bottom_to_top = p8
+i_phase = p9
+i_frequency = cpsmidinn(i_midi_key)
+i_overall_amps = 86 ; To start - change to observed value.
+i_normalization = ampdb(-i_overall_amps) / 2
+i_amplitude = ampdb(i_midi_velocity) * i_normalization
+k_gain = ampdb(gk_FMModerate_level)
 iattack = 0.002
 isustain = p3
 idecay = 4.5
 irelease = 0.05
+xtratim iattack + idecay + irelease
 icarrier = 1
 imodulator = 1.5
 ifmamplitude = 2
 index = 3.5
-ifrequencyb = iHz * 1.003
+ifrequencyb = i_frequency * 1.003
 icarrierb = icarrier * 1.004
-aindenv transeg 0.0, iattack, -7.0, 1.0, idecay, -7.0, 0.025, isustain, 0.0, 0.025, irelease, -7.0, 0.0
+aindenv transegr 0.0, iattack, -7.0, 1.0, idecay, -10.0, 0.025, isustain, 0.0, 0.025, irelease, -7.0, 0.0
 aindex = aindenv * index * ifmamplitude
-; ares foscili xamp, kcps, xcar, xmod, kndx, ifn [, iphs]
-aouta foscili 1.0, iHz, icarrier, imodulator, index, 1
-aoutb foscili 1.0, ifrequencyb, icarrierb, imodulator, index, 1
-; Plus amplitude correction.
-afmout = (aouta + aoutb) * aindenv
-asignal = afmout * iamplitude
-aleft, aright pan2 asignal, p7
-outleta "outleft", aleft * adamping
-outleta "outright", aright * adamping
+aouta foscili 1.0, i_frequency, icarrier, imodulator, index, gi_FMModerate_cosine
+aoutb foscili 1.0, ifrequencyb, icarrierb, imodulator, index, gi_FMModerate_cosine
+a_signal = (aouta + aoutb) * aindenv
+i_attack = .002
+i_sustain = p3
+i_release = 0.05
+xtratim i_attack + i_sustain + i_release
+a_declicking linsegr 0, i_attack, 1, i_sustain, 1, i_release, 0
+a_signal = a_signal * i_amplitude * a_declicking * k_gain
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
-gkgrainDensity init 120
-gkgrainDuration init 0.2
-gkgrainAmplitudeRange init .05
-gkgrainFrequencyRange init 8 / 1200
-instr Eight
- //////////////////////////////////////////////
- // Original by Hans Mikelson.
- // Adapted by Michael Gogins.
- //////////////////////////////////////////////
+gk_Blower_level init 45
+gk_Blower_grainDensity init 120
+gk_Blower_grainDuration init 0.2
+gk_Blower_grainAmplitudeRange init .05
+gk_Blower_grainFrequencyRange init 8 / 1200
+gk_Blower_midi_dynamic_range init 127
+gi_Blower_grtab ftgen 0, 0, 65537, 10, 1, .3, .1, 0, .2, .02, 0, .1, .04
+gi_Blower_wintab ftgen 0, 0, 65537, 10, 1, 0, .5, 0, .33, 0, .25, 0, .2, 0, .167
+instr Blower
+//////////////////////////////////////////////
+// Original by Hans Mikelson.
+// Adapted by Michael Gogins.
+//////////////////////////////////////////////
 i_instrument = p1
 i_time = p2
 i_duration = p3
-i_midikey = p4
-i_midivelocity = p5
-i_phase = p6
-i_pan = p6
-i_depth = p8
-i_height = p9
-i_pitchclassset = p10
-i_homogeneity = p11
-adamping linseg 0, 0.03, 1, p3 - 0.1, 1, 0.07, 0
-ifrequency = cpsmidinn(i_midikey)
-iamplitude = ampdb(i_midivelocity) / 6
-igrtab ftgenonce 0, 0, 65537, 10, 1, .3, .1, 0, .2, .02, 0, .1, .04
-iwintab ftgenonce 0, 0, 65537, 10, 1, 0, .5, 0, .33, 0, .25, 0, .2, 0, .167
-iHz = ifrequency
+i_midi_key = p4
+i_midi_dynamic_range = i(gk_Blower_midi_dynamic_range)
+i_midi_velocity = p5 * i_midi_dynamic_range / 127 + (63.5 - i_midi_dynamic_range / 2)
+k_space_front_to_back = p6
+k_space_left_to_right = p7
+k_space_bottom_to_top = p8
+i_phase = p9
+i_frequency = cpsmidinn(i_midi_key)
+; Adjust the following value until "overall amps" at the end of performance is about -6 dB.
+i_level_correction = 132
+i_normalization = ampdb(-i_level_correction) / 2
+i_amplitude = ampdb(i_midi_velocity) * i_normalization
+k_gain = ampdb(gk_Blower_level)
+iHz = i_frequency
 ihertz = iHz
+ip4 = i_amplitude
 ip5 = iHz
-ip6 = igrtab
-ip7 = iwintab
+ip6 = gi_Blower_grtab
+ip7 = gi_Blower_wintab
 ip8 = 0.033
 ip8 = .002
 ip9 = 150
@@ -657,7 +597,7 @@ ip9 = 100
 ip10 = 1.6
 ip10 = 3
 idur = p3
-iamp = iamplitude ; p4
+iamp = i_amplitude ; p4
 ifqc = iHz ; cpspch(p5)
 igrtab = ip6
 iwintab = ip7
@@ -665,24 +605,37 @@ ifrng = ip8
 idens = ip9
 ifade = ip10
 igdur = 0.2
-iattack = .2
-idecay = .4
-isustain = p3 - (iattack + idecay)
-kenvelope transeg 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
+iattack = 0.5
+i_sustain = p3
+idecay = 1.5
+xtratim iattack + idecay
+kenvelope transegr 0.0, iattack / 2.0, 1.5, .5, iattack / 2.0, -1.5, 1, i_sustain, 0.0, 1, idecay / 2.0, 1.5, .5, idecay / 2.0, -1.5, 0
+; kamp linseg 0, ifade, 1, idur - 2 * ifade, 1, ifade, 0
 kamp = kenvelope
-; ares grain xamp, xpitch, xdens,          kampoff,               kpitchoff,                    kgdur,           igfn,   iwfn,    imgdur [, igrnd]
-aoutl grain 1,  ifqc,   gkgrainDensity, gkgrainAmplitudeRange, ifqc * gkgrainFrequencyRange, gkgrainDuration, igrtab, iwintab, 5
-aoutr grain 1, ifqc, gkgrainDensity, gkgrainAmplitudeRange, ifqc * gkgrainFrequencyRange, gkgrainDuration, igrtab, iwintab, 5
-;aoutl grain 1, ifqc, gkgrainDensity, gkgrainAmplitudeRange, gkgrainFrequencyRange, gkgrainDuration, igrtab, iwintab, 5
-;aoutr grain 1, ifqc, gkgrainDensity, gkgrainAmplitudeRange, gkgrainFrequencyRange, gkgrainDuration, igrtab, iwintab, 5
-aleft = aoutl * kamp * iamplitude
-aright = aoutr * kamp * iamplitude
-outleta "outleft", aleft * adamping
-outleta "outright", aright * adamping
+; Amp Fqc Dense AmpOff PitchOff GrDur GrTable WinTable MaxGrDur
+aoutl grain ip4, ifqc, gk_Blower_grainDensity, gk_Blower_grainAmplitudeRange, gk_Blower_grainFrequencyRange, gk_Blower_grainDuration, igrtab, iwintab, 5
+aoutr grain ip4, ifqc, gk_Blower_grainDensity, gk_Blower_grainAmplitudeRange, gk_Blower_grainFrequencyRange, gk_Blower_grainDuration, igrtab, iwintab, 5
+a_signal = aoutl + aoutr
+i_attack = .002
+i_release = 0.01
+xtratim i_attack + i_release
+a_declicking linsegr 0, i_attack, 1, i_sustain, 1, i_release, 0
+a_signal = a_signal * i_amplitude * a_declicking * k_gain
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
-gk_Xing_level init 60
+gk_Xing_level init 10
 instr Xing
 ; Author: Andrew Horner
 i_instrument = p1
@@ -731,40 +684,93 @@ i_release = 0.01
 xtratim i_attack + i_release
 a_declicking linsegr 0, i_attack, 1, i_sustain, 1, i_release, 0
 a_signal = a_signal * i_amplitude * a_declicking * k_gain
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
 a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
+#endif
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
-instr Xanadu3 ; Xanadu instr 3
-adamping linseg 0, .003, 1, p3 - .008, 1, .005, 0
-iHz,kHz,iamplitude,idB NoteOn p4, p5, 55
-ishift = 1.5 / 1200.0
-kpch = kHz
-koct = octcps(kpch)
-;amodi linseg 0, p3/3, 5, p3/3, 3, p3/3, 0 ; ADSR envelope for I
-amodi linseg 0, p3/3, 1.37, p3/3, 0.43, p3/3, 0 ; ADSR envelope for I
-ip6 = 1.2
-ip7 = 0.8
-amodr linseg ip6, p3, ip7 ; r moves from p6->p7 in p3 sec.
-a1 = amodi * (amodr - 1 / amodr) / 2
-a1ndx = abs(a1 * 2 / 20) ; a1*2 is normalized from 0-1.
-a2 = amodi * (amodr + 1 / amodr) / 2
-a3 tablei a1ndx, giln, 1 ; lookup tbl in f3, normal index
-ao1 poscil3 a1, kpch, gicosine
+gk_FMModulatedChorus_level init 0
+gi_FMModulatedChorus_attack init 0.003
+gi_FMModulatedChorus_release init 0.01
+gk_FMModulatedChorus_midi_dynamic_range init 127
+gi_FMModulatedChorus_ln ftgen 0, 0, 65537, -12, 20.0 ; Unscaled ln(I(x)) from 0 to 20.0.
+gi_FMModulatedChorus_cosine ftgen 0, 0, 65537, 11, 1 ; Cosine wave. Get that noise down on the most widely used table!
+gi_FMModulatedChorus_sine ftgen 0, 0, 65537, 10, 1
+instr FMModulatedChorus
+//////////////////////////////////////////////
+// Original by Hans Mikelson.
+// Adapted by Michael Gogins.
+//////////////////////////////////////////////
+i_instrument = p1
+i_time = p2
+i_sustain = p3
+xtratim gi_FMModulatedChorus_attack + gi_FMModulatedChorus_release
+i_duration = p3
+i_midi_key = p4
+i_midi_dynamic_range = i(gk_FMModulatedChorus_midi_dynamic_range)
+i_midi_velocity = p5 * i_midi_dynamic_range / 127 + (63.6 - i_midi_dynamic_range / 2)
+k_space_front_to_back = p6
+k_space_left_to_right = p7
+k_space_bottom_to_top = p8
+i_phase = p9
+i_frequency = cpsmidinn(i_midi_key)
+; Adjust the following value until "overall amps" at the end of performance is about -6 dB.
+i_level_correction = 85.2
+i_normalization = ampdb(-i_level_correction) / 2
+i_amplitude = ampdb(i_midi_velocity) * i_normalization
+k_gain = ampdb(gk_FMModulatedChorus_level)
+i_modr_start = 0.3
+i_modr_end = 2.2
+; shift it.
+ishift = 4.0 / 12000
+; convert parameter 5 to oct.
+ioct = i_midi_key
+akadsr linsegr 0, gi_FMModulatedChorus_attack, 1, i_sustain, 1, gi_FMModulatedChorus_release, 0
+akmodi linseg 0, gi_FMModulatedChorus_attack, 5, i_sustain, 2, gi_FMModulatedChorus_release, 0
+; r moves from i_modr_start to i_modr_end in p3 secs.
+akmodr linseg i_modr_start, i_sustain, i_modr_end
+a1 = akmodi * (akmodr - 1 / akmodr) / 2
+; a1*2 is argument normalized from 0-1.
+a1ndx = abs(a1 * 2 / 20)
+a2 = akmodi * (akmodr + 1 / akmodr) / 2
+a3 tablei a1ndx, gi_FMModulatedChorus_ln, 1
+ao1 oscili a1, i_frequency, gi_FMModulatedChorus_cosine
 a4 = exp(-0.5 * a3 + ao1)
-ao2 poscil3 a2 * kpch, kpch, gicosine
-aoutl poscil3 1 * a4, ao2 + cpsoct(ishift), gisine
-aoutr poscil3 1 * a4, ao2 + cpsoct(ishift), gisine
-aleft = aoutl * iamplitude
-aright = aoutr * iamplitude
-outleta "outleft", aleft * adamping
-outleta "outright", aright * adamping
+; Cosine
+ao2 oscili a2 * i_frequency, i_frequency, gi_FMModulatedChorus_cosine
+; Final output left
+aoutl oscili 1 * akadsr * a4, ao2 + cpsmidinn(ioct + ishift), gi_FMModulatedChorus_sine
+; Final output right
+aoutr oscili 1 * akadsr * a4, ao2 + cpsmidinn(ioct - ishift), gi_FMModulatedChorus_sine
+asignal = aoutl + aoutr
+a_signal = asignal * i_amplitude
+a_declicking linsegr 0, gi_FMModulatedChorus_attack, 1, i_sustain, 1, gi_FMModulatedChorus_release, 0
+a_signal = a_signal * i_amplitude * a_declicking * k_gain
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
-gk_FMBell_level init 40
+gk_FMBell_level init 0
+gi_FMBell_cosine ftgen 0, 0, 65537, 11, 1
 instr FMBell
 ; Authors: John ffitch, Michael Gogins
 i_instrument = p1
@@ -785,13 +791,12 @@ kc1 = 5
 kc2 = 5
 kvdepth = 0.025
 kvrate = 5.1
-icosine ftgenonce 0, 0, 65536, 11, 1
-ifn1 = icosine
-ifn2 = icosine
-ifn3 = icosine
-ifn4 = icosine
-ivfn = icosine
-aout fmbell 1, i_frequency, kc1, kc2, kvdepth, kvrate, ifn1, ifn2, ifn3, ifn4, ivfn
+ifn1 = gi_FMBell_cosine
+ifn2 = gi_FMBell_cosine
+ifn3 = gi_FMBell_cosine
+ifn4 = gi_FMBell_cosine
+ivfn = gi_FMBell_cosine
+aout fmbell i_amplitude, i_frequency, kc1, kc2, kvdepth, kvrate, ifn1, ifn2, ifn3, ifn4, ivfn
 aenv transegr 0.0, .003, -6, 1.0, 9, -6, 0
 a_signal = aout * aenv
 i_attack = .0005  
@@ -799,17 +804,25 @@ i_sustain = p3
 i_release = 0.01
 xtratim i_attack + i_release
 a_declicking linsegr 0, i_attack, 1, i_sustain, 1, i_release, 0
-a_signal = a_signal * i_amplitude * a_declicking * k_gain * 1.2
+a_signal = a_signal * a_declicking * k_gain * 1.2
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
 a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
+#endif
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
 gk_Reverb_feedback init 0.875
 gk_Reverb_wet init 0.25
 gi_Reverb_delay_modulation init 0.0075
-gk_Reverb_frequency_cutoff init 16000
+gk_Reverb_frequency_cutoff init 14000
 instr ReverbSC
 gk_Reverb_dry = 1.0 - gk_Reverb_wet
 aleftin init 0
@@ -826,29 +839,26 @@ outleta "outright", arightoutmix
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
-instr MasterOutput ; Master output
-igain = p4
-ifade = p5
-iclip = p6
+gk_MasterOutput_level init -15
+gS_MasterOutput_filename init ""
+instr MasterOutput
 aleft inleta "inleft"
 aright inleta "inright"
-; Applies a bass enhancement, compression and fadeout
-; to the whole piece, outputs signals, and clears the mixer.
-; Receive audio from the master mixer buss.
-; Enhance the bass.
-aleft butterlp aleft, 100
-aright butterlp aright, 100
-aleft = aleft * 1.5 + aleft
-aright= aright * 1.5 + aright
-aleft = aleft * igain
-aright = aright * igain
-;aleft clip aleft, 0, iclip
-;aright clip aright, 0, iclip
-; Remove DC bias.
-aleft dcblock aleft
-aright dcblock aright
-; Output audio.
-outs aleft, aright
+k_gain = ampdb(gk_MasterOutput_level)
+printks2 "Master gain: %f\\n", k_gain
+iamp init 1
+aleft butterlp aleft, 18000
+aright butterlp aright, 18000
+outs aleft * k_gain, aright * k_gain
+; We want something that will play on my phone.
+i_amplitude_adjustment = ampdbfs(-3) / 32767
+i_filename_length strlen gS_MasterOutput_filename
+if i_filename_length > 0 goto filename_exists
+goto filename_endif
+filename_exists:
+prints sprintf("Output filename: %s\\n", gS_MasterOutput_filename)
+fout gS_MasterOutput_filename, 18, aleft * i_amplitude_adjustment, aright * i_amplitude_adjustment
+filename_endif:
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 '''
@@ -856,7 +866,6 @@ endin
 model.setCsoundOrchestra(csoundOrchestra)
 model.setCsoundCommand(csoundCommand)
 model.generate()
-#model.createCsoundScore()
 model.performMaster()
 if rendering == 'soundfile':
     model.translateMaster()
