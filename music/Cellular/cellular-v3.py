@@ -92,8 +92,8 @@ def readMeasure(number):
 
 def buildTrack(voiceleadingNode, sequence, channel, bass, time_offset, pan):
     global repetitions
-    tempo = 3/2
-    scale = CsoundAC.Scale("D major")
+    tempo = 1.5
+    scale = CsoundAC.Scale("Ab major")
     chord = scale.chord(1, 4)
     cumulativeTime = 1.0 + time_offset
     for i in range(1, 16):
@@ -106,7 +106,7 @@ def buildTrack(voiceleadingNode, sequence, channel, bass, time_offset, pan):
             count = 0
             # When we pick a number of repetitions for a measure, we see if 
             # if the current chord can be a pivot chord, and if so, we choose 
-            # of the possible modulations to perform.
+            # one of the possible modulations to perform.
             if (scale_count > 1):
                 random_index = random.randint(0, scale_count -1)
                 for s in scales:
@@ -416,7 +416,7 @@ gk_ZakianFlute_level init 8
 gk_PianoOutPianoteq_level init -3
 gk_FMWaterBell_level init 10
 gk_PianoOutFluidsynth_level init -1
-gk_Harpsichord_level init 6
+gk_Harpsichord_level init 11
 gk_Rhodes_level init 12
 gk_Reverb_wet init 0.25
 gk_Reverb_feedback init 0.85
