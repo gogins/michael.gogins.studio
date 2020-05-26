@@ -24,7 +24,7 @@ Cage in that I assign different different harmonies to each constellation.
 Thus, my piece is not atonal but quasi-tonal.
 
 Version 2 of this piece uses the CsoundAC.Scale class to generate the 
-harmony. Each of the constellations is in a different key, and within 
+harmony. Some of the constellations are in different keys, and within 
 each constellation, there is a separate chord progression.
 
 Copyright (C) 2014-2020 by Michael Gogins.
@@ -80,6 +80,7 @@ model = CsoundAC.MusicModel()
 model.setTitle("Zodiac-v2")
 model.setAuthor("Michael Gogins")
 model.setArtist("Michael Gogins")
+model.setYear("2020")
 model.generateAllNames()
 score = model.getScore()
 
@@ -89,15 +90,15 @@ sections = []
 time = 0.
 duration = 30.
 print('Pisces...')
-sections.append(['Alpha_Piscium.tsv',       time, duration, 36., 60., 60., 15., .1, .9, [-2, -2, -8, 2, -2, 1]])
+sections.append(['Alpha_Piscium.tsv',       time, duration, 36., 60., 60., 15., .1, .9, [-2, -2, -10, -2, 4]])
 time = time + duration + 4
 duration = 30.
 print('Aries...')
-sections.append(['Alpha_Arietis.tsv',       time, duration, 36., 60., 60., 15., .1, .9, [-2, -2, -8, 3, -2, 1]])
+sections.append(['Alpha_Arietis.tsv',       time, duration, 36., 60., 60., 15., .1, .9, [-2, -2, -2, -2, -2, 3]])
 time = time + duration + 4
 duration = 30.
 print('Taurus...')
-sections.append(['Aldebaran.tsv',           time, duration, 36., 60., 60., 15., .1, .9, [-2, -12, -8, 2, -2, 3]])
+sections.append(['Aldebaran.tsv',           time, duration, 36., 60., 60., 15., .1, .9, [-2, -2, -8, 2, -8, 3]])
 time = time + duration + 4
 duration = 30.
 print('Gemini...')
@@ -117,7 +118,7 @@ sections.append(['Alpha_Libris.tsv',        time, duration, 36., 60., 60., 15., 
 time = time + duration + 4
 duration = 30.
 print('Scorpio...')
-sections.append(['Alpha_Scorpii.tsv',       time, duration, 36., 60., 60., 15., .1, .9, [-2, -2, -8, 2, -2, 3]])
+sections.append(['Alpha_Scorpii.tsv',       time, duration, 36., 60., 60., 15., .1, .9, [-2, -2, -8, 2, -8, 3]])
 time = time + duration + 4
 duration = 30.
 print('Ophiuchus...')
@@ -125,11 +126,11 @@ sections.append(['Rasalhague.tsv',          time, duration, 36., 60., 60., 15., 
 time = time + duration + 4
 duration = 30.
 print('Sagittarius...')
-sections.append(['Rukbat.tsv',              time, duration, 36., 60., 60., 15., .1, .9, [-6, -2, -8, 2, -2, 3]])
+sections.append(['Rukbat.tsv',              time, duration, 36., 60., 60., 15., .1, .9, [-6, -2, -8, -4, -2, 3]])
 time = time + duration + 4
 duration = 30.
 print('Capricorn...')
-sections.append(['Alpha_Capricornis.tsv',   time, duration, 36., 60., 60., 15., .1, .9, [-12, -12, -8, 3, -2, 3]])
+sections.append(['Alpha_Capricornis.tsv',   time, duration, 36., 60., 60., 15., .1, .9, [-2, -2, -8, 2, -8, 3]])
 time = time + duration + 4
 duration = 30.
 print('Aquarius...')
@@ -137,12 +138,12 @@ sections.append(['Alpha_Aquarii.tsv',       time, duration, 36., 60., 60., 15., 
 time = time + duration + 4
 duration = 30.
 print('Leo...')
-sections.append(['Regulus.tsv',             time, duration, 36., 60., 60., 15., .1, .9, [-2, -6, 3, -2 -2, -8, 2, -2, 3]])
+sections.append(['Regulus.tsv',             time, duration, 36., 60., 60., 15., .1, .9, [-2, -6, 3, -2, -8, 3, 0, 0]])
 
 instrumentsForSpectralTypes = {' ':0, 'O':1, 'B':2, 'A':3, 'F':4, 'G':5, 'K':6, 'M':7}
 
-scale = CsoundAC.Scale("D major")
-chord = scale.chord(1, 4)
+scale = CsoundAC.Scale("A major")
+chord = scale.chord(1, 5)
 
 '''
 Given a scale and chord, if that chord also exists in one or more other keys,
@@ -205,7 +206,9 @@ def readCatalog(section, voiceleadingNode):
                 else:
                     instrument = 8
                 score.getScore().append(time, velocity * 0.001, 144.0, instrument, key, velocity, 0.0, pan)
-            print(score.getScore().toString())
+                score_ = score.getScore()
+                score_[score_.size() -1].setProperty("section", str(section))
+            #print(score.getScore().toString())
             scoreTime = section[1]
             scoreDuration = section[2]
             shortest = 4.0
@@ -237,9 +240,9 @@ def readCatalog(section, voiceleadingNode):
             secondsPerChord = scoreDuration / len(progression)
             chordTime = scoreTime
             for steps in progression:
-                chord = scale.transpose_degrees(chord, steps)
                 print("Time: {:9.4f} chord: {} name: {}".format(chordTime, chord.toString(), chord.eOP().name()))
                 voiceleadingNode.chord(chord, chordTime)
+                chord = scale.transpose_degrees(chord, steps)
                 chordTime = chordTime + secondsPerChord
             scale = modulate(scale, chord)
             return rescale
@@ -291,7 +294,7 @@ connect "FMModulatedChorus", "outright", "ReverbSC", "inright"
 connect "ReverbSC", "outleft", "MasterOutput", "inleft"
 connect "ReverbSC", "outright", "MasterOutput", "inright"
 
-gk_Harpsichord_level init -15
+gk_Harpsichord_level init -13
 gk_Harpsichord_midi_dynamic_range init 127
 gi_Harpsichord_harptable ftgen 0, 0, 65537, 7, -1, 1024, 1, 1024, -1
 instr Harpsichord
@@ -336,10 +339,10 @@ a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d %s\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1), strget(p12)
 endin
 
-gk_FilteredSines2_level init 0
+gk_FilteredSines2_level init -4
 gi_FilteredSines2_attack init 1
 gi_FilteredSines2_release init 1
 gi_FilteredSines2_bergeman ftgen 0, 0, 65537, 10, .28, 1, .74, .66, .78, .48, .05, .33, 0.12, .08, .01, .54, 0.19, .08, .05, 0.16, .01, 0.11, .3, .02, 0.2
@@ -416,10 +419,10 @@ a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d %s\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1), strget(p12)
 endin
 
-gk_FilteredSines3_level init 0
+gk_FilteredSines3_level init -2
 gi_FilteredSines3_attack init 1
 gi_FilteredSines3_release init 1
 gi_FilteredSines3_bergeman ftgen 0, 0, 65537, 10, .28, 1, .74, .66, .78, .48, .05, .33, 0.12, .08, .01, .54, 0.19, .08, .05, 0.16, .01, 0.11, .3, .02, 0.2
@@ -496,10 +499,10 @@ a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d %s\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1), strget(p12)
 endin
 
-gk_FMModerate_level init 6
+gk_FMModerate_level init -4
 gk_FMModerate_midi_dynamic_range init 127
 gi_FMModerate_cosine ftgen 0, 0, 65537, 11, 1
 instr FMModerate
@@ -552,7 +555,7 @@ a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d %s\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1), strget(p12)
 endin
 
 gk_Blower_level init 45
@@ -632,10 +635,10 @@ a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d %s\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1), strget(p12)
 endin
 
-gk_Xing_level init 10
+gk_Xing_level init 0
 instr Xing
 ; Author: Andrew Horner
 i_instrument = p1
@@ -695,7 +698,7 @@ a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d %s\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1), strget(p12)
 endin
 
 gk_FMModulatedChorus_level init 0
@@ -729,9 +732,9 @@ i_normalization = ampdb(-i_level_correction) / 2
 i_amplitude = ampdb(i_midi_velocity) * i_normalization
 k_gain = ampdb(gk_FMModulatedChorus_level)
 i_modr_start = 0.3
-i_modr_end = 2.2
+i_modr_end = 4.2
 ; shift it.
-ishift = 4.0 / 12000
+ishift = 5.0 / 12000
 ; convert parameter 5 to oct.
 ioct = i_midi_key
 akadsr linsegr 0, gi_FMModulatedChorus_attack, 1, i_sustain, 1, gi_FMModulatedChorus_release, 0
@@ -766,7 +769,7 @@ a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d %s\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1), strget(p12)
 endin
 
 gk_FMBell_level init 0
@@ -816,7 +819,7 @@ a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d %s\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1), strget(p12)
 endin
 
 gk_Reverb_feedback init 0.875
@@ -839,7 +842,7 @@ outleta "outright", arightoutmix
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
-gk_MasterOutput_level init -15
+gk_MasterOutput_level init 6
 gS_MasterOutput_filename init ""
 instr MasterOutput
 aleft inleta "inleft"
