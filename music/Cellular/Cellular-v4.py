@@ -1,5 +1,5 @@
 '''
-Cellular version 3
+Cellular version 4
 
 Copyright (C) 2019 by Michael Gogins
 
@@ -7,11 +7,15 @@ Mozart's musical dice game of 1787 is taken apart and put back together along
 the lines of Terry Riley's "In C" using Python, re-harmonized using the 
 CsoundAC.Scale class, and rendered with a built-in Csound orchestra that 
 uses the Pianoteq synthesized piano and other Csound instruments.
+
+Comments in the code are provided in an attempt to clarify what is going on.
 '''
 print(__doc__)
 import CsoundAC
 import os
 import random
+# Using the same random seed for each performance makes the performance 
+# deterministic, not random.
 random.seed(29389)
 import signal
 import string
@@ -21,7 +25,6 @@ import traceback
 print('Set "rendering" to:     "soundfile" or "audio".')
 print
 rendering = 'audio'
-
 
 model = CsoundAC.MusicModel()
 score = model.getScore()
@@ -49,9 +52,9 @@ csound_command = rendering_commands[rendering]
 print('Csound command line:    %s' % csound_command)
 print
 
-# This is Mozart's original minuet table for his musical dice game. We do not 
-# use his trio table. We preserve Mozart's idiosyncratic (by our standards) 
-# indexing ranges. 
+# This is Mozart's original minuet table for his musical dice game; his trio 
+# table is not used. Mozart's idiosyncratic (by our standards) indexing scheme 
+# is preserved.
 
 minuet_table = {}
 minuet_table[ 2] = { 1: 96,  2: 22,  3:141,  4: 41,  5:105,  6:122,  7: 11,  8: 30,  9: 70, 10:121, 11: 26, 12:  9, 13:112, 14: 49, 15:109, 16: 14}
@@ -70,18 +73,22 @@ def reverse_enumeration(L):
    for index in reversed(range(len(L))):
       yield index, L[index]
    
-# These individually varied repetitions are the process used by Terry Riley's 
-# "In C." Here, we randomly choose between 1 and 6 repetitions for each 
-# measure of one complete circuit through a subset of the minuet table.
+# These individually varied repetitions implement the process used by Terry 
+# Riley's "In C." Randomly choose between 1 and 6 repetitions for each measure 
+# of one complete circuit through a chosen subset of the minuet table. The 
+# number of repetitions of each measure may well differ between the voices, 
+# and this creates many differential canons between the voices.
 # NOTE: A "measure" is Mozart's measure to be played for N repetitions, a 
 # "bar" is one measure played one time.
 
 rows_to_play = 4
 columns_to_play = 16
 measures_to_play = rows_to_play * columns_to_play
+minimum_repetitions_per_measure = 1
+maximum_repetitions_per_measure = 6
 repetitions_for_measures = []
 for i in range(measures_to_play):
-    repetitions_for_measures.append(1 + int(random.random() * 6.0))     
+    repetitions_for_measures.append(random.randint(minimum_repetitions_per_measure, maximum_repetitions_per_measure))     
     
 def read_measure(number):
     score_node = CsoundAC.ScoreNode()
@@ -97,30 +104,32 @@ def read_measure(number):
 
 tempo = 1.5
 
-def build_track(voiceleading_node, sequence, instrument, bass, time_offset, pan):
+def build_voice(voiceleading_node, sequence, instrument, bass, time_offset, pan):
     global repetitions_for_measures
     global tempo
     global off_time
-    # We ensure that each track does a different sequence of repetitions, as 
-    # in "In C."
+    # Ensure that each voice plays a different sequence of repetitions, as in 
+    # "In C"; yet shuffling ensures the same total number of bars for each 
+    # voice.
     if len(repetitions_for_measures) > 0:
         random.shuffle(repetitions_for_measures)
     bars_total = sum(repetitions_for_measures)
     print("Instrument: {:3} measures: {} bars: {} repetitions_for_measures: {}".format(instrument, len(repetitions_for_measures), bars_total, repetitions_for_measures))    
     print()
     scale = CsoundAC.Scale("D major")
-    chord = scale.chord(1, 3)
+    chord = scale.chord(1, 4)
     bars_played = 0
     real_time = 1.0
     cumulative_time = real_time + time_offset
-    bass = 48.
-    bass_at_end = 34.
+    # Make both pitch range and dynamic range get bigger through time.
+    bass = bass
+    bass_at_end = bass - 5
     bass_increment_per_bar = (bass_at_end - bass) / bars_total
-    range_ = 12.
-    range_at_end = 70.
+    range_ = 48.
+    range_at_end = 52.
     range_increment_per_bar = (range_at_end - range_) / bars_total
     piano = 60.
-    piano_at_end = 50.
+    piano_at_end = 56.
     piano_increment_per_bar = (piano_at_end - piano) / bars_total
     dynamic_range = 20.
     dynamic_range_at_end = 30.
@@ -135,10 +144,11 @@ def build_track(voiceleading_node, sequence, instrument, bass, time_offset, pan)
             scales = scale.modulations(chord)
             scale_count = len(scales)
             count = 0
-            # When we pick a number of repetitions for a measure, we see if 
-            # the current chord can be a pivot chord, and if so, we choose 
-            # one of the possible modulations to perform.
-            if (scale_count > 1):
+            # After picking a number of repetitions for a measure, find if the 
+            # current chord can be a pivot chord, and if so, choose one of the 
+            # possible modulations to perform. Do this for the first voice 
+            # only, but apply it to all voices.
+            if (scale_count > 1 and time_offset == 0):
                 random_index = random.randint(0, scale_count -1)
                 for s in scales:
                     print("Possible modulation at: {:9.4f} {} {}".format(cumulative_time, s.toString(), s.name()))
@@ -146,19 +156,17 @@ def build_track(voiceleading_node, sequence, instrument, bass, time_offset, pan)
                         scale = s  
                         print("             Chose modulation to: {} {}".format(scale.toString(), scale.name()))
                     count = count + 1
-                print(" ")
+                print()
             for k in range(repetitions_for_measure):
                 if time_offset == 0:
-                    # Once the scale is chosen, we perform root progressions 
+                    # Once the scale is chosen, perform root progressions 
                     # within the scale; away from the tonic in multiples of -2
                     # scale degrees, back to the tonic in multiples of 1 scale 
                     # degree with a preference for 3 steps (as used by V to I). 
-                    # These root progressions are weighted.
+                    # These root progressions are random but weighted.
                     progression = random.choices([-2, -4, -6, -8, -10, -12, 3, 6], [10, 3, 2, 1, 1, 1, 8, 3], k=1)
                     steps = progression[0]
-                    print("choice: {} steps: {}".format(progression, steps))
                     chord = scale.transpose_degrees(chord, steps)
-                    print("{:9.4f} by {:4}: {}".format(cumulative_time, steps, chord.eOP().name()))
                     voiceleading_node.chord(chord, cumulative_time)
                 measure = read_measure(minuet_table[minuet_row][minuet_column])
                 score_for_measure = measure.getScore()
@@ -170,10 +178,10 @@ def build_track(voiceleading_node, sequence, instrument, bass, time_offset, pan)
                 bass = bass + bass_increment_per_bar
                 range_ = range_ + range_increment_per_bar
                 rescale.setRescale(CsoundAC.Event.KEY, bool(1), bool(1), bass, range_)
-                rescale.setRescale(CsoundAC.Event.PAN, bool(1), bool(0), float(pan), 0)
                 piano = piano + piano_increment_per_bar
                 dynamic_range = dynamic_range + dynamic_range_increment_per_bar
                 rescale.setRescale(CsoundAC.Event.VELOCITY, bool(1), bool(1), piano, dynamic_range)
+                rescale.setRescale(CsoundAC.Event.PAN, bool(1), bool(0), float(pan), 0)
                 rescale.thisown = 0
                 rescale.addChild(measure)
                 bars_played = bars_played + 1
@@ -184,24 +192,33 @@ def build_track(voiceleading_node, sequence, instrument, bass, time_offset, pan)
     print()
 
 sequence = CsoundAC.Rescale()
+sequence.setRescale(CsoundAC.Event.VELOCITY,   bool(1), bool(1), 66, 9)
+# The actual harmony is applied after the notes for all voices have been '
+# generated.
 voiceleading_node = CsoundAC.VoiceleadingNode()
 voiceleading_node.addChild(sequence);
 model.addChild(voiceleading_node)
-sequence.setRescale(CsoundAC.Event.VELOCITY,   bool(1), bool(1), 60, 16)
-
-timeoffset = (tempo * 6.0) / 4.0
-build_track(voiceleading_node, sequence,  2, 34, timeoffset * 0.0, 1/7)
-build_track(voiceleading_node, sequence, 56, 34, timeoffset * 1.0, 2/7)
-build_track(voiceleading_node, sequence, 27, 34, timeoffset * 2.0, 3/7)
-build_track(voiceleading_node, sequence, 29, 34, timeoffset * 4.0, 4/7)
-build_track(voiceleading_node, sequence, 17, 34, timeoffset * 5.0, 5/7)
-build_track(voiceleading_node, sequence,  1, 34, timeoffset * 3.0, 6/7)
+initial_bass = 34
+# Stagger starting times for each voice to create canons at the very beginning.
+time_offset = (tempo * 6.0) / 4.0
+# PianoNotePianoteq.
+build_voice(voiceleading_node, sequence,  2, initial_bass, time_offset * 0.0, 1/7)
+# Zakian flute.
+build_voice(voiceleading_node, sequence, 56, initial_bass, time_offset * 1.0, 2/7)
+# FMWaterBell.
+build_voice(voiceleading_node, sequence, 27, initial_bass, time_offset * 2.0, 3/7)
+# Harpsichord.
+build_voice(voiceleading_node, sequence, 29, initial_bass, time_offset * 4.0, 4/7)
+# ChebyshevMelody.
+build_voice(voiceleading_node, sequence, 17, initial_bass, time_offset * 5.0, 5/7)
+# Rhodes.
+build_voice(voiceleading_node, sequence, 40, initial_bass, time_offset * 3.0, 6/7)
 
 orc = '''
 sr = 48000
 ksmps = 128
 nchnls = 2
-0dbfs = 3
+0dbfs = 6
 
 ; Ensure the same random stream for each rendering.
 ; rand, randh, randi, rnd(x) and birnd(x) are not affected by seed.
@@ -212,15 +229,15 @@ seed 88818145
 // the note and the audio patches.
 
 gi_Fluidsynth fluidEngine 0, 0
-gi_FluidSteinway fluidLoad "Steinway_C.sf2", gi_Fluidsynth, 1
-fluidProgramSelect gi_Fluidsynth, 0, gi_FluidSteinway, 0, 1
+gi_FluidSteinway fluidLoad "OmegaGMGS2.sf2", gi_Fluidsynth, 1
+; fluidProgramSelect ienginenum, ichannelnum, isfnum, ibanknum, ipresetnum
+fluidProgramSelect gi_Fluidsynth, 0, gi_FluidSteinway, 0, 14
 
 gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 6/amd64/Pianoteq\ 6.so", 0
 vstinfo gi_Pianoteq 
 
 alwayson "PianoOutPianoteq"
 alwayson "PianoOutFluidsynth"
-;alwayson "MVerb"
 alwayson "ReverbSC"
 alwayson "MasterOutput"
 
@@ -438,12 +455,19 @@ connect "ReverbSC", "outright", "MasterOutput", "inright"
 connect "MVerb", "outleft", "MasterOutput", "inleft"
 connect "MVerb", "outright", "MasterOutput", "inright"
 
-gk_ChebyshevMelody_level init 5
-gk_ZakianFlute_level init 8
-gk_PianoOutPianoteq_level init -2
-gk_FMWaterBell_level init 10
-gk_PianoOutFluidsynth_level init 6
-gk_Harpsichord_level init 11
+; Very important for levels to be evenly balanced _on average_! 
+; Enables instruments to come forward and recede according to their 
+; response to MIDI velocity.
+
+gk_ChebyshevMelody_level init 11
+gk_ZakianFlute_level init 15
+gk_PianoOutPianoteq_level init 0
+gk_FMWaterBell_level init 15
+gk_Harpsichord_level init 11 ;11
+gk_Rhodes_level init 17;15
+
+gk_PianoOutFluidsynth_level init -60 ;8
+gk_Plucked_level init -60 ;12
 
 gk_Reverb_wet init 0.25
 gk_Reverb_feedback init 0.75
@@ -454,8 +478,8 @@ gk_Reverb_frequency_cutoff init 18000
 model.setCsoundOrchestra(orc)
 model.setCsoundCommand(csound_command)
 model.generate()
-# Fix ending. Instruments would drop out, we want them to sustain till the 
-# end. Some of course will decay first.
+# Fix ending. Instruments would drop out, sustain till the end. Some notes 
+# course will decay first.
 score = model.getScore()
 score_duration = score.getDuration() + 6.
 sounding = set()
