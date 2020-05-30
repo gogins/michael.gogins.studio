@@ -1,7 +1,7 @@
 '''
 Cellular version 4
 
-Copyright (C) 2019 by Michael Gogins
+Copyright (C) 2020 by Michael Gogins
 
 Mozart's musical dice game of 1787 is taken apart and put back together along 
 the lines of Terry Riley's "In C" using Python, re-harmonized using the 
@@ -9,6 +9,12 @@ CsoundAC.Scale class, and rendered with a built-in Csound orchestra that
 uses the Pianoteq synthesized piano and other Csound instruments.
 
 Comments in the code are provided in an attempt to clarify what is going on.
+
+The source code for the chord and scale classes used here (inspired by the 
+music theory of Dmitri Tymoczko), can be found at:
+
+https://github.com/gogins/csound-extended/blob/develop/CsoundAC/ChordSpace.hpp
+
 '''
 print(__doc__)
 import CsoundAC
@@ -16,7 +22,7 @@ import os
 import random
 # Using the same random seed for each performance makes the performance 
 # deterministic, not random.
-random.seed(29389)
+random.seed(38493)
 import signal
 import string
 import sys
@@ -24,7 +30,7 @@ import traceback
 
 print('Set "rendering" to:     "soundfile" or "audio".')
 print
-rendering = 'audio'
+rendering = "soundfile"
 
 model = CsoundAC.MusicModel()
 score = model.getScore()
@@ -45,7 +51,7 @@ print
 
 print('Rendering option:       %s' % rendering)
 rendering_commands = {
-    'soundfile':    'csound -d -r 48000 -k 128 -m195 -+msg_color=0 -RWZdfo %s' % (soundfile_name),
+    'soundfile':    'csound -d -r 96000 -k 100 -m195 -+msg_color=0 -RWZdfo %s' % (soundfile_name),
     'audio':        'csound -d -r 48000 -k 128 -m195 -+msg_color=0 -o%s'       % (dac_name),
 }
 csound_command = rendering_commands[rendering]
@@ -54,7 +60,10 @@ print
 
 # This is Mozart's original minuet table for his musical dice game; his trio 
 # table is not used. Mozart's idiosyncratic (by our standards) indexing scheme 
-# is preserved.
+# is preserved. Rather than pick measures by throwing dice according to 
+# Mozart's original instructions, each voice in this piece plays each measure 
+# in each column on each row in turn, but for a randomly chosen number of 
+# repetitions in each voice, as in Terry Riley's "In C."
 
 minuet_table = {}
 minuet_table[ 2] = { 1: 96,  2: 22,  3:141,  4: 41,  5:105,  6:122,  7: 11,  8: 30,  9: 70, 10:121, 11: 26, 12:  9, 13:112, 14: 49, 15:109, 16: 14}
@@ -74,10 +83,11 @@ def reverse_enumeration(L):
       yield index, L[index]
    
 # These individually varied repetitions implement the process used by Terry 
-# Riley's "In C." Randomly choose between 1 and 6 repetitions for each measure 
-# of one complete circuit through a chosen subset of the minuet table. The 
-# number of repetitions of each measure may well differ between the voices, 
-# and this creates many differential canons between the voices.
+# Riley's "In C:" In each voice, randomly choose between 1 and 7 repetitions 
+# for each measure of one complete circuit through a chosen subset of the 
+# minuet table. The number of repetitions of each measure will often differ 
+# between the voices, and this creates many differential canons between the 
+# voices.
 # NOTE: A "measure" is Mozart's measure to be played for N repetitions, a 
 # "bar" is one measure played one time.
 
@@ -85,7 +95,7 @@ rows_to_play = 4
 columns_to_play = 16
 measures_to_play = rows_to_play * columns_to_play
 minimum_repetitions_per_measure = 1
-maximum_repetitions_per_measure = 6
+maximum_repetitions_per_measure = 7
 repetitions_for_measures = []
 for i in range(measures_to_play):
     repetitions_for_measures.append(random.randint(minimum_repetitions_per_measure, maximum_repetitions_per_measure))     
@@ -104,20 +114,22 @@ def read_measure(number):
 
 tempo = 1.5
 
+scale = CsoundAC.Scale("D major")
+chord = scale.chord(1, 4)
+
 def build_voice(voiceleading_node, sequence, instrument, bass, time_offset, pan):
     global repetitions_for_measures
     global tempo
     global off_time
+    global chord
+    global scale
     # Ensure that each voice plays a different sequence of repetitions, as in 
-    # "In C"; yet shuffling ensures the same total number of bars for each 
-    # voice.
-    if len(repetitions_for_measures) > 0:
-        random.shuffle(repetitions_for_measures)
+    # "In C"; yet shuffling ensures that each voice plays the same number of 
+    # bars.
+    random.shuffle(repetitions_for_measures)
     bars_total = sum(repetitions_for_measures)
     print("Instrument: {:3} measures: {} bars: {} repetitions_for_measures: {}".format(instrument, len(repetitions_for_measures), bars_total, repetitions_for_measures))    
     print()
-    scale = CsoundAC.Scale("D major")
-    chord = scale.chord(1, 4)
     bars_played = 0
     real_time = 1.0
     cumulative_time = real_time + time_offset
@@ -147,7 +159,7 @@ def build_voice(voiceleading_node, sequence, instrument, bass, time_offset, pan)
             # After picking a number of repetitions for a measure, find if the 
             # current chord can be a pivot chord, and if so, choose one of the 
             # possible modulations to perform. Do this for the first voice 
-            # only, but apply it to all voices.
+            # only, but it will be applied to all voices.
             if (scale_count > 1 and time_offset == 0):
                 random_index = random.randint(0, scale_count -1)
                 for s in scales:
@@ -199,20 +211,26 @@ voiceleading_node = CsoundAC.VoiceleadingNode()
 voiceleading_node.addChild(sequence);
 model.addChild(voiceleading_node)
 initial_bass = 34
-# Stagger starting times for each voice to create canons at the very beginning.
+# Stagger starting times for each voice to create a canon at the very 
+# beginning.
 time_offset = (tempo * 6.0) / 4.0
 # PianoNotePianoteq.
-build_voice(voiceleading_node, sequence,  2, initial_bass, time_offset * 0.0, 1/7)
+build_voice(voiceleading_node, sequence, 1, initial_bass, time_offset * 0.0, 1/7)
 # Zakian flute.
-build_voice(voiceleading_node, sequence, 56, initial_bass, time_offset * 1.0, 2/7)
+build_voice(voiceleading_node, sequence, 2, initial_bass, time_offset * 1.0, 2/7)
 # FMWaterBell.
-build_voice(voiceleading_node, sequence, 27, initial_bass, time_offset * 2.0, 3/7)
+build_voice(voiceleading_node, sequence, 3, initial_bass, time_offset * 2.0, 3/7)
 # Harpsichord.
-build_voice(voiceleading_node, sequence, 29, initial_bass, time_offset * 4.0, 4/7)
+build_voice(voiceleading_node, sequence, 4, initial_bass, time_offset * 4.0, 4/7)
 # ChebyshevMelody.
-build_voice(voiceleading_node, sequence, 17, initial_bass, time_offset * 5.0, 5/7)
+build_voice(voiceleading_node, sequence, 5, initial_bass, time_offset * 5.0, 5/7)
 # Rhodes.
-build_voice(voiceleading_node, sequence, 40, initial_bass, time_offset * 3.0, 6/7)
+build_voice(voiceleading_node, sequence, 6, initial_bass, time_offset * 3.0, 6/7)
+
+# No #includes are used here, all Csound instruments are defined in this very file.
+# The only non-standard external dependencies are the vst4cs opcodes, and the 
+# Pianoteq physically modeled piano VST instrument plugin. These could easily be 
+# replaced with a Fluidsynth sampled piano soundfont.
 
 orc = '''
 sr = 48000
@@ -223,256 +241,636 @@ nchnls = 2
 ; Ensure the same random stream for each rendering.
 ; rand, randh, randi, rnd(x) and birnd(x) are not affected by seed.
 
-seed 88818145
-
-// These must be initialized here to be in scope for both 
-// the note and the audio patches.
-
-gi_Fluidsynth fluidEngine 0, 0
-gi_FluidSteinway fluidLoad "OmegaGMGS2.sf2", gi_Fluidsynth, 1
-; fluidProgramSelect ienginenum, ichannelnum, isfnum, ibanknum, ipresetnum
-fluidProgramSelect gi_Fluidsynth, 0, gi_FluidSteinway, 0, 14
+seed 38493
 
 gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 6/amd64/Pianoteq\ 6.so", 0
-vstinfo gi_Pianoteq 
 
 alwayson "PianoOutPianoteq"
-alwayson "PianoOutFluidsynth"
 alwayson "ReverbSC"
 alwayson "MasterOutput"
 
-// Watch out for 8, 1, 17, and 47.
-
-gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 6/amd64/Pianoteq\ 6.so", 0
-
-#include "PianoNoteFluidsynth.inc"
-#include "PianoNotePianoteq.inc"
-
-#include "BandedWG.inc"
-#include "BarModel.inc"
-#include "BassModel.inc"
-#include "Blower.inc"
-#include "Bower.inc"
-#include "Buzzer.inc"
-#include "Cascone_ClickyFilterSweep.inc"
-#include "Cascone_FMReverseEnv.inc"
-#include "BanchoffKleinBottle.inc"
-#include "Cascone_RissetCascadeHarmonics.inc"
-#include "Cascone_SampleAndHold.inc"
-#include "Cascone_Sine.inc"
-#include "Cascone_ThreeBranch.inc"
-#include "Cascone_Water.inc"
-#include "ChebyshevMelody.inc"
-#include "ChebyshevPoly.inc"
-;;;#include "CostelloGong.inc"
-#include "DelayedPlucked.inc"
-#include "Droner.inc"
-#include "FilteredSines.inc"
-#include "FMBell.inc"
-//#include "FM_Clang_Controls.inc"
-//#include "FM_Clang.inc"
-//#include "FM_Clang_Preset.inc"
-#include "FMDroner.inc"
-#include "FMModerate2.inc"
-#include "FMModerate.inc"
-#include "FMModulatedChorus.inc"
-#include "FMWaterBell.inc"
-#include "Guitar.inc"
-#include "Harpsichord.inc"
-#include "HeavyMetal.inc"
-//#include "JackAudio.inc"
-//#include "JackNote.inc"
-#include "KarplusStrong3.inc"
-//#include "LeftReverberator.inc"
-#include "LivingstonGuitar.inc"
-#include "Melody.inc"
-//#include "MonoReverberator.inc"
-#include "Night2.inc"
-#include "Phaser.inc"
-#include "PhysicalModel2.inc"
-#include "Plucked.inc"
-#include "PulseWidthModulation.inc"
-#include "RampSaw.inc"
-//#include "Reverb1.inc"
-//#include "Reverb2.inc"
-//#include "Reverberator.inc"
-#include "Rhodes.inc"
-//#include "RightReverberator.inc"
-#include "Shiner.inc"
-//#include "SolinaChorus.inc"
-//#include "Soundfile.inc"
-//#include "Spatialize1.inc"
-//#include "Spatialize2.inc"
-//#include "Spatialize.inc"
-#include "STKBeeThree.inc"
-#include "STKBowed.inc"
-#include "STKPlucked.inc"
-#include "StringPad.inc"
-#include "Sweeper.inc"
-//#include "Template.inc"
-#include "TerrainMappedBass.inc"
-#include "TerrainMappedLead.inc"
-#include "TerrainMappedPulsar.inc"
-#include "TerrainMappedSquarish.inc"
-#include "ToneWheelOrgan.inc"
-#include "TubularBell.inc"
-//#include "WaveTerrain.inc"
-#include "WGPluck.inc"
-#include "Xing.inc"
-#include "YiString.inc"
-#include "ZakianFlute.inc"
-
-#include "FluidAudio.inc"
-#include "PianoOutFluidsynth.inc"
-#include "PianoOutPianoteq.inc"
-//#include "ParametricEQ.inc"
-//#include "Compressor.inc"
-#include "MVerb.inc"
-#include "ReverbSC.inc"
-#include "MasterOutput.inc"
-
-connect "BanchoffKleinBottle", "outleft", "ReverbSC", "inleft"
-connect "BanchoffKleinBottle", "outright", "ReverbSC", "inright"
-connect "BandedWG", "outleft", "ReverbSC", "inleft"
-connect "BandedWG", "outright", "ReverbSC", "inright"
-;connect "BarModel", "outleft", "ReverbSC", "inleft"
-;connect "BarModel", "outright", "ReverbSC", "inright"
-connect "BassModel", "outleft", "ReverbSC", "inleft"
-connect "BassModel", "outright", "ReverbSC", "inright"
-connect "Blower", "outleft", "ReverbSC", "inleft"
-connect "Blower", "outright", "ReverbSC", "inright"
-connect "Bower", "outleft", "ReverbSC", "inleft"
-connect "Bower", "outright", "ReverbSC", "inright"
-connect "Buzzer", "outleft", "ReverbSC", "inleft"
-connect "Buzzer", "outright", "ReverbSC", "inright"
-connect "Cascone_ClickyFilterSweep", "outleft", "ReverbSC", "inleft"
-connect "Cascone_ClickyFilterSweep", "outright", "ReverbSC", "inright"
-connect "Cascone_FMReverseEnv", "outleft", "ReverbSC", "inleft"
-connect "Cascone_FMReverseEnv", "outright", "ReverbSC", "inright"
-connect "Cascone_RissetCascadeHarmonics", "outleft", "ReverbSC", "inleft"
-connect "Cascone_RissetCascadeHarmonics", "outright", "ReverbSC", "inright"
-connect "Cascone_SampleAndHold", "outleft", "ReverbSC", "inleft"
-connect "Cascone_SampleAndHold", "outright", "ReverbSC", "inright"
-connect "Cascone_Sine", "outleft", "ReverbSC", "inleft"
-connect "Cascone_Sine", "outright", "ReverbSC", "inright"
-connect "Cascone_ThreeBranch", "outleft", "ReverbSC", "inleft"
-connect "Cascone_ThreeBranch", "outright", "ReverbSC", "inright"
-connect "Cascone_Water", "outleft", "ReverbSC", "inleft"
-connect "Cascone_Water", "outright", "ReverbSC", "inright"
 connect "ChebyshevMelody", "outleft", "ReverbSC", "inleft"
 connect "ChebyshevMelody", "outright", "ReverbSC", "inright"
-connect "ChebyshevPoly", "outleft", "ReverbSC", "inleft"
-connect "ChebyshevPoly", "outright", "ReverbSC", "inright"
-;;connect "CostelloGong", "outleft", "ReverbSC", "inleft"
-;;connect "CostelloGong", "outright", "ReverbSC", "inright"
-connect "Droner", "outleft", "ReverbSC", "inleft"
-connect "Droner", "outright", "ReverbSC", "inright"
-connect "FilteredSines", "outleft", "ReverbSC", "inleft"
-connect "FilteredSines", "outright", "ReverbSC", "inright"
-connect "FMBell", "outleft", "ReverbSC", "inleft"
-connect "FMBell", "outright", "ReverbSC", "inright"
-connect "FMDroner", "outleft", "ReverbSC", "inleft"
-connect "FMDroner", "outright", "ReverbSC", "inright"
-connect "FMModerate", "outleft", "ReverbSC", "inleft"
-connect "FMModerate", "outright", "ReverbSC", "inright"
-connect "FMModerate2", "outleft", "ReverbSC", "inleft"
-connect "FMModerate2", "outright", "ReverbSC", "inright"
-connect "FMModulatedChorus", "outleft", "ReverbSC", "inleft"
-connect "FMModulatedChorus", "outright", "ReverbSC", "inright"
 connect "FMWaterBell", "outleft", "ReverbSC", "inleft"
 connect "FMWaterBell", "outright", "ReverbSC", "inright"
-connect "Guitar", "outleft", "ReverbSC", "inleft"
-connect "Guitar", "outright", "ReverbSC", "inright"
 connect "Harpsichord", "outleft", "ReverbSC", "inleft"
 connect "Harpsichord", "outright", "ReverbSC", "inright"
-connect "HeavyMetal", "outleft", "ReverbSC", "inleft"
-connect "HeavyMetal", "outright", "ReverbSC", "inright"
-connect "KarplusStrong3", "outleft", "ReverbSC", "inleft"
-connect "KarplusStrong3", "outright", "ReverbSC", "inright"
-connect "Melody", "outleft", "ReverbSC", "inleft"
-connect "Melody", "outright", "ReverbSC", "inright"
-connect "Night2", "outleft", "ReverbSC", "inleft"
-connect "Night2", "outright", "ReverbSC", "inright"
-connect "Phaser", "outleft", "ReverbSC", "inleft"
-connect "Phaser", "outright", "ReverbSC", "inright"
-connect "PhysicalModel2", "outleft", "ReverbSC", "inleft"
-connect "PhysicalModel2", "outright", "ReverbSC", "inright"
-connect "PianoNoteFluidsynth", "outleft", "ReverbSC", "inleft"
-connect "PianoNoteFluidsynth", "outright", "ReverbSC", "inright"
-connect "PianoNotePianoteq", "outleft", "ReverbSC", "inleft"
-connect "PianoNotePianoteq", "outright", "ReverbSC", "inright"
-connect "Plucked", "outleft", "ReverbSC", "inleft"
-connect "Plucked", "outright", "ReverbSC", "inright"
-connect "PulseWidthModulation", "outleft", "ReverbSC", "inleft"
-connect "PulseWidthModulation", "outright", "ReverbSC", "inright"
-connect "RampSaw", "outleft", "ReverbSC", "inleft"
-connect "RampSaw", "outright", "ReverbSC", "inright"
 connect "Rhodes", "outleft", "ReverbSC", "inleft"
 connect "Rhodes", "outright", "ReverbSC", "inright"
-connect "Shiner", "outleft", "ReverbSC", "inleft"
-connect "Shiner", "outright", "ReverbSC", "inright"
-connect "STKBeeThree", "outleft", "ReverbSC", "inleft"
-connect "STKBeeThree", "outright", "ReverbSC", "inright"
-connect "STKBowed", "outleft", "ReverbSC", "inleft"
-connect "STKBowed", "outright", "ReverbSC", "inright"
-connect "STKPlucked", "outleft", "ReverbSC", "inleft"
-connect "STKPlucked", "outright", "ReverbSC", "inright"
-connect "StringPad", "outleft", "ReverbSC", "inleft"
-connect "StringPad", "outright", "ReverbSC", "inright"
-connect "Sweeper", "outleft", "ReverbSC", "inleft"
-connect "Sweeper", "outright", "ReverbSC", "inright"
-connect "TerrainMappedBass", "outleft", "ReverbSC", "inleft"
-connect "TerrainMappedBass", "outright", "ReverbSC", "inright"
-connect "TerrainMappedLead", "outleft", "ReverbSC", "inleft"
-connect "TerrainMappedLead", "outright", "ReverbSC", "inright"
-connect "TerrainMappedPulsar", "outleft", "ReverbSC", "inleft"
-connect "TerrainMappedPulsar", "outright", "ReverbSC", "inright"
-connect "TerrainMappedSquarish", "outleft", "ReverbSC", "inleft"
-connect "TerrainMappedSquarish", "outright", "ReverbSC", "inright"
-connect "ToneWheelOrgan", "outleft", "ReverbSC", "inleft"
-connect "ToneWheelOrgan", "outright", "ReverbSC", "inright"
-connect "TubularBell", "outleft", "ReverbSC", "inleft"
-connect "TubularBell", "outright", "ReverbSC", "inright"
-connect "WaveTerrain", "outleft", "ReverbSC", "inleft"
-connect "WaveTerrain", "outright", "ReverbSC", "inright"
-connect "WGPluck", "outleft", "ReverbSC", "inleft"
-connect "WGPluck", "outright", "ReverbSC", "inright"
-connect "Xing", "outleft", "ReverbSC", "inleft"
-connect "Xing", "outright", "ReverbSC", "inright"
-connect "YiString", "outleft", "ReverbSC", "inleft"
-connect "YiString", "outright", "ReverbSC", "inright"
 connect "ZakianFlute", "outleft", "ReverbSC", "inleft"
 connect "ZakianFlute", "outright", "ReverbSC", "inright"
 
-connect "PianoOutFluidsynth", "outleft", "ReverbSC", "inleft"
-connect "PianoOutFluidsynth", "outright", "ReverbSC", "inright"
 connect "PianoOutPianoteq", "outleft", "ReverbSC", "inleft"
 connect "PianoOutPianoteq", "outright", "ReverbSC", "inright"
-connect "PianoOut", "outleft", "ReverbSC", "inleft"
-connect "PianoOut", "outright", "ReverbSC", "inright"
 connect "ReverbSC", "outleft", "MasterOutput", "inleft"
 connect "ReverbSC", "outright", "MasterOutput", "inright"
-connect "MVerb", "outleft", "MasterOutput", "inleft"
-connect "MVerb", "outright", "MasterOutput", "inright"
 
-; Very important for levels to be evenly balanced _on average_! 
-; Enables instruments to come forward and recede according to their 
+gk_PianoNotePianoteq_midi_dynamic_range init 127
+instr PianoNotePianoteq
+if p3 == -1 then
+  p3 = 1000000
+endif
+i_instrument = p1
+i_time = p2
+i_duration = p3
+i_midi_key = p4
+i_midi_dynamic_range = i(gk_PianoNotePianoteq_midi_dynamic_range)
+i_midi_velocity = p5 * i_midi_dynamic_range / 127 + (63.6 - i_midi_dynamic_range / 2)
+k_space_front_to_back = p6
+k_space_left_to_right = p7
+k_space_bottom_to_top = p8
+i_phase = p9
+i_instrument = p1
+i_time = p2
+i_duration = p3
+i_midi_key = p4
+i_midi_velocity = p5
+i_homogeneity = p11
+instances active p1
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+i_pitch_correction = 44100 / sr
+; prints "Pitch factor:   %9.4f\\n", i_pitch_correction
+vstnote gi_Pianoteq, 0, i_midi_key, i_midi_velocity, i_duration
+endin
+
+gk_ZakianFlute_midi_dynamic_range init 20
+gk_ZakianFlute_level init 0
+gk_ZakianFlute_pan init .5
+gi_ZakianFLute_seed init .5
+gi_ZakianFLute_f2  ftgen 0, 0, 16, -2, 40, 40, 80, 160, 320, 640, 1280, 2560, 5120, 10240, 10240
+gi_ZakianFlute_f26 ftgen 0, 0, 65537, -10, 2000, 489, 74, 219, 125, 9, 33, 5, 5
+gi_ZakianFlute_f27 ftgen 0, 0, 65537, -10, 2729, 1926, 346, 662, 537, 110, 61, 29, 7
+gi_ZakianFlute_f28 ftgen 0, 0, 65537, -10, 2558, 2012, 390, 361, 534, 139, 53, 22, 10, 13, 10
+gi_ZakianFlute_f29 ftgen 0, 0, 65537, -10, 12318, 8844, 1841, 1636, 256, 150, 60, 46, 11
+gi_ZakianFlute_f30 ftgen 0, 0, 65537, -10, 1229, 16, 34, 57, 32
+gi_ZakianFlute_f31 ftgen 0, 0, 65537, -10, 163, 31, 1, 50, 31
+gi_ZakianFlute_f32 ftgen 0, 0, 65537, -10, 4128, 883, 354, 79, 59, 23
+gi_ZakianFlute_f33 ftgen 0, 0, 65537, -10, 1924, 930, 251, 50, 25, 14
+gi_ZakianFlute_f34 ftgen 0, 0, 65537, -10, 94, 6, 22, 8
+gi_ZakianFlute_f35 ftgen 0, 0, 65537, -10, 2661, 87, 33, 18
+gi_ZakianFlute_f36 ftgen 0, 0, 65537, -10, 174, 12
+gi_ZakianFlute_f37 ftgen 0, 0, 65537, -10, 314, 13
+gi_ZakianFlute_wtsin ftgen 0, 0, 65537, 10, 1
+
+instr ZakianFlute
+; Author: Lee Zakian
+; Adapted by: Michael Gogins
+i_instrument = p1
+i_time = p2
+i_duration = p3
+i_midi_key = p4
+i_midi_velocity = p5
+k_space_front_to_back = p6
+k_space_left_to_right = p7
+k_space_bottom_to_top = p8
+i_phase = p9
+i_overall_amps = 65.2
+i_normalization = ampdb(-i_overall_amps) / 2
+i_midi_dynamic_range = i(gk_ZakianFlute_midi_dynamic_range)
+i_midi_velocity = p5 * i_midi_dynamic_range / 127 + (63.5 - i_midi_dynamic_range / 2)
+i_amplitude = ampdb(i_midi_velocity) * i_normalization
+k_gain = ampdb(gk_ZakianFlute_level)
+iattack = .002
+isustain = p3
+irelease = .3
+xtratim iattack + irelease
+iHz = cpsmidinn(i_midi_key)
+kHz = k(iHz)
+aenvelope transeg 1.0, 20.0, -10.0, 0.05
+ip3 = (p3 < 3.0 ? p3 : 3.0)
+; parameters
+; p4 overall amplitude scaling factor
+ip4 init i_amplitude
+; p5 pitch in Hertz (normal pitch range: C4-C7)
+ip5 init iHz
+; p6 percent vibrato depth, recommended values in range [-1., +1.]
+ip6 init 0.5
+; 0.0 -> no vibrato
+; +1. -> 1% vibrato depth, where vibrato rate increases slightly
+; -1. -> 1% vibrato depth, where vibrato rate decreases slightly
+; p7 attack time in seconds
+; recommended value: .12 for slurred notes, .06 for tongued notes
+; (.03 for short notes)
+ip7 init .08
+; p8 decay time in seconds
+; recommended value: .1 (.05 for short notes)
+ip8 init .08
+; p9 overall brightness / filter cutoff factor
+; 1 -> least bright / minimum filter cutoff frequency (40 Hz)
+; 9 -> brightest / maximum filter cutoff frequency (10,240Hz)
+ip9 init 5
+; initial variables
+iampscale = ip4 ; overall amplitude scaling factor
+ifreq = ip5 ; pitch in Hertz
+ivibdepth = abs(ip6*ifreq/100.0) ; vibrato depth relative to fundamental frequency
+iattack = ip7 * (1.1 - .2*gi_ZakianFLute_seed) ; attack time with up to +-10% random deviation
+gi_ZakianFLute_seed = frac(gi_ZakianFLute_seed*105.947) ; reset gi_ZakianFLute_seed
+idecay = ip8 * (1.1 - .2*gi_ZakianFLute_seed) ; decay time with up to +-10% random deviation
+gi_ZakianFLute_seed = frac(gi_ZakianFLute_seed*105.947)
+ifiltcut tablei ip9, gi_ZakianFLute_f2 ; lowpass filter cutoff frequency
+iattack = (iattack < 6/kr ? 6/kr : iattack) ; minimal attack length
+idecay = (idecay < 6/kr ? 6/kr : idecay) ; minimal decay length
+isustain = p3 - iattack - idecay
+p3 = (isustain < 5/kr ? iattack+idecay+5/kr : p3) ; minimal sustain length
+isustain = (isustain < 5/kr ? 5/kr : isustain)
+iatt = iattack/6
+isus = isustain/4
+idec = idecay/6
+iphase = gi_ZakianFLute_seed ; use same phase for all wavetables
+gi_ZakianFLute_seed = frac(gi_ZakianFLute_seed*105.947)
+; vibrato block
+; kvibdepth linseg .1, .8*p3, 1, .2*p3, .7
+kvibdepth linseg .1, .8*ip3, 1, isustain, 1, .2*ip3, .7
+kvibdepth = kvibdepth* ivibdepth ; vibrato depth
+kvibdepthr randi .1*kvibdepth, 5, gi_ZakianFLute_seed ; up to 10% vibrato depth variation
+gi_ZakianFLute_seed = frac(gi_ZakianFLute_seed*105.947)
+kvibdepth = kvibdepth + kvibdepthr
+ivibr1 = gi_ZakianFLute_seed ; vibrato rate
+gi_ZakianFLute_seed = frac(gi_ZakianFLute_seed*105.947)
+ivibr2 = gi_ZakianFLute_seed
+gi_ZakianFLute_seed = frac(gi_ZakianFLute_seed*105.947)
+if ip6 < 0 goto vibrato1
+kvibrate linseg 2.5+ivibr1, p3, 4.5+ivibr2 ; if p6 positive vibrato gets faster
+ goto vibrato2
+vibrato1:
+ivibr3 = gi_ZakianFLute_seed
+gi_ZakianFLute_seed = frac(gi_ZakianFLute_seed*105.947)
+kvibrate linseg 3.5+ivibr1, .1, 4.5+ivibr2, p3-.1, 2.5+ivibr3 ; if p6 negative vibrato gets slower
+vibrato2:
+kvibrater randi .1*kvibrate, 5, gi_ZakianFLute_seed ; up to 10% vibrato rate variation
+gi_ZakianFLute_seed = frac(gi_ZakianFLute_seed*105.947)
+kvibrate = kvibrate + kvibrater
+kvib oscili kvibdepth, kvibrate, gi_ZakianFlute_wtsin
+ifdev1 = -.03 * gi_ZakianFLute_seed ; frequency deviation
+gi_ZakianFLute_seed = frac(gi_ZakianFLute_seed*105.947)
+ifdev2 = .003 * gi_ZakianFLute_seed
+gi_ZakianFLute_seed = frac(gi_ZakianFLute_seed*105.947)
+ifdev3 = -.0015 * gi_ZakianFLute_seed
+gi_ZakianFLute_seed = frac(gi_ZakianFLute_seed*105.947)
+ifdev4 = .012 * gi_ZakianFLute_seed
+gi_ZakianFLute_seed = frac(gi_ZakianFLute_seed*105.947)
+kfreqr linseg ifdev1, iattack, ifdev2, isustain, ifdev3, idecay, ifdev4
+kfreq = kHz * (1 + kfreqr) + kvib
+if ifreq < 427.28 goto range1 ; (cpspch(8.08) + cpspch(8.09))/2
+if ifreq < 608.22 goto range2 ; (cpspch(9.02) + cpspch(9.03))/2
+if ifreq < 1013.7 goto range3 ; (cpspch(9.11) + cpspch(10.00))/2
+goto range4
+; wavetable amplitude envelopes
+range1: ; for low range tones
+kamp1 linseg 0, iatt, 0.002, iatt, 0.045, iatt, 0.146, iatt, \
+0.272, iatt, 0.072, iatt, 0.043, isus, 0.230, isus, 0.000, isus, \
+0.118, isus, 0.923, idec, 1.191, idec, 0.794, idec, 0.418, idec, \
+0.172, idec, 0.053, idec, 0
+kamp2 linseg 0, iatt, 0.009, iatt, 0.022, iatt, -0.049, iatt, \
+-0.120, iatt, 0.297, iatt, 1.890, isus, 1.543, isus, 0.000, isus, \
+0.546, isus, 0.690, idec, -0.318, idec, -0.326, idec, -0.116, idec, \
+-0.035, idec, -0.020, idec, 0
+kamp3 linseg 0, iatt, 0.005, iatt, -0.026, iatt, 0.023, iatt, \
+0.133, iatt, 0.060, iatt, -1.245, isus, -0.760, isus, 1.000, isus, \
+0.360, isus, -0.526, idec, 0.165, idec, 0.184, idec, 0.060, idec, \
+0.010, idec, 0.013, idec, 0
+iwt1 = gi_ZakianFlute_f26 ; wavetable numbers
+iwt2 = gi_ZakianFlute_f27
+iwt3 = gi_ZakianFlute_f28
+inorm = 3949
+goto end
+range2: ; for low mid-range tones
+kamp1 linseg 0, iatt, 0.000, iatt, -0.005, iatt, 0.000, iatt, \
+0.030, iatt, 0.198, iatt, 0.664, isus, 1.451, isus, 1.782, isus, \
+1.316, isus, 0.817, idec, 0.284, idec, 0.171, idec, 0.082, idec, \
+0.037, idec, 0.012, idec, 0
+kamp2 linseg 0, iatt, 0.000, iatt, 0.320, iatt, 0.882, iatt, \
+1.863, iatt, 4.175, iatt, 4.355, isus, -5.329, isus, -8.303, isus, \
+-1.480, isus, -0.472, idec, 1.819, idec, -0.135, idec, -0.082, idec, \
+-0.170, idec, -0.065, idec, 0
+kamp3 linseg 0, iatt, 1.000, iatt, 0.520, iatt, -0.303, iatt, \
+0.059, iatt, -4.103, iatt, -6.784, isus, 7.006, isus, 11, isus, \
+12.495, isus, -0.562, idec, -4.946, idec, -0.587, idec, 0.440, idec, \
+0.174, idec, -0.027, idec, 0
+iwt1 = gi_ZakianFlute_f29
+iwt2 = gi_ZakianFlute_f30
+iwt3 = gi_ZakianFlute_f31
+inorm = 27668.2
+goto end
+range3: ; for high mid-range tones
+kamp1 linseg 0, iatt, 0.005, iatt, 0.000, iatt, -0.082, iatt, \
+0.36, iatt, 0.581, iatt, 0.416, isus, 1.073, isus, 0.000, isus, \
+0.356, isus, .86, idec, 0.532, idec, 0.162, idec, 0.076, idec, 0.064, \
+idec, 0.031, idec, 0
+kamp2 linseg 0, iatt, -0.005, iatt, 0.000, iatt, 0.205, iatt, \
+-0.284, iatt, -0.208, iatt, 0.326, isus, -0.401, isus, 1.540, isus, \
+0.589, isus, -0.486, idec, -0.016, idec, 0.141, idec, 0.105, idec, \
+-0.003, idec, -0.023, idec, 0
+kamp3 linseg 0, iatt, 0.722, iatt, 1.500, iatt, 3.697, iatt, \
+0.080, iatt, -2.327, iatt, -0.684, isus, -2.638, isus, 0.000, isus, \
+1.347, isus, 0.485, idec, -0.419, idec, -.700, idec, -0.278, idec, \
+0.167, idec, -0.059, idec, 0
+iwt1 = gi_ZakianFlute_f32
+iwt2 = gi_ZakianFlute_f33
+iwt3 = gi_ZakianFlute_f34
+inorm = 3775
+goto end
+range4: ; for high range tones
+kamp1 linseg 0, iatt, 0.000, iatt, 0.000, iatt, 0.211, iatt, \
+0.526, iatt, 0.989, iatt, 1.216, isus, 1.727, isus, 1.881, isus, \
+1.462, isus, 1.28, idec, 0.75, idec, 0.34, idec, 0.154, idec, 0.122, \
+idec, 0.028, idec, 0
+kamp2 linseg 0, iatt, 0.500, iatt, 0.000, iatt, 0.181, iatt, \
+0.859, iatt, -0.205, iatt, -0.430, isus, -0.725, isus, -0.544, isus, \
+-0.436, isus, -0.109, idec, -0.03, idec, -0.022, idec, -0.046, idec, \
+-0.071, idec, -0.019, idec, 0
+kamp3 linseg 0, iatt, 0.000, iatt, 1.000, iatt, 0.426, iatt, \
+0.222, iatt, 0.175, iatt, -0.153, isus, 0.355, isus, 0.175, isus, \
+0.16, isus, -0.246, idec, -0.045, idec, -0.072, idec, 0.057, idec, \
+-0.024, idec, 0.002, idec, 0
+iwt1 = gi_ZakianFlute_f35
+iwt2 = gi_ZakianFlute_f36
+iwt3 = gi_ZakianFlute_f37
+inorm = 4909.05
+goto end
+end:
+kampr1 randi .02*kamp1, 10, gi_ZakianFLute_seed ; up to 2% wavetable amplitude variation
+gi_ZakianFLute_seed = frac(gi_ZakianFLute_seed*105.947)
+kamp1 = kamp1 + kampr1
+kampr2 randi .02*kamp2, 10, gi_ZakianFLute_seed ; up to 2% wavetable amplitude variation
+gi_ZakianFLute_seed = frac(gi_ZakianFLute_seed*105.947)
+kamp2 = kamp2 + kampr2
+kampr3 randi .02*kamp3, 10, gi_ZakianFLute_seed ; up to 2% wavetable amplitude variation
+gi_ZakianFLute_seed = frac(gi_ZakianFLute_seed*105.947)
+kamp3 = kamp3 + kampr3
+awt1 poscil kamp1, kfreq, iwt1, iphase ; wavetable lookup
+awt2 poscil kamp2, kfreq, iwt2, iphase
+awt3 poscil kamp3, kfreq, iwt3, iphase
+asig = awt1 + awt2 + awt3
+asig = asig*(iampscale/inorm)
+kcut linseg 0, iattack, ifiltcut, isustain, ifiltcut, idecay, 0 ; lowpass filter for brightness control
+afilt tone asig, kcut
+a_signal balance afilt, asig
+i_attack = .002
+i_sustain = p3
+i_release = 0.01
+xtratim i_attack + i_sustain + i_release
+a_declicking linsegr 0, i_attack, 1, i_sustain, 1, i_release, 0
+a_signal = a_signal * i_amplitude * a_declicking * k_gain
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_signal *= .7
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+endin
+
+//////////////////////////////////////////////
+// Original by Steven Yi.
+// Adapted by Michael Gogins.
+//////////////////////////////////////////////
+gk_FMWaterBell_level init 0
+gi_FMWaterBell_attack init 0.002
+gi_FMWaterBell_release init 0.01
+gi_FMWaterBell_sustain init 20
+gi_FMWaterBell_sustain_level init .1
+gk_FMWaterBell_index init .5
+gk_FMWaterBell_crossfade init .5
+gk_FMWaterBell_vibrato_depth init 0.05
+gk_FMWaterBell_vibrato_rate init 6
+gk_FMWaterBell_midi_dynamic_range init 127
+gi_FMWaterBell_cosine ftgen 0, 0, 65537, 11, 1
+instr FMWaterBell
+i_instrument = p1
+i_time = p2
+i_duration = p3
+; One of the envelopes in this instrument should be releasing, and use this:
+i_sustain = 1000
+;xtratim gi_FMWaterBell_attack + gi_FMWaterBell_release
+xtratim gi_FMWaterBell_attack + gi_FMWaterBell_release
+i_midi_key = p4
+i_midi_dynamic_range = i(gk_FMWaterBell_midi_dynamic_range)
+i_midi_velocity = p5 * i_midi_dynamic_range / 127 + (63.6 - i_midi_dynamic_range / 2)
+k_space_front_to_back = p6
+k_space_left_to_right = p7
+k_space_bottom_to_top = p8
+i_phase = p9
+i_frequency = cpsmidinn(i_midi_key)
+; Adjust the following value until "overall amps" at the end of performance is about -6 dB.
+i_level_correction = 81
+i_normalization = ampdb(-i_level_correction) / 2
+i_amplitude = ampdb(i_midi_velocity) * i_normalization * 1.6
+k_gain = ampdb(gk_FMWaterBell_level)
+a_signal fmbell	1, i_frequency, gk_FMWaterBell_index, gk_FMWaterBell_crossfade, gk_FMWaterBell_vibrato_depth, gk_FMWaterBell_vibrato_rate, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine ;, gi_FMWaterBell_sustain
+;a_envelope linsegr 0, gi_FMWaterBell_attack, 1, i_sustain, gi_FMWaterBell_sustain_level, gi_FMWaterBell_release, 0
+a_envelope linsegr 0, gi_FMWaterBell_attack, 1, i_sustain, 1, gi_FMWaterBell_release, 0
+; ares transegr ia, idur, itype, ib [, idur2] [, itype] [, ic] ...
+; a_envelope transegr 0, gi_FMWaterBell_attack, 12, 1, i_sustain, 12, gi_FMWaterBell_sustain_level, gi_FMWaterBell_release, 12, 0
+a_signal = a_signal * i_amplitude * a_envelope * k_gain
+;_signal = a_signal * i_amplitude * k_gain
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+; printks "FMWaterBell    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d l%9.4f r%9.4f\\n", 1, p1, p2, p3, p4, p5, p7, active(p1), dbamp(rms(a_out_left)), dbamp(rms(a_out_right))
+endin
+
+gk_Harpsichord_midi_dynamic_range init 127
+gk_Harpsichord_level init 0
+gk_Harpsichord_pick init .075
+gk_Harpsichord_reflection init .5
+gk_Harpsichord_pluck init .75
+gi_Harpsichord_harptable ftgen 0, 0, 65537, 7, -1, 1024, 1, 1024, -1
+instr Harpsichord
+i_instrument = p1
+i_time = p2
+i_duration = p3
+i_midi_key = p4
+i_midi_dynamic_range = i(gk_Harpsichord_midi_dynamic_range)
+i_midi_velocity = p5 * i_midi_dynamic_range / 127 + (63.6 - i_midi_dynamic_range / 2)
+k_space_front_to_back = p6
+k_space_left_to_right = p7
+k_space_bottom_to_top = p8
+i_phase = p9
+i_frequency = cpsmidinn(i_midi_key)
+; Adjust the following value until "overall amps" at the end of performance is about -6 dB.
+i_level_correction = 110
+i_normalization = ampdb(-i_level_correction) / 2
+i_amplitude = ampdb(i_midi_velocity) * i_normalization
+k_gain = ampdb(gk_Harpsichord_level)
+iHz = cpsmidinn(i_midi_key)
+kHz = k(iHz)
+aenvelope transeg 1.0, 40.0, -25.0, 0.0
+apluck pluck i_amplitude * k_gain, kHz, iHz, 0, 1
+aharp poscil aenvelope, kHz, gi_Harpsichord_harptable
+aharp2 balance apluck, aharp
+a_signal	= (apluck + aharp2)
+i_attack = .0005
+i_sustain = p3
+i_release = 0.01
+xtratim i_attack + i_release
+a_declicking linsegr 0, i_attack, 1, i_sustain, 1, i_release, 0
+a_signal = a_signal * a_declicking * k_gain
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+;printks "Harpsichord      %9.4f   %9.4f\\n", 0.5, a_out_left, a_out_right
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+endin
+
+gk_ChebyshevMelody_level init 0
+gi_ChebyshevMelody_attack init 0.003
+gi_ChebyshevMelody_release init 0.01
+gk_ChebyshevMelody_midi_dynamic_range init 127
+gk_ChebyshevMelody_level init 0
+gi_ChebyshevMelody_chebyshev ftgen 0, 0, 65537, -7, -1, 150, 0.1, 110, 0, 252, 0
+gi_ChebyshevMelody_sine ftgen 0, 0, 65537, 10, 1
+gi_ChebyshevMelody_cook3 ftgen 0, 0, 65537, 10, 1, .4, 0.2, 0.1, 0.1, .05
+instr ChebyshevMelody
+///////////////////////////////////////////////////////
+// Original by Jon Nelson.
+// Adapted by Michael Gogins.
+///////////////////////////////////////////////////////
+i_instrument = p1
+i_time = p2
+i_sustain = p3
+xtratim gi_ChebyshevMelody_attack + gi_ChebyshevMelody_release
+i_midi_key = p4
+i_midi_dynamic_range = i(gk_ChebyshevMelody_midi_dynamic_range)
+i_midi_velocity = p5 * i_midi_dynamic_range / 127 + (63.6 - i_midi_dynamic_range / 2)
+// Spatial location is specified in Ambisonic coordinates.
+k_space_front_to_back = p6
+// AKA stereo pan.
+k_space_left_to_right = p7
+k_space_bottom_to_top = p8
+i_phase = p9
+i_frequency = cpsmidinn(i_midi_key)
+// Adjust the following value until "overall amps" at the end of performance is about -6 dB.
+i_level_correction = 72
+i_normalization = ampdb(-i_level_correction) / 2
+i_amplitude = ampdb(i_midi_velocity) * i_normalization
+k_gain = ampdb(gk_ChebyshevMelody_level)
+
+iattack = .01
+isustain = p3
+irelease = .01
+p3 = iattack + isustain + irelease
+iHz = cpsmidinn(i_midi_key)
+iamplitude = ampdb(i_midi_velocity) * 7.
+ip6 = gi_ChebyshevMelody_chebyshev
+kHz = k(iHz)
+idB = i_midi_velocity
+i1 = iHz
+k100 randi 1,0.05
+ak101 poscil 1, 5 + k100, gi_ChebyshevMelody_sine
+ak102 linseg 0, .5, 1, p3, 1
+k100 = i1 + (ak101 * ak102)
+; Envelope for driving oscillator.
+ip3 init 3.0
+; k1 linenr 0.5, ip3 * .3, ip3 * 2, 0.01
+ak1 linseg 0, ip3 * .3, .5, ip3 * 2, 0.01, isustain, 0.01, irelease, 0
+; k2 line 1, p3, .5
+ak2 linseg 1.0, ip3, .5, isustain, .5, irelease, 0
+ak1 = ak2 * ak1
+; Amplitude envelope.
+ak10 expseg 0.0001, iattack, 1.0, isustain, 0.8, irelease, .0001
+ak10 = (ak10 - .0001)
+; Power to partials.
+k20 linseg 1.485, iattack, 1.5, (i_sustain + irelease), 1.485
+; a1-3 are for cheby with p6=1-4
+a1 poscil ak1, k100 - .25, gi_ChebyshevMelody_cook3
+; Tables a1 to fn13, others normalize,
+a2 tablei a1, ip6, 1, .5
+a3 balance a2, a1
+; Try other waveforms as well.
+a4 foscili 1, k100 + .04, 1, 2.000, k20, gi_ChebyshevMelody_sine
+a5 poscil 1, k100, gi_ChebyshevMelody_sine
+a6 = ((a3 * .1) + (a4 * .1) + (a5 * .8)) * ak10
+a7 comb a6, .5, 1 / i1
+a8 = (a6 * .9) + (a7 * .1)
+asignal balance a8, a1
+a_declicking linsegr 0, gi_ChebyshevMelody_attack, 1, i_sustain, 1, gi_ChebyshevMelody_release, 0
+a_signal = asignal * i_amplitude * a_declicking * k_gain
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+printks "ChebyshevMelody i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d l%9.4f r%9.4f\\n", .1, p1, p2, p3, p4, p5, p7, active(p1), dbamp(rms(a_out_left)), dbamp(rms(a_out_right))
+endin
+
+gk_Rhodes_level init 0
+gi_Rhodes_sine ftgen 0, 0, 65537, 10, 1
+gi_Rhodes_cosine ftgen 0, 0, 65537, 11, 1
+gi_Rhodes_blank ftgen 0, 0, 65537, 10, 0 ; Blank wavetable for some Cook FM opcodes.
+instr Rhodes
+; Authors: Perry Cook, John ffitch, Michael Gogins
+i_instrument = p1
+i_time = p2
+i_duration = p3
+i_midi_key = p4
+i_midi_velocity = p5
+k_space_front_to_back = p6
+k_space_left_to_right = .5
+k_space_bottom_to_top = p8
+i_phase = p9
+i_frequency = cpsmidinn(i_midi_key)
+; Adjust the following value until "overall amps" at the end of performance is about -6 dB.
+i_overall_amps = 82
+i_normalization = ampdb(-i_overall_amps) / 2
+i_amplitude = ampdb(i_midi_velocity) * i_normalization
+k_gain = ampdb(gk_Rhodes_level)
+iindex = 4
+icrossfade = 3
+ivibedepth = 0.2
+iviberate = 6
+ifn1 = gi_Rhodes_sine
+ifn2 = gi_Rhodes_cosine
+ifn3 = gi_Rhodes_sine
+ifn4 = gi_Rhodes_blank
+ivibefn = gi_Rhodes_sine
+a_signal fmrhode i_amplitude, i_frequency, iindex, icrossfade, ivibedepth, iviberate, ifn1, ifn2, ifn3, ifn4, ivibefn
+i_attack = .002
+i_sustain = p3
+i_release = 0.01
+xtratim i_attack + i_release
+a_declicking linsegr 0, i_attack, 1, i_sustain, 1, i_release, 0
+a_signal = a_signal * a_declicking * k_gain
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+endin
+
+gk_PianoOutPianoteq_level init 0
+gi_PianoOutPianoteq_print init 1
+gk_PianoOutPianoteq_front_to_back init 0
+gk_PianoOutPianoteq_left_to_right init 0.5
+gk_PianoOutPianoteq_bottom_to_top init 0
+instr PianoOutPianoteq
+; Should be "D4 Daily Practice".
+vstprogset gi_Pianoteq, 0
+; Sustain off.
+vstparamset gi_Pianoteq, 0, 0
+; Reverb off.
+vstparamset gi_Pianoteq, 72, 0
+k_gain = ampdb(gk_PianoOutPianoteq_level)
+i_overall_amps = 89
+i_normalization = ampdb(-i_overall_amps) * 2
+i_amplitude = ampdb(80) * i_normalization
+if gi_PianoOutPianoteq_print == 1 then
+  vstinfo gi_Pianoteq
+endif
+i_instrument = p1
+i_time = p2
+i_duration = p3
+i_midi_key = p4
+i_midi_velocity = p5
+ainleft init 0
+ainright init 0
+aoutleft, aoutright vstaudio gi_Pianoteq, ainleft, ainright
+a_signal = aoutleft + aoutright
+a_signal *= k_gain
+a_signal *= i_amplitude
+a_out_left, a_out_right pan2 a_signal, gk_PianoOutPianoteq_left_to_right
+#ifdef USE_SPATIALIZATION
+a_signal = a_out_left + a_out_right
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, gk_PianoOutPianoteq_front_to_back, gk_PianoOutPianoteq_left_to_right, gk_PianoOutPianoteq_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+; printks "PianoOutPt     L %9.4f R %9.4f l %9.4f\\n", 0.5, a_out_left, a_out_right, gk_Piano_level
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+endin
+
+gk_Reverb_feedback init 0.875
+gk_Reverb_wet init 0.5
+gi_Reverb_delay_modulation init 0.0075
+gk_Reverb_frequency_cutoff init 15000
+instr ReverbSC
+gk_Reverb_dry = 1.0 - gk_Reverb_wet
+aleftin init 0
+arightin init 0
+aleftout init 0
+arightout init 0
+aleftin inleta "inleft"
+arightin inleta "inright"
+aleftout, arightout reverbsc aleftin, arightin, gk_Reverb_feedback, gk_Reverb_frequency_cutoff, sr, gi_Reverb_delay_modulation
+aleftoutmix = aleftin * gk_Reverb_dry + aleftout * gk_Reverb_wet
+arightoutmix = arightin * gk_Reverb_dry + arightout * gk_Reverb_wet
+outleta "outleft", aleftoutmix
+outleta "outright", arightoutmix
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+endin
+
+gk_MasterOutput_level init 0
+gS_MasterOutput_filename init ""
+instr MasterOutput
+aleft inleta "inleft"
+aright inleta "inright"
+k_gain = ampdb(gk_MasterOutput_level)
+printks2 "Master gain: %f\\n", k_gain
+iamp init 1
+aleft butterlp aleft, 18000
+aright butterlp aright, 18000
+outs aleft * k_gain, aright * k_gain
+; We want something that will play on my phone.
+i_amplitude_adjustment = ampdbfs(-3) / 32767
+i_filename_length strlen gS_MasterOutput_filename
+if i_filename_length > 0 goto filename_exists
+goto filename_endif
+filename_exists:
+prints sprintf("Output filename: %s\\n", gS_MasterOutput_filename)
+fout gS_MasterOutput_filename, 18, aleft * i_amplitude_adjustment, aright * i_amplitude_adjustment
+filename_endif:
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+endin
+
+; It is important for levels to be evenly balanced _on average_! This 
+; enables instruments to come forward and recede according to their 
 ; response to MIDI velocity.
 
-gk_ChebyshevMelody_level init 11
-gk_ZakianFlute_level init 15
-gk_PianoOutPianoteq_level init 0
-gk_FMWaterBell_level init 15
-gk_Harpsichord_level init 11 ;11
-gk_Rhodes_level init 17;15
-
-gk_PianoOutFluidsynth_level init -60 ;8
-gk_Plucked_level init -60 ;12
+gk_ChebyshevMelody_level init   11
+gk_ZakianFlute_level init       15
+gk_PianoOutPianoteq_level init   0
+gk_FMWaterBell_level init       15
+gk_Harpsichord_level init       11
+gk_Rhodes_level init            17
 
 gk_Reverb_wet init 0.25
 gk_Reverb_feedback init 0.75
 gi_Reverb_delay_modulation init 0.0875
-gk_Reverb_frequency_cutoff init 18000
+gk_Reverb_frequency_cutoff init 14000
 '''
 
 model.setCsoundOrchestra(orc)
@@ -481,10 +879,11 @@ model.generate()
 # Fix ending. Instruments would drop out, sustain till the end. Some notes 
 # course will decay first.
 score = model.getScore()
-score_duration = score.getDuration() + 6.
+score_duration = score.getDuration() + 4.
 sounding = set()
 for i, event in reverse_enumeration(score):
     event.setOffTime(score_duration)
+    CsoundAC.conformToChord(event, chord, True)
     instrument = str(event.getInstrument())
     sounding.add(instrument)
     if len(sounding) == 6:

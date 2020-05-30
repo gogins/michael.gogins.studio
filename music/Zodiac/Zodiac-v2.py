@@ -34,7 +34,7 @@ All rights reserved.
 print(__doc__)
 
 print('Set "rendering" to:     "soundfile" or "audio".')
-rendering = 'soundfile'
+rendering = "soundfile"
 print('Rendering option:       \"%s\"' % rendering)
 print
 print('Set dac_name for system.')
@@ -236,7 +236,8 @@ def readCatalog(section, voiceleadingNode):
             rescale.setRescale(CsoundAC.Event.VELOCITY,  True, True, lowest,    dynamicRange)
             rescale.setRescale(CsoundAC.Event.PHASE,     True, True, leftmost,  width)
             # Now generate the harmony as a function of scoreDuration and add the chords.
-            progression = section[9]
+            changes = random.randint(6, 15)
+            progression = random.choices([-2, -4, -6, -8, -10, -12, 3, 6], [10, 3, 2, 1, 1, 1, 8, 3], k=changes)
             secondsPerChord = scoreDuration / len(progression)
             chordTime = scoreTime
             for steps in progression:
