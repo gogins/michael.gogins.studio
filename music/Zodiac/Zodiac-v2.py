@@ -30,6 +30,10 @@ each constellation, there is a separate chord progression.
 Copyright (C) 2014-2020 by Michael Gogins.
 All rights reserved.
 
+TO DO
+
+The key changes are muddled by overlapping harmonies. Fix that.
+
 '''
 print(__doc__)
 
@@ -50,7 +54,7 @@ import string
 import sys
 import traceback
 
-random.seed(59382)
+random.seed(509382)
 
 CsoundAC.System_setMessageLevel(15)
 
@@ -85,60 +89,61 @@ model.generateAllNames()
 score = model.getScore()
 
 sections = []
-# 0         1      2         3     4      5        6              7     8      9
-# Filename, start, duration, bass, range, softest, dynamic range, left, width, list of root progressions
+# 0         1      2         3     4      5        6              7     8      
+# Filename, start, duration, bass, range, softest, dynamic range, left, width
 time = 0.
 duration = 30.
+rest = 0.
 print('Pisces...')
-sections.append(['Alpha_Piscium.tsv',       time, duration, 36., 60., 60., 15., .1, .9, [-2, -2, -10, -2, 4]])
-time = time + duration + 4
+sections.append(['Alpha_Piscium.tsv',       time, duration, 36., 60., 60., 15., .1, .9])
+time = time + duration + rest
 duration = 30.
 print('Aries...')
-sections.append(['Alpha_Arietis.tsv',       time, duration, 36., 60., 60., 15., .1, .9, [-2, -2, -2, -2, -2, 3]])
-time = time + duration + 4
+sections.append(['Alpha_Arietis.tsv',       time, duration, 36., 60., 60., 15., .1, .9])
+time = time + duration + rest
 duration = 30.
 print('Taurus...')
-sections.append(['Aldebaran.tsv',           time, duration, 36., 60., 60., 15., .1, .9, [-2, -2, -8, 2, -8, 3]])
-time = time + duration + 4
+sections.append(['Aldebaran.tsv',           time, duration, 36., 60., 60., 15., .1, .9])
+time = time + duration + rest
 duration = 30.
 print('Gemini...')
-sections.append(['Pollux.tsv',              time, duration, 36., 60., 60., 15., .1, .9, [-2, -2, -8, 2, -2, 3]])
-time = time + duration + 4
+sections.append(['Pollux.tsv',              time, duration, 36., 60., 60., 15., .1, .9])
+time = time + duration + rest
 duration = 30.
 print('Cancer...')
-sections.append(['Alpha_Cancri.tsv',        time, duration, 36., 60., 60., 15., .1, .9, [-2, -2, -8, 2, -2, 3]])
-time = time + duration + 4
+sections.append(['Alpha_Cancri.tsv',        time, duration, 36., 60., 60., 15., .1, .9])
+time = time + duration + rest
 duration = 30.
 print('Virgo...')
-sections.append(['Spica.tsv',               time, duration, 36., 60., 60., 15., .1, .9, [-2, -2, -2, 2, -2, 3]])
-time = time + duration + 4
+sections.append(['Spica.tsv',               time, duration, 36., 60., 60., 15., .1, .9])
+time = time + duration + rest
 duration = 30.
 print('Libra...')
-sections.append(['Alpha_Libris.tsv',        time, duration, 36., 60., 60., 15., .1, .9, [-2, -4, -8, 2, -4, 3]])
-time = time + duration + 4
+sections.append(['Alpha_Libris.tsv',        time, duration, 36., 60., 60., 15., .1, .9])
+time = time + duration + rest
 duration = 30.
 print('Scorpio...')
-sections.append(['Alpha_Scorpii.tsv',       time, duration, 36., 60., 60., 15., .1, .9, [-2, -2, -8, 2, -8, 3]])
-time = time + duration + 4
+sections.append(['Alpha_Scorpii.tsv',       time, duration, 36., 60., 60., 15., .1, .9])
+time = time + duration + rest
 duration = 30.
 print('Ophiuchus...')
-sections.append(['Rasalhague.tsv',          time, duration, 36., 60., 60., 15., .1, .9, [-2, -10, -2, -8, 3, -2, 3]])
-time = time + duration + 4
+sections.append(['Rasalhague.tsv',          time, duration, 36., 60., 60., 15., .1, .9])
+time = time + duration + rest
 duration = 30.
 print('Sagittarius...')
-sections.append(['Rukbat.tsv',              time, duration, 36., 60., 60., 15., .1, .9, [-6, -2, -8, -4, -2, 3]])
-time = time + duration + 4
+sections.append(['Rukbat.tsv',              time, duration, 36., 60., 60., 15., .1, .9])
+time = time + duration + rest
 duration = 30.
 print('Capricorn...')
-sections.append(['Alpha_Capricornis.tsv',   time, duration, 36., 60., 60., 15., .1, .9, [-2, -2, -8, 2, -8, 3]])
-time = time + duration + 4
+sections.append(['Alpha_Capricornis.tsv',   time, duration, 36., 60., 60., 15., .1, .9])
+time = time + duration + rest
 duration = 30.
 print('Aquarius...')
-sections.append(['Alpha_Aquarii.tsv',       time, duration, 36., 60., 60., 15., .1, .9, [-2, -2, -8, 2, -2, 1]])
-time = time + duration + 4
+sections.append(['Alpha_Aquarii.tsv',       time, duration, 36., 60., 60., 15., .1, .9])
+time = time + duration + rest
 duration = 30.
 print('Leo...')
-sections.append(['Regulus.tsv',             time, duration, 36., 60., 60., 15., .1, .9, [-2, -6, 3, -2, -8, 3, 0, 0]])
+sections.append(['Regulus.tsv',             time, duration, 36., 60., 60., 15., .1, .9])
 
 instrumentsForSpectralTypes = {' ':0, 'O':1, 'B':2, 'A':3, 'F':4, 'G':5, 'K':6, 'M':7}
 
@@ -198,8 +203,6 @@ def readCatalog(section, voiceleadingNode):
                 time = float(fields[1])
                 key = float(fields[2])
                 velocity = float(fields[8])
-                # This was evidently a mistake.
-                # pan = float(fields[6])
                 pan = random.uniform(.05, .95)
                 if(len(fields) > 9):
                     instrument = float(instrumentsForSpectralTypes[fields[9][0]])
@@ -237,7 +240,8 @@ def readCatalog(section, voiceleadingNode):
             rescale.setRescale(CsoundAC.Event.PHASE,     True, True, leftmost,  width)
             # Now generate the harmony as a function of scoreDuration and add the chords.
             changes = random.randint(6, 15)
-            progression = random.choices([-2, -4, -6, -8, -10, -12, 3, 6], [10, 3, 2, 1, 1, 1, 8, 3], k=changes)
+            #progression = random.choices([-2, -4, -6, -8, -10, -12, 3, 6], [10, 3, 2, 1, 1, 1, 8, 3], k=changes)
+            progression = random.choices([-2, -4, -8, -10, -12, 3, 6], [10, 3, 2, 1, 1, 8, 3], k=changes)
             secondsPerChord = scoreDuration / len(progression)
             chordTime = scoreTime
             for steps in progression:
@@ -256,22 +260,22 @@ model.addChild(rescale)
 rescale.setRescale(CsoundAC.Event.INSTRUMENT, True, True,  1.0,  7.0)
 rescale.setRescale(CsoundAC.Event.DURATION,   True, True,  6.0,  8.0)
 rescale.setRescale(CsoundAC.Event.VELOCITY,   True, True, 60.0,  8.0)
+voiceleadingNode = CsoundAC.VoiceleadingNode()
+voiceleadingNode.thisown = 0
+rescale.addChild(voiceleadingNode)
 sectionNumber = 0
 for section in sections:
     sectionNumber = sectionNumber + 1
     print("Section %3d: %s" % (sectionNumber, section))
-    voiceleadingNode = CsoundAC.VoiceleadingNode()
-    voiceleadingNode.thisown = 0
     subscore = readCatalog(section, voiceleadingNode)
     voiceleadingNode.addChild(subscore)
-    rescale.addChild(voiceleadingNode)
 
 csoundOrchestra = '''
 
 sr = 48000
 ksmps = 128
 nchnls = 2
-0dbfs = 1
+0dbfs = 2
 
 alwayson    "ReverbSC"
 alwayson    "MasterOutput"

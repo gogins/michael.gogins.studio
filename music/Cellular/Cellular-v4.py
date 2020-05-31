@@ -22,7 +22,7 @@ import os
 import random
 # Using the same random seed for each performance makes the performance 
 # deterministic, not random.
-random.seed(38493)
+random.seed(221)
 import signal
 import string
 import sys
@@ -30,7 +30,7 @@ import traceback
 
 print('Set "rendering" to:     "soundfile" or "audio".')
 print
-rendering = "soundfile"
+rendering = "audio"
 
 model = CsoundAC.MusicModel()
 score = model.getScore()
@@ -83,7 +83,7 @@ def reverse_enumeration(L):
       yield index, L[index]
    
 # These individually varied repetitions implement the process used by Terry 
-# Riley's "In C:" In each voice, randomly choose between 1 and 7 repetitions 
+# Riley's "In C:" In each voice, randomly choose between 1 and N repetitions 
 # for each measure of one complete circuit through a chosen subset of the 
 # minuet table. The number of repetitions of each measure will often differ 
 # between the voices, and this creates many differential canons between the 
@@ -95,7 +95,7 @@ rows_to_play = 4
 columns_to_play = 16
 measures_to_play = rows_to_play * columns_to_play
 minimum_repetitions_per_measure = 1
-maximum_repetitions_per_measure = 7
+maximum_repetitions_per_measure = 6
 repetitions_for_measures = []
 for i in range(measures_to_play):
     repetitions_for_measures.append(random.randint(minimum_repetitions_per_measure, maximum_repetitions_per_measure))     
@@ -110,12 +110,15 @@ def read_measure(number):
     for i, event in reverse_enumeration(score_for_measure):
         if event.getChannel() < 0:
             score_for_measure.remove(i)
+    #print("Loaded '%s':\n%s" % (filename, score_for_measure.toString()))
     return score_node
 
 tempo = 1.5
 
-scale = CsoundAC.Scale("D major")
+scale = CsoundAC.Scale("E major")
 chord = scale.chord(1, 4)
+initial_bass = 36
+forte_measures = random.choices([1,0], [2/6, 4/6], k=measures_to_play)
 
 def build_voice(voiceleading_node, sequence, instrument, bass, time_offset, pan):
     global repetitions_for_measures
@@ -124,11 +127,13 @@ def build_voice(voiceleading_node, sequence, instrument, bass, time_offset, pan)
     global chord
     global scale
     # Ensure that each voice plays a different sequence of repetitions, as in 
-    # "In C"; yet shuffling ensures that each voice plays the same number of 
+    # "In C"; shuffling ensures that each voice plays the same number of 
     # bars.
     random.shuffle(repetitions_for_measures)
+    random.shuffle(forte_measures)
     bars_total = sum(repetitions_for_measures)
     print("Instrument: {:3} measures: {} bars: {} repetitions_for_measures: {}".format(instrument, len(repetitions_for_measures), bars_total, repetitions_for_measures))    
+    print("Instrument: {:3} measures: {} bars: {} forte_mearues:            {}".format(instrument, len(repetitions_for_measures), bars_total, forte_measures))    
     print()
     bars_played = 0
     real_time = 1.0
@@ -152,6 +157,7 @@ def build_voice(voiceleading_node, sequence, instrument, bass, time_offset, pan)
     for minuet_column in range(1, columns_to_play + 1):
         for minuet_row in range(2, rows_to_play + 2):
             repetitions_for_measure = repetitions_for_measures[repetitions_for_measure_index]
+            forte = forte_measures[repetitions_for_measure]
             repetitions_for_measure_index = repetitions_for_measure_index + 1
             scales = scale.modulations(chord)
             scale_count = len(scales)
@@ -192,8 +198,8 @@ def build_voice(voiceleading_node, sequence, instrument, bass, time_offset, pan)
                 rescale.setRescale(CsoundAC.Event.KEY, bool(1), bool(1), bass, range_)
                 piano = piano + piano_increment_per_bar
                 dynamic_range = dynamic_range + dynamic_range_increment_per_bar
-                rescale.setRescale(CsoundAC.Event.VELOCITY, bool(1), bool(1), piano, dynamic_range)
-                rescale.setRescale(CsoundAC.Event.PAN, bool(1), bool(0), float(pan), 0)
+                rescale.setRescale(CsoundAC.Event.VELOCITY, bool(1), bool(1), piano + (forte * 4), dynamic_range)
+                rescale.setRescale(CsoundAC.Event.PAN, bool(1), bool(1), pan, float(0))
                 rescale.thisown = 0
                 rescale.addChild(measure)
                 bars_played = bars_played + 1
@@ -204,28 +210,37 @@ def build_voice(voiceleading_node, sequence, instrument, bass, time_offset, pan)
     print()
 
 sequence = CsoundAC.Rescale()
-sequence.setRescale(CsoundAC.Event.VELOCITY,   bool(1), bool(1), 66, 9)
+sequence.setRescale(CsoundAC.Event.VELOCITY, bool(1), bool(1), 60., 12.)
 # The actual harmony is applied after the notes for all voices have been '
 # generated.
 voiceleading_node = CsoundAC.VoiceleadingNode()
 voiceleading_node.addChild(sequence);
 model.addChild(voiceleading_node)
-initial_bass = 34
+
+instruments_used = 0
+total_instruments = 6
 # Stagger starting times for each voice to create a canon at the very 
 # beginning.
-time_offset = (tempo * 6.0) / 4.0
-# PianoNotePianoteq.
-build_voice(voiceleading_node, sequence, 1, initial_bass, time_offset * 0.0, 1/7)
-# Zakian flute.
-build_voice(voiceleading_node, sequence, 2, initial_bass, time_offset * 1.0, 2/7)
-# FMWaterBell.
-build_voice(voiceleading_node, sequence, 3, initial_bass, time_offset * 2.0, 3/7)
-# Harpsichord.
-build_voice(voiceleading_node, sequence, 4, initial_bass, time_offset * 4.0, 4/7)
-# ChebyshevMelody.
-build_voice(voiceleading_node, sequence, 5, initial_bass, time_offset * 5.0, 5/7)
-# Rhodes.
-build_voice(voiceleading_node, sequence, 6, initial_bass, time_offset * 3.0, 6/7)
+time_offset = (tempo * total_instruments) / 4.0
+# Make it possible to experimentally shrink or enlarge the arrangement.
+# 1 PianoNotePianoteq.
+instruments_used = instruments_used + 1
+build_voice(voiceleading_node, sequence, 1, initial_bass, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)))
+# 2 Zakian flute.
+instruments_used = instruments_used + 1
+build_voice(voiceleading_node, sequence, 2, initial_bass, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)))
+# 3 FMWaterBell.
+instruments_used = instruments_used + 1
+build_voice(voiceleading_node, sequence, 3, initial_bass, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)))
+# 4 Harpsichord.
+instruments_used = instruments_used + 1
+build_voice(voiceleading_node, sequence, 4, initial_bass, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)))
+# 5 ChebyshevMelody.
+instruments_used = instruments_used + 1
+build_voice(voiceleading_node, sequence, 5, initial_bass, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)))
+# 6 Rhodes.
+instruments_used = instruments_used + 1
+build_voice(voiceleading_node, sequence, 6, initial_bass, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)))
 
 # No #includes are used here, all Csound instruments are defined in this very file.
 # The only non-standard external dependencies are the vst4cs opcodes, and the 
@@ -236,7 +251,7 @@ orc = '''
 sr = 48000
 ksmps = 128
 nchnls = 2
-0dbfs = 6
+0dbfs = 12
 
 ; Ensure the same random stream for each rendering.
 ; rand, randh, randi, rnd(x) and birnd(x) are not affected by seed.
@@ -293,7 +308,7 @@ i_pitch_correction = 44100 / sr
 vstnote gi_Pianoteq, 0, i_midi_key, i_midi_velocity, i_duration
 endin
 
-gk_ZakianFlute_midi_dynamic_range init 20
+gk_ZakianFlute_midi_dynamic_range init 80
 gk_ZakianFlute_level init 0
 gk_ZakianFlute_pan init .5
 gi_ZakianFLute_seed init .5
@@ -717,6 +732,7 @@ printks "ChebyshevMelody i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d l%
 endin
 
 gk_Rhodes_level init 0
+gk_Rhodes_midi_dynamic_range init 127
 gi_Rhodes_sine ftgen 0, 0, 65537, 10, 1
 gi_Rhodes_cosine ftgen 0, 0, 65537, 11, 1
 gi_Rhodes_blank ftgen 0, 0, 65537, 10, 0 ; Blank wavetable for some Cook FM opcodes.
@@ -726,9 +742,11 @@ i_instrument = p1
 i_time = p2
 i_duration = p3
 i_midi_key = p4
+i_midi_dynamic_range = i(gk_Rhodes_midi_dynamic_range)
+i_midi_velocity = p5 * i_midi_dynamic_range / 127 + (63.6 - i_midi_dynamic_range / 2)
 i_midi_velocity = p5
 k_space_front_to_back = p6
-k_space_left_to_right = .5
+k_space_left_to_right = p7
 k_space_bottom_to_top = p8
 i_phase = p9
 i_frequency = cpsmidinn(i_midi_key)
@@ -770,7 +788,7 @@ endin
 gk_PianoOutPianoteq_level init 0
 gi_PianoOutPianoteq_print init 1
 gk_PianoOutPianoteq_front_to_back init 0
-gk_PianoOutPianoteq_left_to_right init 0.5
+gk_PianoOutPianoteq_left_to_right init 1/7
 gk_PianoOutPianoteq_bottom_to_top init 0
 instr PianoOutPianoteq
 ; Should be "D4 Daily Practice".
@@ -834,7 +852,7 @@ prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrs
 endin
 
 gk_MasterOutput_level init 0
-gS_MasterOutput_filename init ""
+gS_MasterOutput_filename init "check.wav"
 instr MasterOutput
 aleft inleta "inleft"
 aright inleta "inright"
@@ -845,7 +863,7 @@ aleft butterlp aleft, 18000
 aright butterlp aright, 18000
 outs aleft * k_gain, aright * k_gain
 ; We want something that will play on my phone.
-i_amplitude_adjustment = ampdbfs(-3) / 32767
+i_amplitude_adjustment = 1; ampdbfs(-3) / 32767
 i_filename_length strlen gS_MasterOutput_filename
 if i_filename_length > 0 goto filename_exists
 goto filename_endif
@@ -860,15 +878,15 @@ endin
 ; enables instruments to come forward and recede according to their 
 ; response to MIDI velocity.
 
-gk_ChebyshevMelody_level init   11
-gk_ZakianFlute_level init       15
 gk_PianoOutPianoteq_level init   0
-gk_FMWaterBell_level init       15
+gk_ZakianFlute_level init       17
+gk_FMWaterBell_level init       16
+gk_ChebyshevMelody_level init   19
 gk_Harpsichord_level init       11
-gk_Rhodes_level init            17
+gk_Rhodes_level init            26
 
 gk_Reverb_wet init 0.25
-gk_Reverb_feedback init 0.75
+gk_Reverb_feedback init 0.85
 gi_Reverb_delay_modulation init 0.0875
 gk_Reverb_frequency_cutoff init 14000
 '''
@@ -886,7 +904,7 @@ for i, event in reverse_enumeration(score):
     CsoundAC.conformToChord(event, chord, True)
     instrument = str(event.getInstrument())
     sounding.add(instrument)
-    if len(sounding) == 6:
+    if len(sounding) == total_instruments:
         break
 score.save(model.getMidifileFilepath())
 model.performMaster()
