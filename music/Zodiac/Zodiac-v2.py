@@ -240,8 +240,7 @@ def readCatalog(section, voiceleadingNode):
             rescale.setRescale(CsoundAC.Event.PHASE,     True, True, leftmost,  width)
             # Now generate the harmony as a function of scoreDuration and add the chords.
             changes = random.randint(6, 15)
-            #progression = random.choices([-2, -4, -6, -8, -10, -12, 3, 6], [10, 3, 2, 1, 1, 1, 8, 3], k=changes)
-            progression = random.choices([-2, -4, -8, -10, -12, 3, 6], [10, 3, 2, 1, 1, 8, 3], k=changes)
+            progression = random.choices([-2, -4, -8, -10, -12, 3], [10, 1, 2, 1, 2, 4], k=changes)
             secondsPerChord = scoreDuration / len(progression)
             chordTime = scoreTime
             for steps in progression:

@@ -30,7 +30,7 @@ import traceback
 
 print('Set "rendering" to:     "soundfile" or "audio".')
 print
-rendering = "soundfile"
+rendering = "audio"
 
 model = CsoundAC.MusicModel()
 score = model.getScore()
@@ -51,7 +51,7 @@ print
 
 print('Rendering option:       %s' % rendering)
 rendering_commands = {
-    'soundfile':    'csound -d -r 96000 -k 100 -m195 -+msg_color=0 -RWZdfo %s' % (soundfile_name),
+    'soundfile':    'csound -d -r 48000 -k 128 -m195 -+msg_color=0 -RWZdfo %s' % (soundfile_name),
     'audio':        'csound -d -r 48000 -k 128 -m195 -+msg_color=0 -o%s'       % (dac_name),
 }
 csound_command = rendering_commands[rendering]
@@ -84,18 +84,18 @@ def reverse_enumeration(L):
    
 # These individually varied repetitions implement the process used by Terry 
 # Riley's "In C:" In each voice, randomly choose between 1 and N repetitions 
-# for each measure of one complete circuit through a chosen subset of the 
+# for each measure of one complete circuit through a selected subset of the 
 # minuet table. The number of repetitions of each measure will often differ 
 # between the voices, and this creates many differential canons between the 
 # voices.
 # NOTE: A "measure" is Mozart's measure to be played for N repetitions, a 
 # "bar" is one measure played one time.
 
-rows_to_play = 4
+rows_to_play = 5
 columns_to_play = 12
 measures_to_play = rows_to_play * columns_to_play
 minimum_repetitions_per_measure = 1
-maximum_repetitions_per_measure = 6 
+maximum_repetitions_per_measure = 8 
 repetitions_for_measures = []
 for i in range(measures_to_play):
     repetitions_for_measures.append(random.randint(minimum_repetitions_per_measure, maximum_repetitions_per_measure))     
@@ -113,9 +113,9 @@ def read_measure(number):
     #print("Loaded '%s':\n%s" % (filename, score_for_measure.toString()))
     return score_node
 
-tempo = 1.5
+tempo = 5./3.
 
-scale = CsoundAC.Scale("E major")
+scale = CsoundAC.Scale("D major")
 chord = scale.chord(1, 4)
 initial_bass = 32
 forte_measures = random.choices([1,0], [2/6, 4/6], k=measures_to_play)
@@ -127,8 +127,8 @@ def build_voice(voiceleading_node, sequence, instrument, bass, time_offset, pan)
     global chord
     global scale
     # Ensure that each voice plays a different sequence of repetitions, as in 
-    # "In C". But note that shuffling ensures rather than resampling ensures 
-    # that each voice plays the same number of bars.
+    # "In C". But note that shuffling, rather than resampling, ensures 
+    # that each voice actually plays the same number of bars.
     random.shuffle(repetitions_for_measures)
     random.shuffle(forte_measures)
     bars_total = sum(repetitions_for_measures)
@@ -164,7 +164,7 @@ def build_voice(voiceleading_node, sequence, instrument, bass, time_offset, pan)
             count = 0
             # After picking a number of repetitions for a measure, find if the 
             # current chord can be a pivot chord, and if so, choose one of the 
-            # possible modulations to perform. Do this for the first voice 
+            # possible modulations to perform. Do this in the first voice 
             # only, but it will be applied to all voices.
             if (scale_count > 1 and time_offset == 0):
                 random_index = random.randint(0, scale_count -1)
@@ -282,9 +282,6 @@ connect "ReverbSC", "outright", "MasterOutput", "inright"
 
 gk_PianoNotePianoteq_midi_dynamic_range init 127
 instr PianoNotePianoteq
-if p3 == -1 then
-  p3 = 1000000
-endif
 i_instrument = p1
 i_time = p2
 i_duration = p3
@@ -879,7 +876,7 @@ endin
 ; response to MIDI velocity.
 
 gk_PianoOutPianoteq_level init   0
-gk_ZakianFlute_level init       17
+gk_ZakianFlute_level init       19
 gk_FMWaterBell_level init       16
 gk_ChebyshevMelody_level init   19
 gk_Harpsichord_level init       11
