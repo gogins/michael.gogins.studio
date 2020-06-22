@@ -19,14 +19,11 @@
     }
 </style>
 <script src='silencio/js/csound_loader.js'></script>
-<script src='silencio/js/canvas_wrapper.js'></script>
 <script src='silencio/js/sprintf.js'></script>
-<script src='silencio/js/numeric.js'></script>
 <script src="silencio/js/three.js"></script>
 <script src='silencio/js/tinycolor.js'></script>
-<script src='silencio/js/Silencio.js'></script>
 <script src="silencio/js/TrackballControls.js"></script>
-<script type="text/javascript" src="silencio/js/dat.gui.js"></script>
+<script src="silencio/js/dat.gui.js"></script>
 </head>
 <body style="background:black;">
 <script>
@@ -40,12 +37,15 @@ try {
 </script>
 <canvas id="canvas" style="block;height:100vh;width:100vw">
 </canvas>
-<textarea id="console" style="position:absolute;left:1vw;top:1vw;width:50vw;height:98vh;color:SkyBlue;background-color:transparent;border:none;text-align:left;font-size:8.25px;overflow:auto;cursor:none;"></textarea>
+<textarea id="console" style="position:absolute;left:1vw;top:1vw;width:50vw;height:98vh;color:SkyBlue;background-color:transparent;border:none;text-align:left;font-size:8.25px;overflow:auto;"></textarea>
 <script src="silencio/js/CsoundAC.js"></script>
+<script src="silencio/js/piano-roll.js"></script>
 <script>
 let CsoundAC;
 let score_model;
 let csound_score;
+let piano_roll = new PianoRoll();
+let canvas = document.getElementById("canvas");
 let soundfile_name = "CsoundAC-HTML-Demo.wav";
 (async function() { CsoundAC =  await createCsoundAC(); CsoundAC.hello(); }());
 window.onerror = function (message, url, line) {
@@ -80,6 +80,7 @@ var generate = function() {
     let score = score_model.getScore();
     score.setDuration(5 * 60);
     csound_score = score.getCsoundScore(12., true);
+    piano_roll.draw3D(score, canvas);
   } catch(err) {
     csound.message(err.name + ': ' + err.message + ' ' + err.line + '\n');
   }
@@ -418,6 +419,7 @@ window.onload = function() {
                 parameters.stop();
             }
         }
+        return false;
     });
 };
 
