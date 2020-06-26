@@ -30,7 +30,7 @@ import traceback
 
 print('Set "rendering" to:     "soundfile" or "audio".')
 print
-rendering = "audio"
+rendering = "soundfile"
 
 model = CsoundAC.MusicModel()
 score = model.getScore()
@@ -880,7 +880,7 @@ gk_ZakianFlute_level init       19
 gk_FMWaterBell_level init       16
 gk_ChebyshevMelody_level init   19
 gk_Harpsichord_level init       11
-gk_Rhodes_level init            28
+gk_Rhodes_level init            32
 
 gk_Reverb_wet init 0.25
 gk_Reverb_feedback init 0.85
