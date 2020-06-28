@@ -251,7 +251,7 @@ orc = '''
 sr = 48000
 ksmps = 128
 nchnls = 2
-0dbfs = 12
+0dbfs = 15
 
 ; Ensure the same random stream for each rendering.
 ; rand, randh, randi, rnd(x) and birnd(x) are not affected by seed.
@@ -875,12 +875,12 @@ endin
 ; enables instruments to come forward and recede according to their 
 ; response to MIDI velocity.
 
-gk_PianoOutPianoteq_level init   0
+gk_PianoOutPianoteq_level init  -1 
 gk_ZakianFlute_level init       19
-gk_FMWaterBell_level init       16
-gk_ChebyshevMelody_level init   19
+gk_FMWaterBell_level init       24;16
+gk_ChebyshevMelody_level init   28;19
 gk_Harpsichord_level init       11
-gk_Rhodes_level init            32
+gk_Rhodes_level init            31
 
 gk_Reverb_wet init 0.25
 gk_Reverb_feedback init 0.85
