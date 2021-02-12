@@ -20,7 +20,7 @@ int main(int argc, const char **argv)
     model.setAuthor("Michael Gogins");
     model.setTitle("ChordLindenmayerTest");
     model.setAlbum("Silence");
-    model.setYear("2018");
+    model.setYear("2020");
     model.setPerformanceRightsOrganization("Irreducible Productions, ASCAP");
     csound::ChordLindenmayer lindenmayer;
     lindenmayer.iterationCount = 4;

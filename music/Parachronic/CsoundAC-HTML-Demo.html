@@ -76,6 +76,7 @@ var generate = function() {
     rescale.setRescale(5, true, true, 60., 12.);
     rescale.addChild(lindenmayer);
     score_model.addChild(rescale);
+    CsoundAC.System.setMessageLevel(15);
     score_model.generate();
     let score = score_model.getScore();
     score.setDuration(5 * 60);
