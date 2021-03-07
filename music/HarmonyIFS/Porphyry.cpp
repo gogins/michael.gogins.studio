@@ -42,32 +42,32 @@ int main(int argc, const char **argv)
     int i = 6;
     int h = 7;
     harmony_ifs.set_transformation(0, t, t,   .5);
-    harmony_ifs.set_transformation(0, t, h, -1.0);
-    harmony_ifs.set_transformation(0, k, k,   .5);
+    harmony_ifs.set_transformation(0, t, h, -1.01);
+    harmony_ifs.set_transformation(0, k, k,   .55);
     harmony_ifs.set_transformation(0, k, h,   .0);
     
-    harmony_ifs.set_transformation(1, t, t,   .5);
-    harmony_ifs.set_transformation(1, t, h,   .0);
+    harmony_ifs.set_transformation(1, t, t,  0.5);
+    harmony_ifs.set_transformation(1, t, h, -1.0);
     harmony_ifs.set_transformation(1, k, k,   .45);
     harmony_ifs.set_transformation(1, k, h,  1.0);
     
     harmony_ifs.set_transformation(2, t, t,   .5);
     harmony_ifs.set_transformation(2, t, h,  1.0);
     harmony_ifs.set_transformation(2, k, k,   .5);
-    harmony_ifs.set_transformation(2, k, h,   .0);
+    harmony_ifs.set_transformation(2, k, h,  1.02);
     
     auto t1 = harmony_ifs.hutchinson_operator[1];
     harmony_ifs.hutchinson_operator.push_back(t1);
     
     //harmony_ifs.set_rotation(2, k, i,   .45);
     
-    harmony_ifs.set_transformation(3, t, t,   .5);
+    harmony_ifs.set_transformation(3, t, t,   .45);
     harmony_ifs.set_transformation(3, t, h,  1.0);
     harmony_ifs.set_transformation(3, k, k,   .5);
-    harmony_ifs.set_transformation(3, k, h,   .0);
+    harmony_ifs.set_transformation(3, k, h,  1.0);
 
     
-    harmony_ifs.generate_score_attractor(7);
+    harmony_ifs.generate_score_attractor(6);
        
     //~ auto &t1 = harmony_ifs.add_transformation();
     //~ //t1(t, t) = .5;

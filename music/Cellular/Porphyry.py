@@ -30,7 +30,7 @@ import traceback
 
 print('Set "rendering" to:     "soundfile" or "audio".')
 print
-rendering = "soundfile"
+rendering = "audio"
 
 model = CsoundAC.MusicModel()
 score = model.getScore()
@@ -120,7 +120,7 @@ chord = scale.chord(1, 4)
 initial_bass = 32
 forte_measures = random.choices([1,0], [2/6, 4/6], k=measures_to_play)
 
-def build_voice(voiceleading_node, sequence, instrument, bass, time_offset, pan):
+def build_voice(voiceleading_node, sequence, instrument, bass, time_offset, pan, level):
     global repetitions_for_measures
     global tempo
     global off_time
@@ -145,8 +145,8 @@ def build_voice(voiceleading_node, sequence, instrument, bass, time_offset, pan)
     range_ = 48.
     range_at_end = 52.
     range_increment_per_bar = (range_at_end - range_) / bars_total
-    piano = 60.
-    piano_at_end = 56.
+    piano = 60. + level
+    piano_at_end = piano - 4.
     piano_increment_per_bar = (piano_at_end - piano) / bars_total
     dynamic_range = 20.
     dynamic_range_at_end = 30.
@@ -218,29 +218,23 @@ voiceleading_node.addChild(sequence);
 model.addChild(voiceleading_node)
 
 instruments_used = 0
-total_instruments = 6
+total_instruments = 4
 # Stagger starting times for each voice to create a canon at the very 
 # beginning.
 time_offset = (tempo * total_instruments) / 4.0
 # Make it possible to experimentally shrink or enlarge the arrangement.
-# 1 PianoNotePianoteq.
 instruments_used = instruments_used + 1
-build_voice(voiceleading_node, sequence, 1, initial_bass + 4, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)))
-# 2 Zakian flute.
+build_voice(voiceleading_node, sequence, 1, initial_bass - 4, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)),  9)
 instruments_used = instruments_used + 1
-build_voice(voiceleading_node, sequence, 2, initial_bass + 0, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)))
-# 3 FMWaterBell.
+build_voice(voiceleading_node, sequence, 2, initial_bass - 3, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)),  0)
 instruments_used = instruments_used + 1
-build_voice(voiceleading_node, sequence, 3, initial_bass + 0, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)))
-# 4 Harpsichord.
+build_voice(voiceleading_node, sequence, 3, initial_bass - 2, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)),  6)
 instruments_used = instruments_used + 1
-build_voice(voiceleading_node, sequence, 4, initial_bass + 0, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)))
-# 5 ChebyshevMelody.
+build_voice(voiceleading_node, sequence, 4, initial_bass - 1, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)),  6)
 instruments_used = instruments_used + 1
-build_voice(voiceleading_node, sequence, 5, initial_bass + 0, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)))
-# 6 Rhodes.
+build_voice(voiceleading_node, sequence, 3, initial_bass + 0, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)), 12)
 instruments_used = instruments_used + 1
-build_voice(voiceleading_node, sequence, 6, initial_bass + 4, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)))
+build_voice(voiceleading_node, sequence, 4, initial_bass + 1, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)), 12)
 
 # No #includes are used here, all Csound instruments are defined in this very file.
 # The only non-standard external dependencies are the vst4cs opcodes, and the 
@@ -258,27 +252,60 @@ nchnls = 2
 
 seed 38493
 
+gi_MverbVst vstinit "/home/mkg/.local/lib/Mverb2020.so", 1
+gi_Organteq vstinit "/home/mkg/Organteq\ 1/x86-64bit/Organteq\ 1.lv2/Organteq_1.so", 0
 gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", 0
 
+alwayson "OrganOutOrganteq"
 alwayson "PianoOutPianoteq"
-alwayson "ReverbSC"
+alwayson "MverbVst"
 alwayson "MasterOutput"
 
-connect "ChebyshevMelody", "outleft", "ReverbSC", "inleft"
-connect "ChebyshevMelody", "outright", "ReverbSC", "inright"
-connect "FMWaterBell", "outleft", "ReverbSC", "inleft"
-connect "FMWaterBell", "outright", "ReverbSC", "inright"
-connect "Harpsichord", "outleft", "ReverbSC", "inleft"
-connect "Harpsichord", "outright", "ReverbSC", "inright"
-connect "Rhodes", "outleft", "ReverbSC", "inleft"
-connect "Rhodes", "outright", "ReverbSC", "inright"
-connect "ZakianFlute", "outleft", "ReverbSC", "inleft"
-connect "ZakianFlute", "outright", "ReverbSC", "inright"
+connect "ChebyshevMelody", "outleft", "MverbVst", "inleft"
+connect "ChebyshevMelody", "outright", "MverbVst", "inright"
+connect "FMWaterBell", "outleft", "MverbVst", "inleft"
+connect "FMWaterBell", "outright", "MverbVst", "inright"
+connect "Harpsichord", "outleft", "MverbVst", "inleft"
+connect "Harpsichord", "outright", "MverbVst", "inright"
+connect "Rhodes", "outleft", "MverbVst", "inleft"
+connect "Rhodes", "outright", "MverbVst", "inright"
+connect "ZakianFlute", "outleft", "MverbVst", "inleft"
+connect "ZakianFlute", "outright", "MverbVst", "inright"
 
-connect "PianoOutPianoteq", "outleft", "ReverbSC", "inleft"
-connect "PianoOutPianoteq", "outright", "ReverbSC", "inright"
-connect "ReverbSC", "outleft", "MasterOutput", "inleft"
-connect "ReverbSC", "outright", "MasterOutput", "inright"
+connect "OrganOutOrganteq", "outleft", "MverbVst", "inleft"
+connect "OrganOutOrganteq", "outright", "MverbVst", "inright"
+connect "PianoOutPianoteq", "outleft", "MverbVst", "inleft"
+connect "PianoOutPianoteq", "outright", "MverbVst", "inright"
+connect "MverbVst", "outleft", "MasterOutput", "inleft"
+connect "MverbVst", "outright", "MasterOutput", "inright"
+
+gk_OrganNoteOrganteq_midi_dynamic_range init 127
+instr Pedale, Positif, Grand_Orgue, Recit
+if p3 == -1 then
+  p3 = 1000000
+endif
+i_instrument = p1
+i_time = p2
+i_duration = p3
+i_midi_key = p4
+i_midi_dynamic_range = i(gk_OrganNoteOrganteq_midi_dynamic_range)
+i_midi_velocity = p5 * i_midi_dynamic_range / 127 + (63.6 - i_midi_dynamic_range / 2)
+k_space_front_to_back = p6
+k_space_left_to_right = p7
+k_space_bottom_to_top = p8
+i_phase = p9
+i_instrument = p1
+i_time = p2
+i_duration = p3
+i_midi_key = p4
+i_midi_velocity = p5
+i_homogeneity = p11
+instances active p1
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+i_pitch_correction = 44100 / sr
+; prints "Pitch factor:   %9.4f\\n", i_pitch_correction
+vstnote gi_Organteq, 1, i_midi_key, i_midi_velocity, i_duration
+endin
 
 gk_PianoNotePianoteq_midi_dynamic_range init 127
 instr PianoNotePianoteq
@@ -640,7 +667,7 @@ outleta "outright", a_out_right
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
-gk_ChebyshevMelody_level init 0
+gk_ChebyshevMelody_level init 3
 gi_ChebyshevMelody_attack init 0.003
 gi_ChebyshevMelody_release init 0.01
 gk_ChebyshevMelody_midi_dynamic_range init 127
@@ -728,7 +755,7 @@ prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrs
 printks "ChebyshevMelody i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d l%9.4f r%9.4f\\n", .1, p1, p2, p3, p4, p5, p7, active(p1), dbamp(rms(a_out_left)), dbamp(rms(a_out_right))
 endin
 
-gk_Rhodes_level init 0
+gk_Rhodes_level init 4
 gk_Rhodes_midi_dynamic_range init 127
 gi_Rhodes_sine ftgen 0, 0, 65537, 10, 1
 gi_Rhodes_cosine ftgen 0, 0, 65537, 11, 1
@@ -825,6 +852,141 @@ outleta "out", a_spatial_reverb_send
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+endin
+
+gk_OrganOutOrganteq_level init 0
+gi_OrganOutOrganteq_print init 1
+gk_OrganOutOrganteq_front_to_back init 0
+gk_OrganOutOrganteq_left_to_right init 0.5
+gk_OrganOutOrganteq_bottom_to_top init 0
+instr OrganOutOrganteq
+; Internal reverb off.
+vstparamset gi_Organteq, 4, 0
+
+; Set up all stops...
+
+vstparamset gi_Organteq, 6, 0
+
+; NOTE: Stop knob # + 40 is stop _volume_.
+
+; Keyboard 1 -- Pedale
+
+vstparamset gi_Organteq, 33, 1
+;vstparamset gi_Organteq, 34, 1
+vstparamset gi_Organteq, 74, .125
+vstparamset gi_Organteq, 35, 0
+vstparamset gi_Organteq, 36, 0
+;vstparamset gi_Organteq, 37, 1
+vstparamset gi_Organteq, 77, .125
+vstparamset gi_Organteq, 38, 0
+vstparamset gi_Organteq, 39, 0
+vstparamset gi_Organteq, 40, 0
+vstparamset gi_Organteq, 41, 0
+vstparamset gi_Organteq, 42, 0
+
+; Keyboard 2 -- Positif
+
+vstparamset gi_Organteq, 43, 0
+vstparamset gi_Organteq, 44, 1
+vstparamset gi_Organteq, 45, 0
+vstparamset gi_Organteq, 46, 0
+vstparamset gi_Organteq, 47, 1
+vstparamset gi_Organteq, 48, 0
+vstparamset gi_Organteq, 49, 0
+vstparamset gi_Organteq, 50, 0
+vstparamset gi_Organteq, 51, 1
+vstparamset gi_Organteq, 52, 0
+
+; Keyboard 3 -- Grand Orgue
+
+vstparamset gi_Organteq, 53, 0
+vstparamset gi_Organteq, 54, 1
+vstparamset gi_Organteq, 55, 1
+vstparamset gi_Organteq, 56, 0
+vstparamset gi_Organteq, 57, 0 
+vstparamset gi_Organteq, 58, 0
+vstparamset gi_Organteq, 59, 0
+vstparamset gi_Organteq, 60, 0
+vstparamset gi_Organteq, 61, 0
+vstparamset gi_Organteq, 62, 0
+
+; Keyboard 4 - Recit 
+
+vstparamset gi_Organteq, 63, 1
+vstparamset gi_Organteq, 64, 1
+vstparamset gi_Organteq, 65, 0
+vstparamset gi_Organteq, 66, 0
+vstparamset gi_Organteq, 67, 0
+vstparamset gi_Organteq, 68, 0
+vstparamset gi_Organteq, 69, 0
+vstparamset gi_Organteq, 70, 1
+vstparamset gi_Organteq, 71, 0
+vstparamset gi_Organteq, 72, 0
+
+k_gain = ampdb(gk_OrganOutOrganteq_level)
+i_overall_amps = 89
+i_normalization = ampdb(-i_overall_amps) * 2
+i_amplitude = ampdb(80) * i_normalization
+if gi_OrganOutOrganteq_print == 1 then
+  vstinfo gi_Organteq
+endif
+i_instrument = p1
+i_time = p2
+i_duration = p3
+i_midi_key = p4
+i_midi_velocity = p5
+ainleft init 0
+ainright init 0
+aoutleft, aoutright vstaudio gi_Organteq, ainleft, ainright
+a_signal = aoutleft + aoutright
+a_signal *= k_gain
+a_signal *= i_amplitude
+a_out_left, a_out_right pan2 a_signal, gk_OrganOutOrganteq_left_to_right
+; printks "vstaudio:       %9.4f   %9.4f\\n", 0.5, aoutleft, aoutright
+#ifdef USE_SPATIALIZATION
+a_signal = a_out_left + a_out_right
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, gk_OrganOutOrganteq_front_to_back, gk_OrganOutOrganteq_left_to_right, gk_OrganOutOrganteq_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+; printks "OrganOutPt     L %9.4f R %9.4f l %9.4f\\n", 0.5, a_out_left, a_out_right, gk_Organ_level
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+endin
+
+gk_MverbVst_level init 0
+gk_MverbVst_Mix init .5
+gk_MverbVst_Pre_delay init 0.25
+gk_MverbVst_Early_late_mix init 0.25
+gk_MverbVst_Size init 0.5
+gk_MverbVst_Density init 0.5
+gk_MverbVst_Bandwith_Frequency init 0.5
+gk_MverbVst_Decay init 0.55
+gk_MverbVst_Damping_Frequency init 0.5
+gk_MverbVst_Gain init 1
+gi_MverbVst_Program init 4
+instr MverbVst
+vstprogset gi_MverbVst, gi_MverbVst_Program
+vstparamset gi_MverbVst, 1, gk_MverbVst_Mix
+;vstparamset gi_MverbVst, 1, gk_MverbVst_Pre_delay
+;vstparamset gi_MverbVst, 2, gk_MverbVst_Early_late_mix
+;vstparamset gi_MverbVst, 3, gk_MverbVst_Size
+;vstparamset gi_MverbVst, 4, gk_MverbVst_Density
+;vstparamset gi_MverbVst, 5, gk_MverbVst_Bandwith_Frequency
+vstparamset gi_MverbVst, 6, gk_MverbVst_Decay
+;vstparamset gi_MverbVst, 7, gk_MverbVst_Damping_Frequency
+;vstparamset gi_MverbVst, 8, gk_MverbVst_Gain
+k_gain = ampdb(gk_MverbVst_level)
+ainleft inleta "inleft"
+ainright inleta "inright"
+aoutleft, aoutright vstaudio gi_MverbVst, ainleft, ainright
+outleta "outleft", aoutleft
+outleta "outright", aoutright
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
