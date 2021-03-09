@@ -115,8 +115,8 @@ def read_measure(number):
 
 tempo = 5./3.
 
-scale = CsoundAC.Scale("D major")
-chord = scale.chord(1, 4)
+scale = CsoundAC.Scale("F# major")
+chord = scale.chord(1, 5)
 initial_bass = 32
 forte_measures = random.choices([1,0], [2/6, 4/6], k=measures_to_play)
 
@@ -188,8 +188,14 @@ def build_voice(voiceleading_node, sequence, instrument, bass, time_offset, pan,
                     voiceleading_node.chord(chord, cumulative_time)
                 measure = read_measure(minuet_table[minuet_row][minuet_column])
                 score_for_measure = measure.getScore()
-                duration = score_for_measure.getDuration() * tempo
-                score_for_measure.setDuration(duration)
+                duration = score_for_measure.getDuration()
+                print("Duration of measure %d, %d: %f" % (minuet_row, minuet_column, duration))
+                duration = 1.8
+                #~ if duration == 1.798750:
+                    #~ duration = 1.8
+                #~ elif duration == 1.198750:
+                    #~ duration = 1.2
+                #score_for_measure.setDuration(duration)
                 rescale = CsoundAC.Rescale() 
                 rescale.setRescale(CsoundAC.Event.TIME, bool(1), bool(0), cumulative_time, 0)
                 rescale.setRescale(CsoundAC.Event.INSTRUMENT, bool(1), bool(1), instrument, 0)
@@ -222,6 +228,9 @@ total_instruments = 4
 # Stagger starting times for each voice to create a canon at the very 
 # beginning.
 time_offset = (tempo * total_instruments) / 4.0
+print("time_offset:", time_offset)
+time_offset = 1.198750 * 3.
+print("time_offset:", time_offset)
 # Make it possible to experimentally shrink or enlarge the arrangement.
 instruments_used = instruments_used + 1
 build_voice(voiceleading_node, sequence, 1, initial_bass - 4, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)),  9)
@@ -873,13 +882,11 @@ vstparamset gi_Organteq, 6, 0
 ; Keyboard 1 -- Pedale
 
 vstparamset gi_Organteq, 33, 1
-;vstparamset gi_Organteq, 34, 1
-vstparamset gi_Organteq, 74, .125
+vstparamset gi_Organteq, 34, 1
 vstparamset gi_Organteq, 35, 0
 vstparamset gi_Organteq, 36, 0
-;vstparamset gi_Organteq, 37, 1
-vstparamset gi_Organteq, 77, .125
-vstparamset gi_Organteq, 38, 0
+vstparamset gi_Organteq, 37, 0
+vstparamset gi_Organteq, 38, 1
 vstparamset gi_Organteq, 39, 0
 vstparamset gi_Organteq, 40, 0
 vstparamset gi_Organteq, 41, 0
@@ -887,26 +894,26 @@ vstparamset gi_Organteq, 42, 0
 
 ; Keyboard 2 -- Positif
 
-vstparamset gi_Organteq, 43, 0
-vstparamset gi_Organteq, 44, 1
+vstparamset gi_Organteq, 43, 1
+vstparamset gi_Organteq, 44, 0
 vstparamset gi_Organteq, 45, 0
-vstparamset gi_Organteq, 46, 0
-vstparamset gi_Organteq, 47, 1
+vstparamset gi_Organteq, 46, 1
+vstparamset gi_Organteq, 47, 0
 vstparamset gi_Organteq, 48, 0
 vstparamset gi_Organteq, 49, 0
 vstparamset gi_Organteq, 50, 0
-vstparamset gi_Organteq, 51, 1
+vstparamset gi_Organteq, 51, 0
 vstparamset gi_Organteq, 52, 0
 
 ; Keyboard 3 -- Grand Orgue
 
-vstparamset gi_Organteq, 53, 0
-vstparamset gi_Organteq, 54, 1
-vstparamset gi_Organteq, 55, 1
+vstparamset gi_Organteq, 53, 1
+vstparamset gi_Organteq, 54, 0
+vstparamset gi_Organteq, 55, 0
 vstparamset gi_Organteq, 56, 0
 vstparamset gi_Organteq, 57, 0 
 vstparamset gi_Organteq, 58, 0
-vstparamset gi_Organteq, 59, 0
+vstparamset gi_Organteq, 59, 1
 vstparamset gi_Organteq, 60, 0
 vstparamset gi_Organteq, 61, 0
 vstparamset gi_Organteq, 62, 0
@@ -916,11 +923,11 @@ vstparamset gi_Organteq, 62, 0
 vstparamset gi_Organteq, 63, 1
 vstparamset gi_Organteq, 64, 1
 vstparamset gi_Organteq, 65, 0
-vstparamset gi_Organteq, 66, 0
-vstparamset gi_Organteq, 67, 0
+vstparamset gi_Organteq, 66, 1
+vstparamset gi_Organteq, 67, 1
 vstparamset gi_Organteq, 68, 0
 vstparamset gi_Organteq, 69, 0
-vstparamset gi_Organteq, 70, 1
+vstparamset gi_Organteq, 70, 0
 vstparamset gi_Organteq, 71, 0
 vstparamset gi_Organteq, 72, 0
 
