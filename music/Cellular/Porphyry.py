@@ -23,6 +23,7 @@ import random
 # Using the same random seed for each performance makes the performance 
 # deterministic, not random.
 random.seed(221)
+random.seed(23)
 import signal
 import string
 import sys
@@ -88,17 +89,38 @@ def reverse_enumeration(L):
 # minuet table. The number of repetitions of each measure will often differ 
 # between the voices, and this creates many differential canons between the 
 # voices.
+# 
 # NOTE: A "measure" is Mozart's measure to be played for N repetitions, a 
 # "bar" is one measure played one time.
 
-rows_to_play = 5
-columns_to_play = 12
+tempo = 5./3.
+scale = CsoundAC.Scale("F# major")
+chord = scale.chord(1, 4)
+bass_offset = 11
+rows_to_play = 8
+columns_to_play = 5
 measures_to_play = rows_to_play * columns_to_play
-minimum_repetitions_per_measure = 1
-maximum_repetitions_per_measure = 8 
+minimum_repetitions_per_measure =  3
+maximum_repetitions_per_measure = 12 
 repetitions_for_measures = []
 for i in range(measures_to_play):
     repetitions_for_measures.append(random.randint(minimum_repetitions_per_measure, maximum_repetitions_per_measure))     
+    
+def time_scale(measure, duration, scale):
+    score = measure.getScore()
+    measure_duration = score.getDuration()
+    measure_duration = measure_duration * scale
+    score.setDuration(measure_duration)
+    return duration * scale
+    
+def pitch_scale(measure, scale):
+    score = measure.getScore()
+    for i, event in enumeration(score):
+        key = event.getKey()
+        key = key * scale
+        key = CsoundAC.Conversions_temper(key, 12.)
+        event.setKey(key)
+        event.temper(12.)
     
 def read_measure(number):
     score_node = CsoundAC.ScoreNode()
@@ -113,11 +135,6 @@ def read_measure(number):
     #print("Loaded '%s':\n%s" % (filename, score_for_measure.toString()))
     return score_node
 
-tempo = 5./3.
-
-scale = CsoundAC.Scale("F# major")
-chord = scale.chord(1, 5)
-initial_bass = 32
 forte_measures = random.choices([1,0], [2/6, 4/6], k=measures_to_play)
 
 def build_voice(voiceleading_node, sequence, instrument, bass, time_offset, pan, level):
@@ -151,11 +168,17 @@ def build_voice(voiceleading_node, sequence, instrument, bass, time_offset, pan,
     dynamic_range = 20.
     dynamic_range_at_end = 30.
     dynamic_range_increment_per_bar = (dynamic_range_at_end - dynamic_range) / bars_total
+    bass = random.choices([24, 30, 36], [8, 6, 4], k=1)[0]
+    range_ = random.choices([60, 45, 48, 30, 24], [12, 10, 8, 6, 5], k=1)[0]
+    duration = 1.8
+    timescale = 1.
+    measure_count = 0
     # Mozart's minuet table has columns indexed [1,16] and rows indexed [2,12]. 
     repetitions_for_measure_index = 0
     # Preserve Mozart's indexing.
     for minuet_column in range(1, columns_to_play + 1):
         for minuet_row in range(2, rows_to_play + 2):
+            measure_count = measure_count + 1
             repetitions_for_measure = repetitions_for_measures[repetitions_for_measure_index]
             forte = forte_measures[repetitions_for_measure]
             repetitions_for_measure_index = repetitions_for_measure_index + 1
@@ -174,33 +197,26 @@ def build_voice(voiceleading_node, sequence, instrument, bass, time_offset, pan,
                         scale = s  
                         print("             Chose modulation to: {} {}".format(scale.toString(), scale.name()))
                     count = count + 1
+                timescale = random.choices([1., 2., .5, 2./3., 4./3.], [12, 2, 2, 2, 2], k=1)[0]
                 print()
+            bass = random.choices([24, 30, 36], [8, 6, 4], k=1)[0] + bass_offset
+            # range_ = random.choices([48, 42, 36, 30, 24], [12, 10, 8, 6, 5], k=1)[0]
+            range_ = random.choices([48, 36, 24], [12, 10, 8, ], k=1)[0]
             for k in range(repetitions_for_measure):
-                if time_offset == 0:
+                if (time_offset == 0) and (k % 3 == 0):
                     # Once the scale is chosen, perform root progressions 
                     # within the scale; away from the tonic in multiples of -2
                     # scale degrees, back to the tonic in multiples of 1 scale 
                     # degree with a preference for 3 steps (as used by V to I). 
                     # These root progressions are random but weighted.
-                    progression = random.choices([-2, -4, -6, -8, -10, -12, 3, 6], [10, 3, 2, 1, 1, 1, 8, 3], k=1)
+                    progression = random.choices([-2, -4, -6, -8, -10, -12, 3, 6], [5, 3, 2, 1, 1, 1, 9, 3], k=1)
                     steps = progression[0]
                     chord = scale.transpose_degrees(chord, steps)
                     voiceleading_node.chord(chord, cumulative_time)
                 measure = read_measure(minuet_table[minuet_row][minuet_column])
-                score_for_measure = measure.getScore()
-                duration = score_for_measure.getDuration()
-                print("Duration of measure %d, %d: %f" % (minuet_row, minuet_column, duration))
-                duration = 1.8
-                #~ if duration == 1.798750:
-                    #~ duration = 1.8
-                #~ elif duration == 1.198750:
-                    #~ duration = 1.2
-                #score_for_measure.setDuration(duration)
                 rescale = CsoundAC.Rescale() 
                 rescale.setRescale(CsoundAC.Event.TIME, bool(1), bool(0), cumulative_time, 0)
                 rescale.setRescale(CsoundAC.Event.INSTRUMENT, bool(1), bool(1), instrument, 0)
-                bass = bass + bass_increment_per_bar
-                range_ = range_ + range_increment_per_bar
                 rescale.setRescale(CsoundAC.Event.KEY, bool(1), bool(1), bass, range_)
                 piano = piano + piano_increment_per_bar
                 dynamic_range = dynamic_range + dynamic_range_increment_per_bar
@@ -227,23 +243,21 @@ instruments_used = 0
 total_instruments = 4
 # Stagger starting times for each voice to create a canon at the very 
 # beginning.
-time_offset = (tempo * total_instruments) / 4.0
-print("time_offset:", time_offset)
-time_offset = 1.198750 * 3.
+time_offset = (1.8 * 2)
 print("time_offset:", time_offset)
 # Make it possible to experimentally shrink or enlarge the arrangement.
 instruments_used = instruments_used + 1
-build_voice(voiceleading_node, sequence, 1, initial_bass - 4, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)),  9)
+build_voice(voiceleading_node, sequence, 1, bass_offset +  0, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)),  9)
 instruments_used = instruments_used + 1
-build_voice(voiceleading_node, sequence, 2, initial_bass - 3, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)),  0)
+build_voice(voiceleading_node, sequence, 2, bass_offset +  2, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)),  0)
 instruments_used = instruments_used + 1
-build_voice(voiceleading_node, sequence, 3, initial_bass - 2, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)),  6)
+build_voice(voiceleading_node, sequence, 3, bass_offset +  4, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)),  6)
 instruments_used = instruments_used + 1
-build_voice(voiceleading_node, sequence, 4, initial_bass - 1, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)),  6)
-instruments_used = instruments_used + 1
-build_voice(voiceleading_node, sequence, 3, initial_bass + 0, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)), 12)
-instruments_used = instruments_used + 1
-build_voice(voiceleading_node, sequence, 4, initial_bass + 1, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)), 12)
+build_voice(voiceleading_node, sequence, 4, bass_offset +  6, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)),  6)
+#~ instruments_used = instruments_used + 1
+#~ build_voice(voiceleading_node, sequence, 3, bass_offset +  8, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)), 12)
+#~ instruments_used = instruments_used + 1
+#~ build_voice(voiceleading_node, sequence, 4, bass_offset + 10, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)), 12)
 
 # No #includes are used here, all Csound instruments are defined in this very file.
 # The only non-standard external dependencies are the vst4cs opcodes, and the 
@@ -259,7 +273,7 @@ nchnls = 2
 ; Ensure the same random stream for each rendering.
 ; rand, randh, randi, rnd(x) and birnd(x) are not affected by seed.
 
-seed 38493
+seed 29384 ;38493
 
 gi_MverbVst vstinit "/home/mkg/.local/lib/Mverb2020.so", 1
 gi_Organteq vstinit "/home/mkg/Organteq\ 1/x86-64bit/Organteq\ 1.lv2/Organteq_1.so", 0
@@ -288,6 +302,31 @@ connect "PianoOutPianoteq", "outright", "MverbVst", "inright"
 connect "MverbVst", "outleft", "MasterOutput", "inleft"
 connect "MverbVst", "outright", "MasterOutput", "inright"
 
+gk_PianoNotePianoteq_midi_dynamic_range init 127
+instr Piano_1, Piano_2, Piano_3, Piano_4
+i_instrument = p1
+i_time = p2
+i_duration = p3
+i_midi_key = p4
+i_midi_dynamic_range = i(gk_PianoNotePianoteq_midi_dynamic_range)
+i_midi_velocity = p5 * i_midi_dynamic_range / 127 + (63.6 - i_midi_dynamic_range / 2)
+k_space_front_to_back = p6
+k_space_left_to_right = p7
+k_space_bottom_to_top = p8
+i_phase = p9
+i_instrument = p1
+i_time = p2
+i_duration = p3
+i_midi_key = p4
+i_midi_velocity = p5
+i_homogeneity = p11
+instances active p1
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+i_pitch_correction = 44100 / sr
+; prints "Pitch factor:   %9.4f\\n", i_pitch_correction
+vstnote gi_Pianoteq, 0, i_midi_key, i_midi_velocity, i_duration
+endin
+
 gk_OrganNoteOrganteq_midi_dynamic_range init 127
 instr Pedale, Positif, Grand_Orgue, Recit
 if p3 == -1 then
@@ -314,31 +353,6 @@ prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrs
 i_pitch_correction = 44100 / sr
 ; prints "Pitch factor:   %9.4f\\n", i_pitch_correction
 vstnote gi_Organteq, 1, i_midi_key, i_midi_velocity, i_duration
-endin
-
-gk_PianoNotePianoteq_midi_dynamic_range init 127
-instr PianoNotePianoteq
-i_instrument = p1
-i_time = p2
-i_duration = p3
-i_midi_key = p4
-i_midi_dynamic_range = i(gk_PianoNotePianoteq_midi_dynamic_range)
-i_midi_velocity = p5 * i_midi_dynamic_range / 127 + (63.6 - i_midi_dynamic_range / 2)
-k_space_front_to_back = p6
-k_space_left_to_right = p7
-k_space_bottom_to_top = p8
-i_phase = p9
-i_instrument = p1
-i_time = p2
-i_duration = p3
-i_midi_key = p4
-i_midi_velocity = p5
-i_homogeneity = p11
-instances active p1
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
-i_pitch_correction = 44100 / sr
-; prints "Pitch factor:   %9.4f\\n", i_pitch_correction
-vstnote gi_Pianoteq, 0, i_midi_key, i_midi_velocity, i_duration
 endin
 
 gk_ZakianFlute_midi_dynamic_range init 80
@@ -818,6 +832,12 @@ outleta "outright", a_out_right
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
+; Combination of stops for Organtec
+
+instr Combination
+i_combination = p4
+endin
+
 gk_PianoOutPianoteq_level init 0
 gi_PianoOutPianoteq_print init 1
 gk_PianoOutPianoteq_front_to_back init 0
@@ -921,11 +941,11 @@ vstparamset gi_Organteq, 62, 0
 ; Keyboard 4 - Recit 
 
 vstparamset gi_Organteq, 63, 1
-vstparamset gi_Organteq, 64, 1
+vstparamset gi_Organteq, 64, 0
 vstparamset gi_Organteq, 65, 0
 vstparamset gi_Organteq, 66, 1
 vstparamset gi_Organteq, 67, 1
-vstparamset gi_Organteq, 68, 0
+vstparamset gi_Organteq, 68, 1
 vstparamset gi_Organteq, 69, 0
 vstparamset gi_Organteq, 70, 0
 vstparamset gi_Organteq, 71, 0
@@ -1060,10 +1080,10 @@ gk_Reverb_frequency_cutoff init 14000
 model.setCsoundOrchestra(orc)
 model.setCsoundCommand(csound_command)
 model.generate()
-# Fix ending. Instruments would drop out, sustain till the end. Some notes 
-# course will decay first.
+#~ # Fix ending. Instruments would drop out, sustain till the end. Some notes 
+#~ # of course will decay first.
 score = model.getScore()
-score_duration = score.getDuration() + 4.
+score_duration = score.getDuration()
 sounding = set()
 for i, event in reverse_enumeration(score):
     event.setOffTime(score_duration)
