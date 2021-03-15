@@ -22,6 +22,8 @@ import os
 import random
 # Using the same random seed for each performance makes the performance 
 # deterministic, not random.
+random.seed(221)
+random.seed(45850)
 random.seed(252210)
 import signal
 import string
@@ -30,7 +32,7 @@ import traceback
 
 print('Set "rendering" to:     "soundfile" or "audio".')
 print
-rendering = "audio"
+rendering = "soundfile"
 
 model = CsoundAC.MusicModel()
 score = model.getScore()
@@ -100,7 +102,7 @@ columns_to_play = 16
 rows_to_play = 2
 measures_to_play = rows_to_play * columns_to_play
 minimum_repetitions_per_measure =  3
-maximum_repetitions_per_measure = 12 
+maximum_repetitions_per_measure = 11 
 repetitions_for_measures = []
 for i in range(measures_to_play):
     repetitions_for_measures.append(random.randint(minimum_repetitions_per_measure, maximum_repetitions_per_measure))     
@@ -905,7 +907,7 @@ vstparamset gi_Organteq, 34, 1
 vstparamset gi_Organteq, 35, 1
 vstparamset gi_Organteq, 36, 0
 vstparamset gi_Organteq, 37, 0
-vstparamset gi_Organteq, 38, 1
+vstparamset gi_Organteq, 38, 0
 vstparamset gi_Organteq, 39, 1
 vstparamset gi_Organteq, 40, 0
 vstparamset gi_Organteq, 41, 0
@@ -919,7 +921,7 @@ vstparamset gi_Organteq, 45, 0
 vstparamset gi_Organteq, 46, 1
 vstparamset gi_Organteq, 47, 1
 vstparamset gi_Organteq, 48, 1
-vstparamset gi_Organteq, 49, 1
+vstparamset gi_Organteq, 49, 0
 vstparamset gi_Organteq, 50, 0
 vstparamset gi_Organteq, 51, 0
 vstparamset gi_Organteq, 52, 0
@@ -928,7 +930,7 @@ vstparamset gi_Organteq, 52, 0
 
 vstparamset gi_Organteq, 53, 0
 vstparamset gi_Organteq, 54, 1
-vstparamset gi_Organteq, 55, 1
+vstparamset gi_Organteq, 55, 0
 vstparamset gi_Organteq, 56, 1
 vstparamset gi_Organteq, 57, 1 
 vstparamset gi_Organteq, 58, 0
@@ -1159,7 +1161,7 @@ vstparamset gi_Organteq, 42 + 40, 1
 ; Keyboard 2 -- Positif
 
 vstparamset gi_Organteq, 43, 1
-vstparamset gi_Organteq, 44, 0
+vstparamset gi_Organteq, 44, 1;0
 vstparamset gi_Organteq, 45, 0
 vstparamset gi_Organteq, 46, 1
 vstparamset gi_Organteq, 47, 0
@@ -1370,8 +1372,7 @@ for i, event in reverse_enumeration(score):
     if len(sounding) == total_instruments:
         break
 score.save(model.getMidifileFilepath())
-model.setExtendSeconds(12.)
-print(model.getExtendSeconds())
+model.setExtendSeconds(9.)
 model.performMaster()
 if rendering == 'soundfile':
     model.translateMaster()
