@@ -22,8 +22,7 @@ import os
 import random
 # Using the same random seed for each performance makes the performance 
 # deterministic, not random.
-random.seed(221)
-random.seed(23)
+random.seed(25210)
 import signal
 import string
 import sys
@@ -96,9 +95,9 @@ def reverse_enumeration(L):
 tempo = 5./3.
 scale = CsoundAC.Scale("F# major")
 chord = scale.chord(1, 4)
-bass_offset = 11
-rows_to_play = 8
-columns_to_play = 5
+bass_offset = 12
+columns_to_play = 16
+rows_to_play = 2
 measures_to_play = rows_to_play * columns_to_play
 minimum_repetitions_per_measure =  3
 maximum_repetitions_per_measure = 12 
@@ -143,6 +142,7 @@ def build_voice(voiceleading_node, sequence, instrument, bass, time_offset, pan,
     global off_time
     global chord
     global scale
+    global sequence_holder
     # Ensure that each voice plays a different sequence of repetitions, as in 
     # "In C". But note that shuffling, rather than resampling, ensures 
     # that each voice actually plays the same number of bars.
@@ -152,6 +152,7 @@ def build_voice(voiceleading_node, sequence, instrument, bass, time_offset, pan,
     print("Instrument: {:3} measures: {} bars: {} repetitions_for_measures: {}".format(instrument, len(repetitions_for_measures), bars_total, repetitions_for_measures))    
     print("Instrument: {:3} measures: {} bars: {} forte_mearues:            {}".format(instrument, len(repetitions_for_measures), bars_total, forte_measures))    
     print()
+    modulation_count = 0
     bars_played = 0
     real_time = 1.0
     cumulative_time = real_time + time_offset
@@ -169,7 +170,8 @@ def build_voice(voiceleading_node, sequence, instrument, bass, time_offset, pan,
     dynamic_range_at_end = 30.
     dynamic_range_increment_per_bar = (dynamic_range_at_end - dynamic_range) / bars_total
     bass = random.choices([24, 30, 36], [8, 6, 4], k=1)[0]
-    range_ = random.choices([60, 45, 48, 30, 24], [12, 10, 8, 6, 5], k=1)[0]
+    #~ range_ = random.choices([60, 45, 48, 30, 24], [12, 10, 8, 6, 5], k=1)[0]
+    range_ = random.choices([48, 30, 24], [12, 10, 8], k=1)[0]
     duration = 1.8
     timescale = 1.
     measure_count = 0
@@ -185,17 +187,28 @@ def build_voice(voiceleading_node, sequence, instrument, bass, time_offset, pan,
             scales = scale.modulations(chord)
             scale_count = len(scales)
             count = 0
-            # After picking a number of repetitions for a measure, find if the 
+            # After picking a number of repetitions for a measure, check if the 
             # current chord can be a pivot chord, and if so, choose one of the 
             # possible modulations to perform. Do this in the first voice 
             # only, but it will be applied to all voices.
             if (scale_count > 1 and time_offset == 0):
+                modulation_count = modulation_count + 1
+                if modulation_count == 4:
+                    sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 1., 1., 1.)
+                if modulation_count == 8:
+                    sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 2., 1., 1.)
+                if modulation_count == 12:
+                    sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 3., 1., 1.)
+                if modulation_count == 16:
+                    sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 4., 1., 1.)
+                if modulation_count == 20:
+                    sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 0., 1., 1.)
                 random_index = random.randint(0, scale_count -1)
                 for s in scales:
                     print("Possible modulation at: {:9.4f} {} {}".format(cumulative_time, s.toString(), s.name()))
                     if count == random_index:
                         scale = s  
-                        print("             Chose modulation to: {} {}".format(scale.toString(), scale.name()))
+                        print("             Chose modulation {} at {} to: {} {}".format(modulation_count, real_time, scale.toString(), scale.name()))
                     count = count + 1
                 timescale = random.choices([1., 2., .5, 2./3., 4./3.], [12, 2, 2, 2, 2], k=1)[0]
                 print()
@@ -215,13 +228,13 @@ def build_voice(voiceleading_node, sequence, instrument, bass, time_offset, pan,
                     voiceleading_node.chord(chord, cumulative_time)
                 measure = read_measure(minuet_table[minuet_row][minuet_column])
                 rescale = CsoundAC.Rescale() 
-                rescale.setRescale(CsoundAC.Event.TIME, bool(1), bool(0), cumulative_time, 0)
-                rescale.setRescale(CsoundAC.Event.INSTRUMENT, bool(1), bool(1), instrument, 0)
-                rescale.setRescale(CsoundAC.Event.KEY, bool(1), bool(1), bass, range_)
+                rescale.setRescale(CsoundAC.Event.TIME, True, False, cumulative_time, 0)
+                rescale.setRescale(CsoundAC.Event.INSTRUMENT, True, True, instrument, 0)
+                rescale.setRescale(CsoundAC.Event.KEY, True, True, bass, range_)
                 piano = piano + piano_increment_per_bar
                 dynamic_range = dynamic_range + dynamic_range_increment_per_bar
-                rescale.setRescale(CsoundAC.Event.VELOCITY, bool(1), bool(1), piano + (forte * 4), dynamic_range)
-                rescale.setRescale(CsoundAC.Event.PAN, bool(1), bool(1), pan, float(0))
+                rescale.setRescale(CsoundAC.Event.VELOCITY, True, True, piano + (forte * 4), dynamic_range)
+                rescale.setRescale(CsoundAC.Event.PAN, True, True, pan, float(0))
                 rescale.thisown = 0
                 rescale.addChild(measure)
                 bars_played = bars_played + 1
@@ -230,13 +243,14 @@ def build_voice(voiceleading_node, sequence, instrument, bass, time_offset, pan,
                 real_time = real_time + duration
     print("Bars played for instrument {}: {}".format(instrument, bars_played))
     print()
-
+sequence_holder = CsoundAC.ScoreNode()
 sequence = CsoundAC.Rescale()
-sequence.setRescale(CsoundAC.Event.VELOCITY, bool(1), bool(1), 60., 12.)
+sequence_holder.addChild(sequence)
+sequence.setRescale(CsoundAC.Event.VELOCITY, True, True, 60., 12.)
 # The actual harmony is applied after the notes for all voices have been '
 # generated.
 voiceleading_node = CsoundAC.VoiceleadingNode()
-voiceleading_node.addChild(sequence);
+voiceleading_node.addChild(sequence_holder);
 model.addChild(voiceleading_node)
 
 instruments_used = 0
@@ -268,7 +282,7 @@ orc = '''
 sr = 48000
 ksmps = 128
 nchnls = 2
-0dbfs = 15
+0dbfs = 10
 
 ; Ensure the same random stream for each rendering.
 ; rand, randh, randi, rnd(x) and birnd(x) are not affected by seed.
@@ -302,31 +316,6 @@ connect "PianoOutPianoteq", "outright", "MverbVst", "inright"
 connect "MverbVst", "outleft", "MasterOutput", "inleft"
 connect "MverbVst", "outright", "MasterOutput", "inright"
 
-gk_PianoNotePianoteq_midi_dynamic_range init 127
-instr Piano_1, Piano_2, Piano_3, Piano_4
-i_instrument = p1
-i_time = p2
-i_duration = p3
-i_midi_key = p4
-i_midi_dynamic_range = i(gk_PianoNotePianoteq_midi_dynamic_range)
-i_midi_velocity = p5 * i_midi_dynamic_range / 127 + (63.6 - i_midi_dynamic_range / 2)
-k_space_front_to_back = p6
-k_space_left_to_right = p7
-k_space_bottom_to_top = p8
-i_phase = p9
-i_instrument = p1
-i_time = p2
-i_duration = p3
-i_midi_key = p4
-i_midi_velocity = p5
-i_homogeneity = p11
-instances active p1
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
-i_pitch_correction = 44100 / sr
-; prints "Pitch factor:   %9.4f\\n", i_pitch_correction
-vstnote gi_Pianoteq, 0, i_midi_key, i_midi_velocity, i_duration
-endin
-
 gk_OrganNoteOrganteq_midi_dynamic_range init 127
 instr Pedale, Positif, Grand_Orgue, Recit
 if p3 == -1 then
@@ -352,7 +341,32 @@ instances active p1
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 i_pitch_correction = 44100 / sr
 ; prints "Pitch factor:   %9.4f\\n", i_pitch_correction
-vstnote gi_Organteq, 1, i_midi_key, i_midi_velocity, i_duration
+vstnote gi_Organteq, i_instrument, i_midi_key, i_midi_velocity, i_duration
+endin
+
+gk_PianoNotePianoteq_midi_dynamic_range init 127
+instr Piano_1, Piano_2, Piano_3, Piano_4
+i_instrument = p1
+i_time = p2
+i_duration = p3
+i_midi_key = p4
+i_midi_dynamic_range = i(gk_PianoNotePianoteq_midi_dynamic_range)
+i_midi_velocity = p5 * i_midi_dynamic_range / 127 + (63.6 - i_midi_dynamic_range / 2)
+k_space_front_to_back = p6
+k_space_left_to_right = p7
+k_space_bottom_to_top = p8
+i_phase = p9
+i_instrument = p1
+i_time = p2
+i_duration = p3
+i_midi_key = p4
+i_midi_velocity = p5
+i_homogeneity = p11
+instances active p1
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+i_pitch_correction = 44100 / sr
+; prints "Pitch factor:   %9.4f\\n", i_pitch_correction
+vstnote gi_Pianoteq, 0, i_midi_key, i_midi_velocity, i_duration
 endin
 
 gk_ZakianFlute_midi_dynamic_range init 80
@@ -832,12 +846,6 @@ outleta "outright", a_out_right
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
-; Combination of stops for Organtec
-
-instr Combination
-i_combination = p4
-endin
-
 gk_PianoOutPianoteq_level init 0
 gi_PianoOutPianoteq_print init 1
 gk_PianoOutPianoteq_front_to_back init 0
@@ -884,6 +892,231 @@ outleta "outright", a_out_right
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
+instr OrgantecCombination
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+i_combination = p5
+if (i_combination == 1.) then
+; NOTE: Stop knob # + 40 is stop _volume_.
+
+; Keyboard 1 -- Pedale
+
+vstparamset gi_Organteq, 33, 1
+vstparamset gi_Organteq, 34, 1
+vstparamset gi_Organteq, 35, 1
+vstparamset gi_Organteq, 36, 0
+vstparamset gi_Organteq, 37, 0
+vstparamset gi_Organteq, 38, 0
+vstparamset gi_Organteq, 39, 1
+vstparamset gi_Organteq, 40, 0
+vstparamset gi_Organteq, 41, 0
+vstparamset gi_Organteq, 42, 0
+
+; Keyboard 2 -- Positif
+
+vstparamset gi_Organteq, 43, 0
+vstparamset gi_Organteq, 44, 0
+vstparamset gi_Organteq, 45, 0
+vstparamset gi_Organteq, 46, 1
+vstparamset gi_Organteq, 47, 1
+vstparamset gi_Organteq, 48, 1
+vstparamset gi_Organteq, 49, 0
+vstparamset gi_Organteq, 50, 0
+vstparamset gi_Organteq, 51, 0
+vstparamset gi_Organteq, 52, 0
+
+; Keyboard 3 -- Grand Orgue
+
+vstparamset gi_Organteq, 53, 0
+vstparamset gi_Organteq, 54, 1
+vstparamset gi_Organteq, 55, 0
+vstparamset gi_Organteq, 56, 1
+vstparamset gi_Organteq, 57, 1 
+vstparamset gi_Organteq, 58, 0
+vstparamset gi_Organteq, 59, 0
+vstparamset gi_Organteq, 60, 1
+vstparamset gi_Organteq, 61, 0
+vstparamset gi_Organteq, 62, 0
+
+; Keyboard 4 - Recit 
+
+vstparamset gi_Organteq, 63, 1
+vstparamset gi_Organteq, 64, 1
+vstparamset gi_Organteq, 65, 1
+vstparamset gi_Organteq, 66, 0
+vstparamset gi_Organteq, 67, 0
+vstparamset gi_Organteq, 68, 0
+vstparamset gi_Organteq, 69, 0
+vstparamset gi_Organteq, 70, 0
+vstparamset gi_Organteq, 71, 0
+vstparamset gi_Organteq, 72, 0
+endif
+if (i_combination == 2.) then
+; NOTE: Stop knob # + 40 is stop _volume_.
+
+; Keyboard 1 -- Pedale
+
+vstparamset gi_Organteq, 33, 1
+vstparamset gi_Organteq, 34, 0
+vstparamset gi_Organteq, 35, 1
+vstparamset gi_Organteq, 36, 1
+vstparamset gi_Organteq, 37, 0
+vstparamset gi_Organteq, 38, 1
+vstparamset gi_Organteq, 39, 0
+vstparamset gi_Organteq, 40, 1
+vstparamset gi_Organteq, 41, 0
+vstparamset gi_Organteq, 42, 0
+
+; Keyboard 2 -- Positif
+
+vstparamset gi_Organteq, 43, 1
+vstparamset gi_Organteq, 44, 0
+vstparamset gi_Organteq, 45, 0
+vstparamset gi_Organteq, 46, 1
+vstparamset gi_Organteq, 47, 1
+vstparamset gi_Organteq, 48, 1
+vstparamset gi_Organteq, 49, 0
+vstparamset gi_Organteq, 50, 0
+vstparamset gi_Organteq, 51, 0
+vstparamset gi_Organteq, 52, 0
+
+; Keyboard 3 -- Grand Orgue
+
+vstparamset gi_Organteq, 53, 1
+vstparamset gi_Organteq, 54, 0
+vstparamset gi_Organteq, 55, 0
+vstparamset gi_Organteq, 56, 1
+vstparamset gi_Organteq, 57, 0 
+vstparamset gi_Organteq, 58, 0
+vstparamset gi_Organteq, 59, 1
+vstparamset gi_Organteq, 60, 1
+vstparamset gi_Organteq, 61, 1
+vstparamset gi_Organteq, 62, 0
+
+; Keyboard 4 - Recit 
+
+vstparamset gi_Organteq, 63, 1
+vstparamset gi_Organteq, 64, 0
+vstparamset gi_Organteq, 65, 0
+vstparamset gi_Organteq, 66, 1
+vstparamset gi_Organteq, 67, 1
+vstparamset gi_Organteq, 68, 1
+vstparamset gi_Organteq, 69, 1
+vstparamset gi_Organteq, 70, 0
+vstparamset gi_Organteq, 71, 0
+vstparamset gi_Organteq, 72, 0
+endif
+if (i_combination == 3.) then
+; NOTE: Stop knob # + 40 is stop _volume_.
+
+; Keyboard 1 -- Pedale
+
+vstparamset gi_Organteq, 33, 1
+vstparamset gi_Organteq, 34, 0
+vstparamset gi_Organteq, 35, 0
+vstparamset gi_Organteq, 36, 1
+vstparamset gi_Organteq, 37, 0
+vstparamset gi_Organteq, 38, 1
+vstparamset gi_Organteq, 39, 1
+vstparamset gi_Organteq, 40, 1
+vstparamset gi_Organteq, 41, 0
+vstparamset gi_Organteq, 42, 0
+
+; Keyboard 2 -- Positif
+
+vstparamset gi_Organteq, 43, 1
+vstparamset gi_Organteq, 44, 0
+vstparamset gi_Organteq, 45, 0
+vstparamset gi_Organteq, 46, 1
+vstparamset gi_Organteq, 47, 1
+vstparamset gi_Organteq, 48, 1
+vstparamset gi_Organteq, 49, 0
+vstparamset gi_Organteq, 50, 0
+vstparamset gi_Organteq, 51, 0
+vstparamset gi_Organteq, 52, 0
+
+; Keyboard 3 -- Grand Orgue
+
+vstparamset gi_Organteq, 53, 1
+vstparamset gi_Organteq, 54, 1
+vstparamset gi_Organteq, 55, 0
+vstparamset gi_Organteq, 56, 1
+vstparamset gi_Organteq, 57, 0 
+vstparamset gi_Organteq, 58, 1
+vstparamset gi_Organteq, 59, 1
+vstparamset gi_Organteq, 60, 1
+vstparamset gi_Organteq, 61, 1
+vstparamset gi_Organteq, 62, 0
+
+; Keyboard 4 - Recit 
+
+vstparamset gi_Organteq, 63, 1
+vstparamset gi_Organteq, 64, 0
+vstparamset gi_Organteq, 65, 1
+vstparamset gi_Organteq, 66, 0
+vstparamset gi_Organteq, 67, 0
+vstparamset gi_Organteq, 68, 1
+vstparamset gi_Organteq, 69, 1
+vstparamset gi_Organteq, 70, 0
+vstparamset gi_Organteq, 71, 0
+vstparamset gi_Organteq, 72, 0
+endif
+if (i_combination == 4.) then
+; NOTE: Stop knob # + 40 is stop _volume_.
+
+; Keyboard 1 -- Pedale
+
+vstparamset gi_Organteq, 33, 1
+vstparamset gi_Organteq, 34, 0
+vstparamset gi_Organteq, 35, 1
+vstparamset gi_Organteq, 36, 1
+vstparamset gi_Organteq, 37, 0
+vstparamset gi_Organteq, 38, 1
+vstparamset gi_Organteq, 39, 0
+vstparamset gi_Organteq, 40, 1
+vstparamset gi_Organteq, 41, 1
+vstparamset gi_Organteq, 42, 0
+
+; Keyboard 2 -- Positif
+
+vstparamset gi_Organteq, 43, 1
+vstparamset gi_Organteq, 44, 0
+vstparamset gi_Organteq, 45, 0
+vstparamset gi_Organteq, 46, 1
+vstparamset gi_Organteq, 47, 1
+vstparamset gi_Organteq, 48, 1
+vstparamset gi_Organteq, 49, 0
+vstparamset gi_Organteq, 50, 0
+vstparamset gi_Organteq, 51, 0
+vstparamset gi_Organteq, 52, 0
+
+; Keyboard 3 -- Grand Orgue
+
+vstparamset gi_Organteq, 53, 1
+vstparamset gi_Organteq, 54, 0
+vstparamset gi_Organteq, 55, 0
+vstparamset gi_Organteq, 56, 1
+vstparamset gi_Organteq, 57, 1 
+vstparamset gi_Organteq, 58, 0
+vstparamset gi_Organteq, 59, 1
+vstparamset gi_Organteq, 60, 1
+vstparamset gi_Organteq, 61, 1
+vstparamset gi_Organteq, 62, 0
+
+; Keyboard 4 - Recit 
+
+vstparamset gi_Organteq, 63, 1
+vstparamset gi_Organteq, 64, 0
+vstparamset gi_Organteq, 65, 1
+vstparamset gi_Organteq, 66, 1
+vstparamset gi_Organteq, 67, 1
+vstparamset gi_Organteq, 68, 1
+vstparamset gi_Organteq, 69, 1
+vstparamset gi_Organteq, 70, 0
+vstparamset gi_Organteq, 71, 1
+vstparamset gi_Organteq, 72, 0
+endif
+endin
+
 gk_OrganOutOrganteq_level init 0
 gi_OrganOutOrganteq_print init 1
 gk_OrganOutOrganteq_front_to_back init 0
@@ -903,14 +1136,25 @@ vstparamset gi_Organteq, 6, 0
 
 vstparamset gi_Organteq, 33, 1
 vstparamset gi_Organteq, 34, 1
-vstparamset gi_Organteq, 35, 0
+vstparamset gi_Organteq, 35, 1
 vstparamset gi_Organteq, 36, 0
-vstparamset gi_Organteq, 37, 0
-vstparamset gi_Organteq, 38, 1
+vstparamset gi_Organteq, 37, 1
+vstparamset gi_Organteq, 38, 0
 vstparamset gi_Organteq, 39, 0
 vstparamset gi_Organteq, 40, 0
 vstparamset gi_Organteq, 41, 0
 vstparamset gi_Organteq, 42, 0
+
+vstparamset gi_Organteq, 33 + 40, 1
+vstparamset gi_Organteq, 34 + 40, 1
+vstparamset gi_Organteq, 35 + 40, 1
+vstparamset gi_Organteq, 36 + 40, 1
+vstparamset gi_Organteq, 37 + 40, 1
+vstparamset gi_Organteq, 38 + 40, 1
+vstparamset gi_Organteq, 39 + 40, 1
+vstparamset gi_Organteq, 40 + 40, 1
+vstparamset gi_Organteq, 41 + 40, 1
+vstparamset gi_Organteq, 42 + 40, 1
 
 ; Keyboard 2 -- Positif
 
@@ -925,6 +1169,17 @@ vstparamset gi_Organteq, 50, 0
 vstparamset gi_Organteq, 51, 0
 vstparamset gi_Organteq, 52, 0
 
+vstparamset gi_Organteq, 43 + 40, 0.333334
+vstparamset gi_Organteq, 44 + 40, 0.333334
+vstparamset gi_Organteq, 45 + 40, 0.333334
+vstparamset gi_Organteq, 46 + 40, 0.333334
+vstparamset gi_Organteq, 47 + 40, 0.333334
+vstparamset gi_Organteq, 48 + 40, 0.333334
+vstparamset gi_Organteq, 49 + 40, 0.333334
+vstparamset gi_Organteq, 50 + 40, 0.333334
+vstparamset gi_Organteq, 51 + 40, 0.333334
+vstparamset gi_Organteq, 52 + 40, 0.333334
+
 ; Keyboard 3 -- Grand Orgue
 
 vstparamset gi_Organteq, 53, 1
@@ -938,6 +1193,17 @@ vstparamset gi_Organteq, 60, 0
 vstparamset gi_Organteq, 61, 0
 vstparamset gi_Organteq, 62, 0
 
+vstparamset gi_Organteq, 53 + 40, 0.333334
+vstparamset gi_Organteq, 54 + 40, 0.333334
+vstparamset gi_Organteq, 55 + 40, 0.333334
+vstparamset gi_Organteq, 56 + 40, 0.333334
+vstparamset gi_Organteq, 57 + 40, 0.333334
+vstparamset gi_Organteq, 58 + 40, 0.333334
+vstparamset gi_Organteq, 59 + 40, 0.333334
+vstparamset gi_Organteq, 60 + 40, 0.333334
+vstparamset gi_Organteq, 61 + 40, 0.333334
+vstparamset gi_Organteq, 62 + 40, 0.333334
+
 ; Keyboard 4 - Recit 
 
 vstparamset gi_Organteq, 63, 1
@@ -950,6 +1216,17 @@ vstparamset gi_Organteq, 69, 0
 vstparamset gi_Organteq, 70, 0
 vstparamset gi_Organteq, 71, 0
 vstparamset gi_Organteq, 72, 0
+
+vstparamset gi_Organteq, 63 + 40, 0.333334
+vstparamset gi_Organteq, 64 + 40, 0.333334
+vstparamset gi_Organteq, 65 + 40, 0.333334
+vstparamset gi_Organteq, 66 + 40, 0.333334
+vstparamset gi_Organteq, 67 + 40, 0.333334
+vstparamset gi_Organteq, 68 + 40, 0.333334
+vstparamset gi_Organteq, 69 + 40, 0.333334
+vstparamset gi_Organteq, 70 + 40, 0.333334
+vstparamset gi_Organteq, 71 + 40, 0.333334
+vstparamset gi_Organteq, 72 + 40, 0.333334
 
 k_gain = ampdb(gk_OrganOutOrganteq_level)
 i_overall_amps = 89
@@ -1093,6 +1370,8 @@ for i, event in reverse_enumeration(score):
     if len(sounding) == total_instruments:
         break
 score.save(model.getMidifileFilepath())
+model.setExtendSeconds(12.)
+print(model.getExtendSeconds())
 model.performMaster()
 if rendering == 'soundfile':
     model.translateMaster()
