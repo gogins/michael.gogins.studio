@@ -31,15 +31,16 @@ random.seed(221)
 random.seed(45850)
 random.seed(222)
 random.seed(11117111)
-tempo = 5./3.
-scale = CsoundAC.Scale("F# major")
-chord = scale.chord(1, 4)
-bass_offset = 13
+bass_offset = 18
 columns_to_play = 15
+master_duration = 1.8
+maximum_repetitions_per_measure = 7 
+minimum_repetitions_per_measure =  2
 rows_to_play = 4
 measures_to_play = rows_to_play * columns_to_play
-minimum_repetitions_per_measure =  3
-maximum_repetitions_per_measure = 11 
+scale = CsoundAC.Scale("F# major")
+chord = scale.chord(1, 4)
+tempo = 5./3.
 
 print('Set "rendering" to:     "soundfile" or "audio".')
 print
@@ -150,6 +151,7 @@ def read_measure(number):
 forte_measures = random.choices([1,0], [2/6, 4/6], k=measures_to_play)
 
 def build_voice(voiceleading_node, sequence, instrument, bass, time_offset, pan, level):
+    global master_duration
     global repetitions_for_measures
     global tempo
     global off_time
@@ -185,7 +187,7 @@ def build_voice(voiceleading_node, sequence, instrument, bass, time_offset, pan,
     bass = random.choices([24, 30, 36], [8, 6, 4], k=1)[0]
     #~ range_ = random.choices([60, 45, 48, 30, 24], [12, 10, 8, 6, 5], k=1)[0]
     range_ = random.choices([48, 30, 24], [12, 10, 8], k=1)[0]
-    duration = 1.8
+    duration = master_duration
     timescale = 1.
     measure_count = 0
     # Mozart's minuet table has columns indexed [1,16] and rows indexed [2,12]. 
@@ -270,7 +272,7 @@ instruments_used = 0
 total_instruments = 4
 # Stagger starting times for each voice to create a canon at the very 
 # beginning.
-time_offset = (1.8 * 2)
+time_offset = (master_duration * 2)
 print("time_offset:", time_offset)
 # Make it possible to experimentally shrink or enlarge the arrangement.
 instruments_used = instruments_used + 1
