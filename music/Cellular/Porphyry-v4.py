@@ -32,11 +32,14 @@ random.seed(45850)
 random.seed(222)
 random.seed(11117111)
 bass_offset = 18
+column_begin = 1
 columns_to_play = 15
 master_duration = 1.8
 maximum_repetitions_per_measure = 7 
-minimum_repetitions_per_measure =  2
-rows_to_play = 4
+minimum_repetitions_per_measure = 2
+offset_factor = 2
+row_begin = 3
+rows_to_play = 3
 measures_to_play = rows_to_play * columns_to_play
 scale = CsoundAC.Scale("F# major")
 chord = scale.chord(1, 4)
@@ -111,7 +114,7 @@ scale = CsoundAC.Scale("F# major")
 chord = scale.chord(1, 4)
 bass_offset = 13
 columns_to_play = 15
-rows_to_play = 4
+rows_to_play = 2
 measures_to_play = rows_to_play * columns_to_play
 minimum_repetitions_per_measure =  3
 maximum_repetitions_per_measure = 11 
@@ -193,8 +196,8 @@ def build_voice(voiceleading_node, sequence, instrument, bass, time_offset, pan,
     # Mozart's minuet table has columns indexed [1,16] and rows indexed [2,12]. 
     repetitions_for_measure_index = 0
     # Preserve Mozart's indexing.
-    for minuet_column in range(1, columns_to_play + 1):
-        for minuet_row in range(2, rows_to_play + 2):
+    for minuet_column in range(column_begin, columns_to_play + column_begin):
+        for minuet_row in range(row_begin, rows_to_play + row_begin):
             measure_count = measure_count + 1
             repetitions_for_measure = repetitions_for_measures[repetitions_for_measure_index]
             forte = forte_measures[repetitions_for_measure]
@@ -208,15 +211,15 @@ def build_voice(voiceleading_node, sequence, instrument, bass, time_offset, pan,
             # only, but it will be applied to all voices.
             if (scale_count > 1 and time_offset == 0):
                 modulation_count = modulation_count + 1
-                if modulation_count == 4:
+                if modulation_count == 5:
                     sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 1., 1., 1.)
-                if modulation_count == 8:
+                if modulation_count == 10:
                     sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 2., 1., 1.)
-                if modulation_count == 12:
+                if modulation_count == 14:
                     sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 3., 1., 1.)
-                if modulation_count == 16:
+                if modulation_count == 19:
                     sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 4., 1., 1.)
-                if modulation_count == 20:
+                if modulation_count == 21:
                     sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 0., 1., 1.)
                 random_index = random.randint(0, scale_count -1)
                 for s in scales:
@@ -262,6 +265,7 @@ sequence_holder = CsoundAC.ScoreNode()
 sequence = CsoundAC.Rescale()
 sequence_holder.addChild(sequence)
 sequence.setRescale(CsoundAC.Event.VELOCITY, True, True, 60., 12.)
+sequence.setRescale(CsoundAC.Event.KEY, True, True, 30., 72.)
 # The actual harmony is applied after the notes for all voices have been '
 # generated.
 voiceleading_node = CsoundAC.VoiceleadingNode()
@@ -272,7 +276,7 @@ instruments_used = 0
 total_instruments = 4
 # Stagger starting times for each voice to create a canon at the very 
 # beginning.
-time_offset = (master_duration * 2)
+time_offset = (master_duration * offset_factor)
 print("time_offset:", time_offset)
 # Make it possible to experimentally shrink or enlarge the arrangement.
 instruments_used = instruments_used + 1
@@ -283,10 +287,10 @@ instruments_used = instruments_used + 1
 build_voice(voiceleading_node, sequence, 3, bass_offset +  4, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)),  6)
 instruments_used = instruments_used + 1
 build_voice(voiceleading_node, sequence, 4, bass_offset +  6, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)),  6)
-#~ instruments_used = instruments_used + 1
-#~ build_voice(voiceleading_node, sequence, 3, bass_offset +  8, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)), 12)
-#~ instruments_used = instruments_used + 1
-#~ build_voice(voiceleading_node, sequence, 4, bass_offset + 10, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)), 12)
+instruments_used = instruments_used + 1
+build_voice(voiceleading_node, sequence, 3, bass_offset +  4, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)), 12)
+instruments_used = instruments_used + 1
+build_voice(voiceleading_node, sequence, 4, bass_offset +  6, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)), 12)
 
 # No #includes are used here, all Csound instruments are defined in this very file.
 # The only non-standard external dependencies are the vst4cs opcodes, and the 
@@ -297,7 +301,7 @@ orc = '''
 sr = 48000
 ksmps = 128
 nchnls = 2
-0dbfs = 10
+0dbfs = 1  
 
 ; Ensure the same random stream for each rendering.
 ; rand, randh, randi, rnd(x) and birnd(x) are not affected by seed.
@@ -346,7 +350,7 @@ k_space_front_to_back = p6
 k_space_left_to_right = p7
 k_space_bottom_to_top = p8
 i_phase = p9
-i_instrument = p1
+i_instrument = p1 - 1
 i_time = p2
 i_duration = p3
 i_midi_key = p4
@@ -356,6 +360,7 @@ instances active p1
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 i_pitch_correction = 44100 / sr
 ; prints "Pitch factor:   %9.4f\\n", i_pitch_correction
+;vstnote gi_Organteq, 3, i_midi_key, i_midi_velocity, i_duration
 vstnote gi_Organteq, i_instrument, i_midi_key, i_midi_velocity, i_duration
 endin
 
@@ -1096,7 +1101,7 @@ vstparamset gi_Organteq, 42, 0
 vstparamset gi_Organteq, 43, 1
 vstparamset gi_Organteq, 44, 0
 vstparamset gi_Organteq, 45, 0
-vstparamset gi_Organteq, 46, 1
+vstparamset gi_Organteq, 46, 0
 vstparamset gi_Organteq, 47, 1
 vstparamset gi_Organteq, 48, 1
 vstparamset gi_Organteq, 49, 0
@@ -1160,17 +1165,6 @@ vstparamset gi_Organteq, 40, 0
 vstparamset gi_Organteq, 41, 0
 vstparamset gi_Organteq, 42, 0
 
-vstparamset gi_Organteq, 33 + 40, 1
-vstparamset gi_Organteq, 34 + 40, 1
-vstparamset gi_Organteq, 35 + 40, 1
-vstparamset gi_Organteq, 36 + 40, 1
-vstparamset gi_Organteq, 37 + 40, 1
-vstparamset gi_Organteq, 38 + 40, 1
-vstparamset gi_Organteq, 39 + 40, 1
-vstparamset gi_Organteq, 40 + 40, 1
-vstparamset gi_Organteq, 41 + 40, 1
-vstparamset gi_Organteq, 42 + 40, 1
-
 ; Keyboard 2 -- Positif
 
 vstparamset gi_Organteq, 43, 1
@@ -1184,16 +1178,6 @@ vstparamset gi_Organteq, 50, 0
 vstparamset gi_Organteq, 51, 0
 vstparamset gi_Organteq, 52, 0
 
-vstparamset gi_Organteq, 43 + 40, 0.333334
-vstparamset gi_Organteq, 44 + 40, 0.333334
-vstparamset gi_Organteq, 45 + 40, 0.333334
-vstparamset gi_Organteq, 46 + 40, 0.333334
-vstparamset gi_Organteq, 47 + 40, 0.333334
-vstparamset gi_Organteq, 48 + 40, 0.333334
-vstparamset gi_Organteq, 49 + 40, 0.333334
-vstparamset gi_Organteq, 50 + 40, 0.333334
-vstparamset gi_Organteq, 51 + 40, 0.333334
-vstparamset gi_Organteq, 52 + 40, 0.333334
 
 ; Keyboard 3 -- Grand Orgue
 
@@ -1208,17 +1192,6 @@ vstparamset gi_Organteq, 60, 0
 vstparamset gi_Organteq, 61, 0
 vstparamset gi_Organteq, 62, 0
 
-vstparamset gi_Organteq, 53 + 40, 0.333334
-vstparamset gi_Organteq, 54 + 40, 0.333334
-vstparamset gi_Organteq, 55 + 40, 0.333334
-vstparamset gi_Organteq, 56 + 40, 0.333334
-vstparamset gi_Organteq, 57 + 40, 0.333334
-vstparamset gi_Organteq, 58 + 40, 0.333334
-vstparamset gi_Organteq, 59 + 40, 0.333334
-vstparamset gi_Organteq, 60 + 40, 0.333334
-vstparamset gi_Organteq, 61 + 40, 0.333334
-vstparamset gi_Organteq, 62 + 40, 0.333334
-
 ; Keyboard 4 - Recit 
 
 vstparamset gi_Organteq, 63, 1
@@ -1232,19 +1205,8 @@ vstparamset gi_Organteq, 70, 0
 vstparamset gi_Organteq, 71, 0
 vstparamset gi_Organteq, 72, 0
 
-vstparamset gi_Organteq, 63 + 40, 0.333334
-vstparamset gi_Organteq, 64 + 40, 0.333334
-vstparamset gi_Organteq, 65 + 40, 0.333334
-vstparamset gi_Organteq, 66 + 40, 0.333334
-vstparamset gi_Organteq, 67 + 40, 0.333334
-vstparamset gi_Organteq, 68 + 40, 0.333334
-vstparamset gi_Organteq, 69 + 40, 0.333334
-vstparamset gi_Organteq, 70 + 40, 0.333334
-vstparamset gi_Organteq, 71 + 40, 0.333334
-vstparamset gi_Organteq, 72 + 40, 0.333334
-
 k_gain = ampdb(gk_OrganOutOrganteq_level)
-i_overall_amps = 89
+i_overall_amps = 100
 i_normalization = ampdb(-i_overall_amps) * 2
 i_amplitude = ampdb(80) * i_normalization
 if gi_OrganOutOrganteq_print == 1 then
@@ -1377,12 +1339,13 @@ model.generate()
 score = model.getScore()
 score_duration = score.getDuration()
 sounding = set()
+instruments_sounding = 0
 for i, event in reverse_enumeration(score):
+    instruments_sounding = instruments_sounding + 1
     event.setOffTime(score_duration)
     CsoundAC.conformToChord(event, chord)
     instrument = str(event.getInstrument())
-    sounding.add(instrument)
-    if len(sounding) == total_instruments:
+    if instruments_sounding > 12:
         break
 score.save(model.getMidifileFilepath())
 model.setExtendSeconds(9.)
