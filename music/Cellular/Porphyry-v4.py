@@ -33,13 +33,13 @@ random.seed(222)
 random.seed(11117111)
 bass_offset = 18
 column_begin = 1
-columns_to_play = 15
+columns_to_play = 14
 master_duration = 1.8
 maximum_repetitions_per_measure = 7 
 minimum_repetitions_per_measure = 2
 offset_factor = 2
-row_begin = 3
-rows_to_play = 3
+row_begin = 2
+rows_to_play = 6
 measures_to_play = rows_to_play * columns_to_play
 scale = CsoundAC.Scale("F# major")
 chord = scale.chord(1, 4)
@@ -148,7 +148,7 @@ def read_measure(number):
     for i, event in reverse_enumeration(score_for_measure):
         if event.getChannel() < 0:
             score_for_measure.remove(i)
-    #print("Loaded '%s':\n%s" % (filename, score_for_measure.toString()))
+    # print("Loaded '%s':\n%s" % (filename, score_for_measure.toString()))
     return score_node
 
 forte_measures = random.choices([1,0], [2/6, 4/6], k=measures_to_play)
@@ -214,13 +214,13 @@ def build_voice(voiceleading_node, sequence, instrument, bass, time_offset, pan,
                 if modulation_count == 5:
                     sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 1., 1., 1.)
                 if modulation_count == 10:
-                    sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 2., 1., 1.)
+                    sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 2., 2., 1.)
                 if modulation_count == 14:
-                    sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 3., 1., 1.)
+                    sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 3., 3., 1.)
                 if modulation_count == 19:
-                    sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 4., 1., 1.)
+                    sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 4., 4., 1.)
                 if modulation_count == 21:
-                    sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 0., 1., 1.)
+                    sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 1., 1., 1.)
                 random_index = random.randint(0, scale_count -1)
                 for s in scales:
                     print("Possible modulation at: {:9.4f} {} {}".format(cumulative_time, s.toString(), s.name()))
@@ -916,224 +916,224 @@ instr OrgantecCombination
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 i_combination = p5
 if (i_combination == 1.) then
-; NOTE: Stop knob # + 40 is stop _volume_.
 
 ; Keyboard 1 -- Pedale
 
-vstparamset gi_Organteq, 33, 1
-vstparamset gi_Organteq, 34, 1
-vstparamset gi_Organteq, 35, 1
-vstparamset gi_Organteq, 36, 0
-vstparamset gi_Organteq, 37, 0
-vstparamset gi_Organteq, 38, 0
-vstparamset gi_Organteq, 39, 1
-vstparamset gi_Organteq, 40, 0
-vstparamset gi_Organteq, 41, 0
-vstparamset gi_Organteq, 42, 0
+vstparamset gi_Organteq, 33, 1 ;  1
+vstparamset gi_Organteq, 34, 0 ;  2 
+vstparamset gi_Organteq, 35, 0 ;  3
+vstparamset gi_Organteq, 36, 0 ;  4
+vstparamset gi_Organteq, 37, 0 ;  5
+vstparamset gi_Organteq, 38, 0 ;  6
+vstparamset gi_Organteq, 39, 1 ;  7
+vstparamset gi_Organteq, 40, 0 ;  8
+vstparamset gi_Organteq, 41, 0 ;  9
+vstparamset gi_Organteq, 42, 0 ; 10
 
 ; Keyboard 2 -- Positif
 
-vstparamset gi_Organteq, 43, 0
-vstparamset gi_Organteq, 44, 0
-vstparamset gi_Organteq, 45, 0
-vstparamset gi_Organteq, 46, 1
-vstparamset gi_Organteq, 47, 1
-vstparamset gi_Organteq, 48, 1
-vstparamset gi_Organteq, 49, 0
-vstparamset gi_Organteq, 50, 0
-vstparamset gi_Organteq, 51, 0
-vstparamset gi_Organteq, 52, 0
+vstparamset gi_Organteq, 43, 0 ;  1
+vstparamset gi_Organteq, 44, 0 ;  2
+vstparamset gi_Organteq, 45, 1 ;  3
+vstparamset gi_Organteq, 46, 0 ;  4
+vstparamset gi_Organteq, 47, 0 ;  5
+vstparamset gi_Organteq, 48, 1 ;  6
+vstparamset gi_Organteq, 49, 0 ;  7
+vstparamset gi_Organteq, 50, 0 ;  8
+vstparamset gi_Organteq, 51, 0 ;  9
+vstparamset gi_Organteq, 52, 0 ; 10
 
 ; Keyboard 3 -- Grand Orgue
 
-vstparamset gi_Organteq, 53, 0
-vstparamset gi_Organteq, 54, 1
-vstparamset gi_Organteq, 55, 0
-vstparamset gi_Organteq, 56, 1
-vstparamset gi_Organteq, 57, 1 
-vstparamset gi_Organteq, 58, 0
-vstparamset gi_Organteq, 59, 0
-vstparamset gi_Organteq, 60, 1
-vstparamset gi_Organteq, 61, 0
-vstparamset gi_Organteq, 62, 0
+vstparamset gi_Organteq, 53, 0 ;  1
+vstparamset gi_Organteq, 54, 0 ;  2
+vstparamset gi_Organteq, 55, 0 ;  3
+vstparamset gi_Organteq, 56, 0 ;  4
+vstparamset gi_Organteq, 57, 1 ;  5
+vstparamset gi_Organteq, 58, 0 ;  6
+vstparamset gi_Organteq, 59, 0 ;  7
+vstparamset gi_Organteq, 60, 0 ;  8
+vstparamset gi_Organteq, 61, 0 ;  9
+vstparamset gi_Organteq, 62, 0 ; 10
 
 ; Keyboard 4 - Recit 
 
-vstparamset gi_Organteq, 63, 1
-vstparamset gi_Organteq, 64, 1
-vstparamset gi_Organteq, 65, 1
-vstparamset gi_Organteq, 66, 0
-vstparamset gi_Organteq, 67, 0
-vstparamset gi_Organteq, 68, 0
-vstparamset gi_Organteq, 69, 0
-vstparamset gi_Organteq, 70, 0
-vstparamset gi_Organteq, 71, 0
-vstparamset gi_Organteq, 72, 0
+vstparamset gi_Organteq, 63, 0 ;  1
+vstparamset gi_Organteq, 64, 0 ;  2
+vstparamset gi_Organteq, 65, 0 ;  3
+vstparamset gi_Organteq, 66, 1 ;  4
+vstparamset gi_Organteq, 67, 0 ;  5
+vstparamset gi_Organteq, 68, 0 ;  6
+vstparamset gi_Organteq, 69, 0 ;  7 
+vstparamset gi_Organteq, 70, 0 ;  8 
+vstparamset gi_Organteq, 71, 1 ;  9 
+vstparamset gi_Organteq, 72, 0 ; 10
+
 endif
 if (i_combination == 2.) then
-; NOTE: Stop knob # + 40 is stop _volume_.
 
 ; Keyboard 1 -- Pedale
 
-vstparamset gi_Organteq, 33, 1
-vstparamset gi_Organteq, 34, 0
-vstparamset gi_Organteq, 35, 1
-vstparamset gi_Organteq, 36, 1
-vstparamset gi_Organteq, 37, 0
-vstparamset gi_Organteq, 38, 1
-vstparamset gi_Organteq, 39, 0
-vstparamset gi_Organteq, 40, 1
-vstparamset gi_Organteq, 41, 0
-vstparamset gi_Organteq, 42, 0
+vstparamset gi_Organteq, 33, 0 ;  1
+vstparamset gi_Organteq, 34, 0 ;  2 
+vstparamset gi_Organteq, 35, 0 ;  3
+vstparamset gi_Organteq, 36, 0 ;  4
+vstparamset gi_Organteq, 37, 1 ;  5
+vstparamset gi_Organteq, 38, 0 ;  6
+vstparamset gi_Organteq, 39, 1 ;  7
+vstparamset gi_Organteq, 40, 0 ;  8
+vstparamset gi_Organteq, 41, 1 ;  9
+vstparamset gi_Organteq, 42, 0 ; 10
 
 ; Keyboard 2 -- Positif
 
-vstparamset gi_Organteq, 43, 1
-vstparamset gi_Organteq, 44, 0
-vstparamset gi_Organteq, 45, 0
-vstparamset gi_Organteq, 46, 1
-vstparamset gi_Organteq, 47, 1
-vstparamset gi_Organteq, 48, 1
-vstparamset gi_Organteq, 49, 0
-vstparamset gi_Organteq, 50, 0
-vstparamset gi_Organteq, 51, 0
-vstparamset gi_Organteq, 52, 0
+vstparamset gi_Organteq, 43, 1 ;  1
+vstparamset gi_Organteq, 44, 0 ;  2
+vstparamset gi_Organteq, 45, 0 ;  3
+vstparamset gi_Organteq, 46, 1 ;  4
+vstparamset gi_Organteq, 47, 0 ;  5
+vstparamset gi_Organteq, 48, 0 ;  6
+vstparamset gi_Organteq, 49, 0 ;  7
+vstparamset gi_Organteq, 50, 0 ;  8
+vstparamset gi_Organteq, 51, 0 ;  9
+vstparamset gi_Organteq, 52, 0 ; 10
+
 
 ; Keyboard 3 -- Grand Orgue
 
-vstparamset gi_Organteq, 53, 1
-vstparamset gi_Organteq, 54, 0
-vstparamset gi_Organteq, 55, 0
-vstparamset gi_Organteq, 56, 1
-vstparamset gi_Organteq, 57, 0 
-vstparamset gi_Organteq, 58, 0
-vstparamset gi_Organteq, 59, 1
-vstparamset gi_Organteq, 60, 1
-vstparamset gi_Organteq, 61, 1
-vstparamset gi_Organteq, 62, 0
+vstparamset gi_Organteq, 53, 0 ;  1
+vstparamset gi_Organteq, 54, 0 ;  2
+vstparamset gi_Organteq, 55, 0 ;  3
+vstparamset gi_Organteq, 56, 0 ;  4
+vstparamset gi_Organteq, 57, 1 ;  5
+vstparamset gi_Organteq, 58, 0 ;  6
+vstparamset gi_Organteq, 59, 0 ;  7
+vstparamset gi_Organteq, 60, 0 ;  8
+vstparamset gi_Organteq, 61, 0 ;  9
+vstparamset gi_Organteq, 62, 0 ; 10
 
 ; Keyboard 4 - Recit 
 
-vstparamset gi_Organteq, 63, 1
-vstparamset gi_Organteq, 64, 0
-vstparamset gi_Organteq, 65, 0
-vstparamset gi_Organteq, 66, 1
-vstparamset gi_Organteq, 67, 1
-vstparamset gi_Organteq, 68, 1
-vstparamset gi_Organteq, 69, 1
-vstparamset gi_Organteq, 70, 0
-vstparamset gi_Organteq, 71, 0
-vstparamset gi_Organteq, 72, 0
+vstparamset gi_Organteq, 63, 0 ;  1
+vstparamset gi_Organteq, 64, 1 ;  2
+vstparamset gi_Organteq, 65, 0 ;  3
+vstparamset gi_Organteq, 66, 0 ;  4
+vstparamset gi_Organteq, 67, 1 ;  5
+vstparamset gi_Organteq, 68, 0 ;  6
+vstparamset gi_Organteq, 69, 0 ;  7 
+vstparamset gi_Organteq, 70, 0 ;  8 
+vstparamset gi_Organteq, 71, 0 ;  9 
+vstparamset gi_Organteq, 72, 0 ; 10
+
 endif
 if (i_combination == 3.) then
-; NOTE: Stop knob # + 40 is stop _volume_.
-
 ; Keyboard 1 -- Pedale
 
-vstparamset gi_Organteq, 33, 1
-vstparamset gi_Organteq, 34, 0
-vstparamset gi_Organteq, 35, 0
-vstparamset gi_Organteq, 36, 1
-vstparamset gi_Organteq, 37, 0
-vstparamset gi_Organteq, 38, 1
-vstparamset gi_Organteq, 39, 1
-vstparamset gi_Organteq, 40, 1
-vstparamset gi_Organteq, 41, 0
-vstparamset gi_Organteq, 42, 0
+vstparamset gi_Organteq, 33, 1 ;  1
+vstparamset gi_Organteq, 34, 1 ;  2 
+vstparamset gi_Organteq, 35, 1 ;  3
+vstparamset gi_Organteq, 36, 1 ;  4
+vstparamset gi_Organteq, 37, 1 ;  5
+vstparamset gi_Organteq, 38, 1 ;  6
+vstparamset gi_Organteq, 39, 0 ;  7
+vstparamset gi_Organteq, 40, 1 ;  8
+vstparamset gi_Organteq, 41, 0 ;  9
+vstparamset gi_Organteq, 42, 0 ; 10
 
 ; Keyboard 2 -- Positif
 
-vstparamset gi_Organteq, 43, 1
-vstparamset gi_Organteq, 44, 0
-vstparamset gi_Organteq, 45, 0
-vstparamset gi_Organteq, 46, 1
-vstparamset gi_Organteq, 47, 1
-vstparamset gi_Organteq, 48, 1
-vstparamset gi_Organteq, 49, 0
-vstparamset gi_Organteq, 50, 0
-vstparamset gi_Organteq, 51, 0
-vstparamset gi_Organteq, 52, 0
+vstparamset gi_Organteq, 43, 1 ;  1
+vstparamset gi_Organteq, 44, 1 ;  2
+vstparamset gi_Organteq, 45, 1 ;  3
+vstparamset gi_Organteq, 46, 0 ;  4
+vstparamset gi_Organteq, 47, 1 ;  5
+vstparamset gi_Organteq, 48, 0 ;  6
+vstparamset gi_Organteq, 49, 0 ;  7
+vstparamset gi_Organteq, 50, 1 ;  8
+vstparamset gi_Organteq, 51, 0 ;  9
+vstparamset gi_Organteq, 52, 0 ; 10
+
 
 ; Keyboard 3 -- Grand Orgue
 
-vstparamset gi_Organteq, 53, 1
-vstparamset gi_Organteq, 54, 1
-vstparamset gi_Organteq, 55, 0
-vstparamset gi_Organteq, 56, 1
-vstparamset gi_Organteq, 57, 0 
-vstparamset gi_Organteq, 58, 1
-vstparamset gi_Organteq, 59, 1
-vstparamset gi_Organteq, 60, 1
-vstparamset gi_Organteq, 61, 1
-vstparamset gi_Organteq, 62, 0
+vstparamset gi_Organteq, 53, 1 ;  1
+vstparamset gi_Organteq, 54, 1 ;  2
+vstparamset gi_Organteq, 55, 0 ;  3
+vstparamset gi_Organteq, 56, 0 ;  4
+vstparamset gi_Organteq, 57, 1 ;  5
+vstparamset gi_Organteq, 58, 1 ;  6
+vstparamset gi_Organteq, 59, 1 ;  7
+vstparamset gi_Organteq, 60, 1 ;  8
+vstparamset gi_Organteq, 61, 1 ;  9
+vstparamset gi_Organteq, 62, 0 ; 10
 
 ; Keyboard 4 - Recit 
 
-vstparamset gi_Organteq, 63, 1
-vstparamset gi_Organteq, 64, 0
-vstparamset gi_Organteq, 65, 1
-vstparamset gi_Organteq, 66, 0
-vstparamset gi_Organteq, 67, 0
-vstparamset gi_Organteq, 68, 1
-vstparamset gi_Organteq, 69, 1
-vstparamset gi_Organteq, 70, 0
-vstparamset gi_Organteq, 71, 0
-vstparamset gi_Organteq, 72, 0
+vstparamset gi_Organteq, 63, 1 ;  1
+vstparamset gi_Organteq, 64, 0 ;  2
+vstparamset gi_Organteq, 65, 0 ;  3
+vstparamset gi_Organteq, 66, 1 ;  4
+vstparamset gi_Organteq, 67, 1 ;  5
+vstparamset gi_Organteq, 68, 0 ;  6
+vstparamset gi_Organteq, 69, 0 ;  7 
+vstparamset gi_Organteq, 70, 0 ;  8 
+vstparamset gi_Organteq, 71, 0 ;  9 
+vstparamset gi_Organteq, 72, 0 ; 10
+
 endif
 if (i_combination == 4.) then
-; NOTE: Stop knob # + 40 is stop _volume_.
-
 ; Keyboard 1 -- Pedale
 
-vstparamset gi_Organteq, 33, 1
-vstparamset gi_Organteq, 34, 0
-vstparamset gi_Organteq, 35, 1
-vstparamset gi_Organteq, 36, 1
-vstparamset gi_Organteq, 37, 0
-vstparamset gi_Organteq, 38, 1
-vstparamset gi_Organteq, 39, 0
-vstparamset gi_Organteq, 40, 1
-vstparamset gi_Organteq, 41, 1
-vstparamset gi_Organteq, 42, 0
+vstparamset gi_Organteq, 33, 1 ;  1
+vstparamset gi_Organteq, 34, 1 ;  2 
+vstparamset gi_Organteq, 35, 0 ;  3
+vstparamset gi_Organteq, 36, 0 ;  4
+vstparamset gi_Organteq, 37, 0 ;  5
+vstparamset gi_Organteq, 38, 0 ;  6
+vstparamset gi_Organteq, 39, 1 ;  7
+vstparamset gi_Organteq, 40, 0 ;  8
+vstparamset gi_Organteq, 41, 0 ;  9
+vstparamset gi_Organteq, 42, 0 ; 10
 
 ; Keyboard 2 -- Positif
 
-vstparamset gi_Organteq, 43, 1
-vstparamset gi_Organteq, 44, 0
-vstparamset gi_Organteq, 45, 0
-vstparamset gi_Organteq, 46, 0
-vstparamset gi_Organteq, 47, 1
-vstparamset gi_Organteq, 48, 1
-vstparamset gi_Organteq, 49, 0
-vstparamset gi_Organteq, 50, 0
-vstparamset gi_Organteq, 51, 0
-vstparamset gi_Organteq, 52, 0
+vstparamset gi_Organteq, 43, 0 ;  1
+vstparamset gi_Organteq, 44, 0 ;  2
+vstparamset gi_Organteq, 45, 1 ;  3
+vstparamset gi_Organteq, 46, 0 ;  4
+vstparamset gi_Organteq, 47, 0 ;  5
+vstparamset gi_Organteq, 48, 0 ;  6
+vstparamset gi_Organteq, 49, 1 ;  7
+vstparamset gi_Organteq, 50, 0 ;  8
+vstparamset gi_Organteq, 51, 0 ;  9
+vstparamset gi_Organteq, 52, 0 ; 10
 
 ; Keyboard 3 -- Grand Orgue
 
-vstparamset gi_Organteq, 53, 1
-vstparamset gi_Organteq, 54, 0
-vstparamset gi_Organteq, 55, 0
-vstparamset gi_Organteq, 56, 1
-vstparamset gi_Organteq, 57, 1 
-vstparamset gi_Organteq, 58, 0
-vstparamset gi_Organteq, 59, 1
-vstparamset gi_Organteq, 60, 1
-vstparamset gi_Organteq, 61, 1
-vstparamset gi_Organteq, 62, 0
+vstparamset gi_Organteq, 53, 0 ;  1
+vstparamset gi_Organteq, 54, 0 ;  2
+vstparamset gi_Organteq, 55, 0 ;  3
+vstparamset gi_Organteq, 56, 0 ;  4
+vstparamset gi_Organteq, 57, 1 ;  5
+vstparamset gi_Organteq, 58, 0 ;  6
+vstparamset gi_Organteq, 59, 1 ;  7
+vstparamset gi_Organteq, 60, 0 ;  8
+vstparamset gi_Organteq, 61, 0 ;  9
+vstparamset gi_Organteq, 62, 0 ; 10
 
 ; Keyboard 4 - Recit 
 
-vstparamset gi_Organteq, 63, 1
-vstparamset gi_Organteq, 64, 0
-vstparamset gi_Organteq, 65, 1
-vstparamset gi_Organteq, 66, 1
-vstparamset gi_Organteq, 67, 1
-vstparamset gi_Organteq, 68, 1
-vstparamset gi_Organteq, 69, 1
-vstparamset gi_Organteq, 70, 0
-vstparamset gi_Organteq, 71, 1
-vstparamset gi_Organteq, 72, 0
+vstparamset gi_Organteq, 63, 1 ;  1
+vstparamset gi_Organteq, 64, 0 ;  2
+vstparamset gi_Organteq, 65, 0 ;  3
+vstparamset gi_Organteq, 66, 0 ;  4
+vstparamset gi_Organteq, 67, 1 ;  5
+vstparamset gi_Organteq, 68, 0 ;  6
+vstparamset gi_Organteq, 69, 0 ;  7 
+vstparamset gi_Organteq, 70, 0 ;  8 
+vstparamset gi_Organteq, 71, 0 ;  9 
+vstparamset gi_Organteq, 72, 0 ; 10
+
 endif
 endin
 
@@ -1150,60 +1150,60 @@ vstparamset gi_Organteq, 4, 0
 
 vstparamset gi_Organteq, 6, 0
 
-; NOTE: Stop knob # + 40 is stop _volume_.
+; NOTE: Stop knob # + 40 is stop _volume.
 
 ; Keyboard 1 -- Pedale
 
-vstparamset gi_Organteq, 33, 1
-vstparamset gi_Organteq, 34, 1
-vstparamset gi_Organteq, 35, 1
-vstparamset gi_Organteq, 36, 0
-vstparamset gi_Organteq, 37, 1
-vstparamset gi_Organteq, 38, 0
-vstparamset gi_Organteq, 39, 0
-vstparamset gi_Organteq, 40, 0
-vstparamset gi_Organteq, 41, 0
-vstparamset gi_Organteq, 42, 0
+vstparamset gi_Organteq, 33, 1 ;  1
+vstparamset gi_Organteq, 34, 0 ;  2 
+vstparamset gi_Organteq, 35, 0 ;  3
+vstparamset gi_Organteq, 36, 0 ;  4
+vstparamset gi_Organteq, 37, 0 ;  5
+vstparamset gi_Organteq, 38, 0 ;  6
+vstparamset gi_Organteq, 39, 1 ;  7
+vstparamset gi_Organteq, 40, 0 ;  8
+vstparamset gi_Organteq, 41, 0 ;  9
+vstparamset gi_Organteq, 42, 0 ; 10
 
 ; Keyboard 2 -- Positif
 
-vstparamset gi_Organteq, 43, 1
-vstparamset gi_Organteq, 44, 1;0
-vstparamset gi_Organteq, 45, 0
-vstparamset gi_Organteq, 46, 1
-vstparamset gi_Organteq, 47, 0
-vstparamset gi_Organteq, 48, 0
-vstparamset gi_Organteq, 49, 0
-vstparamset gi_Organteq, 50, 0
-vstparamset gi_Organteq, 51, 0
-vstparamset gi_Organteq, 52, 0
+vstparamset gi_Organteq, 43, 0 ;  1
+vstparamset gi_Organteq, 44, 0 ;  2
+vstparamset gi_Organteq, 45, 1 ;  3
+vstparamset gi_Organteq, 46, 0 ;  4
+vstparamset gi_Organteq, 47, 0 ;  5
+vstparamset gi_Organteq, 48, 1 ;  6
+vstparamset gi_Organteq, 49, 0 ;  7
+vstparamset gi_Organteq, 50, 0 ;  8
+vstparamset gi_Organteq, 51, 0 ;  9
+vstparamset gi_Organteq, 52, 0 ; 10
 
 
 ; Keyboard 3 -- Grand Orgue
 
-vstparamset gi_Organteq, 53, 1
-vstparamset gi_Organteq, 54, 0
-vstparamset gi_Organteq, 55, 0
-vstparamset gi_Organteq, 56, 0
-vstparamset gi_Organteq, 57, 0 
-vstparamset gi_Organteq, 58, 0
-vstparamset gi_Organteq, 59, 1
-vstparamset gi_Organteq, 60, 0
-vstparamset gi_Organteq, 61, 0
-vstparamset gi_Organteq, 62, 0
+vstparamset gi_Organteq, 53, 0 ;  1
+vstparamset gi_Organteq, 54, 0 ;  2
+vstparamset gi_Organteq, 55, 0 ;  3
+vstparamset gi_Organteq, 56, 0 ;  4
+vstparamset gi_Organteq, 57, 1 ;  5
+vstparamset gi_Organteq, 58, 0 ;  6
+vstparamset gi_Organteq, 59, 0 ;  7
+vstparamset gi_Organteq, 60, 0 ;  8
+vstparamset gi_Organteq, 61, 0 ;  9
+vstparamset gi_Organteq, 62, 0 ; 10
 
 ; Keyboard 4 - Recit 
 
-vstparamset gi_Organteq, 63, 1
-vstparamset gi_Organteq, 64, 0
-vstparamset gi_Organteq, 65, 0
-vstparamset gi_Organteq, 66, 1
-vstparamset gi_Organteq, 67, 1
-vstparamset gi_Organteq, 68, 1
-vstparamset gi_Organteq, 69, 0
-vstparamset gi_Organteq, 70, 0
-vstparamset gi_Organteq, 71, 0
-vstparamset gi_Organteq, 72, 0
+vstparamset gi_Organteq, 63, 0 ;  1
+vstparamset gi_Organteq, 64, 0 ;  2
+vstparamset gi_Organteq, 65, 0 ;  3
+vstparamset gi_Organteq, 66, 1 ;  4
+vstparamset gi_Organteq, 67, 0 ;  5
+vstparamset gi_Organteq, 68, 0 ;  6
+vstparamset gi_Organteq, 69, 0 ;  7 
+vstparamset gi_Organteq, 70, 0 ;  8 
+vstparamset gi_Organteq, 71, 1 ;  9 
+vstparamset gi_Organteq, 72, 0 ; 10
 
 k_gain = ampdb(gk_OrganOutOrganteq_level)
 i_overall_amps = 100
@@ -1337,16 +1337,22 @@ model.generate()
 #~ # Fix ending. Instruments would drop out, sustain till the end. Some notes 
 #~ # of course will decay first.
 score = model.getScore()
-score_duration = score.getDuration()
-sounding = set()
-instruments_sounding = 0
-for i, event in reverse_enumeration(score):
-    instruments_sounding = instruments_sounding + 1
-    event.setOffTime(score_duration)
-    CsoundAC.conformToChord(event, chord)
-    instrument = str(event.getInstrument())
-    if instruments_sounding > 12:
-        break
+cutoff = score.getDurationFromZero()
+size = len(score)
+start = size - 26
+cutoff = cutoff + 1.8
+print("cutoff:", cutoff)
+for i in range(start, size):
+    note = score[i]
+    #note = score[i]
+    print(note.toString())
+    note.setOffTime(cutoff)
+    CsoundAC.conformToChord(note, chord)
+    print(note.toString(), "\n")
+    score[i] = note
+print
+for note in score[start:size]:
+    print(note.toString())
 score.save(model.getMidifileFilepath())
 model.setExtendSeconds(9.)
 model.performMaster()
