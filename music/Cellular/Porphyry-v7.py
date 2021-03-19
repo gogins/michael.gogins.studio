@@ -25,29 +25,31 @@ import string
 import sys
 import traceback
 
+print('Set "rendering" to:     "soundfile" or "audio".')
+print
+rendering = "audio"
+
 # Using the same random seed for each performance makes the performance 
 # deterministic, not random.
 random.seed(221)
 random.seed(45850)
 random.seed(222)
 random.seed(11117111)
-bass_offset = 18
-column_begin = 1
-columns_to_play = 14
-master_duration = 1.8
-maximum_repetitions_per_measure = 9 
-minimum_repetitions_per_measure = 2
-offset_factor = 2
-row_begin = 2
-rows_to_play = 6
-measures_to_play = rows_to_play * columns_to_play
+
 scale = CsoundAC.Scale("F# major")
 chord = scale.chord(1, 4)
-tempo = 5./3.
 
-print('Set "rendering" to:     "soundfile" or "audio".')
-print
-rendering = "audio"
+bass_offset = 18
+column_begin = 1
+master_duration = 1.8
+offset_factor = 2
+row_begin = 2
+bass_offset = 13
+columns_to_play = 15
+rows_to_play = 3
+measures_to_play = rows_to_play * columns_to_play
+minimum_repetitions_per_measure =  2
+maximum_repetitions_per_measure = 11 
 
 model = CsoundAC.MusicModel()
 score = model.getScore()
@@ -108,16 +110,6 @@ def reverse_enumeration(L):
 # 
 # NOTE: A "measure" is Mozart's measure to be played for N repetitions, a 
 # "bar" is one measure played one time.
-
-tempo = 5./3.
-scale = CsoundAC.Scale("F# major")
-chord = scale.chord(1, 4)
-bass_offset = 13
-columns_to_play = 15
-rows_to_play = 2
-measures_to_play = rows_to_play * columns_to_play
-minimum_repetitions_per_measure =  3
-maximum_repetitions_per_measure = 11 
 
 repetitions_for_measures = []
 for i in range(measures_to_play):
@@ -222,6 +214,10 @@ def build_voice(voiceleading_node, sequence, instrument, bass, time_offset, pan,
                     sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 4., 4., 1.)
                 if modulation_count == 21:
                     sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 1., 1., 1.)
+                if modulation_count == 26:
+                    sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 3., 3., 1.)
+                if modulation_count == 31:
+                    sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 2., 2., 1.)
                 random_index = random.randint(0, scale_count -1)
                 for s in scales:
                     print("Possible modulation at: {:9.4f} {} {}".format(cumulative_time, s.toString(), s.name()))

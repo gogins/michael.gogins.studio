@@ -31,23 +31,24 @@ random.seed(221)
 random.seed(45850)
 random.seed(222)
 random.seed(11117111)
-bass_offset = 18
-column_begin = 1
-columns_to_play = 14
-master_duration = 1.8
-maximum_repetitions_per_measure = 9 
-minimum_repetitions_per_measure = 2
-offset_factor = 2
-row_begin = 2
-rows_to_play = 6
-measures_to_play = rows_to_play * columns_to_play
-scale = CsoundAC.Scale("F# major")
-chord = scale.chord(1, 4)
-tempo = 5./3.
 
 print('Set "rendering" to:     "soundfile" or "audio".')
 print
 rendering = "audio"
+
+column_begin = 1
+master_duration = 1.8
+offset_factor = 2
+row_begin = 2
+scale = CsoundAC.Scale("F# major")
+chord = scale.chord(1, 4)
+
+bass_offset = 13
+columns_to_play = 15
+rows_to_play = 3
+measures_to_play = rows_to_play * columns_to_play
+minimum_repetitions_per_measure =  3
+maximum_repetitions_per_measure = 11 
 
 model = CsoundAC.MusicModel()
 score = model.getScore()
@@ -108,16 +109,6 @@ def reverse_enumeration(L):
 # 
 # NOTE: A "measure" is Mozart's measure to be played for N repetitions, a 
 # "bar" is one measure played one time.
-
-tempo = 5./3.
-scale = CsoundAC.Scale("F# major")
-chord = scale.chord(1, 4)
-bass_offset = 13
-columns_to_play = 15
-rows_to_play = 2
-measures_to_play = rows_to_play * columns_to_play
-minimum_repetitions_per_measure =  3
-maximum_repetitions_per_measure = 11 
 
 repetitions_for_measures = []
 for i in range(measures_to_play):
