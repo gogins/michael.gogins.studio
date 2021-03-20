@@ -27,17 +27,24 @@ import traceback
 
 print('Set "rendering" to:     "soundfile" or "audio".')
 print
-rendering = "audio"
+rendering = "soundfile"
 
 # Using the same random seed for each performance makes the performance 
 # deterministic, not random.
-random.seed(221)
-random.seed(45850)
-random.seed(222)
+#random.seed(221)
+#random.seed(45850)
+#random.seed(222)
+random.seed(11117111) # Champ so far.
+#random.seed(11171111)
+#random.seed(11116911)
+#random.seed(11118111)
+random.seed(11117112)
 random.seed(11117111)
 
 scale = CsoundAC.Scale("F# major")
+#scale = CsoundAC.Scale("G# major")
 chord = scale.chord(1, 4)
+#chord = scale.chord(4, 4)
 
 bass_offset = 18
 column_begin = 1
@@ -46,9 +53,9 @@ offset_factor = 2
 row_begin = 2
 bass_offset = 13
 columns_to_play = 15
-rows_to_play = 3
+rows_to_play = 2
 measures_to_play = rows_to_play * columns_to_play
-minimum_repetitions_per_measure =  2
+minimum_repetitions_per_measure =  3
 maximum_repetitions_per_measure = 11 
 
 model = CsoundAC.MusicModel()
@@ -60,7 +67,7 @@ title, exte = os.path.splitext(os.path.basename(script_filename))
 model.setTitle(title)
 model.setArtist("Michael Gogins")
 model.setAuthor("Michael Gogins")
-model.setYear("2020")
+model.setYear("2021")
 model.generateAllNames()
 soundfile_name = model.getOutputSoundfileFilepath()
 print('Soundfile name:         %s' % soundfile_name)
@@ -218,13 +225,15 @@ def build_voice(voiceleading_node, sequence, instrument, bass, time_offset, pan,
                     sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 3., 3., 1.)
                 if modulation_count == 31:
                     sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 2., 2., 1.)
-                random_index = random.randint(0, scale_count -1)
                 for s in scales:
-                    print("Possible modulation at: {:9.4f} {} {}".format(cumulative_time, s.toString(), s.name()))
-                    if count == random_index:
-                        scale = s  
-                        print("             Chose modulation {} at {} to: {} {}".format(modulation_count, real_time, scale.toString(), scale.name()))
-                    count = count + 1
+                    print("Possible modulation at:   {:9.4f} to: {} {}".format(cumulative_time, s.toString(), s.name()))
+                if modulation_count == 25:
+                    scale = scales[3]
+                elif modulation_count == 27:
+                    scale = scales[1]
+                else:
+                    scale = random.choice(scales)
+                print("Chose modulation {:4d} at: {:9.4f} to: {} {}".format(modulation_count, real_time, scale.toString(), scale.name()))
                 timescale = random.choices([1., 2., .5, 2./3., 4./3.], [12, 2, 2, 2, 2], k=1)[0]
                 print()
             bass = random.choices([24, 30, 36], [8, 6, 4], k=1)[0] + bass_offset
@@ -922,7 +931,7 @@ vstparamset gi_Organteq, 35, 0 ;  3
 vstparamset gi_Organteq, 36, 0 ;  4
 vstparamset gi_Organteq, 37, 0 ;  5
 vstparamset gi_Organteq, 38, 0 ;  6
-vstparamset gi_Organteq, 39, 1 ;  7
+vstparamset gi_Organteq, 39, 13 ;  7
 vstparamset gi_Organteq, 40, 0 ;  8
 vstparamset gi_Organteq, 41, 0 ;  9
 vstparamset gi_Organteq, 42, 0 ; 10
@@ -1348,6 +1357,7 @@ for i in range(start, size):
     print(note.toString(), "\n")
     score[i] = note
 print
+#score.setDuration(480.)
 for note in score[start:size]:
     print(note.toString())
 score.save(model.getMidifileFilepath())
