@@ -211,6 +211,10 @@ def build_voice(voiceleading_node, sequence, instrument, bass, time_offset, pan,
             # only, but it will be applied to all voices.
             if (scale_count > 1 and time_offset == 0):
                 modulation_count = modulation_count + 1
+                print("Modulation point:       {:4d}".format(modulation_count))
+                print("Time:                   {:9.4f}".format(cumulative_time))
+                print("Current key:            {} {}".format(scale.toString(), scale.name()))
+                print("Pivot chord:            {}                                        {}".format(chord.toString(), chord.eOP().name()))
                 if modulation_count == 5:
                     sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 1., 1., 1.)
                 if modulation_count == 10:
@@ -225,15 +229,18 @@ def build_voice(voiceleading_node, sequence, instrument, bass, time_offset, pan,
                     sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 3., 3., 1.)
                 if modulation_count == 31:
                     sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 2., 2., 1.)
-                for s in scales:
-                    print("Possible modulation at:   {:9.4f} to: {} {}".format(cumulative_time, s.toString(), s.name()))
+                for i in range(len(scales)):
+                    s = scales[i]
+                    print("Possible modulation to: {} {}".format(s.toString(), s.name()))
                 if modulation_count == 25:
-                    scale = scales[3]
+                    scale = scales[0]
+                elif modulation_count == 26:
+                    scale = scales[1]
                 elif modulation_count == 27:
                     scale = scales[1]
                 else:
                     scale = random.choice(scales)
-                print("Chose modulation {:4d} at: {:9.4f} to: {} {}".format(modulation_count, real_time, scale.toString(), scale.name()))
+                print("\n==>                     {} {}".format(scale.toString(), scale.name()))
                 timescale = random.choices([1., 2., .5, 2./3., 4./3.], [12, 2, 2, 2, 2], k=1)[0]
                 print()
             bass = random.choices([24, 30, 36], [8, 6, 4], k=1)[0] + bass_offset
