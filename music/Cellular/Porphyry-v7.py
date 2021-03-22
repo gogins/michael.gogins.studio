@@ -27,7 +27,7 @@ import traceback
 
 print('Set "rendering" to:     "soundfile" or "audio".')
 print
-rendering = "soundfile"
+rendering = "audio"
 
 # Using the same random seed for each performance makes the performance 
 # deterministic, not random.
@@ -57,6 +57,7 @@ rows_to_play = 2
 measures_to_play = rows_to_play * columns_to_play
 minimum_repetitions_per_measure =  3
 maximum_repetitions_per_measure = 11 
+target_duration = 6.50 * 60.
 
 model = CsoundAC.MusicModel()
 score = model.getScore()
@@ -153,7 +154,7 @@ def read_measure(number):
 
 forte_measures = random.choices([1,0], [2/6, 4/6], k=measures_to_play)
 
-def build_voice(voiceleading_node, sequence, instrument, bass, time_offset, pan, level):
+def build_voice(voiceleading_node, sequence, instrument, bass_, time_offset, pan, level):
     global master_duration
     global repetitions_for_measures
     global tempo
@@ -169,109 +170,119 @@ def build_voice(voiceleading_node, sequence, instrument, bass, time_offset, pan,
     bars_total = sum(repetitions_for_measures)
     print("Instrument: {:3} measures: {} bars: {} repetitions_for_measures: {}".format(instrument, len(repetitions_for_measures), bars_total, repetitions_for_measures))    
     print("Instrument: {:3} measures: {} bars: {} forte_mearues:            {}".format(instrument, len(repetitions_for_measures), bars_total, forte_measures))    
-    print()
+    bass = bass_
     modulation_count = 0
     bars_played = 0
     real_time = 1.0
-    cumulative_time = real_time + time_offset
-    # Make both pitch range and dynamic range get bigger through time.
-    bass = bass
-    bass_at_end = bass - 5
-    bass_increment_per_bar = (bass_at_end - bass) / bars_total
-    range_ = 48.
-    range_at_end = 52.
-    range_increment_per_bar = (range_at_end - range_) / bars_total
-    piano = 60. + level
-    piano_at_end = piano - 4.
-    piano_increment_per_bar = (piano_at_end - piano) / bars_total
-    dynamic_range = 20.
-    dynamic_range_at_end = 30.
-    dynamic_range_increment_per_bar = (dynamic_range_at_end - dynamic_range) / bars_total
-    bass = random.choices([24, 30, 36], [8, 6, 4], k=1)[0]
-    #~ range_ = random.choices([60, 45, 48, 30, 24], [12, 10, 8, 6, 5], k=1)[0]
-    range_ = random.choices([48, 30, 24], [12, 10, 8], k=1)[0]
-    duration = master_duration
-    timescale = 1.
-    measure_count = 0
-    # Mozart's minuet table has columns indexed [1,16] and rows indexed [2,12]. 
-    repetitions_for_measure_index = 0
-    # Preserve Mozart's indexing.
-    for minuet_column in range(column_begin, columns_to_play + column_begin):
-        for minuet_row in range(row_begin, rows_to_play + row_begin):
-            measure_count = measure_count + 1
-            repetitions_for_measure = repetitions_for_measures[repetitions_for_measure_index]
-            forte = forte_measures[repetitions_for_measure]
-            repetitions_for_measure_index = repetitions_for_measure_index + 1
-            scales = scale.modulations(chord)
-            scale_count = len(scales)
-            count = 0
-            # After picking a number of repetitions for a measure, check if the 
-            # current chord can be a pivot chord, and if so, choose one of the 
-            # possible modulations to perform. Do this in the first voice 
-            # only, but it will be applied to all voices.
-            if (scale_count > 1 and time_offset == 0):
-                modulation_count = modulation_count + 1
-                print("Modulation point:       {:4d}".format(modulation_count))
-                print("Time:                   {:9.4f}".format(cumulative_time))
-                print("Current key:            {} {}".format(scale.toString(), scale.name()))
-                print("Pivot chord:            {}                                        {}".format(chord.toString(), chord.eOP().name()))
-                if modulation_count == 5:
-                    sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 1., 1., 1.)
-                if modulation_count == 10:
-                    sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 2., 2., 1.)
-                if modulation_count == 14:
-                    sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 3., 3., 1.)
-                if modulation_count == 19:
-                    sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 4., 4., 1.)
-                if modulation_count == 21:
-                    sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 1., 1., 1.)
-                if modulation_count == 26:
-                    sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 3., 3., 1.)
-                if modulation_count == 31:
-                    sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 2., 2., 1.)
-                for i in range(len(scales)):
-                    s = scales[i]
-                    print("Possible modulation to: {} {}".format(s.toString(), s.name()))
-                if modulation_count == 25:
-                    scale = scales[0]
-                elif modulation_count == 26:
-                    scale = scales[1]
-                elif modulation_count == 27:
-                    scale = scales[1]
-                else:
+    print()
+    for total_iterations in range(2):
+        cumulative_time = real_time + time_offset
+        # Make both pitch range and dynamic range get bigger through time.
+        bass_at_end = bass - 5
+        bass_increment_per_bar = (bass_at_end - bass) / bars_total
+        range_ = 48.
+        range_at_end = 52.
+        range_increment_per_bar = (range_at_end - range_) / bars_total
+        piano = 60. + level
+        piano_at_end = piano - 4.
+        piano_increment_per_bar = (piano_at_end - piano) / bars_total
+        dynamic_range = 20.
+        dynamic_range_at_end = 30.
+        dynamic_range_increment_per_bar = (dynamic_range_at_end - dynamic_range) / bars_total
+        bass = random.choices([24, 30, 36], [8, 6, 4], k=1)[0]
+        #~ range_ = random.choices([60, 45, 48, 30, 24], [12, 10, 8, 6, 5], k=1)[0]
+        range_ = random.choices([48, 30, 24], [12, 10, 8], k=1)[0]
+        duration = master_duration
+        timescale = 1.
+        measure_count = 0
+        # Mozart's minuet table has columns indexed [1,16] and rows indexed [2,12]. 
+        repetitions_for_measure_index = 0
+        # Preserve Mozart's indexing.
+        for minuet_column in range(column_begin, columns_to_play + column_begin):
+            for minuet_row in range(row_begin, rows_to_play + row_begin):
+                measure_count = measure_count + 1
+                repetitions_for_measure = repetitions_for_measures[repetitions_for_measure_index]
+                forte = forte_measures[repetitions_for_measure]
+                repetitions_for_measure_index = repetitions_for_measure_index + 1
+                scales = scale.modulations(chord)
+                scale_count = len(scales)
+                count = 0
+                # After picking a number of repetitions for a measure, check if the 
+                # current chord can be a pivot chord, and if so, choose one of the 
+                # possible modulations to perform. Do this in the first voice 
+                # only, but it will be applied to all voices.
+                if (scale_count > 1 and time_offset == 0):
+                    modulation_count = modulation_count + 1
+                    print("Modulation point:       {:4d}".format(modulation_count))
+                    print("Time:                   {:9.4f}".format(cumulative_time))
+                    print("Current key:            {} {}".format(scale.toString(), scale.name()))
+                    print("Pivot chord:            {}                                        {}".format(chord.toString(), chord.eOP().name()))
+                    if modulation_count == 5:
+                        sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 1., 1., 1.)
+                    if modulation_count == 10:
+                        sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 2., 2., 1.)
+                    if modulation_count == 14:
+                        sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 3., 3., 1.)
+                    if modulation_count == 19:
+                        sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 4., 4., 1.)
+                    if modulation_count == 21:
+                        sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 1., 1., 1.)
+                    if modulation_count == 26:
+                        sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 3., 3., 1.)
+                    if modulation_count == 31:
+                        sequence_holder.getScore().append(cumulative_time, 1., 144., 15., 2., 2., 1.)
+                    for i in range(len(scales)):
+                        s = scales[i]
+                        print("Possible modulation to: {} {}".format(s.toString(), s.name()))
                     scale = random.choice(scales)
-                print("\n==>                     {} {}".format(scale.toString(), scale.name()))
-                timescale = random.choices([1., 2., .5, 2./3., 4./3.], [12, 2, 2, 2, 2], k=1)[0]
-                print()
-            bass = random.choices([24, 30, 36], [8, 6, 4], k=1)[0] + bass_offset
-            # range_ = random.choices([48, 42, 36, 30, 24], [12, 10, 8, 6, 5], k=1)[0]
-            range_ = random.choices([48, 36, 24], [12, 10, 8, ], k=1)[0]
-            for k in range(repetitions_for_measure):
-                if (time_offset == 0) and (k % 3 == 0):
-                    # Once the scale is chosen, perform root progressions 
-                    # within the scale; away from the tonic in multiples of -2
-                    # scale degrees, back to the tonic in multiples of 1 scale 
-                    # degree with a preference for 3 steps (as used by V to I). 
-                    # These root progressions are random but weighted.
-                    progression = random.choices([-2, -4, -6, -8, -10, -12, 3, 6], [5, 3, 2, 1, 1, 1, 9, 3], k=1)
-                    steps = progression[0]
-                    chord = scale.transpose_degrees(chord, steps)
-                    voiceleading_node.chord(chord, cumulative_time)
-                measure = read_measure(minuet_table[minuet_row][minuet_column])
-                rescale = CsoundAC.Rescale() 
-                rescale.setRescale(CsoundAC.Event.TIME, True, False, cumulative_time, 0)
-                rescale.setRescale(CsoundAC.Event.INSTRUMENT, True, True, instrument, 0)
-                rescale.setRescale(CsoundAC.Event.KEY, True, True, bass, range_)
-                piano = piano + piano_increment_per_bar
-                dynamic_range = dynamic_range + dynamic_range_increment_per_bar
-                rescale.setRescale(CsoundAC.Event.VELOCITY, True, True, piano + (forte * 4), dynamic_range)
-                rescale.setRescale(CsoundAC.Event.PAN, True, True, pan, float(0))
-                rescale.thisown = 0
-                rescale.addChild(measure)
-                bars_played = bars_played + 1
-                sequence.addChild(rescale)
-                cumulative_time = cumulative_time + duration
-                real_time = real_time + duration
+                    if modulation_count == 24:
+                        scale = scales[0]
+                    if modulation_count == 25:
+                        scale = scales[1]
+                    #~ elif modulation_count == 27:
+                        #~ scale = scales[1]
+                    #~ else:
+                        #~ pass
+                    print("\n==>                     {} {}".format(scale.toString(), scale.name()))
+                    timescale = random.choices([1., 2., .5, 2./3., 4./3.], [12, 2, 2, 2, 2], k=1)[0]
+                    print()
+                bass = random.choices([24, 30, 36], [8, 6, 4], k=1)[0] + bass_offset
+                # range_ = random.choices([48, 42, 36, 30, 24], [12, 10, 8, 6, 5], k=1)[0]
+                range_ = random.choices([48, 36, 24], [12, 10, 8, ], k=1)[0]
+                for k in range(repetitions_for_measure):
+                    if (time_offset == 0) and (k % 3 == 0):
+                        # Once the scale is chosen, perform root progressions 
+                        # within the scale; away from the tonic in multiples of -2
+                        # scale degrees, back to the tonic in multiples of 1 scale 
+                        # degree with a preference for 3 steps (as used by V to I). 
+                        # These root progressions are random but weighted.
+                        progression = random.choices([-2, -4, -6, -8, -10, -12, 3, 6], [5, 3, 2, 1, 1, 1, 9, 3], k=1)
+                        steps = progression[0]
+                        chord = scale.transpose_degrees(chord, steps)
+                        voiceleading_node.chord(chord, cumulative_time)
+                    measure = read_measure(minuet_table[minuet_row][minuet_column])
+                    rescale = CsoundAC.Rescale() 
+                    rescale.setRescale(CsoundAC.Event.TIME, True, False, cumulative_time, 0)
+                    rescale.setRescale(CsoundAC.Event.INSTRUMENT, True, True, instrument, 0)
+                    rescale.setRescale(CsoundAC.Event.KEY, True, True, bass, range_)
+                    piano = piano + piano_increment_per_bar
+                    dynamic_range = dynamic_range + dynamic_range_increment_per_bar
+                    rescale.setRescale(CsoundAC.Event.VELOCITY, True, True, piano + (forte * 4), dynamic_range)
+                    rescale.setRescale(CsoundAC.Event.PAN, True, True, pan, float(0))
+                    rescale.thisown = 0
+                    rescale.addChild(measure)
+                    bars_played = bars_played + 1
+                    sequence.addChild(rescale)
+                    cumulative_time = cumulative_time + duration
+                    real_time = real_time + duration
+                    if real_time > target_duration:
+                        break
+                if real_time > target_duration:
+                    break
+            if real_time > target_duration:
+                break
+        if real_time > target_duration:
+            break
     print("Bars played for instrument {}: {}".format(instrument, bars_played))
     print()
 sequence_holder = CsoundAC.ScoreNode()
@@ -1352,7 +1363,7 @@ model.generate()
 score = model.getScore()
 cutoff = score.getDurationFromZero()
 size = len(score)
-start = size - 26
+start = size - 40
 cutoff = cutoff + 1.8
 print("cutoff:", cutoff)
 for i in range(start, size):
