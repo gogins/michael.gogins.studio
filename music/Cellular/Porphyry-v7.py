@@ -27,7 +27,7 @@ import traceback
 
 print('Set "rendering" to:     "soundfile" or "audio".')
 print
-rendering = "audio"
+rendering = "soundfile"
 
 # Using the same random seed for each performance makes the performance 
 # deterministic, not random.

@@ -31,7 +31,7 @@ import traceback
 
 print('Set "rendering" to:     "soundfile" or "audio".')
 print
-rendering = "soundfile"
+rendering = "audio"
 
 # Using the same random seed for each performance makes the performance 
 # deterministic, not random.
@@ -66,7 +66,7 @@ rows_to_play = 2
 measures_to_play = rows_to_play * columns_to_play
 minimum_repetitions_per_measure =  3
 maximum_repetitions_per_measure = 11 
-# Delete all notes after 6'46".
+# Delete all notes after cutoff.
 cutoff = 7. * 60. + 30.
 
 target_duration = 9. * 60.
