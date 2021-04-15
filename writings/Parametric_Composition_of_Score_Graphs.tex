@@ -235,8 +235,6 @@ or to interpolate between two scores located in such a map.
 
 %\lohead{Parametric Composition}
 
-
-
 \section{Introduction}
 
 \lstset{language=c++,basicstyle=\ttfamily\tiny,commentstyle=\ttfamily\tiny,tabsize=2,breaklines,backgroundcolor=\color{LstColor},fontadjust=true,keepspaces=false,showstringspaces=false,moredelim=[is][\textbf]{\\emph\{}{\}}}.
@@ -248,7 +246,7 @@ We define a \textit{score generator} as a computer program that generates a
 musical score in some score space. Finally, we define a \textit{parametric score
 generator} as one whose behavior is completely defined by numerical parameters.
 
-Then \textit{parametric composition} is the art of composing music by exploring
+\textit{Parametric composition} is then the art of composing music by exploring
 the parameter space of some parametric score generator. Such exploration can be
 performed by literally zooming around in a colored map of the parameter space,
 by interpolating between two parameter points in that space, or by evolving
@@ -313,9 +311,10 @@ genetic algorithm on sets of actual parameters.
 
 The remainder of this paper develops the mathematical background in somewhat
 more detail; discusses the implementation of IFS, indexes for parameters, and
-the genetic algorithm for IFS parameters in the Silencio library for algorithmic
-composition in JavaScript; and finishes with examples of each of the three
-methods of algorithmic composition, implemented in Silencio and Csound.
+the genetic algorithm for IFS parameters in the CsoundAC library 
+\cite{csoundextended} for algorithmic composition in C++; and finishes with 
+examples of each of the three methods of algorithmic composition, implemented 
+in CsoundAC and Csound \cite{csoundmain}.
 
 \section{Mathematical Development}
 
@@ -355,7 +354,7 @@ $\mathcal{S}$ is the symmetry group. $OPC$ is what musicians commonly mean by
 ``chord.''
 
 \begin{figure}
-\centerline{\includegraphics[width = 0.9\textwidth]{opc}}
+\centerline{\includegraphics[width = 0.9\textwidth]{OPC}}
 \caption{\label{fig:opc}
   $OPC$ for trichords in 12TET.}
 \end{figure}
@@ -367,7 +366,7 @@ simplify the view, pitches are rounded by semitone). This is $OPTC$, which is
 what musicians normally mean by ``chord type.''
 
 \begin{figure}
-\centerline{\includegraphics[width = 0.5\textwidth]{opttc}}
+\centerline{\includegraphics[width = 0.75\textwidth]{OPTC}}
 \caption{\label{fig:opttc}
   $OPTC$ for trichords in 12TET.}
 \end{figure}
@@ -381,7 +380,7 @@ $OPTIC$, which is what theorists mean by ``set class,'' and is the most abstract
 commonly used concept of what is a ``chord.''
 
 \begin{figure}
-\centerline{\includegraphics[width = 0.25\textwidth]{opttic}}
+\centerline{\includegraphics[width = 0.75\textwidth]{OPTIC}}
 \caption{\label{fig:optic}
 $OPTIC$ for trichords in 12TET.}
 \end{figure}

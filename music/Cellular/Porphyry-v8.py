@@ -1385,6 +1385,6 @@ for i in range(len(score) - 1, 0, -1):
         score[i] = note
 score.save(model.getMidifileFilepath())
 model.setExtendSeconds(9.)
-model.performMaster()
-if rendering == 'soundfile':
-    model.translateMaster()
+#~ model.performMaster()
+#~ if rendering == 'soundfile':
+    #~ model.translateMaster()

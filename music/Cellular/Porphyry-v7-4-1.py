@@ -3,7 +3,7 @@ PORPHYRY
 
 Version 7.4.1 -- Final
 
-Copyright (C) 2020 by Michael Gogins
+Copyright (C) 2021 by Michael Gogins
 
 Mozart's musical dice game of 1787 is taken apart and put back together along 
 the lines of Terry Riley's "In C" using Python, re-harmonized using the 
