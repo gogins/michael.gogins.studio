@@ -282,9 +282,9 @@ one point in time, there is one and only one ``harmony.''
 
 The score generators used here are \textit{iterated function systems} (IFS)
 \cite{barnsley1985iterated, 10.2307/24893080, fractalseverywhere}. More
-particularly, our score generators are special IFS where the contractive
-transformations that make up the IFS are constrained such that the IFS computes
-attractors that closely approximate the graphs of functions. The function for
+particularly, our score generators are special IFS whose contractive
+transformations are constrained such that the IFS computes
+attractors closely approximating the graphs of functions. The function for
 such a graph is called a \textit{fractal approximation} (FA) or fractal
 interpolation function (FIF), or simply a \textit{fractal function}
 \cite{Barnsley1986, fractalseverywhere, navascues2014fractal}. (It is
@@ -321,7 +321,7 @@ in CsoundAC and Csound \cite{csoundmain}.
 This section is not intended as a complete, self-contained exposition but rather
 as providing entry points for readers who have some exposure to mathematical
 music theory or fractal geometry. We have tried to supply references not only to
-original publications of ideas, but also to recent reviews or summaries.
+original publications, but also to recent reviews or summaries.
 
 \subsection{Chord Spaces}
 
@@ -334,10 +334,10 @@ space has many uses. For example, Tymoczko \cite{tymoczko2006geometry,
 tymoczko2011geometry} showed that perceptually smoother voice-leadings between
 chords are represented by shorter distances in chord space.
 
-Even unschooled musicians are aware that pitches transposed to different octaves
+All musicians are aware that pitches transposed to different octaves
 are somehow the same. This is expressed in music theory by saying that
 pitch-classes, \textit{e.g.} C or F\#, are pitches under \textit{octave
-equivalence}. Octave equivalence transforms the line of pitch into a circle, an
+equivalence}. Octave equivalence transforms the line of pitches into a circle, an
 \textit{orbifold} or \textit{quotient space} $\mathbb{R}/12$, by gluing the
 lowest pitch under octave equivalence to the same pitch an octave higher. There
 are other implicitly familiar equivalence classes in music:
@@ -362,7 +362,7 @@ $\mathcal{S}$ is the symmetry group. $OPC$ is what musicians commonly mean by
 If in addition transpositional equivalence is assumed, the orbifold collapses to
 a single layer $\left(\mathbb{R}/12\mathbb{Z}\right)^{n-1}/\mathcal{S}_{n}$, in
 which points at 120 degrees rotation are equivalent (Figure \ref{fig:opttc}; to
-simplify the view, pitches are rounded by semitone). This is $OPTC$, which is
+assist the understanding, pitches are rounded by semitone). This is $OPTC$, which is
 what musicians normally mean by ``chord type.''
 
 \begin{figure}
@@ -377,7 +377,7 @@ folds over or reflects to equate major and minor
 $\left(\mathbb{R}/12\mathbb{Z}\right)^{n-1}/(\mathcal{S}_{n} \times
 \mathbb{Z}_{2})$ (Figure \ref{fig:optic}; again, rounded by semitone). This is
 $OPTIC$, which is what theorists mean by ``set class,'' and is the most abstract
-commonly used concept of what is a ``chord.''
+commonly used meaning of what is a ``chord.''
 
 \begin{figure}
 \centerline{\includegraphics[width = 0.75\textwidth]{OPTIC}}
@@ -397,8 +397,8 @@ These dimensions are:
 most abstract conception of a chord; all major and minor triads are equivalent.
 The number of elements in P depends upon the maximum number of voices and the
 number of divisions of the octave.
-\item $I$ -- Inversion by the origin.
-\item $T/R$ -- Transposition within a specified range $R$.
+\item $I$ -- Inversion, \emph{i.e.}\ reflection in the inversion flat of the chord space.
+\item $T$ -- Transposition within octave equivalence.
 \end{enumerate}
 
 \noindent We supplement this chord symmetry space with additional (discrete)
@@ -633,7 +633,7 @@ the sub-domains and ranges (Figure \ref{fig:fif}) with the following
 equation, where $x$ is the time dimension of the score graph, $\mathbf{y}$ is
 the chord symmetry dimension of the score graph, the $X$ are interpolation
 points for time, $\mathbf{Y}$ are vector-valued interpolation points for $\{P,
-I, T, V, A\}$, and $\mathbf{s}$ are vector-valued scaling factors that ensure
+I, T, V, A, L, D\}$, and $\mathbf{s}$ are vector-valued scaling factors that ensure
 contraction to the fixed point of the attractor, i.e.\ the score graph, and
 provide some control over the shape of the graph between the interpolation
 points:
@@ -672,7 +672,7 @@ interpolation points for those dimensions, whereas all the other matrix elements
 are subject only to the requirement that they be contractive.
 
 We also must constrain the Hutchinson operator to subdivide the time-harmony
-planes by time, according to a modification of Equation \eqref{bilinear2} that
+planes by time, using a modification of Equation \eqref{bilinear2} that
 omits the scaling factors. For time-harmony points $(t,\mathbf{h})$, where the
 harmony dimensions $\mathbf{h}$ are $\{P, I, T \}$,
 
