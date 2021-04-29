@@ -45,85 +45,178 @@ print
 
 import musx_csoundac
 
-###############################################################################
+################################################################################
 """
-A musical hommage to the Sierpinski triangle using a recursive process to
-generate a self-similar melodies based on a set of tones representing the
-"sides" of a triangle.  The duration of each note is the process duration
-divided by the number of intervals in the melody. Thus, the entire melody
-in the next level will occupy the same mount of time as one tone in the
-current level. When the process starts running it outputs each note in the
-melody transposed to the current tone. If levels is greater then 1 then the
-process sprouts recursive copies of itself for each note in the melody
-transposed up trans intervals. The value for levels is decremented by 1,
-which will cause the recursive process to stop when the value reaches 0.
+Some examples of generating microtonal music with midi.
+
+musx implements 'channel tuning', a system that quantizes midi frequency and
+channel space into 'divisions per semitone' and routes midi notes with microtonal 
+floating point key numbers to the appropriately tuned channel in the midi file.
+Channel tuning claims channels for microtuning at the expense of the number of
+channels that can be assigned different instruments.  For example, a tuning value
+of 1 means standard semitonal tuning so all 16 channels are available for midi 
+instrument assignment. But a division of 2 (two divisions per semitone), which
+performs quarter-tone tuning, will claim successive pairs of channels and 
+quantizes them to 50 cent steps, so channel 0 is unadjusted and channel 1 is
+tuned 50 cents up.  This means a key number 60.20 would be sent to channel
+0 and a keynum 60.70 would be sent to channel 1, a quarter tone above channel 0.
+The maximum tuning value of 16 provides a tuning quantization step size of 6.25
+cents spread out over all 16 channels, which means that one instrument will 
+claim all 16 channels. Note: If your synth hardwires channel 9 to a drum map
+then for microtunings 9 thru 16 you will hear a percussion sound instead of a
+note whenever channel 9 is selected.
+
+For a MidiNote to produce a microtonal sound three conditions must be met:
+
+* The MidiNote's key number must be a floating point value with a fractional
+  value greater than 0.
+* The MidiNote's 'tuning' parameter must be greater than 1.
+* Track 0 (the 'metatrack' of the midi file) must be quantized to the same
+  divisions per semitone as the 'tuning' parameter. See: MidiSeq.metatrack().
+
+See also: demos fm.py, rm.py, gamelan.py, `MidiSeq.metatrack()`, `MidiNote()`.
 
 To run this script cd to the parent directory of musx_demos/ and do:
 ```bash
-python3 -m musx_demos.sierpinski
+python3 -m musx_demos.micro
 ```
 """
 
 
-from musx.tools import playfile, setmidiplayer
+from musx.midi import MidiNote, MidiSeq, MidiFile, MidiEvent
+from musx.midi.gm import TubularBells, Dulcimer, Flute, Vibraphone, Marimba
 from musx.scheduler import Scheduler
-from musx.scales import keynum
-from musx.midi import MidiNote, MidiSeq, MidiFile
+from musx.ran import odds
+from musx.tools import playfile, setmidiplayer, divide, deltas, rescale
+from musx.scales import scale
+from musx.generators import jumble
+from musx.spectral import temper
 
 
-def sierpinski(q, tone, shape, trans, levels, dur, amp):
+def pitchbends(q, tuning):
     """
-    Generates a melodic shape based on successive transpositions (levels) of
-    itself. 
+    Called by playmicrosteps() to outputs pitchbends to establish a microtuning.
+
+    Parameters
+    ----------
+    q : Scheduler
+        The scheduling queue.
+    tuning : int
+        A value 1 to 16 specificing the divisions per semitone of the tuning.
+    """
+    values = MidiSeq.channeltuning(tuning)
+    for chan,value in enumerate(values):
+        # calculate the pitch bend value
+        bend = round(rescale(value, -2,  2,  0, 16383))
+        q.out.addevent(MidiEvent.pitch_bend(chan, bend, time=q.now))
+    yield -1
+
+    
+def microtones(q, tuning, dur):
+    """
+    Called by playmicrosteps() to play individual tuning steps over dur seconds.
     
     Parameters
     ----------
-    tone : keynum
-        The melodic tone on which to base the melody for the current level.
-    shape : list
-        A list of intervals defining the melodic shape. 
-    levels : int
-        The number of levels the melody should be reproduced on. 
-    dur : int | float
-        The duration of the process.
-    amp : float
-        The amplitude of the process.
+    q : Scheduler
+        The scheduling queue.
+    tuning : int
+        A value 1 to 16 specificing the divisions per semitone of the tuning.
+    dur : number
+        The duration over which the tuning steps will be performed.
     """
-    num = len(shape)
-    for i in shape:
-        k = tone + i
-        # play current tone in melody
-        m = MidiNote(time=q.now, dur=dur, key=min(k,127), amp=amp, chan=levels)
+    rhy = dur*(1/(tuning*12))
+    key = 60
+    for _ in range(tuning*12+1):
+        #print('pre tuning: key',key,end="\t")
+        m = MidiNote(time=q.now, dur=rhy, key=key, tuning=tuning)
+        #print("post tuning: key", m.key, "chan", m.chan)
         q.out.addevent(m)
-        if (levels > 1):
-            # sprout melody on tone at next level
-            q.compose(sierpinski(q, (k + trans), shape,
-                        trans, levels - 1, dur / num,  amp))
-        yield dur
-    
+        key += 1/tuning
+        yield rhy
 
-# It's good practice to add any metadata such as tempo, midi instrument
-# assignments, micro tuning, etc. to track 0 in your midi file.
-t0 = MidiSeq.metaseq()
-# Track 1 will hold the composition.
-t1 = MidiSeq()
-# Create a scheduler and give it t1 as its output object.
-q = Scheduler(t1)
-# Start our composer in the scheduler, this creates the composition.
-# Specify levels and melody length with care! The number of events 
-# sierpinski generates is exponentially related to the length of the
-# melody and the number of levels. For example the first compose()
-# generates 120 events, the second 726, and the third 2728!
-# q.compose(sierpinski(q, keynum('a0'), [0, 7, 5], 12, 4, 3, .5))
-# q.compose(sierpinski(q, keynum('a0'), [0, 7, 5], 8, 5, 7, .5))
-q.compose(sierpinski(q, keynum('a0'), [0, -1, 2, 13], 12, 5, 24, .5))
 
-# Write a midi file with our track data.
-f = MidiFile("sierpinski.mid", [t0, t1]).write()
-# To automatially play demos use setmidiplayer() to assign a shell
-# command that will play midi files on your computer. Example:
-#   setmidiplayer("fluidsynth -iq -g1 /usr/local/sf/MuseScore_General.sf2")
-print(f"Wrote '{f.pathname}'.")
+def playmicrosteps():
+    """
+    Performs the microsteps of all semitonal division from 1 (semitones)
+    upto 16 divisions per semitone. NOTE: Depending on your midi synth if
+    the tuning spans channel 9 you may hear a drum map tone instead of a
+    micotonal pitch!
+    """
+    # It's good practice to add any metadata such as tempo, midi instrument
+    # assignments, micro tuning, etc. to track 0 in your midi file.
+    t0 = MidiSeq.metaseq()
+    # Track 1 will hold the composition.
+    t1 = MidiSeq()
+    # Create a scheduler and give it t1 as its output object.
+    q = Scheduler(t1)
+    # Create composers for each semitonal division from 1 to 16
+    composers = []
+    now = 0
+    dur = 6
+    for div in range(1, 16):
+        # for each division the first composer outputs pitchbends,
+        # and the second outputs the microtonal pitches.
+        composers += [[now, pitchbends(q,div)], [now, microtones(q,div,dur)]]
+        now += dur+1
+    # Add all the composers to the queue
+    q.compose(composers)
+    # Write a midi file with our track data.
+    f = MidiFile("micro.mid", [t0, t1]).write()
+    # To automatially play demos use setmidiplayer() to assign a shell
+    # command that will play midi files on your computer. Example:
+    #   setmidiplayer("fluidsynth -iq -g1 /usr/local/sf/MuseScore_General.sf2")
+    print(f"Wrote '{f.pathname}'.")
+    playfile(f.pathname)
+
+
+def playmicropentatonic():
+    """
+    Plays a lovely microtonal pentatonic scale consisting of the prime
+    numbered harmonics in the 5th octave of the harmonic series:
+
+    Harmonic number: 17   19   23   29   31   34
+    Nearest pitch:   C#   D#   F#   A#   B    C#
+    Cent adjustment: +5   -3   +28  +29  +45  +5
+    """
+    # the harmonic numbers
+    harms = [17, 19, 23, 29, 31, 34]
+    # convert into ascending intervals of a one octave pentatonic scale
+    penta = deltas(temper(divide(harms, 17)))
+
+    #penta = scale(5*4, 60, deltas(semis))
+
+    # It's good practice to add any metadata such as tempo, midi instrument
+    # assignments, micro tuning, etc. to track 0 in your midi file.
+    t0 = MidiSeq.metaseq(ins={i: Vibraphone for i in range(16)}, tuning=8)
+    # Track 1 will hold the composition.
+    t1 = MidiSeq()
+    # Create a scheduler and give it t1 as its output object.
+    q = Scheduler(t1)
+
+    def playpenta (q, num, dur, amp, keys):
+        pat = jumble(keys)
+        for _ in range(num):
+            k = next(pat)
+            m = MidiNote(time=q.now, dur=dur*2, key=k, amp=amp, tuning=8)
+            q.out.addevent(m)
+            yield odds(.2 , 0, dur)
+
+    top = playpenta(q, 90, .3, .4, scale(72+12, 10, *penta))
+    bot = playpenta(q, 45, .6, .5, scale(48, 10, *penta))
+    low = playpenta(q, 23, 1.2, .8, scale(24, 10, *penta))
+    q.compose([top, [.3*4, bot], [.3*12, low]])
+    # Write a midi file with our track data.
+    f = MidiFile("penta.mid", [t0, t1]).write()
+    # To automatially play demos use setmidiplayer() to assign a shell
+    # command that will play midi files on your computer. Example:
+    #   setmidiplayer("fluidsynth -iq -g1 /usr/local/sf/MuseScore_General.sf2")
+    print(f"Wrote '{f.pathname}'.")
+    return f
+ 
+f = playmicropentatonic()
+
+
 csoundac_score_node = CsoundAC.ScoreNode()
 csoundac_score = csoundac_score_node.getScore()
 musx_csoundac.to_csoundac_score(f, csoundac_score)
@@ -135,7 +228,7 @@ orc = '''
 sr = 48000
 ksmps = 128
 nchnls = 2
-0dbfs = 10
+0dbfs = 100
 
 ; Ensure the same random stream for each rendering.
 ; rand, randh, randi, rnd(x) and birnd(x) are not affected by seed.
@@ -164,57 +257,6 @@ connect "PianoOutPianoteq", "outright", "ReverbSC", "inright"
 connect "ReverbSC", "outleft", "MasterOutput", "inleft"
 connect "ReverbSC", "outright", "MasterOutput", "inright"
 
-gk_Harpsichord_midi_dynamic_range init 30
-gk_Harpsichord_level init -80
-gk_Harpsichord_pick init .075
-gk_Harpsichord_reflection init .5
-gk_Harpsichord_pluck init .75
-gi_Harpsichord_harptable ftgen 0, 0, 65537, 7, -1, 1024, 1, 1024, -1
-instr Harpsichord
-i_instrument = p1
-i_time = p2
-i_duration = p3
-i_midi_key = p4
-i_midi_dynamic_range = i(gk_Harpsichord_midi_dynamic_range)
-i_midi_velocity = p5 * i_midi_dynamic_range / 127 + (63.6 - i_midi_dynamic_range / 2)
-k_space_front_to_back = p6
-k_space_left_to_right = p7
-k_space_bottom_to_top = p8
-i_phase = p9
-i_frequency = cpsmidinn(i_midi_key)
-; Adjust the following value until "overall amps" at the end of performance is about -6 dB.
-i_level_correction = 110
-i_normalization = ampdb(-i_level_correction) / 2
-i_amplitude = ampdb(i_midi_velocity) * i_normalization
-k_gain = ampdb(gk_Harpsichord_level)
-iHz = cpsmidinn(i_midi_key)
-kHz = k(iHz)
-aenvelope transeg 1.0, 40.0, -25.0, 0.0
-apluck pluck i_amplitude, kHz, iHz, 0, 1
-aharp poscil aenvelope, kHz, gi_Harpsichord_harptable
-aharp2 balance apluck, aharp
-a_signal	= (apluck + aharp2)
-i_attack = .0005
-i_sustain = p3
-i_release = 0.01
-xtratim i_attack + i_release
-a_declicking linsegr 0, i_attack, 1, i_sustain, 1, i_release, 0
-a_signal = a_signal * a_declicking * k_gain *.08
-#ifdef USE_SPATIALIZATION
-a_spatial_reverb_send init 0
-a_bsignal[] init 16
-a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
-outletv "outbformat", a_bsignal
-outleta "out", a_spatial_reverb_send
-#else
-a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
-outleta "outleft", a_out_left
-outleta "outright", a_out_right
-#endif
-;printks "Harpsichord      %9.4f   %9.4f\\n", 0.5, a_out_left, a_out_right
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
-endin
-
 gk_PianoNotePianoteq_midi_dynamic_range init 127
 instr PianoNotePianoteq
 i_instrument = p1
@@ -238,56 +280,6 @@ prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrs
 i_pitch_correction = 44100 / sr
 ; prints "Pitch factor:   %9.4f\\n", i_pitch_correction
 vstnote gi_Pianoteq, 0, i_midi_key, i_midi_velocity, i_duration
-endin
-
-//////////////////////////////////////////////
-// Original by Steven Yi.
-// Adapted by Michael Gogins.
-//////////////////////////////////////////////
-gk_FMWaterBell_level init 15
-gi_FMWaterBell_attack init 0.002
-gi_FMWaterBell_release init 0.01
-gi_FMWaterBell_sustain init 20
-gi_FMWaterBell_sustain_level init .1
-gk_FMWaterBell_index init .5
-gk_FMWaterBell_crossfade init .5
-gk_FMWaterBell_vibrato_depth init 0.05
-gk_FMWaterBell_vibrato_rate init 6
-gk_FMWaterBell_midi_dynamic_range init 127
-gi_FMWaterBell_cosine ftgen 0, 0, 65537, 11, 1
-instr FMWaterBell
-i_instrument = p1
-i_time = p2
-i_duration = p3
-; One of the envelopes in this instrument should be releasing, and use this:
-i_sustain = 1000
-;xtratim gi_FMWaterBell_attack + gi_FMWaterBell_release
-xtratim gi_FMWaterBell_attack + gi_FMWaterBell_release
-i_midi_key = p4
-i_midi_dynamic_range = i(gk_FMWaterBell_midi_dynamic_range)
-i_midi_velocity = p5 * i_midi_dynamic_range / 127 + (63.6 - i_midi_dynamic_range / 2)
-k_space_front_to_back = p6
-k_space_left_to_right = p7
-k_space_bottom_to_top = p8
-i_phase = p9
-i_frequency = cpsmidinn(i_midi_key)
-; Adjust the following value until "overall amps" at the end of performance is about -6 dB.
-i_level_correction = 81
-i_normalization = ampdb(-i_level_correction) / 2
-i_amplitude = ampdb(i_midi_velocity) * i_normalization * 1.6
-k_gain = ampdb(gk_FMWaterBell_level)
-a_signal fmbell	1, i_frequency, gk_FMWaterBell_index, gk_FMWaterBell_crossfade, gk_FMWaterBell_vibrato_depth, gk_FMWaterBell_vibrato_rate, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine ;, gi_FMWaterBell_sustain
-;a_envelope linsegr 0, gi_FMWaterBell_attack, 1, i_sustain, gi_FMWaterBell_sustain_level, gi_FMWaterBell_release, 0
-a_envelope linsegr 0, gi_FMWaterBell_attack, 1, i_sustain, 1, gi_FMWaterBell_release, 0
-; ares transegr ia, idur, itype, ib [, idur2] [, itype] [, ic] ...
-; a_envelope transegr 0, gi_FMWaterBell_attack, 12, 1, i_sustain, 12, gi_FMWaterBell_sustain_level, gi_FMWaterBell_release, 12, 0
-a_signal = a_signal * i_amplitude * a_envelope * k_gain
-;_signal = a_signal * i_amplitude * k_gain
-a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
-outleta "outleft", a_out_left
-outleta "outright", a_out_right
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
-; printks "FMWaterBell    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d l%9.4f r%9.4f\\n", 1, p1, p2, p3, p4, p5, p7, active(p1), dbamp(rms(a_out_left)), dbamp(rms(a_out_right))
 endin
 
 gk_ZakianFlute_midi_dynamic_range init 80
@@ -524,6 +516,107 @@ outleta "outright", a_out_right
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
+//////////////////////////////////////////////
+// Original by Steven Yi.
+// Adapted by Michael Gogins.
+//////////////////////////////////////////////
+gk_FMWaterBell_level init 0
+gi_FMWaterBell_attack init 0.002
+gi_FMWaterBell_release init 0.01
+gi_FMWaterBell_sustain init 20
+gi_FMWaterBell_sustain_level init .1
+gk_FMWaterBell_index init .5
+gk_FMWaterBell_crossfade init .5
+gk_FMWaterBell_vibrato_depth init 0.05
+gk_FMWaterBell_vibrato_rate init 6
+gk_FMWaterBell_midi_dynamic_range init 127
+gi_FMWaterBell_cosine ftgen 0, 0, 65537, 11, 1
+instr FMWaterBell
+i_instrument = p1
+i_time = p2
+i_duration = p3
+; One of the envelopes in this instrument should be releasing, and use this:
+i_sustain = 1000
+;xtratim gi_FMWaterBell_attack + gi_FMWaterBell_release
+xtratim gi_FMWaterBell_attack + gi_FMWaterBell_release
+i_midi_key = p4
+i_midi_dynamic_range = i(gk_FMWaterBell_midi_dynamic_range)
+i_midi_velocity = p5 * i_midi_dynamic_range / 127 + (63.6 - i_midi_dynamic_range / 2)
+k_space_front_to_back = p6
+k_space_left_to_right = p7
+k_space_bottom_to_top = p8
+i_phase = p9
+i_frequency = cpsmidinn(i_midi_key)
+; Adjust the following value until "overall amps" at the end of performance is about -6 dB.
+i_level_correction = 81
+i_normalization = ampdb(-i_level_correction) / 2
+i_amplitude = ampdb(i_midi_velocity) * i_normalization * 1.6
+k_gain = ampdb(gk_FMWaterBell_level)
+a_signal fmbell	1, i_frequency, gk_FMWaterBell_index, gk_FMWaterBell_crossfade, gk_FMWaterBell_vibrato_depth, gk_FMWaterBell_vibrato_rate, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine ;, gi_FMWaterBell_sustain
+;a_envelope linsegr 0, gi_FMWaterBell_attack, 1, i_sustain, gi_FMWaterBell_sustain_level, gi_FMWaterBell_release, 0
+a_envelope linsegr 0, gi_FMWaterBell_attack, 1, i_sustain, 1, gi_FMWaterBell_release, 0
+; ares transegr ia, idur, itype, ib [, idur2] [, itype] [, ic] ...
+; a_envelope transegr 0, gi_FMWaterBell_attack, 12, 1, i_sustain, 12, gi_FMWaterBell_sustain_level, gi_FMWaterBell_release, 12, 0
+a_signal = a_signal * i_amplitude * a_envelope * k_gain
+;_signal = a_signal * i_amplitude * k_gain
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+; printks "FMWaterBell    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d l%9.4f r%9.4f\\n", 1, p1, p2, p3, p4, p5, p7, active(p1), dbamp(rms(a_out_left)), dbamp(rms(a_out_right))
+endin
+
+gk_Harpsichord_midi_dynamic_range init 127
+gk_Harpsichord_level init 0
+gk_Harpsichord_pick init .075
+gk_Harpsichord_reflection init .5
+gk_Harpsichord_pluck init .75
+gi_Harpsichord_harptable ftgen 0, 0, 65537, 7, -1, 1024, 1, 1024, -1
+instr Harpsichord
+i_instrument = p1
+i_time = p2
+i_duration = p3
+i_midi_key = p4
+i_midi_dynamic_range = i(gk_Harpsichord_midi_dynamic_range)
+i_midi_velocity = p5 * i_midi_dynamic_range / 127 + (63.6 - i_midi_dynamic_range / 2)
+k_space_front_to_back = p6
+k_space_left_to_right = p7
+k_space_bottom_to_top = p8
+i_phase = p9
+i_frequency = cpsmidinn(i_midi_key)
+; Adjust the following value until "overall amps" at the end of performance is about -6 dB.
+i_level_correction = 110
+i_normalization = ampdb(-i_level_correction) / 2
+i_amplitude = ampdb(i_midi_velocity) * i_normalization
+k_gain = ampdb(gk_Harpsichord_level)
+iHz = cpsmidinn(i_midi_key)
+kHz = k(iHz)
+aenvelope transeg 1.0, 40.0, -25.0, 0.0
+apluck pluck i_amplitude, kHz, iHz, 0, 1
+aharp poscil aenvelope, kHz, gi_Harpsichord_harptable
+aharp2 balance apluck, aharp
+a_signal	= (apluck + aharp2)
+i_attack = .0005
+i_sustain = p3
+i_release = 0.01
+xtratim i_attack + i_release
+a_declicking linsegr 0, i_attack, 1, i_sustain, 1, i_release, 0
+a_signal = a_signal * a_declicking * k_gain
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+;printks "Harpsichord      %9.4f   %9.4f\\n", 0.5, a_out_left, a_out_right
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+endin
+
 gk_ChebyshevMelody_level init 0
 gi_ChebyshevMelody_attack init 0.003
 gi_ChebyshevMelody_release init 0.01
@@ -666,7 +759,7 @@ outleta "outright", a_out_right
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
-gk_PianoOutPianoteq_level init -8
+gk_PianoOutPianoteq_level init 0
 gi_PianoOutPianoteq_print init 1
 gk_PianoOutPianoteq_front_to_back init 0
 gk_PianoOutPianoteq_left_to_right init 1/7
@@ -759,21 +852,21 @@ endin
 ; enables instruments to come forward and recede according to their 
 ; response to MIDI velocity.
 
-gk_PianoOutPianoteq_level init  -10
-gk_ZakianFlute_level init       30
+gk_PianoOutPianoteq_level init  -8 
+gk_ZakianFlute_level init       25
 gk_FMWaterBell_level init       24;16
 gk_ChebyshevMelody_level init   28;19
 gk_Harpsichord_level init       27
 gk_Rhodes_level init            31
 
-gk_Reverb_wet init 0.5
-gk_Reverb_feedback init 0.75
+gk_Reverb_wet init 0.25
+gk_Reverb_feedback init 0.85
 gi_Reverb_delay_modulation init 0.0875
 gk_Reverb_frequency_cutoff init 14000
 '''
 rescale = CsoundAC.Rescale()
 rescale.addChild(csoundac_score_node)
-rescale.setRescale(CsoundAC.Event.INSTRUMENT, bool(1), bool(1), 1, 4.)
+rescale.setRescale(CsoundAC.Event.INSTRUMENT, bool(1), bool(1), 1, 3.99)
 rescale.setRescale(CsoundAC.Event.VELOCITY, bool(1), bool(1), 50, 20)
 model.addChild(rescale)
 model.setCsoundOrchestra(orc)

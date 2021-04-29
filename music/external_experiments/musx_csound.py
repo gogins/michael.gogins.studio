@@ -54,7 +54,7 @@ def assign_durations(midifile):
 Translates the MIDI event into a Csound "i" statement.
 '''
 def to_i_statement(midi_event):
-    i_statement = "i {} {} {} {} {}".format(1 + midi_event.channel(), midi_event.time, midi_event.duration, midi_event.keynum(), midi_event.velocity())
+    i_statement = "i {} {} {} {} {}".format(1 + midi_event.channel(), midi_event.time, midi_event.duration, midi_event._key, midi_event.velocity())
     return i_statement
     
 '''

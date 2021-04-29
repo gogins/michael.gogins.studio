@@ -45,85 +45,230 @@ print
 
 import musx_csoundac
 
-###############################################################################
+################################################################################
 """
-A musical hommage to the Sierpinski triangle using a recursive process to
-generate a self-similar melodies based on a set of tones representing the
-"sides" of a triangle.  The duration of each note is the process duration
-divided by the number of intervals in the melody. Thus, the entire melody
-in the next level will occupy the same mount of time as one tone in the
-current level. When the process starts running it outputs each note in the
-melody transposed to the current tone. If levels is greater then 1 then the
-process sprouts recursive copies of itself for each note in the melody
-transposed up trans intervals. The value for levels is decremented by 1,
-which will cause the recursive process to stop when the value reaches 0.
+This tutorial presents an implementation of an simple automatic jazz
+program. The code is derived from a program originally written by
+Erik Flister at CCRMA, Stanford University, as a project for his
+undergraduate computer music class. His original program has been
+simplified and adapted here to work with General MIDI
+instruments. Flister's improviser generates music for a jazz trio
+(piano, acoustic bass and percussion).
 
 To run this script cd to the parent directory of musx_demos/ and do:
 ```bash
-python3 -m musx_demos.sierpinski
+python3 -m musx_demos.jazz
 ```
 """
 
 
-from musx.tools import playfile, setmidiplayer
-from musx.scheduler import Scheduler
-from musx.scales import keynum
 from musx.midi import MidiNote, MidiSeq, MidiFile
+from musx.midi.gm import AcousticGrandPiano, AcousticBass
+from musx.generators import cycle, choose, jumble
+from musx.rhythm import intempo
+from musx.scheduler import Scheduler
+from musx.ran import odds, pick, between
+from musx.tools import playfile, setmidiplayer
+from musx.scales import keynum
+import types
 
 
-def sierpinski(q, tone, shape, trans, levels, dur, amp):
+jazz_scale = [0, 2, 3, 5, 7, 9, 10, 12, 14]
+"""The scale used by the improvisor."""
+
+
+jazz_changes = keynum('bf3 ef4 bf3 bf ef4 ef bf3 bf f4 ef bf3 bf')
+"""The chord changes for the piano and bass parts."""
+
+
+jazz_tempo = 120
+"""The tempo of the compostion."""
+
+
+def jazz_high_hat(q, tmpo, ampl):
     """
-    Generates a melodic shape based on successive transpositions (levels) of
-    itself. 
-    
-    Parameters
-    ----------
-    tone : keynum
-        The melodic tone on which to base the melody for the current level.
-    shape : list
-        A list of intervals defining the melodic shape. 
-    levels : int
-        The number of levels the melody should be reproduced on. 
-    dur : int | float
-        The duration of the process.
-    amp : float
-        The amplitude of the process.
+    Plays the High Hat on the second and fourth quarter of every measure and
+    rests on the first and third beats. Each sound lasts for the duration one
+    triplet eighth note i.e. 1/3 of a beat.
     """
-    num = len(shape)
-    for i in shape:
-        k = tone + i
-        # play current tone in melody
-        m = MidiNote(time=q.now, dur=dur, key=min(k,127), amp=amp, chan=levels)
-        q.out.addevent(m)
-        if (levels > 1):
-            # sprout melody on tone at next level
-            q.compose(sierpinski(q, (k + trans), shape,
-                        trans, levels - 1, dur / num,  amp))
-        yield dur
-    
+    rhy = intempo(1, tmpo)
+    dur = intempo(1/3, tmpo)
+    amp = .5
+    pat = cycle(['r', 42, 'r', 42]) # 'r' is rest
+    for _ in range(4):
+        x = next(pat)
+        if x != 'r':
+            m = MidiNote(time=q.now, dur=dur, key=x, amp=amp * ampl, chan=9)
+            q.out.addevent(m)
+        yield rhy
 
+
+def jazz_drums(q, tmpo, ampl):
+    """
+    Randomly selects between playing the snare, the bass drum or resting one
+    quarter of the time. One tenth of the time it produces a very loud tone.
+    """
+    elec_snare = 40
+    bass_drum = 35
+    knums = choose(['r', elec_snare, bass_drum], [.25, 1, 1])
+    rhys = cycle([2/3, 1/3])
+    amps = choose([.7, .95], [1, .1])
+    for _ in range(8):
+        k = next(knums)
+        a = next(amps)
+        r = intempo(next(rhys), tmpo)
+        if k != 'r':
+            m = MidiNote(time=q.now, dur=r, key=k, amp=a * ampl, chan=9)
+            q.out.addevent(m)
+        yield r
+
+
+def jazz_cymbals(q, tmpo, ampl):
+    """
+    The cymbals process performs a constant stream of triplet eighths in
+    which the ride1 cymbal is played on the beginning of every quarter
+    note. The second and third triplets of each beat are either rests or
+    a random choice between ride1, ride2 or a rest.  This is the beat
+    map for a measure of the process, where '1' means the ride cymbal 1 is
+    played, '-' means a rest, and 'x' means a random choice between ride1,
+    ride2 or a rest:
+
+    ```text
+    Triplet 8th: 1  2  3    4  5  6    7  8  9   10 11 12
+    Cymbals:     1  -  x    1  -  1    1  x  x    1  x  1 
+    ```
+    """
+    ride1 = 51
+    ride2 = 59
+    rhy = intempo(1/3, tmpo)
+    amps = cycle([.6, .5, .9, .7, .5, 1, .6, .5, .9, .7, .5, 1])
+
+    def subpat(wt):
+        r1 = choose([ride1, 'r'], [1, wt])
+        r2 = choose([ride2, 'r'], [1, wt])
+        return choose([r1, r2], [1.5, 1])
+
+    # the events that happen on each triplet of the measure
+    meas = {0: ride1,  1: 'r',        2: subpat(5),
+            3: ride1,  4: 'r',        5: ride1,
+            6: ride1,  7: subpat(7),  8: subpat(7),
+            9: ride1, 10: subpat(3), 11: ride1}
+    for b in meas:
+        k = meas[b]
+        if k != 'r':
+            if type(k) is not int: # k is a subpattern
+                k = next(next(k))
+            if k != 'r':
+                a = next(amps)
+                m = MidiNote(time=q.now, dur=rhy, key=k, amp=a*ampl, chan=9)
+                q.out.addevent(m)
+        yield rhy
+
+
+def jazz_piano(q, on, tmpo, ampl):
+    """
+    The jazz piano improvises jazz chords based on a pattern of root
+    changes and a scale pattern that is transposed to each root. The
+    piano randomly choose between playing triplet eighths or straight
+    eights for a given measure.
+    """
+    reps = odds(.65, 8, 12)
+    scal = jumble(jazz_scale)
+    rhys = cycle([2/3, 1/3] if reps == 8 else [1/3])
+    for _ in range(reps):
+        r = intempo(next(rhys), tmpo)
+        l = [] if odds(2/5) else [next(scal) for _ in range(between(1,9))]
+        for k in l:
+            a = pick(.4, .5, .6, .7, .8)
+            m = MidiNote(time=q.now, dur=r, key=on+k, amp=a, chan=0)
+            q.out.addevent(m)
+        yield r
+
+
+def jazz_bass(q, on, tmpo, ampl):
+    """
+    The bass part plays a melodic line built out of tones from the jazz-scale's
+    tonic seventh chord alternating with color tones outside the tonic chord.
+    The bass plays a series of 12 triplets per measure, on each triplet only one of
+    the two sets is possible. On all but the first triplet a rest is also possible.
+    """
+    # 5 possible patterns for triplets 1-4
+    a = choose(['trrc', 'trrr', 'trtc', 'tctc', 'tctr'], [1.0, .25, .22, .065, .014])
+    # 5 possible patterns for 5-7
+    b = choose(['rrt', 'rrr', 'rct', 'tct', 'tcr'], [1.0, .25, .22, .038, .007])
+    # 5 possible patterns for 8-10
+    c = choose(['rrc', 'rtc', 'rrr', 'ctc', 'ctr'], [1.0, .415, .25, .11, .018])
+    # two possible values for 11
+    d = choose(['r', 't'], [1, .25])
+    # two possible values for 12
+    e = choose(['r', 'c'], [1, .25])
+    # the measure map
+    meas = next(a) + next(b) + next(c) + next(d) + next(e)
+
+    rhy = intempo(1/3, tmpo)
+    tonics = choose([jazz_scale[i] for i in [0, 2, 4, 6, 7]])
+    colors = choose([jazz_scale[i] for i in [1, 3, 5, 6, 8]])
+    amps = cycle([.5, .4, 1.0, .9, .4, .9, .5, .4, 1.0, .9, .5, .9])
+    durs = cycle([2/3, 1/3, 1/3])
+
+    for x in meas:
+        k = -1
+        if x == 't':
+            k = next(tonics)
+        elif x == 'c':
+            k = next(colors)
+        if k > -1:
+            a = next(amps)
+            d = next(durs)
+            m = MidiNote(time=q.now, dur=d, key=on+k, amp=ampl*a, chan=1)
+            q.out.addevent(m)
+        yield rhy
+
+
+def jazz_combo(q, measures, tempo):
+    """
+    The conductor process adds combo parts for each meaure to the schedule 
+    generate sound. By adding parts at each measure the conductor could make
+    changes to the overall texture, amplitude etc, as the pieces progresses.
+    """ 
+    roots = cycle(jazz_changes)
+    ampl = .9
+    for meas in range(measures):
+        root = next(roots)
+        if  0 == meas % 12:
+           ampl = between(.5, 1)
+        q.compose(jazz_piano(q, root, tempo, ampl))
+        q.compose(jazz_cymbals(q, tempo, ampl))
+        q.compose(jazz_high_hat(q, tempo, ampl))
+        q.compose(jazz_drums(q, tempo, ampl))
+        q.compose(jazz_bass(q, root-12, tempo, ampl))
+        yield intempo(4,tempo)
+    
 # It's good practice to add any metadata such as tempo, midi instrument
 # assignments, micro tuning, etc. to track 0 in your midi file.
-t0 = MidiSeq.metaseq()
+t0 = MidiSeq.metaseq(ins={0: AcousticGrandPiano, 1: AcousticBass})
 # Track 1 will hold the composition.
 t1 = MidiSeq()
 # Create a scheduler and give it t1 as its output object.
 q = Scheduler(t1)
-# Start our composer in the scheduler, this creates the composition.
-# Specify levels and melody length with care! The number of events 
-# sierpinski generates is exponentially related to the length of the
-# melody and the number of levels. For example the first compose()
-# generates 120 events, the second 726, and the third 2728!
-# q.compose(sierpinski(q, keynum('a0'), [0, 7, 5], 12, 4, 3, .5))
-# q.compose(sierpinski(q, keynum('a0'), [0, 7, 5], 8, 5, 7, .5))
-q.compose(sierpinski(q, keynum('a0'), [0, -1, 2, 13], 12, 5, 24, .5))
 
+# c=[]
+# for t in range(0, 15, 2): # t -> 0 2 4 6 8 10 12 14
+#     c += [[t, jazz_high_hat(q, 120, .9)], 
+#           [t, jazz_drums(q, 120, .9)],
+#           [t, jazz_cymbals(q, 120, .9)],
+#           [t, jazz_piano(q, 58, 120, .9)],
+#           [t, jazz_bass(q, 46, 120, .9)]
+#           ]
+
+q.compose(jazz_combo(q, 48, 120))
 # Write a midi file with our track data.
-f = MidiFile("sierpinski.mid", [t0, t1]).write()
+f = MidiFile("jazz.mid", [t0, t1]).write()
 # To automatially play demos use setmidiplayer() to assign a shell
 # command that will play midi files on your computer. Example:
 #   setmidiplayer("fluidsynth -iq -g1 /usr/local/sf/MuseScore_General.sf2")
 print(f"Wrote '{f.pathname}'.")
+
 csoundac_score_node = CsoundAC.ScoreNode()
 csoundac_score = csoundac_score_node.getScore()
 musx_csoundac.to_csoundac_score(f, csoundac_score)
@@ -135,7 +280,7 @@ orc = '''
 sr = 48000
 ksmps = 128
 nchnls = 2
-0dbfs = 10
+0dbfs = 100
 
 ; Ensure the same random stream for each rendering.
 ; rand, randh, randi, rnd(x) and birnd(x) are not affected by seed.
@@ -164,57 +309,6 @@ connect "PianoOutPianoteq", "outright", "ReverbSC", "inright"
 connect "ReverbSC", "outleft", "MasterOutput", "inleft"
 connect "ReverbSC", "outright", "MasterOutput", "inright"
 
-gk_Harpsichord_midi_dynamic_range init 30
-gk_Harpsichord_level init -80
-gk_Harpsichord_pick init .075
-gk_Harpsichord_reflection init .5
-gk_Harpsichord_pluck init .75
-gi_Harpsichord_harptable ftgen 0, 0, 65537, 7, -1, 1024, 1, 1024, -1
-instr Harpsichord
-i_instrument = p1
-i_time = p2
-i_duration = p3
-i_midi_key = p4
-i_midi_dynamic_range = i(gk_Harpsichord_midi_dynamic_range)
-i_midi_velocity = p5 * i_midi_dynamic_range / 127 + (63.6 - i_midi_dynamic_range / 2)
-k_space_front_to_back = p6
-k_space_left_to_right = p7
-k_space_bottom_to_top = p8
-i_phase = p9
-i_frequency = cpsmidinn(i_midi_key)
-; Adjust the following value until "overall amps" at the end of performance is about -6 dB.
-i_level_correction = 110
-i_normalization = ampdb(-i_level_correction) / 2
-i_amplitude = ampdb(i_midi_velocity) * i_normalization
-k_gain = ampdb(gk_Harpsichord_level)
-iHz = cpsmidinn(i_midi_key)
-kHz = k(iHz)
-aenvelope transeg 1.0, 40.0, -25.0, 0.0
-apluck pluck i_amplitude, kHz, iHz, 0, 1
-aharp poscil aenvelope, kHz, gi_Harpsichord_harptable
-aharp2 balance apluck, aharp
-a_signal	= (apluck + aharp2)
-i_attack = .0005
-i_sustain = p3
-i_release = 0.01
-xtratim i_attack + i_release
-a_declicking linsegr 0, i_attack, 1, i_sustain, 1, i_release, 0
-a_signal = a_signal * a_declicking * k_gain *.08
-#ifdef USE_SPATIALIZATION
-a_spatial_reverb_send init 0
-a_bsignal[] init 16
-a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
-outletv "outbformat", a_bsignal
-outleta "out", a_spatial_reverb_send
-#else
-a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
-outleta "outleft", a_out_left
-outleta "outright", a_out_right
-#endif
-;printks "Harpsichord      %9.4f   %9.4f\\n", 0.5, a_out_left, a_out_right
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
-endin
-
 gk_PianoNotePianoteq_midi_dynamic_range init 127
 instr PianoNotePianoteq
 i_instrument = p1
@@ -238,56 +332,6 @@ prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrs
 i_pitch_correction = 44100 / sr
 ; prints "Pitch factor:   %9.4f\\n", i_pitch_correction
 vstnote gi_Pianoteq, 0, i_midi_key, i_midi_velocity, i_duration
-endin
-
-//////////////////////////////////////////////
-// Original by Steven Yi.
-// Adapted by Michael Gogins.
-//////////////////////////////////////////////
-gk_FMWaterBell_level init 15
-gi_FMWaterBell_attack init 0.002
-gi_FMWaterBell_release init 0.01
-gi_FMWaterBell_sustain init 20
-gi_FMWaterBell_sustain_level init .1
-gk_FMWaterBell_index init .5
-gk_FMWaterBell_crossfade init .5
-gk_FMWaterBell_vibrato_depth init 0.05
-gk_FMWaterBell_vibrato_rate init 6
-gk_FMWaterBell_midi_dynamic_range init 127
-gi_FMWaterBell_cosine ftgen 0, 0, 65537, 11, 1
-instr FMWaterBell
-i_instrument = p1
-i_time = p2
-i_duration = p3
-; One of the envelopes in this instrument should be releasing, and use this:
-i_sustain = 1000
-;xtratim gi_FMWaterBell_attack + gi_FMWaterBell_release
-xtratim gi_FMWaterBell_attack + gi_FMWaterBell_release
-i_midi_key = p4
-i_midi_dynamic_range = i(gk_FMWaterBell_midi_dynamic_range)
-i_midi_velocity = p5 * i_midi_dynamic_range / 127 + (63.6 - i_midi_dynamic_range / 2)
-k_space_front_to_back = p6
-k_space_left_to_right = p7
-k_space_bottom_to_top = p8
-i_phase = p9
-i_frequency = cpsmidinn(i_midi_key)
-; Adjust the following value until "overall amps" at the end of performance is about -6 dB.
-i_level_correction = 81
-i_normalization = ampdb(-i_level_correction) / 2
-i_amplitude = ampdb(i_midi_velocity) * i_normalization * 1.6
-k_gain = ampdb(gk_FMWaterBell_level)
-a_signal fmbell	1, i_frequency, gk_FMWaterBell_index, gk_FMWaterBell_crossfade, gk_FMWaterBell_vibrato_depth, gk_FMWaterBell_vibrato_rate, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine ;, gi_FMWaterBell_sustain
-;a_envelope linsegr 0, gi_FMWaterBell_attack, 1, i_sustain, gi_FMWaterBell_sustain_level, gi_FMWaterBell_release, 0
-a_envelope linsegr 0, gi_FMWaterBell_attack, 1, i_sustain, 1, gi_FMWaterBell_release, 0
-; ares transegr ia, idur, itype, ib [, idur2] [, itype] [, ic] ...
-; a_envelope transegr 0, gi_FMWaterBell_attack, 12, 1, i_sustain, 12, gi_FMWaterBell_sustain_level, gi_FMWaterBell_release, 12, 0
-a_signal = a_signal * i_amplitude * a_envelope * k_gain
-;_signal = a_signal * i_amplitude * k_gain
-a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
-outleta "outleft", a_out_left
-outleta "outright", a_out_right
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
-; printks "FMWaterBell    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d l%9.4f r%9.4f\\n", 1, p1, p2, p3, p4, p5, p7, active(p1), dbamp(rms(a_out_left)), dbamp(rms(a_out_right))
 endin
 
 gk_ZakianFlute_midi_dynamic_range init 80
@@ -524,6 +568,107 @@ outleta "outright", a_out_right
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
+//////////////////////////////////////////////
+// Original by Steven Yi.
+// Adapted by Michael Gogins.
+//////////////////////////////////////////////
+gk_FMWaterBell_level init 0
+gi_FMWaterBell_attack init 0.002
+gi_FMWaterBell_release init 0.01
+gi_FMWaterBell_sustain init 20
+gi_FMWaterBell_sustain_level init .1
+gk_FMWaterBell_index init .5
+gk_FMWaterBell_crossfade init .5
+gk_FMWaterBell_vibrato_depth init 0.05
+gk_FMWaterBell_vibrato_rate init 6
+gk_FMWaterBell_midi_dynamic_range init 127
+gi_FMWaterBell_cosine ftgen 0, 0, 65537, 11, 1
+instr FMWaterBell
+i_instrument = p1
+i_time = p2
+i_duration = p3
+; One of the envelopes in this instrument should be releasing, and use this:
+i_sustain = 1000
+;xtratim gi_FMWaterBell_attack + gi_FMWaterBell_release
+xtratim gi_FMWaterBell_attack + gi_FMWaterBell_release
+i_midi_key = p4
+i_midi_dynamic_range = i(gk_FMWaterBell_midi_dynamic_range)
+i_midi_velocity = p5 * i_midi_dynamic_range / 127 + (63.6 - i_midi_dynamic_range / 2)
+k_space_front_to_back = p6
+k_space_left_to_right = p7
+k_space_bottom_to_top = p8
+i_phase = p9
+i_frequency = cpsmidinn(i_midi_key)
+; Adjust the following value until "overall amps" at the end of performance is about -6 dB.
+i_level_correction = 81
+i_normalization = ampdb(-i_level_correction) / 2
+i_amplitude = ampdb(i_midi_velocity) * i_normalization * 1.6
+k_gain = ampdb(gk_FMWaterBell_level)
+a_signal fmbell	1, i_frequency, gk_FMWaterBell_index, gk_FMWaterBell_crossfade, gk_FMWaterBell_vibrato_depth, gk_FMWaterBell_vibrato_rate, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine ;, gi_FMWaterBell_sustain
+;a_envelope linsegr 0, gi_FMWaterBell_attack, 1, i_sustain, gi_FMWaterBell_sustain_level, gi_FMWaterBell_release, 0
+a_envelope linsegr 0, gi_FMWaterBell_attack, 1, i_sustain, 1, gi_FMWaterBell_release, 0
+; ares transegr ia, idur, itype, ib [, idur2] [, itype] [, ic] ...
+; a_envelope transegr 0, gi_FMWaterBell_attack, 12, 1, i_sustain, 12, gi_FMWaterBell_sustain_level, gi_FMWaterBell_release, 12, 0
+a_signal = a_signal * i_amplitude * a_envelope * k_gain
+;_signal = a_signal * i_amplitude * k_gain
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+; printks "FMWaterBell    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d l%9.4f r%9.4f\\n", 1, p1, p2, p3, p4, p5, p7, active(p1), dbamp(rms(a_out_left)), dbamp(rms(a_out_right))
+endin
+
+gk_Harpsichord_midi_dynamic_range init 127
+gk_Harpsichord_level init 0
+gk_Harpsichord_pick init .075
+gk_Harpsichord_reflection init .5
+gk_Harpsichord_pluck init .75
+gi_Harpsichord_harptable ftgen 0, 0, 65537, 7, -1, 1024, 1, 1024, -1
+instr Harpsichord
+i_instrument = p1
+i_time = p2
+i_duration = p3
+i_midi_key = p4
+i_midi_dynamic_range = i(gk_Harpsichord_midi_dynamic_range)
+i_midi_velocity = p5 * i_midi_dynamic_range / 127 + (63.6 - i_midi_dynamic_range / 2)
+k_space_front_to_back = p6
+k_space_left_to_right = p7
+k_space_bottom_to_top = p8
+i_phase = p9
+i_frequency = cpsmidinn(i_midi_key)
+; Adjust the following value until "overall amps" at the end of performance is about -6 dB.
+i_level_correction = 110
+i_normalization = ampdb(-i_level_correction) / 2
+i_amplitude = ampdb(i_midi_velocity) * i_normalization
+k_gain = ampdb(gk_Harpsichord_level)
+iHz = cpsmidinn(i_midi_key)
+kHz = k(iHz)
+aenvelope transeg 1.0, 40.0, -25.0, 0.0
+apluck pluck i_amplitude, kHz, iHz, 0, 1
+aharp poscil aenvelope, kHz, gi_Harpsichord_harptable
+aharp2 balance apluck, aharp
+a_signal	= (apluck + aharp2)
+i_attack = .0005
+i_sustain = p3
+i_release = 0.01
+xtratim i_attack + i_release
+a_declicking linsegr 0, i_attack, 1, i_sustain, 1, i_release, 0
+a_signal = a_signal * a_declicking * k_gain
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+;printks "Harpsichord      %9.4f   %9.4f\\n", 0.5, a_out_left, a_out_right
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+endin
+
 gk_ChebyshevMelody_level init 0
 gi_ChebyshevMelody_attack init 0.003
 gi_ChebyshevMelody_release init 0.01
@@ -666,7 +811,7 @@ outleta "outright", a_out_right
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
-gk_PianoOutPianoteq_level init -8
+gk_PianoOutPianoteq_level init 0
 gi_PianoOutPianoteq_print init 1
 gk_PianoOutPianoteq_front_to_back init 0
 gk_PianoOutPianoteq_left_to_right init 1/7
@@ -759,21 +904,21 @@ endin
 ; enables instruments to come forward and recede according to their 
 ; response to MIDI velocity.
 
-gk_PianoOutPianoteq_level init  -10
-gk_ZakianFlute_level init       30
+gk_PianoOutPianoteq_level init  -8 
+gk_ZakianFlute_level init       25
 gk_FMWaterBell_level init       24;16
 gk_ChebyshevMelody_level init   28;19
 gk_Harpsichord_level init       27
 gk_Rhodes_level init            31
 
-gk_Reverb_wet init 0.5
-gk_Reverb_feedback init 0.75
+gk_Reverb_wet init 0.25
+gk_Reverb_feedback init 0.85
 gi_Reverb_delay_modulation init 0.0875
 gk_Reverb_frequency_cutoff init 14000
 '''
 rescale = CsoundAC.Rescale()
 rescale.addChild(csoundac_score_node)
-rescale.setRescale(CsoundAC.Event.INSTRUMENT, bool(1), bool(1), 1, 4.)
+rescale.setRescale(CsoundAC.Event.INSTRUMENT, bool(1), bool(1), 1, 3.99)
 rescale.setRescale(CsoundAC.Event.VELOCITY, bool(1), bool(1), 50, 20)
 model.addChild(rescale)
 model.setCsoundOrchestra(orc)
