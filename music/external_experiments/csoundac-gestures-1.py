@@ -30,7 +30,7 @@ model.setYear("2020")
 model.generateAllNames()
 soundfile_name = model.getOutputSoundfileFilepath()
 print('Soundfile name:         %s' % soundfile_name)
-dac_name = 'dac:plughw:1,0'
+dac_name = 'dac'
 print('Audio output name:      %s' % dac_name)
 print
 
@@ -73,6 +73,9 @@ scale = CsoundAC.Scale("F# major")
 chord = scale.chord(1, 5)
 
 def motive1(q, octave, limit, chan):
+    global chord
+    global scale
+    global voiceleading_node
     """
     Motive1 generates three notes in random order but always with a
     whole step and minor seventh sounding. The motive can be randomly
@@ -89,6 +92,18 @@ def motive1(q, octave, limit, chan):
     chan : int
         The midi channel to assign to the notes.
     """
+    if chan == 0:
+        if int(q.now) % 7 == 0:
+            print("modulating", q.now)
+            scales = scale.modulations_for_voices(chord, 5)
+            if len(scales) > 0:
+                scale = random.choice(scales)
+        if int(q.now) % 2 == 0:
+            print("progressing", q.now)
+            progression = random.choices([-2, -4, -6, -8, -10, -12, 3, 6], [5, 3, 7, 1, 1, 1, 9, 3], k=1)
+            steps = progression[0]
+            chord = scale.transpose_degrees(chord, steps)
+            voiceleading_node.chord(chord, q.now)
     # the basic pitches to transpose and jumble e.g. [F#4 E4 D5].
     pitches = jumble([6, 4, 14, 3])
     # one of the three pitches will be louder than the others.
@@ -155,18 +170,6 @@ def gesture4(q, numtimes, lowoctave, highoctave, limit, chan, hiwait, lowwait):
     CsoundAC.
     """
     for i in range(numtimes):
-        if chan == 0:
-            if int(q.now) % 7 == 0:
-                print("modulating", q.now)
-                scales = scale.modulations_for_voices(chord, 5)
-                if len(scales) > 0:
-                    scale = random.choice(scales)
-            if int(q.now) % 2 == 0:
-                print("progressing", q.now)
-                progression = random.choices([-2, -4, -6, -8, -10, -12, 3, 6], [5, 3, 2, 1, 1, 1, 9, 3], k=1)
-                steps = progression[0]
-                chord = scale.transpose_degrees(chord, steps)
-                voiceleading_node.chord(chord, q.now)
         if odds(qtime(i, numtimes, 1.0, 0.0, .01)):
             q.compose(motive1(q, between(lowoctave, highoctave), limit, chan))
         else:
