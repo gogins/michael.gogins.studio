@@ -30,7 +30,7 @@ model.setYear("2020")
 model.generateAllNames()
 soundfile_name = model.getOutputSoundfileFilepath()
 print('Soundfile name:         %s' % soundfile_name)
-dac_name = 'dac'
+dac_name = 'dac:plughw:1,0'
 print('Audio output name:      %s' % dac_name)
 print
 
@@ -70,7 +70,7 @@ from musx.envelopes import interp
 
 voiceleading_node = CsoundAC.VoiceleadingNode()
 scale = CsoundAC.Scale("F# major")
-chord = scale.chord(1, 5)
+chord = scale.chord(1, 4)
 
 def motive1(q, octave, limit, chan):
     global chord
@@ -94,16 +94,19 @@ def motive1(q, octave, limit, chan):
     """
     if chan == 0:
         if int(q.now) % 7 == 0:
-            print("modulating", q.now)
-            scales = scale.modulations_for_voices(chord, 5)
+            scales = scale.modulations_for_voices(chord, 4)
             if len(scales) > 0:
                 scale = random.choice(scales)
+                print("modulated at:  {:9.4f} to {}".format(q.now, scale.name()))
         if int(q.now) % 2 == 0:
-            print("progressing", q.now)
-            progression = random.choices([-2, -4, -6, -8, -10, -12, 3, 6], [5, 3, 7, 1, 1, 1, 9, 3], k=1)
+            progression = random.choices([-2, -4, -6, -8, -10, -12, 1, 6], [5, 3, 7, 1, 1, 1, 9, 3], k=1)
             steps = progression[0]
             chord = scale.transpose_degrees(chord, steps)
-            voiceleading_node.chord(chord, q.now)
+            if steps < -2:
+                voiceleading_node.chord(chord, q.now)
+            else:
+                voiceleading_node.chordVoiceleading(chord, q.now, True)
+            print("progressed at: {:9.4f} to {}".format(q.now, chord.eOP().name()))
     # the basic pitches to transpose and jumble e.g. [F#4 E4 D5].
     pitches = jumble([6, 4, 14, 3])
     # one of the three pitches will be louder than the others.
