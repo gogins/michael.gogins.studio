@@ -1,22 +1,24 @@
 '''
 Author: Michael Gogins
 '''
-import os
-import sys
-import traceback
-import CsoundAC
 from athenaCL.libATH import command
 from athenaCL.libATH import athenaObj
 from athenaCL.libATH import eventList
+from athenaCL.libATH.libPmtr import parameter
+
+import CsoundAC
+
 import os
+import sys
 import random
-# Using the same random seed for each performance makes the performance 
-# deterministic, not random.
-random.seed(221)
 import signal
 import string
 import sys
 import traceback
+
+# Using the same random seed for each performance makes the performance 
+# deterministic, not random.
+random.seed(221)
 
 print('Set "rendering" to:     "soundfile" or "audio".')
 print
@@ -35,7 +37,7 @@ model.setYear("2020")
 model.generateAllNames()
 soundfile_name = model.getOutputSoundfileFilepath()
 print('Soundfile name:         %s' % soundfile_name)
-dac_name = 'dac'
+dac_name = 'dac:plughw:1,0'
 print('Audio output name:      %s' % dac_name)
 print
 
@@ -54,13 +56,13 @@ import athenacl_csoundac
 
 script = '''
 emo cn
-pin a d3,e3,g3,a3,b3,d4,e4,g4,a4,b4,d5,e5,g5,a5,b5
+pin a d3,e3,g3,a3,b3,d4,e4,e3,g4,a4,b4,d5,e5,g5,a5,b5
 tmo ha
 tin a 6 27
 tie r pt,(c,16),(ig,(bg,rc,(1,2,3,5,7)),(bg,rc,(3,6,9,12))),(c,1)
 tie a om,(ls,e,9,(ru,.2,1),(ru,.2,1)),(wp,e,23,0,0,1)
 tie d0 c,0
-tie d1 n,100,2,0,14
+tie d1 n,200,2,0,14
 tie d2 c,1
 tie d3 c,1
 tie d3 ru,1,4
@@ -72,6 +74,8 @@ for line in script.split("\n"):
     if len(line) > 1:
         print("command:", line)
         print(interpreter.cmd(line))
+        
+
         
 csoundac_score_node = CsoundAC.ScoreNode()
 csoundac_score = csoundac_score_node.getScore()
@@ -93,7 +97,7 @@ orc = '''
 sr = 48000
 ksmps = 128
 nchnls = 2
-0dbfs = 100
+0dbfs = 10
 
 ; Ensure the same random stream for each rendering.
 ; rand, randh, randi, rnd(x) and birnd(x) are not affected by seed.
@@ -725,24 +729,21 @@ gk_Harpsichord_level init       27
 gk_Rhodes_level init            31
 
 gk_Reverb_wet init 0.25
-gk_Reverb_feedback init 0.85
+gk_Reverb_feedback init 0.75
 gi_Reverb_delay_modulation init 0.0875
 gk_Reverb_frequency_cutoff init 14000
 '''
 rescale = CsoundAC.Rescale()
 rescale.addChild(csoundac_score_node)
-voiceleading_node.addChild(csoundac_score_node)
-rescale.setRescale(CsoundAC.Event.INSTRUMENT, bool(1), bool(1), 1, 2.99)
-rescale.setRescale(CsoundAC.Event.VELOCITY, bool(1), bool(1), 50, 20)
-model.addChild(rescale)
+voiceleading_node.addChild(rescale)
+rescale.setRescale(CsoundAC.Event.INSTRUMENT, True, True, 2., 0.)
+rescale.setRescale(CsoundAC.Event.VELOCITY, True, True, 50., 20.)
+model.addChild(voiceleading_node)
 model.setCsoundOrchestra(orc)
 model.setCsoundCommand(csound_command)
 model.generate()
-# Fix ending. Instruments would drop out, sustain till the end. Some notes 
-# course will decay first.
 score = model.getScore()
-score_duration = score.getDuration() + 4.
-sounding = set()
+score_duration = score.setDuration(240.)
 score.save(model.getMidifileFilepath())
 model.performMaster()
 if rendering == 'soundfile':

@@ -30,7 +30,7 @@ model.setYear("2020")
 model.generateAllNames()
 soundfile_name = model.getOutputSoundfileFilepath()
 print('Soundfile name:         %s' % soundfile_name)
-dac_name = 'dac'
+dac_name = 'dac:plughw:1,0'
 print('Audio output name:      %s' % dac_name)
 print
 
@@ -220,7 +220,7 @@ orc = '''
 sr = 48000
 ksmps = 128
 nchnls = 2
-0dbfs = 100
+0dbfs = 10
 
 ; Ensure the same random stream for each rendering.
 ; rand, randh, randi, rnd(x) and birnd(x) are not affected by seed.
@@ -860,7 +860,7 @@ rescale = CsoundAC.Rescale()
 rescale.addChild(voiceleading_node)
 voiceleading_node.addChild(csoundac_score_node)
 rescale.setRescale(CsoundAC.Event.INSTRUMENT, bool(1), bool(1), 1, 2.99)
-rescale.setRescale(CsoundAC.Event.VELOCITY, bool(1), bool(1), 50, 20)
+rescale.setRescale(CsoundAC.Event.VELOCITY, bool(1), bool(1), 50, 10)
 model.addChild(rescale)
 model.setCsoundOrchestra(orc)
 model.setCsoundCommand(csound_command)
