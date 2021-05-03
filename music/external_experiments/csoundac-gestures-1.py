@@ -68,7 +68,7 @@ from musx.tools import quantize, playfile, setmidiplayer
 from musx.envelopes import interp
 
 voiceleading_node = CsoundAC.VoiceleadingNode()
-scale = CsoundAC.Scale("F# major")
+scale = CsoundAC.Scale("G major")
 voices = 4
 chord = scale.chord(1, voices)
 
@@ -108,32 +108,32 @@ def motive1(q, octave, limit, chan):
                 voiceleading_node.chordVoiceleading(chord, q.now, True)
             print("progressed at: {:9.4f} to {}".format(q.now, chord.eOP().name()))
     # the basic pitches to transpose and jumble e.g. [F#4 E4 D5].
-    pitches = jumble([6, 4, 14, 5, 3])
+    pitches = jumble([6, 4, 11, 5, 2, 12])
     # one of the three pitches will be louder than the others.
-    amps = jumble([.75, .5, .5, .45, .2])
+    amps = jumble([.75, .5, .5, .45, .2, .4])
     # randomly chosen transpostion within a limit
     offset = random.randrange(limit)
     for _ in range(4):
         knum = next(pitches) + (octave * 12) + offset
-        note = MidiNote(time=q.now, dur=.25, key=knum, amp=next(amps), chan=chan)
+        note = MidiNote(time=q.now, dur=.75, key=knum, amp=next(amps), chan=chan)
         q.out.addevent(note)
-        yield .2
+        yield .5
     
 def motive2(q, octave, limit, chan):
     """Motive2 generates a repeated tone with one tone accented."""
     amps = jumble([.75, .5, .5])
-    rhys = jumble([.2, .2, .4])
+    rhys = jumble([.25, .25, .5])
     offset = random.randrange(limit)
     for _ in range(3):
         knum = 0 + (octave * 12) + offset
-        note = MidiNote(time=q.now, dur=.5, key=knum, amp=next(amps), chan=chan)
+        note = MidiNote(time=q.now, dur=.75, key=knum, amp=next(amps), chan=chan)
         q.out.addevent(note)
         yield next(rhys)
 
 def gesture1(q, numtimes, o, chan):
     for _ in range(numtimes):
         if (odds(o)):
-            q.compose(motive1(q, 5, 1, chan))
+            q.compose(motive1(q, 6, 1, chan))
         else:
             q.compose(motive2(q, 6, 1, chan))
         yield 2
@@ -142,7 +142,7 @@ def gesture2(q, numtimes, o, limit, chan):
     """The same as gesture1 but with transposition upto limit."""
     for _ in range(numtimes):
         if (odds(o)):
-            q.compose(motive1(q, 5, limit, chan))
+            q.compose(motive1(q, 6, limit, chan))
         else:
             q.compose(motive2(q, 6, limit, chan))
         yield 2
@@ -159,7 +159,7 @@ def gesture3(q, numtimes, o, limit, chan, hiwait, lowwait):
     """Like gesture2 but takes smaller amounts of time between motives."""
     for i in range(numtimes):
         if (odds(o)):
-            q.compose(motive1(q, 5, limit, chan))
+            q.compose(motive1(q, 6, limit, chan))
         else:
             q.compose(motive2(q, 6, limit, chan))
         yield qtime(i, numtimes, 2, .2, .2)
@@ -844,10 +844,10 @@ endin
 ; enables instruments to come forward and recede according to their 
 ; response to MIDI velocity.
 
-gk_PianoOutPianoteq_level init  -12 
+gk_PianoOutPianoteq_level init  4.5 
 gk_ZakianFlute_level init       25
-gk_FMWaterBell_level init       24;16
-gk_ChebyshevMelody_level init   28;19
+gk_FMWaterBell_level init       24
+gk_ChebyshevMelody_level init   28
 gk_Harpsichord_level init       27
 gk_Rhodes_level init            31
 
@@ -865,11 +865,7 @@ model.addChild(rescale)
 model.setCsoundOrchestra(orc)
 model.setCsoundCommand(csound_command)
 model.generate()
-# Fix ending. Instruments would drop out, sustain till the end. Some notes 
-# course will decay first.
 score = model.getScore()
-score_duration = score.getDuration() + 4.
-sounding = set()
 score.save(model.getMidifileFilepath())
 model.performMaster()
 if rendering == 'soundfile':
