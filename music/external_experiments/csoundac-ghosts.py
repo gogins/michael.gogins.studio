@@ -57,7 +57,6 @@ python3 -m musx_demos.ghosts
 ```
 """
 
-
 from random import choice
 from musx.generators import steps
 from musx.ran import between

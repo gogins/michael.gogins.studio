@@ -19,6 +19,10 @@ rendering = "audio"
 
 model = CsoundAC.MusicModel()
 score = model.getScore()
+voiceleading_node = CsoundAC.VoiceleadingNode()
+scale = CsoundAC.Scale("F major")
+voices = 4
+chord = scale.chord(4, voices)
 
 script_filename = sys.argv[0]
 print('Full Python script:     %s' % script_filename)
@@ -64,14 +68,14 @@ python3 -m musx_demos.sierpinski
 ```
 """
 
-
 from musx.tools import playfile, setmidiplayer
 from musx.scheduler import Scheduler
 from musx.scales import keynum
 from musx.midi import MidiNote, MidiSeq, MidiFile
 
-
-def sierpinski(q, tone, shape, trans, levels, dur, amp):
+def sierpinski(q, tone, shape, trans, levels, dur, amp, highest_level):
+    global scale
+    global chord
     """
     Generates a melodic shape based on successive transpositions (levels) of
     itself. 
@@ -94,11 +98,24 @@ def sierpinski(q, tone, shape, trans, levels, dur, amp):
         k = tone + i
         # play current tone in melody
         m = MidiNote(time=q.now, dur=dur, key=min(k,127), amp=amp, chan=levels)
+        m2 = MidiNote(time=q.now + 2, dur=dur, key=min(k + 4,127), amp=amp, chan=levels)
         q.out.addevent(m)
+        q.out.addevent(m2)
+        if levels == highest_level: 
+            scales = scale.modulations_for_voices(chord, voices)
+            if len(scales) > 0:
+                scale = random.choice(scales)
+                print("modulated at:  {:9.4f} to {}".format(q.now, scale.name()))
+        if levels == (highest_level - 1):
+            progression = random.choices([-2, -4, 1, 5], [4, 2, 1, 1], k=1)
+            steps = progression[0]
+            chord = scale.transpose_degrees(chord, steps)
+            voiceleading_node.chord(chord, q.now)
+            print("progressed at: {:9.4f} to {}".format(q.now, chord.eOP().name()))
         if (levels > 1):
             # sprout melody on tone at next level
             q.compose(sierpinski(q, (k + trans), shape,
-                        trans, levels - 1, dur / num,  amp))
+                        trans, levels - 1, dur / num,  amp, highest_level))
         yield dur
     
 
@@ -116,7 +133,8 @@ q = Scheduler(t1)
 # generates 120 events, the second 726, and the third 2728!
 # q.compose(sierpinski(q, keynum('a0'), [0, 7, 5], 12, 4, 3, .5))
 # q.compose(sierpinski(q, keynum('a0'), [0, 7, 5], 8, 5, 7, .5))
-q.compose(sierpinski(q, keynum('a0'), [0, -1, 2, 13], 12, 5, 24, .5))
+levels = 5
+q.compose(sierpinski(q, keynum('a0'), [0, -3, 3, 6, 1], 12, levels, 90, .5, levels))
 
 # Write a midi file with our track data.
 f = MidiFile("sierpinski.mid", [t0, t1]).write()
@@ -135,7 +153,7 @@ orc = '''
 sr = 48000
 ksmps = 128
 nchnls = 2
-0dbfs = 10
+0dbfs = 3
 
 ; Ensure the same random stream for each rendering.
 ; rand, randh, randi, rnd(x) and birnd(x) are not affected by seed.
@@ -763,18 +781,19 @@ gk_PianoOutPianoteq_level init  -10
 gk_ZakianFlute_level init       30
 gk_FMWaterBell_level init       24;16
 gk_ChebyshevMelody_level init   28;19
-gk_Harpsichord_level init       27
+gk_Harpsichord_level init       18
 gk_Rhodes_level init            31
 
 gk_Reverb_wet init 0.5
 gk_Reverb_feedback init 0.75
-gi_Reverb_delay_modulation init 0.0875
+gi_Reverb_delay_modulation init 0.00875
 gk_Reverb_frequency_cutoff init 14000
 '''
 rescale = CsoundAC.Rescale()
-rescale.addChild(csoundac_score_node)
-rescale.setRescale(CsoundAC.Event.INSTRUMENT, bool(1), bool(1), 1, 4.)
-rescale.setRescale(CsoundAC.Event.VELOCITY, bool(1), bool(1), 50, 20)
+rescale.addChild(voiceleading_node)
+voiceleading_node.addChild(csoundac_score_node)
+rescale.setRescale(CsoundAC.Event.INSTRUMENT, bool(1), bool(1), 3, 0)
+rescale.setRescale(CsoundAC.Event.VELOCITY, bool(1), bool(1), 50, 10)
 model.addChild(rescale)
 model.setCsoundOrchestra(orc)
 model.setCsoundCommand(csound_command)

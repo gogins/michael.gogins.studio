@@ -58,7 +58,6 @@ python3 -m musx_demos.gestures
 ```
 """
 
-
 import random
 from musx.generators import jumble
 from musx.midi import MidiNote, MidiSeq, MidiFile
@@ -70,7 +69,8 @@ from musx.envelopes import interp
 
 voiceleading_node = CsoundAC.VoiceleadingNode()
 scale = CsoundAC.Scale("F# major")
-chord = scale.chord(1, 4)
+voices = 4
+chord = scale.chord(1, voices)
 
 def motive1(q, octave, limit, chan):
     global chord
@@ -94,7 +94,7 @@ def motive1(q, octave, limit, chan):
     """
     if chan == 0:
         if int(q.now) % 7 == 0:
-            scales = scale.modulations_for_voices(chord, 4)
+            scales = scale.modulations_for_voices(chord, voices)
             if len(scales) > 0:
                 scale = random.choice(scales)
                 print("modulated at:  {:9.4f} to {}".format(q.now, scale.name()))
@@ -108,9 +108,9 @@ def motive1(q, octave, limit, chan):
                 voiceleading_node.chordVoiceleading(chord, q.now, True)
             print("progressed at: {:9.4f} to {}".format(q.now, chord.eOP().name()))
     # the basic pitches to transpose and jumble e.g. [F#4 E4 D5].
-    pitches = jumble([6, 4, 14, 3])
+    pitches = jumble([6, 4, 14, 5, 3])
     # one of the three pitches will be louder than the others.
-    amps = jumble([.75, .5, .5, .45])
+    amps = jumble([.75, .5, .5, .45, .2])
     # randomly chosen transpostion within a limit
     offset = random.randrange(limit)
     for _ in range(4):
