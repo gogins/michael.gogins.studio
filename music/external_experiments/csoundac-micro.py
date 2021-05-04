@@ -853,7 +853,7 @@ endin
 ; response to MIDI velocity.
 
 gk_PianoOutPianoteq_level init  -8 
-gk_ZakianFlute_level init       25
+gk_ZakianFlute_level init       35
 gk_FMWaterBell_level init       24;16
 gk_ChebyshevMelody_level init   28;19
 gk_Harpsichord_level init       27
@@ -866,16 +866,14 @@ gk_Reverb_frequency_cutoff init 14000
 '''
 rescale = CsoundAC.Rescale()
 rescale.addChild(csoundac_score_node)
-rescale.setRescale(CsoundAC.Event.INSTRUMENT, bool(1), bool(1), 1, 3.99)
+rescale.setRescale(CsoundAC.Event.INSTRUMENT, bool(1), bool(1), 2, 3.99)
 rescale.setRescale(CsoundAC.Event.VELOCITY, bool(1), bool(1), 50, 20)
 model.addChild(rescale)
 model.setCsoundOrchestra(orc)
 model.setCsoundCommand(csound_command)
+model.setTonesPerOctave(0)
 model.generate()
-# Fix ending. Instruments would drop out, sustain till the end. Some notes 
-# course will decay first.
 score = model.getScore()
-score_duration = score.getDuration() + 4.
 sounding = set()
 score.save(model.getMidifileFilepath())
 model.performMaster()

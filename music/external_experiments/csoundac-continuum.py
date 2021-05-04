@@ -779,12 +779,9 @@ rescale.setRescale(CsoundAC.Event.VELOCITY, bool(1), bool(1), 50, 20)
 model.addChild(rescale)
 model.setCsoundOrchestra(orc)
 model.setCsoundCommand(csound_command)
+model.setTonesPerOctave(0)
 model.generate()
-# Fix ending. Instruments would drop out, sustain till the end. Some notes 
-# course will decay first.
 score = model.getScore()
-score_duration = score.getDuration() + 4.
-sounding = set()
 score.save(model.getMidifileFilepath())
 model.performMaster()
 if rendering == 'soundfile':

@@ -743,7 +743,7 @@ endin
 ; response to MIDI velocity.
 
 gk_PianoOutPianoteq_level init  -10
-gk_ZakianFlute_level init       40
+gk_ZakianFlute_level init       30
 gk_FMWaterBell_level init       24;16
 gk_ChebyshevMelody_level init   28;19
 gk_Harpsichord_level init       27
