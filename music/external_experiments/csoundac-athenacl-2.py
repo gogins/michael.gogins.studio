@@ -57,17 +57,17 @@ import athenacl_csoundac
 script = '''
 emo cn
 # create a single, large Multiset using a sieve
-pin a 5@0|7@20,c2,c7
+pin a 5@2|7@20,c2,c8
 tmo ha
 tin a 6 27
-tie r pt,(c,8),(ig,(bg,rc,(2,3)),(bg,rc,(3,6,9))),(c,1)
-tie a ls,e,9,(ru,.2,1),(ru,.2,1)
+tie r pt,(c,8),(ig,(bg,rc,(2,3)),(bg,rc,(3,6,9))),(c,4)
+tie a ls,e,9,(ru,4,8),(ru,4,8)
 # select only Multiset 0
 tie d0 c,0
 # select pitches from Multiset using CaList
-tie d1 cl,f{s}x{20},90,0,fria,oc
+tie d1 cl,f{s}x{200},90,0,fria,oc
 # create only 1 simultaneity from each multiset
-tie d2 c,2
+tie d2 c,23
 # create only 1-element simultaneities
 tie d3 c,3
 '''
@@ -740,7 +740,7 @@ model.setCsoundOrchestra(orc)
 model.setCsoundCommand(csound_command)
 model.generate()
 score = model.getScore()
-score_duration = score.setDuration(240.)
+#score_duration = score.setDuration(240.)
 score.save(model.getMidifileFilepath())
 model.performMaster()
 if rendering == 'soundfile':

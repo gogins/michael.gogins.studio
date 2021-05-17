@@ -30,7 +30,7 @@ model.setYear("2020")
 model.generateAllNames()
 soundfile_name = model.getOutputSoundfileFilepath()
 print('Soundfile name:         %s' % soundfile_name)
-dac_name = 'dac:plughw:1,0'
+dac_name = 'dac'
 print('Audio output name:      %s' % dac_name)
 print
 
@@ -118,7 +118,7 @@ orc = '''
 sr = 48000
 ksmps = 128
 nchnls = 2
-0dbfs = 10
+0dbfs = 2
 
 ; Ensure the same random stream for each rendering.
 ; rand, randh, randi, rnd(x) and birnd(x) are not affected by seed.
