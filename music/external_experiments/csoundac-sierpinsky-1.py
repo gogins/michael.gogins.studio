@@ -34,7 +34,7 @@ model.setYear("2020")
 model.generateAllNames()
 soundfile_name = model.getOutputSoundfileFilepath()
 print('Soundfile name:         %s' % soundfile_name)
-dac_name = 'dac'
+dac_name = 'dac:plughw:2,0'
 print('Audio output name:      %s' % dac_name)
 print
 
