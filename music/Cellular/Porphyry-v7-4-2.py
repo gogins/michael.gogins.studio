@@ -30,7 +30,7 @@ import traceback
 
 print('Set "rendering" to:     "soundfile" or "audio".')
 print
-rendering = "audio"
+rendering = "soundfile"
 
 # Using the same random seed for each performance makes the performance 
 # deterministic, not random.
@@ -308,7 +308,7 @@ sequence = CsoundAC.Rescale()
 sequence_holder.addChild(sequence)
 sequence.setRescale(CsoundAC.Event.VELOCITY, True, True, 60., 12.)
 sequence.setRescale(CsoundAC.Event.KEY, True, True, 30., 72.)
-# The actual harmony is applied after the notes for all voices have been '
+# The actual harmony is applied after the notes for all voices have been 
 # generated.
 voiceleading_node = CsoundAC.VoiceleadingNode()
 voiceleading_node.addChild(sequence_holder);
@@ -352,28 +352,13 @@ seed 29384 ;38493
 
 gi_MverbVst vstinit "/home/mkg/.local/lib/Mverb2020.so", 1
 gi_Organteq vstinit "/home/mkg/Organteq\ 1/x86-64bit/Organteq\ 1.lv2/Organteq_1.so", 0
-gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", 0
 
 alwayson "OrganOutOrganteq"
-alwayson "PianoOutPianoteq"
 alwayson "MverbVst"
 alwayson "MasterOutput"
 
-connect "ChebyshevMelody", "outleft", "MverbVst", "inleft"
-connect "ChebyshevMelody", "outright", "MverbVst", "inright"
-connect "FMWaterBell", "outleft", "MverbVst", "inleft"
-connect "FMWaterBell", "outright", "MverbVst", "inright"
-connect "Harpsichord", "outleft", "MverbVst", "inleft"
-connect "Harpsichord", "outright", "MverbVst", "inright"
-connect "Rhodes", "outleft", "MverbVst", "inleft"
-connect "Rhodes", "outright", "MverbVst", "inright"
-connect "ZakianFlute", "outleft", "MverbVst", "inleft"
-connect "ZakianFlute", "outright", "MverbVst", "inright"
-
 connect "OrganOutOrganteq", "outleft", "MverbVst", "inleft"
 connect "OrganOutOrganteq", "outright", "MverbVst", "inright"
-connect "PianoOutPianoteq", "outleft", "MverbVst", "inleft"
-connect "PianoOutPianoteq", "outright", "MverbVst", "inright"
 connect "MverbVst", "outleft", "MasterOutput", "inleft"
 connect "MverbVst", "outright", "MasterOutput", "inright"
 
@@ -407,7 +392,9 @@ vstnote gi_Organteq, i_instrument, i_midi_key, i_midi_velocity, i_duration
 endin
 
 instr OrgantecCombination
+prints "\\n****************************************************************************************\\n\\n"
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "\\n****************************************************************************************\\n\\n"
 i_combination = p5
 if (i_combination == 0.) then
 
@@ -459,8 +446,8 @@ vstparamset gi_Organteq, 66, 0 ;  4
 vstparamset gi_Organteq, 67, 0 ;  5
 vstparamset gi_Organteq, 68, 0 ;  6
 vstparamset gi_Organteq, 69, 0 ;  7 
-vstparamset gi_Organteq, 70, 0 ;  8 
-vstparamset gi_Organteq, 71, 1 ;  9 
+vstparamset gi_Organteq, 70, 1 ;  8 
+vstparamset gi_Organteq, 71, 0 ;  9 
 vstparamset gi_Organteq, 72, 0 ; 10
 
 endif
@@ -476,8 +463,8 @@ vstparamset gi_Organteq, 37, 0 ;  5
 vstparamset gi_Organteq, 38, 0 ;  6
 vstparamset gi_Organteq, 39, 0 ;  7
 vstparamset gi_Organteq, 40, 0 ;  8
-vstparamset gi_Organteq, 41, 0 ;  9
-vstparamset gi_Organteq, 42, 0 ; 10
+vstparamset gi_Organteq, 41, 1 ;  9
+vstparamset gi_Organteq, 42, 1 ; 10
 
 ; Keyboard 2 -- Positif
 
@@ -496,8 +483,8 @@ vstparamset gi_Organteq, 52, 0 ; 10
 
 vstparamset gi_Organteq, 53, 0 ;  1
 vstparamset gi_Organteq, 54, 0 ;  2
-vstparamset gi_Organteq, 55, 0 ;  3
-vstparamset gi_Organteq, 56, 0 ;  4
+vstparamset gi_Organteq, 55, 1 ;  3
+vstparamset gi_Organteq, 56, 1 ;  4
 vstparamset gi_Organteq, 57, 1 ;  5
 vstparamset gi_Organteq, 58, 0 ;  6
 vstparamset gi_Organteq, 59, 0 ;  7
@@ -538,25 +525,24 @@ vstparamset gi_Organteq, 42, 0 ; 10
 
 vstparamset gi_Organteq, 43, 1 ;  1
 vstparamset gi_Organteq, 44, 0 ;  2
-vstparamset gi_Organteq, 45, 0 ;  3
+vstparamset gi_Organteq, 45, 1 ;  3
 vstparamset gi_Organteq, 46, 1 ;  4
-vstparamset gi_Organteq, 47, 0 ;  5
+vstparamset gi_Organteq, 47, 1 ;  5
 vstparamset gi_Organteq, 48, 0 ;  6
 vstparamset gi_Organteq, 49, 0 ;  7
 vstparamset gi_Organteq, 50, 0 ;  8
 vstparamset gi_Organteq, 51, 0 ;  9
 vstparamset gi_Organteq, 52, 0 ; 10
 
-
 ; Keyboard 3 -- Grand Orgue
 
-vstparamset gi_Organteq, 53, 0 ;  1
+vstparamset gi_Organteq, 53, 1 ;  1
 vstparamset gi_Organteq, 54, 0 ;  2
 vstparamset gi_Organteq, 55, 0 ;  3
 vstparamset gi_Organteq, 56, 0 ;  4
 vstparamset gi_Organteq, 57, 1 ;  5
 vstparamset gi_Organteq, 58, 0 ;  6
-vstparamset gi_Organteq, 59, 0 ;  7
+vstparamset gi_Organteq, 59, 1 ;  7
 vstparamset gi_Organteq, 60, 0 ;  8
 vstparamset gi_Organteq, 61, 0 ;  9
 vstparamset gi_Organteq, 62, 0 ; 10
@@ -571,7 +557,7 @@ vstparamset gi_Organteq, 67, 1 ;  5
 vstparamset gi_Organteq, 68, 0 ;  6
 vstparamset gi_Organteq, 69, 0 ;  7 
 vstparamset gi_Organteq, 70, 0 ;  8 
-vstparamset gi_Organteq, 71, 0 ;  9 
+vstparamset gi_Organteq, 71, 1 ;  9 
 vstparamset gi_Organteq, 72, 0 ; 10
 
 endif
@@ -602,7 +588,6 @@ vstparamset gi_Organteq, 50, 1 ;  8
 vstparamset gi_Organteq, 51, 0 ;  9
 vstparamset gi_Organteq, 52, 0 ; 10
 
-
 ; Keyboard 3 -- Grand Orgue
 
 vstparamset gi_Organteq, 53, 1 ;  1
@@ -626,8 +611,8 @@ vstparamset gi_Organteq, 67, 1 ;  5
 vstparamset gi_Organteq, 68, 0 ;  6
 vstparamset gi_Organteq, 69, 0 ;  7 
 vstparamset gi_Organteq, 70, 0 ;  8 
-vstparamset gi_Organteq, 71, 0 ;  9 
-vstparamset gi_Organteq, 72, 0 ; 10
+vstparamset gi_Organteq, 71, 1 ;  9 
+vstparamset gi_Organteq, 72, 1 ; 10
 
 endif
 if (i_combination == 4.) then
@@ -698,8 +683,18 @@ vstparamset gi_Organteq, 4, 0
 ; Set up all stops...
 
 vstparamset gi_Organteq, 6, 0
-
 scoreline_i "i 5 0 .1 0 0 0"
+
+; Uncomment a line for evaluating stops in that particular section.
+
+//scoreline_i "a 0 .5 45"
+//scoreline_i "a 0 .5 106.2"
+//scoreline_i "a 0 .5 152"
+//scoreline_i "a 0 .5 226"
+//scoreline_i "a 0 .5 270"
+//scoreline_i "a 0 .5 318.6"
+//scoreline_i "a 0 .5 370.8"
+//scoreline_i "a 0 .5 437.4"
 
 k_gain = ampdb(gk_OrganOutOrganteq_level)
 i_overall_amps = 100
@@ -764,26 +759,6 @@ ainright inleta "inright"
 aoutleft, aoutright vstaudio gi_MverbVst, ainleft, ainright
 outleta "outleft", aoutleft
 outleta "outright", aoutright
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
-endin
-
-gk_Reverb_feedback init 0.875
-gk_Reverb_wet init 0.5
-gi_Reverb_delay_modulation init 0.0075
-gk_Reverb_frequency_cutoff init 15000
-instr ReverbSC
-gk_Reverb_dry = 1.0 - gk_Reverb_wet
-aleftin init 0
-arightin init 0
-aleftout init 0
-arightout init 0
-aleftin inleta "inleft"
-arightin inleta "inright"
-aleftout, arightout reverbsc aleftin, arightin, gk_Reverb_feedback, gk_Reverb_frequency_cutoff, sr, gi_Reverb_delay_modulation
-aleftoutmix = aleftin * gk_Reverb_dry + aleftout * gk_Reverb_wet
-arightoutmix = arightin * gk_Reverb_dry + arightout * gk_Reverb_wet
-outleta "outleft", aleftoutmix
-outleta "outright", arightoutmix
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
