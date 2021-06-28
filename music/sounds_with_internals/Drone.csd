@@ -13,6 +13,8 @@ ksmps = 128
 nchnls = 2
 0dbfs = 15000000
 
+connect "Internals_1",       "outleft",  "ReverbLeft",   "input"
+connect "Internals_1",       "outright", "ReverbRight",  "input"
 connect "Bower",        "outleft",  "ReverbLeft",   "input"
 connect "Bower",        "outright", "ReverbRight",  "input"
 connect "Phaser",       "outleft",  "ReverbLeft",   "input"
@@ -46,7 +48,22 @@ i_midinn = 12 * (log(i_frequency / 440) / i_log2) + 69
 xout i_midinn
 endop
 
-instr 101
+instr 101,102,103,104
+i_instrument = p1
+i_time = p2
+i_duration = p3
+i_fundamental = p4
+i_numerator = p5
+i_denominator = p6
+i_midi_velocity = p7
+i_pan = p8
+i_ratio = i_numerator / i_denominator
+i_frequency = i_fundamental * i_ratio
+i_midi_key ratio2midinn i_fundamental, i_numerator, i_denominator
+event_i "i", "Internals_1", 0, i_duration, i_midi_key, i_midi_velocity, 0, i_pan
+endin
+
+instr 1011
 i_instrument = p1
 i_time = p2
 i_duration = p3
@@ -61,7 +78,7 @@ i_midi_key ratio2midinn i_fundamental, i_numerator, i_denominator
 event_i "i", "Bower", 0, i_duration, i_midi_key, i_midi_velocity, 0, i_pan
 endin
 
-instr 102
+instr 1021
 i_instrument = p1
 i_time = p2
 i_duration = p3
@@ -76,7 +93,7 @@ i_midi_key ratio2midinn i_fundamental, i_numerator, i_denominator
 event_i "i", "Phaser", 0, i_duration, i_midi_key, i_midi_velocity, 0, i_pan
 endin
 
-instr 103
+instr 1031
 i_instrument = p1
 i_time = p2
 i_duration = p3
@@ -91,7 +108,7 @@ i_midi_key ratio2midinn i_fundamental, i_numerator, i_denominator
 event_i "i", "Sweeper", 0, i_duration, i_midi_key, i_midi_velocity, 0, i_pan
 endin
 
-instr 104
+instr 1041
 i_instrument = p1
 i_time = p2
 i_duration = p3
@@ -104,6 +121,58 @@ i_ratio = i_numerator / i_denominator
 i_frequency = i_fundamental * i_ratio
 i_midi_key ratio2midinn i_fundamental, i_numerator, i_denominator
 event_i "i", "Blower", 0, i_duration, i_midi_key, i_midi_velocity, 0, i_pan
+endin
+
+gi_Internals_1_sine ftgen 0, 0, 65537, 10, 1, 0, .02
+instr Internals_1
+i_instrument = p1
+i_time = p2
+i_duration = p3
+i_midi_key = p4
+i_midi_velocity = p5
+i_phase = p6
+i_pan = p7
+k1 init .5
+k2 init .05
+k3 init .1
+k4 init .2
+k5 init .1
+k6 init .05
+k7 init .1
+k8 init 0
+k9 init 0
+k10 init 0
+k_waveform init 0
+i_amplitude = ampdb(i_midi_velocity)
+i_attack =  p3 * (1 / 4) * (4 / 3)
+i_sustain = p3 * (1 / 2) * (4 / 3)
+i_release =   p3 * (1 / 4) * (4 / 3)
+p3 = i_attack + i_sustain + i_release
+ak_envelope transeg 0.0, i_attack / 2.0, 1.5, i_amplitude / 2.0, i_attack / 2.0, -1.5, i_amplitude, i_sustain, 0.0, i_amplitude, i_release / 2.0, 1.5, i_amplitude / 2.0, i_release / 2.0, -1.5, 0
+i_frequency = cpsmidinn(i_midi_key)
+; print i_frequency
+if k_waveform == 0 then
+a_signal poscil3 1, i_frequency, gi_Internals_1_sine
+endif
+if k_waveform == 1 then
+a_signal vco2 1, i_frequency, 8 ; integrated saw
+endif
+if k_waveform == 2 then
+a_signal vco2 1, i_frequency, 12 ; triangle
+endif
+if k_waveform == 3 then
+a_signal chebyshevpoly a_signal, 0, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10
+endif
+a_modulator vco2 1, .03, 12
+a_vdelay vdelay3 a_signal, a_modulator, 4
+a_vdelay = a_vdelay * ak_envelope * 10
+a_left, a_right pan2 a_signal, i_pan
+a_damping linseg 0, 0.03, 1, p3 - 0.1, 1, 0.07, 0
+a_left = a_damping * a_left
+a_right = a_damping * a_right
+outleta "outleft", a_left
+outleta "outright", a_right
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
 gi_Droner_sine ftgen 0, 0, 65537, 10, 1, 0, .02
@@ -440,8 +509,8 @@ outleta "outright", a_right
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
-gk_ReverbFeedback init 0.975
-gk_DelayModulation init 0.875
+gk_ReverbFeedback init 0.0975
+gk_DelayModulation init 0.0875
 
 instr ReverbLeft
 ; p4 = gain of reverb. Adjust empirically

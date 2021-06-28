@@ -3,8 +3,8 @@
 -RWdf --sample-accurate -oxanadu-high-resolution.wav
 </CsOptions>
 <CsInstruments>
-sr          =           96000
-ksmps       =           1
+sr          =           48000
+ksmps       =           128
 nchnls      =           2
 ;--------------------------------------------------------
 ;Instrument 1 : plucked strings chorused left/right and
