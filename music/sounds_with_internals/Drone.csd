@@ -13,26 +13,30 @@ ksmps = 128
 nchnls = 2
 0dbfs = 15000
 
-connect "Internals_1",       "outleft",  "ReverbLeft",   "input"
-connect "Internals_1",       "outright", "ReverbRight",  "input"
-connect "Bower",        "outleft",  "ReverbLeft",   "input"
-connect "Bower",        "outright", "ReverbRight",  "input"
-connect "Phaser",       "outleft",  "ReverbLeft",   "input"
-connect "Phaser",       "outright", "ReverbRight",  "input"
-connect "Droner",       "outleft",  "ReverbLeft",   "input"
-connect "Droner",       "outright", "ReverbRight",  "input"
-connect "Sweeper",      "outleft",  "ReverbLeft",   "input"
-connect "Sweeper",      "outright", "ReverbRight",  "input"
-connect "Buzzer",       "outleft",  "ReverbLeft",   "input"
-connect "Buzzer",       "outright", "ReverbRight",  "input"
-connect "Blower",       "outleft",  "ReverbLeft",   "input"
-connect "Blower",       "outright", "ReverbRight",  "input"
-connect "Shiner",       "outleft",  "ReverbLeft",   "input"
-connect "Shiner",       "outright", "ReverbRight",  "input"
-connect "ReverbLeft",   "output",   "MasterOutput", "inleft"
-connect "ReverbRight",  "output",   "MasterOutput", "inright"
+#include "Internals.inc"
 
+connect "Internals_1",  "outleft",  "Internals",   	"inleft"
+connect "Internals_1",  "outright", "Internals",  		"inright"
+connect "Bower",        "outleft",  "Internals",   	"inleft"
+connect "Bower",        "outright", "Internals",  		"inright"
+connect "Phaser",       "outleft",  "Internals",   	"inleft"
+connect "Phaser",       "outright", "Internals",  		"inright"
+connect "Droner",       "outleft",  "Internals",   	"inleft"
+connect "Droner",       "outright", "Internals",  		"inright"
+connect "Sweeper",      "outleft",  "Internals",   	"inleft"
+connect "Sweeper",      "outright", "Internals",  		"inright"
+connect "Buzzer",       "outleft",  "Internals",   	"inleft"
+connect "Buzzer",       "outright", "Internals",  		"inright"
+connect "Blower",       "outleft",  "Internals",   	"inleft"
+connect "Blower",       "outright", "Internals",  		"inright"
+connect "Shiner",       "outleft",  "Internals",   	"inleft"
+connect "Shiner",       "outright", "Internals",  		"inright"
+connect "Internals",   	"outleft",  "MasterOutput", 	"inleft"
+connect "Internals",  	"outright", "MasterOutput",	"inright"
+connect "Internals",   	"output",   "MasterOutput", 	"inleft"
+connect "Internals",  	"output",   "MasterOutput", 	"inright"
 
+alwayson "Internals"
 alwayson "ReverbLeft"
 alwayson "ReverbRight"
 alwayson "MasterOutput"
@@ -48,7 +52,7 @@ i_midinn = 12 * (log(i_frequency / 440) / i_log2) + 69
 xout i_midinn
 endop
 
-instr 101,102,103,104
+instr blah ; 101,102,103,104
 i_instrument = p1
 i_time = p2
 i_duration = p3
@@ -63,7 +67,7 @@ i_midi_key ratio2midinn i_fundamental, i_numerator, i_denominator
 event_i "i", "Internals_1", 0, i_duration, i_midi_key, i_midi_velocity, 0, i_pan
 endin
 
-instr 1011
+instr 101
 i_instrument = p1
 i_time = p2
 i_duration = p3
@@ -78,7 +82,7 @@ i_midi_key ratio2midinn i_fundamental, i_numerator, i_denominator
 event_i "i", "Bower", 0, i_duration, i_midi_key, i_midi_velocity, 0, i_pan
 endin
 
-instr 1021
+instr 102
 i_instrument = p1
 i_time = p2
 i_duration = p3
@@ -93,7 +97,7 @@ i_midi_key ratio2midinn i_fundamental, i_numerator, i_denominator
 event_i "i", "Phaser", 0, i_duration, i_midi_key, i_midi_velocity, 0, i_pan
 endin
 
-instr 1031
+instr 103
 i_instrument = p1
 i_time = p2
 i_duration = p3
@@ -108,7 +112,7 @@ i_midi_key ratio2midinn i_fundamental, i_numerator, i_denominator
 event_i "i", "Sweeper", 0, i_duration, i_midi_key, i_midi_velocity, 0, i_pan
 endin
 
-instr 1041
+instr 104
 i_instrument = p1
 i_time = p2
 i_duration = p3
@@ -516,7 +520,6 @@ outleta "outright", a_right
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
-gk_ReverbFeedback chnexport "gk_ReverbFeedback", 3
 gk_DelayModulation chnexport "gk_DelayModulation", 3
 
 instr ReverbLeft
@@ -760,10 +763,12 @@ prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrst
 endin
 
 </CsInstruments>
-<CsScore>
+<CsScore bin="python">
 
-; Change the tempo, if you like.
-;t 0 27
+import sys
+
+with open(sys.argv[1], 'w') as f:
+	f.write('''
 
 ; p1 p2 p3 p4 p5 p6 p7 p8
 ; insno onset duration fundamental numerator denominator velocity pan
@@ -787,5 +792,67 @@ i 103 120 30 [3 * 60] 28 15 56 [-1 + 3 / 2]
 i 103 150 30 [4 * 60]  1  1 58 [-1 + 3 / 2]
 i 103 120 60 [3 * 60]  1  1 56 [-1 + 3 / 2]
 e 10.0
+''')
 </CsScore>
 </CsoundSynthesizer>
+<bsbPanel>
+ <label>Widgets</label>
+ <objectName/>
+ <x>0</x>
+ <y>0</y>
+ <width>921</width>
+ <height>875</height>
+ <visible>true</visible>
+ <uuid/>
+ <bgcolor mode="nobackground">
+  <r>255</r>
+  <g>255</g>
+  <b>255</b>
+ </bgcolor>
+ <bsbObject type="BSBScope" version="2">
+  <objectName/>
+  <x>564</x>
+  <y>563</y>
+  <width>350</width>
+  <height>150</height>
+  <uuid>{4ae8d54a-03de-4109-a575-a0b431d3bb11}</uuid>
+  <visible>true</visible>
+  <midichan>0</midichan>
+  <midicc>-3</midicc>
+  <description>Output</description>
+  <value>-255.00000000</value>
+  <type>scope</type>
+  <zoomx>2.00000000</zoomx>
+  <zoomy>1.00000000</zoomy>
+  <dispx>1.00000000</dispx>
+  <dispy>1.00000000</dispy>
+  <mode>0.00000000</mode>
+  <triggermode>NoTrigger</triggermode>
+ </bsbObject>
+ <bsbObject type="BSBConsole" version="2">
+  <objectName/>
+  <x>14</x>
+  <y>734</y>
+  <width>907</width>
+  <height>141</height>
+  <uuid>{3d4f056b-b5b1-499f-84f8-44b7ca241828}</uuid>
+  <visible>true</visible>
+  <midichan>0</midichan>
+  <midicc>-3</midicc>
+  <description>Console</description>
+  <font>Courier</font>
+  <fontsize>8</fontsize>
+  <color>
+   <r>0</r>
+   <g>0</g>
+   <b>0</b>
+  </color>
+  <bgcolor mode="nobackground">
+   <r>255</r>
+   <g>255</g>
+   <b>255</b>
+  </bgcolor>
+ </bsbObject>
+</bsbPanel>
+<bsbPresets>
+</bsbPresets>
