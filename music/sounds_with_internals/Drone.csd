@@ -4,14 +4,14 @@ Copyright (C) 2021 by Michael Gogins.
 All rights reserved.
 </CsLicense>
 <CsOptions>
--d --midi-key=4 --midi-velocity=5 -m168 -j4 -odac:plughw:2,0
+-d --midi-key=4 --midi-velocity=5 -m168 -odac:plughw:2,0
 </CsOptions>
 <CsInstruments>
 
 sr = 48000
 ksmps = 128
 nchnls = 2
-0dbfs = 15000000
+0dbfs = 15000
 
 connect "Internals_1",       "outleft",  "ReverbLeft",   "input"
 connect "Internals_1",       "outright", "ReverbRight",  "input"
@@ -123,6 +123,12 @@ i_midi_key ratio2midinn i_fundamental, i_numerator, i_denominator
 event_i "i", "Blower", 0, i_duration, i_midi_key, i_midi_velocity, 0, i_pan
 endin
 
+
+gk_Internals_1_mod_amp chnexport "gk_Internals_1_mod_amp", 3
+gk_Internals_1_mod_hz chnexport "gk_Internals_1_mod_hz", 3
+gk_Internals_1_level chnexport "gk_Internals_1_level", 3
+gi_Internals_1_waveform chnexport "gi_Internals_1_waveform", 3
+
 gi_Internals_1_sine ftgen 0, 0, 65537, 10, 1, 0, .02
 instr Internals_1
 i_instrument = p1
@@ -142,7 +148,6 @@ k7 init .1
 k8 init 0
 k9 init 0
 k10 init 0
-k_waveform init 0
 i_amplitude = ampdb(i_midi_velocity)
 i_attack =  p3 * (1 / 4) * (4 / 3)
 i_sustain = p3 * (1 / 2) * (4 / 3)
@@ -151,22 +156,24 @@ p3 = i_attack + i_sustain + i_release
 ak_envelope transeg 0.0, i_attack / 2.0, 1.5, i_amplitude / 2.0, i_attack / 2.0, -1.5, i_amplitude, i_sustain, 0.0, i_amplitude, i_release / 2.0, 1.5, i_amplitude / 2.0, i_release / 2.0, -1.5, 0
 i_frequency = cpsmidinn(i_midi_key)
 ; print i_frequency
-if k_waveform == 0 then
+if gi_Internals_1_waveform == 0 then
 a_signal poscil3 1, i_frequency, gi_Internals_1_sine
 endif
-if k_waveform == 1 then
+if gi_Internals_1_waveform == 1 then
 a_signal vco2 1, i_frequency, 8 ; integrated saw
 endif
-if k_waveform == 2 then
+if gi_Internals_1_waveform == 2 then
 a_signal vco2 1, i_frequency, 12 ; triangle
 endif
-if k_waveform == 3 then
+if gi_Internals_1_waveform == 3 then
 a_signal chebyshevpoly a_signal, 0, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10
 endif
-a_modulator vco2 1, .03, 12
+printks2 "Csound: gk_Internals_1_mod_amp: %9.4f\n", gk_Internals_1_mod_amp
+printks2 "Csound: gk_Internals_1_mod_hz:  %9.4f\n", gk_Internals_1_mod_hz
+a_modulator vco2 gk_Internals_1_mod_amp, gk_Internals_1_mod_hz, 12
 a_vdelay vdelay3 a_signal, a_modulator, 4
 a_vdelay = a_vdelay * ak_envelope * 10
-a_left, a_right pan2 a_signal, i_pan
+a_left, a_right pan2 a_vdelay, i_pan
 a_damping linseg 0, 0.03, 1, p3 - 0.1, 1, 0.07, 0
 a_left = a_damping * a_left
 a_right = a_damping * a_right
@@ -509,10 +516,12 @@ outleta "outright", a_right
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
-gk_ReverbFeedback init 0.0975
-gk_DelayModulation init 0.0875
+gk_ReverbFeedback chnexport "gk_ReverbFeedback", 3
+gk_DelayModulation chnexport "gk_DelayModulation", 3
 
 instr ReverbLeft
+printks2 "Csound: gk_ReverbFeedback:   %9.4f\n", gk_ReverbFeedback
+printks2 "Csound: gk_DelayModulation:  %9.4f\n", gk_DelayModulation
 ; p4 = gain of reverb. Adjust empirically
 ; for desired reverb time. .6 gives
 ; a good small "live" room sound, .8
@@ -736,12 +745,15 @@ outleta "output", aout
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
-gk_MasterLevel init 4
+gk_MasterLevel init 0
+gk_MasterLevel chnexport "gk_MasterLevel", 3
 instr MasterOutput
+printks2 "Csound: gk_MasterLevel:  %9.4f\n", gk_MasterLevel
 a_left inleta "inleft"
 a_right inleta "inright"
-a_left *= gk_MasterLevel
-a_right *= gk_MasterLevel
+k_gain = ampdb(gk_MasterLevel)
+a_left *= k_gain
+a_right *= k_gain
 outs a_left, a_right
 ;fout "Drone-IV-performance.wav", 16, a_left, a_right
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
