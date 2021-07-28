@@ -11,7 +11,7 @@ All rights reserved.
 sr = 48000
 ksmps = 128
 nchnls = 2
-0dbfs = 15000
+0dbfs = 150000
 
 #include "Internals.inc"
 
@@ -52,7 +52,7 @@ i_midinn = 12 * (log(i_frequency / 440) / i_log2) + 69
 xout i_midinn
 endop
 
-instr blah ; 101,102,103,104
+instr 101,102,103,104
 i_instrument = p1
 i_time = p2
 i_duration = p3
@@ -67,7 +67,7 @@ i_midi_key ratio2midinn i_fundamental, i_numerator, i_denominator
 event_i "i", "Internals_1", 0, i_duration, i_midi_key, i_midi_velocity, 0, i_pan
 endin
 
-instr 101
+instr 1101
 i_instrument = p1
 i_time = p2
 i_duration = p3
@@ -82,7 +82,7 @@ i_midi_key ratio2midinn i_fundamental, i_numerator, i_denominator
 event_i "i", "Bower", 0, i_duration, i_midi_key, i_midi_velocity, 0, i_pan
 endin
 
-instr 102
+instr 1102
 i_instrument = p1
 i_time = p2
 i_duration = p3
@@ -97,7 +97,7 @@ i_midi_key ratio2midinn i_fundamental, i_numerator, i_denominator
 event_i "i", "Phaser", 0, i_duration, i_midi_key, i_midi_velocity, 0, i_pan
 endin
 
-instr 103
+instr 1103
 i_instrument = p1
 i_time = p2
 i_duration = p3
@@ -112,7 +112,7 @@ i_midi_key ratio2midinn i_fundamental, i_numerator, i_denominator
 event_i "i", "Sweeper", 0, i_duration, i_midi_key, i_midi_velocity, 0, i_pan
 endin
 
-instr 104
+instr 1104
 i_instrument = p1
 i_time = p2
 i_duration = p3
@@ -127,11 +127,11 @@ i_midi_key ratio2midinn i_fundamental, i_numerator, i_denominator
 event_i "i", "Blower", 0, i_duration, i_midi_key, i_midi_velocity, 0, i_pan
 endin
 
-
 gk_Internals_1_mod_amp chnexport "gk_Internals_1_mod_amp", 3
 gk_Internals_1_mod_hz chnexport "gk_Internals_1_mod_hz", 3
 gk_Internals_1_level chnexport "gk_Internals_1_level", 3
-gi_Internals_1_waveform chnexport "gi_Internals_1_waveform", 3
+gS_Internals_1_mod_waveform chnexport "gS_Internals_1_mod_waveform", 3
+gS_Internals_1_waveform chnexport "gS_Internals_1_waveform", 3
 
 gi_Internals_1_sine ftgen 0, 0, 65537, 10, 1, 0, .02
 instr Internals_1
@@ -160,18 +160,47 @@ p3 = i_attack + i_sustain + i_release
 ak_envelope transeg 0.0, i_attack / 2.0, 1.5, i_amplitude / 2.0, i_attack / 2.0, -1.5, i_amplitude, i_sustain, 0.0, i_amplitude, i_release / 2.0, 1.5, i_amplitude / 2.0, i_release / 2.0, -1.5, 0
 i_frequency = cpsmidinn(i_midi_key)
 ; print i_frequency
-if gi_Internals_1_waveform == 0 then
+i_waveform init 0
+if strcmp(gS_Internals_1_waveform, "Sine") == 0 then
+i_waveform = 0
+endif
+if strcmp(gS_Internals_1_waveform, "Sawtooth") == 0 then
+i_waveform = 1
+endif
+if strcmp(gS_Internals_1_waveform, "Triangle") == 0 then
+i_waveform = 2
+endif
+if strcmp(gS_Internals_1_waveform, "Chebyschev") == 0 then
+i_waveform = 3 
+endif
+if i_waveform == 0 then
 a_signal poscil3 1, i_frequency, gi_Internals_1_sine
 endif
-if gi_Internals_1_waveform == 1 then
-a_signal vco2 1, i_frequency, 8 ; integrated saw
+if i_waveform == 1 then
+a_signal vco2 1, i_frequency, 8
 endif
-if gi_Internals_1_waveform == 2 then
-a_signal vco2 1, i_frequency, 12 ; triangle
+if i_waveform == 2 then
+a_signal vco2 1, i_frequency, 12
 endif
-if gi_Internals_1_waveform == 3 then
+if i_waveform == 3 then
 a_signal chebyshevpoly a_signal, 0, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10
 endif
+
+prints "Csound: gS_Internals_1_waveform: %s\n", gS_Internals_1_waveform
+prints "Csound: i_waveform: %f\n", i_waveform
+
+i_mod_waveform init 12
+if strcmp(gS_Internals_1_mod_waveform, "Triangle") == 0 then
+i_mod_waveform init 12
+endif 
+if strcmp(gS_Internals_1_mod_waveform, "Sawtooth") == 0 then
+i_mod_waveform init 4
+endif
+if strcmp(gS_Internals_1_mod_waveform, "Square") == 0 then
+i_mod_waveform init 10
+endif 
+prints "Csound: gS_Internals_1_mod_waveform: %s\n", gS_Internals_1_mod_waveform
+prints "Csound: i_mod_waveform: %f\n", i_mod_waveform
 printks2 "Csound: gk_Internals_1_mod_amp: %9.4f\n", gk_Internals_1_mod_amp
 printks2 "Csound: gk_Internals_1_mod_hz:  %9.4f\n", gk_Internals_1_mod_hz
 a_modulator vco2 gk_Internals_1_mod_amp, gk_Internals_1_mod_hz, 12
@@ -520,6 +549,7 @@ outleta "outright", a_right
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
+gk_ReverbFeedback chnexport "gk_ReverbFeedback", 3
 gk_DelayModulation chnexport "gk_DelayModulation", 3
 
 instr ReverbLeft

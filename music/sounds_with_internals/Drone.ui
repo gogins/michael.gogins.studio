@@ -1,48 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.2 -->
+<!-- Generated with glade 3.39.0 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
   <object class="GtkAdjustment" id="adjustment1">
     <property name="upper">1</property>
-    <property name="step_increment">0.01</property>
-    <property name="page_increment">10</property>
+    <property name="step-increment">0.01</property>
+    <property name="page-increment">10</property>
   </object>
   <object class="GtkAdjustment" id="adjustment2">
     <property name="upper">100</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
   </object>
   <object class="GtkAdjustment" id="adjustment3">
     <property name="upper">1</property>
-    <property name="step_increment">0.01</property>
-    <property name="page_increment">10</property>
+    <property name="step-increment">0.01</property>
+    <property name="page-increment">10</property>
   </object>
   <object class="GtkAdjustment" id="adjustment4">
     <property name="upper">1</property>
-    <property name="step_increment">0.01</property>
-    <property name="page_increment">10</property>
+    <property name="step-increment">0.01</property>
+    <property name="page-increment">10</property>
   </object>
   <object class="GtkAdjustment" id="adjustment5">
     <property name="lower">-50</property>
     <property name="upper">50</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
   </object>
+  <object class="GtkListStore" id="liststore1">
+    <columns>
+      <!-- column-name id -->
+      <column type="gint"/>
+      <!-- column-name waveform -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0">0</col>
+        <col id="1" translatable="yes">Triangle</col>
+      </row>
+      <row>
+        <col id="0">1</col>
+        <col id="1" translatable="yes">Square</col>
+      </row>
+      <row>
+        <col id="0">2</col>
+        <col id="1" translatable="yes">Sawtooth</col>
+      </row>
+      <row>
+        <col id="0">3</col>
+        <col id="1" translatable="yes">Sine</col>
+      </row>
+    </data>
+  </object>
+  <!-- n-columns=2 n-rows=9 -->
   <object class="GtkGrid" id="user_controls_layout">
     <property name="name">user_controls_layout</property>
     <property name="visible">True</property>
-    <property name="can_focus">False</property>
+    <property name="can-focus">False</property>
+    <property name="double-buffered">False</property>
     <property name="valign">start</property>
-    <property name="margin_left">40</property>
-    <property name="margin_right">40</property>
-    <property name="margin_top">40</property>
-    <property name="margin_bottom">40</property>
-    <property name="row_spacing">40</property>
-    <property name="column_spacing">40</property>
+    <property name="margin-start">10</property>
+    <property name="margin-end">10</property>
+    <property name="margin-top">40</property>
+    <property name="margin-bottom">40</property>
+    <property name="row-spacing">20</property>
+    <property name="column-spacing">20</property>
     <child>
       <object class="GtkLabel">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
+        <property name="can-focus">False</property>
         <property name="halign">start</property>
         <property name="valign">start</property>
         <property name="label" translatable="yes">Internals</property>
@@ -52,72 +80,72 @@
         </attributes>
       </object>
       <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">0</property>
+        <property name="left-attach">0</property>
+        <property name="top-attach">0</property>
       </packing>
     </child>
     <child>
       <object class="GtkLabel">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
+        <property name="can-focus">False</property>
         <property name="halign">start</property>
         <property name="label" translatable="yes">gk_Internals_1_mod_amp</property>
       </object>
       <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">1</property>
+        <property name="left-attach">0</property>
+        <property name="top-attach">2</property>
       </packing>
     </child>
     <child>
       <object class="GtkLabel">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
+        <property name="can-focus">False</property>
         <property name="halign">start</property>
         <property name="label" translatable="yes">gk_Internals_1_mod_hz</property>
       </object>
       <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">2</property>
+        <property name="left-attach">0</property>
+        <property name="top-attach">3</property>
       </packing>
     </child>
     <child>
       <object class="GtkScale" id="gk_Internals_1_mod_amp">
         <property name="name">gk_Internals_1_mod_amp</property>
-        <property name="width_request">400</property>
+        <property name="width-request">400</property>
         <property name="visible">True</property>
-        <property name="can_focus">True</property>
+        <property name="can-focus">True</property>
         <property name="adjustment">adjustment1</property>
-        <property name="fill_level">1000</property>
-        <property name="round_digits">4</property>
+        <property name="fill-level">1000</property>
+        <property name="round-digits">4</property>
         <property name="digits">4</property>
-        <property name="value_pos">right</property>
+        <property name="value-pos">right</property>
       </object>
       <packing>
-        <property name="left_attach">1</property>
-        <property name="top_attach">1</property>
+        <property name="left-attach">1</property>
+        <property name="top-attach">2</property>
       </packing>
     </child>
     <child>
       <object class="GtkScale" id="gk_Internals_1_mod_hz">
         <property name="name">gk_Internals_1_mod_hz</property>
-        <property name="width_request">400</property>
+        <property name="width-request">400</property>
         <property name="visible">True</property>
-        <property name="can_focus">True</property>
+        <property name="can-focus">True</property>
         <property name="adjustment">adjustment2</property>
-        <property name="fill_level">100</property>
-        <property name="round_digits">4</property>
+        <property name="fill-level">100</property>
+        <property name="round-digits">4</property>
         <property name="digits">4</property>
-        <property name="value_pos">right</property>
+        <property name="value-pos">right</property>
       </object>
       <packing>
-        <property name="left_attach">1</property>
-        <property name="top_attach">2</property>
+        <property name="left-attach">1</property>
+        <property name="top-attach">3</property>
       </packing>
     </child>
     <child>
       <object class="GtkLabel">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
+        <property name="can-focus">False</property>
         <property name="halign">start</property>
         <property name="valign">start</property>
         <property name="label" translatable="yes">Reverb</property>
@@ -127,14 +155,14 @@
         </attributes>
       </object>
       <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">3</property>
+        <property name="left-attach">0</property>
+        <property name="top-attach">4</property>
       </packing>
     </child>
     <child>
       <object class="GtkLabel">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
+        <property name="can-focus">False</property>
         <property name="halign">start</property>
         <property name="valign">start</property>
         <property name="label" translatable="yes">Output</property>
@@ -144,91 +172,122 @@
         </attributes>
       </object>
       <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">6</property>
+        <property name="left-attach">0</property>
+        <property name="top-attach">7</property>
       </packing>
     </child>
     <child>
       <object class="GtkScale" id="gk_ReverbFeedback">
         <property name="name">gk_ReverbFeedback</property>
         <property name="visible">True</property>
-        <property name="can_focus">True</property>
+        <property name="can-focus">True</property>
         <property name="adjustment">adjustment3</property>
-        <property name="fill_level">1</property>
-        <property name="round_digits">4</property>
+        <property name="fill-level">1</property>
+        <property name="round-digits">4</property>
         <property name="digits">4</property>
-        <property name="value_pos">right</property>
+        <property name="value-pos">right</property>
       </object>
       <packing>
-        <property name="left_attach">1</property>
-        <property name="top_attach">4</property>
+        <property name="left-attach">1</property>
+        <property name="top-attach">5</property>
       </packing>
     </child>
     <child>
       <object class="GtkScale" id="gk_DelayModulation">
         <property name="name">gk_DelayModulation</property>
         <property name="visible">True</property>
-        <property name="can_focus">True</property>
+        <property name="can-focus">True</property>
         <property name="adjustment">adjustment4</property>
-        <property name="fill_level">1</property>
-        <property name="round_digits">4</property>
+        <property name="fill-level">1</property>
+        <property name="round-digits">4</property>
         <property name="digits">4</property>
-        <property name="value_pos">right</property>
+        <property name="value-pos">right</property>
       </object>
       <packing>
-        <property name="left_attach">1</property>
-        <property name="top_attach">5</property>
+        <property name="left-attach">1</property>
+        <property name="top-attach">6</property>
       </packing>
     </child>
     <child>
       <object class="GtkScale" id="gk_MasterLevel">
         <property name="name">gk_MasterLevel</property>
         <property name="visible">True</property>
-        <property name="can_focus">True</property>
+        <property name="can-focus">True</property>
         <property name="adjustment">adjustment5</property>
-        <property name="fill_level">50</property>
-        <property name="round_digits">1</property>
-        <property name="value_pos">right</property>
+        <property name="fill-level">50</property>
+        <property name="round-digits">1</property>
+        <property name="value-pos">right</property>
       </object>
       <packing>
-        <property name="left_attach">1</property>
-        <property name="top_attach">7</property>
+        <property name="left-attach">1</property>
+        <property name="top-attach">8</property>
       </packing>
     </child>
     <child>
       <object class="GtkLabel">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
+        <property name="can-focus">False</property>
         <property name="halign">start</property>
         <property name="label" translatable="yes">gk_ReverbFeedback</property>
       </object>
       <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">4</property>
+        <property name="left-attach">0</property>
+        <property name="top-attach">5</property>
       </packing>
     </child>
     <child>
       <object class="GtkLabel">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
+        <property name="can-focus">False</property>
         <property name="halign">start</property>
         <property name="label" translatable="yes">gk_DelayModulation</property>
       </object>
       <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">5</property>
+        <property name="left-attach">0</property>
+        <property name="top-attach">6</property>
       </packing>
     </child>
     <child>
       <object class="GtkLabel">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
+        <property name="can-focus">False</property>
         <property name="halign">start</property>
         <property name="label" translatable="yes">gk_MasterLevel</property>
       </object>
       <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">7</property>
+        <property name="left-attach">0</property>
+        <property name="top-attach">8</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="label" translatable="yes">gS_Internals_1_mod_waveform</property>
+      </object>
+      <packing>
+        <property name="left-attach">0</property>
+        <property name="top-attach">1</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkComboBox" id="gS_Internals_1_mod_waveform">
+        <property name="name">gS_Internals_1_mod_waveform</property>
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="model">liststore1</property>
+        <property name="active">0</property>
+        <property name="id-column">1</property>
+        <child>
+          <object class="GtkCellRendererText" id="waveform_cell_renderer"/>
+          <attributes>
+            <attribute name="text">1</attribute>
+          </attributes>
+        </child>
+      </object>
+      <packing>
+        <property name="left-attach">1</property>
+        <property name="top-attach">1</property>
       </packing>
     </child>
     <child>
