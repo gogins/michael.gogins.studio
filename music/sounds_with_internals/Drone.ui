@@ -177,8 +177,8 @@
       </packing>
     </child>
     <child>
-      <object class="GtkScale" id="gk_ReverbFeedback">
-        <property name="name">gk_ReverbFeedback</property>
+      <object class="GtkScale" id="gk_Internals_delay_level">
+        <property name="name">gk_Internals_delay_level</property>
         <property name="visible">True</property>
         <property name="can-focus">True</property>
         <property name="adjustment">adjustment3</property>
@@ -228,7 +228,7 @@
         <property name="visible">True</property>
         <property name="can-focus">False</property>
         <property name="halign">start</property>
-        <property name="label" translatable="yes">gk_ReverbFeedback</property>
+        <property name="label" translatable="yes">gk_Internals_delay_level</property>
       </object>
       <packing>
         <property name="left-attach">0</property>

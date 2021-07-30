@@ -11,34 +11,31 @@ All rights reserved.
 sr = 48000
 ksmps = 128
 nchnls = 2
-0dbfs = 150000
+0dbfs = 1500000
 
 #include "Internals.inc"
 
 connect "Internals_1",  "outleft",  "Internals",   	"inleft"
-connect "Internals_1",  "outright", "Internals",  		"inright"
+connect "Internals_1",  "outright", "Internals",    "inright"
 connect "Bower",        "outleft",  "Internals",   	"inleft"
-connect "Bower",        "outright", "Internals",  		"inright"
+connect "Bower",        "outright", "Internals",    "inright"
 connect "Phaser",       "outleft",  "Internals",   	"inleft"
-connect "Phaser",       "outright", "Internals",  		"inright"
+connect "Phaser",       "outright", "Internals",    "inright"
 connect "Droner",       "outleft",  "Internals",   	"inleft"
-connect "Droner",       "outright", "Internals",  		"inright"
+connect "Droner",       "outright", "Internals",    "inright"
 connect "Sweeper",      "outleft",  "Internals",   	"inleft"
-connect "Sweeper",      "outright", "Internals",  		"inright"
+connect "Sweeper",      "outright", "Internals",    "inright"
 connect "Buzzer",       "outleft",  "Internals",   	"inleft"
-connect "Buzzer",       "outright", "Internals",  		"inright"
+connect "Buzzer",       "outright", "Internals",    "inright"
 connect "Blower",       "outleft",  "Internals",   	"inleft"
-connect "Blower",       "outright", "Internals",  		"inright"
+connect "Blower",       "outright", "Internals",    "inright"
 connect "Shiner",       "outleft",  "Internals",   	"inleft"
-connect "Shiner",       "outright", "Internals",  		"inright"
-connect "Internals",   	"outleft",  "MasterOutput", 	"inleft"
+connect "Shiner",       "outright", "Internals",    "inright"
+connect "Internals",   	"outleft",  "MasterOutput", "inleft"
 connect "Internals",  	"outright", "MasterOutput",	"inright"
-connect "Internals",   	"output",   "MasterOutput", 	"inleft"
-connect "Internals",  	"output",   "MasterOutput", 	"inright"
+connect "Internals",   	"outleft",  "MasterOutput", "inleft"
 
 alwayson "Internals"
-alwayson "ReverbLeft"
-alwayson "ReverbRight"
 alwayson "MasterOutput"
 
 opcode ratio2midinn, i, iii
