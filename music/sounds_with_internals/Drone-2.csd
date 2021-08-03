@@ -47,7 +47,7 @@ i_midinn = 12 * (log(i_frequency / 440) / i_log2) + 69
 xout i_midinn
 endop
 
-instr 101,102
+instr 101,102,103,104
 i_instrument = p1
 i_time = p2
 i_duration = p3
@@ -59,10 +59,10 @@ i_pan = p8
 i_ratio = i_numerator / i_denominator
 i_frequency = i_fundamental * i_ratio
 i_midi_key ratio2midinn i_fundamental, i_numerator, i_denominator
-event_i "i", "Internals_1", 0, i_duration, i_midi_key, i_midi_velocity, 0, i_pan
+event_i "i", "Sweeper", 0, i_duration, i_midi_key, i_midi_velocity, 0, i_pan
 endin
 
-instr 103,104
+instr 1031,1041
 i_instrument = p1
 i_time = p2
 i_duration = p3
@@ -391,10 +391,11 @@ prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrst
 ;printks "Phaser         i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d l%9.4f r%9.4f\n", 1, p1, p2, p3, p4, p5, p7, active(p1), dbamp(rms(a_left)), dbamp(rms(a_right))
 endin
 
-gk_britel init 0
-gk_briteh init 2.9
-gk_britels init .2 / 3
-gk_britehs init 2.5 / 2
+gk_Sweeper_level init 0
+gk_Sweeper_britel init 0
+gk_Sweeper_briteh init 2.9
+gk_Sweeper_britels init .2 / 3
+gk_Sweeper_britehs init 2.5 / 2
 gi_Sweeper_sine ftgen 0, 0, 65537, 10, 1
 gi_Sweeper_octfn ftgen 0, 0, 65537, -19, 1, 0.5, 270, 0.5
 instr Sweeper
@@ -417,7 +418,7 @@ kamp expseg 0.001,0.02,0.2,p3-0.01,0.001
 ktonemoddep jspline 0.01,0.05,0.2
 ktonemodrte jspline 6,0.1,0.2
 ktone poscil3 ktonemoddep, ktonemodrte, gi_Sweeper_sine
-kbrite rspline gk_britel, gk_briteh, gk_britels, gk_britehs
+kbrite rspline gk_Sweeper_britel, gk_Sweeper_briteh, gk_Sweeper_britels, gk_Sweeper_britehs
 ibasfreq init icps
 ioctcnt init 3
 iphs init 0
