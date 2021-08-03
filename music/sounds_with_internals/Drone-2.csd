@@ -391,11 +391,11 @@ prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrst
 ;printks "Phaser         i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d l%9.4f r%9.4f\n", 1, p1, p2, p3, p4, p5, p7, active(p1), dbamp(rms(a_left)), dbamp(rms(a_right))
 endin
 
-gk_Sweeper_level init 0
-gk_Sweeper_britel init 0
-gk_Sweeper_briteh init 2.9
-gk_Sweeper_britels init .2 / 3
-gk_Sweeper_britehs init 2.5 / 2
+gk_Sweeper_level chnexport "gk_Sweeper_level",3
+gk_Sweeper_britel chnexport "gk_Sweeper_britel",3
+gk_Sweeper_briteh chnexport "gk_Sweeper_briteh",3
+gk_Sweeper_britels chnexport "gk_Sweeper_britels",3
+gk_Sweeper_britehs chnexport "gk_Sweeper_britehs",3
 gi_Sweeper_sine ftgen 0, 0, 65537, 10, 1
 gi_Sweeper_octfn ftgen 0, 0, 65537, -19, 1, 0.5, 270, 0.5
 instr Sweeper
@@ -434,6 +434,8 @@ a1 ntrpol a1, arm, kmix
 kpanrte jspline 5, 0.05, 0.1
 kpandep jspline 0.9, 0.2, 0.4
 kpan poscil3 kpandep, kpanrte, gi_Sweeper_sine
+k_gain dbamp gk_Sweeper_level
+a1 = a1 * k_gain
 a1,a2 pan2 a1, kpan
 a1 delay a1, rnd(0.1)
 a2 delay a2, rnd(0.11)

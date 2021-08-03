@@ -71,23 +71,23 @@
     <property name="page-increment">10</property>
   </object>
   <object class="GtkAdjustment" id="adjustment21">
-    <property name="upper">100</property>
-    <property name="step-increment">1</property>
+    <property name="upper">5</property>
+    <property name="step-increment">0.001</property>
     <property name="page-increment">10</property>
   </object>
   <object class="GtkAdjustment" id="adjustment22">
-    <property name="upper">100</property>
-    <property name="step-increment">1</property>
+    <property name="upper">5</property>
+    <property name="step-increment">0.001</property>
     <property name="page-increment">10</property>
   </object>
   <object class="GtkAdjustment" id="adjustment23">
-    <property name="upper">100</property>
-    <property name="step-increment">1</property>
+    <property name="upper">5</property>
+    <property name="step-increment">0.001</property>
     <property name="page-increment">10</property>
   </object>
   <object class="GtkAdjustment" id="adjustment24">
-    <property name="upper">100</property>
-    <property name="step-increment">1</property>
+    <property name="upper">5</property>
+    <property name="step-increment">0.001</property>
     <property name="page-increment">10</property>
   </object>
   <object class="GtkAdjustment" id="adjustment3">
@@ -806,7 +806,7 @@
         <property name="visible">True</property>
         <property name="can-focus">False</property>
         <property name="halign">start</property>
-        <property name="label" translatable="yes">gk_Sweeper_briteh</property>
+        <property name="label" translatable="yes">Brightness high level</property>
       </object>
       <packing>
         <property name="left-attach">4</property>
@@ -818,7 +818,7 @@
         <property name="visible">True</property>
         <property name="can-focus">False</property>
         <property name="halign">start</property>
-        <property name="label" translatable="yes">gk_Sweeper_britehs</property>
+        <property name="label" translatable="yes">Brightness high level speed</property>
       </object>
       <packing>
         <property name="left-attach">4</property>
@@ -830,7 +830,7 @@
         <property name="visible">True</property>
         <property name="can-focus">False</property>
         <property name="halign">start</property>
-        <property name="label" translatable="yes">gk_Sweeper_britel</property>
+        <property name="label" translatable="yes">Brightness low level</property>
       </object>
       <packing>
         <property name="left-attach">4</property>
@@ -842,7 +842,7 @@
         <property name="visible">True</property>
         <property name="can-focus">False</property>
         <property name="halign">start</property>
-        <property name="label" translatable="yes">gk_Sweeper_britels</property>
+        <property name="label" translatable="yes">Brightness low level speed</property>
       </object>
       <packing>
         <property name="left-attach">4</property>
@@ -866,12 +866,12 @@
       </packing>
     </child>
     <child>
-      <object class="GtkScale" id="gk_Sweeper_level1">
-        <property name="name">gk_Sweeper_level</property>
+      <object class="GtkScale" id="gk_Sweeper_briteh">
+        <property name="name">gk_Sweeper_briteh</property>
         <property name="visible">True</property>
         <property name="can-focus">True</property>
         <property name="adjustment">adjustment21</property>
-        <property name="fill-level">100</property>
+        <property name="fill-level">5</property>
         <property name="round-digits">4</property>
         <property name="digits">4</property>
         <property name="value-pos">right</property>
@@ -882,12 +882,12 @@
       </packing>
     </child>
     <child>
-      <object class="GtkScale" id="gk_Sweeper_level2">
-        <property name="name">gk_Sweeper_level</property>
+      <object class="GtkScale" id="gk_Sweeper_britehs">
+        <property name="name">gk_Sweeper_britehs</property>
         <property name="visible">True</property>
         <property name="can-focus">True</property>
         <property name="adjustment">adjustment22</property>
-        <property name="fill-level">100</property>
+        <property name="fill-level">5</property>
         <property name="round-digits">4</property>
         <property name="digits">4</property>
         <property name="value-pos">right</property>
@@ -898,12 +898,12 @@
       </packing>
     </child>
     <child>
-      <object class="GtkScale" id="gk_Sweeper_level3">
-        <property name="name">gk_Sweeper_level</property>
+      <object class="GtkScale" id="gk_Sweeper_britel">
+        <property name="name">gk_Sweeper_britel</property>
         <property name="visible">True</property>
         <property name="can-focus">True</property>
         <property name="adjustment">adjustment23</property>
-        <property name="fill-level">100</property>
+        <property name="fill-level">5</property>
         <property name="round-digits">4</property>
         <property name="digits">4</property>
         <property name="value-pos">right</property>
@@ -914,12 +914,12 @@
       </packing>
     </child>
     <child>
-      <object class="GtkScale" id="gk_Sweeper_level4">
-        <property name="name">gk_Sweeper_level</property>
+      <object class="GtkScale" id="gk_Sweeper_britels">
+        <property name="name">gk_Sweeper_britels</property>
         <property name="visible">True</property>
         <property name="can-focus">True</property>
         <property name="adjustment">adjustment24</property>
-        <property name="fill-level">100</property>
+        <property name="fill-level">5</property>
         <property name="round-digits">4</property>
         <property name="digits">4</property>
         <property name="value-pos">right</property>
