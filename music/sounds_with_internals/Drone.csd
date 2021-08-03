@@ -4,7 +4,7 @@ Copyright (C) 2021 by Michael Gogins.
 All rights reserved.
 </CsLicense>
 <CsOptions>
--d --midi-key=4 --midi-velocity=5 -m168 -odac:plughw:2,0
+-d --midi-key=4 --midi-velocity=5 -m168 -odac
 </CsOptions>
 <CsInstruments>
 
