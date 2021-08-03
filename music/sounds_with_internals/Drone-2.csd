@@ -11,7 +11,7 @@ All rights reserved.
 sr = 48000
 ksmps = 128
 nchnls = 2
-0dbfs = 1
+0dbfs = 150000
 
 connect "Internals_1",  "outleft",  "ReverbLeft",   "input"
 connect "Internals_1",  "outright", "ReverbRight",  "input"
@@ -109,7 +109,6 @@ k5 = gk_Internals_1_k5
 k6 = gk_Internals_1_k6
 k7 = gk_Internals_1_k7
 k8 = gk_Internals_1_k8
-
 i_amplitude = ampdb(i_midi_velocity)
 i_attack =  p3 * (1 / 4) * (4 / 3)
 i_sustain = p3 * (1 / 2) * (4 / 3)
@@ -128,7 +127,7 @@ endif
 if strcmp(gS_Internals_1_waveform, "Triangle") == 0 then
 i_waveform = 2
 endif
-if strcmp(gS_Internals_1_waveform, "Chebyschev") == 0 then
+if strcmp(gS_Internals_1_waveform, "Chebyshev") == 0 then
 i_waveform = 3 
 endif
 if i_waveform == 0 then
@@ -141,11 +140,11 @@ if i_waveform == 2 then
 a_signal vco2 1, i_frequency, 12
 endif
 if i_waveform == 3 then
+a_signal poscil3 1, i_frequency, gi_Internals_1_sine
 a_signal chebyshevpoly a_signal, 0, k1, k2, k3, k4, k5, k6, k7, k8
 endif
 
 prints "Csound: gS_Internals_1_waveform: %s\n", gS_Internals_1_waveform
-prints "Csound: i_waveform:              %f\n", i_waveform
 
 i_mod_waveform init 12
 if strcmp(gS_Internals_1_mod_waveform, "Triangle") == 0 then
@@ -157,11 +156,19 @@ endif
 if strcmp(gS_Internals_1_mod_waveform, "Square") == 0 then
 i_mod_waveform init 10
 endif 
-prints "Csound: gS_Internals_1_mod_waveform: %s\n", gS_Internals_1_mod_waveform
-prints "Csound: i_mod_waveform: %f\n", i_mod_waveform
-printks2 "Csound: gk_Internals_1_mod_amp: %9.4f\n", gk_Internals_1_mod_amp
-printks2 "Csound: gk_Internals_1_mod_hz:  %9.4f\n", gk_Internals_1_mod_hz
-printks2 "Csound: gk_Internals_1_level:   %9.4f\n", gk_Internals_1_level
+prints   "Csound: gS_Internals_1_mod_waveform: %s\n", gS_Internals_1_mod_waveform
+prints   "Csound: i_mod_waveform: %f\n", i_mod_waveform
+printks2 "Csound: gk_Internals_1_mod_amp:  %9.4f\n", gk_Internals_1_mod_amp
+printks2 "Csound: gk_Internals_1_mod_hz:   %9.4f\n", gk_Internals_1_mod_hz
+printks2 "Csound: gk_Internals_1_level:    %9.4f\n", gk_Internals_1_level
+printks2 "Csound: gk_Internals_1_k1:       %9.4f\n", gk_Internals_1_k1
+printks2 "Csound: gk_Internals_1_k2:       %9.4f\n", gk_Internals_1_k2
+printks2 "Csound: gk_Internals_1_k3:       %9.4f\n", gk_Internals_1_k3
+printks2 "Csound: gk_Internals_1_k4:       %9.4f\n", gk_Internals_1_k4
+printks2 "Csound: gk_Internals_1_k5:       %9.4f\n", gk_Internals_1_k5
+printks2 "Csound: gk_Internals_1_k6:       %9.4f\n", gk_Internals_1_k6
+printks2 "Csound: gk_Internals_1_k7:       %9.4f\n", gk_Internals_1_k7
+printks2 "Csound: gk_Internals_1_k8:       %9.4f\n", gk_Internals_1_k8
 k_gain = ampdb(gk_Internals_1_level)
 a_modulator vco2 gk_Internals_1_mod_amp, gk_Internals_1_mod_hz, 12
 a_vdelay vdelay3 a_signal, a_modulator, 4
@@ -428,11 +435,11 @@ outleta "outright", a_right
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
-gk_Blower_grainDensity init 40
-gk_Blower_grainDuration init 0.2
-gk_Blower_grainAmplitudeRange init 100
-gk_Blower_grainFrequencyRange init 3
-gk_Blower_level init 0
+gk_Blower_level chnexport "gk_Blower_level", 3
+gk_Blower_grainDensity chnexport "gk_Blower_grainDensity", 3
+gk_Blower_grainDuration chnexport "gk_Blower_grainDuration", 3
+gk_Blower_grainAmplitudeRange chnexport "gk_Blower_grainAmplitudeRange", 3
+gk_Blower_grainFrequencyRange chnexport "gk_Blower_grainFrequencyRange", 3
 gk_Blower_midi_dynamic_range init 20
 gi_Blower_grtab ftgen 0, 0, 65537, 10, 1, .3, .1, 0, .2, .02, 0, .1, .04
 gi_Blower_wintab ftgen 0, 0, 65537, 10, 1, 0, .5, 0, .33, 0, .25, 0, .2, 0, .167
@@ -496,6 +503,11 @@ a_signal = a_signal * i_amplitude * a_declicking * k_gain
 a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
+printks2 "csound: gk_Blower_level:               %9.4f\n", gk_Blower_level
+printks2 "csound: gk_Blower_grainDensity:        %9.4f\n", gk_Blower_grainDensity
+printks2 "csound: gk_Blower_grainAmplitudeRange: %9.4f\n", gk_Blower_grainAmplitudeRange
+printks2 "csound: gk_Blower_grainFrequencyRange: %9.4f\n", gk_Blower_grainFrequencyRange
+printks2 "csound: gk_Blower_grainDuration:       %9.4f\n", gk_Blower_grainDuration
 prints  "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 printks "Blower         i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d l%9.4f r%9.4f\n", 1, p1, p2, p3, p4, p5, p7, active(p1), dbamp(rms(a_out_left)), dbamp(rms(a_out_right))
 endin
