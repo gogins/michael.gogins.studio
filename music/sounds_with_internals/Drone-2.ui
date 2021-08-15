@@ -162,6 +162,23 @@
     <property name="step-increment">0.001</property>
     <property name="page-increment">10</property>
   </object>
+  <object class="GtkAdjustment" id="adjustment37">
+    <property name="lower">-50</property>
+    <property name="upper">50</property>
+    <property name="step-increment">0.001</property>
+    <property name="page-increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment38">
+    <property name="lower">-1</property>
+    <property name="upper">1</property>
+    <property name="step-increment">0.001</property>
+    <property name="page-increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment39">
+    <property name="upper">40</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
   <object class="GtkAdjustment" id="adjustment4">
     <property name="upper">1</property>
     <property name="step-increment">0.01</property>
@@ -281,7 +298,7 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="halign">start</property>
-                    <property name="label" translatable="yes">Level</property>
+                    <property name="label" translatable="yes">Internals level</property>
                   </object>
                   <packing>
                     <property name="left-attach">0</property>
@@ -620,7 +637,7 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="halign">start</property>
-                    <property name="label" translatable="yes">Level</property>
+                    <property name="label" translatable="yes">Blower level</property>
                   </object>
                   <packing>
                     <property name="left-attach">0</property>
@@ -786,7 +803,7 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="halign">start</property>
-                    <property name="label" translatable="yes">Level</property>
+                    <property name="label" translatable="yes">Sweeper level</property>
                   </object>
                   <packing>
                     <property name="left-attach">0</property>
@@ -950,6 +967,120 @@
               </object>
               <packing>
                 <property name="position">2</property>
+                <property name="tab-fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <!-- n-columns=3 n-rows=3 -->
+              <object class="GtkGrid">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="margin-start">5</property>
+                <property name="margin-end">5</property>
+                <property name="margin-top">5</property>
+                <property name="margin-bottom">5</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="label" translatable="yes">Buzzer level</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="label" translatable="yes">Buzzer pan</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="label" translatable="yes">Buzzer partials
+</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScale" id="gk_Phaser_level1">
+                    <property name="name">gk_Buzzer_level</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="hexpand">True</property>
+                    <property name="adjustment">adjustment37</property>
+                    <property name="round-digits">1</property>
+                    <property name="value-pos">right</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScale" id="gk_Phaser_pen1">
+                    <property name="name">gk_Phaser_pan</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="adjustment">adjustment38</property>
+                    <property name="round-digits">1</property>
+                    <property name="value-pos">right</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScale" id="gk_Phaser_pen2">
+                    <property name="name">gk_Buzzer_partials</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="adjustment">adjustment39</property>
+                    <property name="round-digits">1</property>
+                    <property name="value-pos">right</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+              <packing>
+                <property name="position">4</property>
+              </packing>
+            </child>
+            <child type="tab">
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label" translatable="yes">Buzzer</property>
+              </object>
+              <packing>
+                <property name="position">3</property>
                 <property name="tab-fill">False</property>
               </packing>
             </child>
@@ -1124,7 +1255,7 @@
                 </child>
               </object>
               <packing>
-                <property name="position">3</property>
+                <property name="position">4</property>
               </packing>
             </child>
             <child type="tab">
@@ -1134,127 +1265,7 @@
                 <property name="label" translatable="yes">Phaser</property>
               </object>
               <packing>
-                <property name="position">3</property>
-                <property name="tab-fill">False</property>
-              </packing>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child type="tab">
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="label" translatable="yes">Buzzer</property>
-              </object>
-              <packing>
                 <property name="position">4</property>
-                <property name="tab-fill">False</property>
-              </packing>
-            </child>
-            <child>
-              <!-- n-columns=3 n-rows=3 -->
-              <object class="GtkGrid">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="margin-start">5</property>
-                <property name="margin-end">5</property>
-                <property name="margin-top">5</property>
-                <property name="margin-bottom">5</property>
-                <property name="hexpand">True</property>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-              </object>
-              <packing>
-                <property name="position">5</property>
-              </packing>
-            </child>
-            <child type="tab">
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="label" translatable="yes">Droner</property>
-              </object>
-              <packing>
-                <property name="position">5</property>
-                <property name="tab-fill">False</property>
-              </packing>
-            </child>
-            <child>
-              <!-- n-columns=3 n-rows=3 -->
-              <object class="GtkGrid">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="margin-start">5</property>
-                <property name="margin-end">5</property>
-                <property name="margin-top">5</property>
-                <property name="margin-bottom">5</property>
-                <property name="hexpand">True</property>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-              </object>
-              <packing>
-                <property name="position">6</property>
-              </packing>
-            </child>
-            <child type="tab">
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="label" translatable="yes">Shiner</property>
-              </object>
-              <packing>
-                <property name="position">6</property>
                 <property name="tab-fill">False</property>
               </packing>
             </child>
@@ -1284,8 +1295,7 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="halign">start</property>
-                    <property name="label" translatable="yes">Bower pan
-</property>
+                    <property name="label" translatable="yes">Bower pan</property>
                   </object>
                   <packing>
                     <property name="left-attach">0</property>
@@ -1487,7 +1497,7 @@
                 </child>
               </object>
               <packing>
-                <property name="position">7</property>
+                <property name="position">5</property>
               </packing>
             </child>
             <child type="tab">
@@ -1497,7 +1507,7 @@
                 <property name="label" translatable="yes">Bower</property>
               </object>
               <packing>
-                <property name="position">7</property>
+                <property name="position">5</property>
                 <property name="tab-fill">False</property>
               </packing>
             </child>
