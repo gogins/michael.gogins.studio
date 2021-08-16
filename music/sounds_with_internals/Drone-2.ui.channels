@@ -21,7 +21,7 @@ gk_Sweeper_britel init 0.292
 gk_Sweeper_britehs init 0.9854
 gk_Sweeper_briteh init 3.2482
 gk_Sweeper_level init -48.1308
-gk_Buzzer_partials init 4.1
+gk_Buzzer_partials init 5.0
 gk_Phaser_pan init 0.2
 gk_Buzzer_level init -33.8
 gk_Phaser_index2 init 0.6
