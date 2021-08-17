@@ -50,7 +50,7 @@ i_pan = p8
 i_ratio = i_numerator / i_denominator
 i_frequency = i_fundamental * i_ratio
 i_midi_key ratio2midinn i_fundamental, i_numerator, i_denominator
-event_i "i", "Buzzer", 0, i_duration, i_midi_key, i_midi_velocity, 0, i_pan
+event_i "i", "Phaser", 0, i_duration, i_midi_key, i_midi_velocity, 0, i_pan
 endin
 
 instr 1031,1041
@@ -69,6 +69,7 @@ event_i "i", "Buzzer", 0, i_duration, i_midi_key, i_midi_velocity, 0, i_pan
 endin
 
 gk_Blower_level chnexport "gk_Blower_level", 3
+gk_Blower_pan chnexport "gk_Blower_pan", 3
 gk_Blower_grainDensity chnexport "gk_Blower_grainDensity", 3
 gk_Blower_grainDuration chnexport "gk_Blower_grainDuration", 3
 gk_Blower_grainAmplitudeRange chnexport "gk_Blower_grainAmplitudeRange", 3
@@ -76,7 +77,6 @@ gk_Blower_grainFrequencyRange chnexport "gk_Blower_grainFrequencyRange", 3
 gk_Blower_midi_dynamic_range init 20
 gi_Blower_grtab ftgen 0, 0, 65537, 10, 1, .3, .1, 0, .2, .02, 0, .1, .04
 gi_Blower_wintab ftgen 0, 0, 65537, 10, 1, 0, .5, 0, .33, 0, .25, 0, .2, 0, .167
-
 instr Blower
 //////////////////////////////////////////////
 // Original by Hans Mikelson.
@@ -89,7 +89,7 @@ i_midi_key = p4
 i_midi_dynamic_range = i(gk_Blower_midi_dynamic_range)
 i_midi_velocity = p5 * i_midi_dynamic_range / 127 + (63.5 - i_midi_dynamic_range / 2)
 k_space_front_to_back = p6
-k_space_left_to_right = p7
+k_space_left_to_right = gk_Blower_pan
 k_space_bottom_to_top = p8
 i_phase = p9
 i_frequency = cpsmidinn(i_midi_key)
@@ -149,6 +149,7 @@ endin
 gk_Internals_1_mod_amp chnexport "gk_Internals_1_mod_amp", 3
 gk_Internals_1_mod_hz chnexport "gk_Internals_1_mod_hz", 3
 gk_Internals_1_level chnexport "gk_Internals_1_level", 3
+gk_Internals_1_pan chnexport "gk_Internals_1_pan", 3
 gS_Internals_1_mod_waveform chnexport "gS_Internals_1_mod_waveform", 3
 gS_Internals_1_waveform chnexport "gS_Internals_1_waveform", 3
 gk_Internals_1_k1 chnexport "gk_Internals_1_k1", 3
@@ -159,7 +160,6 @@ gk_Internals_1_k5 chnexport "gk_Internals_1_k5", 3
 gk_Internals_1_k6 chnexport "gk_Internals_1_k6", 3
 gk_Internals_1_k7 chnexport "gk_Internals_1_k7", 3
 gk_Internals_1_k8 chnexport "gk_Internals_1_k8", 3
-
 gi_Internals_1_sine ftgen 0, 0, 65537, 10, 1, 0, .02
 instr Internals_1
 i_instrument = p1
@@ -211,7 +211,6 @@ if i_waveform == 3 then
 a_signal poscil3 1, i_frequency, gi_Internals_1_sine
 a_signal chebyshevpoly a_signal, 0, k1, k2, k3, k4, k5, k6, k7, k8
 endif
-
 i_mod_waveform init 12
 if strcmp(gS_Internals_1_mod_waveform, "Triangle") == 0 then
 i_mod_waveform init 12
@@ -241,7 +240,7 @@ a_modulator vco2 gk_Internals_1_mod_amp, gk_Internals_1_mod_hz, 12
 a_vdelay vdelay3 a_signal, a_modulator, 4
 a_vdelay = a_vdelay * ak_envelope * 10
 a_output = k_gain * a_vdelay
-a_left, a_right pan2 a_output, i_pan
+a_left, a_right pan2 a_output, gk_Internals_1_pan
 a_damping linseg 0, 0.03, 1, p3 - 0.1, 1, 0.07, 0
 a_left = a_damping * a_left
 a_right = a_damping * a_right
@@ -346,6 +345,7 @@ prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrs
 endin
 
 gk_Sweeper_level chnexport "gk_Sweeper_level",3
+gk_Sweeper_pan chnexport "gk_Sweeper_pan",3
 gk_Sweeper_britel chnexport "gk_Sweeper_britel",3
 gk_Sweeper_briteh chnexport "gk_Sweeper_briteh",3
 gk_Sweeper_britels chnexport "gk_Sweeper_britels",3
@@ -359,7 +359,7 @@ i_duration = p3
 i_midi_key = p4
 i_midi_velocity = p5
 i_phase = p6
-i_pan = p7
+k_pan = gk_Sweeper_pan
 i_amplitude = ampdb(i_midi_velocity)
 i_attack =  p3 * (1 / 4) * (4 / 3)
 i_sustain = p3 * (1 / 2) * (4 / 3)
@@ -390,7 +390,7 @@ kpandep jspline 0.9, 0.2, 0.4
 kpan poscil3 kpandep, kpanrte, gi_Sweeper_sine
 k_gain dbamp gk_Sweeper_level
 a1 = a1 * k_gain
-a1,a2 pan2 a1, kpan
+a1,a2 pan2 a1, kpan + gk_Sweeper_pan
 a1 delay a1, rnd(0.1)
 a2 delay a2, rnd(0.11)
 kenv linsegr 1, 1, 0
