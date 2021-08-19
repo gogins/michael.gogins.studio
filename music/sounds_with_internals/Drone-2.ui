@@ -2,6 +2,35 @@
 <!-- Generated with glade 3.39.0 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
+  <object class="GtkListStore" id="Phaser_eq_list_store">
+    <columns>
+      <!-- column-name eq_mode -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Resonant lowpass</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Resonant highpass</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Bandpass</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Band-reject</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Peaking EQ</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Low shelf EQ</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">High shelf EQ</col>
+      </row>
+    </data>
+  </object>
   <object class="GtkAdjustment" id="adjustment1">
     <property name="upper">100</property>
     <property name="step-increment">0.001</property>
@@ -199,6 +228,30 @@
   <object class="GtkAdjustment" id="adjustment42">
     <property name="lower">-1</property>
     <property name="upper">1</property>
+    <property name="step-increment">0.001</property>
+    <property name="page-increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment43">
+    <property name="upper">10000</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment44">
+    <property name="lower">0.001</property>
+    <property name="upper">4</property>
+    <property name="value">1</property>
+    <property name="step-increment">0.001</property>
+    <property name="page-increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment45">
+    <property name="upper">10000</property>
+    <property name="value">0.001</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment46">
+    <property name="lower">0.001</property>
+    <property name="upper">4</property>
     <property name="step-increment">0.001</property>
     <property name="page-increment">10</property>
   </object>
@@ -1168,7 +1221,7 @@
               </packing>
             </child>
             <child>
-              <!-- n-columns=2 n-rows=6 -->
+              <!-- n-columns=2 n-rows=12 -->
               <object class="GtkGrid">
                 <property name="name">Phaser level</property>
                 <property name="visible">True</property>
@@ -1243,8 +1296,7 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="halign">start</property>
-                    <property name="label" translatable="yes">Index 2
-</property>
+                    <property name="label" translatable="yes">Index 2</property>
                   </object>
                   <packing>
                     <property name="left-attach">0</property>
@@ -1268,7 +1320,7 @@
                 </child>
                 <child>
                   <object class="GtkScale" id="gk_Phaser_pan">
-                    <property name="name">gk_Phaser_pen</property>
+                    <property name="name">gk_Phaser_pan</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="adjustment">adjustment32</property>
@@ -1335,6 +1387,148 @@
                     <property name="left-attach">1</property>
                     <property name="top-attach">5</property>
                   </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="label" translatable="yes">Parametric EQ type</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">6</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="label" translatable="yes">Parametric EQ cutoff hz</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">7</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="label" translatable="yes">Parametric EQ cutoff level</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">8</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="label" translatable="yes">Parametric EQ Q</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">9</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="label" translatable="yes">Parametric EQ slope</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">10</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkComboBox">
+                    <property name="name">gS_Phaser_eq_mode</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="model">Phaser_eq_list_store</property>
+                    <property name="active">0</property>
+                    <property name="id-column">0</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="gS_Phaser_eq_mode_text"/>
+                      <attributes>
+                        <attribute name="text">0</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">6</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScale" id="gk_Phaser_eq_cutoff_hz">
+                    <property name="name">gk_Phaser_eq_cutoff_hz</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="adjustment">adjustment43</property>
+                    <property name="round-digits">3</property>
+                    <property name="value-pos">right</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">7</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScale" id="gk_Phaser_eq_level">
+                    <property name="name">gk_Phaser_eq_level</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="adjustment">adjustment44</property>
+                    <property name="round-digits">3</property>
+                    <property name="value-pos">right</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">8</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScale" id="gk_Phaser_eq_Q">
+                    <property name="name">gk_Phaser_eq_Q</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="adjustment">adjustment45</property>
+                    <property name="round-digits">3</property>
+                    <property name="value-pos">right</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">9</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScale" id="gk_Phaser_eq_slope">
+                    <property name="name">gk_Phaser_eq_slope</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="adjustment">adjustment46</property>
+                    <property name="round-digits">3</property>
+                    <property name="value-pos">right</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">10</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
                 </child>
               </object>
               <packing>

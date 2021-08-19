@@ -2,83 +2,32 @@
 Author: Michael Gogins
 '''
 
-import CsoundAC
-import os
-import random
-# Using the same random seed for each performance makes the performance 
-# deterministic, not random.
-random.seed(221)
-import signal
-import string
-import sys
-import traceback
-
-print('Set "rendering" to:     "soundfile" or "audio".')
-print
-rendering = "audio"
-
-model = CsoundAC.MusicModel()
-score = model.getScore()
-
-script_filename = sys.argv[0]
-print('Full Python script:     %s' % script_filename)
-title, exte = os.path.splitext(os.path.basename(script_filename))
-model.setTitle(title)
-model.setArtist("Michael Gogins")
-model.setAuthor("Michael Gogins")
-model.setYear("2020")
-model.generateAllNames()
-soundfile_name = model.getOutputSoundfileFilepath()
-print('Soundfile name:         %s' % soundfile_name)
-dac_name = 'dac:plughw:1,0'
-print('Audio output name:      %s' % dac_name)
-print
-
-print('Rendering option:       %s' % rendering)
-rendering_commands = {
-    'soundfile':    'csound -d -r 48000 -k 128 -m195 -+msg_color=0 -RWZdfo %s' % (soundfile_name),
-    'audio':        'csound -d -r 48000 -k 128 -m195 -+msg_color=0 -o%s'       % (dac_name),
-}
-csound_command = rendering_commands[rendering]
-print('Csound command line:    %s' % csound_command)
-print
-
-import musx_csoundac
-
 ###############################################################################
 """
 Ring modulation generates pairwise sum and difference tones of two input 
 spectra. This little etude utilizes both the input and output spectra 
 simultaneously to create a funky two part composition.
 
-To run this script cd to the parent directory of musx_demos/ and do:
+To run this script cd to the parent directory of demos/ and do:
 ```bash
-python3 -m musx_demos.rm
+python3 -m demos.rm
 ```
 """
 
 
-import random
-from musx.spectral import rmspectrum
-from musx.generators import choose, jumble, cycle
-from musx.scheduler import Scheduler
-from musx.scales import keynum, hertz, scale
-from musx.ran import pick
-from musx.tools import setmidiplayer, playfile
-from musx.rhythm import intempo
-from musx.midi import MidiNote, MidiSeq, MidiFile
-from musx.midi.gm import AcousticGrandPiano, Xylophone, Flute, FretlessBass, SteelDrums,\
-     Clarinet, Marimba, AcousticBass
+from musx import Score, Note, Seq, MidiFile, rmspectrum, choose, jumble,\
+     cycle, hertz, scale, pick, intempo
+from musx.midi.gm import Clarinet, Marimba
 
 
-def accompaniment(q, reps, dur, set1, set2):
+def accompaniment(score, reps, dur, set1, set2):
     """
     Creates the accompanyment part from the ring modulation input specta.
 
     Parameters
     ----------
-    q : Sheduler
-        The scheduling queue
+    score : Score
+        The musical score.
     reps : int
         The number of sections to compose.
     dur : int
@@ -96,21 +45,21 @@ def accompaniment(q, reps, dur, set1, set2):
         # Iterate the keys, play as a chord.
         for k in keys:
             # Create a midi note at the current time.
-            m = MidiNote(time=q.now, dur=dur, key=k, amp=.3, chan=0)
+            n = Note(time=score.now, duration=dur, pitch=k, amplitude=.3, instrument=0)
             # Add it to our output seq.
-            q.out.addevent(m)
+            score.add(n)
         # Wait till the next chord.
         yield dur
 
 
-def melody(q, reps, dur, set3):
+def melody(score, reps, dur, set3):
     """
     Creates the melodic part out of the ring modulated output specta.
  
     Parameters
     ----------
-    q : Sheduler
-        The scheduling queue.
+    score : Score
+        The musical score.
     reps : int
         The number of sections to compose.
     dur : int
@@ -121,21 +70,21 @@ def melody(q, reps, dur, set3):
     # Create a cycle of the two inputs
     pat = cycle(set3)
     for _ in range(2 * reps):
-        m = MidiNote(time=q.now, dur=dur/2, key=next(pat), amp=.7, chan=1)
-        q.out.addevent(m)
+        n = Note(time=score.now, duration=dur/2, pitch=next(pat), amplitude=.7, instrument=1)
+        score.add(n)
         # Wait till the next note
         yield dur
 
 
-def rmfunky(q, reps, dur, keys):
+def rmfunky(score, reps, dur, keys):
     """
     Main composer chooses input spectra , creates a ring modulated
     output spectrum and plays them using two parts.
 
     Parameters
     ----------
-    q : Sheduler
-        The scheduling queue
+    score : Score
+        The musical score.
     reps : int
         The number of sections to compose.
     dur : int
@@ -157,34 +106,50 @@ def rmfunky(q, reps, dur, keys):
         keys3 = spect.keynums(quant=1, unique=True, minkey=21, maxkey=108)
         # sprout composers to play inputs and output
         playn = pick(3,4,5)
-        q.compose(accompaniment(q, playn, dur, keys1, keys2))
-        q.compose(melody(q, playn, dur, keys3))
-        # do it again after composers finish
+        score.compose(accompaniment(score, playn, dur, keys1, keys2))
+        score.compose(melody(score, playn, dur, keys3))        # do it again after composers finish
         yield (dur * playn * 2)
 
-# It's good practice to add any metadata such as tempo, midi instrument
-# assignments, micro tuning, etc. to track 0 in your midi file.
-t0 = MidiSeq.metaseq(ins={0: Marimba, 1: Clarinet})
-# Track 1 will hold the composition.
-t1 = MidiSeq()
-# Create a scheduler and give it t1 as its output object.
-q = Scheduler(t1)
-# Musical material is the cycle of fourths.
-keys = scale(40, 12, 5)
-# Surface rhythm
-rhy = intempo(.25, 74)
-# Start our composer in the scheduler, this creates the composition.
-q.compose(rmfunky(q, 24, rhy, keys))
-# Write a midi file with our track data.
-f = MidiFile("rm.mid", [t0, t1]).write()
-# To automatially play demos use setmidiplayer() to assign a shell
-# command that will play midi files on your computer. Example:
-#   setmidiplayer("fluidsynth -iq -g1 /usr/local/sf/MuseScore_General.sf2")
-print(f"Wrote '{f.pathname}'.")
 
+if __name__ == '__main__':
+    # It's good practice to add any metadata such as tempo, midi instrument
+    # assignments, micro tuning, etc. to track 0 in your midi file.
+    track0 = MidiFile.metatrack(ins={0: Marimba, 1: Clarinet})
+    # Track 1 will hold the composition.
+    track1 = Seq()
+    # Create a score and give it tr1 to hold the score event data.
+    score = Score(out=track1)
+    # Musical material is the cycle of fourths.
+    keys = scale(40, 12, 5)
+    # Surface rhythm
+    rhy = intempo(.25, 74)
+    # Create the composition.
+    score.compose(rmfunky(score, 24, rhy, keys))
+    # Write the tracks to a midi file in the current directory.
+    midi_file = MidiFile("rm.mid", [track0, track1]).write()
+    print(f"Wrote '{midi_file.pathname}'.")
+
+    # To automatially play demos use setmidiplayer() and playfile().
+    # Example:
+    #     setmidiplayer("fluidsynth -iq -g1 /usr/local/sf/MuseScore_General.sf2")
+    #     playfile(file.pathname)
+
+
+
+import CsoundAC
+model = CsoundAC.MusicModel()
 csoundac_score_node = CsoundAC.ScoreNode()
 csoundac_score = csoundac_score_node.getScore()
-musx_csoundac.to_csoundac_score(f, csoundac_score)
+#musx_csoundac.to_csoundac_score(f, csoundac_score)
+
+def to_csound_ac_score(score, midifile):
+    for sequence in midifile:
+        for event in sequence:
+            if isinstance(event, Note) == True:
+                #score.append(event.instrument, event.time, event.duration, event.pitch, event.amplitude)
+                score.append_note (event.time, event.duration, 144, event.instrument, event.pitch, event.amplitude)    
+
+to_csound_ac_score(csoundac_score, midi_file)
 
 print("Generated:")
 print(csoundac_score.getCsoundScore())
@@ -835,11 +800,12 @@ rescale.setRescale(CsoundAC.Event.INSTRUMENT, bool(1), bool(1), 1, 3.99)
 rescale.setRescale(CsoundAC.Event.VELOCITY, bool(1), bool(1), 50, 20)
 model.addChild(rescale)
 model.setCsoundOrchestra(orc)
-model.setCsoundCommand(csound_command)
+model.setCsoundCommand("-m165 -d -RWfodac:plughw:2,0")
 model.generate()
 # Fix ending. Instruments would drop out, sustain till the end. Some notes 
 # course will decay first.
 score = model.getScore()
+score.save("rm.xml")
 score_duration = score.getDuration() + 4.
 sounding = set()
 score.save(model.getMidifileFilepath())

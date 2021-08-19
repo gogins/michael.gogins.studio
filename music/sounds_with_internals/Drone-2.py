@@ -297,12 +297,17 @@ endin
 
 gk_Phaser_attack init .125
 gk_Phaser_release init .125
-gk_Phaser_ratio1 chnexport "gk_Phaser_ratio1", 3
-gk_Phaser_ratio2 chnexport "gk_Phaser_ratio2", 3
-gk_Phaser_index1 chnexport "gk_Phaser_index1", 3
-gk_Phaser_index2 chnexport "gk_Phaser_index2", 3
 gk_Phaser_level chnexport "gk_Phaser_level", 3
 gk_Phaser_pan chnexport "gk_Phaser_pan", 3
+gk_Phaser_ratio1 chnexport "gk_Phaser_ratio1", 3
+gk_Phaser_index1 chnexport "gk_Phaser_index1", 3
+gk_Phaser_ratio2 chnexport "gk_Phaser_ratio2", 3
+gk_Phaser_index2 chnexport "gk_Phaser_index2", 3
+gS_Phaser_eq_mode chnexport "gS_Phaser_eq_mode", 3
+gk_Phaser_eq_cutoff_hz chnexport "gk_Phaser_eq_cutoff_hz", 3
+gk_Phaser_eq_level chnexport "gk_Phaser_eq_level", 3
+gk_Phaser_eq_Q chnexport "gk_Phaser_eq_Q", 3
+gk_Phaser_eq_slope chnexport "gk_Phaser_eq_slope", 3
 gk_Phaser_midi_dynamic_range init 127
 gi_Phaser_sine ftgen 0,0,65537,10,1
 instr Phaser
@@ -329,6 +334,29 @@ p3 = i_attack + i_sustain + i_release
 a_envelope transegr 0.0, i_attack / 2.0, 1.5, i_amplitude / 2.0, i_attack / 2.0, -1.5, i_amplitude, i_sustain, 0.0, i_amplitude, i_release / 2.0, 1.5, i_amplitude / 2.0, i_release / 2.0, -1.5, 0
 a1,a2 crosspm gk_Phaser_ratio1, gk_Phaser_ratio2, gk_Phaser_index1, gk_Phaser_index2, i_frequency, gi_Phaser_sine, gi_Phaser_sine
 a_signal = (a1 + a2) * k_gain * a_envelope
+; ar rbjeq asig, kfco, klvl, kQ, kS[, imode]
+if strcmp(gS_Phaser_eq_mode, "Resonant lowpass") == 0 then
+    i_mode = 0
+endif
+if strcmp(gS_Phaser_eq_mode, "Resonant highpass") == 0 then
+    i_mode = 2
+endif
+if strcmp(gS_Phaser_eq_mode, "Bandpass") == 0 then
+    i_mode = 4
+endif
+if strcmp(gS_Phaser_eq_mode, "Band-reject") == 0 then
+    i_mode = 6
+endif
+if strcmp(gS_Phaser_eq_mode, "Peaking EQ") == 0 then
+    i_mode = 8
+endif
+if strcmp(gS_Phaser_eq_mode, "Low shelf EQ") == 0 then
+    i_mode = 10
+endif
+if strcmp(gS_Phaser_eq_mode, "High shelf EQ") == 0 then
+    i_mode = 12
+endif
+a_signal rbjeq a_signal, gk_Phaser_eq_cutoff_hz, gk_Phaser_eq_level, gk_Phaser_eq_Q, gk_Phaser_eq_slope, i_mode
 #ifdef USE_SPATIALIZATION
 a_spatial_reverb_send init 0
 a_bsignal[] init 16
@@ -981,7 +1009,6 @@ def post_process():
     except:
         print(traceback.format_exc())
         
-
 def on_render_button_clicked(button):
     try:
         global piece_filepath
@@ -1013,7 +1040,6 @@ def on_render_button_clicked(button):
     except:
         print(traceback.format_exc())
         
-
 def on_stop_button_clicked(button):
     try:
         global csound_is_performing
@@ -1190,7 +1216,7 @@ def load_ui(source=None):
             if os.path.exists(ui_channels_filepath) == True:
                 with open(ui_channels_filepath, "r", encoding="utf-8") as file:
                     for line in file:
-                            channel, equals, value = line.split()
+                            channel, equals, value = line.split(maxsplit=2)
                             if channel in widgets_for_channels:
                                 widget = widgets_for_channels[channel]
                                 if widget:
