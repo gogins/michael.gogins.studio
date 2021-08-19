@@ -38,7 +38,52 @@ i_midinn = 12 * (log(i_frequency / 440) / i_log2) + 69
 xout i_midinn
 endop
 
-instr 101,102,103,104
+instr 101
+i_instrument = p1
+i_time = p2
+i_duration = p3
+i_fundamental = p4
+i_numerator = p5
+i_denominator = p6
+i_midi_velocity = p7
+i_pan = p8
+i_ratio = i_numerator / i_denominator
+i_frequency = i_fundamental * i_ratio
+i_midi_key ratio2midinn i_fundamental, i_numerator, i_denominator
+event_i "i", "Internals_1", 0, i_duration, i_midi_key, i_midi_velocity, 0, i_pan
+endin
+
+instr 102
+i_instrument = p1
+i_time = p2
+i_duration = p3
+i_fundamental = p4
+i_numerator = p5
+i_denominator = p6
+i_midi_velocity = p7
+i_pan = p8
+i_ratio = i_numerator / i_denominator
+i_frequency = i_fundamental * i_ratio
+i_midi_key ratio2midinn i_fundamental, i_numerator, i_denominator
+event_i "i", "Sweeper", 0, i_duration, i_midi_key, i_midi_velocity, 0, i_pan
+endin
+
+instr 103
+i_instrument = p1
+i_time = p2
+i_duration = p3
+i_fundamental = p4
+i_numerator = p5
+i_denominator = p6
+i_midi_velocity = p7
+i_pan = p8
+i_ratio = i_numerator / i_denominator
+i_frequency = i_fundamental * i_ratio
+i_midi_key ratio2midinn i_fundamental, i_numerator, i_denominator
+event_i "i", "Bower", 0, i_duration, i_midi_key, i_midi_velocity, 0, i_pan
+endin
+
+instr 104
 i_instrument = p1
 i_time = p2
 i_duration = p3
@@ -51,21 +96,6 @@ i_ratio = i_numerator / i_denominator
 i_frequency = i_fundamental * i_ratio
 i_midi_key ratio2midinn i_fundamental, i_numerator, i_denominator
 event_i "i", "Phaser", 0, i_duration, i_midi_key, i_midi_velocity, 0, i_pan
-endin
-
-instr 1031,1041
-i_instrument = p1
-i_time = p2
-i_duration = p3
-i_fundamental = p4
-i_numerator = p5
-i_denominator = p6
-i_midi_velocity = p7
-i_pan = p8
-i_ratio = i_numerator / i_denominator
-i_frequency = i_fundamental * i_ratio
-i_midi_key ratio2midinn i_fundamental, i_numerator, i_denominator
-event_i "i", "Buzzer", 0, i_duration, i_midi_key, i_midi_velocity, 0, i_pan
 endin
 
 gk_Blower_level chnexport "gk_Blower_level", 3
@@ -1061,19 +1091,20 @@ def get_control_value(control):
         channel_value = control.get_active()
     elif isinstance(control, Gtk.Scale):
         channel_value = control.get_value()
-        log_print("control: {} value: {}".format(control.get_name(), channel_value))
     #~ elif isinstance(control, Gtk.SpinButton):
         #~ channel_value = control.get_value()
     elif isinstance(control, Gtk.Editable):
         channel_value = control.get_text()
+    log_print("control: {} value: {}".format(control.get_name(), channel_value))
     return channel_value
     
 def set_control_value(control, value):
-    log_print("control: {} value: {}".format(control.get_name(), value))
+    value = value.strip().replace('"', '')
+    log_print("control: {}{} value: {}".format(control.get_name(), type(control), value))
     if isinstance(control, Gtk.Switch):
         control.set_state(float(value))
     elif isinstance(control, Gtk.ComboBox):
-        control.set_active_id(value)
+        result = control.set_active_id(value)
     elif isinstance(control, Gtk.ToggleButton):
         control.set_active(float(value))
     elif isinstance(control, Gtk.Scale):
@@ -1216,11 +1247,11 @@ def load_ui(source=None):
             if os.path.exists(ui_channels_filepath) == True:
                 with open(ui_channels_filepath, "r", encoding="utf-8") as file:
                     for line in file:
-                            channel, equals, value = line.split(maxsplit=2)
-                            if channel in widgets_for_channels:
-                                widget = widgets_for_channels[channel]
-                                if widget:
-                                    set_control_value(widget, value)
+                        channel, equals, value = line.split(maxsplit=2)
+                        if channel in widgets_for_channels:
+                            widget = widgets_for_channels[channel]
+                            if widget:
+                                set_control_value(widget, value)
             else:
                 log_print("UI file not found, not defining controls.")
     except:

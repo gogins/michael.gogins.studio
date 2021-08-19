@@ -27,17 +27,17 @@ gk_Sweeper_level init -48.1308
 gk_Buzzer_partials init 8.2
 gk_Buzzer_pan init 0.0
 gk_Buzzer_level init -19.4
-gk_Phaser_eq_slope init 0.982
-gk_Phaser_eq_Q init 729.614
-gk_Phaser_eq_level init 0.952
-gk_Phaser_eq_cutoff_hz init 1630.901
-gS_Phaser_eq_mode init "Peaking EQ"
-gk_Phaser_index2 init 0.4
+gk_Phaser_eq_slope init 3.346
+gk_Phaser_eq_Q init 0.188
+gk_Phaser_eq_level init 3.509
+gk_Phaser_eq_cutoff_hz init 1244.635
+gS_Phaser_eq_mode init "Resonant lowpass"
+gk_Phaser_index2 init 2.3
 gk_Phaser_ratio2 init 1.8
 gk_Phaser_index1 init 1.9
 gk_Phaser_ratio1 init 1.9
-gk_Phaser_pan init 0.0
-gk_Phaser_level init 13.6
+gk_Phaser_pan init 0.7
+gk_Phaser_level init 6.9
 gk_Bower_vibrato_amplitude init 0.0
 gk_Bower_vibrato_hz init 0.0
 gk_Bower_bow_pressure init 0.0
@@ -45,6 +45,6 @@ gk_Bower_bow_position init 0.0
 gi_Bower_minimum_hz init 10.0
 gk_Bower_pan init 0.0
 gk_Bower_level init 0.0
-gk_Reverb_Feedback init 0.6016
-gk_Reverb_DelayModulation init 0.5737
-gk_MasterLevel init 0.0
+gk_Reverb_Feedback init 0.5339
+gk_Reverb_DelayModulation init 0.0
+gk_MasterLevel init 24.0
