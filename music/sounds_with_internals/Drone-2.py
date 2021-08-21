@@ -418,7 +418,7 @@ i_midi_key = p4
 i_midi_velocity = p5
 i_phase = p6
 k_pan = gk_Sweeper_pan
-i_amplitude = ampdb(i_midi_velocity)
+i_amplitude = ampdb(i_midi_velocity) * .1
 i_attack =  p3 * (1 / 4) * (4 / 3)
 i_sustain = p3 * (1 / 2) * (4 / 3)
 i_release = p3 * (1 / 4) * (4 / 3)
@@ -446,7 +446,7 @@ a1 ntrpol a1, arm, kmix
 kpanrte jspline 5, 0.05, 0.1
 kpandep jspline 0.9, 0.2, 0.4
 kpan poscil3 kpandep, kpanrte, gi_Sweeper_sine
-k_gain dbamp gk_Sweeper_level
+k_gain ampdb gk_Sweeper_level
 a1 = a1 * k_gain
 a1,a2 pan2 a1, kpan + gk_Sweeper_pan
 a1 delay a1, rnd(0.1)
@@ -1095,12 +1095,12 @@ def get_control_value(control):
         #~ channel_value = control.get_value()
     elif isinstance(control, Gtk.Editable):
         channel_value = control.get_text()
-    log_print("control: {} value: {}".format(control.get_name(), channel_value))
+    #log_print("control: {} value: {}".format(control.get_name(), channel_value))
     return channel_value
     
 def set_control_value(control, value):
     value = value.strip().replace('"', '')
-    log_print("control: {}{} value: {}".format(control.get_name(), type(control), value))
+    #log_print("control: {}{} value: {}".format(control.get_name(), type(control), value))
     if isinstance(control, Gtk.Switch):
         control.set_state(float(value))
     elif isinstance(control, Gtk.ComboBox):
@@ -1124,34 +1124,34 @@ def on_control_change(control, data=-1 ,user_data=None):
         global csound
         channel_name = control.get_name()
         channel_value = get_control_value(control)
-        log_print("channel: {} value: {}".format(channel_name, channel_value))
+        #log_print("channel: {} value: {}".format(channel_name, channel_value))
         # Prevent premature definition of control channels.
         if csound_is_performing == False:
             pass
         else:
             if isinstance(control, Gtk.ToggleButton):
-                log_print("ToggleButton:  setControlChannel({}, {}, ({}))".format(channel_name, channel_value, type(channel_value)))
+                #log_print("ToggleButton:  setControlChannel({}, {}, ({}))".format(channel_name, channel_value, type(channel_value)))
                 csound.setControlChannel(channel_name, channel_value)
             elif isinstance(control, Gtk.ComboBox):
                 channel_value = control.get_active_id()
-                log_print("Combo box:     SetStringChannel({}, {}, ({}))".format(channel_name, channel_value, type(channel_value)))
+                #log_print("Combo box:     SetStringChannel({}, {}, ({}))".format(channel_name, channel_value, type(channel_value)))
                 csound.setStringChannel(channel_name, channel_value)
             elif isinstance(control, Gtk.Button):
                 channel_value = float(data)
-                log_print("Button:        setControlChannel({}, {}, ({}))".format(channel_name, channel_value, type(channel_value)))
+                #log_print("Button:        setControlChannel({}, {}, ({}))".format(channel_name, channel_value, type(channel_value)))
                 csound.setControlChannel(channel_name, channel_value)
             elif isinstance(control, Gtk.MenuItem):
                 channel_value = data
-                log_print("MenuItem:      setControlChannel({}, {}, ({}))".format(channel_name, channel_value, type(channel_value)))
+                #log_print("MenuItem:      setControlChannel({}, {}, ({}))".format(channel_name, channel_value, type(channel_value)))
                 csound.setControlChannel(channel_name, channel_value)
             elif isinstance(control, Gtk.Scale):
-                log_print("Scale:         setControlChannel({}, {}, ({}))".format(channel_name, channel_value, type(channel_value)))
+                #log_print("Scale:         setControlChannel({}, {}, ({}))".format(channel_name, channel_value, type(channel_value)))
                 csound.setControlChannel(channel_name, channel_value)
             #~ elif isinstance(control, Gtk.SpinButton):
                 #~ channel_value = control.get_value()
                 #~ csound.SetControlChannel(channel_name, channel_value)
             elif isinstance(control, Gtk.Editable):
-                channel_value = control.get_text()
+                #channel_value = control.get_text()
                 log_print("Editable:      SetStringChannel({}, {}, ({}))".format(channel_name, channel_value, type(channel_value)))
                 csound.setStringChannel(channel_name, channel_value)
         values_for_channels[channel_name] = channel_value
