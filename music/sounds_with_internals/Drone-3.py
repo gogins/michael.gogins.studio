@@ -2,7 +2,7 @@ orc = '''
 sr = 48000
 ksmps = 128
 nchnls = 2
-0dbfs = 200000
+0dbfs = 2000000
 
 connect "Internals_1",  "outleft",  "ReverbLeft",   "input"
 connect "Internals_1",  "outright", "ReverbRight",  "input"
@@ -161,11 +161,11 @@ aoutr grain ip4, ifqc, gk_Blower_grainDensity, gk_Blower_grainAmplitudeRange, gk
 a_signal = aoutl + aoutr
 i_attack = .002
 i_release = 0.01
-printks2 "csound: gk_Blower_level:               %9.4f\\n", gk_Blower_level
-printks2 "csound: gk_Blower_grainDensity:        %9.4f\\n", gk_Blower_grainDensity
-printks2 "csound: gk_Blower_grainAmplitudeRange: %9.4f\\n", gk_Blower_grainAmplitudeRange
-printks2 "csound: gk_Blower_grainFrequencyRange: %9.4f\\n", gk_Blower_grainFrequencyRange
-printks2 "csound: gk_Blower_grainDuration:       %9.4f\\n", gk_Blower_grainDuration
+; printks2 "csound: gk_Blower_level:               %9.4f\\n", gk_Blower_level
+; printks2 "csound: gk_Blower_grainDensity:        %9.4f\\n", gk_Blower_grainDensity
+; printks2 "csound: gk_Blower_grainAmplitudeRange: %9.4f\\n", gk_Blower_grainAmplitudeRange
+; printks2 "csound: gk_Blower_grainFrequencyRange: %9.4f\\n", gk_Blower_grainFrequencyRange
+; printks2 "csound: gk_Blower_grainDuration:       %9.4f\\n", gk_Blower_grainDuration
 p3 = i_attack + i_sustain + i_release
 a_declicking linsegr 0, i_attack, 1, i_sustain, 1, i_release, 0
 a_signal = a_signal * i_amplitude * a_declicking * k_gain
@@ -251,20 +251,20 @@ endif
 if strcmp(gS_Internals_1_mod_waveform, "Square") == 0 then
 i_mod_waveform init 10
 endif 
-prints   "Csound: gS_Internals_1_waveform:     %s\\n", gS_Internals_1_waveform
-prints   "Csound: gS_Internals_1_mod_waveform: %s\\n", gS_Internals_1_mod_waveform
-prints   "Csound: i_mod_waveform:              %9.4f\\n", i_mod_waveform
-printks2 "Csound: gk_Internals_1_mod_amp:      %9.4f\\n", gk_Internals_1_mod_amp
-printks2 "Csound: gk_Internals_1_mod_hz:       %9.4f\\n", gk_Internals_1_mod_hz
-printks2 "Csound: gk_Internals_1_level:        %9.4f\\n", gk_Internals_1_level
-printks2 "Csound: gk_Internals_1_k1:           %9.4f\\n", gk_Internals_1_k1
-printks2 "Csound: gk_Internals_1_k2:           %9.4f\\n", gk_Internals_1_k2
-printks2 "Csound: gk_Internals_1_k3:           %9.4f\\n", gk_Internals_1_k3
-printks2 "Csound: gk_Internals_1_k4:           %9.4f\\n", gk_Internals_1_k4
-printks2 "Csound: gk_Internals_1_k5:           %9.4f\\n", gk_Internals_1_k5
-printks2 "Csound: gk_Internals_1_k6:           %9.4f\\n", gk_Internals_1_k6
-printks2 "Csound: gk_Internals_1_k7:           %9.4f\\n", gk_Internals_1_k7
-printks2 "Csound: gk_Internals_1_k8:           %9.4f\\n", gk_Internals_1_k8
+; prints   "Csound: gS_Internals_1_waveform:     %s\\n", gS_Internals_1_waveform
+; prints   "Csound: gS_Internals_1_mod_waveform: %s\\n", gS_Internals_1_mod_waveform
+; prints   "Csound: i_mod_waveform:              %9.4f\\n", i_mod_waveform
+; printks2 "Csound: gk_Internals_1_mod_amp:      %9.4f\\n", gk_Internals_1_mod_amp
+; printks2 "Csound: gk_Internals_1_mod_hz:       %9.4f\\n", gk_Internals_1_mod_hz
+; printks2 "Csound: gk_Internals_1_level:        %9.4f\\n", gk_Internals_1_level
+; printks2 "Csound: gk_Internals_1_k1:           %9.4f\\n", gk_Internals_1_k1
+; printks2 "Csound: gk_Internals_1_k2:           %9.4f\\n", gk_Internals_1_k2
+; printks2 "Csound: gk_Internals_1_k3:           %9.4f\\n", gk_Internals_1_k3
+; printks2 "Csound: gk_Internals_1_k4:           %9.4f\\n", gk_Internals_1_k4
+; printks2 "Csound: gk_Internals_1_k5:           %9.4f\\n", gk_Internals_1_k5
+; printks2 "Csound: gk_Internals_1_k6:           %9.4f\\n", gk_Internals_1_k6
+; printks2 "Csound: gk_Internals_1_k7:           %9.4f\\n", gk_Internals_1_k7
+; printks2 "Csound: gk_Internals_1_k8:           %9.4f\\n", gk_Internals_1_k8
 k_gain = ampdb(gk_Internals_1_level)
 a_modulator vco2 gk_Internals_1_mod_amp, gk_Internals_1_mod_hz, 12
 a_vdelay vdelay3 a_signal, a_modulator, 4
@@ -502,8 +502,8 @@ gk_Reverb_Feedback chnexport "gk_Reverb_Feedback", 3
 gk_Reverb_DelayModulation chnexport "gk_Reverb_DelayModulation", 3
 
 instr ReverbLeft
-printks2 "Csound: gk_Reverb_Feedback:         %9.4f\\n", gk_Reverb_Feedback
-printks2 "Csound: gk_Reverb_DelayModulation:  %9.4f\\n", gk_Reverb_DelayModulation
+; printks2 "Csound: gk_Reverb_Feedback:         %9.4f\\n", gk_Reverb_Feedback
+; printks2 "Csound: gk_Reverb_DelayModulation:  %9.4f\\n", gk_Reverb_DelayModulation
 ; p4 = gain of reverb. Adjust empirically
 ; for desired reverb time. .6 gives
 ; a good small "live" room sound, .8
@@ -730,7 +730,7 @@ endin
 gk_MasterLevel init 0
 gk_MasterLevel chnexport "gk_MasterLevel", 3
 instr MasterOutput
-printks2 "Csound: gk_MasterLevel:  %9.4f\\n", gk_MasterLevel
+; printks2 "Csound: gk_MasterLevel:  %9.4f\\n", gk_MasterLevel
 a_left inleta "inleft"
 a_right inleta "inright"
 k_gain = ampdb(gk_MasterLevel)
@@ -751,22 +751,23 @@ print("lindenmayer: {}".format(lindenmayer))
 
 score_model = CsoundAC.ScoreModel()
 lindenmayer = CsoundAC.ChordLindenmayer();
-lindenmayer.setAxiom("(seed P 3928394)(R P 60)(= N[d] 3)(Sc P)(A)")
-lindenmayer.addRule("(A)", "(A)(W N)(+ N[k] 20 R)(C Sd 5 R)(W C R)(- Sd 2)([)(+ N[k] 7)(/ S[t] 1.025)(/ S[d] 1.025)(F N 1)(A)(])(uni V 1 24)(uni N[x] 0 1)(+ N[t] 1)(W C R)(C Sd 3)(uni N[i] 1 5)(M Sc 3 0)(Sc P)(W N)(A)(- N[k] 2)(+ N[t] 1)(W N)(A)")
-lindenmayer.setIterationCount(3)
+lindenmayer.setAxiom("(seed P 3928394)(= P 60)(= Sc Cmajor {0,2,4,5,7,9,11})(= N[d] 2.)(Sc P)(A)")
+#lindenmayer.addRule("(A)", "(A)(W N)(+ N[k] 20 R)(C Sd 5 R)(W C R)([)(+ N[k] 7)(F N 1)(A)(])(uni V 1 24)(uni N[x] 0 1)(+ N[t] 1)(W C R)(C Sd 3)(uni N[i] 1 5)(M Sc 3 0)(Sc P)(W N)(A)(- N[k] 2)(+ N[t] 1)(W N)(A)")
+lindenmayer.addRule("(A)", "(A)(W C R)(+ N[k] 2 R)(C Sd 3 R)(W C R)([)(+ N[k] 7 R)(F N .1)(A)(])(M Sc 3 0)(uni V 1 24)(uni N[x] 0 1)(+ N[t] 1)(T C 5 O)(W C R)(C Sd 3)(uni N[i] 1 5)(M Sc 3 0)(Sc P)(W N R)(A)(- N[k] 2 R)(+ N[t] 1)(W N R)(A)")
+lindenmayer.setIterationCount(4)
 #print("lindenmayer: " + lindenmayer)
 rescale = CsoundAC.Rescale()
-rescale.setRescale(0, True, False, 1., 0.)
-rescale.setRescale(3, True, True, 1., 8.)
-rescale.setRescale(4, True, False, 30., 72.)
-rescale.setRescale(5, True, True, 60., 12.)
+rescale.setRescale(CsoundAC.Event.TIME, True, False, 1., 0.)
+rescale.setRescale(CsoundAC.Event.INSTRUMENT, True, True, 1., 5.999)
+rescale.setRescale(CsoundAC.Event.KEY, True, False, 24., 72.)
+rescale.setRescale(CsoundAC.Event.VELOCITY, True, True, 60., 12.)
 CsoundAC.System.setMessageLevel(15)
 rescale.addChild(lindenmayer)
 score_model.addChild(rescale)
 score_model.generate()
 score = score_model.getScore()
-score.setDuration(5 * 60)
-sco = score.getCsoundScore(12., True)
+score.setDuration(9 * 60)
+sco = score.getCsoundScore(12, False)
 print("sco:")
 print(sco)
 
