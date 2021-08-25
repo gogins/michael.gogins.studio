@@ -47,4 +47,4 @@ gk_Bower_pan init 0.433
 gk_Bower_level init -42.576
 gk_Reverb_Feedback init 0.7291
 gk_Reverb_DelayModulation init 0.0602
-gk_MasterLevel init 30.5
+gk_MasterLevel init 37.0
