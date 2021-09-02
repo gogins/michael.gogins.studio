@@ -45,6 +45,11 @@ nchnls = 2
 #include "TubularBell.inc"
 #include "DelayedPlucked.inc"
 
+gk_HeavyMetal_level init 9.
+gk_FaustTurenas_level init -6.
+gk_Plucked_level init 16.
+gk_FM_Clang_level init 24.
+
 #include "MVerb.inc"
 #include "MasterOutput.inc"
 
@@ -84,8 +89,8 @@ lindenmayer = CsoundAC.ChordLindenmayer();
 lindenmayer.setAxiom("(seed P 3928394)(= P 60)(= Sc Cmajor {0,2,4,5,7,9,11})(++ C)(= C {0,4,7,11})(= M {0,4,7,11})(= N[d] 3.)(Sc P)(A)")
 #lindenmayer.addRule("(A)", "(A)(W N)(+ N[k] 20 R)(C Sd 5 R)(W C R)([)(+ N[k] 7)(F N 1)(A)(])(uni V 1 24)(uni N[x] 0 1)(+ N[t] 1)(W C R)(C Sd 3)(uni N[i] 1 5)(M Sc 3 0)(Sc P)(W N)(A)(- N[k] 2)(+ N[t] 1)(W N)(A)")
 #lindenmayer.addRule("(A)", "(A)(W C R)(+ N[k] 2 R)(C Sd 3 R)(W Cl R)([)(+ N[k] 7 R)(F N .1)(A)(])(M Sc 4 0)(uni V 1 24)(uni N[x] 0 1)(+ N[t] 1)(T C 5 O)(W C R)(C Sd 3)(uni N[i] 1 5)(M Sc 3 0)(Sc P)(W N R)(A)(- N[k] 2 R)(+ N[t] 1)(W N R)(A)")
-lindenmayer.addRule("(A)", "(A)(W C R)(+ N[k] 2 R)(+ N[v] 2)(+ Sd 2 R)(W Cl R)([)(* S[t] .9)(+ N[k] 7 R)(F N .1)(A)(])(M Sc 4 0)(uni V 1 24)(uni N[x] 0 1)(+ N[t] 1)(- N[v] 2)(T C 5 O)(W C R)(+ Sd 3)(uni N[i] 1 5)(M Sc 3 0)(Sc P)(W N R)(A)(- N[k] 2 R)(+ N[t] 1)(W N R)(A)")
-lindenmayer.setIterationCount(7)
+lindenmayer.addRule("(A)", "(A)(W C R)(+ N[k] 2 R)(+ N[v] 2)(+ Sd 2 R)(W Cl R)([)(* S[t] .9)(+ N[k] 4 R)(F N .1)(A)(])(M Sc 3 0)(uni V 1 24)(uni N[x] 0 1)(+ N[t] 1)(- N[v] 2)(T C 5 O)(W C R)(+ Sd 3)(uni N[i] 1 5)(M Sc 3 0)(Sc P)(W N R)(A)(- N[k] 3 R)(+ N[t] 1)(W N R)(A)")
+lindenmayer.setIterationCount(6)
 #print("lindenmayer: " + lindenmayer)
 rescale = CsoundAC.Rescale()
 rescale.setRescale(CsoundAC.Event.TIME, True, False, .02, 0.)
@@ -97,7 +102,7 @@ rescale.addChild(lindenmayer)
 score_model.addChild(rescale)
 score_model.generate()
 score = score_model.getScore()
-score.setDuration(20 * 60)
+score.setDuration(6 * 60)
 sco = score.getCsoundScore(12, False)
 print("sco:")
 print(sco)
@@ -171,7 +176,7 @@ metadata_publisher = settings.get_value("metadata", "publisher")
 metadata_year = settings.get_value("metadata", "year")
 metadata_notes = settings.get_value("metadata", "notes")
 metadata_license=settings.get_value("metadata", "license")
-csound_audio_output = settings.get_value("csound", "audio-output")
+csound_audio_output = "dac:plughw:0,0" #settings.get_value("csound", "audio-output")
 print("csound_audio_output: " + csound_audio_output)
 soundfile_editor=settings.get_value("playpen", "soundfile-editor")
 gnome_theme=settings.get_value("playpen", "gnome-theme")
@@ -647,5 +652,8 @@ try:
     load_ui()
     Gtk.main()
 except:
-    on_play_button_clicked(None)
+    if sys.argv[1] == "--audio":
+        on_play_button_clicked(None)
+    else:
+        on_render_button_clicked(None)
     
