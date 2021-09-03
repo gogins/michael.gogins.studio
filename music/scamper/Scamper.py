@@ -45,14 +45,15 @@ nchnls = 2
 #include "TubularBell.inc"
 #include "DelayedPlucked.inc"
 
-FMWaterBell_level init -12
+#include "MVerb.inc"
+#include "MasterOutput.inc"
+
+gk_FMWaterBell_level init -12
 gk_HeavyMetal_level init -60
 gk_FaustTurenas_level init -18.
 gk_Plucked_level init 24.
 gk_FM_Clang_level init 24.
-
-#include "MVerb.inc"
-#include "MasterOutput.inc"
+gk_MasterOutput_level init -24.
 
 connect "FaustBubble",  "outleft",  "MVerb",        "inleft"
 connect "FaustBubble",  "outright", "MVerb",        "inright"
@@ -95,7 +96,7 @@ lindenmayer.setIterationCount(6)
 #print("lindenmayer: " + lindenmayer)
 rescale = CsoundAC.Rescale()
 rescale.setRescale(CsoundAC.Event.TIME, True, False, .02, 0.)
-rescale.setRescale(CsoundAC.Event.INSTRUMENT, True, True, 1., 3.999)
+rescale.setRescale(CsoundAC.Event.INSTRUMENT, True, True, 1., 5.999)
 rescale.setRescale(CsoundAC.Event.KEY, True, False, 24., 72.)
 rescale.setRescale(CsoundAC.Event.VELOCITY, True, True, 50., 18.)
 CsoundAC.System.setMessageLevel(15)
