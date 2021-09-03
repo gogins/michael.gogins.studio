@@ -45,9 +45,10 @@ nchnls = 2
 #include "TubularBell.inc"
 #include "DelayedPlucked.inc"
 
-gk_HeavyMetal_level init 9.
-gk_FaustTurenas_level init -6.
-gk_Plucked_level init 16.
+FMWaterBell_level init -12
+gk_HeavyMetal_level init -60
+gk_FaustTurenas_level init -18.
+gk_Plucked_level init 24.
 gk_FM_Clang_level init 24.
 
 #include "MVerb.inc"
@@ -94,7 +95,7 @@ lindenmayer.setIterationCount(6)
 #print("lindenmayer: " + lindenmayer)
 rescale = CsoundAC.Rescale()
 rescale.setRescale(CsoundAC.Event.TIME, True, False, .02, 0.)
-rescale.setRescale(CsoundAC.Event.INSTRUMENT, True, True, 1., 5.999)
+rescale.setRescale(CsoundAC.Event.INSTRUMENT, True, True, 1., 3.999)
 rescale.setRescale(CsoundAC.Event.KEY, True, False, 24., 72.)
 rescale.setRescale(CsoundAC.Event.VELOCITY, True, True, 50., 18.)
 CsoundAC.System.setMessageLevel(15)
@@ -176,7 +177,7 @@ metadata_publisher = settings.get_value("metadata", "publisher")
 metadata_year = settings.get_value("metadata", "year")
 metadata_notes = settings.get_value("metadata", "notes")
 metadata_license=settings.get_value("metadata", "license")
-csound_audio_output = "dac:plughw:0,0" #settings.get_value("csound", "audio-output")
+csound_audio_output = settings.get_value("csound", "audio-output")
 print("csound_audio_output: " + csound_audio_output)
 soundfile_editor=settings.get_value("playpen", "soundfile-editor")
 gnome_theme=settings.get_value("playpen", "gnome-theme")
@@ -652,8 +653,8 @@ try:
     load_ui()
     Gtk.main()
 except:
-    if sys.argv[1] == "--audio":
-        on_play_button_clicked(None)
-    else:
+    if len(sys.argv) > 1 and sys.argv[1] == "--render":
         on_render_button_clicked(None)
+    else:
+        on_play_button_clicked(None)
     
