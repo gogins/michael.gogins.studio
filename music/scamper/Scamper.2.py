@@ -26,37 +26,39 @@ faster, with a more marked harmonic structure. Potential instruments to use:
 -- TubularBell.
 -- WGPluck.
 -- Xing.
-
 '''
-
 
 orc = '''
 sr = 48000
 ksmps = 128
 nchnls = 2
-0dbfs = 12
+0dbfs = 6
 
 #include "FaustBubble.inc"
-#include "FaustTurenas.inc"
 #include "FMWaterBell.inc"
-#include "Plucked.inc"
-#include "HeavyMetal.inc"
+#include "ChebyshevMelody.inc"
 #include "FM_Clang.inc"
 #include "TubularBell.inc"
-#include "DelayedPlucked.inc"
+#include "FaustTurenas.inc"
+#include "Plucked.inc"
 
-gk_FMWaterBell_level init -12
+gk_FMWaterBell_level init -6
 gk_HeavyMetal_level init -60
 gk_FaustTurenas_level init -18.
-gk_Plucked_level init 24.
+gk_Plucked_level init 18.
 gk_FM_Clang_level init 24.
+gk_HeavyMetal_level init 18.
+gk_ChebyshevMelody_level init 20.
 
 #include "MVerb.inc"
 #include "MasterOutput.inc"
 
-gk_MVerb_feedback init .75
-gk_MVerb_wet init .2
+gk_MVerb_feedback init .825
+gk_MVerb_wet init .5
 
+
+connect "ChebyshevMelody",  "outleft",  "MVerb",        "inleft"
+connect "ChebyshevMelody",  "outright", "MVerb",        "inright"
 connect "FaustBubble",  "outleft",  "MVerb",        "inleft"
 connect "FaustBubble",  "outright", "MVerb",        "inright"
 connect "FaustTurenas",        "outleft",  "MVerb",        "inleft"
@@ -93,20 +95,22 @@ lindenmayer = CsoundAC.ChordLindenmayer();
 lindenmayer.setAxiom("(seed P 3928394)(= P 60)(= Sc Cmajor {0,2,4,5,7,9,11})(++ C)(= C {0,4,7,11})(= M {0,4,7,11})(= N[d] 3.)(Sc P)(A)")
 #lindenmayer.addRule("(A)", "(A)(W N)(+ N[k] 20 R)(C Sd 5 R)(W C R)([)(+ N[k] 7)(F N 1)(A)(])(uni V 1 24)(uni N[x] 0 1)(+ N[t] 1)(W C R)(C Sd 3)(uni N[i] 1 5)(M Sc 3 0)(Sc P)(W N)(A)(- N[k] 2)(+ N[t] 1)(W N)(A)")
 #lindenmayer.addRule("(A)", "(A)(W C R)(+ N[k] 2 R)(C Sd 3 R)(W Cl R)([)(+ N[k] 7 R)(F N .1)(A)(])(M Sc 4 0)(uni V 1 24)(uni N[x] 0 1)(+ N[t] 1)(T C 5 O)(W C R)(C Sd 3)(uni N[i] 1 5)(M Sc 3 0)(Sc P)(W N R)(A)(- N[k] 2 R)(+ N[t] 1)(W N R)(A)")
-lindenmayer.addRule("(A)", "(A)(W C R)(+ N[k] 2 R)(+ N[v] 2)(+ Sd 2 R)(W Cl R)([)(* S[t] .9)(+ N[k] 4 R)(F N .1)(A)(])(M Sc 3 0)(uni V 1 24)(uni N[x] 0 1)(+ N[t] 1)(- N[v] 2)(T C 5 O)(W C R)(+ Sd 3)(uni N[i] 1 5)(M Sc 3 0)(Sc P)(W N R)(A)(- N[k] 3 R)(+ N[t] 1)(W N R)(A)")
-lindenmayer.setIterationCount(6)
+lindenmayer.addRule("(A)", "(A)(W C R)(+ N[k] 2 R)(+ N[v] 2)(+ Sd 2 R)(+ Sd 2 R)(W Cl R)([)(* S[t] .75)(+ N[k] 1 R)(F N .1)(A)(])(M Sc 3 0)(uni V 1 24)(uni N[x] 0 1)(+ N[t] 1)(- N[v] 2)(B)(T C 5 O)(W C R)(+ Sd 3)(uni N[i] 1 5)(M Sc 3 0)(Sc P)(W N R)(A)(- N[k] 3 R)(+ N[t] .5)(W N R)(A)")
+lindenmayer.addRule("(B)", "(B)([)(/ S[t] 2)(/ 2 S[d])(+ N[k] 3)(A)(])")
+lindenmayer.setIterationCount(5)
 #print("lindenmayer: " + lindenmayer)
 rescale = CsoundAC.Rescale()
 rescale.setRescale(CsoundAC.Event.TIME, True, False, .02, 0.)
-rescale.setRescale(CsoundAC.Event.INSTRUMENT, True, True, 1., 5.999)
+rescale.setRescale(CsoundAC.Event.INSTRUMENT, True, True, 1., 3.999)
 rescale.setRescale(CsoundAC.Event.KEY, True, False, 24., 72.)
-rescale.setRescale(CsoundAC.Event.VELOCITY, True, True, 50., 18.)
+rescale.setRescale(CsoundAC.Event.VELOCITY, True, True, 50., 9.)
 CsoundAC.System.setMessageLevel(15)
 rescale.addChild(lindenmayer)
 score_model.addChild(rescale)
 score_model.generate()
 score = score_model.getScore()
-score.setDuration(6 * 60)
+score.setDuration(9 * 60)
+score.save("Scamper.mid")
 sco = score.getCsoundScore(12, False)
 print("sco:")
 print(sco)
@@ -656,8 +660,6 @@ try:
     load_ui()
     Gtk.main()
 except:
-    if len(sys.argv) > 1 and sys.argv[1] == "--render":
-        on_render_button_clicked(None)
-    else:
-        on_play_button_clicked(None)
+    #on_render_button_clicked(None)
+    on_play_button_clicked(None)
     
