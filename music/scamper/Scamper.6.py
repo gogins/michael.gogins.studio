@@ -37,13 +37,15 @@ nchnls = 2
 #include "FaustBubble.inc"
 #include "FMWaterBell.inc"
 #include "FM_Clang.inc"
-#include "BandedWG.inc"
-#include "Sweeper.inc"
 #include "ChebyshevMelody.inc"
 #include "TubularBell.inc"
+#include "Sweeper.inc"
 #include "FaustTurenas.inc"
 #include "Shiner.inc"
+#include "BandedWG.inc"
 
+gk_FaustBubble_level init 9
+gk_BandedWG_level init -6
 gk_FMWaterBell_level init -6
 gk_HeavyMetal_level init -60
 gk_FaustTurenas_level init -18.
@@ -103,12 +105,12 @@ print("lindenmayer: {}".format(lindenmayer))
 score_model = CsoundAC.ScoreModel()
 lindenmayer = CsoundAC.ChordLindenmayer();
 lindenmayer.setAxiom("(seed P 3928394)(= P 72)(= Sc Cmajor {0,2,4,5,7,9,11})(++ C)(= C {0,4,7,11})(= M {0,4,7,11})(= N[d] 3.)(Sc P)(A)")
-lindenmayer.addRule("(A)", "(A)(F N .5 R)(uni V 1 210)(W C R)(+ N[k] 2 R)(+ N[v] 2)(+ Sd 3 R)(W Cl R)([)(* S[t] .75)(+ N[k] 2 R)(F N 1)(A)(])(M Sc 3 1)(uni N[x] 0 1)(+ N[t] 1)(R O t k .3333334)(F N 1.5 R)(R O t i .25)(- N[v] 2)(B)(+ Sd 4)(C Sd 4)(W Cl R)(+ Sd 3)(uni N[i] 1 5)(M Sc 3 0)(Sc P)(W N R)(A)(- N[k] 3 R)(+ N[t] .5)(W N R)(A)")
+lindenmayer.addRule("(A)", "(B)(F N .5 R)(uni V 1 210)(W C R)(+ N[k] -1 R)(+ N[v] 2)(+ Sd -3 R)(W Cl R)([)(* S[t] .75)(- N[k] .5 R)(F N 1)(A)(])(M Sc 3 1)(uni N[x] 0 1)(+ N[t] 1)(R O t k .3333334)(F N 1.5 R)(R O t i .25)(- N[v] 2)(B)(+ Sd 4)(C Sd 4)(W Cl R)(+ Sd 3)(uni N[i] 1 5)(M Sc 3 0)(Sc P)(W N R)(A)(+ N[k] 2 R)(+ N[t] .5)(W N R)(A)")
 lindenmayer.addRule("(B)", "(Sc P)(B)([)(/ S[t] 2)(/ 2 S[d])(+ N[k] 4)(A)(])")
-lindenmayer.setIterationCount(5)
+lindenmayer.setIterationCount(6)
 rescale = CsoundAC.Rescale()
 rescale.setRescale(CsoundAC.Event.TIME, True, False, .02, 0.)
-rescale.setRescale(CsoundAC.Event.INSTRUMENT, True, True, 1., 4.999)
+rescale.setRescale(CsoundAC.Event.INSTRUMENT, True, True, 1., 5.999)
 rescale.setRescale(CsoundAC.Event.KEY, True, False, 24., 78.)
 rescale.setRescale(CsoundAC.Event.VELOCITY, True, True, 50., 9.)
 CsoundAC.System.setMessageLevel(15)
@@ -116,7 +118,7 @@ rescale.addChild(lindenmayer)
 score_model.addChild(rescale)
 score_model.generate()
 score = score_model.getScore()
-score.setDuration(12 * 60)
+score.setDuration(6 * 60)
 score.save("Scamper.6.mid")
 sco = score.getCsoundScore(12, False)
 print("sco:")
