@@ -423,17 +423,17 @@ void update_bounds(Scaling &scaling, const Note &note) {
     scaling.ranges = scaling.maxima - scaling.minima;
 }
 
-void multiple_copy_reducing_machine(const Note &note, const std::vector<Transformation> &transformations, Score &score, int depth) {
+void multiple_copy_reducing_machine(const Note &note, const std::vector<Transformation> &hutchinson, Score &score, int depth) {
     --depth;
     if (depth < 0) {
         return;
     }
-    for (const auto &transformation : transformations) {
+    for (const auto &transformation : hutchinson) {
         auto new_note = transformation * note;
         if (depth == 1) {
             score.push_back(new_note);
         }
-        multiple_copy_reducing_machine(new_note, transformations, score, depth);
+        multiple_copy_reducing_machine(new_note, hutchinson, score, depth);
     }
 }
 
@@ -574,49 +574,50 @@ extern "C" int score_generator(CSOUND *csound) {
     int result = OK;
     // Notes are column vectors. Notes and transformations are homogeneous.
     Note note;
-    note << 1., 0., 4., 60., 60., .5, 1.;
+    note << 1., 0., 1, 60., 60., .5, 1.;
     std::cerr << "initial note: " << std::endl << note << std::endl;
-    std::vector<Transformation> transformations;
-    transformations.resize(4);
-    //                     i   t   d   k   v   p   T
-    transformations[0] << .5,  0,  0,  0,  0,  0,  0, /* i */
-                           0, .5,  0,  0,  0,  0,  0, /* t */
-                           0,  0, .5,  0,  0,  0,  0, /* d */
-                           0,  0,  0, .5,  0,  0,  0, /* k */
-                           0,  0,  0,  0, .5,  0,  0, /* v */
-                           0,  0,  0,  0,  0, .5,  0, /* p */
-                           0,  0,  0,  0,  0,  0,  1; /* H */
-                           
-    transformations[1] << .5,  0,  0,  0,  0,  0,  0,
-                           0, .5,  0,  0,  0,  0,  1,
-                           0,  0, .5,  0,  0,  0,  0,
-                           0,  0,  0, .5,  0,  0,  0,
-                           0,  0,  0,  0, .5,  0,  0,
-                           0,  0,  0,  0,  0, .5,  0,
-                           0,  0,  0,  0,  0,  0,  1;
-                           
-    transformations[2] << .5,  0,  0,  0,  0,  0,  0,
-                           0, .5,  0,  0,  0,  0,  0,
-                           0,  0, .5,  0,  0,  0,  0,
-                           0,  0,  0, .5,  0,  0,  1,
-                           0,  0,  0,  0, .5,  0,  0,
-                           0,  0,  0,  0,  0, .5,  0,
-                           0,  0,  0,  0,  0,  0,  1;
-                           
-    transformations[3] << .5,  0,  0,  0,  0,  0,  0,
-                           0, .5,  0,  0,  0,  0,  1,
-                           0,  0, .5,  0,  0,  0,  0,
-                           0,  0,  0, .5,  0,  0,  1,
-                           0,  0,  0,  0, .5,  0,  0,
-                           0,  0,  0,  0,  0, .5,  0,
-                           0,  0,  0,  0,  0,  0,  1;
+    std::vector<Transformation> hutchinson;
+    hutchinson.resize(4);
+    /*                 i   t   d   k   v   p   T       */
+    hutchinson[0] <<  .5,  0,  0,  0,  0,  0,  0, /* i */
+                       0, .45,  0,  0,  0,  0,  0, /* t */
+                       0,  0, .5,  0,  0,  0,  0, /* d */
+                       0,  0,  0, .5,  0,  0,  0, /* k */
+                       0,  0,  0,  0, .5,  0,  0, /* v */
+                       0,  0,  0,  0,  0, .5,  0, /* p */
+                       0,  0,  0,  0,  0,  0,  1; /* H */
+    /*                 i   t   d   k   v   p   T       */
+    hutchinson[1] <<  .5,  0,  0,  0,  0,  0,  0, /* i */
+                       0, .5,  0,  0,  0,  0,  1, /* t */
+                       0,  0, .5,  0,  0,  0,  0, /* d */
+                       0,  0,  0, .45,  0,  0,  0, /* k */
+                       0,  0,  0,  0, .5,  0,  0, /* v */
+                       0,  0,  0,  0,  0, .5,  0, /* p */
+                       0,  0,  0,  0,  0,  0,  1; /* H */
+    /*                 i   t   d   k   v   p   T       */
+    hutchinson[2] <<  .5,  0,  0,  0,  0,  0,  0, /* i */
+                       0, .45,  0,  0,  0,  0,  0, /* t */
+                       0,  0, .5,  0,  0,  0,  0, /* d */
+                       0,  0,  0, .5,  0,  0,  1, /* k */
+                       0,  0,  0,  0, .5,  0,  0, /* v */
+                       0,  0,  0,  0,  0, .5,  0, /* p */
+                       0,  0,  0,  0,  0,  0,  1; /* H */
+    /*                 i   t   d   k   v   p   T       */
+    hutchinson[3] <<  .5,  0,  0,  0,  0,  0,  0, /* i */
+                       0, .5,  0,  0,  0,  0,  1, /* t */
+                       0,  0, .5,  0,  0,  0,  0, /* d */
+                       0,  0,  0, .45,  0,  0,  1, /* k */
+                       0,  0,  0,  0, .5,  0,  0, /* v */
+                       0,  0,  0,  0,  0, .5,  0, /* p */
+                       0,  0,  0,  0,  0,  0,  1; /* H */
     Score score;
     Scaling scaling;
-    multiple_copy_reducing_machine(note, transformations, score, 7);
-    rescale(scaling, score, 0, true, true,  1.,    0.0);
-    rescale(scaling, score, 3, true, true, 24.,   96.0);
-    rescale(scaling, score, 4, true, true, 60.,   10.0);
+    multiple_copy_reducing_machine(note, hutchinson, score, 8);
+    rescale(scaling, score, 0, true, true,  1.,     0.0);
+    rescale(scaling, score, 3, true, true, 24.,    96.0);
+    rescale(scaling, score, 4, true, true, 60.,    10.0);
     rescale_time_and_duration(score, 2., 60.);
+    rescale(scaling, score, 2, true, true,  0.9412, 0.0);
     auto csound_score = to_csound_score(score);
     csound->InputMessage(csound, csound_score.c_str());
     return result;
@@ -628,6 +629,6 @@ i_result clang_compile "score_generator", S_score_generator_code, "-g -O2 -std=c
 
 </CsInstruments>
 <CsScore>
-f 0 70 
+f 0 64 
 </CsScore>
 </CsoundSynthesizer>
