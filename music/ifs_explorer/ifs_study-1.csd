@@ -1,6 +1,6 @@
 <CsoundSyntheizer>
 <CsOptions>
--m0 -d -RWfoifs_explorer.wav --opcode-lib="/home/mkg/clang-opcodes/clang_opcodes.so"
+-m0 -d -RWfoifs_study-1.wav --opcode-lib="/home/mkg/clang-opcodes/clang_opcodes.so"
 </CsOptions>
 <CsInstruments>
 
@@ -195,7 +195,7 @@ struct InvokableCosineGrain : public ClangInvokableBase {
         temporary = 0.0;
         return result;
     }
-    MYFLT tick() {
+    MYFLT tick(MYFLT input = 0) override {
         signal = (sinusoid_1 * (envelope_1 - 1.0)) * amplitude;
         temporary = sinusoid_1;
         sinusoid_1 = sinusoid_coefficient * sinusoid_1 - sinusoid_2;
@@ -204,21 +204,6 @@ struct InvokableCosineGrain : public ClangInvokableBase {
         envelope_1 = envelope_coefficient * envelope_1 - envelope_2;
         envelope_2 = temporary;
         return signal;
-    }
-    int kontrol(CSOUND *csound_, MYFLT **outputs, MYFLT **inputs) override {
-        int result = OK;
-        int frame_index = 0;
-        for( ; frame_index < kperiodOffset(); ++frame_index) {
-            outputs[0][frame_index] = 0;
-        }
-        for( ; frame_index < kperiodEnd(); ++frame_index) {
-            MYFLT sample = tick();
-            outputs[0][frame_index] = sample;
-        }
-        for( ; frame_index < ksmps(); ++frame_index) {
-            outputs[0][frame_index] = 0;
-        }
-        return result;
     }
     double center_time_seconds;
     double duration_seconds;
@@ -500,7 +485,7 @@ void rescale_time_and_duration(Score &score, double starting_time, double total_
     // Move the notes to the origin, rescale times and durations, 
     // and move the notes to the target starting time.
     for (auto &note : score) {
-        print_note(note);
+        //print_note(note);
         auto start = note[1];
         auto duration = note[2];
         start = start - minimum_start;
@@ -509,7 +494,7 @@ void rescale_time_and_duration(Score &score, double starting_time, double total_
         start = start + starting_time;
         note[1] = start;
         note[2] = duration;
-        print_note(note);
+        //print_note(note);
         std::fprintf(stderr, "\\n");
     }
 }
@@ -564,8 +549,8 @@ std::string to_csound_score(Score &score, bool twelve_tet=false) {
         stream_ << buffer;
     }
     auto generated_score = stream_.str();
-    std::fprintf(stderr, "to_csound_score: generated %ld notes.\\n", score.size());
     std::cerr << "to_csound_score: " << std::endl << generated_score << std::endl;
+    std::fprintf(stderr, "to_csound_score: generated %ld notes.\\n", score.size());
     return generated_score;
 }
 
@@ -612,12 +597,12 @@ extern "C" int score_generator(CSOUND *csound) {
                        0,  0,  0,  0,  0,  0,  1; /* H */
     Score score;
     Scaling scaling;
-    multiple_copy_reducing_machine(note, hutchinson, score, 8);
+    multiple_copy_reducing_machine(note, hutchinson, score, 10);
     rescale(scaling, score, 0, true, true,  1.,     0.0);
     rescale(scaling, score, 3, true, true, 24.,    96.0);
     rescale(scaling, score, 4, true, true, 60.,    10.0);
     rescale_time_and_duration(score, 2., 60.);
-    rescale(scaling, score, 2, true, true,  0.25, 0.0);
+    rescale(scaling, score, 2, true, true,  0.01, 0.0);
     auto csound_score = to_csound_score(score);
     csound->InputMessage(csound, csound_score.c_str());
     return result;
