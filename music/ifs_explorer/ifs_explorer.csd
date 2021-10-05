@@ -11,6 +11,8 @@ nchnls = 2
 
 connect "JonesParksGrain", "outleft",  "MasterOutput", "inleft"
 connect "JonesParksGrain", "outright", "MasterOutput", "inright"
+connect "CosineGrain", "outleft",  "MasterOutput", "inleft"
+connect "CosineGrain", "outright", "MasterOutput", "inright"
 
 alwayson "MasterOutput"
 
@@ -136,23 +138,180 @@ struct InvokableGrain : public ClangInvokableBase {
     std::complex<double> f1;
 };
 
+    /**
+     * Compute a cosine grain. If the synchronous_phase argument is true
+     * (the default value), then all grains of the same frequency
+     * will have synchronous phases, which can be useful in avoiding certain artifacts.
+     * For example, if cosine grains of the same frequency have synchronous phases,
+     * they can be overlapped by 1/2 their duration without artifacts
+     * to produce a continuous cosine tone.
+     *
+     * The algorithm uses an efficient difference equation.
+     */
+struct InvokableCosineGrain : public ClangInvokableBase {
+    virtual ~InvokableCosineGrain() {
+    };
+    int init(CSOUND *csound_, OPDS *opds_, MYFLT **outputs, MYFLT **inputs) override {
+        if (diagnostics_enabled) std::fprintf(stderr, ">>>>>>> InvokableCosineGrain::init...\\n");
+        int result = OK;
+        csound = csound_;
+        opds = opds_;
+        // Inputs.
+        center_time_seconds = *(inputs[0]);
+        duration_seconds = *(inputs[1]);
+        frequency_hz = *(inputs[2]);
+        amplitude = *(inputs[3]);
+        phase_offset_radians = *(inputs[4]);
+        if (*(inputs[5]) != 0.) {
+            synchronous_phase = true;
+        } else {
+            synchronous_phase = false;
+        }
+        if (synchronous_phase) {
+            wavelength_seconds = 1.0 / frequency_hz;
+            wavelengths = center_time_seconds / wavelength_seconds;
+            whole_cycles = 0;
+            fractional_cycle = std::modf(wavelengths, &whole_cycles);
+            phase_offset_radians = 2.0 * M_PI * fractional_cycle;
+        }
+        frames_per_second = csound->GetSr(csound);
+        frame_count = size_t(std::round(duration_seconds * frames_per_second));
+        // The signal is a cosine sinusoid.
+        sinusoid_radians_per_frame = 2.0 * M_PI * frequency_hz / frames_per_second;
+        sinusoid_coefficient = 2.0 * std::cos(sinusoid_radians_per_frame);
+        // The initial frame.
+        sinusoid_1 = std::cos(phase_offset_radians);
+        // What would have been the previous frame.
+        sinusoid_2 = std::cos(-sinusoid_radians_per_frame + phase_offset_radians);
+        // The envelope is exactly 1 cycle of a cosine sinusoid, offset by -1.
+        envelope_frequency_hz = 1.0 / duration_seconds;
+        envelope_radians_per_frame = 2.0 * M_PI * envelope_frequency_hz / frames_per_second;
+        envelope_coefficient = 2.0 * std::cos(envelope_radians_per_frame);
+        // The initial frame.
+        envelope_1 = std::cos(0.0);
+        // What would have been the previous frame.
+        envelope_2 = std::cos(-envelope_radians_per_frame);
+        signal = 0.0;
+        temporary = 0.0;
+        return result;
+    }
+    MYFLT tick() {
+        signal = (sinusoid_1 * (envelope_1 - 1.0)) * amplitude;
+        temporary = sinusoid_1;
+        sinusoid_1 = sinusoid_coefficient * sinusoid_1 - sinusoid_2;
+        sinusoid_2 = temporary;
+        temporary = envelope_1;
+        envelope_1 = envelope_coefficient * envelope_1 - envelope_2;
+        envelope_2 = temporary;
+        return signal;
+    }
+    int kontrol(CSOUND *csound_, MYFLT **outputs, MYFLT **inputs) override {
+        int result = OK;
+        int frame_index = 0;
+        for( ; frame_index < kperiodOffset(); ++frame_index) {
+            outputs[0][frame_index] = 0;
+        }
+        for( ; frame_index < kperiodEnd(); ++frame_index) {
+            MYFLT sample = tick();
+            outputs[0][frame_index] = sample;
+        }
+        for( ; frame_index < ksmps(); ++frame_index) {
+            outputs[0][frame_index] = 0;
+        }
+        return result;
+    }
+    double center_time_seconds;
+    double duration_seconds;
+    double frequency_hz;
+    double amplitude;
+    double phase_offset_radians;
+    double wavelengths;
+    double wavelength_seconds;
+    double whole_cycles;
+    double fractional_cycle;
+    bool synchronous_phase;
+    int frame_count;
+    double frames_per_second;
+    double sinusoid_radians_per_frame;
+    double sinusoid_coefficient;    
+    double sinusoid_1;
+    double sinusoid_2;
+    double envelope_frequency_hz;
+    double envelope_radians_per_frame;
+    double envelope_coefficient;
+    double envelope_1;
+    double envelope_2;
+    double signal;
+    double temporary;
+};
+
+
 extern "C" {
+    
     int grain_main(CSOUND *csound) {
         int result = OK;
         if (diagnostics_enabled) std::fprintf(stderr, ">>>>>>> This is \\"grain_main\\".\\n");
         return result;
     }
+    
     ClangInvokable *grain_factory() {
         if (diagnostics_enabled) std::fprintf(stderr, ">>>>>>> This is \\"grain_factory\\".\\n");
         auto result = new InvokableGrain;
         if (diagnostics_enabled) std::fprintf(stderr, ">>>>>>> \\"grain_factory\\" created %p.\\n", result);
         return result;
     }
+    
+    ClangInvokable *cosine_grain_factory() {
+        if (diagnostics_enabled) std::fprintf(stderr, ">>>>>>> This is \\"cosine_grain_factory\\".\\n");
+        auto result = new InvokableCosineGrain;
+        if (diagnostics_enabled) std::fprintf(stderr, ">>>>>>> \\"cosine_grain_factory\\" created %p.\\n", result);
+        return result;
+    }
+
 };
 
 }}
 
 i_result clang_compile "grain_main", S_grain_code, "-g -Ofast -march=native -std=c++14 -I/home/mkg/clang-opcodes -I/usr/local/include/csound  -I. -stdlib=libstdc++", "/usr/lib/gcc/x86_64-linux-gnu/9/libstdc++.so /usr/lib/gcc/x86_64-linux-gnu/9/libgcc_s.so /usr/local/lib/libstk.so /usr/lib/x86_64-linux-gnu/libm.so /usr/lib/x86_64-linux-gnu/libpthread.so"
+
+gk_CosineGrain_level chnexport "gk_CosineGrain_level", 3
+gk_CosineGrain_midi_dynamic_range chnexport "gk_CosineGrain_midi_dynamic_range", 3
+
+gk_CosineGrain_level init 0
+gk_CosineGrain_midi_dynamic_range init 20
+instr CosineGrain
+i_instrument = p1
+i_time = p2
+i_duration = p3
+i_midi_key = p4
+i_midi_dynamic_range = i(gk_CosineGrain_midi_dynamic_range)
+i_midi_velocity = p5 * i_midi_dynamic_range / 127 + (63.5 - i_midi_dynamic_range / 2)
+k_space_front_to_back = p6
+k_space_left_to_right = p7
+k_space_bottom_to_top = p8
+i_phase = p9
+i_frequency = cpsmidinn(i_midi_key)
+; Adjust the following value until "overall amps" at the end of performance is about -6 dB.
+i_level_correction = 65
+i_normalization = ampdb(-i_level_correction) / 2
+i_amplitude = ampdb(i_midi_velocity) * i_normalization
+k_gain = ampdb(gk_CosineGrain_level)
+
+; Grain inputs.
+i_center_time_seconds init i_time
+i_duration_seconds init i_duration
+i_frequency_hz init i_frequency
+i_amplitude init i_amplitude
+i_phase_offset_radians init 0
+i_synchronous_phase init 1
+a_signal clang_invoke "cosine_grain_factory", 3, i_center_time_seconds, i_duration_seconds, i_frequency_hz, i_amplitude, i_phase_offset_radians, i_synchronous_phase 
+a_signal = a_signal * k_gain
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+; printks "a_signal: %9.4f a_out_left: %9.4f a_out_right: %9.4f\\n", 0, k(a_signal), k(a_out_left), k(a_out_right)
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+endin
 
 gk_JonesParksGrain_level chnexport "gk_JonesParksGrain_level", 3
 gk_JonesParksGrain_midi_dynamic_range chnexport "gk_JonesParksGrain_midi_dynamic_range", 3
@@ -356,30 +515,30 @@ void rescale_time_and_duration(Score &score, double starting_time, double total_
 }
 
 struct {
-        bool operator()(const Note &a, const Note &b) const 
-        { 
-            if (a[1] < b[1]) {
-                return true;
-            } else if (a[1] > b[1]) {
-                return false;
-            }
-            if (a[2] < b[2]) {
-                return true;
-            } else if (a[2] > b[2]) {
-                return false;
-            }
-            if (a[3] < b[3]) {
-                return true;
-            } else if (a[3] > b[3]) {
-                return false;
-            }
-            if (a[0] < b[0]) {
-                return true;
-            } else if (a[0] > b[0]) {
-                return false;
-            }
+    bool operator()(const Note &a, const Note &b) const 
+    { 
+        if (a[1] < b[1]) {
+            return true;
+        } else if (a[1] > b[1]) {
             return false;
         }
+        if (a[2] < b[2]) {
+            return true;
+        } else if (a[2] > b[2]) {
+            return false;
+        }
+        if (a[3] < b[3]) {
+            return true;
+        } else if (a[3] > b[3]) {
+            return false;
+        }
+        if (a[0] < b[0]) {
+            return true;
+        } else if (a[0] > b[0]) {
+            return false;
+        }
+        return false;
+    }
 } Note_less;
 
 std::string to_csound_score(Score &score, bool twelve_tet=false) {
@@ -447,17 +606,17 @@ extern "C" int score_generator(CSOUND *csound) {
     transformations[3] << .5,  0,  0,  0,  0,  0,  0,
                            0, .5,  0,  0,  0,  0,  1,
                            0,  0, .5,  0,  0,  0,  0,
-                           0,  0,  0, .45,  0,  0,  1,
+                           0,  0,  0, .5,  0,  0,  1,
                            0,  0,  0,  0, .5,  0,  0,
                            0,  0,  0,  0,  0, .5,  0,
                            0,  0,  0,  0,  0,  0,  1;
     Score score;
     Scaling scaling;
     multiple_copy_reducing_machine(note, transformations, score, 7);
-    rescale(scaling, score, 0, true, true,  1.,    0.);
+    rescale(scaling, score, 0, true, true,  1.,    0.0);
     rescale(scaling, score, 3, true, true, 24.,   96.0);
     rescale(scaling, score, 4, true, true, 60.,   10.0);
-    rescale_time_and_duration(score, 2., 50.);
+    rescale_time_and_duration(score, 2., 60.);
     auto csound_score = to_csound_score(score);
     csound->InputMessage(csound, csound_score.c_str());
     return result;
@@ -469,6 +628,6 @@ i_result clang_compile "score_generator", S_score_generator_code, "-g -O2 -std=c
 
 </CsInstruments>
 <CsScore>
-f 0 120 
+f 0 70 
 </CsScore>
 </CsoundSynthesizer>
