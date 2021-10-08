@@ -455,16 +455,13 @@ void rescale_time_and_duration(Score &score, double starting_time, double total_
     for (auto &note : score) {
         auto start = note[1];
         auto duration = note[2];
-        print_note(note);
         if (duration < 0.) {
             duration = std::fabs(duration);
             start = start - duration;
             note[1] = start;
             note[2] = duration;
         }
-        print_note(note);
-        std::fprintf(stderr, "\\n");
-    }
+     }
     // Find the total duration of that part of the score that contains notes.
     double minimum_start = score.front()[1];
     double maximum_end = minimum_start + score.front()[2];
@@ -485,7 +482,6 @@ void rescale_time_and_duration(Score &score, double starting_time, double total_
     // Move the notes to the origin, rescale times and durations, 
     // and move the notes to the target starting time.
     for (auto &note : score) {
-        //print_note(note);
         auto start = note[1];
         auto duration = note[2];
         start = start - minimum_start;
@@ -495,7 +491,6 @@ void rescale_time_and_duration(Score &score, double starting_time, double total_
         note[1] = start;
         note[2] = duration;
         //print_note(note);
-        std::fprintf(stderr, "\\n");
     }
 }
 
@@ -526,32 +521,35 @@ struct {
     }
 } Note_less;
 
-std::string to_csound_score(Score &score, bool twelve_tet=false) {
+void to_csound_score(CSOUND *csound, Score &score, bool twelve_tet=false) {
     // Sort score.
     std::sort(score.begin(), score.end(), Note_less);
     // Randomize all stereo pans.
     std::mt19937 mersenne_twister(49850);
     std::uniform_real_distribution<double> random_pan(.05, .95);
-    std::stringstream stream_;
-    char buffer[0x500];
-    for (const auto &note : score) {
-        auto instrument = note[0];
-        auto time = note[1];
-        auto duration = note[2];
+    EVTBLK evtblk;
+    std::memset(&evtblk, 0, sizeof(EVTBLK));
+    for (auto &note : score) {
+        evtblk.strarg = nullptr;
+        evtblk.scnt = 0;
+        evtblk.opcod = 'i';
+        evtblk.pcnt = 7;
+        evtblk.p[1] = note[0];
+        evtblk.p[2] = note[1];
+        evtblk.p[3] = note[2];
         auto midi_key = note[3];
         if (twelve_tet == true) {
             midi_key = std::round(midi_key);
+            note[3] = midi_key;
         }
-        auto midi_velocity = note[4];
-        double depth = 0;
-        double pan = 0.5; //random_pan(mersenne_twister);
-        std::snprintf(buffer, 0x500, "i %9.4f %9.4f %9.4f %9.4f %9.4f %9.4f %9.4f\\n", instrument, time, duration, midi_key, midi_velocity, depth, pan);
-        stream_ << buffer;
+        evtblk.p[4] = note[3];
+        evtblk.p[5] = note[4];
+        evtblk.p[6] = 0.;
+        evtblk.p[7] = random_pan(mersenne_twister);
+        //print_note(note);
+        int result = csound->insert_score_event(csound, &evtblk, 0.);
     }
-    auto generated_score = stream_.str();
-    std::cerr << "to_csound_score: " << std::endl << generated_score << std::endl;
     std::fprintf(stderr, "to_csound_score: generated %ld notes.\\n", score.size());
-    return generated_score;
 }
 
 extern "C" int score_generator(CSOUND *csound) {
@@ -597,14 +595,13 @@ extern "C" int score_generator(CSOUND *csound) {
                        0,  0,  0,  0,  0,  0,  1; /* H */
     Score score;
     Scaling scaling;
-    multiple_copy_reducing_machine(note, hutchinson, score, 10);
+    multiple_copy_reducing_machine(note, hutchinson, score, 9);
     rescale(scaling, score, 0, true, true,  1.,     0.0);
     rescale(scaling, score, 3, true, true, 24.,    96.0);
     rescale(scaling, score, 4, true, true, 60.,    10.0);
     rescale_time_and_duration(score, 2., 60.);
-    rescale(scaling, score, 2, true, true,  0.01, 0.0);
-    auto csound_score = to_csound_score(score);
-    csound->InputMessage(csound, csound_score.c_str());
+    rescale(scaling, score, 2, true, true,  0.1, 0.0);
+    to_csound_score(csound, score);
     return result;
 }
 
