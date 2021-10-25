@@ -9,11 +9,19 @@ ksmps = 128
 nchnls = 2
 0dbfs = 20
 
-connect "JonesParksGrain", "outleft",  "MasterOutput", "inleft"
-connect "JonesParksGrain", "outright", "MasterOutput", "inright"
-connect "CosineGrain", "outleft",  "MasterOutput", "inleft"
-connect "CosineGrain", "outright", "MasterOutput", "inright"
+gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", 0
+gi_Mverb2020 vstinit "/home/mkg/.local/lib/Mverb2020.so", 1
 
+connect "JonesParksGrain", "outleft",  "Mverb2020", "inleft"
+connect "JonesParksGrain", "outright", "Mverb2020", "inright"
+connect "CosineGrain", "outleft",  "Mverb2020", "inleft"
+connect "CosineGrain", "outright", "Mverb2020", "inright"
+connect "PianoOutPianoteq", "outleft",  "Mverb2020", "inleft"
+connect "PianoOutPianoteq", "outright", "Mverb2020", "inright"
+connect "Mverb2020", "outleft",  "MasterOutput", "inleft"
+connect "Mverb2020", "outright", "MasterOutput", "inright"
+
+alwayson "Mverb2020"
 alwayson "MasterOutput"
 
 S_grain_code init {{
@@ -343,6 +351,15 @@ gS_MasterOutput_filename chnexport "gS_MasterOutput_filename", 3 ; ""
 gk_MasterOutput_level init 0
 gS_MasterOutput_filename init ""
 
+#include "PianoNotePianoteq.inc"
+#include "PianoOutPianoteq.inc"
+
+alwayson "PianoOutPianoteq"
+
+#include "Mverb2020.inc"
+
+gi_Mverb2020_Program init 5
+
 instr MasterOutput
 aleft inleta "inleft"
 aright inleta "inright"
@@ -556,7 +573,7 @@ extern "C" int score_generator(CSOUND *csound) {
     int result = OK;
     // Notes are column vectors. Notes and transformations are homogeneous.
     Note note;
-    note << 1., 0., 1, 60., 60., .5, 1.;
+    note << 1., 0., 8, 60., 60., .5, 1.;
     std::cerr << "initial note: " << std::endl << note << std::endl;
     std::vector<Transformation> hutchinson;
     hutchinson.resize(4);
@@ -565,12 +582,12 @@ extern "C" int score_generator(CSOUND *csound) {
                        0, .25,  0,  0,  0,  0,  0, /* t */
                        0,  0, .5,  0,  0,  0,  0, /* d */
                        0,  0,  0, .25,  0,  0,  0, /* k */
-                       0,  0,  0,  0, .5,  0,  0, /* v */
+                       0,  0,  0,  0, .5,  0,  0.2, /* v */
                        0,  0,  0,  0,  0, .5,  0, /* p */
                        0,  0,  0,  0,  0,  0,  1; /* H */
     /*                 i   t   d   k   v   p   T       */
     hutchinson[1] <<  .5,  0,  0,  0,  0,  0,  0, /* i */
-                       0, .5,  0,  0,  0,  0,  1, /* t */
+                       0, .65,  0,  0,  0,  0,  1, /* t */
                        0,  0, .5,  0,  0,  0,  0, /* d */
                        0,  0,  0, .5,  0,  0,  0, /* k */
                        0,  0,  0,  0, .5,  0,  0, /* v */
@@ -579,27 +596,28 @@ extern "C" int score_generator(CSOUND *csound) {
     /*                 i   t   d   k   v   p   T       */
     hutchinson[2] <<  .5,  0,  0,  0,  0,  0,  0, /* i */
                        0, .5,  0,  0,  0,  0,  0, /* t */
-                       0,  0, .5,  0,  0,  0,  0, /* d */
-                       0,  0,  0, .5,  0,  0,  1.01, /* k */
-                       0,  0,  0,  0, .5,  0,  0, /* v */
-                       0,  0,  0,  0,  0, .5,  0, /* p */
+                       0,  0, .175,  0,  0,  0,  0, /* d */
+                       0,  0,  0, .5,  0,  0,  1.03, /* k */
+                       0,  0,  0,  0, .45,  0,  0, /* v */
+                       0,  .08,  0,  0,  0, .5,  0, /* p */
                        0,  0,  0,  0,  0,  0,  1; /* H */
     /*                 i   t   d   k   v   p   T       */
-    hutchinson[3] <<  .5,  0,  0,  0,  0,  0,  0, /* i */
+    hutchinson[3] <<  .5,  0.05,  0,  0,  0,  0,  0, /* i */
                        0, .5,  0,  0,  0,  0,  1.05, /* t */
                        0,  0, .5,  0,  0,  0,  0, /* d */
                        0,  -1.1,  0, .5,  0,  0,  1, /* k */
-                       0,  0,  0,  0, .5,  0,  0, /* v */
+                       0,  0,  0,  0, .5,  0,  -.2, /* v */
                        0,  0,  0,  0,  0, .5,  0, /* p */
                        0,  0,  0,  0,  0,  0,  1; /* H */
     Score score;
     Scaling scaling;
-    multiple_copy_reducing_machine(note, hutchinson, score, 8);
-    rescale(scaling, score, 0, true, true,  1.,     0.0);
-    rescale(scaling, score, 3, true, true, 24.,    96.0);
-    rescale(scaling, score, 4, true, true, 60.,    10.0);
-    rescale_time_and_duration(score, 2., 60.);
-    rescale(scaling, score, 2, true, true,  0.1, 0.0);
+    multiple_copy_reducing_machine(note, hutchinson, score, 5);
+    rescale(scaling, score, 0, true, true,  3.,     0.0);
+    // Full range of grand piano,
+    rescale(scaling, score, 3, true, true, 21.,    88.0);
+    rescale(scaling, score, 4, true, true, 60.,    20.0);
+    rescale_time_and_duration(score, 2., 240.);
+    rescale(scaling, score, 2, true, true,  .1, 12.0);
     to_csound_score(csound, score, true);
     return result;
 }
@@ -610,6 +628,6 @@ i_result clang_compile "score_generator", S_score_generator_code, "-g -O2 -std=c
 
 </CsInstruments>
 <CsScore>
-f 0 64 
+f 0 244 
 </CsScore>
 </CsoundSynthesizer>
