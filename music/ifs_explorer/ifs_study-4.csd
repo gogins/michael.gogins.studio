@@ -1,6 +1,6 @@
 <CsoundSyntheizer>
 <CsOptions>
--m0 -d -RWfoifs_study-1.wav --opcode-lib="/home/mkg/clang-opcodes/clang_opcodes.so"
+-m0 -d -RWfoifs_study-4.wav"
 </CsOptions>
 <CsInstruments>
 
@@ -355,10 +355,202 @@ gS_MasterOutput_filename init ""
 #include "PianoOutPianoteq.inc"
 
 alwayson "PianoOutPianoteq"
+alwayson "Browser"
 
 #include "Mverb2020.inc"
 
 gi_Mverb2020_Program init 5
+
+instr Browser
+
+gS_html init {{<!DOCTYPE html>
+<html>
+<head>
+    <title>Iterated Function System Study No. 4</title>
+    <style type="text/css">
+    input[type='range'] {
+        -webkit-appearance: none;
+        box-shadow: inset 0 0 5px #333;
+        background-color: gray;
+        height: 10px;
+        width: 100%;
+        vertical-align: middle;
+    }
+    input[type=range]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        border: none;
+        height: 16px;
+        width: 16px;
+        border-radius: 50%;
+        box-shadow: inset 0 0 7px #234;
+        background: chartreuse;
+        margin-top: -4px;
+        border-radius: 10px;
+    }
+    table td {
+        border-width: 2px;
+        padding: 8px;
+        border-style: solid;
+        border-color: transparent;
+        color:yellow;
+        background-color: teal;
+        font-family: sans-serif
+    }
+    table th {
+        border-width: 2px;
+        padding: 8px;
+        border-style: solid;
+        border-color: transparent;
+        color:white;
+        background-color:teal;
+         font-family: sans-serif
+   }
+    textarea {
+        border-width: 2px;
+        padding: 8px;
+        border-style: solid;
+        border-color: transparent;
+        color:chartreuse;
+        background-color:black;
+        font-size:10pt;
+        font-family: 'Courier', sans-serif
+    }
+    h1 {
+    margin: 1em 0 0.5em 0;
+    color: #343434;
+    font-weight: normal;
+    font-family: 'Ultra', sans-serif;   
+    font-size: 36px;
+    line-height: 42px;
+    text-transform: uppercase;
+    }
+    h2 {
+        margin: 1em 0 0.5em 0;
+        color: #343434;
+        font-weight: normal;
+        font-size: 30px;
+        line-height: 40px;
+        font-family: 'Orienta', sans-serif;
+    }    
+        h3 {
+        margin: 1em 0 0.5em 0;
+        color: #343434;
+        font-weight: normal;
+        font-size:24px;
+        line-height: 30px;
+        font-family: 'Orienta', sans-serif;
+    }    
+    </style>
+</head>
+<body style="background-color:CadetBlue;box-sizing:border-box;padding:20px;:fullscreen">
+    <script>
+        csound_message = function(message) {
+            if (typeof webkit_initialized == "undefined" || webkit_initialized === null) {
+                return;
+            }
+            let messages_textarea = document.getElementById("console");
+            if (typeof messages_textarea == "undefined" || messages_textarea === null) {
+                return;
+            }
+            let existing = messages_textarea.value;
+            messages_textarea.value = existing + message;
+            messages_textarea.scrollTop = messages_textarea.scrollHeight;
+        };
+    </script>
+    <h1>Iterated Function System Study No. 4</h1>
+    <h3>Michael Gogins, 2021</h3>
+    <form id='persist'>
+    <table>
+    <col width="2*">
+    <col width="5*">
+    <col width="100px">
+    <tr>
+    <td>
+    <label for=gk2_spread>Frequency spread factor</label>
+    <td>
+    <input class=persistent-element type=range min=0 max=4 value=1 id=gk2_spread step=.001>
+    <td>
+    <output for=gk2_spread id=gk2_spread_output>1</output>
+    </tr>
+    <tr>
+    <td>
+    <label for=gk2_bass_gain>Bass emphasis factor</label>
+    <td>
+    <input class=persistent-element type=range min=0.0001 max=1 value=.005 id=gk2_bass_gain step=.001>
+    <td>
+    <output for=gk2_bass_gain id=gk2_bass_gain_output>.005</output>
+    </tr>
+    <tr>
+    <td>
+    <label for=gk_reverb_delay>Reverb delay feedback</label>
+    <td>
+    <input class=persistent-element type=range min=0 max=1 value=.89 id=gk_reverb_delay step=.001>
+    <td>
+    <output for=gk_reverb_delay id=gk_reverb_delay_output>.89</output>
+    </tr>
+    <tr>
+    <td>
+    <label for=gk_reverb_hipass>Reverb highpass cutoff (Hz)</label>
+    <td>
+    <input class=persistent-element type=range min=0 max=20000 value=12000 id=gk_reverb_hipass step=.001>
+    <td>
+    <output for=gk_reverb_hipass id=gk_reverb_hipass_output>12000</output>
+    </tr>
+    <tr>
+    <td>
+    <label for=gk_master_level>Master output level (dB)</label>
+    <td>
+    <input class=persistent-element type=range min=-40 max=40 value=-6 id=gk_master_level step=.001>
+    <td>
+    <output for=gk_master_level id=gk_master_level_output>-6</output>
+    </tr>
+    </table>
+    <p>
+     <input type="button" id='save' value="Save" />
+    <input type="button" id='restore' value="Restore" />
+    </form>   
+    <textarea class="code" id="console" rows=15 cols=108>
+    </textarea>
+    <p>
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+<script src="csound.js"></script>
+<script>   
+    $(document).ready(function() {
+        var csound = new Csound("http://localhost:8383");
+        csound.Message("Hello, World! -- from message.html displayed by the WebKit opcodes\\n");
+        $('input').on('input', function(event) {
+            var slider_value = parseFloat(event.target.value);
+            csound.SetControlChannel(event.target.id, slider_value);
+            var output_selector = '#' + event.target.id + '_output';
+            $(output_selector).val(slider_value);
+        });
+        $('#save').on('click', function() {
+            $('.persistent-element').each(function() {
+                localStorage.setItem(this.id, this.value);
+            });
+        });
+        $('#restore').on('click', function() {
+            $('.persistent-element').each(function() {
+                this.value = localStorage.getItem(this.id);
+                csound.SetControlChannel(this.id, parseFloat(this.value));
+                var output_selector = '#' + this.id + '_output';
+                $(output_selector).val(this.value);
+            });
+        });
+    });
+    webkit_initialized = true;
+</script>
+</body>
+</html>
+}}
+
+gi_browser webkit_create 8383, 1
+S_pwd pwd
+S_base_uri sprintf "file://%s/", S_pwd
+prints S_base_uri
+webkit_open_html gi_browser, "Iterated Function System Study No. 4", gS_html, S_base_uri, 1200, 1000, 0
+endin
 
 instr MasterOutput
 aleft inleta "inleft"
@@ -390,6 +582,7 @@ S_score_generator_code init {{
 #include <sstream>
 #include <random>
 #include <vector>
+#include "clang_invokable.hpp"
 
 /**
  * Multipe Copy Reducing Machine for dimensions:
@@ -568,7 +761,26 @@ void to_csound_score(CSOUND *csound, Score &score, bool twelve_tet=false) {
     std::fprintf(stderr, "to_csound_score: generated %ld notes.\\n", score.size());
 }
 
-extern "C" int score_generator(CSOUND *csound) {
+extern "C" { 
+
+void webkit_execute(int browser_handle, const char *javascript_code);
+
+void csound_message_callback(CSOUND *csound, int attr, const char *format, va_list valist) {
+    char message[0x2000];
+    std::vsnprintf(message, 0x2000, format, valist);
+    char javascript[0x3000];
+    std::sprintf(javascript, "csound_message(`%s`);", message);
+    std::fprintf(stderr, "%s\\n", javascript);
+    static int call_count = 0;
+    if (call_count >=50) {
+        webkit_execute(0, javascript);
+    }
+    call_count++;
+}
+
+int score_generator(CSOUND *csound) {
+    webkit_execute(0, "console.log(\\"****************\\");");
+    csound->SetMessageCallback(csound, csound_message_callback);
     csound->Message(csound, ">>>>>>> This is \\"score_generator\\".\\n");
     int result = OK;
     // Notes are column vectors. Notes and transformations are homogeneous.
@@ -577,54 +789,57 @@ extern "C" int score_generator(CSOUND *csound) {
     std::cerr << "initial note: " << std::endl << note << std::endl;
     std::vector<Transformation> hutchinson;
     hutchinson.resize(4);
-    /*                 i   t   d   k   v   p   T       */
-    hutchinson[0] <<  .5,  0,  0,  0,  0,  0,  0, /* i */
-                       0, .25,  0,  0,  0,  0,  0, /* t */
-                       0,  0, .5,  0,  0,  0,  0, /* d */
-                       0,  0,  0, .25,  0,  0,  0, /* k */
-                       0,  0,  0,  0, .5,  0,  0.2, /* v */
-                       0,  0,  0,  0,  0, .5,  0, /* p */
-                       0,  0,  0,  0,  0,  0,  1; /* H */
-    /*                 i   t   d   k   v   p   T       */
-    hutchinson[1] <<  .5,  0,  0,  0,  0,  0,  0, /* i */
-                       0, .65,  0,  0,  0,  0,  1, /* t */
-                       0,  0, .5,  0,  0,  0,  0, /* d */
-                       0,  0,  0, .5,  0,  0,  0, /* k */
-                       0,  0,  0,  0, .5,  0,  0, /* v */
-                       0,  0,  0,  0,  0, .5,  0, /* p */
-                       0,  0,  0,  0,  0,  0,  1; /* H */
-    /*                 i   t   d   k   v   p   T       */
-    hutchinson[2] <<  .5,  0,  0,  0,  0,  0,  0, /* i */
-                       0, .5,  0,  0,  0,  0,  0, /* t */
-                       0,  0, .175,  0,  0,  0,  0, /* d */
-                       0,  0,  0, .5,  0,  0,  1.03, /* k */
-                       0,  0,  0,  0, .45,  0,  0, /* v */
-                       0,  .08,  0,  0,  0, .5,  0, /* p */
-                       0,  0,  0,  0,  0,  0,  1; /* H */
-    /*                 i   t   d   k   v   p   T       */
-    hutchinson[3] <<  .5,  0.05,  0,  0,  0,  0,  0, /* i */
-                       0, .5,  0,  0,  0,  0,  1.05, /* t */
-                       0,  0, .5,  0,  0,  0,  0, /* d */
-                       0,  -1.1,  0, .5,  0,  0,  1, /* k */
-                       0,  0,  0,  0, .5,  0,  -.2, /* v */
-                       0,  0,  0,  0,  0, .5,  0, /* p */
-                       0,  0,  0,  0,  0,  0,  1; /* H */
+    /*                 i   t   d   k   v   p   T        */
+    hutchinson[0] <<  .5,  0,  0,  0,  0,  0,  0,  /* i */
+                       0, .25, 0,  0,  0,  0,  0,  /* t */
+                       0,  0, .5,  0,  0,  0,  0,  /* d */
+                       0,  0,  0, .25, 0,  0,  0,  /* k */
+                       0,  0,  0,  0, .5,  0, .2,  /* v */
+                       0,  0,  0,  0,  0, .5,  0,  /* p */
+                       0,  0,  0,  0,  0,  0,  1;  /* H */
+    /*                 i   t   d   k   v   p   T        */
+    hutchinson[1] <<  .5,  0,  0,  0,  0,  0,  0,  /* i */
+                       0, .65, 0,  0,  0,  0,  1,  /* t */
+                       0,  0, .5,  0,  0,  0,  0,  /* d */
+                       0,  0,  0, .5,  0,  0,  0,  /* k */
+                       0,  0,  0,  0, .5,  0,  0,  /* v */
+                       0,  0,  0,  0,  0, .5,  0,  /* p */
+                       0,  0,  0,  0,  0,  0,  1;  /* H */
+    /*                 i   t   d   k   v   p   T        */
+    hutchinson[2] <<  .5,  0,  0,  0,  0,  0,  0,  /* i */
+                       0, .5,  0,  0,  0,  0,  0,  /* t */
+                       0,  0, .175,0,  0,  0,  0,  /* d */
+                       0,  0,  0, .5,  0,  0,1.03, /* k */
+                       0,  0,  0,  0, .45, 0,  0,  /* v */
+                       0, .08, 0,  0,  0, .5,  0,  /* p */
+                       0,  0,  0,  0,  0,  0,  1;  /* H */
+    /*                 i   t   d   k   v   p   T        */
+    hutchinson[3] <<  .5, .05, 0,  0,  0,  0,  0,  /* i */
+                       0, .5,  0,  0,  0,  0,1.05, /* t */
+                       0,  0, .5,  0,  0,  0,  0,  /* d */
+                       0, -1.1,0, .5,  0,  0,  1,  /* k */
+                       0,  0,  0,  0, .5,  0,-.2,  /* v */
+                       0,  0,  0,  0,  0, .5,  0,  /* p */
+                       0,  0,  0,  0,  0,  0,  1;  /* H */
     Score score;
     Scaling scaling;
     multiple_copy_reducing_machine(note, hutchinson, score, 5);
     rescale(scaling, score, 0, true, true,  3.,     0.0);
-    // Full range of grand piano,
+    // Full range of grand piano.
     rescale(scaling, score, 3, true, true, 21.,    88.0);
     rescale(scaling, score, 4, true, true, 60.,    20.0);
     rescale_time_and_duration(score, 2., 240.);
     rescale(scaling, score, 2, true, true,  .1, 12.0);
     to_csound_score(csound, score, true);
+    // Send to Web page for score display.
     return result;
-}
+};
+
+};
 
 }}
 
-i_result clang_compile "score_generator", S_score_generator_code, "-g -O2 -std=c++14 -I/home/mkg/clang-opcodes -I/usr/local/include/csound -stdlib=libstdc++", "/usr/lib/gcc/x86_64-linux-gnu/9/libstdc++.so /usr/lib/gcc/x86_64-linux-gnu/9/libgcc_s.so /usr/lib/x86_64-linux-gnu/libm.so /usr/lib/x86_64-linux-gnu/libpthread.so"
+i_result clang_compile "score_generator", S_score_generator_code, "-g -O2 -std=c++14 -I/home/mkg/clang-opcodes -I/usr/local/include/csound -stdlib=libstdc++", "/usr/lib/gcc/x86_64-linux-gnu/9/libstdc++.so /usr/lib/gcc/x86_64-linux-gnu/9/libgcc_s.so /home/mkg/webkit-opcodes/webkit_opcodes.so /usr/lib/x86_64-linux-gnu/libm.so /usr/lib/x86_64-linux-gnu/libpthread.so"
 
 </CsInstruments>
 <CsScore>
