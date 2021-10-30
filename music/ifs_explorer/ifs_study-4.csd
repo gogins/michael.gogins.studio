@@ -12,18 +12,6 @@ nchnls = 2
 gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", 0
 gi_Mverb2020 vstinit "/home/mkg/.local/lib/Mverb2020.so", 1
 
-connect "JonesParksGrain", "outleft",  "Mverb2020", "inleft"
-connect "JonesParksGrain", "outright", "Mverb2020", "inright"
-connect "CosineGrain", "outleft",  "Mverb2020", "inleft"
-connect "CosineGrain", "outright", "Mverb2020", "inright"
-connect "PianoOutPianoteq", "outleft",  "Mverb2020", "inleft"
-connect "PianoOutPianoteq", "outright", "Mverb2020", "inright"
-connect "Mverb2020", "outleft",  "MasterOutput", "inleft"
-connect "Mverb2020", "outright", "MasterOutput", "inright"
-
-alwayson "Mverb2020"
-alwayson "MasterOutput"
-
 S_grain_code init {{
 
 void* __dso_handle = (void *)&__dso_handle;
@@ -266,6 +254,70 @@ extern "C" {
 
 i_result clang_compile "grain_main", S_grain_code, "-g -Ofast -march=native -std=c++14 -I/home/mkg/clang-opcodes -I/usr/local/include/csound  -I. -stdlib=libstdc++", "/usr/lib/gcc/x86_64-linux-gnu/9/libstdc++.so /usr/lib/gcc/x86_64-linux-gnu/9/libgcc_s.so /usr/local/lib/libstk.so /usr/lib/x86_64-linux-gnu/libm.so /usr/lib/x86_64-linux-gnu/libpthread.so"
 
+#include "FMWaterBell.inc"
+connect "FMWaterBell", "outleft",  "Mverb2020", "inleft"
+connect "FMWaterBell", "outright", "Mverb2020", "inright"
+gk_FMWaterBell_level init 0
+gi_FMWaterBell_attack init 0.002
+gi_FMWaterBell_release init 0.01
+gi_FMWaterBell_sustain init 20
+gi_FMWaterBell_sustain_level init .1
+gk_FMWaterBell_index init .5
+gk_FMWaterBell_crossfade init .5
+gk_FMWaterBell_vibrato_depth init 0.05
+gk_FMWaterBell_vibrato_rate init 6
+gk_FMWaterBell_midi_dynamic_range init 20
+
+#include "FaustBubble.inc"
+connect "FaustBubble", "outleft",  "Mverb2020", "inleft"
+connect "FaustBubble", "outright", "Mverb2020", "inright"
+gk_FaustBubble_level init 0
+gk_FaustBubble_Damp init .5 ;.175
+gk_FaustBubble_RoomSize init .8
+gk_FaustBubble_Stereo_Spread init .8
+gk_FaustBubble_Wet init .35
+
+/*
+#include "FaustBrass.inc"
+connect "FaustBrass", "outleft",  "Mverb2020", "inleft"
+connect "FaustBrass", "outright", "Mverb2020", "inright"
+gk_FaustBrass_level init 0
+gk_FaustBrass_gain init .75
+gk_FaustBrass_envAttack init 1
+gk_FaustBrass_lipsTension init .5
+gk_FaustBrass_mute init .5
+gk_FaustBrass_vibratoFreq init 4
+gk_FaustBrass_vibratoGain init .5
+gk_FaustBrass_outGain init .5
+gk_FaustBrass_midi_dynamic_range init 20
+
+#include "FaustTurenas.inc"
+connect "FaustTurenas", "outleft",  "Mverb2020", "inleft"
+connect "FaustTurenas", "outright", "Mverb2020", "inright"
+gk_FaustTurenas_level init 0
+gk_FaustTurenas_y init .22
+gk_FaustTurenas_res init 3.93
+gk_FaustTurenas_midi_dynamic_range init 20
+*/
+
+#include "Rhodes.inc"
+connect "Rhodes", "outleft",  "Mverb2020", "inleft"
+connect "Rhodes", "outright", "Mverb2020", "inright"
+gk_Rhodes_level init 0
+
+#include "ZakianFlute.inc"
+connect "ZakianFlute", "outleft",  "Mverb2020", "inleft"
+connect "ZakianFlute", "outright", "Mverb2020", "inright"
+gk_ZakianFlute_midi_dynamic_range init 20
+gk_ZakianFlute_level init 0
+
+#include "PianoNotePianoteq.inc"
+#include "PianoOutPianoteq.inc"
+connect "PianoOutPianoteq", "outleft",  "Mverb2020", "inleft"
+connect "PianoOutPianoteq", "outright", "Mverb2020", "inright"
+gk_PianoOutPianoteq_level init -25
+alwayson "PianoOutPianoteq"
+
 gk_CosineGrain_level chnexport "gk_CosineGrain_level", 3
 gk_CosineGrain_midi_dynamic_range chnexport "gk_CosineGrain_midi_dynamic_range", 3
 
@@ -302,8 +354,10 @@ a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 ; printks "a_signal: %9.4f a_out_left: %9.4f a_out_right: %9.4f\\n", 0, k(a_signal), k(a_out_left), k(a_out_right)
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
+connect "CosineGrain", "outleft",  "Mverb2020", "inleft"
+connect "CosineGrain", "outright", "Mverb2020", "inright"
 
 gk_JonesParksGrain_level chnexport "gk_JonesParksGrain_level", 3
 gk_JonesParksGrain_midi_dynamic_range chnexport "gk_JonesParksGrain_midi_dynamic_range", 3
@@ -342,24 +396,33 @@ a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 ; printks "a_signal: %9.4f a_out_left: %9.4f a_out_right: %9.4f\\n", 0, k(a_signal), k(a_out_left), k(a_out_right)
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
-
-gk_MasterOutput_level chnexport "gk_MasterOutput_level", 3 ; 0
-gS_MasterOutput_filename chnexport "gS_MasterOutput_filename", 3 ; ""
-
-gk_MasterOutput_level init 0
-gS_MasterOutput_filename init ""
-
-#include "PianoNotePianoteq.inc"
-#include "PianoOutPianoteq.inc"
-
-alwayson "PianoOutPianoteq"
-alwayson "Browser"
+connect "JonesParksGrain", "outleft",  "Mverb2020", "inleft"
+connect "JonesParksGrain", "outright", "Mverb2020", "inright"
 
 #include "Mverb2020.inc"
+connect "Mverb2020", "outleft",  "MasterOutput", "inleft"
+connect "Mverb2020", "outright", "MasterOutput", "inright"
+gk_Mverb2020_level init 0
+gk_Mverb2020_Mix init .5
+gk_Mverb2020_Pre_delay init 0.5
+gk_Mverb2020_Early_late_mix init 0.5
+gk_Mverb2020_Size init 0.5
+gk_Mverb2020_Density init 0.5
+gk_Mverb2020_Bandwith_Frequency init 0.5
+gk_Mverb2020_Decay init 0.85
+gk_Mverb2020_Damping_Frequency init 0.5
+gk_Mverb2020_Gain init 1
+gi_Mverb2020_Program init 4
 
-gi_Mverb2020_Program init 5
+alwayson "Mverb2020"
+
+#include "MasterOutput.inc"
+gk_MasterOutput_level init 10
+gS_MasterOutput_filename init ""
+
+alwayson "MasterOutput"
 
 instr Browser
 
@@ -379,8 +442,8 @@ gS_html init {{<!DOCTYPE html>
     input[type=range]::-webkit-slider-thumb {
         -webkit-appearance: none;
         border: none;
-        height: 16px;
-        width: 16px;
+        height: 12px;
+        width: 12px;
         border-radius: 50%;
         box-shadow: inset 0 0 7px #234;
         background: chartreuse;
@@ -389,7 +452,7 @@ gS_html init {{<!DOCTYPE html>
     }
     table td {
         border-width: 2px;
-        padding: 8px;
+        padding: 4px;
         border-style: solid;
         border-color: transparent;
         color:yellow;
@@ -398,7 +461,7 @@ gS_html init {{<!DOCTYPE html>
     }
     table th {
         border-width: 2px;
-        padding: 8px;
+        padding: 4px;
         border-style: solid;
         border-color: transparent;
         color:white;
@@ -407,7 +470,7 @@ gS_html init {{<!DOCTYPE html>
    }
     textarea {
         border-width: 2px;
-        padding: 8px;
+        padding: 4px;
         border-style: solid;
         border-color: transparent;
         color:chartreuse;
@@ -416,13 +479,13 @@ gS_html init {{<!DOCTYPE html>
         font-family: 'Courier', sans-serif
     }
     h1 {
-    margin: 1em 0 0.5em 0;
-    color: #343434;
-    font-weight: normal;
-    font-family: 'Ultra', sans-serif;   
-    font-size: 36px;
-    line-height: 42px;
-    text-transform: uppercase;
+        margin: 1em 0 0.5em 0;
+        color: #343434;
+        font-weight: normal;
+        font-family: 'Ultra', sans-serif;   
+        font-size: 36px;
+        line-height: 42px;
+        text-transform: uppercase;
     }
     h2 {
         margin: 1em 0 0.5em 0;
@@ -442,7 +505,7 @@ gS_html init {{<!DOCTYPE html>
     }    
     </style>
 </head>
-<body style="background-color:CadetBlue;box-sizing:border-box;padding:20px;:fullscreen">
+<body style="background-color:CadetBlue;box-sizing:border-box;padding:10px;:fullscreen">
     <script>
         csound_message = function(message) {
             if (typeof webkit_initialized == "undefined" || webkit_initialized === null) {
@@ -457,68 +520,168 @@ gS_html init {{<!DOCTYPE html>
             messages_textarea.scrollTop = messages_textarea.scrollHeight;
         };
     </script>
-    <h1>Iterated Function System Study No. 4</h1>
-    <h3>Michael Gogins, 2021</h3>
-    <form id='persist'>
-    <table>
-    <col width="2*">
-    <col width="5*">
-    <col width="100px">
-    <tr>
-    <td>
-    <label for=gk2_spread>Frequency spread factor</label>
-    <td>
-    <input class=persistent-element type=range min=0 max=4 value=1 id=gk2_spread step=.001>
-    <td>
-    <output for=gk2_spread id=gk2_spread_output>1</output>
-    </tr>
-    <tr>
-    <td>
-    <label for=gk2_bass_gain>Bass emphasis factor</label>
-    <td>
-    <input class=persistent-element type=range min=0.0001 max=1 value=.005 id=gk2_bass_gain step=.001>
-    <td>
-    <output for=gk2_bass_gain id=gk2_bass_gain_output>.005</output>
-    </tr>
-    <tr>
-    <td>
-    <label for=gk_reverb_delay>Reverb delay feedback</label>
-    <td>
-    <input class=persistent-element type=range min=0 max=1 value=.89 id=gk_reverb_delay step=.001>
-    <td>
-    <output for=gk_reverb_delay id=gk_reverb_delay_output>.89</output>
-    </tr>
-    <tr>
-    <td>
-    <label for=gk_reverb_hipass>Reverb highpass cutoff (Hz)</label>
-    <td>
-    <input class=persistent-element type=range min=0 max=20000 value=12000 id=gk_reverb_hipass step=.001>
-    <td>
-    <output for=gk_reverb_hipass id=gk_reverb_hipass_output>12000</output>
-    </tr>
-    <tr>
-    <td>
-    <label for=gk_master_level>Master output level (dB)</label>
-    <td>
-    <input class=persistent-element type=range min=-40 max=40 value=-6 id=gk_master_level step=.001>
-    <td>
-    <output for=gk_master_level id=gk_master_level_output>-6</output>
-    </tr>
-    </table>
-    <p>
-     <input type="button" id='save' value="Save" />
+    <h2>Iterated Function System Study No. 4</h2>
+    <h3>Michael Gogins, 2021
+    <input type="button" id='save' value="Save" />
     <input type="button" id='restore' value="Restore" />
+    </h3>
+    <form id='persist'>
     </form>   
     <textarea class="code" id="console" rows=15 cols=108>
     </textarea>
     <p>
+    <table>
+    <col width="2*">
+    <col width="5*">
+    <col width="100px">
+        
+        <!-- Controls for:
+        
+        gk_FMWaterBell_level init 0
+        gk_FMWaterBell_index init .5
+        gk_FMWaterBell_crossfade init .5
+        gk_FMWaterBell_vibrato_depth init 0.05
+        gk_FMWaterBell_vibrato_rate init 6
+        
+        gk_FaustBubble_level init 0
+        gk_FaustBubble_midi_dynamic_range init 20
+        
+        gk_Rhodes_level init 0
+
+        gk_ZakianFlute_level init 0
+        gk_ZakianFlute_midi_dynamic_range init 20
+ 
+        gk_PianoOutPianoteq_level init -25
+
+        gk_Mverb2020_level init 0
+        gk_Mverb2020_Mix init .5
+        gk_Mverb2020_Pre_delay init 0.5
+        gk_Mverb2020_Early_late_mix init 0.5
+        gk_Mverb2020_Size init 0.5
+        gk_Mverb2020_Density init 0.5
+        gk_Mverb2020_Bandwith_Frequency init 0.5
+        gk_Mverb2020_Decay init 0.85
+        gk_Mverb2020_Damping_Frequency init 0.5
+        gk_Mverb2020_Gain init 1
+        gi_Mverb2020_Program init 4
+
+        gk_MasterOutput_level init 0
+
+        -->
+        
+    <tr>
+    <td>
+    <label for=gk_FMWaterBell_level>FMWaterBell level (dB)</label>
+    <td>
+    <input class=persistent-element type=range min=-40 max=40 value=0 id=gk_FMWaterBell_level step=.001>
+    <td>
+    <output for=gk_FMWaterBell_level id=gk_FMWaterBell_level_output>0</output>
+    </tr>
+    <tr>
+    <td>
+    <label for=i>FMWaterBell index</label>
+    <td>
+    <input class=persistent-element type=range min=0 max=20 value=0 id=gk_FMWaterBell_index step=.001>
+    <td>
+    <output for=gk_FMWaterBell_index id=gk_FMWaterBell_index_output>0</output>
+    </tr>
+    <tr>
+    <td>
+    <label for=i>FMWaterBell crossfade</label>
+    <td>
+    <input class=persistent-element type=range min=0 max=1 value=0 id=gk_FMWaterBell_crossfade step=.001>
+    <td>
+    <output for=gk_FMWaterBell_crossfade id=gk_FMWaterBell_crossfade_output>0</output>
+    </tr>
+    <tr>
+    <td>
+    <label for=i>FMWaterBell vibrato depth</label>
+    <td>
+    <input class=persistent-element type=range min=0 max=10 value=0 id=gk_FMWaterBell_vibrato_depth step=.001>
+    <td>
+    <output for=gk_FMWaterBell_vibrato_depth id=gk_FMWaterBell_vibrato_depth_output>0</output>
+    </tr>
+    <tr>
+    <td>
+    <label for=i>FMWaterBell vibrato rate</label>
+    <td>
+    <input class=persistent-element type=range min=0 max=10 value=0 id=gk_FMWaterBell_vibrato_rate step=.001>
+    <td>
+    <output for=gk_FMWaterBell_vibrato_rate id=gk_FMWaterBell_vibrato_rate_output>0</output>
+    </tr>
+    
+    <tr/>
+    <tr>
+    <td>
+    <label for=gk_FaustBubble_level>FaustBubble output level (dB)</label>
+    <td>
+    <input class=persistent-element type=range min=-40 max=40 value=-6 id=gk_FaustBubble_level step=.001>
+    <td>
+    <output for=gk_FaustBubble_level id=gk_FaustBubble_level_output>-6</output>
+    <tr>
+    <td>
+    <label for=gk_FaustBubble_midi_dynamic_range>FaustBubble MIDI dynamic range</label>
+    <td>
+    <input class=persistent-element type=range min=0 max=127 value=20 id=gk_FaustBubble_midi_dynamic_range step=.001>
+    <td>
+    <output for=gk_FaustBubble_midi_dynamic_range id=gk_FaustBubble_midi_dynamic_range_output>-6</output>
+    </tr>
+    
+    <tr/>
+    <tr>
+    <td>
+    <label for=gk_Rhodes_level>Rhodes output level (dB)</label>
+    <td>
+    <input class=persistent-element type=range min=-40 max=40 value=-6 id=gk_Rhodes_level step=.001>
+    <td>
+    <output for=gk_Rhodes_level id=gk_Rhodes_level_output>-6</output>
+    </tr>
+    
+    <tr/>
+    <tr>
+    <td>
+    <label for=gk_ZakianFlute_level>ZakianFlute output level (dB)</label>
+    <td>
+    <input class=persistent-element type=range min=-40 max=40 value=-6 id=gk_ZakianFlute_level step=.001>
+    <td>
+    <output for=gk_ZakianFlute_level id=gk_ZakianFlute_level_outout>-6</output>
+    <tr>
+    <td>
+    <label for=gk_ZakianFlute_midi_dynamic_range>ZakianFlute MIDI dynamic range</label>
+    <td>
+    <input class=persistent-element type=range min=0 max=127 value=20 id=gk_ZakianFlute_midi_dynamic_range step=.001>
+    <td>
+    <output for=gk_ZakianFlute_midi_dynamic_range id=gk_ZakianFlute_midi_dynamic_range_output>-6</output>
+    </tr>
+    
+
+    
+    <tr/>
+    <tr>
+    <td>
+    <label for=gk_PianoOutPianoteq_level>Pianoteq output level (dB)</label>
+    <td>
+    <input class=persistent-element type=range min=-40 max=40 value=-6 id=gk_PianoOutPianoteq_level step=.001>
+    <td>
+    <output for=gk_PianoOutPianoteq_level id=gk_PianoOutPianoteq_level_output>-6</output>
+    </tr>
+    
+    <tr/>
+    <tr>
+    <td>
+    <label for=gk_MasterOutput_level>Master output level (dB)</label>
+    <td>
+    <input class=persistent-element type=range min=-40 max=40 value=-6 id=gk_MasterOutput_level step=.001>
+    <td>
+    <output for=gk_MasterOutput_level id=gk_MasterOutput_level_output>-6</output>
+    </tr>
+    </table>
 </script>
 <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
 <script src="csound.js"></script>
 <script>   
     $(document).ready(function() {
         var csound = new Csound("http://localhost:8383");
-        csound.Message("Hello, World! -- from message.html displayed by the WebKit opcodes\\n");
         $('input').on('input', function(event) {
             var slider_value = parseFloat(event.target.value);
             csound.SetControlChannel(event.target.id, slider_value);
@@ -538,6 +701,7 @@ gS_html init {{<!DOCTYPE html>
                 $(output_selector).val(this.value);
             });
         });
+        $('#restore').click();
     });
     webkit_initialized = true;
 </script>
@@ -545,33 +709,14 @@ gS_html init {{<!DOCTYPE html>
 </html>
 }}
 
-gi_browser webkit_create 8383, 1
+gi_browser webkit_create 8383, 0
 S_pwd pwd
 S_base_uri sprintf "file://%s/", S_pwd
 prints S_base_uri
-webkit_open_html gi_browser, "Iterated Function System Study No. 4", gS_html, S_base_uri, 1200, 1000, 0
+webkit_open_html gi_browser, "Iterated Function System Study No. 4", gS_html, S_base_uri, 12000, 10000, 0
 endin
 
-instr MasterOutput
-aleft inleta "inleft"
-aright inleta "inright"
-k_gain = ampdb(gk_MasterOutput_level)
-printks2 "Master gain: %f\n", k_gain
-iamp init 1
-aleft butterlp aleft, 18000
-aright butterlp aright, 18000
-outs aleft * k_gain, aright * k_gain
-; We want something that will play on my phone.
-i_amplitude_adjustment = ampdbfs(-3) / 32767
-i_filename_length strlen gS_MasterOutput_filename
-if i_filename_length > 0 goto filename_exists
-goto filename_endif
-filename_exists:
-prints sprintf("Output filename: %s\n", gS_MasterOutput_filename)
-fout gS_MasterOutput_filename, 18, aleft * i_amplitude_adjustment, aright * i_amplitude_adjustment
-filename_endif:
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
-endin
+alwayson "Browser"
 
 S_score_generator_code init {{
 
@@ -585,7 +730,7 @@ S_score_generator_code init {{
 #include "clang_invokable.hpp"
 
 /**
- * Multipe Copy Reducing Machine for dimensions:
+ * Multiple Copy Reducing Machine for dimensions:
  * 0 instrument
  * 1 time
  * 2 duration
@@ -736,6 +881,31 @@ void to_csound_score(CSOUND *csound, Score &score, bool twelve_tet=false) {
     // Randomize all stereo pans.
     std::mt19937 mersenne_twister(49850);
     std::uniform_real_distribution<double> random_pan(.05, .95);
+    // Combine overlapping notes (same instrument and MIDI key, simultaneously sounding).
+    for (int laterI = score.size() - 1; laterI > 1; --laterI) {
+        auto &laterEvent = score[laterI];
+        for (int earlierI = laterI - 1; earlierI > 0; --earlierI) {
+            auto &earlierEvent = score[earlierI];
+             if (earlierEvent[3] != laterEvent[3]) {
+                continue;
+            }
+            if (earlierEvent[4] <= 0.0 || laterEvent[4] <= 0.0) {
+                continue;
+            }
+            if ((earlierEvent[1] + earlierEvent[2]) < laterEvent[1]) {
+                continue;
+            }
+            if (earlierEvent[0] != laterEvent[0]) {
+                continue;
+            }
+            std::fprintf(stderr, "erasing %d...\\n", laterI);
+            // Ok, must be tied.
+            auto later_event_off_time = laterEvent[1] + laterEvent[2];
+            earlierEvent[2] = later_event_off_time = earlierEvent[1];
+            score.erase(score.begin() + laterI);
+            break;
+        }
+    }
     EVTBLK evtblk;
     std::memset(&evtblk, 0, sizeof(EVTBLK));
     for (auto &note : score) {
@@ -770,7 +940,7 @@ void csound_message_callback(CSOUND *csound, int attr, const char *format, va_li
     std::vsnprintf(message, 0x2000, format, valist);
     char javascript[0x3000];
     std::sprintf(javascript, "csound_message(`%s`);", message);
-    std::fprintf(stderr, "%s\\n", javascript);
+    //std::fprintf(stderr, "%s\\n", javascript);
     static int call_count = 0;
     if (call_count >=50) {
         webkit_execute(0, javascript);
@@ -779,9 +949,7 @@ void csound_message_callback(CSOUND *csound, int attr, const char *format, va_li
 }
 
 int score_generator(CSOUND *csound) {
-    webkit_execute(0, "console.log(\\"****************\\");");
     csound->SetMessageCallback(csound, csound_message_callback);
-    csound->Message(csound, ">>>>>>> This is \\"score_generator\\".\\n");
     int result = OK;
     // Notes are column vectors. Notes and transformations are homogeneous.
     Note note;
@@ -790,7 +958,7 @@ int score_generator(CSOUND *csound) {
     std::vector<Transformation> hutchinson;
     hutchinson.resize(4);
     /*                 i   t   d   k   v   p   T        */
-    hutchinson[0] <<  .5,  0,  0,  0,  0,  0,  0,  /* i */
+    hutchinson[0] <<  .5,  0,  0,  0,  0,  0, .5,  /* i */
                        0, .25, 0,  0,  0,  0,  0,  /* t */
                        0,  0, .5,  0,  0,  0,  0,  /* d */
                        0,  0,  0, .25, 0,  0,  0,  /* k */
@@ -798,7 +966,7 @@ int score_generator(CSOUND *csound) {
                        0,  0,  0,  0,  0, .5,  0,  /* p */
                        0,  0,  0,  0,  0,  0,  1;  /* H */
     /*                 i   t   d   k   v   p   T        */
-    hutchinson[1] <<  .5,  0,  0,  0,  0,  0,  0,  /* i */
+    hutchinson[1] <<  .5,  0,  0,  0,  0,  0,  1,  /* i */
                        0, .65, 0,  0,  0,  0,  1,  /* t */
                        0,  0, .5,  0,  0,  0,  0,  /* d */
                        0,  0,  0, .5,  0,  0,  0,  /* k */
@@ -806,7 +974,7 @@ int score_generator(CSOUND *csound) {
                        0,  0,  0,  0,  0, .5,  0,  /* p */
                        0,  0,  0,  0,  0,  0,  1;  /* H */
     /*                 i   t   d   k   v   p   T        */
-    hutchinson[2] <<  .5,  0,  0,  0,  0,  0,  0,  /* i */
+    hutchinson[2] <<  .5,  0,  0,  0,  0,  0, -1,  /* i */
                        0, .5,  0,  0,  0,  0,  0,  /* t */
                        0,  0, .175,0,  0,  0,  0,  /* d */
                        0,  0,  0, .5,  0,  0,1.03, /* k */
@@ -824,14 +992,13 @@ int score_generator(CSOUND *csound) {
     Score score;
     Scaling scaling;
     multiple_copy_reducing_machine(note, hutchinson, score, 5);
-    rescale(scaling, score, 0, true, true,  3.,     0.0);
-    // Full range of grand piano.
+    rescale(scaling, score, 0, true, true,  1.,     4.999);
+    // Fit to the full range of the grand piano.
     rescale(scaling, score, 3, true, true, 21.,    88.0);
     rescale(scaling, score, 4, true, true, 60.,    20.0);
     rescale_time_and_duration(score, 2., 240.);
-    rescale(scaling, score, 2, true, true,  .1, 12.0);
+    rescale(scaling, score, 2, true, true,  .1, 15.0);
     to_csound_score(csound, score, true);
-    // Send to Web page for score display.
     return result;
 };
 
