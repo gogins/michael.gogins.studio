@@ -1,4 +1,11 @@
 <CsoundSyntheizer>
+<CsLicense>
+IFS Study No. 4
+Michael Gogins, 2021
+
+This piece demonstrates the use of the Faust opcodes, the Clang opcodes, the 
+vst4cs opcodes, and the WebKit opcodes, all in one .csd file.
+</CsLicense>
 <CsOptions>
 -m0 -d -RWfoifs_study-4.wav"
 </CsOptions>
@@ -272,10 +279,6 @@ gk_FMWaterBell_midi_dynamic_range init 20
 connect "FaustBubble", "outleft",  "Mverb2020", "inleft"
 connect "FaustBubble", "outright", "Mverb2020", "inright"
 gk_FaustBubble_level init 0
-gk_FaustBubble_Damp init .5 ;.175
-gk_FaustBubble_RoomSize init .8
-gk_FaustBubble_Stereo_Spread init .8
-gk_FaustBubble_Wet init .35
 
 /*
 #include "FaustBrass.inc"
@@ -312,11 +315,6 @@ gk_ZakianFlute_midi_dynamic_range init 20
 gk_ZakianFlute_level init 0
 
 #include "PianoNotePianoteq.inc"
-#include "PianoOutPianoteq.inc"
-connect "PianoOutPianoteq", "outleft",  "Mverb2020", "inleft"
-connect "PianoOutPianoteq", "outright", "Mverb2020", "inright"
-gk_PianoOutPianoteq_level init -25
-alwayson "PianoOutPianoteq"
 
 gk_CosineGrain_level chnexport "gk_CosineGrain_level", 3
 gk_CosineGrain_midi_dynamic_range chnexport "gk_CosineGrain_midi_dynamic_range", 3
@@ -336,7 +334,7 @@ k_space_bottom_to_top = p8
 i_phase = p9
 i_frequency = cpsmidinn(i_midi_key)
 ; Adjust the following value until "overall amps" at the end of performance is about -6 dB.
-i_level_correction = 65
+i_level_correction = 90
 i_normalization = ampdb(-i_level_correction) / 2
 i_amplitude = ampdb(i_midi_velocity) * i_normalization
 k_gain = ampdb(gk_CosineGrain_level)
@@ -401,6 +399,13 @@ endin
 connect "JonesParksGrain", "outleft",  "Mverb2020", "inleft"
 connect "JonesParksGrain", "outright", "Mverb2020", "inright"
 
+#include "PianoOutPianoteq.inc"
+connect "PianoOutPianoteq", "outleft",  "Mverb2020", "inleft"
+connect "PianoOutPianoteq", "outright", "Mverb2020", "inright"
+gk_PianoOutPianoteq_level init -25
+alwayson "PianoOutPianoteq"
+
+
 #include "Mverb2020.inc"
 connect "Mverb2020", "outleft",  "MasterOutput", "inleft"
 connect "Mverb2020", "outright", "MasterOutput", "inright"
@@ -414,7 +419,7 @@ gk_Mverb2020_Bandwith_Frequency init 0.5
 gk_Mverb2020_Decay init 0.85
 gk_Mverb2020_Damping_Frequency init 0.5
 gk_Mverb2020_Gain init 1
-gi_Mverb2020_Program init 4
+gi_Mverb2020_Program init 2
 
 alwayson "Mverb2020"
 
@@ -452,7 +457,7 @@ gS_html init {{<!DOCTYPE html>
     }
     table td {
         border-width: 2px;
-        padding: 4px;
+        padding: 6px;
         border-style: solid;
         border-color: transparent;
         color:yellow;
@@ -461,7 +466,7 @@ gS_html init {{<!DOCTYPE html>
     }
     table th {
         border-width: 2px;
-        padding: 4px;
+        padding: 6px;
         border-style: solid;
         border-color: transparent;
         color:white;
@@ -470,7 +475,7 @@ gS_html init {{<!DOCTYPE html>
    }
     textarea {
         border-width: 2px;
-        padding: 4px;
+        padding: 6px;
         border-style: solid;
         border-color: transparent;
         color:chartreuse;
@@ -526,48 +531,20 @@ gS_html init {{<!DOCTYPE html>
     <input type="button" id='restore' value="Restore" />
     </h3>
     <form id='persist'>
-    </form>   
-    <textarea class="code" id="console" rows=15 cols=108>
-    </textarea>
     <p>
+    <table>
+    <col>
+    <col>
+    <tr>
+    <td colspan=2>
+    <textarea class="code" id="console" rows=15 style="width:99%;">
+    </textarea>
+    </tr>
+    <td>
     <table>
     <col width="2*">
     <col width="5*">
     <col width="100px">
-        
-        <!-- Controls for:
-        
-        gk_FMWaterBell_level init 0
-        gk_FMWaterBell_index init .5
-        gk_FMWaterBell_crossfade init .5
-        gk_FMWaterBell_vibrato_depth init 0.05
-        gk_FMWaterBell_vibrato_rate init 6
-        
-        gk_FaustBubble_level init 0
-        gk_FaustBubble_midi_dynamic_range init 20
-        
-        gk_Rhodes_level init 0
-
-        gk_ZakianFlute_level init 0
-        gk_ZakianFlute_midi_dynamic_range init 20
- 
-        gk_PianoOutPianoteq_level init -25
-
-        gk_Mverb2020_level init 0
-        gk_Mverb2020_Mix init .5
-        gk_Mverb2020_Pre_delay init 0.5
-        gk_Mverb2020_Early_late_mix init 0.5
-        gk_Mverb2020_Size init 0.5
-        gk_Mverb2020_Density init 0.5
-        gk_Mverb2020_Bandwith_Frequency init 0.5
-        gk_Mverb2020_Decay init 0.85
-        gk_Mverb2020_Damping_Frequency init 0.5
-        gk_Mverb2020_Gain init 1
-        gi_Mverb2020_Program init 4
-
-        gk_MasterOutput_level init 0
-
-        -->
         
     <tr>
     <td>
@@ -644,7 +621,7 @@ gS_html init {{<!DOCTYPE html>
     <td>
     <input class=persistent-element type=range min=-40 max=40 value=-6 id=gk_ZakianFlute_level step=.001>
     <td>
-    <output for=gk_ZakianFlute_level id=gk_ZakianFlute_level_outout>-6</output>
+    <output for=gk_ZakianFlute_level id=gk_ZakianFlute_level_output>-6</output>
     <tr>
     <td>
     <label for=gk_ZakianFlute_midi_dynamic_range>ZakianFlute MIDI dynamic range</label>
@@ -653,8 +630,6 @@ gS_html init {{<!DOCTYPE html>
     <td>
     <output for=gk_ZakianFlute_midi_dynamic_range id=gk_ZakianFlute_midi_dynamic_range_output>-6</output>
     </tr>
-    
-
     
     <tr/>
     <tr>
@@ -665,8 +640,56 @@ gS_html init {{<!DOCTYPE html>
     <td>
     <output for=gk_PianoOutPianoteq_level id=gk_PianoOutPianoteq_level_output>-6</output>
     </tr>
+    </table>
+    
+    <td>
+    <table>
     
     <tr/>
+    <tr>
+    <td>
+    <label for=gk_CosineGrain_level>Cosine grain output level (dB)</label>
+    <td>
+    <input class=persistent-element type=range min=-40 max=40 value=0 id=gk_CosineGrain_level step=.001>
+    <td>
+    <output for=gk_CosineGrain_level id=gk_CosineGrain_level_output>0/output>
+    </tr>
+    <tr>
+    <td>
+    <label for=gk_CosineGrain_MIDI_dynamic_range>Cosine grain MIDI dynamic range (dB)</label>
+    <td>
+    <input class=persistent-element type=range min=0 max=127 value=20 id=gk_CosineGrain_MIDI_dynamic_range step=.001>
+    <td>
+    <output for=gk_CosineGrain_MIDI_dynamic_range id=gk_CosineGrain_MIDI_dynamic_range_output>-6</output>
+    </tr>
+
+    <tr>
+    <td>
+    <label for=gk_Mverb2020_level>Mverb2020 reverb level (dB)</label>
+    <td>
+    <input class=persistent-element type=range min=-40 max=40 value=-6 id=gk_Mverb2020_level step=.001>
+    <td>
+    <output for=gk_Mverb2020_level id=gk_Mverb2020_level_output>-6</output>
+    </tr>
+    
+    <tr>
+    <td>
+    <label for=gk_Mverb2020_Mix>Mverb2020 reverb Mix</label>
+    <td>
+    <input class=persistent-element type=range min=0 max=1 value=.5 id=gk_Mverb2020_Mix step=.001>
+    <td>
+    <output for=gk_Mverb2020_Mix id=gk_Mverb2020_Mix_output>.5</output>
+    </tr>
+    
+    <tr>
+    <td>
+    <label for=gk_Mverb2020_Decay>Mverb2020 reverb Decay</label>
+    <td>
+    <input class=persistent-element type=range min=0 max=1 value=.5 id=gk_Mverb2020_Decay step=.001>
+    <td>
+    <output for=gk_Mverb2020_Decay id=gk_Mverb2020_Decay_output>.5</output>
+    </tr>
+    
     <tr>
     <td>
     <label for=gk_MasterOutput_level>Master output level (dB)</label>
@@ -676,6 +699,9 @@ gS_html init {{<!DOCTYPE html>
     <output for=gk_MasterOutput_level id=gk_MasterOutput_level_output>-6</output>
     </tr>
     </table>
+    </tr>
+    </table>
+    </form>   
 </script>
 <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
 <script src="csound.js"></script>
@@ -942,7 +968,7 @@ void csound_message_callback(CSOUND *csound, int attr, const char *format, va_li
     std::sprintf(javascript, "csound_message(`%s`);", message);
     //std::fprintf(stderr, "%s\\n", javascript);
     static int call_count = 0;
-    if (call_count >=50) {
+    if (call_count >=39) {
         webkit_execute(0, javascript);
     }
     call_count++;
@@ -953,7 +979,7 @@ int score_generator(CSOUND *csound) {
     int result = OK;
     // Notes are column vectors. Notes and transformations are homogeneous.
     Note note;
-    note << 1., 0., 8, 60., 60., .5, 1.;
+    note << 1., 0., .1, 60., 60., .5, 1.;
     std::cerr << "initial note: " << std::endl << note << std::endl;
     std::vector<Transformation> hutchinson;
     hutchinson.resize(4);
@@ -969,7 +995,7 @@ int score_generator(CSOUND *csound) {
     hutchinson[1] <<  .5,  0,  0,  0,  0,  0,  1,  /* i */
                        0, .65, 0,  0,  0,  0,  1,  /* t */
                        0,  0, .5,  0,  0,  0,  0,  /* d */
-                       0,  0,  0, .5,  0,  0,  0,  /* k */
+                       0,  0,  0, .5,  0,  0,-.1,  /* k */
                        0,  0,  0,  0, .5,  0,  0,  /* v */
                        0,  0,  0,  0,  0, .5,  0,  /* p */
                        0,  0,  0,  0,  0,  0,  1;  /* H */
@@ -983,21 +1009,21 @@ int score_generator(CSOUND *csound) {
                        0,  0,  0,  0,  0,  0,  1;  /* H */
     /*                 i   t   d   k   v   p   T        */
     hutchinson[3] <<  .5, .05, 0,  0,  0,  0,  0,  /* i */
-                       0, .5,  0,  0,  0,  0,1.05, /* t */
+                       0, .5,  0,  0,  0,  0,1.25, /* t */
                        0,  0, .5,  0,  0,  0,  0,  /* d */
-                       0, -1.1,0, .5,  0,  0,  1,  /* k */
+                       0,  0,  0, .5,  0,  0,  1,  /* k */
                        0,  0,  0,  0, .5,  0,-.2,  /* v */
                        0,  0,  0,  0,  0, .5,  0,  /* p */
                        0,  0,  0,  0,  0,  0,  1;  /* H */
     Score score;
     Scaling scaling;
-    multiple_copy_reducing_machine(note, hutchinson, score, 5);
-    rescale(scaling, score, 0, true, true,  1.,     4.999);
+    multiple_copy_reducing_machine(note, hutchinson, score, 6);
+    rescale(scaling, score, 0, true, true,  1.,     6.999);
     // Fit to the full range of the grand piano.
     rescale(scaling, score, 3, true, true, 21.,    88.0);
     rescale(scaling, score, 4, true, true, 60.,    20.0);
     rescale_time_and_duration(score, 2., 240.);
-    rescale(scaling, score, 2, true, true,  .1, 15.0);
+    rescale(scaling, score, 2, true, true,  .1,     8.0);
     to_csound_score(csound, score, true);
     return result;
 };
