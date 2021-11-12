@@ -14,7 +14,7 @@ struct Cursor
     csound::Chord chord;
 };
 
-auto generator = [&] (const Cursor &cursor, int depth, csound::Score &score)
+auto generator = [] (const Cursor &cursor, int depth, csound::Score &score)
 {
     Cursor result = cursor;
     return result;
@@ -166,15 +166,15 @@ int main(int argc, const char **argv)
         auto &chord = it->second;
         auto segment = csound::slice(score, startTime, endTime);
         size += segment.size();
-        csound::print("From %9.4f to %9.4f apply %s to %d notes.\n", startTime, endTime, chord.eOP().name().c_str(), segment.size());
-        csound::print("Before:\n");
+        std::fprintf(stderr, "From %9.4f to %9.4f apply %s to %d notes.\n", startTime, endTime, chord.eOP().name().c_str(), segment.size());
+        std::fprintf(stderr, "Before:\n");
         for (int i = 0, n = segment.size(); i < n; ++i) {
-            csound::print("  %s\n", segment[i]->toString().c_str());
+            std::fprintf(stderr, "  %s\n", segment[i]->toString().c_str());
         }  
         csound::apply(score, chord, startTime, endTime, true);
-        csound::print("After:\n");
+        std::fprintf(stderr, "After:\n");
         for (int i = 0, n = segment.size(); i < n; ++i) {
-            csound::print("  %s\n", segment[i]->toString().c_str());
+            std::fprintf(stderr, "  %s\n", segment[i]->toString().c_str());
         }  
         endTime = startTime;
     }

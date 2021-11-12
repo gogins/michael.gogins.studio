@@ -20,7 +20,7 @@
  * The function can, and usually does, move the pen to a new position before
  * returning it.
  */
-auto generator = [&](const csound::Event &pen, int depth, csound::Score &score, csound::VoiceleadingNode &voiceleadingNode)
+auto generator = [](const csound::Event &pen, int depth, csound::Score &score, csound::VoiceleadingNode &voiceleadingNode)
 {
     csound::Event result = pen;
     return result;

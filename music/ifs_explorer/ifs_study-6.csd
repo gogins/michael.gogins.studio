@@ -1,21 +1,32 @@
 <CsoundSyntheizer>
 <CsLicense>
-IFS Study No. 6
+
+I F S   S T U D Y   N O .   6
+
 Michael Gogins, 2021
 
 This piece demonstrates the use of the Faust opcodes, the Clang opcodes, the 
 vst4cs opcodes, the signal flow graph opcodes, and the WebKit opcodes, all in 
 one .csd file.
 
-Comments are provided in the piece. 
+Comments are provided throughout the piece. 
+
+External dependencies are brought into the .csd file -- as far as that is 
+possible. The remaining external dependencies are the WebKitGTK+ system 
+packages, the Clang/LLVM system packages, the Eigen header-only library 
+for linear algrebra, the Faust system packages and Faust opcodes for Csound,
+the vst4cs opcodes for Csound, and the Pianoteq VST plugin from Modartt.
+
+It's a lot, but it makes for a very powerful computer music system.
+
 </CsLicense>
 <CsOptions>
--m0 -d -RWfoifs_study-4.wav"
+-m0 -d -odac:plughw:2,0
 </CsOptions>
 <CsInstruments>
 
 sr = 48000
-ksmps = 128
+ksmps = 1
 nchnls = 2
 0dbfs = 20
 
@@ -39,11 +50,171 @@ void* __dso_handle = (void *)&__dso_handle;
 
 static bool diagnostics_enabled = false;
 
-#include "clang_invokable.hpp"
 #include <cmath>
 #include <complex>
 #include <csound/csdl.h>
 #include <cstdio>
+
+/*
+clang_invokable.hpp - this file is part of clang-opcodes.
+
+Copyright (C) 2021 by Michael Gogins
+
+clang-opcodes is free software; you can redistribute it
+and/or modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+clang-opcodes is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with clang-opcodes; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+02110-1301 USA
+*/
+
+#include <csdl.h>
+#include <cstring>
+
+extern "C" {
+    void webkit_execute(int handle, const char *javascript_code);
+};
+
+/**
+ * Defines the pure abstract interface implemented by Clang modules to be 
+ * called by Csound using the `clang_invoke` opcode.
+ */
+struct ClangInvokable {
+	virtual ~ClangInvokable() {};
+	/**
+	 * Called once at init time. The inputs are the same as the 
+	 * parameters passed to the `clang_invoke` opcode. The outputs become 
+	 * the values returned from the `clang_invoke` opcode. Performs the 
+	 * same work as `iopadr` in a standard Csound opcode definition. The 
+	 * `opds` argument can be used to find many things about the invoking 
+     * opcde and its enclosing instrument.
+	 */
+	virtual int init(CSOUND *csound, OPDS *opds, MYFLT **outputs, MYFLT **inputs) = 0;
+	/**
+	 * Called once every kperiod. The inputs are the same as the 
+	 * parameters passed to the `clang_invoke` opcode. The outputs become 
+	 * the values returned from the `clang_invoke` opcode. Performs the 
+	 * same work as `kopadr` in a standard Csound opcode definition.
+	 */
+	virtual int kontrol(CSOUND *csound, MYFLT **outputs, MYFLT **inputs) = 0;
+	/**
+	 * Called by Csound when the Csound instrument that contains this 
+	 * instance of the ClangInvokable is turned off.
+	 */
+	virtual int noteoff(CSOUND *csound) = 0;
+};
+
+/**
+ * Concrete base class that implements `ClangInvokable`, with some helper 
+ * facilities. Most users will implement a ClangInvokable by inheriting from 
+ * `ClangInvokableBase` and overriding one or more of its virtual methods.
+ */
+class ClangInvokableBase : public ClangInvokable {
+    public:
+        virtual ~ClangInvokableBase() {
+        };
+        int init(CSOUND *csound_, OPDS *opds_, MYFLT **outputs, MYFLT **inputs) override {
+            int result = OK;
+            csound = csound_;
+            opds = opds_;
+            return result;
+        }
+        /**
+         * Computes one sample of one frame of output audio.
+         * The `kontrol` method then calls this as appropriate for 
+         * --sample-accurate rendering. The implemention of this method must 
+         * be compatible with Csound's inputs to `clang_invoke`.
+         */
+        virtual MYFLT tick(MYFLT **inputs) {
+            MYFLT value = 0;
+            return value;
+        }
+         int kontrol(CSOUND *csound_, MYFLT **outputs, MYFLT **inputs) override {
+            int result = OK;
+            int frame_index = 0;
+            MYFLT input = 0.;
+            for( ; frame_index < kperiodOffset(); ++frame_index) {
+                outputs[0][frame_index] = 0;
+            }
+            for( ; frame_index < kperiodEnd(); ++frame_index) {
+                MYFLT sample = tick(inputs);
+                outputs[0][frame_index] = sample;
+            }
+            for( ; frame_index < ksmps(); ++frame_index) {
+                outputs[0][frame_index] = 0;
+            }
+            return result;
+        }
+        int noteoff(CSOUND *csound) override 
+        {
+            int result = OK;
+            return result;
+        }
+        uint32_t kperiodOffset() const
+        {
+            return opds->insdshead->ksmps_offset;
+        }
+        uint32_t kperiodEnd() const
+        {
+            uint32_t end = opds->insdshead->ksmps_no_end;
+            if (end) {
+                return end;
+            } else {
+                return ksmps();
+            }
+        }
+        uint32_t ksmps() const
+        {
+            return opds->insdshead->ksmps;
+        }
+        uint32_t output_arg_count()
+        {
+            return (uint32_t)opds->optext->t.outArgCount;
+        }
+        uint32_t input_arg_count()
+        {
+            // The first two input arguments belong to the invoking opcode.
+            return (uint32_t)opds->optext->t.inArgCount - 2;
+        }
+        void log(const char *format,...)
+        {
+            va_list args;
+            va_start(args, format);
+            if(csound) {
+                csound->MessageV(csound, 0, format, args);
+            } else {
+                vfprintf(stdout, format, args);
+            }
+            va_end(args);
+        }
+        void warn(const char *format,...)
+        {
+            if(csound) {
+                if(csound->GetMessageLevel(csound) & WARNMSG) {
+                    va_list args;
+                    va_start(args, format);
+                    csound->MessageV(csound, CSOUNDMSG_WARNING, format, args);
+                    va_end(args);
+                }
+            } else {
+                va_list args;
+                va_start(args, format);
+                vfprintf(stdout, format, args);
+                va_end(args);
+            }
+        }
+    protected:
+        CSOUND *csound = nullptr;
+        OPDS *opds = nullptr;
+};
 
 /**
  * Synthesizes a Jones-Parks grain, i.e. a Gaussian chirp, which can be a 
@@ -284,7 +455,72 @@ i_result clang_compile "grain_main", S_grain_code, "-g -Ofast -march=native -std
 // as a unit without affecting other instruments.
 
 //////////////////////////////////////////////////////////////////////////////
-#include "FMWaterBell.inc"
+// Original by Steven Yi.
+// Adapted by Michael Gogins.
+gk_FMWaterBell_level chnexport "gk_FMWaterBell_level", 3 ; 0
+gi_FMWaterBell_attack chnexport "gi_FMWaterBell_attack", 3 ; 0.002
+gi_FMWaterBell_release chnexport "gi_FMWaterBell_release", 3 ; 0.01
+gi_FMWaterBell_sustain chnexport "gi_FMWaterBell_sustain", 3 ; 20
+gi_FMWaterBell_sustain_level chnexport "gi_FMWaterBell_sustain_level", 3 ; .1
+gk_FMWaterBell_index chnexport "gk_FMWaterBell_index", 3 ; .5
+gk_FMWaterBell_crossfade chnexport "gk_FMWaterBell_crossfade", 3 ; .5
+gk_FMWaterBell_vibrato_depth chnexport "gk_FMWaterBell_vibrato_depth", 3 ; 0.05
+gk_FMWaterBell_vibrato_rate chnexport "gk_FMWaterBell_vibrato_rate", 3 ; 6
+gk_FMWaterBell_midi_dynamic_range chnexport "gk_FMWaterBell_midi_dynamic_range", 3 ; 20
+
+gk_FMWaterBell_level init 0
+gi_FMWaterBell_attack init 0.002
+gi_FMWaterBell_release init 0.01
+gi_FMWaterBell_sustain init 20
+gi_FMWaterBell_sustain_level init .1
+gk_FMWaterBell_index init .5
+gk_FMWaterBell_crossfade init .5
+gk_FMWaterBell_vibrato_depth init 0.05
+gk_FMWaterBell_vibrato_rate init 6
+gk_FMWaterBell_midi_dynamic_range init 20
+
+gi_FMWaterBell_cosine ftgen 0, 0, 65537, 11, 1
+
+instr FMWaterBell
+i_instrument = p1
+i_time = p2
+i_duration = p3
+; One of the envelopes in this instrument should be releasing, and use this:
+i_sustain = 1000
+xtratim gi_FMWaterBell_attack + gi_FMWaterBell_release
+i_midi_key = p4
+i_midi_dynamic_range = i(gk_FMWaterBell_midi_dynamic_range)
+i_midi_velocity = p5 * i_midi_dynamic_range / 127 + (63.6 - i_midi_dynamic_range / 2)
+k_space_front_to_back = p6
+k_space_left_to_right = p7
+k_space_bottom_to_top = p8
+i_phase = p9
+i_frequency = cpsmidinn(i_midi_key)
+; Adjust the following value until "overall amps" at the end of performance is about -6 dB.
+i_level_correction = 75
+i_normalization = ampdb(-i_level_correction) / 2
+i_amplitude = ampdb(i_midi_velocity) * i_normalization * 1.6
+k_gain = ampdb(gk_FMWaterBell_level)
+a_signal fmbell	1, i_frequency, gk_FMWaterBell_index, gk_FMWaterBell_crossfade, gk_FMWaterBell_vibrato_depth, gk_FMWaterBell_vibrato_rate, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine, gi_FMWaterBell_cosine ;, gi_FMWaterBell_sustain
+;a_envelope linsegr 0, gi_FMWaterBell_attack, 1, i_sustain, gi_FMWaterBell_sustain_level, gi_FMWaterBell_release, 0
+a_envelope linsegr 0, gi_FMWaterBell_attack, 1, i_sustain, 1, gi_FMWaterBell_release, 0
+; ares transegr ia, idur, itype, ib [, idur2] [, itype] [, ic] ...
+; a_envelope transegr 0, gi_FMWaterBell_attack, 12, 1, i_sustain, 12, gi_FMWaterBell_sustain_level, gi_FMWaterBell_release, 12, 0
+a_signal = a_signal * i_amplitude * a_envelope * k_gain
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+endin
 connect "FMWaterBell", "outleft",  "Mverb2020", "inleft"
 connect "FMWaterBell", "outright", "Mverb2020", "inright"
 gk_FMWaterBell_level init 0
@@ -301,7 +537,109 @@ maxalloc "FMWaterBell", gi_maximum_voices
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
-#include "FaustBubble.inc"
+gi_FaustBubble_compiled faustcompile {{
+
+declare name "bubble";
+declare description "Production of a water drop bubble sound.";
+declare license "MIT";
+declare copyright "(c) 2017: Yann Orlarey, GRAME";
+
+import("stdfaust.lib");
+
+//---------------------------`bubble`--------------------------
+// bubble(f0, trig) : produces a water drop bubble sound
+//
+// #### Usage
+//
+// ```
+// bubble(f0, trig) : _
+// ```
+//
+// Where:
+//
+// * ` f0 `: base frequency of bubble sound
+// * `trig`: trigs the bubble sound on the rising front
+//
+// #### Example
+//
+// ```
+// button("drop") : bubble(600) : _
+// ```
+//
+// #### Reference:
+//
+// <http://www.cs.ubc.ca/~kvdoel/publications/tap05.pdf>
+//------------------------------------------------------------
+
+bubble(f0,trig) = os.osc(f) * (exp(-damp*time) : si.smooth(0.99))
+	with {
+		damp = 0.043*f0 + 0.0014*f0^(3/2);
+		f = f0*(1+sigma*time);
+		sigma = eta * damp;
+		eta = 0.075;
+		time = 0 : (select2(trig>trig'):+(1)) ~ _ : ba.samp2sec;
+	};
+
+process = button("drop") : bubble(hslider("v:bubble/freq", 600, 150, 2000, 1)) <: dm.freeverb_demo;
+
+}}, "--import-dir \"/home/mkg/faust/libraries\"", 0
+
+print gi_FaustBubble_compiled
+
+gk_FaustBubble_level chnexport "gk_FaustBubble_level", 3
+gk_FaustBubble_midi_dynamic_range chnexport "gk_FaustBubble_midi_dynamic_range", 3
+
+gk_FaustBubble_level init 0
+gk_FaustBubble_midi_dynamic_range init 20
+
+instr FaustBubble
+i_attack = .005
+i_sustain = p3
+i_release = .1
+xtratim i_attack + i_release
+i_instrument = p1
+i_time = p2
+i_midi_key = p4
+while i_midi_key < 49 do
+  i_midi_key = i_midi_key + 12
+od
+while i_midi_key > 99 do
+  i_midi_key = i_midi_key - 12
+od
+i_midi_dynamic_range = i(gk_FaustBubble_midi_dynamic_range)
+i_midi_velocity = p5 * i_midi_dynamic_range / 127 + (63.5 - i_midi_dynamic_range / 2)
+k_space_front_to_back = p6
+k_space_left_to_right = p7
+k_space_bottom_to_top = p8
+i_phase = p9
+i_frequency = cpsmidinn(i_midi_key)
+; Adjust the following value until "overall amps" at the end of performance is about -6 dB.
+i_level_correction = 68
+i_normalization = ampdb(-i_level_correction) / 2
+i_amplitude = ampdb(i_midi_velocity) * i_normalization
+k_gain = ampdb(gk_FaustBubble_level)
+i_faust_dsp faustdsp gi_FaustBubble_compiled
+k_frequency cpsmidinn i_midi_key
+faustctl i_faust_dsp, "freq", k_frequency
+faustctl i_faust_dsp, "drop", k(1)
+a_left, a_right faustplay i_faust_dsp
+a_declicking linsegr 0, i_attack, 1, i_sustain, 1, i_release, 0
+a_left = a_left * i_amplitude * a_declicking * k_gain
+a_right = a_right * i_amplitude * a_declicking * k_gain
+
+#ifdef USE_SPATIALIZATION
+a_signal = a_left + a_right
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+outleta "outleft", a_left
+outleta "outright", a_right
+#endif
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+endin
 connect "FaustBubble", "outleft",  "Mverb2020", "inleft"
 connect "FaustBubble", "outright", "Mverb2020", "inright"
 gk_FaustBubble_level init 0
@@ -309,7 +647,60 @@ maxalloc "FaustBubble", gi_maximum_voices
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
-#include "Rhodes.inc"
+gk_Rhodes_level chnexport "gk_Rhodes_level", 3 ;  0
+gk_Rhodes_level init 0
+
+gi_Rhodes_sine ftgen 0, 0, 65537, 10, 1
+gi_Rhodes_cosine ftgen 0, 0, 65537, 11, 1
+gi_Rhodes_blank ftgen 0, 0, 65537, 10, 0 ; Blank wavetable for some Cook FM opcodes.
+
+instr Rhodes
+; Authors: Perry Cook, John ffitch, Michael Gogins
+i_instrument = p1
+i_time = p2
+i_duration = p3
+i_midi_key = p4
+i_midi_velocity = p5
+k_space_front_to_back = p6
+k_space_left_to_right = p7
+k_space_bottom_to_top = p8
+i_phase = p9
+i_frequency = cpsmidinn(i_midi_key)
+; Adjust the following value until "overall amps" at the end of performance is about -6 dB.
+i_overall_amps = 82
+i_normalization = ampdb(-i_overall_amps) / 2
+i_amplitude = ampdb(i_midi_velocity) * i_normalization
+k_gain = ampdb(gk_Rhodes_level)
+iindex = 4
+icrossfade = 3
+ivibedepth = 0.2
+iviberate = 6
+ifn1 = gi_Rhodes_sine
+ifn2 = gi_Rhodes_cosine
+ifn3 = gi_Rhodes_sine
+ifn4 = gi_Rhodes_blank
+ivibefn = gi_Rhodes_sine
+a_signal fmrhode i_amplitude, i_frequency, iindex, icrossfade, ivibedepth, iviberate, ifn1, ifn2, ifn3, ifn4, ivibefn
+i_attack = .002
+i_sustain = p3
+i_release = 0.01
+xtratim i_attack + i_release
+a_declicking linsegr 0, i_attack, 1, i_sustain, 1, i_release, 0
+a_signal = a_signal * a_declicking * k_gain
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+endin
 connect "Rhodes", "outleft",  "Mverb2020", "inleft"
 connect "Rhodes", "outright", "Mverb2020", "inright"
 gk_Rhodes_level init 0
@@ -317,7 +708,248 @@ maxalloc "Rhodes", gi_maximum_voices
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
-#include "ZakianFlute.inc"
+gk_ZakianFlute_midi_dynamic_range chnexport "gk_ZakianFlute_midi_dynamic_range", 3 ;  20
+gk_ZakianFlute_level chnexport "gk_ZakianFlute_level", 3 ;  0
+gk_ZakianFlute_pan chnexport "gk_ZakianFlute_pan", 3 ;  .5
+gi_ZakianFLute_seed chnexport "gi_ZakianFLute_seed", 3 ;  .5
+
+gk_ZakianFlute_midi_dynamic_range init 20
+gk_ZakianFlute_level init 0
+gk_ZakianFlute_pan init .5
+gi_ZakianFLute_seed init .5
+
+gi_ZakianFLute_f2  ftgen 0, 0, 16, -2, 40, 40, 80, 160, 320, 640, 1280, 2560, 5120, 10240, 10240
+gi_ZakianFlute_f26 ftgen 0, 0, 65537, -10, 2000, 489, 74, 219, 125, 9, 33, 5, 5
+gi_ZakianFlute_f27 ftgen 0, 0, 65537, -10, 2729, 1926, 346, 662, 537, 110, 61, 29, 7
+gi_ZakianFlute_f28 ftgen 0, 0, 65537, -10, 2558, 2012, 390, 361, 534, 139, 53, 22, 10, 13, 10
+gi_ZakianFlute_f29 ftgen 0, 0, 65537, -10, 12318, 8844, 1841, 1636, 256, 150, 60, 46, 11
+gi_ZakianFlute_f30 ftgen 0, 0, 65537, -10, 1229, 16, 34, 57, 32
+gi_ZakianFlute_f31 ftgen 0, 0, 65537, -10, 163, 31, 1, 50, 31
+gi_ZakianFlute_f32 ftgen 0, 0, 65537, -10, 4128, 883, 354, 79, 59, 23
+gi_ZakianFlute_f33 ftgen 0, 0, 65537, -10, 1924, 930, 251, 50, 25, 14
+gi_ZakianFlute_f34 ftgen 0, 0, 65537, -10, 94, 6, 22, 8
+gi_ZakianFlute_f35 ftgen 0, 0, 65537, -10, 2661, 87, 33, 18
+gi_ZakianFlute_f36 ftgen 0, 0, 65537, -10, 174, 12
+gi_ZakianFlute_f37 ftgen 0, 0, 65537, -10, 314, 13
+gi_ZakianFlute_wtsin ftgen 0, 0, 65537, 10, 1
+
+instr ZakianFlute
+; Author: Lee Zakian
+; Adapted by: Michael Gogins
+i_instrument = p1
+i_time = p2
+i_duration = p3
+i_midi_key = p4
+i_midi_velocity = p5
+k_space_front_to_back = p6
+k_space_left_to_right = p7
+k_space_bottom_to_top = p8
+i_phase = p9
+i_overall_amps = 65.2
+i_normalization = ampdb(-i_overall_amps) / 2
+i_midi_dynamic_range = i(gk_ZakianFlute_midi_dynamic_range)
+i_midi_velocity = p5 * i_midi_dynamic_range / 127 + (63.5 - i_midi_dynamic_range / 2)
+i_amplitude = ampdb(i_midi_velocity) * i_normalization
+k_gain = ampdb(gk_ZakianFlute_level)
+;;;iattack = .002
+;;;isustain = p3
+;;;irelease = .3
+;;;xtratim iattack + irelease
+iHz = cpsmidinn(i_midi_key)
+kHz = k(iHz)
+// Bug?
+// aenvelope transeg 1.0, 20.0, -10.0, 0.05
+aenvelope transegr 1.0, 20.0, -10.0, 0.05
+ip3 = (p3 < 3.0 ? p3 : 3.0)
+; parameters
+; p4 overall amplitude scaling factor
+ip4 init i_amplitude
+; p5 pitch in Hertz (normal pitch range: C4-C7)
+ip5 init iHz
+; p6 percent vibrato depth, recommended values in range [-1., +1.]
+ip6 init 0.5
+; 0.0 -> no vibrato
+; +1. -> 1% vibrato depth, where vibrato rate increases slightly
+; -1. -> 1% vibrato depth, where vibrato rate decreases slightly
+; p7 attack time in seconds
+; recommended value: .12 for slurred notes, .06 for tongued notes
+; (.03 for short notes)
+ip7 init .08
+; p8 decay time in seconds
+; recommended value: .1 (.05 for short notes)
+ip8 init .08
+; p9 overall brightness / filter cutoff factor
+; 1 -> least bright / minimum filter cutoff frequency (40 Hz)
+; 9 -> brightest / maximum filter cutoff frequency (10,240Hz)
+ip9 init 5
+; initial variables
+iampscale = ip4 ; overall amplitude scaling factor
+ifreq = ip5 ; pitch in Hertz
+ivibdepth = abs(ip6*ifreq/100.0) ; vibrato depth relative to fundamental frequency
+iattack = ip7 * (1.1 - .2*gi_ZakianFLute_seed) ; attack time with up to +-10% random deviation
+gi_ZakianFLute_seed = frac(gi_ZakianFLute_seed*105.947) ; reset gi_ZakianFLute_seed
+idecay = ip8 * (1.1 - .2*gi_ZakianFLute_seed) ; decay time with up to +-10% random deviation
+gi_ZakianFLute_seed = frac(gi_ZakianFLute_seed*105.947)
+ifiltcut tablei ip9, gi_ZakianFLute_f2 ; lowpass filter cutoff frequency
+iattack = (iattack < 6/kr ? 6/kr : iattack) ; minimal attack length
+idecay = (idecay < 6/kr ? 6/kr : idecay) ; minimal decay length
+isustain = p3 - iattack - idecay
+p3 = (isustain < 5/kr ? iattack+idecay+5/kr : p3) ; minimal sustain length
+isustain = (isustain < 5/kr ? 5/kr : isustain)
+iatt = iattack/6
+isus = isustain/4
+idec = idecay/6
+iphase = gi_ZakianFLute_seed ; use same phase for all wavetables
+gi_ZakianFLute_seed = frac(gi_ZakianFLute_seed*105.947)
+; vibrato block
+; kvibdepth linseg .1, .8*p3, 1, .2*p3, .7
+kvibdepth linseg .1, .8*ip3, 1, isustain, 1, .2*ip3, .7
+kvibdepth = kvibdepth* ivibdepth ; vibrato depth
+kvibdepthr randi .1*kvibdepth, 5, gi_ZakianFLute_seed ; up to 10% vibrato depth variation
+gi_ZakianFLute_seed = frac(gi_ZakianFLute_seed*105.947)
+kvibdepth = kvibdepth + kvibdepthr
+ivibr1 = gi_ZakianFLute_seed ; vibrato rate
+gi_ZakianFLute_seed = frac(gi_ZakianFLute_seed*105.947)
+ivibr2 = gi_ZakianFLute_seed
+gi_ZakianFLute_seed = frac(gi_ZakianFLute_seed*105.947)
+if ip6 < 0 goto vibrato1
+kvibrate linseg 2.5+ivibr1, p3, 4.5+ivibr2 ; if p6 positive vibrato gets faster
+goto vibrato2
+vibrato1:
+ivibr3 = gi_ZakianFLute_seed
+gi_ZakianFLute_seed = frac(gi_ZakianFLute_seed*105.947)
+kvibrate linseg 3.5+ivibr1, .1, 4.5+ivibr2, p3-.1, 2.5+ivibr3 ; if p6 negative vibrato gets slower
+vibrato2:
+kvibrater randi .1*kvibrate, 5, gi_ZakianFLute_seed ; up to 10% vibrato rate variation
+gi_ZakianFLute_seed = frac(gi_ZakianFLute_seed*105.947)
+kvibrate = kvibrate + kvibrater
+kvib oscili kvibdepth, kvibrate, gi_ZakianFlute_wtsin
+ifdev1 = -.03 * gi_ZakianFLute_seed ; frequency deviation
+gi_ZakianFLute_seed = frac(gi_ZakianFLute_seed*105.947)
+ifdev2 = .003 * gi_ZakianFLute_seed
+gi_ZakianFLute_seed = frac(gi_ZakianFLute_seed*105.947)
+ifdev3 = -.0015 * gi_ZakianFLute_seed
+gi_ZakianFLute_seed = frac(gi_ZakianFLute_seed*105.947)
+ifdev4 = .012 * gi_ZakianFLute_seed
+gi_ZakianFLute_seed = frac(gi_ZakianFLute_seed*105.947)
+kfreqr linseg ifdev1, iattack, ifdev2, isustain, ifdev3, idecay, ifdev4
+kfreq = kHz * (1 + kfreqr) + kvib
+if ifreq < 427.28 goto range1 ; (cpspch(8.08) + cpspch(8.09))/2
+if ifreq < 608.22 goto range2 ; (cpspch(9.02) + cpspch(9.03))/2
+if ifreq < 1013.7 goto range3 ; (cpspch(9.11) + cpspch(10.00))/2
+goto range4
+; wavetable amplitude envelopes
+range1: ; for low range tones
+kamp1 linseg 0, iatt, 0.002, iatt, 0.045, iatt, 0.146, iatt, \
+0.272, iatt, 0.072, iatt, 0.043, isus, 0.230, isus, 0.000, isus, \
+0.118, isus, 0.923, idec, 1.191, idec, 0.794, idec, 0.418, idec, \
+0.172, idec, 0.053, idec, 0
+kamp2 linseg 0, iatt, 0.009, iatt, 0.022, iatt, -0.049, iatt, \
+-0.120, iatt, 0.297, iatt, 1.890, isus, 1.543, isus, 0.000, isus, \
+0.546, isus, 0.690, idec, -0.318, idec, -0.326, idec, -0.116, idec, \
+-0.035, idec, -0.020, idec, 0
+kamp3 linseg 0, iatt, 0.005, iatt, -0.026, iatt, 0.023, iatt, \
+0.133, iatt, 0.060, iatt, -1.245, isus, -0.760, isus, 1.000, isus, \
+0.360, isus, -0.526, idec, 0.165, idec, 0.184, idec, 0.060, idec, \
+0.010, idec, 0.013, idec, 0
+iwt1 = gi_ZakianFlute_f26 ; wavetable numbers
+iwt2 = gi_ZakianFlute_f27
+iwt3 = gi_ZakianFlute_f28
+inorm = 3949
+goto end
+range2: ; for low mid-range tones
+kamp1 linseg 0, iatt, 0.000, iatt, -0.005, iatt, 0.000, iatt, \
+0.030, iatt, 0.198, iatt, 0.664, isus, 1.451, isus, 1.782, isus, \
+1.316, isus, 0.817, idec, 0.284, idec, 0.171, idec, 0.082, idec, \
+0.037, idec, 0.012, idec, 0
+kamp2 linseg 0, iatt, 0.000, iatt, 0.320, iatt, 0.882, iatt, \
+1.863, iatt, 4.175, iatt, 4.355, isus, -5.329, isus, -8.303, isus, \
+-1.480, isus, -0.472, idec, 1.819, idec, -0.135, idec, -0.082, idec, \
+-0.170, idec, -0.065, idec, 0
+kamp3 linseg 0, iatt, 1.000, iatt, 0.520, iatt, -0.303, iatt, \
+0.059, iatt, -4.103, iatt, -6.784, isus, 7.006, isus, 11, isus, \
+12.495, isus, -0.562, idec, -4.946, idec, -0.587, idec, 0.440, idec, \
+0.174, idec, -0.027, idec, 0
+iwt1 = gi_ZakianFlute_f29
+iwt2 = gi_ZakianFlute_f30
+iwt3 = gi_ZakianFlute_f31
+inorm = 27668.2
+goto end
+range3: ; for high mid-range tones
+kamp1 linseg 0, iatt, 0.005, iatt, 0.000, iatt, -0.082, iatt, \
+0.36, iatt, 0.581, iatt, 0.416, isus, 1.073, isus, 0.000, isus, \
+0.356, isus, .86, idec, 0.532, idec, 0.162, idec, 0.076, idec, 0.064, \
+idec, 0.031, idec, 0
+kamp2 linseg 0, iatt, -0.005, iatt, 0.000, iatt, 0.205, iatt, \
+-0.284, iatt, -0.208, iatt, 0.326, isus, -0.401, isus, 1.540, isus, \
+0.589, isus, -0.486, idec, -0.016, idec, 0.141, idec, 0.105, idec, \
+-0.003, idec, -0.023, idec, 0
+kamp3 linseg 0, iatt, 0.722, iatt, 1.500, iatt, 3.697, iatt, \
+0.080, iatt, -2.327, iatt, -0.684, isus, -2.638, isus, 0.000, isus, \
+1.347, isus, 0.485, idec, -0.419, idec, -.700, idec, -0.278, idec, \
+0.167, idec, -0.059, idec, 0
+iwt1 = gi_ZakianFlute_f32
+iwt2 = gi_ZakianFlute_f33
+iwt3 = gi_ZakianFlute_f34
+inorm = 3775
+goto end
+range4: ; for high range tones
+kamp1 linseg 0, iatt, 0.000, iatt, 0.000, iatt, 0.211, iatt, \
+0.526, iatt, 0.989, iatt, 1.216, isus, 1.727, isus, 1.881, isus, \
+1.462, isus, 1.28, idec, 0.75, idec, 0.34, idec, 0.154, idec, 0.122, \
+idec, 0.028, idec, 0
+kamp2 linseg 0, iatt, 0.500, iatt, 0.000, iatt, 0.181, iatt, \
+0.859, iatt, -0.205, iatt, -0.430, isus, -0.725, isus, -0.544, isus, \
+-0.436, isus, -0.109, idec, -0.03, idec, -0.022, idec, -0.046, idec, \
+-0.071, idec, -0.019, idec, 0
+kamp3 linseg 0, iatt, 0.000, iatt, 1.000, iatt, 0.426, iatt, \
+0.222, iatt, 0.175, iatt, -0.153, isus, 0.355, isus, 0.175, isus, \
+0.16, isus, -0.246, idec, -0.045, idec, -0.072, idec, 0.057, idec, \
+-0.024, idec, 0.002, idec, 0
+iwt1 = gi_ZakianFlute_f35
+iwt2 = gi_ZakianFlute_f36
+iwt3 = gi_ZakianFlute_f37
+inorm = 4909.05
+goto end
+end:
+kampr1 randi .02*kamp1, 10, gi_ZakianFLute_seed ; up to 2% wavetable amplitude variation
+gi_ZakianFLute_seed = frac(gi_ZakianFLute_seed*105.947)
+kamp1 = kamp1 + kampr1
+kampr2 randi .02*kamp2, 10, gi_ZakianFLute_seed ; up to 2% wavetable amplitude variation
+gi_ZakianFLute_seed = frac(gi_ZakianFLute_seed*105.947)
+kamp2 = kamp2 + kampr2
+kampr3 randi .02*kamp3, 10, gi_ZakianFLute_seed ; up to 2% wavetable amplitude variation
+gi_ZakianFLute_seed = frac(gi_ZakianFLute_seed*105.947)
+kamp3 = kamp3 + kampr3
+awt1 poscil kamp1, kfreq, iwt1, iphase ; wavetable lookup
+awt2 poscil kamp2, kfreq, iwt2, iphase
+awt3 poscil kamp3, kfreq, iwt3, iphase
+asig = awt1 + awt2 + awt3
+asig = asig*(iampscale/inorm)
+kcut linseg 0, iattack, ifiltcut, isustain, ifiltcut, idecay, 0 ; lowpass filter for brightness control
+afilt tone asig, kcut
+a_signal balance afilt, asig
+i_attack = .002
+i_sustain = p3
+i_release = 0.01
+xtratim i_attack + i_release
+a_declicking linseg 0, i_attack, 1, i_sustain, 1, i_release, 0
+a_signal = a_signal * i_amplitude * a_declicking * k_gain
+
+#ifdef USE_SPATIALIZATION
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+a_signal *= .7
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+endin
 connect "ZakianFlute", "outleft",  "Mverb2020", "inleft"
 connect "ZakianFlute", "outright", "Mverb2020", "inright"
 gk_ZakianFlute_midi_dynamic_range init 20
@@ -326,7 +958,36 @@ maxalloc "ZakianFlute", gi_maximum_voices
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
-#include "PianoNotePianoteq.inc"
+gk_PianoNotePianoteq_midi_dynamic_range chnexport "gk_PianoNotePianoteq_midi_dynamic_range", 3 ;  20
+
+gk_PianoNotePianoteq_midi_dynamic_range init 20
+
+instr PianoNotePianoteq
+if p3 == -1 then
+  p3 = 1000000
+endif
+i_instrument = p1
+i_time = p2
+i_duration = p3
+i_midi_key = p4
+i_midi_dynamic_range = i(gk_PianoNotePianoteq_midi_dynamic_range)
+i_midi_velocity = p5 * i_midi_dynamic_range / 127 + (63.6 - i_midi_dynamic_range / 2)
+k_space_front_to_back = p6
+k_space_left_to_right = p7
+k_space_bottom_to_top = p8
+i_phase = p9
+i_instrument = p1
+i_time = p2
+i_duration = p3
+i_midi_key = p4
+i_midi_velocity = p5
+i_homogeneity = p11
+instances active p1
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+i_pitch_correction = 44100 / sr
+; prints "Pitch factor:   %9.4f\n", i_pitch_correction
+vstnote gi_Pianoteq, 0, i_midi_key, i_midi_velocity, i_duration
+endin
 maxalloc "PianoNotePianoteq", gi_maximum_voices
 //////////////////////////////////////////////////////////////////////////////
 
@@ -417,7 +1078,65 @@ gk_JonesParksGrain_midi_dynamic_range init 20
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
-#include "PianoOutPianoteq.inc"
+// This must be initialized in the orc header before any #includes.
+
+gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", 0
+vstinfo gi_Pianoteq 
+
+gk_PianoOutPianoteq_level chnexport "gk_PianoOutPianoteq_level", 3 ;  0
+gi_PianoOutPianoteq_print chnexport "gi_PianoOutPianoteq_print", 3 ;  1
+gk_PianoOutPianoteq_front_to_back chnexport "gk_PianoOutPianoteq_front_to_back", 3 ;  0
+gk_PianoOutPianoteq_left_to_right chnexport "gk_PianoOutPianoteq_left_to_right", 3 ;  0.5
+gk_PianoOutPianoteq_bottom_to_top chnexport "gk_PianoOutPianoteq_bottom_to_top", 3 ;  0
+
+gk_PianoOutPianoteq_level init 0
+gi_PianoOutPianoteq_print init 1
+gk_PianoOutPianoteq_front_to_back init 0
+gk_PianoOutPianoteq_left_to_right init 0.5
+gk_PianoOutPianoteq_bottom_to_top init 0
+
+instr PianoOutPianoteq
+; Should be "D4 Daily Practice".
+vstprogset gi_Pianoteq, 0
+; Sustain off.
+vstparamset gi_Pianoteq, 0, 0
+; Reverb off.
+vstparamset gi_Pianoteq, 72, 0
+k_gain = ampdb(gk_PianoOutPianoteq_level)
+i_overall_amps = 87
+i_normalization = ampdb(-i_overall_amps) * 2
+i_amplitude = ampdb(80) * i_normalization
+if gi_PianoOutPianoteq_print == 1 then
+  vstinfo gi_PianoOutPianoteq_print
+endif
+i_instrument = p1
+i_time = p2
+i_duration = p3
+i_midi_key = p4
+i_midi_velocity = p5
+ainleft init 0
+ainright init 0
+aoutleft, aoutright vstaudio gi_Pianoteq, ainleft, ainright
+a_signal = aoutleft + aoutright
+a_signal *= k_gain
+a_signal *= i_amplitude
+a_out_left, a_out_right pan2 a_signal, gk_PianoOutPianoteq_left_to_right
+; printks "vstaudio:       %9.4f   %9.4f\n", 0.5, aoutleft, aoutright
+
+#ifdef USE_SPATIALIZATION
+a_signal = a_out_left + a_out_right
+a_spatial_reverb_send init 0
+a_bsignal[] init 16
+a_bsignal, a_spatial_reverb_send Spatialize a_signal, gk_PianoOutPianoteq_front_to_back, gk_PianoOutPianoteq_left_to_right, gk_PianoOutPianoteq_bottom_to_top
+outletv "outbformat", a_bsignal
+outleta "out", a_spatial_reverb_send
+#else
+; printks "PianoOutPt     L %9.4f R %9.4f l %9.4f\\n", 0.5, a_out_left, a_out_right, gk_Piano_level
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#endif
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+endin
 connect "PianoOutPianoteq", "outleft",  "Mverb2020", "inleft"
 connect "PianoOutPianoteq", "outright", "Mverb2020", "inright"
 gk_PianoOutPianoteq_level init -25
@@ -425,7 +1144,52 @@ alwayson "PianoOutPianoteq"
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
-#include "Mverb2020.inc"
+; Use with, e.g.: gi_Mverb2020 vstinit "/home/mkg/.local/lib/Mverb2020.so", 1
+; Obtain from: http://socalabs.com/effects/mverb2020/
+
+gk_Mverb2020_level chnexport "gk_Mverb2020_level", 3 ; 0
+gk_Mverb2020_Mix chnexport "gk_Mverb2020_Mix", 3 ; .5
+gk_Mverb2020_Pre_delay chnexport "gk_Mverb2020_Pre_delay", 3 ; 0.5
+gk_Mverb2020_Early_late_mix chnexport "gk_Mverb2020_Early_late_mix", 3 ; 0.5
+gk_Mverb2020_Size chnexport "gk_Mverb2020_Size", 3 ; 0.5
+gk_Mverb2020_Density chnexport "gk_Mverb2020_Density", 3 ; 0.5
+gk_Mverb2020_Bandwith_Frequency chnexport "gk_Mverb2020_Bandwith_Frequency", 3 ; 0.5
+gk_Mverb2020_Decay chnexport "gk_Mverb2020_Decay", 3 ; 0.85
+gk_Mverb2020_Damping_Frequency chnexport "gk_Mverb2020_Damping_Frequency", 3 ; 0.5
+gk_Mverb2020_Gain chnexport "gk_Mverb2020_Gain", 3 ; 1
+gi_Mverb2020_Program chnexport "gi_Mverb2020_Program", 3 ; 4
+
+gk_Mverb2020_level init 0
+gk_Mverb2020_Mix init .5
+gk_Mverb2020_Pre_delay init 0.5
+gk_Mverb2020_Early_late_mix init 0.5
+gk_Mverb2020_Size init 0.5
+gk_Mverb2020_Density init 0.5
+gk_Mverb2020_Bandwith_Frequency init 0.5
+gk_Mverb2020_Decay init 0.85
+gk_Mverb2020_Damping_Frequency init 0.5
+gk_Mverb2020_Gain init 1
+gi_Mverb2020_Program init 4
+
+instr Mverb2020
+vstprogset gi_Mverb2020, gi_Mverb2020_Program
+vstparamset gi_Mverb2020, 1, gk_Mverb2020_Mix
+;vstparamset gi_Mverb2020, 1, gk_Mverb2020_Pre_delay
+;vstparamset gi_Mverb2020, 2, gk_Mverb2020_Early_late_mix
+;vstparamset gi_Mverb2020, 3, gk_Mverb2020_Size
+;vstparamset gi_Mverb2020, 4, gk_Mverb2020_Density
+;vstparamset gi_Mverb2020, 5, gk_Mverb2020_Bandwith_Frequency
+vstparamset gi_Mverb2020, 6, gk_Mverb2020_Decay
+;vstparamset gi_Mverb2020, 7, gk_Mverb2020_Damping_Frequency
+;vstparamset gi_Mverb2020, 8, gk_Mverb2020_Gain
+k_gain = ampdb(gk_Mverb2020_level)
+ainleft inleta "inleft"
+ainright inleta "inright"
+aoutleft, aoutright vstaudio gi_Mverb2020, ainleft, ainright
+outleta "outleft", aoutleft
+outleta "outright", aoutright
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f -- %3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+endin
 connect "Mverb2020", "outleft",  "MasterOutput", "inleft"
 connect "Mverb2020", "outright", "MasterOutput", "inright"
 gk_Mverb2020_level init 0
@@ -443,20 +1207,44 @@ alwayson "Mverb2020"
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
-#include "MasterOutput.inc"
+gk_MasterOutput_level chnexport "gk_MasterOutput_level", 3 ; 0
+gS_MasterOutput_filename chnexport "gS_MasterOutput_filename", 3 ; ""
+
+gk_MasterOutput_level init 0
+gS_MasterOutput_filename init ""
+
+instr MasterOutput
+aleft inleta "inleft"
+aright inleta "inright"
+k_gain = ampdb(gk_MasterOutput_level)
+printks2 "Master gain: %f\n", k_gain
+iamp init 1
+aleft butterlp aleft, 18000
+aright butterlp aright, 18000
+outs aleft * k_gain, aright * k_gain
+; We want something that will play on my phone.
+i_amplitude_adjustment = ampdbfs(-3) / 32767
+i_filename_length strlen gS_MasterOutput_filename
+if i_filename_length > 0 goto filename_exists
+goto filename_endif
+filename_exists:
+prints sprintf("Output filename: %s\n", gS_MasterOutput_filename)
+fout gS_MasterOutput_filename, 18, aleft * i_amplitude_adjustment, aright * i_amplitude_adjustment
+filename_endif:
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+endin
 gk_MasterOutput_level init 10
 gS_MasterOutput_filename init ""
 alwayson "MasterOutput"
+//////////////////////////////////////////////////////////////////////////////
 
+//////////////////////////////////////////////////////////////////////////////
 // This instrument defines a WebKit browser that provides sliders for 
 // real-time tweaking of instrument parameters, as well as a display of 
 // Csound's diagnostic messages.
 //
 // Control values that are saved by clicking the "Save" button will
 // automatically be restored on the next run of Csound.
-//////////////////////////////////////////////////////////////////////////////
-
-//////////////////////////////////////////////////////////////////////////////
 instr Browser
 
 // The following HTML5 code is pretty much the standard sort of thing for Web 
@@ -498,7 +1286,8 @@ gS_html init {{<!DOCTYPE html>
         border-color: transparent;
         color:yellow;
         background-color: teal;
-        font-family: sans-serif
+        font-family: sans-serif;
+        text-align:right;
     }
     table table th {
         border-width: 2px;
@@ -509,6 +1298,7 @@ gS_html init {{<!DOCTYPE html>
         background-color:teal;
         font-family: sans-serif;
     }
+    
     textarea {
         border-width: 2px;
         padding: 6px;
@@ -547,20 +1337,6 @@ gS_html init {{<!DOCTYPE html>
     </style>
 </head>
 <body style="background-color:CadetBlue;box-sizing:border-box;padding:10px;:fullscreen">
-    <script>
-        csound_message = function(message) {
-            if (typeof webkit_initialized == "undefined" || webkit_initialized === null) {
-                return;
-            }
-            let messages_textarea = document.getElementById("console");
-            if (typeof messages_textarea == "undefined" || messages_textarea === null) {
-                return;
-            }
-            let existing = messages_textarea.value;
-            messages_textarea.value = existing + message;
-            messages_textarea.scrollTop = messages_textarea.scrollHeight;
-        };
-    </script>
     <h2>Iterated Function System Study No. 6</h2>
     <h3>Michael Gogins, 2021
     <input type="button" id='save' value="Save" />
@@ -571,17 +1347,11 @@ gS_html init {{<!DOCTYPE html>
     <table>
     <col>
     <col>
-    <tr>
-    <td colspan=2>
-    <textarea class="code" id="console" rows=15 style="width:99%;">
-    </textarea>
-    </tr>
     <td>
     <table>
     <col width="2*">
     <col width="5*">
     <col width="100px">
-        
     <tr>
     <td>
     <label for=gk_FMWaterBell_level>FMWaterBell level (dB)</label>
@@ -748,15 +1518,189 @@ gS_html init {{<!DOCTYPE html>
     </form>   
 </script>
 <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
-<script src="csound.js"></script>
+<script>
+/**
+ * This file is generated by jsonrpcstub, DO NOT CHANGE IT MANUALLY!
+ */
+function Csound(url) {
+    this.url = url;
+    var id = 1;
+    
+    function doJsonRpcRequest(method, params, methodCall, callback_success, callback_error) {
+        var request = {};
+        if (methodCall)
+            request.id = id++;
+        request.jsonrpc = "2.0";
+        request.method = method;
+        if (params !== null) {
+            request.params = params;
+        }
+        JSON.stringify(request);
+        
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: JSON.stringify(request),
+            success: function (response) {
+                if (methodCall) {
+                    if (response.hasOwnProperty("result") && response.hasOwnProperty("id")) {
+                        callback_success(response.id, response.result);
+                    } else if (response.hasOwnProperty("error")) {
+                        if (callback_error != null)
+                            callback_error(response.error.code,response.error.message);
+                    } else {
+                        if (callback_error != null)
+                            callback_error(-32001, "Invalid Server response: " + response);
+                    }
+                }
+            },
+            error: function () {
+                if (methodCall)
+                    callback_error(-32002, "AJAX Error");
+            },
+            dataType: "json"
+        });
+        return id-1;
+    }
+    this.doRPC = function(method, params, methodCall, callback_success, callback_error) {
+        return doJsonRpcRequest(method, params, methodCall, callback_success, callback_error);
+    }
+}
+
+Csound.prototype.CompileCsdText = function(csd_text, callbackSuccess, callbackError) {
+    var params = {csd_text : csd_text};
+    return this.doRPC("CompileCsdText", params, true, callbackSuccess, callbackError);
+};
+Csound.prototype.CompileOrc = function(orc_code, callbackSuccess, callbackError) {
+    var params = {orc_code : orc_code};
+    return this.doRPC("CompileOrc", params, true, callbackSuccess, callbackError);
+};
+Csound.prototype.EvalCode = function(orc_code, callbackSuccess, callbackError) {
+    var params = {orc_code : orc_code};
+    return this.doRPC("EvalCode", params, true, callbackSuccess, callbackError);
+};
+Csound.prototype.Get0dBFS = function(callbackSuccess, callbackError) {
+    var params = null;
+    return this.doRPC("Get0dBFS", params, true, callbackSuccess, callbackError);
+};
+Csound.prototype.GetAudioChannel = function(channel_name, callbackSuccess, callbackError) {
+    var params = {channel_name : channel_name};
+    return this.doRPC("GetAudioChannel", params, true, callbackSuccess, callbackError);
+};
+Csound.prototype.GetControlChannel = function(channel_name, callbackSuccess, callbackError) {
+    var params = {channel_name : channel_name};
+    return this.doRPC("GetControlChannel", params, true, callbackSuccess, callbackError);
+};
+Csound.prototype.GetDebug = function(callbackSuccess, callbackError) {
+    var params = null;
+    return this.doRPC("GetDebug", params, true, callbackSuccess, callbackError);
+};
+Csound.prototype.GetKsmps = function(callbackSuccess, callbackError) {
+    var params = null;
+    return this.doRPC("GetKsmps", params, true, callbackSuccess, callbackError);
+};
+Csound.prototype.GetNchnls = function(callbackSuccess, callbackError) {
+    var params = null;
+    return this.doRPC("GetNchnls", params, true, callbackSuccess, callbackError);
+};
+Csound.prototype.GetNchnlsInput = function(callbackSuccess, callbackError) {
+    var params = null;
+    return this.doRPC("GetNchnlsInput", params, true, callbackSuccess, callbackError);
+};
+Csound.prototype.GetScoreOffsetSeconds = function(callbackSuccess, callbackError) {
+    var params = null;
+    return this.doRPC("GetScoreOffsetSeconds", params, true, callbackSuccess, callbackError);
+};
+Csound.prototype.GetScoreTime = function(callbackSuccess, callbackError) {
+    var params = null;
+    return this.doRPC("GetScoreTime", params, true, callbackSuccess, callbackError);
+};
+Csound.prototype.GetSr = function(callbackSuccess, callbackError) {
+    var params = null;
+    return this.doRPC("GetSr", params, true, callbackSuccess, callbackError);
+};
+Csound.prototype.GetStringChannel = function(channel_name, callbackSuccess, callbackError) {
+    var params = {channel_name : channel_name};
+    return this.doRPC("GetStringChannel", params, true, callbackSuccess, callbackError);
+};
+Csound.prototype.InputMessage = function(sco_code, callbackSuccess, callbackError) {
+    var params = {sco_code : sco_code};
+    return this.doRPC("InputMessage", params, true, callbackSuccess, callbackError);
+};
+Csound.prototype.IsScorePending = function(callbackSuccess, callbackError) {
+    var params = null;
+    return this.doRPC("IsScorePending", params, true, callbackSuccess, callbackError);
+};
+Csound.prototype.Message = function(message, callbackSuccess, callbackError) {
+    var params = {message : message};
+    this.doRPC("Message", params, false, callbackSuccess, callbackError);
+};
+Csound.prototype.ReadScore = function(sco_code, callbackSuccess, callbackError) {
+    var params = {sco_code : sco_code};
+    return this.doRPC("ReadScore", params, true, callbackSuccess, callbackError);
+};
+Csound.prototype.RewindScore = function(callbackSuccess, callbackError) {
+    var params = null;
+    return this.doRPC("RewindScore", params, true, callbackSuccess, callbackError);
+};
+Csound.prototype.ScoreEvent = function(opcode_code, pfields, callbackSuccess, callbackError) {
+    var params = {opcode_code : opcode_code, pfields : pfields};
+    return this.doRPC("ScoreEvent", params, true, callbackSuccess, callbackError);
+};
+Csound.prototype.SetControlChannel = function(channel_name, channel_value, callbackSuccess, callbackError) {
+    var params = {channel_name : channel_name, channel_value : channel_value};
+    return this.doRPC("SetControlChannel", params, true, callbackSuccess, callbackError);
+};
+Csound.prototype.SetDebug = function(enabled, callbackSuccess, callbackError) {
+    var params = {enabled : enabled};
+    return this.doRPC("SetDebug", params, true, callbackSuccess, callbackError);
+};
+Csound.prototype.SetMessageCallback = function(callback, callbackSuccess, callbackError) {
+    var params = {callback : callback};
+    return this.doRPC("SetMessageCallback", params, true, callbackSuccess, callbackError);
+};
+Csound.prototype.SetScoreOffsetSeconds = function(score_time, callbackSuccess, callbackError) {
+    var params = {score_time : score_time};
+    return this.doRPC("SetScoreOffsetSeconds", params, true, callbackSuccess, callbackError);
+};
+Csound.prototype.SetScorePending = function(pending, callbackSuccess, callbackError) {
+    var params = {pending : pending};
+    return this.doRPC("SetScorePending", params, true, callbackSuccess, callbackError);
+};
+Csound.prototype.SetStringChannel = function(channel_name, channel_value, callbackSuccess, callbackError) {
+    var params = {channel_name : channel_name, channel_value : channel_value};
+    return this.doRPC("SetStringChannel", params, true, callbackSuccess, callbackError);
+};
+Csound.prototype.TableLength = function(table_number, callbackSuccess, callbackError) {
+    var params = {table_number : table_number};
+    return this.doRPC("TableLength", params, true, callbackSuccess, callbackError);
+};
+Csound.prototype.TableGet = function(index, table_number, callbackSuccess, callbackError) {
+    var params = {index : index, table_number : table_number};
+    return this.doRPC("TableGet", params, true, callbackSuccess, callbackError);
+};
+Csound.prototype.TableSet = function(index, table_number, value, callbackSuccess, callbackError) {
+    var params = {index : index, table_number : table_number, value : value};
+    return this.doRPC("TableSet", params, true, callbackSuccess, callbackError);
+};
+</script>
 <script>   
+
+    function showResult(response) {
+    };
+
+    function showError(response) {
+    };
+
+    var number_format = new Intl.NumberFormat('en-US', {minimumFractionDigits: 3, maximumFractionDigits: 3 });
     $(document).ready(function() {
         var csound = new Csound("http://localhost:8383");
         $('input').on('input', function(event) {
             var slider_value = parseFloat(event.target.value);
-            csound.SetControlChannel(event.target.id, slider_value);
+            csound.SetControlChannel(event.target.id, slider_value, showResult, showError);
             var output_selector = '#' + event.target.id + '_output';
-            $(output_selector).val(slider_value);
+            var formatted = number_format.format(slider_value);
+            $(output_selector).val(formatted);
         });
         $('#save').on('click', function() {
             $('.persistent-element').each(function() {
@@ -766,7 +1710,7 @@ gS_html init {{<!DOCTYPE html>
         $('#restore').on('click', function() {
             $('.persistent-element').each(function() {
                 this.value = localStorage.getItem(this.id);
-                csound.SetControlChannel(this.id, parseFloat(this.value));
+                csound.SetControlChannel(this.id, parseFloat(this.value), showResult, showError);
                 var output_selector = '#' + this.id + '_output';
                 $(output_selector).val(this.value);
             });
@@ -809,7 +1753,6 @@ S_score_generator_code init {{
 #include <cstdio>
 #include <random>
 #include <vector>
-#include "clang_invokable.hpp"
 
 /**
  * Multiple Copy Reducing Machine for dimensions:
@@ -993,13 +1936,17 @@ void to_csound_score(CSOUND *csound, Score &score, bool twelve_tet=false) {
                 continue;
             }
             // Ok, must be tied.
-            std::fprintf(stderr, "erasing %d...\\n", laterI);
+            std::fprintf(stderr, "erasing redundant note at %d...\\n", laterI);
             auto later_event_off_time = laterEvent[1] + laterEvent[2];
             earlierEvent[2] = later_event_off_time = earlierEvent[1];
             score.erase(score.begin() + laterI);
             break;
         }
     }
+    
+    // Using the EVTBLK struct for each note is more efficient than using a 
+    // string for each note.
+    
     EVTBLK evtblk;
     std::memset(&evtblk, 0, sizeof(EVTBLK));
     for (auto &note : score) {
@@ -1029,28 +1976,8 @@ extern "C" {
 
 void webkit_execute(int browser_handle, const char *javascript_code);
 
-// This function calls back into the Web page with Csound's diagnostic messages.
-
-void csound_message_callback(CSOUND *csound, int attr, const char *format, va_list valist) {
-    char message[0x2000];
-    std::vsnprintf(message, 0x2000, format, valist);
-    // Print the message also to stderr.
-    std::fprintf(stderr, "%s", message);
-    char javascript[0x3000];
-    std::sprintf(javascript, "csound_message(`%s`);", message);
-    // Calling JavaScript in the Web page is not immediately possible due to its 
-    // asynchronous initialization. The actual number of calls to skip must be 
-    // determined by trial and error.
-    static int call_count = 0;
-    if (call_count >=39) {
-        webkit_execute(0, javascript);
-    }
-    call_count++;
-}
-
 int score_generator(CSOUND *csound) {
     int result = OK;
-    csound->SetMessageCallback(csound, csound_message_callback);
     // Transformations are homogeneous matrices, and notes are homogeneous 
     // column vectors.
     Note note;
@@ -1064,7 +1991,7 @@ int score_generator(CSOUND *csound) {
     hutchinson[0] <<  .5,  0,  0,  0,  0,  0,  0,    /* i */
                        0, .5,  0,  0,  0,  0,  0,    /* t */
                        0,  0, .425,0,  0,  0, .05,   /* d */
-                       0,-.015,0, .5,  0,  0,  0,    /* k */
+                       0,-.013,0, .5,  0,  0,  0,    /* k */
                        0,  0,  0,  0, .4,  0,  0,    /* v */
                        0,  0,  0,  0,  0, .5,  0,    /* p */
                        0,  0,  0,  0,  0,  0,  1;    /* H */
@@ -1101,9 +2028,8 @@ int score_generator(CSOUND *csound) {
     rescale(scaling, score, 3, true, true, 21.,    88.0);
     // Fit to the desired dynamic range.
     rescale(scaling, score, 4, true, true, 60.,    30.0);
-    // Stretch to the desired time.
+    // Fit to the desired time.
     rescale_time_and_duration(score, 2., 240.);
-    //rescale(scaling, score, 2, true, true,  .2,     8.0);
     to_csound_score(csound, score, true);
     return result;
 };
@@ -1112,7 +2038,7 @@ int score_generator(CSOUND *csound) {
 
 }}
 
-i_result clang_compile "score_generator", S_score_generator_code, "-g -O2 -std=c++14 -I/home/mkg/clang-opcodes -I/usr/local/include/csound -stdlib=libstdc++", "/usr/lib/gcc/x86_64-linux-gnu/9/libstdc++.so /usr/lib/gcc/x86_64-linux-gnu/9/libgcc_s.so /home/mkg/webkit-opcodes/webkit_opcodes.so /usr/lib/x86_64-linux-gnu/libm.so /usr/lib/x86_64-linux-gnu/libpthread.so"
+i_result clang_compile "score_generator", S_score_generator_code, "-g -O2 -std=c++14 -I/home/mkg/clang-opcodes -I/usr/local/include/csound -I. -stdlib=libstdc++", "/usr/lib/gcc/x86_64-linux-gnu/9/libstdc++.so /usr/lib/gcc/x86_64-linux-gnu/9/libgcc_s.so /home/mkg/webkit-opcodes/webkit_opcodes.so /usr/lib/x86_64-linux-gnu/libm.so /usr/lib/x86_64-linux-gnu/libpthread.so"
 
 instr Exit
 exitnow 0
@@ -1120,10 +2046,8 @@ endin
 
 </CsInstruments>
 <CsScore>
-
-// f 0 does not work here, we actually need to schedule an instrument that 
-// actually turns off Csound.
-
+; f 0 does not work here, we actually need to schedule an instrument that 
+; turns off Csound.
 i "Exit" 244
 </CsScore>
 </CsoundSynthesizer>

@@ -23,7 +23,7 @@ g++ Yellow_Leaves_4.cpp -o Yellow_Leaves_4.exe -mtune=native -std=c++0x -O2 -g -
  * The function can, and usually does, move the pen to a new position before
  * returning it.
  */
-auto generator = [&](const csound::Event &pen, int depth, csound::Score &score, csound::VoiceleadingNode &voiceleader)
+auto generator = [](const csound::Event &pen, int depth, csound::Score &score, csound::VoiceleadingNode &voiceleader)
 {
     csound::Event result = pen;
     return result;
@@ -3322,5 +3322,6 @@ aoutright                       =                       gkMasterLevel * ainright
     model.arrange(11, 14,  5.00); // Was 5.
     model.arrange(12,  4,  5.00);
     model.processArgv(argc, argv);
+    std::cerr << model.getScore().toJson() << std::endl;
 }
 
