@@ -21,7 +21,7 @@ It's a lot, but it makes for a very powerful computer music system.
 
 </CsLicense>
 <CsOptions>
--m0 -d -odac:plughw:2,0
+-m0 -d -odac
 </CsOptions>
 <CsInstruments>
 
