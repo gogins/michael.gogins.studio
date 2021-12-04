@@ -21,12 +21,12 @@ It's a lot, but it makes for a very powerful computer music system.
 
 </CsLicense>
 <CsOptions>
--m0 -d -odac
+-m0 -d -odac:plughw:1,0
 </CsOptions>
 <CsInstruments>
 
 sr = 48000
-ksmps = 1
+ksmps = 100
 nchnls = 2
 0dbfs = 20
 
@@ -1684,6 +1684,69 @@ Csound.prototype.TableSet = function(index, table_number, value, callbackSuccess
     return this.doRPC("TableSet", params, true, callbackSuccess, callbackError);
 };
 </script>
+<script>
+/**
+ * Saves the text to the specified filename.  This is done by creating a Blob 
+ element containing the text, and downloading the blob.
+ */
+function save_text(text, filename) {
+  var blob = new Blob([ text ], { type: 'text/plain' });
+  var downloadLink = document.createElement("a");
+  downloadLink.download = filename;
+  downloadLink.innerHTML = "Download Text";
+  if (window.webkitURL != null) {
+    // Chrome allows the link to be clicked without actually adding it to the DOM.
+    downloadLink.href = window.webkitURL.createObjectURL(blob);
+  } else {
+    // Firefox requires the link to be added to the DOM before it can be clicked.
+    downloadLink.href = window.URL.createObjectURL(blob);
+    downloadLink.onclick = destroyClickedElement;
+    downloadLink.style.display = "none";saveTextAsFiletext
+    document.body.appendChild(downloadLink);
+  }
+  // This actually performs the download.
+  downloadLink.click();
+}
+
+function save_local_storage_to_file(filename) {
+  
+  /* dump local storage to string */
+  
+  var a = {};
+  for (var i = 0; i < localStorage.length; i++) {
+    var k = localStorage.key(i);
+    var v = localStorage.getItem(k);
+    a[k] = v;
+  }
+  
+  /* save as blob */
+  filename
+  var textToSave = JSON.stringify(a)
+  var textToSaveAsBlob = new Blob([textToSave], {
+    type: "text/plain"
+  });
+  var textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob);
+  
+  /* download without button hack */
+  
+  var downloadLink = document.createElement("a");
+  downloadLink.download = filename;
+  downloadLink.innerHTML = "Download Local Storage";
+  downloadLink.href = textToSaveAsURL;
+  downloadLink.onclick = function () {
+    console.log("saved local storage from: " + downloadLink.href);
+   console.log("Saving local storage to: " + downloadLink.download);
+   document.body.removeChild(event.target);
+  };
+  downloadLink.style.display = "none";
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
+  
+}
+
+function load_text(filename) {
+}
+</script>
 <script>   
 
     function showResult(response) {
@@ -1706,6 +1769,7 @@ Csound.prototype.TableSet = function(index, table_number, value, callbackSuccess
             $('.persistent-element').each(function() {
                 localStorage.setItem(this.id, this.value);
             });
+            save_local_storage_to_file("test.txt");
         });
         $('#restore').on('click', function() {
             $('.persistent-element').each(function() {
