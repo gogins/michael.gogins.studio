@@ -1692,7 +1692,7 @@ Csound.prototype.TableSet = function(index, table_number, value, callbackSuccess
 function save_text(text, filename) {
   var blob = new Blob([ text ], { type: 'text/plain' });
   var downloadLink = document.createElement("a");
-  downloadLink.download = filename;
+  downloadLink.download = document.documentURI + "/" + filename;
   downloadLink.innerHTML = "Download Text";
   if (window.webkitURL != null) {
     // Chrome allows the link to be clicked without actually adding it to the DOM.
@@ -1730,7 +1730,7 @@ function save_local_storage_to_file(filename) {
   /* download without button hack */
   
   var downloadLink = document.createElement("a");
-  downloadLink.download = filename;
+  downloadLink.download = document.URL + document.title + "." + filename;
   downloadLink.innerHTML = "Download Local Storage";
   downloadLink.href = textToSaveAsURL;
   downloadLink.onclick = function () {
@@ -1812,11 +1812,19 @@ alwayson "Browser"
 S_score_generator_code init {{
 
 #include <eigen3/Eigen/Dense>
+#include <csound.h>
 #include <csound/csdl.h>
 #include <iostream>
 #include <cstdio>
 #include <random>
 #include <vector>
+#include <Composition.hpp>
+#include <functional>
+#include <memory>
+#include <MusicModel.hpp>
+#include <random>
+#include <ScoreNode.hpp>
+#include <VoiceleadingNode.hpp>
 
 /**
  * Multiple Copy Reducing Machine for dimensions:
@@ -2036,11 +2044,16 @@ void to_csound_score(CSOUND *csound, Score &score, bool twelve_tet=false) {
     std::fprintf(stderr, "to_csound_score: generated %ld notes.\\n", score.size());
 }
 
+
 extern "C" { 
 
 void webkit_execute(int browser_handle, const char *javascript_code);
 
 int score_generator(CSOUND *csound) {
+
+    csound::Scale scale("F# major");
+    auto chord = scale.chord(1, 4);
+
     int result = OK;
     // Transformations are homogeneous matrices, and notes are homogeneous 
     // column vectors.
@@ -2063,7 +2076,7 @@ int score_generator(CSOUND *csound) {
     hutchinson[1] <<  .5,  0,  0,  0,  0,  0,  1,    /* i */
                        0, .5,  0,  0,  0,  0,  1,    /* t */
                        0,  0, .5,  0,  0,  0,  0,    /* d */
-                       0,  0,  0,-.5,  0,  0,  0,    /* k */
+                       0,  0,  0,-.5, -1,  0,  0,    /* k */
                        0,  0,  0,  0, .5,  0,  0,    /* v */
                        0,  0,  0,  0,  0, .5,  0,    /* p */
                        0,  0,  0,  0,  0,  0,  1;    /* H */
@@ -2102,7 +2115,7 @@ int score_generator(CSOUND *csound) {
 
 }}
 
-i_result clang_compile "score_generator", S_score_generator_code, "-g -O2 -std=c++14 -I/home/mkg/clang-opcodes -I/usr/local/include/csound -I. -stdlib=libstdc++", "/usr/lib/gcc/x86_64-linux-gnu/9/libstdc++.so /usr/lib/gcc/x86_64-linux-gnu/9/libgcc_s.so /home/mkg/webkit-opcodes/webkit_opcodes.so /usr/lib/x86_64-linux-gnu/libm.so /usr/lib/x86_64-linux-gnu/libpthread.so"
+i_result clang_compile "score_generator", S_score_generator_code, "-g -v -O2 -std=c++17 -I/home/mkg/clang-opcodes -I/home/mkg/csound-extended/CsoundAC -I/usr/local/include/csound -stdlib=libstdc++", "/usr/lib/libCsoundAC.so.6.0 /usr/lib/gcc/x86_64-linux-gnu/9/libstdc++.so /usr/lib/gcc/x86_64-linux-gnu/9/libgcc_s.so /home/mkg/webkit-opcodes/webkit_opcodes.so /usr/lib/x86_64-linux-gnu/libm.so /usr/lib/x86_64-linux-gnu/libpthread.so"
 
 instr Exit
 exitnow 0
