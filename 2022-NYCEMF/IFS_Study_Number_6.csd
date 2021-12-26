@@ -1,7 +1,7 @@
 <CsoundSyntheizer>
 <CsLicense>
 
-I F S   S T U D Y   N O .   6
+# I F S   S T U D Y   N O .   6
 
 Michael Gogins, 2021
 
@@ -18,6 +18,68 @@ for linear algrebra, the Faust system packages and Faust opcodes for Csound,
 the vst4cs opcodes for Csound, and the Pianoteq VST plugin from Modartt.
 
 It's a lot, but it makes for a very powerful computer music system.
+
+# Program Notes
+
+This piece is algorithmically composed using the multiple copy reducing 
+machine algorithm, an abstract and flexible method of producing an 
+approximation to the attractor of an iterated function system; in this case,
+the attractor is a set of notes in a musical score.
+
+This piece also demonstrates the use of some powerful Csound plugin opcodes, 
+and some of these are new.
+
+The piece uses the faustgen opcodes for embedding source code for the Faust 
+digital signal processing language in the Csound orchestra, and compiling 
+the Faust code to user-defined opcodes at Csound's run time.
+
+The piece uses the new Clang opcodes, written by me, for 
+embedding the C++ source code that implements the MCRM score generator in the 
+Csound orchestra, and compiling and running the C++ code at Csound's run time.
+
+C++ code for a user-defined phase-synchronous granular synthesis opcode is 
+also embedded, and compiled and run at Csound's run time.
+
+The piece uses the new WebKit opcodes, written by me, for embedding the 
+HTML and JavaScript source code for a Web page showing interactive controls 
+for adjusting the Csound instruments, and display the Web page at Csound's 
+run time to enable tweaking the sounds of the instruments.
+
+The piece uses the vst4cs opcodes, partly written and now maintained by 
+me, for hosting the Pianoteq physically modelled piano as a VST2 plugin, and 
+for using the freeware Mverb2020 plugin, which provides a good implementation 
+of Jon Dattoro's mesh reverb.
+
+Source code for this piece is available at 
+https://github.com/gogins/michael.gogins.studio/blob/master/2022-NYCEMF/IFS_Study_Number_6.csd
+
+# Biography
+
+I was born in 1950 in Salt Lake City, Utah, and lived there till 1973, a 
+wonderful place to grow up with many trips to mountains, desert, and unlocked 
+university labs. My father was an inventor, my mother was a fine artist and 
+commercial artist. I have pursued poetry, photography, music performance, and 
+music composition. I have lived in Salt Lake City, Los Angeles, New York, 
+and Seattle. I have a B.A. in comparative religion from the University of 
+Washington, 1984.
+
+At the same time as I was studying comparative religion, I was taking seminars 
+in computer music with John Rahn. Computer music gradually became my major 
+interest. It also enabled me to make a living as a software engineer. In the 
+late 1980s, I benefited greatly from Brad Garton's openness to non-student 
+participation in the woof user group and concerts at the Columbia-Princeton 
+Electronic Music Center, now the Columbia Computer Music Center.
+
+Currently, I contribute code to Csound, maintain the vst4cs opcodes for 
+hosting VST plugins in Csound, maintain the Csound for Android app, and 
+maintain the csound-extended package incorporating various facilities for 
+algorithmic composition in JavaScript, C++, and Common Lisp. I write articles 
+and papers and give talks on computer music, and I create computer music. I 
+have a special interest in algorithmic composition. I am currently working to 
+bring new developments in mathematical music theory into algorithmic 
+composition software.  I am married to Heidi Rogers, who before she retired 
+ran Frank Music Company, a classical sheet music store in New York. We live on 
+a farm in the Catskills, and on the Upper West Side of Manhattan. 
 
 </CsLicense>
 <CsOptions>
