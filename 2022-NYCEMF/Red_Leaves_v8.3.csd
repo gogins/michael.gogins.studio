@@ -88,7 +88,7 @@ gi_Spatialize3D_room_table ftgen 1, 0, 64, -2,                                  
     3,      0,      -1,        0,         0,     123,                                  \
 /*  used   distance  random  reflection  eq hz   eq level  eq q  eq mode            */ \
     1,     20,       0.05,   0.87,       4000.0, 0.6,      0.7,  2,      /* ceiling */ \
-    1,      2,       0.05,   0.87,       3500.0, 0.5,      0.7,  2,      /* floor   */ \
+    1,     20,       0.05,   0.87,       3500.0, 0.5,      0.7,  2,      /* floor   */ \
     1,     20,       0.05,   0.87,       5000.0, 0.8,      0.7,  2,      /* front   */ \
     1,     20,       0.05,   0.87,       5000.0, 0.8,      0.7,  2,      /* back    */ \
     1,     20,       0.05,   0.87,       5000.0, 0.8,      0.7,  2,      /* right   */ \
@@ -125,12 +125,12 @@ connect "ReverbSC", "outright", "MasterOutput", "inright"
 
 opcode instrument_position, kk, iii
 i_onset, i_radius, i_rate xin
-i_rate = .1 + (i_rate / 100)
+i_rate = .2 + (i_rate / 50)
 k_time times
 // Depth.
-k_x = i_radius * cos(i_onset + ((k_time - i_onset) * i_rate))
+k_x = i_radius * 4 * cos(i_onset + ((k_time - i_onset) * i_rate))
 // Pan.
-k_y = i_radius * sin(i_onset + ((k_time - i_onset) * i_rate))
+k_y = i_radius * 4 * sin(i_onset + ((k_time - i_onset) * i_rate))
 xout k_x, k_y
 endop
 
@@ -156,13 +156,13 @@ alwayson "ReverbSC"
 alwayson "MasterOutput"
 #endif
 
-gk_PianoOutPianoteq_front_to_back init -1
-gk_PianoOutPianoteq_left_to_right init -2
-gk_PianoOutPianoteq_bottom_to_top init 1
+gk_PianoOutPianoteq_front_to_back init -3
+gk_PianoOutPianoteq_left_to_right init -3
+gk_PianoOutPianoteq_bottom_to_top init 10
 
-gk_FMWaterBell_front_to_back init -1
-gk_FMWaterBell_left_to_right init 2
-gk_FMWaterBell_bottom_to_top init -1
+gk_FMWaterBell_front_to_back init -3
+gk_FMWaterBell_left_to_right init 3
+gk_FMWaterBell_bottom_to_top init -10
 
 
 //////////////////////////////////////////////////////////////////////////////
