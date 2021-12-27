@@ -304,7 +304,7 @@ gk_ZakianFlute_level init 25.125628140703512
 gk_PianoOutPianoteq_level init -40
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-gi_Spatialize3D_speaker_rig init 31
+gi_Spatialize3D_speaker_rig init 1
 
 //////////////////////////////////////////////////////////////////////////////
 // This instrument defines a WebKit browser embedded in Csound. The following 
