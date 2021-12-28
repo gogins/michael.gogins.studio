@@ -340,8 +340,10 @@ prints "i_front:            %9.4f\n", i_front
 prints "i_left:             %9.4f\n", i_left
 prints "i_right:            %9.4f\n", i_right
 i_distance = sqrt(i_w * i_w + i_h * i_h + i_d * i_d)
-prints "i_distance:         %9.4f\n", i_distance
 k_distance = sqrt(k_x * k_x + k_y * k_y + k_z * k_z)
+k_print = 1
+printf "i_distance:         %9.4f initial k_distance: %9.4f\n", k_print, i_distance, k_distance
+k_print = 0
 i_maximum_delay = ((i_r + 1) * i_distance / gi_Spatialize3D_Mach) * 2
 prints "i_maximum_delay:    %9.4f\n", i_maximum_delay
 i_minimum_distance = (gi_Spatialize3D_Mach * 18) / sr

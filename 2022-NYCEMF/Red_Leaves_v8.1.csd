@@ -1,11 +1,11 @@
 <CsoundSyntheizer>
 <CsLicense>
 
-R E D   L E A V E S   V E R S I O N   8 . 3
+R E D   L E A V E S   V E R S I O N   8 . 1
 
 Michael Gogins, 2021
 
-This piece is another in my "Leaves" series of pieces of electroacoustic 
+This piece is another in the "Leaves" series of pieces of electroacoustic 
 concert music, algorithmically composed, that have been performed in 
 international festivals and are available on electronic distribution.
 
@@ -15,12 +15,24 @@ signal flow graph opcodes, and the WebKit opcodes -- all in one .csd file.
 
 TODO:
 
--- Spatialize, with piano and water bell not moving, and other instruments 
-   orbiting the hall slowly.
+-- Spatialize, with piano not moving and other sounds rotating slowly.
    (a) First, get existing coordinates to work in binaural mode.
    (b) Then, implement the movements.
-   (c) Have the pad sounds orbit at different speeds so that they are 
+   (c) Have the pad sounds move at different speeds so that they are 
        heard merging and separationg.
+
+-- Try more involving chord changes. Still pretty static, not sure how to 
+   change. Still, it works.
+
+-- More involving balances among the pads. _Pretty good now._
+
+-- Check that FMWaterBell level is tracking slider. _Yes, it is._
+
+-- Check that Pianoteq patch is good and reverb is off. _Yes for both._
+
+-- Transpose just the piano part up a 6th or octave. _An octave works._
+
+-- At 273 seconds, Droner, Buzzer, or Shiner is too loud. Same later on.
 
 //////////////////////////////////////////////////////////////////////////////
 // Tutorial comments like this are provided throughout the piece. 
@@ -60,7 +72,7 @@ information on how to use some of these features in your own pieces.
 
 </CsLicense>
 <CsOptions>
--+msg_color=0 -m163 -d -odac 
+-+msg_color=0 -m165 -d -odac
 </CsOptions>
 <CsInstruments>
 
@@ -68,9 +80,9 @@ information on how to use some of these features in your own pieces.
 // Change to sr=96000 with ksmps=1 for final rendering to soundfile.
 //////////////////////////////////////////////////////////////////////////////
 sr = 48000
-ksmps = 1
+ksmps = 128
 nchnls = 2
-0dbfs = 2000
+0dbfs = 5000
 //////////////////////////////////////////////////////////////////////////////
 // This random seed ensures that the same random stream  is used for each 
 // rendering. Note that rand, randh, randi, rnd(x) and birnd(x) are not 
@@ -78,22 +90,44 @@ nchnls = 2
 //////////////////////////////////////////////////////////////////////////////
 seed 88818145
 
-#define USE_SPATIALIZATION ##
+;#define USE_SPATIALIZATION ##
 
 #ifdef USE_SPATIALIZATION
-#include "Spatialize3D.inc"
+#include "Spatialize1.inc"
+gk_BformatDecoder_SpeakerRig init 1
+gk_Spatialize_SpeakerRigRadius init 5.0
+gk_SpatialReverb_ReverbDecay init 0.96
+gk_SpatialReverb_CutoffHz init sr
+gk_SpatialReverb_RandomDelayModulation init 4.0
+gk_LocalReverbByDistance_Wet init 0.5
+; This is a fraction of the speaker rig radius.
+gk_LocalReverbByDistance_FrontWall init 0.9
+gk_LocalReverbByDistance_ReverbDecay init 0.6
+gk_LocalReverbByDistance_CutoffHz init 20000
+gk_LocalReverbByDistance_RandomDelayModulation init 1.0
+gk_Spatialize_Verbose init 0
 
-gi_Spatialize3D_room_table ftgen 1, 0, 64, -2,                                               \                                       
-/*  depth1  depth2  max delay  ir length  idist  seed                               */ \
-    3,      0,      -1,        0,         0,     123,                                  \
-/*  used   distance  random  reflection  eq hz   eq level  eq q  eq mode            */ \
-    1,     20,       0.05,   0.87,       4000.0, 0.6,      0.7,  2,      /* ceiling */ \
-    1,     20,       0.05,   0.87,       3500.0, 0.5,      0.7,  2,      /* floor   */ \
-    1,     20,       0.05,   0.87,       5000.0, 0.8,      0.7,  2,      /* front   */ \
-    1,     20,       0.05,   0.87,       5000.0, 0.8,      0.7,  2,      /* back    */ \
-    1,     20,       0.05,   0.87,       5000.0, 0.8,      0.7,  2,      /* right   */ \
-    1,     20,       0.05,   0.87,       5000.0, 0.8,      0.7,  2       /* left    */
-
+connect "Blower", "outbformat", "BformatDecoder", "inbformat"
+connect "Blower", "out", "SpatialReverb", "in"
+connect "STKBowed", "outbformat", "BformatDecoder", "inbformat"
+connect "STKBowed", "out", "SpatialReverb", "in"
+connect "Buzzer", "outbformat", "BformatDecoder", "inbformat"
+connect "Buzzer", "out", "SpatialReverb", "in"
+connect "Droner", "outbformat", "BformatDecoder", "inbformat"
+connect "Droner", "out", "SpatialReverb", "in"
+connect "FMWaterBell", "outbformat", "BformatDecoder", "inbformat"
+connect "FMWaterBell", "out", "SpatialReverb", "in"
+connect "Phaser", "outbformat", "BformatDecoder", "inbformat"
+connect "Phaser", "out", "SpatialReverb", "in"
+connect "PianoOutPianoteq", "outbformat", "BformatDecoder", "inbformat"
+connect "PianoOutPianoteq", "out", "SpatialReverb", "in"
+connect "Sweeper", "outbformat", "BformatDecoder", "inbformat"
+connect "Sweeper", "out", "SpatialReverb", "in"
+connect "Shiner", "outbformat", "BformatDecoder", "inbformat"
+connect "Shiner", "out", "SpatialReverb", "in"
+connect "ZakianFlute", "outbformat", "BformatDecoder", "inbformat"
+connect "ZakianFlute", "out", "SpatialReverb", "in"
+connect "SpatialReverb", "outbformat", "BformatDecoder", "inbformat"
 #else
 connect "Blower", "outleft", "ReverbSC", "inleft"
 connect "Blower", "outright", "ReverbSC", "inright"
@@ -122,17 +156,19 @@ connect "ReverbSC", "outright", "MasterOutput", "inright"
 //////////////////////////////////////////////////////////////////////////////
 // These are all the Csound instruments and effects used in this piece.
 //////////////////////////////////////////////////////////////////////////////
+#ifndef USE_SPATIALIZATION
+instr dummy1
+endin
 
-opcode instrument_position, kk, iii
-i_onset, i_radius, i_rate xin
-i_rate = (i_rate /3) + (i_rate / 66)
-k_time times
-// Depth.
-k_x = i_radius * cos(i_onset + ((k_time - i_onset) * i_rate))
-// Pan.
-k_y = i_radius * sin(i_onset + ((k_time - i_onset) * i_rate))
-xout k_x, k_y
-endop
+instr dummy2
+endin
+
+instr dummy3
+endin
+
+instr dummy4
+endin
+#endif
 
 gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", 1
 #include "PianoNotePianoteq.inc"
@@ -149,21 +185,17 @@ gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", 1
 #include "PianoOutPianoteq.inc"
 alwayson "PianoOutPianoteq"
 
-#ifndef USE_SPATIALIZATION
+#ifdef USE_SPATIALIZATION
+alwayson "SpatialReverb"
+alwayson "SpatialReverb2"
+alwayson "BformatDecoder"
+alwayson "BformatDecoder2"
+#else
 #include "ReverbSC.inc"
 alwayson "ReverbSC"
 #include "MasterOutput.inc"
 alwayson "MasterOutput"
 #endif
-
-gk_PianoOutPianoteq_front_to_back init -3
-gk_PianoOutPianoteq_left_to_right init -3
-gk_PianoOutPianoteq_bottom_to_top init 3
-
-gk_FMWaterBell_front_to_back init -3
-gk_FMWaterBell_left_to_right init 3
-gk_FMWaterBell_bottom_to_top init -3
-
 
 //////////////////////////////////////////////////////////////////////////////
 // These define the initial values of all the global variables/control 
@@ -270,7 +302,7 @@ gk_FMWaterBell_crossfade init 0.1234039047697504
 gk_FMWaterBell_index init 1.1401499375260309
 gk_FMWaterBell_vibrato_depth init 0.28503171595683335
 gk_FMWaterBell_vibrato_rate init 2.4993821566850647
-gk_FMWaterBell_level init 23
+gk_FMWaterBell_level init 22
 gk_Phaser_ratio1 init 1.0388005601779389
 gk_Phaser_ratio2 init 3
 gk_Phaser_index1 init 0.5
@@ -301,10 +333,8 @@ gk_Blower_grainAmplitudeRange init 174.0746779716289
 gk_Blower_grainFrequencyRange init 62.82406652535464
 gk_Blower_level init 6.562856676993313
 gk_ZakianFlute_level init 25.125628140703512
-gk_PianoOutPianoteq_level init -40
+gk_PianoOutPianoteq_level init -38
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-gi_Spatialize3D_speaker_rig init 31
 
 //////////////////////////////////////////////////////////////////////////////
 // This instrument defines a WebKit browser embedded in Csound. The following 
@@ -783,7 +813,7 @@ extern "C" int score_generator(CSOUND *csound) {
             pen.chord = pen.chord.Q(3, modality);
         }
         pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (1000 + 1);
-        pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .76) - .25;
+        pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .75) - .25;
         pen.note[csound::Event::VELOCITY] =  std::cos(pen.note[csound::Event::TIME]);                    
         return pen;
     };
@@ -800,7 +830,7 @@ extern "C" int score_generator(CSOUND *csound) {
     auto g4 = [&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
         Cursor pen = pen_;
         pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (1000 - 5);
-        pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .77) + 1.;
+        pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .75) + 1.;
         pen.note[csound::Event::INSTRUMENT] = std::sin(pen.note[csound::Event::TIME]);
         pen.note[csound::Event::VELOCITY] =  std::cos(pen.note[csound::Event::TIME]);
         return pen;
@@ -888,6 +918,9 @@ extern "C" int score_generator(CSOUND *csound) {
         if (evtblk.p[1] == 1) {
             evtblk.p[4] += 12;
         }
+        // Offset for spatialization instruments that actually need to be 
+        // defined first.
+        evtblk.p[1] += 4;
         evtblk.p[5] = note.getVelocity();
         evtblk.p[6] = note.getDepth();
         evtblk.p[7] = note.getPan();
