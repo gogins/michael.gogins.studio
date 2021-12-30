@@ -68,7 +68,7 @@ information on how to use some of these features in your own pieces.
 // Change to sr=96000 with ksmps=1 for final rendering to soundfile.
 //////////////////////////////////////////////////////////////////////////////
 sr = 48000
-ksmps = 1
+ksmps = 128
 nchnls = 2
 0dbfs = 2000
 //////////////////////////////////////////////////////////////////////////////
@@ -78,7 +78,7 @@ nchnls = 2
 //////////////////////////////////////////////////////////////////////////////
 seed 88818145
 
-#define USE_SPATIALIZATION ##
+;#define USE_SPATIALIZATION ##
 
 #ifdef USE_SPATIALIZATION
 #include "Spatialize3D.inc"
@@ -107,8 +107,8 @@ connect "FMWaterBell", "outleft", "ReverbSC", "inleft"
 connect "FMWaterBell", "outright", "ReverbSC", "inright"
 connect "Phaser", "outleft", "ReverbSC", "inleft"
 connect "Phaser", "outright", "ReverbSC", "inright"
-connect "PianoOutPianoteq", "outleft", "MasterOutput", "inleft"
-connect "PianoOutPianoteq", "outright", "MasterOutput", "inright"
+connect "PianoOutPianoteq", "outleft", "ReverbSC", "inleft"
+connect "PianoOutPianoteq", "outright", "ReverbSC", "inright"
 connect "Sweeper", "outleft", "ReverbSC", "inleft"
 connect "Sweeper", "outright", "ReverbSC", "inright"
 connect "Shiner", "outleft", "ReverbSC", "inleft"
@@ -157,11 +157,11 @@ alwayson "MasterOutput"
 #endif
 
 gk_PianoOutPianoteq_front_to_back init -3
-gk_PianoOutPianoteq_left_to_right init -3
+gk_PianoOutPianoteq_left_to_right init .5
 gk_PianoOutPianoteq_bottom_to_top init 3
 
 gk_FMWaterBell_front_to_back init -3
-gk_FMWaterBell_left_to_right init 3
+gk_FMWaterBell_left_to_right init 1
 gk_FMWaterBell_bottom_to_top init -3
 
 
@@ -301,10 +301,10 @@ gk_Blower_grainAmplitudeRange init 174.0746779716289
 gk_Blower_grainFrequencyRange init 62.82406652535464
 gk_Blower_level init 6.562856676993313
 gk_ZakianFlute_level init 25.125628140703512
-gk_PianoOutPianoteq_level init -40
+gk_PianoOutPianoteq_level init -33
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-gi_Spatialize3D_speaker_rig init 1
+gi_Spatialize3D_speaker_rig init 31
 
 //////////////////////////////////////////////////////////////////////////////
 // This instrument defines a WebKit browser embedded in Csound. The following 
