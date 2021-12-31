@@ -12,10 +12,36 @@ ksmps = 128
 nchnls = 2
 0dbfs = 10
 
-#define SPATIALIZE_STEREO #1#
+// Define just one of these.
+;#define SPATIALIZE_STEREO #1#
 #define SPATIALIZE_IEM #2#
-#define SPATIALIZE_SPARTA #3#
-#define SPATIALIZE_GOGINS #4#
+;#define SPATIALIZE_SPARTA #3#
+;#define SPATIALIZE_GOGINS #4#
+
+opcode cartesian_to_polar, kkk, kkk
+kx, ky, kz xin
+; Calculate the distance from the origin (the listener).
+kdistance = sqrt(kx^2 + ky^2 + kz^2)
+; Normalize the coordinates to unit vectors from the origin.
+kx = kx / kdistance
+ky = ky / kdistance
+kz = kz / kdistance
+; Limit distance to prevent too close a sound becoming too loud.
+kdistance = (kdistance < 0.3 ? 0.3 : kdistance)
+; Calculate the elevation.
+kelevation = cosinv(sqrt(1 - kz^2))
+; If z is negative, make elevation negative also.
+kelevation = (kz < 0 ? -kelevation : kelevation)
+; Calculate the angle.
+kangle = sininv(ky / cos(kelevation))
+; Distinguish between positive x and negative x.
+kangle = (kx >= 0 ? kangle : 3.14159265 - kangle)
+; Distinguish between positive and negative y and x.
+kangle = (ky <= 0 && kx >= 0 ? 6.28318531 + kangle : kangle)
+kangle = kangle * 57.295779513
+kelevation = kelevation * 57.295779513
+xout kangle, kelevation, kdistance
+endop
 
 // Presumably, N of the 64 channels are assigned and used in order, 
 // and unused channels are left as 0.
@@ -37,8 +63,8 @@ gi_iem_room_encoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/Roo
 prints "````````````````````````````````````````````````````\n"
 prints "Then to one of these outputs:\n"
 gi_iem_simple_decoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/SimpleDecoder.so", 1
-gi_item_allra_decoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/AllRADecoder.so", 1
-gi_item_binaural_decoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/BinauralDecoder.so", 1
+gi_iem_allra_decoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/AllRADecoder.so", 1
+gi_iem_binaural_decoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/BinauralDecoder.so", 1
 prints "====================================================\n"
 
 prints "====================================================\n"
@@ -66,6 +92,23 @@ prints "Or this (probably best for binaural):\n"
 prints "````````````````````````````````````````````````````\n"
 gi_compass_binaural vstinit "/home/mkg/.vst/libcompass_binaural.so", 1
 prints "====================================================\n"
+
+#ifdef SPATIALIZE_GOGINS
+#include "Spatialize.inc"
+gk_BformatDecoder_SpeakerRig init 5
+
+alwayson "SpatialReverb"
+alwayson "BformatDecoder"
+#else 
+instr 1
+endin
+instr 2 
+endin
+instr 3 
+endin
+instr 4
+endin
+#end
 
 // Need 3 instruments of distinct sound to exercise the spatializers.
 
@@ -114,17 +157,32 @@ a_declicking linsegr 0, i_attack, 1, i_sustain, 1, i_release, 0
 a_signal = a_signal * a_declicking * k_gain
 
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
-#ifdef USE_SPATIALIZATION
+#ifdef SPATIALIZE_GOGINS 
 a_spatial_reverb_send init 0
 a_bsignal[] init 16
-a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+a_bsignal, a_spatial_reverb_send Spatializer a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
 outletv "outbformat", a_bsignal
 outleta "out", a_spatial_reverb_send
-#else
+#end
+#ifdef SPATIALIZE_STEREO
 a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
-#endif
+#end
+#ifdef SPATIALIZE_IEM
+a_iem_out[] init 64
+k_azimuth, k_elevation, k_gain cartesian_to_polar k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+i_index init floor(p1) - 5
+i_azimuth =     7 + i_index * 5 + 0
+i_elevation =   7 + i_index * 5 + 1
+i_gain =        7 + i_index * 5 + 2
+prints "i_index: %3d i_azimuth: %3d i_elevation: %3d i_gain: %3d\n", i_index, i_azimuth, i_elevation, i_gain
+vstparamset gi_iem_multi_encoder, i_azimuth, k_azimuth
+vstparamset gi_iem_multi_encoder, i_elevation, k_elevation
+vstparamset gi_iem_multi_encoder, i_gain, k_gain
+a_iem_out[i_index] = a_signal
+outletv "iem_out", a_iem_out
+#end
 endin
 
 gk_STKBeeThree_level chnexport "gk_STKBeeThree_level", 3 ;  0
@@ -160,20 +218,33 @@ a_declicking linsegr 0, i_attack, 1, i_sustain, 1, i_release, 0
 a_signal = a_signal * i_amplitude * a_declicking * k_gain * .75
 
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
-#ifdef USE_SPATIALIZATION
+#ifdef SPATIALIZE_GOGINS 
 a_spatial_reverb_send init 0
 a_bsignal[] init 16
-a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+a_bsignal, a_spatial_reverb_send Spatializer a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
 outletv "outbformat", a_bsignal
 outleta "out", a_spatial_reverb_send
-#else
+#end
+#ifdef SPATIALIZE_STEREO
 a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
-#endif
+#end
+#ifdef SPATIALIZE_IEM
+a_iem_out[] init 64
+k_azimuth, k_elevation, k_gain cartesian_to_polar k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+i_index init floor(p1) - 5
+i_azimuth =     7 + i_index * 5 + 0
+i_elevation =   7 + i_index * 5 + 1
+i_gain =        7 + i_index * 5 + 2
+prints "i_index: %3d i_azimuth: %3d i_elevation: %3d i_gain: %3d\n", i_index, i_azimuth, i_elevation, i_gain
+vstparamset gi_iem_multi_encoder, i_azimuth, k_azimuth
+vstparamset gi_iem_multi_encoder, i_elevation, k_elevation
+vstparamset gi_iem_multi_encoder, i_gain, k_gain
+a_iem_out[i_index] = a_signal
+outletv "iem_out", a_iem_out
+#end
 endin
-
-// A guitar will spiral out from the middle, but high up, and at a different speed.
 
 gk_Guitar_midi_dynamic_range chnexport "gk_Guitar_midi_dynamic_range", 3 ; 127
 gk_Guitar_midi_dynamic_range init 127
@@ -219,31 +290,72 @@ a_declicking linsegr 0, iattack, 1, isustain, 1, irelease, 0
 a_signal = a_signal * i_amplitude * a_declicking * k_gain
 
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
-#ifdef USE_SPATIALIZATION
+#ifdef SPATIALIZE_GOGINS 
 a_spatial_reverb_send init 0
 a_bsignal[] init 16
-a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+a_bsignal, a_spatial_reverb_send Spatializer a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
 outletv "outbformat", a_bsignal
 outleta "out", a_spatial_reverb_send
-#else
+#end
+#ifdef SPATIALIZE_STEREO
 a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
-#endif
+#end
+#ifdef SPATIALIZE_IEM
+a_iem_out[] init 64
+k_azimuth, k_elevation, k_gain cartesian_to_polar k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+i_index init floor(p1) - 5
+i_azimuth =     7 + i_index * 5 + 0
+i_elevation =   7 + i_index * 5 + 1
+i_gain =        7 + i_index * 5 + 2
+prints "i_index: %3d i_azimuth: %3d i_elevation: %3d i_gain: %3d\n", i_index, i_azimuth, i_elevation, i_gain
+vstparamset gi_iem_multi_encoder, i_azimuth, k_azimuth
+vstparamset gi_iem_multi_encoder, i_elevation, k_elevation
+vstparamset gi_iem_multi_encoder, i_gain, k_gain
+a_iem_out[i_index] = a_signal
+outletv "iem_out", a_iem_out
+#end
 endin
 
+#ifdef SPATIALIZE_STEREO
 #include "MasterOutput.inc"
 alwayson "MasterOutput"
+#end
+
+#ifdef SPATIALIZE_IEM
+
+// TODO: One room encoder for each instrument.
+// Possibly, use reverb.
+// Only need binaural decoder for now.
 
 instr SpatializeIEM 
-a_iem_buss_in[] init 64
-a_iem_buss_in inletv "iem_buss_in"
-a_iem_buss_out[] init 64
-;a_iem_buss_out vstaudio gi_iem_multi_encoder, a_iem_buss_in
-
-
+a_iem_encoder_in[] init 64
+a_iem_encoder_in inletv "iem_in"
+a_iem_encoder_out[] init 64
+vstparamset gi_iem_multi_encoder, 0, 3
+a_iem_encoder_out vstaudio gi_iem_multi_encoder, a_iem_encoder_in
+a_iem_compressor_out[] init 64
+;a_iem_compressor_out vstaudio gi_iem_omni_compressor, a_iem_encoder_out
+;a_iem_room_out[] init 64;
+;_iem_room_out vstaudio gi_iem_room_encoder, a_iem_compressor_out
+a_iem_decoder_out[] init 64
+;a_iem_decoder_out vstaudio gi_iem_allra_decoder, a_iem_encoder_out
+;a_iem_decoder_out vstaudio gi_iem_simple_decoder, a_iem_room_out
+a_iem_decoder_out vstaudio gi_iem_binaural_decoder, a_iem_encoder_out
+out a_iem_decoder_out
 endin
-alwayson "SpatializeIem"
+alwayson "SpatializeIEM"
+
+connect "STKBeeThree", "iem_out", "SpatializeIEM", "iem_in"
+connect "STKBeeThree", "iem_out", "SpatializeIEM", "iem_in"
+connect "Rhodes", "iem_out", "SpatializeIEM", "iem_in"
+connect "Rhodes", "iem_out", "SpatializeIEM", "iem_in"
+connect "Guitar", "iem_out", "SpatializeIEM", "iem_in"
+connect "Guitar", "iem_out", "SpatializeIEM", "iem_in"
+#end
+
+#ifdef SPATIALIZE_STEREO
 
 connect "STKBeeThree", "outright", "MasterOutput", "inright"
 connect "STKBeeThree", "outleft", "MasterOutput", "inleft"
@@ -251,6 +363,8 @@ connect "Rhodes", "outright", "MasterOutput", "inright"
 connect "Rhodes", "outleft", "MasterOutput", "inleft"
 connect "Guitar", "outright", "MasterOutput", "inright"
 connect "Guitar", "outleft", "MasterOutput", "inleft"
+
+#end
 
 S_score_generator_code init {{
 
@@ -293,7 +407,7 @@ extern "C" int score_generator(CSOUND *csound) {
             evtblk.scnt = 0;
             evtblk.opcod = 'i';
             evtblk.pcnt = 9;
-            evtblk.p[1] = i;
+            evtblk.p[1] = 4 + i;
             evtblk.p[2] = j;
             evtblk.p[3] = 1;
             evtblk.p[4] = 60 + (i * 4);
