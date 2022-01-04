@@ -10,12 +10,12 @@ All rights reserved.
 sr = 48000
 ksmps = 128
 nchnls = 2
-0dbfs = 10
+0dbfs = 2
 
 // Define just one of these.
 ;#define SPATIALIZE_STEREO #1#
-;#define SPATIALIZE_IEM #2#
-#define SPATIALIZE_AALTO #3#
+#define SPATIALIZE_IEM #2#
+;#define SPATIALIZE_AALTO #3#
 ;#define SPATIALIZE_GOGINS #4#
 
 gi_pi init 3.141592653589793
@@ -61,12 +61,11 @@ printks "i: %3d azimuth: %9.4f elevation: %9.4f radius: %9.4f\n", 1, p1, k_azimu
 xout k_azimuth_vst, k_elevation_vst, k_radius_vst
 endop
 
-// Are the SPARTA and IEM Ambisonic conventions the same? Both seem to use SN3D
-// but IEM uses azimuth, elevation, radius but SPARTA only seems to use 
-// azimuth, elevation.
+// Are the SPARTA and IEM Ambisonic conventions the same? Both seem to use 
+// SN3D, but IEM uses azimuth, elevation, radius while SPARTA only seems to 
+// use azimuth, elevation -- except for ambiRoomSim!
 
-// Presumably, N of the 64 channels are assigned and used in order, 
-// and unused channels are left as 0.
+// N of the 64 channels are assigned and used in order, and unused channels are left as 0.
 
 prints "====================================================\n"
 prints "IEM Plugin Suite:\n"
@@ -150,7 +149,7 @@ instr 4
 endin
 #end
 
-gi_size init 1
+gi_size init 6
 
 // Need 3 instruments of distinct sound to exercise the spatializers.
 
@@ -173,7 +172,7 @@ i_midi_velocity = p5
 k_time times
 k_space_front_to_back = sin(k_time / p1)
 k_space_left_to_right = cos(k_time / p1)
-k_space_bottom_to_top = 1
+k_space_bottom_to_top = 0
 i_phase = p9
 i_frequency = cpsmidinn(i_midi_key)
 ; Adjust the following value until "overall amps" at the end of performance is about -6 dB.
@@ -251,7 +250,7 @@ i_midi_velocity = p5
 k_time times
 k_space_front_to_back = sin(k_time / p1)
 k_space_left_to_right = cos(k_time / p1)
-k_space_bottom_to_top = 0
+k_space_bottom_to_top = .5
 i_phase = p9
 i_frequency = cpsmidinn(i_midi_key)
 ; Adjust the following value until "overall amps" at the end of performance is about -6 dB.
@@ -324,7 +323,7 @@ i_midi_velocity = p5 * i_midi_dynamic_range / 127 + (63.5 - i_midi_dynamic_range
 k_time times
 k_space_front_to_back = sin(k_time / p1)
 k_space_left_to_right = cos(k_time / p1)
-k_space_bottom_to_top = -1
+k_space_bottom_to_top = 1
 i_phase = p9
 i_frequency = cpsmidinn(i_midi_key)
 ; Adjust the following value until "overall amps" at the end of performance is about -6 dB.
@@ -439,13 +438,86 @@ instr SpatializeAALTO
 a_aalto_encoder_in[] init 64
 a_aalto_encoder_in inletv "aalto_in"
 a_aalto_encoder_out[] init 64
-vstparamset gi_sparta_ambi_room_sim, 0, 3
-vstparamset gi_sparta_ambi_room_sim, 3, 3
-vstparamset gi_sparta_ambi_room_sim, 3, 1
+/*
+Enums are 1-based.
+case k_outputOrder:   ambi_roomsim_setOutputOrder(hAmbi, (SH_ORDERS)(int)(newValue*(float)(MAX_SH_ORDER-1) + 1.5f)); break;
+case k_channelOrder:  ambi_roomsim_setChOrder(hAmbi, (int)(newValue*(float)(NUM_CH_ORDERINGS-1) + 1.5f)); break;
+case k_normType:      ambi_roomsim_setNormType(hAmbi, (int)(newValue*(float)(NUM_NORM_TYPES-1) + 1.5f)); break;
+case k_numSources:    ambi_roomsim_setNumSources(hAmbi, (int)(newValue*(float)(ROOM_SIM_MAX_NUM_SOURCES)+0.5)); break;
+case k_numReceivers:  ambi_roomsim_setNumReceivers(hAmbi, (int)(newValue*(float)(ROOM_SIM_MAX_NUM_RECEIVERS)+0.5)); break;
+*/
+// Ambisonic order (3 in {1,...,7}).
+vstparamset gi_sparta_ambi_room_sim, 0, (3. / 7.001)
+// Channel order (1 in {1, 2}).
+vstparamset gi_sparta_ambi_room_sim, 1, (1. / 2.001)
+// Normalization type (2 in {1, 2, 3}/
+vstparamset gi_sparta_ambi_room_sim, 2, (2. / 3.001)
+// Number of sources (3).
+vstparamset gi_sparta_ambi_room_sim, 3, (3. / 16.001)
+// Number of receivers (1).
+vstparamset gi_sparta_ambi_room_sim, 4, (1. / 16.001)
+// Receiver coordinates (center of room).
+vstparamset gi_sparta_ambi_room_sim, 53, .5
+vstparamset gi_sparta_ambi_room_sim, 54, .5
+vstparamset gi_sparta_ambi_room_sim, 55, .5
+
 a_aalto_encoder_out vstaudio gi_sparta_ambi_room_sim, a_aalto_encoder_in
+k_left rms a_aalto_encoder_out[0]
+k_right rms a_aalto_encoder_out[1]
+printks "%-24.24s i %9.4f t %9.4f d %9.4f a %9.4f e %9.4f #%3d\n", 1, nstrstr(p1), p1, p2, p3, k_left, k_right, p7, active(p1)
 a_aalto_decoder_out[] init 64
-vstparamset gi_compass_binaural, 0, 3
-a_aalto_decoder_out vstaudio gi_compass_binaural, a_aalto_encoder_out
+a_iem_reverb_out[] init 64
+a_iem_reverb_out vstaudio gi_iem_fdn_reverb, a_aalto_encoder_out
+
+
+; // Sadly, the source code for the "COMPASS" plugins, which sound markedly 
+; // better, could not be found; therefore, VST normalizations could not be 
+; // determined; using the SPARTA ambiBIN decoder instead.
+; // Ambisonic order.
+; vstparamset gi_compass_binaural, 0, (3. / 7.001)
+; // Channel order.
+; vstparamset gi_compass_binaural, 1, (1. / 2.001)
+; // Covariance averaging.
+; vstparamset gi_compass_binaural, 2, .88
+; // Synth av.
+; vstparamset gi_compass_binaural, 3, .88
+; // Balance (diff-dir).
+; vstparamset gi_compass_binaural, 4, .5
+; // Balance (linear-par).
+; vstparamset gi_compass_binaural, 5, 1.
+; // Enable rotation.
+; vstparamset gi_compass_binaural, 6, 0.
+; a_aalto_decoder_out vstaudio gi_compass_binaural, a_aalto_encoder_out
+
+/*
+Parameter    0: order
+Parameter    1: channel_order
+Parameter    2: norm_type
+Parameter    3: decode_method
+Parameter    4: apply_diff_match
+Parameter    5: apply_maxre_weights
+Parameter    6: enable_rotation
+Parameter    9: pitch
+Parameter   10: roll
+Parameter   11: flip_yaw
+Parameter   12: flip_pitch
+Parameter   13: flip_roll
+*/
+// Ambisonic order (3 in {1,...,7}).
+vstparamset gi_sparta_ambi_bin, 0, (3. / 7.001)
+// Channel order (1 in {1, 2}).
+vstparamset gi_sparta_ambi_bin, 1, (1. / 2.001)
+// Normalization type (2 in {1, 2, 3}/
+vstparamset gi_sparta_ambi_bin, 2, (2. / 3.001)
+// Decode method (5 in {1, 2, 3, 4, 5}
+vstparamset gi_sparta_ambi_bin, 3, 1.
+// Apply diff match
+vstparamset gi_sparta_ambi_bin, 4, 0.
+// Apply maxre weights
+vstparamset gi_sparta_ambi_bin, 5, 1.
+// Apply enable rotation
+vstparamset gi_sparta_ambi_bin, 6, 0.
+a_aalto_decoder_out vstaudio gi_sparta_ambi_bin, a_iem_reverb_out
 out a_aalto_decoder_out
 k_left rms a_aalto_decoder_out[0]
 k_right rms a_aalto_decoder_out[1]
@@ -457,7 +529,6 @@ connect "STKBeeThree", "aalto_out", "SpatializeAALTO", "aalto_in"
 connect "Rhodes", "aalto_out", "SpatializeAALTO", "aalto_in"
 connect "Guitar", "aalto_out", "SpatializeAALTO", "aalto_in"
 #end
-
 
 #ifdef SPATIALIZE_STEREO
 connect "STKBeeThree", "outright", "MasterOutput", "inright"
