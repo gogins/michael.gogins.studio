@@ -382,9 +382,10 @@ outletv "iem_out", a_iem_out
 #ifdef SPATIALIZE_AALTO
 a_aalto_out[] init 64
 a_aalto_out[0] = a_signal
-vstparamset gi_sparta_ambi_room_sim, 11, k_space_front_to_back
-vstparamset gi_sparta_ambi_room_sim, 12, k_space_left_to_right
-vstparamset gi_sparta_ambi_room_sim, 13, k_space_front_to_back
+i_p1 = int(p1)
+vstparamset gi_sparta_ambi_room_sim, (((i_p1 - 5) * 3) + 0), k_space_front_to_back
+vstparamset gi_sparta_ambi_room_sim, (((i_p1 - 5) * 3) + 1), k_space_left_to_right
+vstparamset gi_sparta_ambi_room_sim, (((i_p1 - 5) * 3) + 1), k_space_front_to_back
 outletv "aalto_out", a_aalto_out
 #end
 endin

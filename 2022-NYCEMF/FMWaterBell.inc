@@ -56,12 +56,13 @@ a_envelope linsegr 0, gi_FMWaterBell_attack, 1, i_sustain, 1, gi_FMWaterBell_rel
 ; a_envelope transegr 0, gi_FMWaterBell_attack, 12, 1, i_sustain, 12, gi_FMWaterBell_sustain_level, gi_FMWaterBell_release, 12, 0
 a_signal = a_signal * i_amplitude * a_envelope * k_gain
 
-#ifdef USE_SPATIALIZATION
-Spatialize3D a_signal, gk_FMWaterBell_bottom_to_top, gk_FMWaterBell_left_to_right, gk_FMWaterBell_bottom_to_top
-#else
-a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
-outleta "outleft", a_out_left
-outleta "outright", a_out_right
-#endif
+#ifdef SPATIALIZE_AALTO
+a_aalto_out[] init 64
+a_aalto_out[0] = a_signal
+vstparamset gi_sparta_ambi_room_sim, 11, k_space_front_to_back
+vstparamset gi_sparta_ambi_room_sim, 12, k_space_left_to_right
+vstparamset gi_sparta_ambi_room_sim, 13, k_space_front_to_back
+outletv "aalto_out", a_aalto_out
+#end
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
