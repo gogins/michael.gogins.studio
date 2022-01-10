@@ -85,13 +85,34 @@ a_signal = asignal * adeclicking
 a_signal = a_signal * i_amplitude * k_gain * 1.4
 
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
-#ifdef USE_SPATIALIZATION
+k_time times
+k_space_front_to_back = sin(k_time / p1)
+k_space_left_to_right = cos(k_time / p1)
+k_space_bottom_to_top = .5
+
+#ifdef SPATIALIZE_GOGINS
 kx, ky instrument_position p2, 10, p1
 kz init 0
 Spatialize3D a_signal, kx, ky, kz
-#else
-a_out_left, a_out_right pan2 a_signal, p7
+#end
+#ifdef SPATIALIZE_IEM
+a_iem_out[] init 64
+k_azimuth, k_elevation, k_radius iem_cartesian_to_spherical_vst gi_size, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+i_index init floor(p1) - 1
+i_azimuth =     7 + i_index * 5 + 0
+i_elevation =   7 + i_index * 5 + 1
+i_radius =      7 + i_index * 5 + 2
+prints "i_index: %3d i_azimuth: %3d i_elevation: %3d i_radius: %3d\n", i_index, i_azimuth, i_elevation, i_radius
+vstparamset gi_iem_multi_encoder, i_azimuth, k_azimuth
+vstparamset gi_iem_multi_encoder, i_elevation, k_elevation
+vstparamset gi_iem_multi_encoder, i_radius, k_radius
+a_iem_out[i_index] = a_signal
+outletv "iem_out", a_iem_out
+#end
+#ifdef SPATIALIZE_STEREO
+a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
-#endif
+#end
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin

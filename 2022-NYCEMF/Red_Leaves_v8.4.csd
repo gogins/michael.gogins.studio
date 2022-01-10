@@ -6,21 +6,32 @@ R E D   L E A V E S   V E R S I O N   8 . 4
 Michael Gogins, 2021
 
 This piece is another in my "Leaves" series of pieces of electroacoustic 
-concert music, algorithmically composed, that have been performed in 
-international festivals and are available on electronic distribution.
+concert music, algorithmically composed, available on electronic distribution. 
+This is the first piece in the series that I have attempted to spatialize. The 
+complete source code for this composition is available at 
+https://github.com/gogins/michael.gogins.studio/blob/master/2022-NYCEMF/Red_Leaves_v8.4.csd. 
 
-This piece demonstrates the use of the Faust opcodes, the Clang opcodes, the 
-CsoundAC C++ library for algorithmic composition, the vst4cs opcodes, the 
-signal flow graph opcodes, and the WebKit opcodes -- all in one .csd file.
-
-TODO:
-
--- Spatialize, with piano and water bell not moving, and other instruments 
-   orbiting the hall slowly.
-   (a) First, get existing coordinates to work in binaural mode.
-   (b) Then, implement the movements.
-   (c) Have the pad sounds orbit at different speeds so that they are 
-       heard merging and separationg.
+This piece is algorithmically composed using a deterministic iterated 
+function system (IFS), implemented using my CsoundAC library for algorithmic 
+composition. The C++ code for the score generator is embedded in the Csound 
+.csd file and compiled and run using my Clang opcodes, which embed the 
+Clang/LLVM just-in-time C++ compiler into the Csound runtime. The IFS uses 
+operators upon chord transposition and upon the K and Q operators of the 
+generalized contextual group of Fiore and Satyendra to generate chord 
+progresssions, and uses operators upon instrument channel, time, pitch, and 
+loudness to generate the actual notes. The piece uses a Web page to display a 
+three-dimensional piano roll view of the score, with interactive controls to 
+tweak the sounds and balance of the Csound instruments. The HTML5 source code 
+for this page is embedded in the Csound .csd file and run using my WebKit 
+opcodes, which embed the WebKit HTML browser and JavaScript runtime into the 
+Csound runtime. The Csound instruments in this piece borrow and adapt 
+instruments by Perry Cook, Ian McCurdy, Hans Mikelson, Steven Yi, and Lee 
+Zakian, as well as myself. Spatialization is implemented using the IEM suite  
+of VST 2 plugins from IEM Graz, embedded in the Csound 
+runtime using the vst4cs opcodes for Csound by Andres Cabrera and myself. The 
+plugin Csound opcodes used in this piece are available on GitHub at 
+https://github.com/gogins, except for the vst4cs opcodes which can be 
+downloaded from https://michaelgogins.tumblr.com/csound_extended. 
 
 //////////////////////////////////////////////////////////////////////////////
 // Tutorial comments like this are provided throughout the piece. 
@@ -60,7 +71,7 @@ information on how to use some of these features in your own pieces.
 
 </CsLicense>
 <CsOptions>
--+msg_color=0 -m165 -d -odac 
+-+msg_color=0 -m3 -d -odac 
 </CsOptions>
 <CsInstruments>
 
@@ -78,7 +89,7 @@ nchnls = 2
 //////////////////////////////////////////////////////////////////////////////
 seed 88818145
 
-gi_size init 6
+gi_size init 20
 
 // Define just one of these.
 ;#define SPATIALIZE_STEREO #1#
@@ -97,14 +108,20 @@ gi_pi init 3.141592653589793
 // z is bottom to top [-1, 1].
 // To normalize to the VST range of [0,1], all calculations must agree on a 
 // maximum radius (half the room size, or range of positions).
-opcode iem_cartesian_to_spherical, kkk, ikkk
-i_maximum_radius, k_x, k_y, k_z xin
-; Calculate the distance from the origin (the listener).
+/*
+    static void cartesianToSpherical (const Type x, const Type y, const Type z, Type& azimuthInRadians, Type& elevationInRadians, Type& radius)
+    {
+        const float xSquared = x * x;
+        const float ySquared = y * y;
+        radius = sqrt(xSquared + ySquared + z * z);
+        azimuthInRadians = atan2(y, x);
+        elevationInRadians = atan2(z, sqrt(xSquared + ySquared));
+    }
+
+*/
+opcode iem_cartesian_to_spherical, kkk, kkk
+k_x, k_y, k_z xin
 k_radius = sqrt(k_x^2 + k_y^2 + k_z^2)
-; Normalize the coordinates to unit vectors from the origin.
-k_x = k_x / k_radius
-k_y = k_y / k_radius
-k_z = k_z / k_radius
 k_azimuth taninv2 k_y, k_x
 k_elevation taninv2 k_z, sqrt(k_x^2 + k_y^2)
 xout k_azimuth, k_elevation, k_radius
@@ -113,9 +130,9 @@ endop
 // Converts IEM spherical coordinates to VST parameter ranges.
 opcode iem_normalize_spherical_coordinates, kkk, ikkk
 i_maximum_radius, k_azimuth, k_elevation, k_radius xin
-k_normalized_azimuth = (k_azimuth / (2 * gi_pi)) + .5
-k_normalized_elevation = (k_elevation / (2 * gi_pi)) + .5
-k_normalized_radius = i_maximum_radius / k_radius
+k_normalized_azimuth = -1 * ((k_azimuth + gi_pi) / (2 * gi_pi))
+k_normalized_elevation = (k_elevation + (gi_pi / 2)) / gi_pi
+k_normalized_radius = k_radius / i_maximum_radius 
 xout k_normalized_azimuth, k_normalized_elevation, k_normalized_radius
 endop
 
@@ -123,9 +140,19 @@ endop
 // spherical coordinates that are normalized to VST parameter ranges.
 opcode iem_cartesian_to_spherical_vst,kkk,ikkk
 i_maximum_radius, k_x, k_y, k_z xin
-k_azimuth, k_elevation, k_radius iem_cartesian_to_spherical i_maximum_radius, k_x, k_y, k_z
+k_x *= (i_maximum_radius / 2)
+k_y *= (i_maximum_radius / 2)
+k_z *= (i_maximum_radius / 2)
+k_azimuth, k_elevation, k_radius iem_cartesian_to_spherical k_x, k_y, k_z
 k_azimuth_vst, k_elevation_vst, k_radius_vst iem_normalize_spherical_coordinates i_maximum_radius, k_azimuth, k_elevation, k_radius
-printks "i: %3d azimuth: %9.4f elevation: %9.4f radius: %9.4f\n", 1, p1, k_azimuth_vst, k_elevation_vst, k_radius_vst
+S_template init {{%-24.24s i: %3d t: %9.4f max radius: %9.4f
+  => Cartesian:  x: %9.4f y: %9.4f z: %9.4f
+  => Spherical:  a: %9.4f e: %9.4f r: %9.4f
+  =>             a: %9.4f e: %9.4f r: %9.4f
+  => Normalized: a: %9.4f e: %9.4f r: %9.4f
+}}
+k_time times
+printks S_template, .5, nstrstr(p1), int(p1), k_time, i_maximum_radius, k_x, k_y, k_z, k_azimuth, k_elevation, k_radius, k_azimuth * 180 / gi_pi, k_elevation * 180 / gi_pi, k_radius, k_azimuth_vst, k_elevation_vst, k_radius_vst
 xout k_azimuth_vst, k_elevation_vst, k_radius_vst
 endop
 
@@ -293,7 +320,7 @@ k_2 rms a_iem_encoder_in[1]
 k_3 rms a_iem_encoder_in[2]
 printks "SpatializeIEM: a_iem_encoder_in: %9.4f %9.4f %9.4f\n", .5, k_1, k_2, k_3
 a_iem_encoder_out[] init 64
-vstparamset gi_iem_multi_encoder, 0, 3
+vstparamset gi_iem_multi_encoder, 0, 10
 a_iem_encoder_out vstaudio gi_iem_multi_encoder, a_iem_encoder_in
 a_iem_reverb_out[] init 64
 a_iem_reverb_out vstaudio gi_iem_fdn_reverb, a_iem_encoder_out
@@ -305,6 +332,7 @@ printks "%-24.24s i %9.4f t %9.4f d %9.4f l %9.4f r %9.4f #%3d\n", 1, nstrstr(p1
 out a_iem_decoder_out
 endin
 alwayson "SpatializeIEM"
+alwayson "PianoOutPianoteq"
 
 connect "Blower", "iem_out", "SpatializeIEM", "iem_in"
 connect "STKBowed", "iem_out", "SpatializeIEM", "iem_in"
@@ -396,8 +424,6 @@ connect "Sweeper", "aalto_out", "SpatializeAALTO", "aalto_in"
 connect "Shiner", "aalto_out", "SpatializeAALTO", "aalto_in"
 connect "ZakianFlute", "aalto_out", "SpatializeAALTO", "aalto_in"
 #end
-
-
 
 gk_PianoOutPianoteq_front_to_back init -3
 gk_PianoOutPianoteq_left_to_right init .5
@@ -513,7 +539,7 @@ gk_FMWaterBell_crossfade init 0.1234039047697504
 gk_FMWaterBell_index init 1.1401499375260309
 gk_FMWaterBell_vibrato_depth init 0.28503171595683335
 gk_FMWaterBell_vibrato_rate init 2.4993821566850647
-gk_FMWaterBell_level init 29
+gk_FMWaterBell_level init 27
 gk_Phaser_ratio1 init 1.0388005601779389
 gk_Phaser_ratio2 init 3
 gk_Phaser_index1 init 0.5
@@ -544,7 +570,8 @@ gk_Blower_grainAmplitudeRange init 174.0746779716289
 gk_Blower_grainFrequencyRange init 62.82406652535464
 gk_Blower_level init 6.562856676993313
 gk_ZakianFlute_level init 25.125628140703512
-gk_PianoOutPianoteq_level init -30
+;gk_PianoOutPianoteq_level init -30
+gk_PianoOutPianoteq_level init 37
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 gi_Spatialize3D_speaker_rig init 31

@@ -48,18 +48,17 @@ Spatialize3D a_signal, kx, ky, kz
 #ifdef SPATIALIZE_IEM
 a_iem_out[] init 64
 k_azimuth, k_elevation, k_radius iem_cartesian_to_spherical_vst gi_size, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
-i_index init floor(p1) - 5
+i_index init floor(p1) - 1
 i_azimuth =     7 + i_index * 5 + 0
 i_elevation =   7 + i_index * 5 + 1
-i_gain =        7 + i_index * 5 + 2
-prints "i_index: %3d i_azimuth: %3d i_elevation: %3d i_gain: %3d\n", i_index, i_azimuth, i_elevation, i_gain
+i_radius =        7 + i_index * 5 + 2
+prints "i_index: %3d i_azimuth: %3d i_elevation: %3d i_radius: %3d\n", i_index, i_azimuth, i_elevation, i_radius
 vstparamset gi_iem_multi_encoder, i_azimuth, k_azimuth
 vstparamset gi_iem_multi_encoder, i_elevation, k_elevation
-vstparamset gi_iem_multi_encoder, i_gain, k_gain
+vstparamset gi_iem_multi_encoder, i_radius, k_radius
 a_iem_out[i_index] = a_signal
 outletv "iem_out", a_iem_out
 #end
-
 #ifdef SPATIALIZE_STEREO
 a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
