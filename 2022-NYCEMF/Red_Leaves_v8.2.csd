@@ -72,7 +72,7 @@ information on how to use some of these features in your own pieces.
 
 </CsLicense>
 <CsOptions>
--+msg_color=0 -m165 -d -odac
+-+msg_color=0 -m165 -d -odac:plughw:1,0
 </CsOptions>
 <CsInstruments>
 
@@ -91,6 +91,8 @@ nchnls = 2
 seed 88818145
 
 ;#define USE_SPATIALIZATION ##
+
+#define SPATIALIZE_STEREO
 
 #ifdef USE_SPATIALIZATION
 #include "Spatialize1.inc"
@@ -151,7 +153,7 @@ connect "ZakianFlute", "outleft", "ReverbSC", "inleft"
 connect "ZakianFlute", "outright", "ReverbSC", "inright"
 connect "ReverbSC", "outleft", "MasterOutput", "inleft"
 connect "ReverbSC", "outright", "MasterOutput", "inright"
-#endif
+#end
 
 //////////////////////////////////////////////////////////////////////////////
 // These are all the Csound instruments and effects used in this piece.
@@ -168,7 +170,7 @@ endin
 
 instr dummy4
 endin
-#endif
+#end
 
 gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", 1
 #include "PianoNotePianoteq.inc"
@@ -195,7 +197,7 @@ alwayson "BformatDecoder2"
 alwayson "ReverbSC"
 #include "MasterOutput.inc"
 alwayson "MasterOutput"
-#endif
+#end
 
 //////////////////////////////////////////////////////////////////////////////
 // These define the initial values of all the global variables/control 
@@ -703,7 +705,7 @@ alwayson "Browser"
 
 S_score_generator_code init {{
 
-#include <eigen3/Eigen/Dense>
+#include <Eigen/Dense>
 #include <csound.h>
 #include <csound/csdl.h>
 #include <iostream>
@@ -954,10 +956,10 @@ extern "C" int score_generator(CSOUND *csound) {
 // This compiles the above C++ module and then calls its entry point function.
 // Note that dynamic link libraries must be passed as complete filepaths.
 //////////////////////////////////////////////////////////////////////////////
-i_result clang_compile "score_generator", S_score_generator_code, "-g -O2 -std=c++17 -I/home/mkg/clang-opcodes -I/home/mkg/csound-extended/CsoundAC -I/usr/local/include/csound -stdlib=libstdc++", "/usr/lib/libCsoundAC.so.6.0 /usr/lib/gcc/x86_64-linux-gnu/9/libstdc++.so /usr/lib/gcc/x86_64-linux-gnu/9/libgcc_s.so /home/mkg/webkit-opcodes/webkit_opcodes.so /usr/lib/x86_64-linux-gnu/libm.so /usr/lib/x86_64-linux-gnu/libpthread.so"
+i_result clang_compile "score_generator", S_score_generator_code, "-g -O2 -std=c++17 -I/usr/include/eigen3 -I/home/mkg/clang-opcodes -I/home/mkg/csound-extended/CsoundAC -I/usr/local/include/csound -stdlib=libstdc++", "/usr/lib/libCsoundAC.so.6.0 /usr/lib/gcc/x86_64-linux-gnu/9/libstdc++.so /usr/lib/gcc/x86_64-linux-gnu/9/libgcc_s.so /home/mkg/webkit-opcodes/webkit_opcodes.so /usr/lib/x86_64-linux-gnu/libm.so /usr/lib/x86_64-linux-gnu/libpthread.so"
 
 instr Exit
-prints "exitnow i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "exitnow i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 exitnow
 endin
 

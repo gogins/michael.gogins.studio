@@ -87,5 +87,5 @@ outleta "out", a_spatial_reverb_send
 a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
-#endif
+#end
 endin

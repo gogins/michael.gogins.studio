@@ -83,7 +83,7 @@ a farm in the Catskills, and on the Upper West Side of Manhattan.
 
 </CsLicense>
 <CsOptions>
--+msg_color=0 -m0 -d -odac:plughw:2,0
+-+msg_color=0 -m0 -d -odac:plughw:1,0
 </CsOptions>
 <CsInstruments>
 
@@ -260,7 +260,7 @@ class ClangInvokableBase : public ClangInvokable {
         void warn(const char *format,...)
         {
             if(csound) {
-                if(csound->GetMessageLevel(csound) & WARNMSG) {
+                if(csound->GetMessageLevel(csound) & CS_WARNMSG) {
                     va_list args;
                     va_start(args, format);
                     csound->MessageV(csound, CSOUNDMSG_WARNING, format, args);
@@ -580,7 +580,7 @@ outleta "out", a_spatial_reverb_send
 a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
-#endif
+#end
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 connect "FMWaterBell", "outleft",  "Mverb2020", "inleft"
@@ -699,7 +699,7 @@ outleta "out", a_spatial_reverb_send
 #else
 outleta "outleft", a_left
 outleta "outright", a_right
-#endif
+#end
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 connect "FaustBubble", "outleft",  "Mverb2020", "inleft"
@@ -760,7 +760,7 @@ outleta "out", a_spatial_reverb_send
 a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
-#endif
+#end
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 connect "Rhodes", "outleft",  "Mverb2020", "inleft"
@@ -1009,7 +1009,7 @@ a_signal *= .7
 a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
-#endif
+#end
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 connect "ZakianFlute", "outleft",  "Mverb2020", "inleft"
@@ -1196,7 +1196,7 @@ outleta "out", a_spatial_reverb_send
 ; printks "PianoOutPt     L %9.4f R %9.4f l %9.4f\\n", 0.5, a_out_left, a_out_right, gk_Piano_level
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
-#endif
+#end
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 connect "PianoOutPianoteq", "outleft",  "Mverb2020", "inleft"

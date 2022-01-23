@@ -7,6 +7,8 @@ gS_MasterOutput_filename init ""
 instr MasterOutput
 aleft inleta "inleft"
 aright inleta "inright"
+k_time times
+printks "%-24.24s             t %9.4f L %9.4f R %9.4f\n", 1, nstrstr(p1), k_time, downsamp(aleft), downsamp(aright)
 k_gain = ampdb(gk_MasterOutput_level)
 printks2 "Master gain: %f\n", k_gain
 iamp init 1
@@ -22,5 +24,5 @@ filename_exists:
 prints sprintf("Output filename: %s\n", gS_MasterOutput_filename)
 fout gS_MasterOutput_filename, 18, aleft * i_amplitude_adjustment, aright * i_amplitude_adjustment
 filename_endif:
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "%-24.24s  t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin

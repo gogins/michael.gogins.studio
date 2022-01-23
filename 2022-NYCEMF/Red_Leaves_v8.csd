@@ -149,7 +149,7 @@ connect "ZakianFlute", "outleft", "ReverbSC", "inleft"
 connect "ZakianFlute", "outright", "ReverbSC", "inright"
 connect "ReverbSC", "outleft", "MasterOutput", "inleft"
 connect "ReverbSC", "outright", "MasterOutput", "inright"
-#endif
+#end
 
 //////////////////////////////////////////////////////////////////////////////
 // These are all the Csound instruments and effects used in this piece.
@@ -166,7 +166,7 @@ endin
 
 instr dummy4
 endin
-#endif
+#end
 
 gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", 1
 #include "PianoNotePianoteq.inc"
@@ -193,7 +193,7 @@ alwayson "BformatDecoder2"
 alwayson "ReverbSC"
 #include "MasterOutput.inc"
 alwayson "MasterOutput"
-#endif
+#end
 
 //////////////////////////////////////////////////////////////////////////////
 // These define the initial values of all the global variables/control 
