@@ -3,24 +3,35 @@
 
 R E D   L E A V E S   V E R S I O N   8 . 3
 
-Michael Gogins, 2021
+Michael Gogins, 2022
 
 This piece is another in my "Leaves" series of pieces of electroacoustic 
-concert music, algorithmically composed, that have been performed in 
-international festivals and are available on electronic distribution.
+concert music, algorithmically composed, available on electronic distribution. 
+This is the first piece in the series that I have attempted to spatialize. The 
+complete source code for this composition is available at 
+https://github.com/gogins/michael.gogins.studio/blob/master/2022-NYCEMF/Red_Leaves_v8.4.csd. 
 
-This piece demonstrates the use of the Faust opcodes, the Clang opcodes, the 
-CsoundAC C++ library for algorithmic composition, the vst4cs opcodes, the 
-signal flow graph opcodes, and the WebKit opcodes -- all in one .csd file.
-
-TODO:
-
--- Spatialize, with piano and water bell not moving, and other instruments 
-   orbiting the hall slowly.
-   (a) First, get existing coordinates to work in binaural mode.
-   (b) Then, implement the movements.
-   (c) Have the pad sounds orbit at different speeds so that they are 
-       heard merging and separationg.
+This piece is algorithmically composed using a deterministic iterated 
+function system (IFS), implemented using my CsoundAC library for algorithmic 
+composition. The C++ code for the score generator is embedded in the Csound 
+.csd file and compiled and run using my Clang opcodes, which embed the 
+Clang/LLVM just-in-time C++ compiler into the Csound runtime. The IFS uses 
+operators upon chord transposition and upon the K and Q operators of the 
+generalized contextual group of Fiore and Satyendra to generate chord 
+progresssions, and uses operators upon instrument channel, time, pitch, and 
+loudness to generate the actual notes. The piece uses a Web page to display a 
+three-dimensional piano roll view of the score, with interactive controls to 
+tweak the sounds and balance of the Csound instruments. The HTML5 source code 
+for this page is embedded in the Csound .csd file and run using my WebKit 
+opcodes, which embed the WebKit HTML browser and JavaScript runtime into the 
+Csound runtime. The Csound instruments in this piece borrow and adapt 
+instruments by Perry Cook, Ian McCurdy, Hans Mikelson, Steven Yi, and Lee 
+Zakian, as well as myself. Spatialization is implemented using the IEM suite  
+of VST 2 plugins from IEM Graz, embedded in the Csound 
+runtime using the vst4cs opcodes for Csound by Andres Cabrera and myself. The 
+plugin Csound opcodes used in this piece are available on GitHub at 
+https://github.com/gogins, except for the vst4cs opcodes which can be 
+downloaded from https://michaelgogins.tumblr.com/csound_extended. 
 
 //////////////////////////////////////////////////////////////////////////////
 // Tutorial comments like this are provided throughout the piece. 
@@ -60,7 +71,7 @@ information on how to use some of these features in your own pieces.
 
 </CsLicense>
 <CsOptions>
--+msg_color=0 -m163 -d -odac 
+-+msg_color=0 -m165 -d -W -R -o test.wav
 </CsOptions>
 <CsInstruments>
 
@@ -70,7 +81,7 @@ information on how to use some of these features in your own pieces.
 sr = 48000
 ksmps = 128
 nchnls = 2
-0dbfs = 2000
+0dbfs = 1000000
 //////////////////////////////////////////////////////////////////////////////
 // This random seed ensures that the same random stream  is used for each 
 // rendering. Note that rand, randh, randi, rnd(x) and birnd(x) are not 
@@ -78,9 +89,146 @@ nchnls = 2
 //////////////////////////////////////////////////////////////////////////////
 seed 88818145
 
-;#define USE_SPATIALIZATION ##
+gi_size init 20
 
-#ifdef USE_SPATIALIZATION
+// Define just one of these.
+#define SPATIALIZE_STEREO #1#
+;#define SPATIALIZE_IEM #2#
+;#define SPATIALIZE_AALTO #3#
+;#define SPATIALIZE_GOGINS #4#
+
+gi_pi init 3.141592653589793
+
+// Converts IEM Cartesian coordinates to IEM spherical coordinates.
+// Azimuth is displayed as degrees in [-180, 180] with 90 at left, -90 at 
+// right, -180 or 180 at back, 0 at front.
+// Elevation is displayed in [-90, 90] with -90 at bottom and 90 at top.
+// Radius is displayed in [0, maximum_radius].
+// Cartesian coordinates are y is left to right [-1, 1], x is front to back [1, -1],
+// z is bottom to top [-1, 1].
+// To normalize to the VST range of [0,1], all calculations must agree on a 
+// maximum radius (half the room size, or range of positions).
+/*
+    static void cartesianToSpherical (const Type x, const Type y, const Type z, Type& azimuthInRadians, Type& elevationInRadians, Type& radius)
+    {
+        const float xSquared = x * x;
+        const float ySquared = y * y;
+        radius = sqrt(xSquared + ySquared + z * z);
+        azimuthInRadians = atan2(y, x);
+        elevationInRadians = atan2(z, sqrt(xSquared + ySquared));
+    } 9MT32V)@W4
+
+*/
+opcode iem_cartesian_to_spherical, kkk, kkk
+k_x, k_y, k_z xin
+k_radius = sqrt(k_x^2 + k_y^2 + k_z^2)
+k_azimuth taninv2 k_y, k_x
+k_elevation taninv2 k_z, sqrt(k_x^2 + k_y^2)
+xout k_azimuth, k_elevation, k_radius
+endop
+
+// Converts IEM spherical coordinates to VST parameter ranges.
+opcode iem_normalize_spherical_coordinates, kkk, ikkk
+i_maximum_radius, k_azimuth, k_elevation, k_radius xin
+k_normalized_azimuth = -1 * ((k_azimuth + gi_pi) / (2 * gi_pi))
+k_normalized_elevation = (k_elevation + (gi_pi / 2)) / gi_pi
+k_normalized_radius = k_radius / i_maximum_radius 
+xout k_normalized_azimuth, k_normalized_elevation, k_normalized_radius
+endop
+
+// Converts IEM Cartesian coordinates to IEM 
+// spherical coordinates that are normalized to VST parameter ranges.
+opcode iem_cartesian_to_spherical_vst,kkk,ikkk
+i_maximum_radius, k_x, k_y, k_z xin
+k_x *= (i_maximum_radius / 2)
+k_y *= (i_maximum_radius / 2)
+k_z *= (i_maximum_radius / 2)
+k_azimuth, k_elevation, k_radius iem_cartesian_to_spherical k_x, k_y, k_z
+k_azimuth_vst, k_elevation_vst, k_radius_vst iem_normalize_spherical_coordinates i_maximum_radius, k_azimuth, k_elevation, k_radius
+S_template init {{%-24.24s i: %3d t: %9.4f max radius: %9.4f
+  => Cartesian:  x: %9.4f y: %9.4f z: %9.4f
+  => Spherical:  a: %9.4f e: %9.4f r: %9.4f
+  =>             a: %9.4f e: %9.4f r: %9.4f
+  => Normalized: a: %9.4f e: %9.4f r: %9.4f
+}}
+k_time times
+printks S_template, .5, nstrstr(p1), int(p1), k_time, i_maximum_radius, k_x, k_y, k_z, k_azimuth, k_elevation, k_radius, k_azimuth * 180 / gi_pi, k_elevation * 180 / gi_pi, k_radius, k_azimuth_vst, k_elevation_vst, k_radius_vst
+xout k_azimuth_vst, k_elevation_vst, k_radius_vst
+endop
+
+// Are the SPARTA and IEM Ambisonic conventions the same? Both seem to use 
+// SN3D, but IEM uses azimuth, elevation, radius while SPARTA only seems to 
+// use azimuth, elevation -- except for ambiRoomSim!
+
+// N of the 64 channels are assigned and used in order, and unused channels are left as 0.
+
+prints "====================================================\n"
+prints "IEM Plugin Suite:\n"
+prints "----------------------------------------------------\n"
+prints "Send N instruments to one channel of one of these...\n"
+gi_iem_multi_encoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/MultiEncoder.so"
+vstinfo gi_iem_multi_encoder
+prints "````````````````````````````````````````````````````\n"
+prints "...or to N of these.\n"
+gi_iem_stereo_encoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/StereoEncoder.so"
+vstinfo gi_iem_stereo_encoder
+prints "````````````````````````````````````````````````````\n"
+prints "Then to the \"buss.\"\n"
+gi_iem_omni_compressor vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/OmniCompressor.so"
+vstinfo gi_iem_omni_compressor
+prints "````````````````````````````````````````````````````\n"
+prints "Then to the room encoder (which does Doppler effects):\n"
+gi_iem_room_encoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/RoomEncoder.so"
+vstinfo gi_iem_room_encoder
+prints "````````````````````````````````````````````````````\n"
+prints "Then to the FDN reverb:\n"
+gi_iem_fdn_reverb vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/FdnReverb.so"
+vstinfo gi_iem_fdn_reverb
+prints "````````````````````````````````````````````````````\n"
+prints "Then to one of these outputs:\n"
+gi_iem_simple_decoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/SimpleDecoder.so"
+vstinfo gi_iem_simple_decoder
+gi_iem_allra_decoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/AllRADecoder.so"
+vstinfo gi_iem_allra_decoder
+gi_iem_binaural_decoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/BinauralDecoder.so"
+vstinfo gi_iem_binaural_decoder
+prints "====================================================\n"
+
+prints "====================================================\n"
+prints "SPARTA Suite:\n"
+prints "----------------------------------------------------\n"
+prints "Send N instruments to one channel of one of these...\n"
+prints "````````````````````````````````````````````````````\n"
+gi_sparta_ambi_enc vstinit "/home/mkg/.vst/libsparta_ambiENC.so"
+vstinfo gi_sparta_ambi_enc
+prints "...or to N of these (need 2 of these at 2nd order):\n"
+prints "````````````````````````````````````````````````````\n"
+gi_sparta_ambi_room_sim vstinit "/home/mkg/.vst/libsparta_ambiRoomSim.so"
+vstinfo gi_sparta_ambi_room_sim
+prints "Not sure if this makes sense or can be controlled with parameters.\n"
+prints "````````````````````````````````````````````````````\n"
+gi_compass_spatedit vstinit "/home/mkg/.vst/libcompass_spatedit.so"
+vstinfo gi_compass_spatedit
+prints "Then to this (N channels or binaural):\n"
+prints "````````````````````````````````````````````````````\n"
+gi_sparta_ambi_dec vstinit "/home/mkg/.vst/libsparta_ambiDEC.so"
+vstinfo gi_sparta_ambi_dec
+prints "Or this:\n"
+prints "````````````````````````````````````````````````````\n"
+gi_sparta_ambi_bin vstinit "/home/mkg/.vst/libsparta_ambiBIN.so"
+vstinfo gi_sparta_ambi_bin
+prints "Or this:\n"
+prints "````````````````````````````````````````````````````\n"
+gi_compass_decoder vstinit "/home/mkg/.vst/libcompass_decoder.so"
+vstinfo gi_compass_decoder
+prints "Or this (probably best for binaural):\n"
+prints "````````````````````````````````````````````````````\n"
+gi_compass_binaural vstinit "/home/mkg/.vst/libcompass_binaural.so"
+vstinfo gi_compass_binaural
+prints "====================================================\n"
+
+
+#ifdef SPATIALIZE_GOGINS
 #include "Spatialize3D.inc"
 
 gi_Spatialize3D_room_table ftgen 1, 0, 64, -2,                                               \                                       
@@ -94,7 +242,9 @@ gi_Spatialize3D_room_table ftgen 1, 0, 64, -2,                                  
     1,     20,       0.05,   0.87,       5000.0, 0.8,      0.7,  2,      /* right   */ \
     1,     20,       0.05,   0.87,       5000.0, 0.8,      0.7,  2       /* left    */
 
-#else
+#end
+#ifdef SPATIALIZE_STEREO
+
 connect "Blower", "outleft", "ReverbSC", "inleft"
 connect "Blower", "outright", "ReverbSC", "inright"
 connect "STKBowed", "outleft", "ReverbSC", "inleft"
@@ -117,7 +267,7 @@ connect "ZakianFlute", "outleft", "ReverbSC", "inleft"
 connect "ZakianFlute", "outright", "ReverbSC", "inright"
 connect "ReverbSC", "outleft", "MasterOutput", "inleft"
 connect "ReverbSC", "outright", "MasterOutput", "inright"
-#endif
+#end
 
 //////////////////////////////////////////////////////////////////////////////
 // These are all the Csound instruments and effects used in this piece.
@@ -149,12 +299,131 @@ gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", 1
 #include "PianoOutPianoteq.inc"
 alwayson "PianoOutPianoteq"
 
-#ifndef USE_SPATIALIZATION
+#ifdef SPATIALIZE_STEREO
 #include "ReverbSC.inc"
 alwayson "ReverbSC"
 #include "MasterOutput.inc"
 alwayson "MasterOutput"
-#endif
+#end
+
+#ifdef SPATIALIZE_IEM
+
+// TODO: One room encoder for each instrument?
+// Possibly, use reverb?
+// Only need binaural decoder for now.
+
+instr SpatializeIEM 
+a_iem_encoder_in[] init 64
+a_iem_encoder_in inletv "iem_in"
+k_1 rms a_iem_encoder_in[0]
+k_2 rms a_iem_encoder_in[1]
+k_3 rms a_iem_encoder_in[2]
+printks "SpatializeIEM: a_iem_encoder_in: %9.4f %9.4f %9.4f\n", .5, k_1, k_2, k_3
+a_iem_encoder_out[] init 64
+vstparamset gi_iem_multi_encoder, 0, 10
+a_iem_encoder_out vstaudio gi_iem_multi_encoder, a_iem_encoder_in
+a_iem_reverb_out[] init 64
+a_iem_reverb_out vstaudio gi_iem_fdn_reverb, a_iem_encoder_out
+a_iem_decoder_out[] init 64
+a_iem_decoder_out vstaudio gi_iem_binaural_decoder, a_iem_reverb_out
+k_left rms a_iem_decoder_out[0]
+k_right rms a_iem_decoder_out[1]
+printks "%-24.24s i %9.4f t %9.4f d %9.4f l %9.4f r %9.4f #%3d\n", 1, nstrstr(p1), p1, p2, p3, k_left, k_right, p7, active(p1)
+out a_iem_decoder_out
+endin
+alwayson "SpatializeIEM"
+alwayson "PianoOutPianoteq"
+
+connect "Blower", "iem_out", "SpatializeIEM", "iem_in"
+connect "STKBowed", "iem_out", "SpatializeIEM", "iem_in"
+connect "Buzzer", "iem_out", "SpatializeIEM", "iem_in"
+connect "Droner", "iem_out", "SpatializeIEM", "iem_in"
+connect "FMWaterBell", "iem_out", "SpatializeIEM", "iem_in"
+connect "Phaser", "iem_out", "SpatializeIEM", "iem_in"
+connect "PianoOutPianoteq", "iem_out", "SpatializeIEM", "iem_in"
+connect "Sweeper", "iem_out", "SpatializeIEM", "iem_in"
+connect "Shiner", "iem_out", "SpatializeIEM", "iem_in"
+connect "ZakianFlute", "iem_out", "SpatializeIEM", "iem_in"
+#end
+
+#ifdef SPATIALIZE_AALTO
+instr SpatializeAALTO
+a_aalto_encoder_in[] init 64
+a_aalto_encoder_in inletv "aalto_in"
+a_aalto_encoder_out[] init 64
+// Ambisonic order (3 in {1,...,7}).
+vstparamset gi_sparta_ambi_room_sim, 0, (3. / 7.001)
+// Channel order (1 in {1, 2}).
+vstparamset gi_sparta_ambi_room_sim, 1, (1. / 2.001)
+// Normalization type (2 in {1, 2, 3}/
+vstparamset gi_sparta_ambi_room_sim, 2, (2. / 3.001)
+// Number of sources (3).
+vstparamset gi_sparta_ambi_room_sim, 3, (3. / 16.001)
+// Number of receivers (1).
+vstparamset gi_sparta_ambi_room_sim, 4, (1. / 16.001)
+// Receiver coordinates (center of room).
+vstparamset gi_sparta_ambi_room_sim, 53, .5
+vstparamset gi_sparta_ambi_room_sim, 54, .5
+vstparamset gi_sparta_ambi_room_sim, 55, .5
+
+a_aalto_encoder_out vstaudio gi_sparta_ambi_room_sim, a_aalto_encoder_in
+k_left rms a_aalto_encoder_out[0]
+k_right rms a_aalto_encoder_out[1]
+printks "%-24.24s i %9.4f t %9.4f d %9.4f a %9.4f e %9.4f #%3d\n", 1, nstrstr(p1), p1, p2, p3, k_left, k_right, p7, active(p1)
+a_aalto_decoder_out[] init 64
+a_iem_reverb_out[] init 64
+a_iem_reverb_out vstaudio gi_iem_fdn_reverb, a_aalto_encoder_out
+; // Sadly, the source code for the "COMPASS" plugins, which sound markedly 
+; // better, could not be found; therefore, VST normalizations could not be 
+; // determined; using the SPARTA ambiBIN decoder instead.
+; // Ambisonic order.
+; vstparamset gi_compass_binaural, 0, (3. / 7.001)
+; // Channel order.
+; vstparamset gi_compass_binaural, 1, (1. / 2.001)
+; // Covariance averaging.
+; vstparamset gi_compass_binaural, 2, .88
+; // Synth av.
+; vstparamset gi_compass_binaural, 3, .88
+; // Balance (diff-dir).
+; vstparamset gi_compass_binaural, 4, .5
+; // Balance (linear-par).
+; vstparamset gi_compass_binaural, 5, 1.
+; // Enable rotation.
+; vstparamset gi_compass_binaural, 6, 0.
+; a_aalto_decoder_out vstaudio gi_compass_binaural, a_aalto_encoder_out
+// Ambisonic order (3 in {1,...,7}).
+vstparamset gi_sparta_ambi_bin, 0, (3. / 7.001)
+// Channel order (1 in {1, 2}).
+vstparamset gi_sparta_ambi_bin, 1, (1. / 2.001)
+// Normalization type (2 in {1, 2, 3}/
+vstparamset gi_sparta_ambi_bin, 2, (2. / 3.001)
+// Decode method (5 in {1, 2, 3, 4, 5}
+vstparamset gi_sparta_ambi_bin, 3, 1.
+// Apply diff match
+vstparamset gi_sparta_ambi_bin, 4, 0.
+// Apply maxre weights
+vstparamset gi_sparta_ambi_bin, 5, 1.
+// Apply enable rotation
+vstparamset gi_sparta_ambi_bin, 6, 0.
+a_aalto_decoder_out vstaudio gi_sparta_ambi_bin, a_iem_reverb_out
+out a_aalto_decoder_out
+k_left rms a_aalto_decoder_out[0]
+k_right rms a_aalto_decoder_out[1]
+printks "%-24.24s i %9.4f t %9.4f d %9.4f l %9.4f r %9.4f #%3d\n", 1, nstrstr(p1), p1, p2, p3, k_left, k_right, p7, active(p1)
+endin
+alwayson "SpatializeAALTO"
+
+connect "Blower", "aalto_out", "SpatializeAALTO", "aalto_in"
+connect "STKBowed", "aalto_out", "SpatializeAALTO", "aalto_in"
+connect "Buzzer", "aalto_out", "SpatializeAALTO", "aalto_in"
+connect "Droner", "aalto_out", "SpatializeAALTO", "aalto_in"
+connect "FMWaterBell", "aalto_out", "SpatializeAALTO", "aalto_in"
+connect "Phaser", "aalto_out", "SpatializeAALTO", "aalto_in"
+connect "PianoOutPianoteq", "aalto_out", "SpatializeAALTO", "aalto_in"
+connect "Sweeper", "aalto_out", "SpatializeAALTO", "aalto_in"
+connect "Shiner", "aalto_out", "SpatializeAALTO", "aalto_in"
+connect "ZakianFlute", "aalto_out", "SpatializeAALTO", "aalto_in"
+#end
 
 gk_PianoOutPianoteq_front_to_back init -3
 gk_PianoOutPianoteq_left_to_right init .5
@@ -260,7 +529,7 @@ gk_ZakianFlute_level init 25.125628140703512
 gk_PianoOutPianoteq_level init -38
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 gk_ReverbSC_feedback init 0.86
-gk_MasterOutput_level init 46
+gk_MasterOutput_level init 0
 gi_FMWaterBell_attack init 0.002936276551436901
 gi_FMWaterBell_release init 0.022698875468554768
 gi_FMWaterBell_exponent init 0
@@ -270,7 +539,7 @@ gk_FMWaterBell_crossfade init 0.1234039047697504
 gk_FMWaterBell_index init 1.1401499375260309
 gk_FMWaterBell_vibrato_depth init 0.28503171595683335
 gk_FMWaterBell_vibrato_rate init 2.4993821566850647
-gk_FMWaterBell_level init 23
+gk_FMWaterBell_level init 21
 gk_Phaser_ratio1 init 1.0388005601779389
 gk_Phaser_ratio2 init 3
 gk_Phaser_index1 init 0.5
@@ -300,8 +569,10 @@ gk_Blower_grainDuration init 0.2854231208217838
 gk_Blower_grainAmplitudeRange init 174.0746779716289
 gk_Blower_grainFrequencyRange init 62.82406652535464
 gk_Blower_level init 6.562856676993313
-gk_ZakianFlute_level init 25.125628140703512
-gk_PianoOutPianoteq_level init -33
+;gk_ZakianFlute_level init 25.125628140703512
+gk_ZakianFlute_level init 23.
+;gk_PianoOutPianoteq_level init -30
+gk_PianoOutPianoteq_level init 37
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 gi_Spatialize3D_speaker_rig init 31
@@ -673,7 +944,7 @@ alwayson "Browser"
 
 S_score_generator_code init {{
 
-#include <eigen3/Eigen/Dense>
+#include <Eigen/Dense>
 #include <csound.h>
 #include <csound/csdl.h>
 #include <iostream>
@@ -921,7 +1192,9 @@ extern "C" int score_generator(CSOUND *csound) {
 // This compiles the above C++ module and then calls its entry point function.
 // Note that dynamic link libraries must be passed as complete filepaths.
 //////////////////////////////////////////////////////////////////////////////
-i_result clang_compile "score_generator", S_score_generator_code, "-g -O2 -std=c++17 -I/home/mkg/clang-opcodes -I/home/mkg/csound-extended/CsoundAC -I/usr/local/include/csound -stdlib=libstdc++", "/usr/lib/libCsoundAC.so.6.0 /usr/lib/gcc/x86_64-linux-gnu/9/libstdc++.so /usr/lib/gcc/x86_64-linux-gnu/9/libgcc_s.so /home/mkg/webkit-opcodes/webkit_opcodes.so /usr/lib/x86_64-linux-gnu/libm.so /usr/lib/x86_64-linux-gnu/libpthread.so"
+;i_result clang_compile "score_generator", S_score_generator_code, "-g -O2 -std=c++14 -I/home/mkg/clang-opcodes -I/usr/local/include/csound -stdlib=libstdc++", "/usr/lib/gcc/x86_64-linux-gnu/9/libstdc++.so /usr/lib/gcc/x86_64-linux-gnu/9/libgcc_s.so /home/mkg/webkit-opcodes/webkit_opcodes.so /usr/lib/x86_64-linux-gnu/libm.so /usr/lib/x86_64-linux-gnu/libpthread.so"
+
+i_result clang_compile "score_generator", S_score_generator_code, "-g -O2 -std=c++17 -I/user/include -I/usr/local/include -I/usr/include/eigen3 -I/home/mkg/clang-opcodes -I/home/mkg/csound-extended/CsoundAC -I/usr/local/include/csound -stdlib=libstdc++", "/usr/lib/libCsoundAC.so.6.0 /usr/lib/gcc/x86_64-linux-gnu/9/libstdc++.so /usr/lib/gcc/x86_64-linux-gnu/9/libgcc_s.so /home/mkg/webkit-opcodes/webkit_opcodes.so /usr/lib/x86_64-linux-gnu/libm.so /usr/lib/x86_64-linux-gnu/libpthread.so"
 
 instr Exit
 prints "exitnow i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
