@@ -88,30 +88,30 @@
     \end{frame}
     
     \begin{frame}{Basic Pre-Requisites}
+    	On Linux install with apt, on macOS install with Homebrew, on Windows install with vcpkg or 
+	search for downloads.
         \begin{itemize}
+            \item In this workshop we use the basic but quite cross-platform text editor \texttt{gedit} 
+            as an environment for writing and running Csound pieces.
             \item Install the latest Csound package for your desktop from
             \url{https://csound.com/download.html}. To get the most current release on
-            Linux, build Csound from sources
+            Linux, build Csound from sources 
             (\url{https://github.com/csound/csound/blob/develop/BUILD.md}).
-            \item Install the latest CsoundQt package for your desktop from
-            \url{http://csoundqt.github.io/pages/install.html}.
+            \item Download the latest Csound for the Web also from 
+            \url{https://csound.com/download.html}.
             \item Install the Audacity soundfile editor for your desktop from
             \url{https://www.audacityteam.org/download/}.
         \end{itemize}
     \end{frame}
+    
     \begin{frame}{Optional Pre-Requisites}
-        Many of these have their own additional pre-requisites. All are available
-        for Linux, but not all are available on other platforms.
+        Many of these have their own additional pre-requisites. 
         \begin{itemize}
             \item Python 3.9 from \url{https://www.python.org/downloads/}.
             \item Faust DSP language from
             \url{https://github.com/grame-cncm/faust/releases}.
             \item Csound plugin opcodes from
             \url{https://github.com/csound/plugins}, needs to be built from sources.
-            \item Clang opcodes from \url{https://github.com/gogins/clang-opcodes},
-            needs to be built from sources.
-            \item WebKit opcodes from
-            \url{https://github.com/gogins/webkit-opcodes}, needs to be built from sources.
         \end{itemize}
     \end{frame}
     
@@ -136,22 +136,41 @@
             \item Csound began with "off-line rendering," but now does real-time
             audio and interactive performance very well.
             \item Csound runs on desktop and mobile operating systems, and in Web
-            browsers. Here, we focus on the desktop. 
+            browsers. Here, we focus on the desktop and Web browsers.
         \end{itemize}
     \end{frame}
     \begin{frame}{An "All-In" Piece}
         \begin{itemize}
             \item Here I will perform a real-time, interactive, algorithmic piece
-            that uses everything we will work with today.
-            \item This piece is one .csd file that incorporates Faust, Python, C++,
-            HTML, JavaScript, and shader code and uses significant external plugins and
-            libraries.
-            \item But it is still just one .csd file that is edited in a code editor
+            that uses much of what we will work with today.
+            \item This piece is one .html file that incorporates  HTML, JavaScript, Csound, 
+            Faust, and shader code.
+            \item But it is still just one .html file that is edited in a code editor
             like any other code, and that runs in one process like any other program.
         \end{itemize}
     \end{frame}
     
     \section{Coding for Csound}
+    
+    \begin{frame}{The Playpen Concept}
+        \begin{itemize}
+            \item A "playpen" is a place where you can play with things and not worry 
+            about breaking them.
+            \item In computer music we have an iterative work cycle:
+            	\begin{itemize}
+		   \item \textit{Edit} a piece.
+		   \item \textit{Compile} the piece. If it doesn't compile, go back to \textit{Edit}.
+		   \item \textit{Run} the piece to render audio. If it doesn't run, go back to \emph{Edit}.
+		   \item \textit{Listen} to the piece. If you don't like it, go back to \emph{Edit}.
+		   \item When you don't need to go back to \emph{Edit}, the piece is done.
+	        \end{itemize}
+            \item  We will make a playpen that makes these steps as fast and 
+            automatic as possible, so that we can concentrate on making music.
+            \item We can make our playpen by customizing a code editor, or by 
+            using a code editor specifically designed for Csound.
+          \end{itemize}    
+    \end{frame}
+    
     \begin{frame}{Code Editors}
         \begin{itemize}
             \item A Csound piece consists of one or more source code files that are
@@ -161,56 +180,17 @@
             come with its own visual patcher or a graphical user interface "front end."
             \item Nevertheless using a code editor or a dedicated "front end"
             program can make the user significantly more productive.
-            \item This workshop uses the CsoundQt front end, but I will mention some
-            other options.
+            \item This workshop uses gedit with external commands as a front end, but you 
+            may find other editors more useful.
         \end{itemize}
     \end{frame}
     \begin{frame}{Code Editor Resources}
         \begin{itemize}
             \item CsoundQt from \url{http://csoundqt.github.io/}.
-            \item SciTE as customized in csound-extended from
-            \url{https://github.com/gogins/csound-extended/blob/master/playpen/.SciTEUser.properties}.
             \item blue from \url{https://blue.kunstmusik.com/}.
             \item Cabbage from \url{https://www.cabbageaudio.com/}.
             \item Visual Studio Code from \url{https://code.visualstudio.com/} with
             Csound extension from \url{https://github.com/csound/csound-vscode-plugin}.
-        \end{itemize}
-    \end{frame}
-    \begin{frame}{Configuring CsoundQt I}
-        Run CsoundQt and:
-        \begin{itemize}
-            \item Click on the \textit{Configure} button. 
-            \item Enable the \textit{Use CsoundQt options} check boxes.
-            \item From the \textit{RT Audio Module combo} box select
-            \texttt{coreaudio} on macOS, \texttt{portaudio} on Windows, or \texttt{alsa} on
-            Linux.
-            \item Click on the three dots next to the \textit{Output device} text
-            field to see a list of available output devices, and select what seems to be the
-            right one.
-        \end{itemize}
-    \end{frame}
-    \begin{frame}{Configuring CsoundQt II}
-        Run CsoundQt and:
-        \begin{itemize}
-            \item Run the \textit{Examples} menu, \textit{Music} submenu,
-            \textit{Xanadu} command to open \texttt{Kung-Xanadu.csd}. Click on the
-            \textit{Run in Term} button and see if you hear sound. If there is an error or
-            no sound, edit the \textit{Output device} field. For example, on Linux, if using
-            ALSA, manually enter a plughw interface, e.g. \texttt{dac:plughw:2,0}.
-            \item Stop the piece and click on the \textit{Run Csound} button and see
-            if you hear sound.
-        \end{itemize}
-    \end{frame}
-    \begin{frame}{Configuring CsoundQt III}
-        \begin{itemize}
-            \item Click on the \textit{Render} button to render \textit{Xanadu} to a
-            soundfile, then click on the \textit{Ext. Editor} button to view the soundfile.
-            If nothing happens, go to the configuration dialog, \textit{External Programs}
-            tab, and select the Audacity binary.
-            \item Click on the \textit{Manual} button to view the
-            \textit{\textbf{Csound Reference Manual}}. If nothing happens, go to the
-            configuration dialog, \textit{Environment} tab, and set the \textit{Html Doc
-                Directory}.
         \end{itemize}
     \end{frame}
     
