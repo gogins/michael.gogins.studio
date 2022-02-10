@@ -1,0 +1,4 @@
+plugins:
+  - jekyll-redirect-from
+future: true
+theme: jekyll-theme-cayman
