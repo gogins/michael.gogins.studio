@@ -150,7 +150,7 @@ connect "Shiner", "out", "SpatialReverb", "in"
 connect "ZakianFlute", "outbformat", "BformatDecoder", "inbformat"
 connect "ZakianFlute", "out", "SpatialReverb", "in"
 connect "SpatialReverb", "outbformat", "BformatDecoder", "inbformat"
-#else
+#elseif
 connect "Blower", "outleft", "ReverbSC", "inleft"
 connect "Blower", "outright", "ReverbSC", "inright"
 connect "STKBowed", "outleft", "ReverbSC", "inleft"
@@ -193,18 +193,18 @@ endin
 #end
 
 gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", 1
-#include "PianoNotePianoteq.inc"
-#include "FMWaterBell.inc"
-#include "Phaser.inc"
-#include "Droner.inc"
-#include "Sweeper.inc"
-#include "Buzzer.inc"
-#include "Shiner.inc"
-#include "Blower.inc"
-#include "ZakianFlute.inc"
-#include "STKBowed.inc"
+#include "patches/PianoNotePianoteq.inc"
+#include "patches/FMWaterBell.inc"
+#include "patches/Phaser.inc"
+#include "patches/Droner.inc"
+#include "patches/Sweeper.inc"
+#include "patches/Buzzer.inc"
+#include "patches/Shiner.inc"
+#include "patches/Blower.inc"
+#include "patches/ZakianFlute.inc"
+#include "patches/STKBowed.inc"
 
-#include "PianoOutPianoteq.inc"
+#include "patches/PianoOutPianoteq.inc"
 alwayson "PianoOutPianoteq"
 
 #ifdef USE_SPATIALIZATION
@@ -213,9 +213,9 @@ alwayson "SpatialReverb2"
 alwayson "BformatDecoder"
 alwayson "BformatDecoder2"
 #else
-#include "ReverbSC.inc"
+#include "patches/ReverbSC.inc"
 alwayson "ReverbSC"
-#include "MasterOutput.inc"
+#include "patches/MasterOutput.inc"
 alwayson "MasterOutput"
 #end
 

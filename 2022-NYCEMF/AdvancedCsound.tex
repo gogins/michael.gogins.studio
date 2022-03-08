@@ -89,7 +89,7 @@
     	Install with brew on macOS, apt on Linux, vcpkg on Windows, or 
 	google for downloads.
         \begin{itemize}
-            \item We use the basic but quite cross-platform text editor \texttt{gedit} 
+            \item This workshop uses the basic but quite cross-platform text editor \texttt{gedit} 
             for both writing and running Csound pieces.
             \item Install the latest Csound for your desktop from
             \url{https://csound.com/download.html}. For the current release on
@@ -105,6 +105,7 @@
     \begin{frame}{Optional Pre-Requisites}
         Many of these have their own additional pre-requisites. 
         \begin{itemize}
+            \item ABX comparator from \url{https://github.com/gogins/python-abx}.
             \item Python 3.9 from \url{https://www.python.org/downloads/}.
             \item Faust DSP language from
             \url{https://github.com/grame-cncm/faust/releases}.
@@ -116,6 +117,27 @@
     \begin{frame}{Agenda}
         \tableofcontents
         % You might wish to add the option [pausesections]
+    \end{frame}
+    
+    \section{Hearing Electroacoustically}
+    
+    \begin{frame}{Hearing}
+    	\begin{itemize}
+	  \item Before anything else one should know that one is hearing \textit{objectively}.
+	  \item One should establish the limits of one's hearing because the computer 
+	  will exceed them.
+	  \item One should establish the least noticeable differences for important features of sound. 
+	\end{itemize}
+    \end{frame}
+    \begin{frame}{Exercise: Hearing}
+    	\begin{itemize}
+	  \item Ideally get a hearing test from an audiologist.
+	  \item Frequency sweep in Audacity.
+	  \item Dynamic ranges in Audacity.
+	  \item Wave table sizes in Audacity.
+	  \item Time/frequency uncertainty relation.
+	  \item Digital artifacts in Audacity: clicking, aliasing, smearing.
+	\end{itemize}
     \end{frame}
     
     \section{Introduction to Csound}
@@ -140,8 +162,7 @@
         \begin{itemize}
             \item Here I will perform a real-time, interactive, algorithmic piece
             that uses much of what we will work with today.
-            \item This piece is one .html file that incorporates  HTML, JavaScript, Csound, 
-            Faust, and shader code.
+            \item This piece is one .html file that incorporates  HTML, JavaScript, and Csound.
             \item But it is still just one .html file that is edited in a code editor
             like any other code, and that runs in one process like any other program.
         \end{itemize}
@@ -182,15 +203,28 @@
         \end{itemize}
     \end{frame}
     
-    \begin{frame}{Code Editor Resources}
+    \begin{frame}{Code Editors for Csound}
         \begin{itemize}
-            \item CsoundQt from \url{http://csoundqt.github.io/}.
             \item blue from \url{https://blue.kunstmusik.com/}.
+            \item CsoundQt from \url{http://csoundqt.github.io/}.
             \item Cabbage from \url{https://www.cabbageaudio.com/}.
             \item Visual Studio Code from \url{https://code.visualstudio.com/} with
             Csound extension from \url{https://github.com/csound/csound-vscode-plugin}.
         \end{itemize}
     \end{frame}
+    
+    \begin{frame}{Configuring the Csound Environment}
+    	\begin{itemize}
+		\item The \texttt{csound} program should be in your environment's \texttt{PATH} variable.
+		\item For the \texttt{vst4cs opcodes}, we configure Csound to load them from their build or download directories.
+		\item For the Csound plugins repository, we build them locally and install using \texttt{sudo make install}.
+		\item Shown for macOS, but the same variables should be set with appropriate values on Linux or Windows.
+	\end{itemize}
+    \end{frame}    
+    \begin{lstlisting}
+export OPCODE6DIR64="/Users/michaelgogins/Downloads"
+export RAWWAVE_PATH="/opt/homebrew/Cellar/stk/4.6.2/share/stk/rawwaves"
+     \end{lstlisting}
     
     \begin{frame}{Coding for High-Quality Audio}
         \begin{itemize}
@@ -227,8 +261,7 @@
             UDOs that perform similar functions; e.g. different synths should use the same
             pfields.
             \item \textbf{Normalization} Use \textit{musical} units: MIDI key not
-            Hz, MIDI velocity not amplitude. \textit{\textbf{Note:}} Use MIDI interop so
-            MIDI and scores both can play the same instruments!
+            Hz, MIDI velocity not amplitude.
             \item \textbf{Signal Flow} Signals flow from input devices through
             opcodes to instruments; from opcode to opcode through variables; from
             instruments through opcodes to output devices. Processing is first by
@@ -246,6 +279,15 @@
             \texttt{chnexport} to  export these variables as control channels.
             \item Define signal flow in the orchestra header, \textit{not} inside modules.
         \end{itemize}
+    \end{frame}
+    
+    \begin{frame}{Exercise: MIDI Interop}
+    	\begin{itemize}
+		\item \texttt{insdef\_score.csd} uses an instrument definition designed to be driven by a Csound score.
+		\item \texttt{insdef\_midi.csd}  uses a similar instrument definition designed to be driven by a MIDI controller (or MIDI file).
+		\item \texttt{insdef\_interop.csd}  modifies the instrument definition to work equally well in all these ways.
+		\item \texttt{insdef\_interop.html} shows how to use this instrument with the trigger-release model used by modular analog synthesizers.
+	\end{itemize}
     \end{frame}
     
     \section{Useful Builtin Opcodes}
