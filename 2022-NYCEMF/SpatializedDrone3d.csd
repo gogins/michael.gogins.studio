@@ -14,7 +14,7 @@ nchnls = 2
 
 #define USE_SPATIALIZATION #1#
 
-#include "Spatialize1.inc"
+#include "patches/Spatialize1.inc"
 
 gk_BformatDecoder_SpeakerRig init 1
 gk_Spatialize_SpeakerRigRadius init 7.0
