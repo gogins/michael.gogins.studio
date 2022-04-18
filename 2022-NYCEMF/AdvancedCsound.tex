@@ -73,6 +73,9 @@
             
             \item \textit{There are no compromises here}, but I will try to keep things
             as simple as possible.
+            
+            \item I provide pre-written examples and exercises, so you won't have to debug much 
+            during the workshop.
         \end{itemize}
     \end{frame}
     
@@ -89,29 +92,25 @@
     
     \begin{frame}{Basic Pre-Requisites}
         \begin{itemize}
-            \item Install the latest Csound package for your desktop from
-            \url{https://csound.com/download.html}. To get the most current release on
+            \item Install the latest Csound for your desktop from
+            \url{https://csound.com/download.html}. For the most current release on
             Linux, build Csound from sources
             (\url{https://github.com/csound/csound/blob/develop/BUILD.md}).
-            \item Install the latest CsoundQt package for your desktop from
+            \item Install the Risset package manager for Csound plugin opcodes from 
+            \url{https://github.com/csound-plugins/risset}. All opcodes used in this 
+            workshop can be installed from Risset.
+            \item Install the latest CsoundQt from
             \url{http://csoundqt.github.io/pages/install.html}.
-            \item Install the Audacity soundfile editor for your desktop from
+            \item Install the Audacity soundfile editor from
             \url{https://www.audacityteam.org/download/}.
         \end{itemize}
     \end{frame}
     \begin{frame}{Optional Pre-Requisites}
-        Many of these have their own additional pre-requisites. All are available
-        for Linux, but not all are available on other platforms.
+        Some of these have their own additional pre-requisites.
         \begin{itemize}
             \item Python 3.9 from \url{https://www.python.org/downloads/}.
             \item Faust DSP language from
             \url{https://github.com/grame-cncm/faust/releases}.
-            \item Csound plugin opcodes from
-            \url{https://github.com/csound/plugins}, needs to be built from sources.
-            \item Clang opcodes from \url{https://github.com/gogins/clang-opcodes},
-            needs to be built from sources.
-            \item WebKit opcodes from
-            \url{https://github.com/gogins/webkit-opcodes}, needs to be built from sources.
         \end{itemize}
     \end{frame}
     
@@ -131,11 +130,11 @@
             than other SWSS.
             \item Csound can be extended with plugins, some of which bring other
             programming languages into Csound. 
-            \item Csound has a flexible API, and can be embedded in many other
+            \item Csound has a flexible API, and can be embedded in other
             programming languages.
             \item Csound began with "off-line rendering," but now does real-time
             audio and interactive performance very well.
-            \item Csound runs on desktop and mobile operating systems, and in Web
+            \item Csound runs on the desktop, on mobile devices, and in Web
             browsers. Here, we focus on the desktop. 
         \end{itemize}
     \end{frame}
@@ -161,7 +160,7 @@
             come with its own visual patcher or a graphical user interface "front end."
             \item Nevertheless using a code editor or a dedicated "front end"
             program can make the user significantly more productive.
-            \item This workshop uses the CsoundQt front end, but I will mention some
+            \item This workshop uses the CsoundQt front end, but I will mention
             other options.
         \end{itemize}
     \end{frame}
@@ -170,6 +169,8 @@
             \item CsoundQt from \url{http://csoundqt.github.io/}.
             \item SciTE as customized in csound-extended from
             \url{https://github.com/gogins/csound-extended/blob/master/playpen/.SciTEUser.properties}.
+            \item gedit as customized in csound-extended from
+\url{https://github.com/gogins/csound-extended/blob/master/playpen}.
             \item blue from \url{https://blue.kunstmusik.com/}.
             \item Cabbage from \url{https://www.cabbageaudio.com/}.
             \item Visual Studio Code from \url{https://code.visualstudio.com/} with
@@ -218,13 +219,13 @@
         \begin{itemize}
             \item Many of Csound's opcodes, man pages, and examples are old, and
             prioritize memory and run time over audio quality.
-            \item \textit{Today, prioritize audio quality in all cases}.
+            \item \textit{Today, \textbf{prioritize audio quality} in all cases}.
             \item Use a sample rate of 48,000 or even 96,000 frames per second with
             \texttt{ksmps = 100} or even \texttt{ksmps = 1}.
             \item Use the double-precision version of Csound (now default).
             \item Render to floating-point soundfiles for high dynamic range.
             \item Use table sizes of at least 65,537 for lower noise.
-            \item Use \textit{audio-rate} envelopes.
+            \item Use \textit{audio-rate} envelopes to prevent zipper noise.
             \item Use the \textit{latest versions} of opcodes.
             \item Used in this way, Csound competes on audio quality with
             \textit{any} open source or commercial software.
@@ -241,11 +242,11 @@
     
     \begin{frame}{Software Design}
         \begin{itemize}
-            \item \textbf{Encapsulation} Hide functionality in \textit{modules} that
-            expose only inputs and outputs. Define modules with \texttt{instr} and
-            \texttt{opcode}, corresponding to classes and functions.
+            \item \textbf{Encapsulation} Hide implementations in \textit{modules} that
+            expose only inputs and outputs. Define modules with \texttt{instr} (classes) and
+            \texttt{opcode} (functions).
             \item \textbf{Abstraction} Define abstract interfaces for instruments or
-            UDOs that perform similar functions; e.g. different synths should use the same
+            UDOs that perform similar functions; e.g. different synths use the same
             pfields.
             \item \textbf{Normalization} Use \textit{musical} units: MIDI key not
             Hz, MIDI velocity not amplitude. \textit{\textbf{Note:}} Use MIDI interop so
