@@ -1,0 +1,164 @@
+\documentclass{beamer}
+
+\mode<presentation>
+{
+    %\usetheme{Warsaw}
+    \definecolor{links}{HTML}{2A1B81}
+    \hypersetup{colorlinks,linkcolor=,urlcolor=links}
+    \usetheme{Frankfurt}
+    %\usecolortheme{seagull}
+    % or ...
+    \setbeamercovered{transparent}
+    % or whatever (possibly just delete it)
+}
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{fancyvrb}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{attachfile}
+\usepackage{ifthen}
+
+\newboolean{localPieces} %Declaration, defaults to false
+\setboolean{localPieces}{false} %Assignment
+
+\title{Advanced Csound}
+
+\author[Gogins] % (optional, use only with lots of authors)
+{Michael Gogins \\ \url{http://michaelgogins.tumblr.com} }
+
+\institute[Irreducible Productions] % (optional, but mostly needed)
+{
+    Irreducible Productions\\
+    New York
+}
+\date[NYCEMF 2022] 
+{NYCEMF 2022}
+
+\subject{Computer Music}
+\expandafter\def\expandafter\insertshorttitle\expandafter{%
+    \insertshorttitle\hfill%
+    \insertframenumber\,/\,\inserttotalframenumber}
+\begin{document}
+    \lstset{basicstyle=\ttfamily\tiny,commentstyle=\ttfamily\tiny,tabsize=2,breaklines,fontadjust=true,keepspaces=false,fancyvrb=true,showstringspaces=false,moredelim=[is][\textbf]{\\emph\{}{\}}}
+
+\frame{\titlepage}
+
+    \begin{frame}{Outline I}
+        \begin{itemize}
+            \item These are slides, with links to resources, for a workshop on the
+            \emph{advanced} use of Csound.
+            \item The intended audience is anyone using Csound to \textit{actually make
+                music}, whether they are a raw beginner or an experienced user.           
+             \item \emph{There are no compromises here}, but I will try to keep things
+            as simple as possible.
+            
+            \item I provide pre-written examples and exercises, so you won't have to debug much 
+            during the workshop.
+        \end{itemize}
+    \end{frame}
+    
+    \begin{frame}{Outline II}
+        \begin{itemize}
+           \item First I review "best practices" using \textit{built-in features of
+            the current release of Csound}.
+            \item Then I review some extensions to Csound: 
+                \begin{itemize}
+                    \item Development environments.
+                    \item Plugin opcodes.
+                    \item Hosting VST plugins.
+                    \item Using other languages in Csound.
+                \end{itemize}
+        \end{itemize}
+    \end{frame}
+    
+    \begin{frame}{Basic Pre-Requisites}
+    	Install with brew on macOS, apt on Linux, vcpkg on Windows, or 
+	google for downloads.
+        \begin{itemize}
+            \item Install Csound from
+            \url{https://csound.com/download.html}. For the most current release on
+            Linux, build from sources
+            (\url{https://github.com/csound/csound/blob/develop/BUILD.md}).
+            \item Install the Risset package manager for Csound plugins from 
+            \url{https://github.com/csound-plugins/risset}. 
+            \item Install the CsoundQt Csound editor from
+            \url{http://csoundqt.github.io/pages/install.html}.
+            \item Install the Audacity soundfile editor from
+            \url{https://www.audacityteam.org/download/}.
+        \end{itemize}
+    \end{frame}
+    
+    \begin{frame}{Optional Pre-Requisites}
+        Some of these have their own additional pre-requisites.
+        \begin{itemize}
+            \item ABX comparator from \url{https://github.com/gogins/python-abx}.
+            \item Python 3.9 from \url{https://www.python.org/downloads/}.
+            \item Faust DSP language from
+            \url{https://github.com/grame-cncm/faust/releases}.
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}{Agenda}
+        \tableofcontents
+        % You might wish to add the option [pausesections]
+    \end{frame}
+
+    \section{Hearing Electroacoustically}
+       \begin{frame}{Hearing}
+    	\begin{itemize}
+	  \item Before anything else one should know that one is hearing \textit{objectively}.
+	  \item One should establish the limits of one's hearing because the computer 
+	  will exceed them.
+	  \item One should establish the least noticeable differences for important features of sound. 
+	\end{itemize}
+    \end{frame}
+\begin{frame}
+	\begin{example}{Hearing}
+		\begin{itemize}
+			\item Ideally, get a hearing test from an audiologist.
+			\item Frequency sweep in Audacity.
+			\item Dynamic ranges in Audacity.
+			\item Wave table sizes in Audacity.
+			\item Time/frequency uncertainty relation.
+			\item Digital artifacts in Audacity: clicking, aliasing, smearing.
+		\end{itemize}
+ 	\end{example}
+ \end{frame}
+
+    \section{Introduction to Csound}
+    \begin{frame}{Csound}
+        \begin{itemize}
+            \item Csound is a \textit{programmable} software sound synthesizer.
+            \item Csound dates from 1985, yet is still being developed (with almost
+            complete backward compatibility).
+            \item All SWSS have digital oscillators, filters, envelopes, etc...
+            \textit{because} it is older, Csound has \textit{more} unit generators.
+            \item Csound can be extended with plugins, some of which bring other
+            programming languages into Csound. 
+            \item Csound has a flexible API, and can be embedded in other
+            programming languages.
+            \item Csound began with "off-line rendering," but now does real-time
+            audio and interactive performance very well.
+            \item Csound runs on the desktop, on mobile devices, and in Web
+            browsers. Here, we focus on the desktop. 
+        \end{itemize}
+    \end{frame}
+    \begin{frame}{An "All-In" Piece}
+        \begin{itemize}
+            \item Here I will perform a real-time, interactive, algorithmic piece
+            that uses much of what we will work with today.
+            \item This piece is one .html file that incorporates  HTML, JavaScript, and Csound.
+            \item But it is still just one .html file that is edited in a code editor
+            like any other code, and that runs in one process like any other program.
+        \end{itemize}
+    \end{frame}
+
+
+
+
+
+\end{document}

@@ -82,22 +82,31 @@ prealloc "Harpsichord", 4
 prealloc "YiString", 4
 prealloc "Bower", 4
 
-connect "Guitar", "outleft", "CxxReverb", "inleft"
-connect "Guitar", "outleft", "CxxReverb", "inleft"
-connect "ZakianFlute", "outleft", "CxxReverb", "inleft"
-connect "ZakianFlute", "outleft", "CxxReverb", "inleft"
-connect "Harpsichord", "outleft", "CxxReverb", "inleft"
-connect "Harpsichord", "outright", "CxxReverb", "inright"
-connect "YiString", "outleft", "CxxReverb", "inleft"
-connect "YiString", "outright", "CxxReverb", "inright"
-connect "Bower", "outleft", "CxxReverb", "inleft"
-connect "Bower", "outright", "CxxReverb", "inright"
-connect "CxxGuitar", "outleft", "CxxReverb", "inleft"
-connect "CxxGuitar", "outright", "CxxReverb", "inright"
-connect "CxxReverb", "outleft", "MasterOutput", "inleft"
-connect "CxxReverb", "outright", "MasterOutput", "inright"
+connect "Blower", "outleft", "ReverbSC", "inleft"
+connect "Blower", "outright", "ReverbSC", "inright"
+connect "STKBowed", "outleft", "ReverbSC", "inleft"
+connect "STKBowed", "outright", "ReverbSC", "inright"
+connect "Buzzer", "outleft", "ReverbSC", "inleft"
+connect "Buzzer", "outright", "ReverbSC", "inright"
+connect "Droner", "outleft", "ReverbSC", "inleft"
+connect "Droner", "outright", "ReverbSC", "inright"
+connect "FMWaterBell", "outleft", "ReverbSC", "inleft"
+connect "FMWaterBell", "outright", "ReverbSC", "inright"
+connect "Phaser", "outleft", "ReverbSC", "inleft"
+connect "Phaser", "outright", "ReverbSC", "inright"
+connect "PianoOutPianoteq", "outleft", "MasterOutput", "inleft"
+connect "PianoOutPianoteq", "outright", "MasterOutput", "inright"
+connect "Sweeper", "outleft", "ReverbSC", "inleft"
+connect "Sweeper", "outright", "ReverbSC", "inright"
+connect "Shiner", "outleft", "ReverbSC", "inleft"
+connect "Shiner", "outright", "ReverbSC", "inright"
+connect "ZakianFlute", "outleft", "ReverbSC", "inleft"
+connect "ZakianFlute", "outright", "ReverbSC", "inright"
+connect "ReverbSC", "outleft", "MasterOutput", "inleft"
+connect "ReverbSC", "outright", "MasterOutput", "inright"
 
-alwayson "CxxReverb"
+
+alwayson "ReverbSC"
 alwayson "MasterOutput"
 
 gk_overlap init .0125
@@ -332,10 +341,14 @@ a_out_left, a_out_right pan2 a_signal, gk_ZakianFlute_pan
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
-;prints "ZakianFlute    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, gk_ZakianFlute_pan, active(p1)
 prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, gk_ZakianFlute_pan, active(p1)
 
 endin
+
+#include "patches/FMWaterBell.inc"
+connect "FMWaterBell", "outleft", "ReverbSC", "inleft"
+connect "FMWaterBell", "outright", "ReverbSC", "inright"
+gk_FMWaterBell_level init 18.
 
 gk_Guitar_level init 8
 instr Guitar
@@ -386,7 +399,7 @@ a_out_left, a_out_right pan2 a_signal, p1/6
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
-prints "Guitar         i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p1/6, active(p1)
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p1/6, active(p1)
 endin
 
 gk_YiString_level init 6
@@ -443,7 +456,7 @@ outleta "chorusleft", a_out_left * gk_YiString_chorus_send
 outleta "chorusright", a_out_right * gk_YiString_chorus_send
 ;printks "YiString         %9.4f  %9.4f\n", 0.5, a_out_left, a_out_right
 #endif
-prints  "YiString       i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p1/6, active(p1)
+prints  "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p1/6, active(p1)
 endin
 
 gk_Bower_level init 20
@@ -484,7 +497,7 @@ aright = adamping * aright
 kgain = ampdb(gk_Bower_level)
 outleta "outleft", aleft * kgain
 outleta "outright", aright * kgain 
-prints "Bower          i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p1/6, active(p1)
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1),p1, p2, p3, p4, p5, p1/6, active(p1)
 endin
 
 gk_Harpsichord_level init 0
@@ -535,7 +548,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 ; printks "Harpsichord      %9.4f   %9.4f\n", 0.5, a_out_left, a_out_right
-prints "Harpsichord    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p1/6, active(p1)
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p1/6, active(p1)
 kpbend    pchbend   2
 printks2 "pchbend %9.4f\n", kpbend
 kmodw     midictrl  1
@@ -633,16 +646,20 @@ extern "C" {
 i_result cxx_compile "reverb_main", S_reverb_code, "-g -v -O2 -fPIC -shared -std=c++14 -stdlib=libc++ -I/usr/local/include/csound -I/Library/Frameworks/CsoundLib64.framework/Versions/6.0/Headers -I/opt/homebrew/Cellar/stk/4.6.2/include -I. -L/opt/homebrew/lib -lstk -lm -lpthread"
 
 gk_Reverb_feedback init 2.2
-instr CxxReverb
+instr ReverbSC2
 aleftout init 0
 arightout init 0
 aleftin inleta "inleft"
 arightin inleta "inright"
+aleftout = aleftin
+arightout = arightin
 aleftout, arightout cxx_invoke "reverb_factory", 3, gk_Reverb_feedback, aleftin, arightin
 outleta "outleft", aleftout
 outleta "outright", arightout
-prints "CxxReverb      i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", p1, p2, p3, p4, p5, p1/6, active(p1)
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p1/6, active(p1)
 endin
+
+#include "patches/ReverbSC.inc"
 
 gk_MasterOutput_level init -15
 gS_MasterOutput_filename init ""
@@ -668,7 +685,7 @@ has_filename:
 prints sprintf("Output filename: %s\n", gS_MasterOutput_filename)
 fout gS_MasterOutput_filename, 18, aleft * i_amplitude_adjustment, aright * i_amplitude_adjustment
 non_has_filename:
-prints "MasterOutput   i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p1/6, active(p1)
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p1/6, active(p1)
 kstatus, kchan, kdata1, kdata2 midiin
 ;printf "          midi in s %4d c %4d %4d %4d\n", kdata2, kstatus, kchan, kdata1, kdata2
 endin
@@ -777,7 +794,7 @@ extern "C" int score_generator(CSOUND *csound) {
     modality.fromString("0 4 7 11 14");
     pen.chord = modality;
     ///pen.note = {1,35,144,1,1,1,0,0,0,0,1};
-    pen.note = csound::Event{1,32,144,1,1,1,0,0,0,0,1};
+    pen.note = csound::Event{1,10,144,1,1,1,0,0,0,0,1};
     int depth = 7;
     std::vector<std::function<Cursor(const Cursor &, int, csound::Score &)>> generators;
     auto g1 = [&chordsForTimes, &modality](const Cursor &pen_, int depth, csound::Score &score) {
@@ -842,7 +859,7 @@ extern "C" int score_generator(CSOUND *csound) {
     generators.push_back(g4);
     // Generate the score.
     Eigen::MatrixXd transitions(4,4);
-    transitions <<  1, 1, 1, 1,
+    transitions <<  1, 1, 0, 1,
                     1, 1, 1, 1,
                     1, 0, 1, 1,
                     1, 1, 0, 1;
@@ -851,7 +868,7 @@ extern "C" int score_generator(CSOUND *csound) {
     // Before iterating, ensure that the score does start with a chord.
     //////////////////////////////////////////////////////////////////////////////
     chordsForTimes[-100.] = pen.chord;
-    recurrent(generators, transitions, 7, 0, pen, score);
+    recurrent(generators, transitions, 8, 0, pen, score);
     std::cout << "Generated duration:     " << score.getDuration() << std::endl;
     //////////////////////////////////////////////////////////////////////////////
     // We apply the chords that were generated along WITH the notes, TO the notes.
@@ -886,7 +903,7 @@ extern "C" int score_generator(CSOUND *csound) {
     std::cout << "Conformed duration:     " << score.getDuration() << std::endl;
     std::cout << "Conformed notes:        " << size << std::endl;
     score.rescale(csound::Event::TIME,          true,  0.0, false,  0.0);
-    score.rescale(csound::Event::INSTRUMENT,    true,  1.0, true,   5.999);
+    score.rescale(csound::Event::INSTRUMENT,    true,  1.0, true,   5.99);
     score.rescale(csound::Event::VELOCITY,      true, 40.0, true,  20.0);
     score.rescale(csound::Event::PAN,           true,  0.0, true,   0.0);
     std::cout << "Move to origin duration:" << score.getDuration() << std::endl;
@@ -906,6 +923,7 @@ extern "C" int score_generator(CSOUND *csound) {
     score.rescale(csound::Event::TIME,          true,  1.0, false,  0.0);
     std::cout << "Final duration:         " << score.getDuration() << std::endl;
     auto csound_score = score.getCsoundScore(12., false);
+    std::fprintf(stderr, csound_score.c_str());
     csound->InputMessage(csound, csound_score.c_str());
     csound->Message(csound, "Sent generated score to Csound.\\n");    
     return result;
@@ -923,6 +941,6 @@ i_result cxx_compile "score_generator", S_score_generator_code, "-g -v -O2 -fPIC
 
 </CsInstruments>
 <CsScore>
-f 0 360
+f 0 720
 </CsScore>
 </CsoundSynthesizer>
