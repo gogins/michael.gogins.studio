@@ -44,120 +44,206 @@
     \insertframenumber\,/\,\inserttotalframenumber}
 \begin{document}
     \lstset{basicstyle=\ttfamily\tiny,commentstyle=\ttfamily\tiny,tabsize=2,breaklines,fontadjust=true,keepspaces=false,fancyvrb=true,showstringspaces=false,moredelim=[is][\textbf]{\\emph\{}{\}}}
+\maketitle
+\begin{frame}{Agenda}
+\tableofcontents
+\end{frame}
 
-\frame{\titlepage}
+\section{Who this is for}
+\begin{frame}{Who this is for}
+\begin{itemize}
+\item This workshop is for anyone who uses Csound to \emph{actually make music}.
+\item That includes beginners, expert users, and even programmers.
+\item I provide examples/exercises that are pre-written to speed things up. You should run them, but you should not have to debug them.
+\item The examples are written for macOS, Linux, and Windows, but the ideas should also apply to Android and WebAssembly.
+\end{itemize}
+\end{frame}
 
-    \begin{frame}{Outline I}
-        \begin{itemize}
-            \item These are slides, with links to resources, for a workshop on the
-            \emph{advanced} use of Csound.
-            \item The intended audience is anyone using Csound to \textit{actually make
-                music}, whether they are a raw beginner or an experienced user.           
-             \item \emph{There are no compromises here}, but I will try to keep things
-            as simple as possible.
-            
-            \item I provide pre-written examples and exercises, so you won't have to debug much 
-            during the workshop.
-        \end{itemize}
-    \end{frame}
+\section{What is Csound}
+\begin{frame}{What is Csound}
+\begin{itemize}
+\item \emph{Csound is a programmable software sound synthesis system with a runtime compiler.}
+\item Csound was written in 1985, so has \emph{more unit generators} than later SWSS such as SuperCollider or Max.
+\item Csound runs on desktops, devices, single-board computers, and Web browsers (WASM).
+\item Csound has a straightforward "C" API (csound.h).
+\item The Csound API has interfaces in C++, Python, Lua, Lisp, and other languages. \emph{You can run Csound inside other languages.}
+\item Csound has opcodes for hosting external plugins and even external languages (Python, C++, Lua). \emph{You can run other languages inside Csound.
+}\end{itemize}
+\end{frame}
+
+\section{Getting Csound}
+\begin{frame}{Getting Csound}
+Install with brew on macOS, apt on Linux, vcpkg on Windows, or 
+google for downloads.
+\begin{itemize}
+\item Install Csound for your desktop (\url{https://csound.com/download.html}). For the \emph{current} release on
+Linux, build from sources
+(\url{https://github.com/csound/csound/blob/develop/BUILD.md}).
+\item Install the Audacity soundfile editor (\url{https://www.audacityteam.org/download/}).
+\item Consider building the Csound external plugins repository (\url{https://github.com/csound/plugins}) from sources and installing it.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{M1 Macintosh}
+\begin{itemize}
+\item Apple's arm64 M1 processor is fantastic, but can create problems of software incompatibility.
+\item Some software distributed for Csound is built for x86-amd or x86-64 architecture only, and won't work with software built for arm64 only.
+\item Currently, if you have an M1 Mac, CsoundQt and the plugins in the Risset package manager don't work.
+\item If you have an \emph{Intel} Mac:
+\begin{itemize}
+\item Install CsoundQt (\url{http://csoundqt.github.io/pages/install.html}).
+\item Install the Risset package manager for Csound plugins (\url{https://github.com/csound-plugins/risset}). 
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Other useful software}
+Some of these have their own additional pre-requisites.
+\begin{itemize}
+\item Python 3.9 (\url{https://www.python.org/downloads/}).
+\item ABX comparator (\url{https://github.com/gogins/python-abx}).
+\item Faust DSP language (\url{https://github.com/grame-cncm/faust/releases}).
+\end{itemize}
+\end{frame}
+
+\section{Running Csound}
+\begin{frame}{Running Csound}
+Csound does not have a built-in code editor or visual patcher like SuperCollider or Max.
+\begin{itemize}
+\item You can run Csound from the command line.
+\item You can run Csound from a general-purpose but customized code editor.
+\item You can run Csound from a purpose-built Csound code editor such as CsoundQt.
+\item In this workshop, we use any text editor and the command line as the lowest common denominator.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Running Csound from the command line}
+\begin{example}
+Change to the \texttt{commandline} directory of your workshop directory.
+\begin{itemize}
+\item Execute \texttt{csound electric-priest.csd} to make sure that Csound runs.  Also make sure that the maximum level at the end is negative so you won't blow out your speakers!
+\item Execute \texttt{csound ---devices} to list your system's audio devices.
+\item Execute e.g.\ \texttt{csound electric-priest.csd -odac0} to render the piece with real-time audio.
+\end{itemize}
+\end{example}
+\end{frame}
+
+\begin{frame}{Other code editors for Csound}
+\begin{itemize}
+\item SciTE as customized in csound-extended (\url{https://github.com/gogins/csound-extended/blob/master/playpen/.SciTEUser.properties}).
+\item gedit as customized in csound-extended (\url{https://github.com/gogins/csound-extended/blob/master/playpen}).
+\item blue (\url{https://blue.kunstmusik.com/}).
+\item Cabbage (\url{https://www.cabbageaudio.com/}).
+\item Visual Studio Code (\url{https://code.visualstudio.com/}) with
+Csound extension (\url{https://github.com/csound/csound-vscode-plugin}).
+\end{itemize}
+\end{frame}
+
+\begin{frame}{The playpen concept}
+\begin{itemize}
+\item A "playpen" is where you can play with things and not worry 
+about breaking them.
+\item In computer music we have an iterative work cycle:
+\begin{itemize}
+\item \textit{Edit} a piece.
+\item \textit{Compile} the piece. If it doesn't compile, go back to \textit{Edit}.
+\item \textit{Run} the piece to render audio. If it doesn't run, go back to \emph{Edit}.
+\item \textit{Listen} to the piece. If you don't like it, go back to \emph{Edit}.
+\item When you don't need to go back to \emph{Edit}, the piece is done.
+\end{itemize}
+\item  We will make a playpen that makes these steps as fast and 
+automatic as possible, so that we can concentrate on making music.
+\item We can make our playpen by customizing a code editor, or by 
+using a code editor specifically designed for Csound.
+\end{itemize}    
+\end{frame}
+
+\begin{frame}{A command-line playpen}
+I present a command-line version because CsoundQt does not work with brew Csound on M1 Macs.
+\begin{itemize}
+\item Requires Python 3.
+\item Install \texttt{playpen.py} (\url{https://github.com/gogins/csound-extended/blob/master/playpen/playpen.py}) in your home directory, and make it executable.
+\item Install \texttt{playpen.ini} (\url{https://github.com/gogins/csound-extended/blob/master/playpen/playpen.ini} ) in your home directory, and customize it for your installation.
+\item \texttt{$\sim$/playpen.py help} prints documentation.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Main playpen commands}
+\begin{example}
+Change to the texttt{play} directory of your workshop directory.
+\begin{itemize}
+\item Execute \texttt{$\sim$/playpen.py} to view help.
+\item Execute \texttt{$\sim$/playpen.py csd-audio oblivion.csd} to run \texttt{oblivion.csd} and hear it in real time.
+\item Execute \texttt{$\sim$/playpen.py csd-soundfile oblivion.csd} to run \texttt{oblivion.csd} , render it to a soundfile, post-process it, tag it with your metadata, and open it in Audacity.
+\end{itemize}
+\end{example}
+\end{frame}
+
+\section{Best practices for core Csound}
+\begin{frame}{Best practices for core Csound}
+\begin{itemize}
+\item Learn to hear electroacoustically
+\item Optimize audio quality
+\item Useful builtin opcodes
+\end{itemize}
+\end{frame}
+
+\section{Coding for Csound}
+\begin{frame}{Software design}
+\begin{itemize}
+\item \textbf{Encapsulation} Hide implementations in \textit{modules} that
+expose only inputs and outputs. Define modules with \texttt{instr} (classes) and
+\texttt{opcode} (functions).
+\item \textbf{Abstraction} Define abstract interfaces for instruments or
+UDOs that perform similar functions; e.g. different synths use the same
+pfields.
+\item \textbf{Normalization} Use \textit{musical} units: MIDI key not
+Hz, MIDI velocity not amplitude.
+\item \textbf{Signal Flow} Signals flow from input devices through
+opcodes to instruments; from opcode to opcode through variables; from
+instruments through opcodes to output devices. Processing is first by
+instrument number, then by order of definition. Signals also flow through
+control channels and global variables.
+\end{itemize}
+\end{frame}
     
-    \begin{frame}{Outline II}
-        \begin{itemize}
-           \item First I review "best practices" using \textit{built-in features of
-            the current release of Csound}.
-            \item Then I review some extensions to Csound: 
-                \begin{itemize}
-                    \item Development environments.
-                    \item Plugin opcodes.
-                    \item Hosting VST plugins.
-                    \item Using other languages in Csound.
-                \end{itemize}
-        \end{itemize}
-    \end{frame}
+\begin{frame}{Modular design}
+\begin{itemize}
+\item Using naming conventions to simulate namespaces.
+\item Normalize pfields and variables.
+\item Associate global function tables with modules.
+\item Associate global control variables with modules, and use
+\texttt{chnexport} to  export these variables as control channels.
+\item Define signal flow in the orchestra header, \textit{not} inside modules.
+\end{itemize}
+\end{frame}
     
-    \begin{frame}{Basic Pre-Requisites}
-    	Install with brew on macOS, apt on Linux, vcpkg on Windows, or 
-	google for downloads.
-        \begin{itemize}
-            \item Install Csound from
-            \url{https://csound.com/download.html}. For the most current release on
-            Linux, build from sources
-            (\url{https://github.com/csound/csound/blob/develop/BUILD.md}).
-            \item Install the Risset package manager for Csound plugins from 
-            \url{https://github.com/csound-plugins/risset}. 
-            \item Install the CsoundQt Csound editor from
-            \url{http://csoundqt.github.io/pages/install.html}.
-            \item Install the Audacity soundfile editor from
-            \url{https://www.audacityteam.org/download/}.
-        \end{itemize}
-    \end{frame}
+\begin{frame}{Exercise: MIDI interop}
+\begin{example}
+\begin{itemize}
+\item \texttt{insdef\_score.csd} uses an instrument definition designed to be driven by a Csound score.
+\item \texttt{insdef\_midi.csd}  uses a similar instrument definition designed to be driven by a MIDI controller (or MIDI file).
+\item \texttt{insdef\_interop.csd}  modifies the instrument definition to work equally well in all these ways.
+\item \texttt{insdef\_interop.html} shows how to use this instrument with the trigger-release model used by modular analog synthesizers.
+\end{itemize}
+\end{example}
+\end{frame}
     
-    \begin{frame}{Optional Pre-Requisites}
-        Some of these have their own additional pre-requisites.
-        \begin{itemize}
-            \item ABX comparator from \url{https://github.com/gogins/python-abx}.
-            \item Python 3.9 from \url{https://www.python.org/downloads/}.
-            \item Faust DSP language from
-            \url{https://github.com/grame-cncm/faust/releases}.
-        \end{itemize}
-    \end{frame}
+\section{Plugins for Csound}
+\begin{frame}{Plugins for Csound}
+\begin{itemize}
+\item Learn to hear electroacoustically
+\item Optimize audio quality
+\end{itemize}
+\end{frame}
 
-    \begin{frame}{Agenda}
-        \tableofcontents
-        % You might wish to add the option [pausesections]
-    \end{frame}
-
-    \section{Hearing Electroacoustically}
-       \begin{frame}{Hearing}
-    	\begin{itemize}
-	  \item Before anything else one should know that one is hearing \textit{objectively}.
-	  \item One should establish the limits of one's hearing because the computer 
-	  will exceed them.
-	  \item One should establish the least noticeable differences for important features of sound. 
-	\end{itemize}
-    \end{frame}
-\begin{frame}
-	\begin{example}{Hearing}
-		\begin{itemize}
-			\item Ideally, get a hearing test from an audiologist.
-			\item Frequency sweep in Audacity.
-			\item Dynamic ranges in Audacity.
-			\item Wave table sizes in Audacity.
-			\item Time/frequency uncertainty relation.
-			\item Digital artifacts in Audacity: clicking, aliasing, smearing.
-		\end{itemize}
- 	\end{example}
- \end{frame}
-
-    \section{Introduction to Csound}
-    \begin{frame}{Csound}
-        \begin{itemize}
-            \item Csound is a \textit{programmable} software sound synthesizer.
-            \item Csound dates from 1985, yet is still being developed (with almost
-            complete backward compatibility).
-            \item All SWSS have digital oscillators, filters, envelopes, etc...
-            \textit{because} it is older, Csound has \textit{more} unit generators.
-            \item Csound can be extended with plugins, some of which bring other
-            programming languages into Csound. 
-            \item Csound has a flexible API, and can be embedded in other
-            programming languages.
-            \item Csound began with "off-line rendering," but now does real-time
-            audio and interactive performance very well.
-            \item Csound runs on the desktop, on mobile devices, and in Web
-            browsers. Here, we focus on the desktop. 
-        \end{itemize}
-    \end{frame}
-    \begin{frame}{An "All-In" Piece}
-        \begin{itemize}
-            \item Here I will perform a real-time, interactive, algorithmic piece
-            that uses much of what we will work with today.
-            \item This piece is one .html file that incorporates  HTML, JavaScript, and Csound.
-            \item But it is still just one .html file that is edited in a code editor
-            like any other code, and that runs in one process like any other program.
-        \end{itemize}
-    \end{frame}
-
-
+\section{Csound and other languages}
+\begin{frame}{Csound and Other Languages}
+\begin{itemize}
+\item Learn to hear electroacoustically
+\item Optimize audio quality
+\end{itemize}
+\end{frame}
 
 
 
