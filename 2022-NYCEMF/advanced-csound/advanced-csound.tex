@@ -190,17 +190,17 @@ Change to the \texttt{erxercises/playpen} directory of your workshop directory.
 \section{Best practices for core Csound}
 \begin{frame}{Best practices for core Csound}
 \begin{itemize}
-\item Learn to hear electroacoustically
-\item Optimize audio quality
-\item Useful builtin opcodes
+\item Learn to hear electroacoustically.
+\item Optimize for audio quality.
+\item Learn the most useful builtin opcodes.
 \end{itemize}
 \end{frame}
 
 \begin{frame}{Hearing electroacoustically}
 \begin{itemize}
-\item Before anything else one should know what one is hearing \textit{objectively}.
-\item One should establish the limits of one's hearing because Csound will exceed them.
-\item One should establish the least noticeable differences for important features of sound.
+\item Before anything else, one should know what one is hearing \textit{objectively}.
+\item One should establish the limits of one's hearing, because Csound will exceed them.
+\item One should understand typical artifacts of digital audio.
 \end{itemize}
 \end{frame}
 
@@ -226,12 +226,12 @@ Ideally, you should get a hearing test from an audiologist.
 
 \begin{frame}{Hearing electroacoustically}
 \begin{itemize}
-\item The initial spike shows that a 1 sample click contains all frequencies up to Nyquist.
+\item The initial spike shows that a 1 sample click contains all frequencies up to the Nyquist frequency.
 \item The next three columns show the effects of increasing wave table size on noise.
 \item The first arc shows aliasing of a sine tone as the frequency exceeds Nyquist. Aliasing reflects off Nyquist.
 \item The second set of arcs shows aliasing of an FM tone as the frequency of the modulating signal increases. Note the \emph{negative} aliasing, which reflects off frequency 0.
-%\item Next we get three bands of randomly generated notes, but with varying dynamic ranges.
-%\item Finally there are three bands where a source sound is convolved with an increasingly longer impulse sound.
+\item Next we get three bands of randomly generated notes, but with varying dynamic ranges.
+\item Finally there are three bands where a source sound is convolved with an increasingly longer impulse sound.
 \end{itemize}
 \end{frame}
 
@@ -274,6 +274,45 @@ Change to the \texttt{exercises/resolution} directory in your workshop directory
 \end{figure}
 \end{frame}
 
+\begin{frame}{Useful opcodes}
+Exercises for:
+\begin{itemize}
+\item \texttt{prints}: fprint-type formatting for Csound diagnostics.
+\item \texttt{transegr}: most flexible envelope generator.
+\item \texttt{ftgen}: put function tables into the orchestra.
+\item \texttt{poscil}, \texttt{poscil3}: most precise oscillators.
+\item \texttt{crosspm}, \texttt{crosspmi}: phase modulation/frequency modulation.
+\item Fluidsynth opcodes for SoundFont (plugin).
+\item \texttt{diskin2}: flexible soundfile input.
+\item \texttt{deltapi}: building block for physical models.
+\item \texttt{pvs} opcodes: toolkit for time/frequency operations.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{transegr}
+\begin{example}
+Change to the \texttt{exercises/opcodes} directory of your workshop directory.
+\begin{itemize}
+\item Execute \texttt{$\sim$/playpen.py csd-play transegr.csd} and view the soundfile in Audacity.
+\end{itemize}
+\end{example}
+\begin{itemize}
+\item Use exponent of 0 for linear envelopes, negative exponent for exponential envelopes.
+\item See how the \texttt{r} (release) suffix handles early termination of a note without clicking.
+\item No need for any other envelope opcode.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{deltapi}
+\begin{example}
+Change to the \texttt{exercises/opcodes} directory of your workshop directory.
+\begin{itemize}
+\item Execute \texttt{$\sim$/playpen.py csd-play livingston-guitar.csd} and view the soundfile in Audacity.
+\end{itemize}
+\end{example}
+\end{frame}
+
+
 \section{Coding}
 \begin{frame}{Software design}
 \begin{itemize}
@@ -304,13 +343,18 @@ control channels and global variables.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Exercise: MIDI interop}
+\begin{frame}{Modules in Csound}
 \begin{example}
+Change to the \texttt{exercises/coding} directory of your workshop directory.
 \begin{itemize}
-\item \texttt{insdef\_score.csd} uses an instrument definition designed to be driven by a Csound score.
-\item \texttt{insdef\_midi.csd}  uses a similar instrument definition designed to be driven by a MIDI controller (or MIDI file).
-\item \texttt{insdef\_interop.csd}  modifies the instrument definition to work equally well in all these ways.
-\item \texttt{insdef\_interop.html} shows how to use this instrument with the trigger-release model used by modular analog synthesizers.
+\item Execute \texttt{$\sim$/playpen.py csd-play modules.csd} and view the soundfile in Audacity.
+\end{itemize}
+Read the code...
+\begin{itemize}
+\item Note creation of the function table as a global variable associated with the instrument definition.
+\item To that end, namespaces are implemented using prefixes to names.
+\item Note "natural" units (MIDI key, MIDI velocity) in the score.
+\item Note instruments can be re-ordered, added, removed; all connections are made in the orc header.
 \end{itemize}
 \end{example}
 \end{frame}
@@ -318,16 +362,20 @@ control channels and global variables.
 \section{Plugins}
 \begin{frame}{Plugins for Csound}
 \begin{itemize}
-\item Learn to hear electroacoustically
-\item Optimize audio quality
+\item \texttt{vst4cs} opcodes.
+\item \texttt{csound-vst3-opcodes}.
+\item Opcodes in Risset.
+\item Csound external plugins repository.
 \end{itemize}
 \end{frame}
 
 \section{Other languages}
-\begin{frame}{Csound and Other Languages}
+\begin{frame}{Csound and other languages}
 \begin{itemize}
-\item Learn to hear electroacoustically
-\item Optimize audio quality
+\item Python in Csound with the \texttt{py} opcodes.
+\item Csound in Python with \texttt{ctcsound}.
+\item C++ in Csound with \texttt{csound-cxx-opcodes}.
+\item Csound in C++ with \texttt{csound\_threaded.hpp}.
 \end{itemize}
 \end{frame}
 
