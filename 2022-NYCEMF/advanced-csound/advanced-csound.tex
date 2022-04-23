@@ -27,24 +27,16 @@
 
 \title{Advanced Csound}
 
-\author[Gogins] % (optional, use only with lots of authors)
-{Michael Gogins \\ \url{http://michaelgogins.tumblr.com} }
+\author[Gogins]
+{Michael Gogins \\ \url{http://michaelgogins.tumblr.com}}
 
-\institute[Irreducible Productions] % (optional, but mostly needed)
-{
-    Irreducible Productions \\
-    New York
-}
-\date[NYCEMF 2022] 
-{NYCEMF 2022}
+\institute[Irreducible Productions]{Irreducible Productions \\ New York}
+\date[NYCEMF 2022]{NYCEMF 2022}
 
 \subject{Computer Music}
-\expandafter\def\expandafter\insertshorttitle\expandafter{%
-    \insertshorttitle\hfill%
-    \insertframenumber\,/\,\inserttotalframenumber}
 \begin{document}
-    \lstset{basicstyle=\ttfamily\tiny,commentstyle=\ttfamily\tiny,tabsize=2,breaklines,fontadjust=true,keepspaces=false,fancyvrb=true,showstringspaces=false,moredelim=[is][\textbf]{\\emph\{}{\}}}
-    
+\lstset{basicstyle=\ttfamily\tiny,commentstyle=\ttfamily\tiny,tabsize=2,breaklines,fontadjust=true,keepspaces=false,fancyvrb=true,showstringspaces=false,moredelim=[is][\textbf]{\\emph\{}{\}}}
+
 \maketitle
 
 \begin{frame}{Agenda}
@@ -226,6 +218,13 @@ Ideally, you should get a hearing test from an audiologist.
 \end{frame}
 
 \begin{frame}{Hearing electroacoustically}
+\begin{figure}
+\centerline{\includegraphics[height = 0.66\textwidth]{hearing}}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}{Hearing electroacoustically}
 \begin{itemize}
 \item The initial spike shows that a 1 sample click contains all frequencies up to Nyquist.
 \item The next three columns show the effects of increasing wave table size on noise.
@@ -258,9 +257,21 @@ prioritize memory and run time over audio quality.
 Change to the \texttt{exercises/resolution} directory in your workshop directory.
 \begin{itemize}
 \item Execute \texttt{~/playpen.py csd-play xanadu.csd}, listen on headphones, and examine the spectrogram in Audacity.
-\item Execute \texttt{~/playpen.py csd-play xanadu.csd} the high-resolution version by listen on headphones, and examine the spectrogram in Audacity.
+\item Execute \texttt{~/playpen.py csd-play xanadu-high-resolution.csd} the high-resolution version, listen on headphones, and examine the spectrogram in Audacity.
 \end{itemize}
 \end{example}
+\end{frame}
+
+\begin{frame}{Original Xanadu}
+\begin{figure}
+\centerline{\includegraphics[height = 0.66\textwidth]{xanadu}}
+\end{figure}
+\end{frame}
+
+\begin{frame}{High-Resolution Xanadu}
+\begin{figure}
+\centerline{\includegraphics[height = 0.66\textwidth]{xanadu-high-resolution}}
+\end{figure}
 \end{frame}
 
 \section{Coding}
