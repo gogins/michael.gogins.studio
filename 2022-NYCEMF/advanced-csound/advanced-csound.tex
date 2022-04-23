@@ -369,14 +369,52 @@ Read the code...
 \end{itemize}
 \end{frame}
 
+\begin{frame}{csound-vst3-opcodes}
+\begin{example}
+Change to the \texttt{exercises/plugins} directory of your workshop directory.
+\begin{itemize}
+\item Execute \texttt{$\sim$/playpen.py csd-play vst3.csd} and view the soundfile in Audacity.
+\end{itemize}
+\end{example}
+\end{frame}
+
+\begin{frame}{Opcodes in Risset}
+\begin{example}
+Change to the \texttt{exercises/plugins} directory of your workshop directory.
+\begin{itemize}
+\item Execute \texttt{python3 -m risset list} to view all plugins in the repository.
+\item Execute \texttt{python3 -m risset show beosc} to view details on the band-limited+noise  oscillator opcodes.
+\end{itemize}
+\end{example}
+\end{frame}
+
+\begin{frame}{Opcodes in Risset}
+\begin{example}
+Change to the \texttt{exercises/plugins} directory of your workshop directory.
+\begin{itemize}
+\item Execute \texttt{python3 -m risset list} to view all plugins in the repository.
+\item Execute \texttt{python3 -m risset show beosc} to view details on the band-limited+noise  oscillator opcodes.
+\end{itemize}
+\end{example}
+\end{frame}
+
+\section{External plugins}
+\begin{frame}{External Csound plugins repository}
+\begin{itemize}
+\item Go to \url{https://github.com/csound/plugins} to see what's currently available.
+\item These currently need to be built from source code, which is not difficult if you can program.
+\end{itemize}
+\end{frame}
+
 \section{Other languages}
 \begin{frame}{Csound and other languages}
 \begin{itemize}
-\item Python in Csound with the \texttt{py} opcodes.
-\item Csound in Python with \texttt{ctcsound}.
-\item C++ in Csound with \texttt{csound-cxx-opcodes}.
-\item Csound in C++ with \texttt{csound\_threaded.hpp}.
+\item Embed Python in Csound with the \texttt{py} opcodes.
+\item Embed Csound in Python with \texttt{ctcsound}.
+\item Embed C++ in Csound with \texttt{csound-cxx-opcodes}.
+\item Embed Csound in C++ with \texttt{csound\_threaded.hpp}.
 \end{itemize}
+There are many other language bindings for Csound....
 \end{frame}
 
 \end{document}
