@@ -32,7 +32,7 @@
 
 \institute[Irreducible Productions] % (optional, but mostly needed)
 {
-    Irreducible Productions\\
+    Irreducible Productions \\
     New York
 }
 \date[NYCEMF 2022] 
@@ -44,34 +44,36 @@
     \insertframenumber\,/\,\inserttotalframenumber}
 \begin{document}
     \lstset{basicstyle=\ttfamily\tiny,commentstyle=\ttfamily\tiny,tabsize=2,breaklines,fontadjust=true,keepspaces=false,fancyvrb=true,showstringspaces=false,moredelim=[is][\textbf]{\\emph\{}{\}}}
+    
 \maketitle
+
 \begin{frame}{Agenda}
 \tableofcontents
 \end{frame}
 
-\section{Who this is for}
-\begin{frame}{Who this is for}
+\section{Who is this for?}
+\begin{frame}{Who is this for?}
 \begin{itemize}
 \item This workshop is for anyone who uses Csound to \emph{actually make music}.
 \item That includes beginners, expert users, and even programmers.
 \item I provide examples/exercises that are pre-written to speed things up. You should run them, but you should not have to debug them.
-\item The examples are written for macOS, Linux, and Windows, but the ideas should also apply to Android and WebAssembly.
+\item The examples are written for macOS, Linux, and Windows, but the ideas also apply to Android and WebAssembly.
 \end{itemize}
 \end{frame}
 
-\section{What is Csound}
-\begin{frame}{What is Csound}
+\section{What is Csound?}
+\begin{frame}{What is Csound?}
 \begin{itemize}
 \item \emph{Csound is a programmable software sound synthesis system with a runtime compiler.}
 \item Csound was written in 1985, so has \emph{more unit generators} than later SWSS such as SuperCollider or Max.
-\item Csound runs on desktops, devices, single-board computers, and Web browsers (WASM).
+\item Csound runs on desktops, mobile devices, single-board computers, and Web browsers (WebAssembly).
 \item Csound has a straightforward "C" API (csound.h).
 \item The Csound API has interfaces in C++, Python, Lua, Lisp, and other languages. \emph{You can run Csound inside other languages.}
-\item Csound has opcodes for hosting external plugins and even external languages (Python, C++, Lua). \emph{You can run other languages inside Csound.
-}\end{itemize}
+\item Csound has opcodes for hosting external plugins and even external languages (Python, C++, Lua). \emph{You can run other languages inside Csound.}
+\end{itemize}
 \end{frame}
 
-\section{Getting Csound}
+\section{Installing Csound}
 \begin{frame}{Getting Csound}
 Install with brew on macOS, apt on Linux, vcpkg on Windows, or 
 google for downloads.
@@ -83,6 +85,20 @@ Linux, build from sources
 \item Consider building the Csound external plugins repository (\url{https://github.com/csound/plugins}) from sources and installing it.
 \end{itemize}
 \end{frame}
+
+\begin{frame}{Configuring}
+\begin{itemize}
+\item The \texttt{csound} program should be in your environment's \texttt{PATH} variable.
+\item For the \texttt{vst4cs opcodes}, we configure Csound to load them from their build or download directories.
+\item For the Csound plugins repository, we build them locally and install using \texttt{sudo make install}.
+\item Shown for macOS, but the same variables should be set with appropriate values on Linux or Windows.
+\end{itemize}
+\end{frame}
+
+\begin{lstlisting}
+export OPCODE6DIR64="/Users/michaelgogins/Downloads"
+export RAWWAVE_PATH="/opt/homebrew/Cellar/stk/4.6.2/share/stk/rawwaves"
+\end{lstlisting}
 
 \begin{frame}{M1 Macintosh}
 \begin{itemize}
@@ -119,11 +135,11 @@ Csound does not have a built-in code editor or visual patcher like SuperCollider
 
 \begin{frame}{Running Csound from the command line}
 \begin{example}
-Change to the \texttt{commandline} directory of your workshop directory.
+Change to the \texttt{exercises/commandline} directory of your workshop directory.
 \begin{itemize}
 \item Execute \texttt{csound electric-priest.csd} to make sure that Csound runs.  Also make sure that the maximum level at the end is negative so you won't blow out your speakers!
 \item Execute \texttt{csound ---devices} to list your system's audio devices.
-\item Execute e.g.\ \texttt{csound electric-priest.csd -odac0} to render the piece with real-time audio.
+\item Execute e.g.\  \texttt{csound electric-priest.csd -odac0} to render the piece with real-time audio.
 \end{itemize}
 \end{example}
 \end{frame}
@@ -155,7 +171,7 @@ about breaking them.
 automatic as possible, so that we can concentrate on making music.
 \item We can make our playpen by customizing a code editor, or by 
 using a code editor specifically designed for Csound.
-\end{itemize}    
+\end{itemize}
 \end{frame}
 
 \begin{frame}{A command-line playpen}
@@ -170,11 +186,11 @@ I present a command-line version because CsoundQt does not work with brew Csound
 
 \begin{frame}{Main playpen commands}
 \begin{example}
-Change to the texttt{play} directory of your workshop directory.
+Change to the \texttt{erxercises/playpen} directory of your workshop directory.
 \begin{itemize}
 \item Execute \texttt{$\sim$/playpen.py} to view help.
 \item Execute \texttt{$\sim$/playpen.py csd-audio oblivion.csd} to run \texttt{oblivion.csd} and hear it in real time.
-\item Execute \texttt{$\sim$/playpen.py csd-soundfile oblivion.csd} to run \texttt{oblivion.csd} , render it to a soundfile, post-process it, tag it with your metadata, and open it in Audacity.
+\item Execute \texttt{$\sim$/playpen.py csd-play oblivion.csd} to run \texttt{oblivion.csd} , render it to a soundfile, post-process it, tag it with your metadata, and open it in Audacity.
 \end{itemize}
 \end{example}
 \end{frame}
@@ -188,7 +204,66 @@ Change to the texttt{play} directory of your workshop directory.
 \end{itemize}
 \end{frame}
 
-\section{Coding for Csound}
+\begin{frame}{Hearing electroacoustically}
+\begin{itemize}
+\item Before anything else one should know what one is hearing \textit{objectively}.
+\item One should establish the limits of one's hearing because Csound will exceed them.
+\item One should establish the least noticeable differences for important features of sound.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Hearing electroacoustically}
+\begin{example}
+Ideally, you should get a hearing test from an audiologist.
+\begin{itemize}
+\item Change to the \texttt{exercises/hearing} directory.
+\item Execute \texttt{csound hearing.csd} to render a soundfile.
+\item Open \texttt{hearing.wav} in Audacity
+\item Configure Audacity's preferences for Tracks to auto-fit track height, default view mode multi-view.
+\item Configure Audacity's preferences for Spectrograms to use the frequencies algorithm, window size 4096, min frequency 0, max frequency 40,000 (to view aliasing), Mel scale, gain 20 dB, range 80 dB.
+\end{itemize}
+\end{example}
+\end{frame}
+
+\begin{frame}{Hearing electroacoustically}
+\begin{itemize}
+\item The initial spike shows that a 1 sample click contains all frequencies up to Nyquist.
+\item The next three columns show the effects of increasing wave table size on noise.
+\item The first arc shows aliasing of a sine tone as the frequency exceeds Nyquist. Aliasing reflects off Nyquist.
+\item The second set of arcs shows aliasing of an FM tone as the frequency of the modulating signal increases. Note the \emph{negative} aliasing, which reflects off frequency 0.
+%\item Next we get three bands of randomly generated notes, but with varying dynamic ranges.
+%\item Finally there are three bands where a source sound is convolved with an increasingly longer impulse sound.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Coding for high-resolution audio}
+\begin{itemize}
+\item Many of Csound's opcodes, man pages, and examples are old, and
+prioritize memory and run time over audio quality.
+\item \textit{Today, \textbf{prioritize audio quality} in all cases}.
+\item Use a sample rate of 48,000 or even 96,000 frames per second with
+\texttt{ksmps = 100} or even \texttt{ksmps = 1}.
+\item Use the double-precision version of Csound (now default).
+\item Render to floating-point soundfiles for high dynamic range.
+\item Use table sizes of at least 65,537 for lower noise.
+\item Use \textit{audio-rate} envelopes to prevent zipper noise.
+\item Use the \textit{latest versions} of opcodes.
+\item Used in this way, Csound competes on audio quality with
+\textit{any} open source or commercial software.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Exercise: Coding for high-resolution audio}
+\begin{example}
+Change to the \texttt{exercises/resolution} directory in your workshop directory.
+\begin{itemize}
+\item Execute \texttt{~/playpen.py csd-play xanadu.csd}, listen on headphones, and examine the spectrogram in Audacity.
+\item Execute \texttt{~/playpen.py csd-play xanadu.csd} the high-resolution version by listen on headphones, and examine the spectrogram in Audacity.
+\end{itemize}
+\end{example}
+\end{frame}
+
+\section{Coding}
 \begin{frame}{Software design}
 \begin{itemize}
 \item \textbf{Encapsulation} Hide implementations in \textit{modules} that
@@ -206,18 +281,18 @@ instrument number, then by order of definition. Signals also flow through
 control channels and global variables.
 \end{itemize}
 \end{frame}
-    
+
 \begin{frame}{Modular design}
 \begin{itemize}
 \item Using naming conventions to simulate namespaces.
 \item Normalize pfields and variables.
 \item Associate global function tables with modules.
 \item Associate global control variables with modules, and use
-\texttt{chnexport} to  export these variables as control channels.
+\texttt{chnexport} to export these variables as control channels.
 \item Define signal flow in the orchestra header, \textit{not} inside modules.
 \end{itemize}
 \end{frame}
-    
+
 \begin{frame}{Exercise: MIDI interop}
 \begin{example}
 \begin{itemize}
@@ -228,8 +303,8 @@ control channels and global variables.
 \end{itemize}
 \end{example}
 \end{frame}
-    
-\section{Plugins for Csound}
+
+\section{Plugins}
 \begin{frame}{Plugins for Csound}
 \begin{itemize}
 \item Learn to hear electroacoustically
@@ -237,14 +312,12 @@ control channels and global variables.
 \end{itemize}
 \end{frame}
 
-\section{Csound and other languages}
+\section{Other languages}
 \begin{frame}{Csound and Other Languages}
 \begin{itemize}
 \item Learn to hear electroacoustically
 \item Optimize audio quality
 \end{itemize}
 \end{frame}
-
-
 
 \end{document}
