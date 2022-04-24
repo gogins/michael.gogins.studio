@@ -231,19 +231,31 @@ Ideally, you should get a hearing test from an audiologist.
 \item The first arc shows aliasing of a sine tone as the frequency exceeds Nyquist. Aliasing reflects off Nyquist.
 \item The second set of arcs shows aliasing of an FM tone as the frequency of the modulating signal increases. Note the \emph{negative} aliasing, which reflects off frequency 0.
 \item After the arcs, there is a single cosine grain .01 seconds long.
-\item Next we get three bands of notes, but with varying dynamic ranges.
 \item Finally there are three bands where a source sound is convolved with an increasingly longer impulse sound.
 \end{itemize}
 \end{frame}
 
 \begin{frame}{Hearing electroacoustically}
 \begin{itemize}
-\item In Audacity, zoom in on the short grain. Leave space before and after.
-\item Change the spectrogram window to the smallest size (most wideband).
-\item Observe that time is well-resolved, but \emph{all} frequencies are shown in the spectrogram, i.e. there is \emph{no} frequency resolution.
-\item Change the spectrogram window to the largest size (most narrowband).
-\item Observe that the frequency is now well-resolved, but the energy is smeared out \emph{well} before and after the grain.
-\item This illustrates the time/frequency uncertainty that exists in all convolution and spectral processing.
+\item In Audacity, zoom in on the single short grain.
+\item Change the spectrogram window to the smallest size.
+\item Time is well-resolved, but \emph{all} frequencies are shown in the spectrogram, i.e. there is \emph{no} frequency resolution.
+\item Change the spectrogram window to the largest size.
+\item Frequency is now well-resolved, but the energy is smeared out \emph{well} before and after the grain.
+\item This shows the time/frequency uncertainty that exists in all convolution and spectral processing.
+\item The minimal area of resolved energy is called the Gabor logon. It can get taller or wider, but its area is constant.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Hearing electroacoustically}
+\begin{itemize}
+\item In Audacity, zoom in on the final two notes.
+\item The first note uses a long exponential decay with no release, so it just cuts off at the end of the note.
+\item This causes an abrupt discontinuity in the waveform, which is the same as noise in the frequency domain. This is visible in the spectrogram as extra energy in the vertical dimension.
+\item The second note is exactly the same, but using the releasing form of the envelope.
+\item Clicks are a bedeviling artifact of digital audio, because avoiding discontinuities in digital signals is hard.
+\item Natural sounds don't have these discontinuities, because physical energy always takes time to build up or to release.
+\item Always use a releasing envelope, or a de-clicking envelope (more on this later).
 \end{itemize}
 \end{frame}
 
@@ -258,6 +270,7 @@ prioritize memory and run time over audio quality.
 \item Render to floating-point soundfiles for high dynamic range.
 \item Use table sizes of at least 65,537 for lower noise.
 \item Use \textit{audio-rate} envelopes to prevent zipper noise.
+\item Use releasing or de-clicking envelopes on all final outputs.
 \item Use the \textit{latest versions} of opcodes.
 \item Used in this way, Csound competes on audio quality with
 \textit{any} open source or commercial software.

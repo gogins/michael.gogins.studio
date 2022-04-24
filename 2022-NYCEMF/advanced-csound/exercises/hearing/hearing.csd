@@ -155,11 +155,43 @@ i_decay = 2
 i_release = 0.1
 xtratim i_attack + i_release
 ; ares transegr ia, idur, itype, ib [, idur2] [, itype] [, ic] ...
-a_envelope transegr 0, i_attack, i_exponent,   1, i_decay, i_exponent,  .15, i_release, i_exponent, 0
+a_envelope transeg 0, i_attack, i_exponent,   1, i_decay, i_exponent,  .5, i_release, i_exponent, 0
 a_signal = a_signal * i_amplitude * a_envelope * k_gain * .75
 out a_signal
 prints "%-24.s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
+
+instr STKBeeThreer
+; Authors: Michael Gogins
+i_instrument = p1
+i_time = p2
+i_duration = p3
+i_midi_key = p4
+i_midi_velocity = p5
+i_exponent = p6
+k_space_left_to_right = p7
+k_space_bottom_to_top = p8
+i_phase = p9
+i_frequency = cpsmidinn(i_midi_key)
+; Adjust the following value until "overall amps" at the end of performance is about -6 dB.
+i_overall_amps = 64
+i_normalization = ampdb(-i_overall_amps) / 2
+i_amplitude = ampdb(i_midi_velocity) * i_normalization
+k_gain = ampdb(gk_STKBeeThree_level)
+asignal STKBeeThree i_frequency, 1.0, 1, 1.5, 2, 4.8, 4, 2.1
+; ares phaser1 asig, kfreq, kord, kfeedback [, iskip]
+a_signal phaser1 asignal, 8000, 16, .2, .9
+i_attack = .004
+i_decay = 2
+i_release = 0.1
+xtratim i_attack + i_release
+; ares transegr ia, idur, itype, ib [, idur2] [, itype] [, ic] ...
+a_envelope transegr 0, i_attack, i_exponent,   1, i_decay, i_exponent,  .5, i_release, i_exponent, 0
+a_signal = a_signal * i_amplitude * a_envelope * k_gain * .75
+out a_signal
+prints "%-24.s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+endin
+
 
 instr Convolver
 prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, active(p1)
@@ -175,15 +207,9 @@ i 5 ^+2 20 0 0
 i 6 ^+21 20 0 0
 s 1
 i "OneGrain" 1 .01 96 60
-i "OneGrain" 2 .1 96 60
-i "OneGrain" 3 1 96 60
 s 1
-i "STKBeeThree" 1 .75 60 60 0 
-i "STKBeeThree" 2 .75 60 60 5
-i "STKBeeThree" 3 .75 60 60 15
-i "STKBeeThree" 4 .75 60 60 -5
-i "STKBeeThree" 5 .75 60 60 -15
-i "STKBeeThree" 6 .75 60 60 -30
+i "STKBeeThree" 1 .75 60 60 -10
+i "STKBeeThreer" 2 .75 60 60 -10
 s 1
 
 </CsScore>
