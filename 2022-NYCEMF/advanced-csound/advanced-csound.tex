@@ -230,8 +230,20 @@ Ideally, you should get a hearing test from an audiologist.
 \item The next three columns show the effects of increasing wave table size on noise.
 \item The first arc shows aliasing of a sine tone as the frequency exceeds Nyquist. Aliasing reflects off Nyquist.
 \item The second set of arcs shows aliasing of an FM tone as the frequency of the modulating signal increases. Note the \emph{negative} aliasing, which reflects off frequency 0.
-\item Next we get three bands of randomly generated notes, but with varying dynamic ranges.
+\item After the arcs, there is a single cosine grain .01 seconds long.
+\item Next we get three bands of notes, but with varying dynamic ranges.
 \item Finally there are three bands where a source sound is convolved with an increasingly longer impulse sound.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Hearing electroacoustically}
+\begin{itemize}
+\item In Audacity, zoom in on the short grain. Leave space before and after.
+\item Change the spectrogram window to the smallest size (most wideband).
+\item Observe that time is well-resolved, but \emph{all} frequencies are shown in the spectrogram, i.e. there is \emph{no} frequency resolution.
+\item Change the spectrogram window to the largest size (most narrowband).
+\item Observe that the frequency is now well-resolved, but the energy is smeared out \emph{well} before and after the grain.
+\item This illustrates the time/frequency uncertainty that exists in all convolution and spectral processing.
 \end{itemize}
 \end{frame}
 
@@ -297,8 +309,8 @@ Change to the \texttt{exercises/opcodes} directory of your workshop directory.
 \end{itemize}
 \end{example}
 \begin{itemize}
-\item Use exponent of 0 for linear envelopes, negative exponent for exponential envelopes.
-\item See how the \texttt{r} (release) suffix handles early termination of a note without clicking.
+\item Observe that an exponent of 0 creates linear segments, a negative exponent creates concave segments.
+\item See how the \texttt{r} (release) suffix handles termination of notes without clicking.
 \item No need for any other envelope opcode.
 \end{itemize}
 \end{frame}
@@ -362,7 +374,7 @@ Read the code...
 \section{Plugins}
 \begin{frame}{Plugins for Csound}
 \begin{itemize}
-\item \texttt{vst4cs} opcodes.
+\item \texttt{vst4cs} opcodes. Not discussed here as VST2 is now deprecated by Steinberg.
 \item \texttt{csound-vst3-opcodes}.
 \item Opcodes in Risset.
 \item Csound external plugins repository.
@@ -373,7 +385,7 @@ Read the code...
 \begin{example}
 Change to the \texttt{exercises/plugins} directory of your workshop directory.
 \begin{itemize}
-\item Execute \texttt{$\sim$/playpen.py csd-play vst3.csd} and view the soundfile in Audacity.
+\item Execute \texttt{$\sim$/playpen.py csd-play vst3-opcodes-minimal.csd} and view the soundfile in Audacity.
 \end{itemize}
 \end{example}
 \end{frame}
