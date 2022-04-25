@@ -34,6 +34,11 @@
 \date[NYCEMF 2022]{NYCEMF 2022}
 
 \subject{Computer Music}
+\expandafter\def\expandafter\insertshorttitle\expandafter{%
+    \insertshorttitle\hfill%
+    \insertframenumber\,/\,\inserttotalframenumber}
+% This is only inserted into the PDF information catalog. Can be left
+% out. 
 \begin{document}
 \lstset{basicstyle=\ttfamily\tiny,commentstyle=\ttfamily\tiny,tabsize=2,breaklines,fontadjust=true,keepspaces=false,fancyvrb=true,showstringspaces=false,moredelim=[is][\textbf]{\\emph\{}{\}}}
 
@@ -251,11 +256,11 @@ Ideally, you should get a hearing test from an audiologist.
 \begin{itemize}
 \item In Audacity, zoom in on the final two notes.
 \item The first note uses a long exponential decay with no release, so it just cuts off at the end of the note.
-\item This causes an abrupt discontinuity in the waveform, which is the same as noise in the frequency domain. This is visible in the spectrogram as extra energy in the vertical dimension.
+\item This causes a discontinuity in the waveform, which is the same as noise in the frequency domain. The spectrogram shows this as extra energy in the vertical dimension.
 \item The second note is exactly the same, but using the releasing form of the envelope.
 \item Clicks are a bedeviling artifact of digital audio, because avoiding discontinuities in digital signals is hard.
 \item Natural sounds don't have these discontinuities, because physical energy always takes time to build up or to release.
-\item Always use a releasing envelope, or a de-clicking envelope (more on this later).
+\item Always use a releasing envelope or a de-clicking envelope.
 \end{itemize}
 \end{frame}
 
@@ -272,8 +277,7 @@ prioritize memory and run time over audio quality.
 \item Use \textit{audio-rate} envelopes to prevent zipper noise.
 \item Use releasing or de-clicking envelopes on all final outputs.
 \item Use the \textit{latest versions} of opcodes.
-\item Used in this way, Csound competes on audio quality with
-\textit{any} open source or commercial software.
+\item Used like this, Csound has unsurpassed audio quality.
 \end{itemize}
 \end{frame}
 
@@ -300,7 +304,6 @@ Change to the \texttt{exercises/resolution} directory in your workshop directory
 \end{frame}
 
 \begin{frame}{Useful opcodes}
-Exercises for:
 \begin{itemize}
 \item \texttt{prints}: fprint-type formatting for Csound diagnostics.
 \item \texttt{transegr}: most flexible envelope generator.
@@ -311,6 +314,7 @@ Exercises for:
 \item \texttt{diskin2}: flexible soundfile input.
 \item \texttt{deltapi}: building block for physical models.
 \item \texttt{pvs} opcodes: toolkit for time/frequency operations.
+Exercises for some of these follow.
 \end{itemize}
 \end{frame}
 
@@ -333,12 +337,13 @@ Change to the \texttt{exercises/opcodes} directory of your workshop directory.
 Change to the \texttt{exercises/opcodes} directory of your workshop directory.
 \begin{itemize}
 \item Execute \texttt{$\sim$/playpen.py csd-play livingston-guitar.csd} and view the soundfile in Audacity.
+\item Read the code to see how double delay lines with filters model reflecting waves in strings.
 \end{itemize}
 \end{example}
 \end{frame}
 
 
-\section{Coding}
+\section{Coding for Csound}
 \begin{frame}{Software design}
 \begin{itemize}
 \item \textbf{Encapsulation} Hide implementations in \textit{modules} that
@@ -365,6 +370,7 @@ control channels and global variables.
 \item Associate global control variables with modules, and use
 \texttt{chnexport} to export these variables as control channels.
 \item Define signal flow in the orchestra header, \textit{not} inside modules.
+\item Use the MIDI interop command line options so the same instruments work for both MIDI and scores.
 \end{itemize}
 \end{frame}
 
@@ -385,14 +391,6 @@ Read the code...
 \end{frame}
 
 \section{Plugins}
-\begin{frame}{Plugins for Csound}
-\begin{itemize}
-\item \texttt{vst4cs} opcodes. Not discussed here as VST2 is now deprecated by Steinberg.
-\item \texttt{csound-vst3-opcodes}.
-\item Opcodes in Risset.
-\item Csound external plugins repository.
-\end{itemize}
-\end{frame}
 
 \begin{frame}{csound-vst3-opcodes}
 \begin{example}
@@ -423,11 +421,19 @@ Change to the \texttt{exercises/plugins} directory of your workshop directory.
 \end{example}
 \end{frame}
 
-\section{External plugins}
 \begin{frame}{External Csound plugins repository}
 \begin{itemize}
 \item Go to \url{https://github.com/csound/plugins} to see what's currently available.
 \item These currently need to be built from source code, which is not difficult if you can program.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Non-Csound Plugins}
+\begin{itemize}
+\item \texttt{vst4cs} opcodes. Not discussed here as VST2 is now deprecated by Steinberg.
+\item \texttt{csound-vst3-opcodes}.
+\item Opcodes in Risset.
+\item Csound external plugins repository.
 \end{itemize}
 \end{frame}
 
