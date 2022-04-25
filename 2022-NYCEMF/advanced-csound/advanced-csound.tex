@@ -228,15 +228,23 @@ Ideally, you should get a hearing test from an audiologist.
 \end{figure}
 \end{frame}
 
-
 \begin{frame}{Hearing electroacoustically}
 \begin{itemize}
 \item The initial spike shows that a 1 sample click contains all frequencies up to the Nyquist frequency.
 \item The next three columns show the effects of increasing wave table size on noise.
-\item The first arc shows aliasing of a sine tone as the frequency exceeds Nyquist. Aliasing reflects off Nyquist.
-\item The second set of arcs shows aliasing of an FM tone as the frequency of the modulating signal increases. Note the \emph{negative} aliasing, which reflects off frequency 0.
+\item The first arc shows a frequency sweep from 0 up to 40 KHz, though the sampling rate is 48 KHz.
+\item What can you really hear? Where does your ability to hear high frequencies end? Use good headphones.
+\item As for me, I can't hear anything past about 12 KHz.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Hearing electroacoustically}
+\begin{itemize}
+\item The second set of arcs shows aliasing of an FM tone as the frequency of the modulating signal increases. 
+Note the \emph{negative} aliasing, which reflects off frequency 0.
 \item After the arcs, there is a single cosine grain .01 seconds long.
-\item Finally there are three bands where a source sound is convolved with an increasingly longer impulse sound. TODO
+\item Then there are two notes with non-releasing and releasing envelopes.
+\item Finally, there are bands where a source sound is convolved with an increasingly longer impulse sound.
 \end{itemize}
 \end{frame}
 
@@ -254,13 +262,27 @@ Ideally, you should get a hearing test from an audiologist.
 
 \begin{frame}{Hearing electroacoustically}
 \begin{itemize}
-\item In Audacity, zoom in on the final two notes.
+\item In Audacity, zoom in on the two notes following the single grain.
 \item The first note uses a long exponential decay with no release, so it just cuts off at the end of the note.
-\item This causes a discontinuity in the waveform, which is the same as noise in the frequency domain. The spectrogram shows this as extra energy in the vertical dimension.
+\item This causes a discontinuity in the waveform, which is the same as noise in the frequency domain. The spectrogram shows this as  energy spread out in the vertical dimension.
 \item The second note is exactly the same, but using the releasing form of the envelope.
 \item Clicks are a bedeviling artifact of digital audio, because avoiding discontinuities in digital signals is hard.
-\item Natural sounds don't have these discontinuities, because physical energy always takes time to build up or to release.
+\item Natural sounds don't have such discontinuities, because physical energy always takes time to build up or to release.
 \item Always use a releasing envelope or a de-clicking envelope.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Hearing electroacoustically}
+\begin{itemize}
+\item Finally, there are four bands at the end of the soundfile.
+\begin{enumerate}
+\item An original recording of junk noises from my apartment.
+\item Junk convolved with a .01 second bell sound. It's subtle, a bit of ringing on the final note.
+\item Junk convolved with a .1 second bell sound. The convolution can be heard on all sounds. There is a kind of ringing from the impulse.
+\item Junk convolved with a 1 second bell sound. The original sounds are obscured by the ringing of the long impulse.
+\end{enumerate}
+\item The ringing is an artifact \emph{in some contexts}, I call it "convolution smear."
+\item What is true of convolution is true of every linear time-invariant system. A positive frequency in the impulse produces ringing, a negative frequency notching. Maybe you \emph{want} it, maybe not, but \emph{notice} it.
 \end{itemize}
 \end{frame}
 
@@ -304,6 +326,7 @@ Change to the \texttt{exercises/resolution} directory in your workshop directory
 \end{frame}
 
 \begin{frame}{Useful opcodes}
+Exercises for some of these follow.
 \begin{itemize}
 \item \texttt{prints}: fprint-type formatting for Csound diagnostics.
 \item \texttt{transegr}: most flexible envelope generator.
@@ -313,8 +336,7 @@ Change to the \texttt{exercises/resolution} directory in your workshop directory
 \item Fluidsynth opcodes for SoundFont (plugin).
 \item \texttt{diskin2}: flexible soundfile input.
 \item \texttt{deltapi}: building block for physical models.
-\item \texttt{pvs} opcodes: toolkit for time/frequency operations.
-Exercises for some of these follow.
+\item \texttt{PVS} opcodes: toolkit for time/frequency operations.
 \end{itemize}
 \end{frame}
 

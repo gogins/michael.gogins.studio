@@ -192,8 +192,33 @@ out a_signal
 prints "%-24.s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
+gi_Convolver_01 ftgen 0, 0, 480, 1, "impulses.wav", 4, 1, 1
+instr Convolver_original
+a_signal diskin2 "kitchen.wav"
+out a_signal 
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, active(p1)
+endin
 
-instr Convolver
+instr Convolver_01
+a_kitchen diskin2 "kitchen.wav"
+a_signal ftconv a_kitchen, gi_Convolver_01, 1024
+out a_signal / 50
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, active(p1)
+endin
+
+gi_Convolver_02 ftgen 0, 0, 4800, 1, "impulses.wav", 5, 1, 1
+instr Convolver_02
+a_kitchen diskin2 "kitchen.wav"
+a_signal ftconv a_kitchen, gi_Convolver_02, 1024
+out a_signal / 100
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, active(p1)
+endin
+
+gi_Convolver_03 ftgen 0, 0, 48000, 1, "impulses.wav", 6, 1, 1
+instr Convolver_03
+a_kitchen diskin2 "kitchen.wav"
+a_signal ftconv a_kitchen, gi_Convolver_03, 1024
+out a_signal / 200
 prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, active(p1)
 endin
 
@@ -203,14 +228,21 @@ i 1   1 .5 0 0
 i 2 ^+2 1 0 0
 i 3 ^+2 1 0 0
 i 4 ^+2 1 0 0
-i 5 ^+2 20 0 0
-i 6 ^+21 20 0 0
+i 5 ^+2 40 0 0
+i 6 ^+41 40 0 0
 s 1
 i "OneGrain" 1 .01 96 60
 s 1
 i "STKBeeThree" 1 .75 60 60 -10
 i "STKBeeThreer" 2 .75 60 60 -10
 s 1
+i "Convolver_original" 1 21
+s 1
+i "Convolver_01" 1 21
+s 1
+i "Convolver_02" 1 21
+s 1
+i "Convolver_03" 1 21
 
 </CsScore>
 </CsoundSynthesizer>
