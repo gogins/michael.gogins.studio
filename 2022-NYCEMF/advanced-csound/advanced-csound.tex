@@ -236,7 +236,7 @@ Ideally, you should get a hearing test from an audiologist.
 \item The first arc shows aliasing of a sine tone as the frequency exceeds Nyquist. Aliasing reflects off Nyquist.
 \item The second set of arcs shows aliasing of an FM tone as the frequency of the modulating signal increases. Note the \emph{negative} aliasing, which reflects off frequency 0.
 \item After the arcs, there is a single cosine grain .01 seconds long.
-\item Finally there are three bands where a source sound is convolved with an increasingly longer impulse sound.
+\item Finally there are three bands where a source sound is convolved with an increasingly longer impulse sound. TODO
 \end{itemize}
 \end{frame}
 
@@ -342,6 +342,24 @@ Change to the \texttt{exercises/opcodes} directory of your workshop directory.
 \end{example}
 \end{frame}
 
+\begin{frame}{FluidSynth opcodes}
+\begin{example}
+Change to the \texttt{exercises/fluid} directory of your workshop directory.
+\begin{itemize}
+\item TODO
+\end{itemize}
+\end{example}
+\end{frame}
+
+\begin{frame}{PVS opcodes}
+\begin{example}
+Change to the \texttt{exercises/pvs} directory of your workshop directory.
+\begin{itemize}
+\item TODO
+\end{itemize}
+\end{example}
+\end{frame}
+
 
 \section{Coding for Csound}
 \begin{frame}{Software design}
@@ -392,7 +410,38 @@ Read the code...
 
 \section{Plugins}
 
+\begin{frame}{Plugins}
+\begin{itemize}
+\item Csound has its own plugin format, not only for plugin opcodes, but also for plugin function table generators.
+\item Csound also has opcodes that can load non-Csound plugins:
+\begin{itemize}
+\item VST2 plugins, now deprecated by Steinberg (freeware from me).
+\item VST3 plugins, now free software (on GitHub from me).
+\item The Jack Audio Connection Kit (JACK) can be considered a kind of plugin protocol. Csound supports JACK both as an input/output driver, and with the Jacko plugins from me.
+\end{itemize}
+\item Plugins are available from \emph{many} sources. The largest number are VST plugins.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Sources of Csound plugins}
+\begin{itemize}
+\item Csound external plugins repository.
+\item The Risset package manager for Csound plugin opcodes.
+\item \texttt{vst4cs} opcodes. Not discussed here as VST2 is now deprecated by Steinberg.
+\item \texttt{csound-vst3-opcodes}.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{External Csound plugins repository}
+\begin{itemize}
+\item This contains opcodes former in Csound's GitHub repository that have external dependencies, and so were moved to their own repository.
+\item These currently need to be built from source code, which is not difficult if you can program.
+\item Go to \url{https://github.com/csound/plugins} to see what's currently available.
+\end{itemize}
+\end{frame}
+
 \begin{frame}{csound-vst3-opcodes}
+This assumes you have installed \texttt{csound-vst3-opcodes}, or built them from sources.
 \begin{example}
 Change to the \texttt{exercises/plugins} directory of your workshop directory.
 \begin{itemize}
@@ -411,32 +460,6 @@ Change to the \texttt{exercises/plugins} directory of your workshop directory.
 \end{example}
 \end{frame}
 
-\begin{frame}{Opcodes in Risset}
-\begin{example}
-Change to the \texttt{exercises/plugins} directory of your workshop directory.
-\begin{itemize}
-\item Execute \texttt{python3 -m risset list} to view all plugins in the repository.
-\item Execute \texttt{python3 -m risset show beosc} to view details on the band-limited+noise  oscillator opcodes.
-\end{itemize}
-\end{example}
-\end{frame}
-
-\begin{frame}{External Csound plugins repository}
-\begin{itemize}
-\item Go to \url{https://github.com/csound/plugins} to see what's currently available.
-\item These currently need to be built from source code, which is not difficult if you can program.
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Non-Csound Plugins}
-\begin{itemize}
-\item \texttt{vst4cs} opcodes. Not discussed here as VST2 is now deprecated by Steinberg.
-\item \texttt{csound-vst3-opcodes}.
-\item Opcodes in Risset.
-\item Csound external plugins repository.
-\end{itemize}
-\end{frame}
-
 \section{Other languages}
 \begin{frame}{Csound and other languages}
 \begin{itemize}
@@ -444,8 +467,44 @@ Change to the \texttt{exercises/plugins} directory of your workshop directory.
 \item Embed Csound in Python with \texttt{ctcsound}.
 \item Embed C++ in Csound with \texttt{csound-cxx-opcodes}.
 \item Embed Csound in C++ with \texttt{csound\_threaded.hpp}.
+\item There are many other language bindings for Csound....
 \end{itemize}
-There are many other language bindings for Csound....
+\end{frame}
+
+\begin{frame}{Python in Csound}
+\begin{example}
+Change to the \texttt{exercises/python} directory of your workshop directory.
+\begin{itemize}
+\item TODO
+\end{itemize}
+\end{example}
+\end{frame}
+
+\begin{frame}{Csound in Python}
+\begin{example}
+Change to the \texttt{exercises/python} directory of your workshop directory.
+\begin{itemize}
+\item TODO
+\end{itemize}
+\end{example}
+\end{frame}
+
+\begin{frame}{C++ in Csound}
+\begin{example}
+Change to the \texttt{exercises/cplusplus} directory of your workshop directory.
+\begin{itemize}
+\item TODO
+\end{itemize}
+\end{example}
+\end{frame}
+
+\begin{frame}{Csound in C++}
+\begin{example}
+Change to the \texttt{exercises/cplusplus} directory of your workshop directory.
+\begin{itemize}
+\item TODO
+\end{itemize}
+\end{example}
 \end{frame}
 
 \end{document}
