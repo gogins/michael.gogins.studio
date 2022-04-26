@@ -1,7 +1,17 @@
 import ctcsound
 import random
 
-orc = '''
+csd = '''
+<CsoundSynthesizer>
+<CsOptions>
+-m165 -d -RWfocsound-in-python.wav
+</CsOptions>
+C S O U N D   I N   P Y T H O N
+Michael Gogins
+LGPLv2.1
+<CsLicense>
+</CsLicense>
+<CsInstruments>
 sr = 48000
 ksmps = 128
 nchnls = 2
@@ -84,6 +94,11 @@ prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(
 a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outs a_out_left, a_out_right
 endin
+</CsInstruments>
+<CsScore>
+f 0 65
+</CsScore>
+</CsoundSynthesizer>
 '''
 
 def score_generator(csound):
@@ -102,15 +117,10 @@ def score_generator(csound):
         pan_ = random.random()
         scoreline = 'i {} {} {} {} {} {} {}'.format(1, time_, duration, key, velocity, 0, pan_)
         csound.inputMessage(scoreline)
-    # This must be used to end the performance when a csd file is not used.
-    csound.inputMessage("e 0 65")
    
 csound = ctcsound.Csound()
-csound.compileOrc(orc)
+csound.compileCsdText(csd)
 score_generator(csound)
-csound.setOption("-odac0")
-csound.setOption("-m165")
-csound.setOption("-d")
 csound.start()
 csound.perform()
 

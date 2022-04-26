@@ -1,13 +1,6 @@
-#include <csound_threaded.hpp>
-#include <cstdio>
-#include <iostream>
-#include <random>
-#include <string>
-
-const char csd_text[] = R"(
 <CsoundSynthesizer>
 <CsOptions>
--m165 -d -RWfocsound-in-cplusplus.wav
+-m165 -d -RWfocplusplus-in-csound.wav
 </CsOptions>
 C S O U N D   I N   C + +
 Michael Gogins
@@ -97,14 +90,17 @@ prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(
 a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outs a_out_left, a_out_right
 endin
-</CsInstruments>
-<CsScore>
-f 0 65
-</CsScore>
-</CsoundSynthesizer>
-)";
 
-static void score_generator(CsoundThreaded &csound) {
+S_score_generator_code init {{
+
+#include <csdl.h>
+#include <cmath>
+#include <random>
+#include <cstdio>
+
+extern "C" int score_generator(CSOUND *csound) {
+    csound->Message(csound, ">>>>>>> This is \\"score_generator\\".\\n");
+    int result = OK;
     std::default_random_engine generator;
     std::uniform_real_distribution<double> distribution(0.0, 1.0);    
     auto time_ = 0.;
@@ -118,22 +114,29 @@ static void score_generator(CsoundThreaded &csound) {
         time_ = i / 2.;
         auto y1 = c * 4 * y * (1 - y);
         y = y1;
-        auto key = round(bass + (range_ * y));
+        auto key = std::round(bass + (range_ * y));
         auto pan_ = distribution(generator);
         char scoreline[0x128];
         std::sprintf(scoreline, "i %9.4f %9.4f %9.4f %9.4f %9.4f %9.4f %9.4f", 1., time_, duration, key, velocity, 0., pan_);
-        csound.InputMessage(scoreline);
+        csound->InputMessage(csound, scoreline);
     }
-};
-
-
-int main(int argc, char *argv[])
-{
-    CsoundThreaded csound;
-    csound.CompileCsdText(csd_text);
-    score_generator(csound);
-    csound.Start();
-    int thread = csound.Perform();
-    csound.Join();
-    std::cout << "Finished." << std::endl;
+    csound->Message(csound, "Sent generated score to Csound.\\n");
+    return 0;
 }
+
+}}
+
+i_result cxx_compile "score_generator", S_score_generator_code, "g++ -g -v -O2 -fPIC -shared -std=c++17 -DUSE_DOUBLE -stdlib=libc++ -I/usr/local/include/csound -I/Library/Frameworks/CsoundLib64.framework/Versions/6.0/Headers -I/opt/homebrew/Cellar/eigen/3.4.0_1/include -lpthread"
+//i_result cxx_compile "score_generator", S_score_generator_code, "g++ -g -v -O2 -fPIC -shared -std=c++17 -DUSE_DOUBLE -I/usr/local/include/csound -I/usr/include/eigen3 -lpthread"
+
+
+</CsInstruments>
+<CsScore>
+f 0 65
+i "ScoreGenerator" 0 1
+</CsScore>
+</CsoundSynthesizer>
+)";
+
+
+

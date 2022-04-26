@@ -496,7 +496,6 @@ Change to the \texttt{exercises/plugins} directory of your workshop directory.
 \begin{itemize}
 %% The examples all have to use the same simple orchestra and simple algorithmic score generator.
 \item The following exercises all implement the same Csound piece, for purposes of comparison.
-\item Embed Python in Csound with the \texttt{py} opcodes.
 \item Embed Csound in Python with \texttt{ctcsound}.
 \item Embed C++ in Csound with \texttt{csound-cxx-opcodes}.
 \item Embed Csound in C++ with \texttt{csound\_threaded.hpp}.
@@ -504,20 +503,12 @@ Change to the \texttt{exercises/plugins} directory of your workshop directory.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Python in Csound}
-\begin{example}
-Change to the \texttt{exercises/languages} directory of your workshop directory.
-\begin{itemize}
-\item TODO
-\end{itemize}
-\end{example}
-\end{frame}
-
 \begin{frame}{Csound in Python}
 \begin{example}
 Change to the \texttt{exercises/languages} directory of your workshop directory.
 \begin{itemize}
-\item TODO
+\item Execute \texttt{python3 csound-in-python.py}
+\item Open \texttt{csound-in-python.py} in Audacity to see and hear the soundfile.
 \end{itemize}
 \end{example}
 \end{frame}
@@ -526,9 +517,8 @@ Change to the \texttt{exercises/languages} directory of your workshop directory.
 \begin{example}
 Change to the \texttt{exercises/languages} directory of your workshop directory.
 \begin{itemize}
-\item Execute \texttt{$\sim$/playpen.py cpp-app csound-in-cplusplus.cpp} to compile the piece.
-\item Execute \texttt{./csound-in-cplusplus} to run the piece.
-\item Execute \texttt{open test.wav} to view and hear the soundfile.
+\item Execute \texttt{csound cplusplus-in-csound.csd} to render the piece.
+\item Open \texttt{cplusplus-in-csound.wav} in Audacity to see and hear the soundfile.
 \end{itemize}
 \end{example}
 \end{frame}
@@ -537,7 +527,9 @@ Change to the \texttt{exercises/languages} directory of your workshop directory.
 \begin{example}
 Change to the \texttt{exercises/languages} directory of your workshop directory.
 \begin{itemize}
-\item TODO
+\item Execute \texttt{$\sim$/playpen.py cpp-app csound-in-cplusplus.cpp} to compile the piece.
+\item Execute \texttt{./csound-in-cplusplus} to run the piece.
+\item Execute \texttt{open csound-in-cplusplus.wav} to view and hear the soundfile.
 \end{itemize}
 \end{example}
 \end{frame}
