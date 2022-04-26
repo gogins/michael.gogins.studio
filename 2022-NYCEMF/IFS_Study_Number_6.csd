@@ -83,7 +83,7 @@ a farm in the Catskills, and on the Upper West Side of Manhattan.
 
 </CsLicense>
 <CsOptions>
--+msg_color=0 -m0 -d -odac:plughw:1,0
+-+msg_color=0 -m0 -d -otemp.wav
 </CsOptions>
 <CsInstruments>
 
@@ -96,8 +96,8 @@ gi_maximum_voices init 10
 
 // VST plugins must be loaded ahead of instruments that use them.
 
-gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", 0
-gi_Mverb2020 vstinit "/home/mkg/.local/lib/Mverb2020.so", 1
+gi_Pianoteq vst3init "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", 0
+gi_Mverb2020 vst3init "/home/mkg/.local/lib/Mverb2020.so", 1
 
 // The following C++ code defines two invokable "opcodes" that compute a 
 // phase-synchronous Gaussian chirp grain, or a phase-synchronous cosine 

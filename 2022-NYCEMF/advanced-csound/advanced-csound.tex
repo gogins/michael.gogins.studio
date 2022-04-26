@@ -328,12 +328,12 @@ Change to the \texttt{exercises/resolution} directory in your workshop directory
 \begin{frame}{Useful opcodes}
 Exercises for some of these follow.
 \begin{itemize}
-\item \texttt{prints}: fprint-type formatting for Csound diagnostics.
 \item \texttt{transegr}: most flexible envelope generator.
-\item \texttt{ftgen}: put function tables into the orchestra.
+\item \texttt{ftgen}: move function tables from score to orchestra.
 \item \texttt{poscil}, \texttt{poscil3}: most precise oscillators.
 \item \texttt{crosspm}, \texttt{crosspmi}: phase modulation/frequency modulation.
-\item Fluidsynth opcodes for SoundFont (plugin).
+\item Fluidsynth opcodes for SoundFonts (plugin).
+\item Opcodes for Faust DSP language (plugin).
 \item \texttt{diskin2}: flexible soundfile input.
 \item \texttt{deltapi}: building block for physical models.
 \item \texttt{PVS} opcodes: toolkit for time/frequency operations.
@@ -367,6 +367,15 @@ Change to the \texttt{exercises/opcodes} directory of your workshop directory.
 \begin{frame}{FluidSynth opcodes}
 \begin{example}
 Change to the \texttt{exercises/fluid} directory of your workshop directory.
+\begin{itemize}
+\item TODO
+\end{itemize}
+\end{example}
+\end{frame}
+
+\begin{frame}{Faust opcodes}
+\begin{example}
+Change to the \texttt{exercises/faust} directory of your workshop directory.
 \begin{itemize}
 \item TODO
 \end{itemize}
@@ -485,6 +494,8 @@ Change to the \texttt{exercises/plugins} directory of your workshop directory.
 \section{Other languages}
 \begin{frame}{Csound and other languages}
 \begin{itemize}
+%% The examples all have to use the same simple orchestra and simple algorithmic score generator.
+\item The following exercises all implement the same Csound piece, for purposes of comparison.
 \item Embed Python in Csound with the \texttt{py} opcodes.
 \item Embed Csound in Python with \texttt{ctcsound}.
 \item Embed C++ in Csound with \texttt{csound-cxx-opcodes}.
@@ -495,7 +506,7 @@ Change to the \texttt{exercises/plugins} directory of your workshop directory.
 
 \begin{frame}{Python in Csound}
 \begin{example}
-Change to the \texttt{exercises/python} directory of your workshop directory.
+Change to the \texttt{exercises/languages} directory of your workshop directory.
 \begin{itemize}
 \item TODO
 \end{itemize}
@@ -504,7 +515,7 @@ Change to the \texttt{exercises/python} directory of your workshop directory.
 
 \begin{frame}{Csound in Python}
 \begin{example}
-Change to the \texttt{exercises/python} directory of your workshop directory.
+Change to the \texttt{exercises/languages} directory of your workshop directory.
 \begin{itemize}
 \item TODO
 \end{itemize}
@@ -513,16 +524,18 @@ Change to the \texttt{exercises/python} directory of your workshop directory.
 
 \begin{frame}{C++ in Csound}
 \begin{example}
-Change to the \texttt{exercises/cplusplus} directory of your workshop directory.
+Change to the \texttt{exercises/languages} directory of your workshop directory.
 \begin{itemize}
-\item TODO
+\item Execute \texttt{$\sim$/playpen.py cpp-app csound-in-cplusplus.cpp} to compile the piece.
+\item Execute \texttt{./csound-in-cplusplus} to run the piece.
+\item Execute \texttt{open test.wav} to view and hear the soundfile.
 \end{itemize}
 \end{example}
 \end{frame}
 
 \begin{frame}{Csound in C++}
 \begin{example}
-Change to the \texttt{exercises/cplusplus} directory of your workshop directory.
+Change to the \texttt{exercises/languages} directory of your workshop directory.
 \begin{itemize}
 \item TODO
 \end{itemize}
