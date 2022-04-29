@@ -21,7 +21,7 @@ import traceback
 output = r'complete-%s.m3u' % datetime.date.today()
 spreadsheet = r'complete_soundfiles-%s.tsv' % datetime.date.today()
 
-rootdirs = '/home/mkg'.split()
+rootdirs = '/Users/michaelgogins'.split()
 omitdirs = 'synthv-editor performance-mode Trash csound-extended-vst4cs Downloads jak_stretch Nancarrow_Renderings imparting_harmonies rawwaves orc eSupport attic Attic music-attic Examples Music MUSIC examples winabx csound-extended ssdir Hrabovsky'.split()
 extensions = '.wav .aif .aiff'.split()
 

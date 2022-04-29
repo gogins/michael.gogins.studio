@@ -126,7 +126,6 @@ static void score_generator(CsoundThreaded &csound) {
     }
 };
 
-
 int main(int argc, char *argv[])
 {
     CsoundThreaded csound;
