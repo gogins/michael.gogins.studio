@@ -58,7 +58,7 @@ i_pitch_correction = 44100 / sr
 id vst3note gi_Organteq, i_instrument, i_midi_key, i_midi_velocity, i_duration
 endin
 
-instr OrgantecCombination
+instr OrganteqCombination
 prints "\n****************************************************************************************\n\n"
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 prints "\n****************************************************************************************\n\n"
@@ -367,9 +367,9 @@ k_gain = ampdb(gk_OrganOutOrganteq_level)
 i_overall_amps = 100
 i_normalization = ampdb(-i_overall_amps) * 2
 i_amplitude = ampdb(80) * i_normalization
-if gi_OrganOutOrganteq_print == 1 then
-  vst3info gi_Organteq
-endif
+;;;if gi_OrganOutOrganteq_print == 1 then
+;;;  vst3info gi_Organteq
+;;;endif
 i_instrument = p1
 i_time = p2
 i_duration = p3
@@ -382,7 +382,7 @@ a_signal = aoutleft + aoutright
 a_signal *= k_gain
 a_signal *= i_amplitude
 a_out_left, a_out_right pan2 a_signal, gk_OrganOutOrganteq_left_to_right
-; printks "vstaudio:       %9.4f   %9.4f\n", 0.5, aoutleft, aoutright
+printks "vstaudio:       %9.4f   %9.4f\n", 0.5, aoutleft, aoutright
 #ifdef USE_SPATIALIZATION
 a_signal = a_out_left + a_out_right
 a_spatial_reverb_send init 0
@@ -399,22 +399,12 @@ prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrst
 endin
 
 gk_Freeverb_level init 0
-gk_Freeverb_Mix init .5
-gk_Freeverb_Pre_delay init 0.25
-gk_Freeverb_Early_late_mix init 0.25
-gk_Freeverb_Size init 0.5
-gk_Freeverb_Density init 0.5
-gk_Freeverb_Bandwith_Frequency init 0.5
-gk_Freeverb_Decay init 0.55
-gk_Freeverb_Damping_Frequency init 0.5
-gk_Freeverb_Gain init 1
-gi_Freeverb_Program init 4
 instr Freeverb
 ;aoutL, aoutR freeverb ainL, ainR, kRoomSize, kHFDamp[, iSRate[, iSkip]] 
 k_gain = ampdb(gk_Freeverb_level)
 ainleft inleta "inleft"
 ainright inleta "inright"
-aoutleft, aoutright freeverb ainleft, ainright, 12., 12000., sr
+aoutleft, aoutright freeverb ainleft, ainright, .8, .8, sr
 outleta "outleft", aoutleft
 outleta "outright", aoutright
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
@@ -1040,7 +1030,6 @@ i 4 45 0.59875 36 69.02692 0 0.8 0 0 4095 1
 i 4 45 0.59875 43 70.55901 0 1.2 0 0 4095 1 
 i 4 45 0.59875 51 69.02692 0 0.8 0 0 4095 1 
 i 4 45 0.59875 67 70.55901 0 1.2 0 0 4095 1 
-i 5 45 1 0 1 0 0 0 1 4095 1 
 i 2 45.6 0.59875 34 61.95997 0 0.4 0 0 4095 1 
 i 2 45.6 0.59875 75 61.95997 0 0.4 0 0 4095 1 
 i 3 45.6 0.59875 55 62.49275 0 0.6 0 0 4095 1 
@@ -2107,7 +2096,6 @@ i 3 106.2 0.19875 32 68.28157 0 0.6 0 0 4095 1
 i 3 106.2 0.59875 87 70.85714 0 1 0 0 4095 1 
 i 4 106.2 0.19875 44 70.84058 0 1.2 0 0 4095 1 
 i 4 106.2 0.59875 72 68.26501 0 0.8 0 0 4095 1 
-i 5 106.2 1 3 2 0 0 0 1 4095 1 
 i 2 106.4 0.19875 44 60.72878 0 0.4 0 0 4095 1 
 i 3 106.4 0.19875 44 62.30504 0 0.6 0 0 4095 1 
 i 4 106.4 0.19875 80 64.94686 0 1.2 0 0 4095 1 
@@ -2827,7 +2815,6 @@ i 3 153 0.59875 95 69.54037 0 0.6 0 0 4095 1
 i 4 153 0.59875 30 70.01242 0 1.2 0 0 4095 1 
 i 4 153 0.59875 66 68.48033 0 0.8 0 0 4095 1 
 i 4 153 0.59875 90 70.01242 0 1.2 0 0 4095 1 
-i 5 153 1 3 3 0 0 0 1 4095 1 
 i 1 153.6 0.59875 78 62.92202 0 0.2 0 0 4095 1 
 i 2 153.6 0.59875 59 60.58523 0 0.4 0 0 4095 1 
 i 3 153.6 0.59875 42 64.79227 0 1 0 0 4095 1 
@@ -3988,7 +3975,6 @@ i 3 226.8 0.29875 79 63.52243 0 1 0 0 4095 1
 i 4 226.8 0.29875 31 68.81988 0 0.8 0 0 4095 1 
 i 4 226.8 0.29875 55 68.81988 0 0.8 0 0 4095 1 
 i 4 226.8 0.29875 86 63.53347 0 1.2 0 0 4095 1 
-i 5 226.8 1 2 4 0 0 0 1 4095 1 
 i 3 227.1 0.29875 74 63.52243 0 1 0 0 4095 1 
 i 4 227.1 0.29875 77 63.53347 0 1.2 0 0 4095 1 
 i 1 227.4 0.59875 50 63.73913 0 0.2 0 0 4095 1 
@@ -4754,7 +4740,6 @@ i 4 270 0.59875 60 62.85714 0 0.8 0 0 4095 1
 i 4 270 0.59875 62 63.40097 0 1.2 0 0 4095 1 
 i 4 270 0.59875 68 62.85714 0 0.8 0 0 4095 1 
 i 4 270 0.59875 80 63.40097 0 1.2 0 0 4095 1 
-i 5 270 1 0 1 0 0 0 1 4095 1 
 i 3 270.3 0.29875 74 63.38992 0 1 0 0 4095 1 
 i 1 270.6 0.59875 44 62.56315 0 0.2 0 0 4095 1 
 i 1 270.6 0.59875 89 62.56315 0 0.2 0 0 4095 1 
@@ -5560,7 +5545,6 @@ i 3 318.6 0.59875 72 62.69703 0 0.6 0 0 4095 1
 i 4 318.6 0.59875 36 69.24224 0 0.8 0 0 4095 1 
 i 4 318.6 0.59875 76 69.24224 0 0.8 0 0 4095 1 
 i 4 318.6 0.59875 105 63.2519 0 1.2 0 0 4095 1 
-i 5 318.6 1 4 3 0 0 0 1 4095 1 
 i 2 318.8 0.19875 53 61.12077 0 0.4 0 0 4095 1 
 i 2 319 0.19875 81 61.12077 0 0.4 0 0 4095 1 
 i 1 319.2 0.59875 88 63.45756 0 0.2 0 0 4095 1 
@@ -6418,7 +6402,6 @@ i 4 370.8 0.59875 74 68.96066 0 0.8 0 0 4095 1
 i 1 370.8 0.59875 94 69.79296 0 0.2 0 0 4095 1 
 i 2 370.8 0.59875 46 66.38509 0 0.4 0 0 4095 1 
 i 2 370.8 0.59875 62 66.38509 0 0.4 0 0 4095 1 
-i 5 370.8 1 2 2 0 0 0 1 4095 1 
 i 3 371.4 0.59875 70 64.12422 0 1 0 0 4095 1 
 i 4 371.4 0.59875 50 65.17874 0 1.2 0 0 4095 1 
 i 3 371.4 0.59875 62 62.53692 0 0.6 0 0 4095 1 

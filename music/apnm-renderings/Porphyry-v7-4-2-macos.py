@@ -8,7 +8,7 @@ Copyright (C) 2021 by Michael Gogins
 Mozart's musical dice game of 1787 is taken apart and put back together along 
 the lines of Terry Riley's "In C" using Python, re-harmonized using the 
 CsoundAC.Scale class, and rendered with a built-in Csound orchestra that 
-integrates the Organtec physically modeled pipe organ with a waveguide reverb.
+integrates the Organteq physically modeled pipe organ with a waveguide reverb.
 
 Comments in the code are provided in an attempt to clarify what is going on.
 
@@ -254,7 +254,7 @@ def build_voice(voiceleading_node, sequence, instrument, bass_, time_offset, pan
                         print("Possible modulation to: {} {}".format(s.toString(), s.name()))
                     scale = random.choice(scales)
                     if combination != 0:
-                        sequence_holder.getScore().append(cumulative_time, 1., 144., 5., combination, combination, 1.)
+                        ### sequence_holder.getScore().append(cumulative_time, 1., 144., 5., combination, combination, 1.)
                         print("==> Combination:           {}".format(combination))
                     print("==> Modulated to:       {} {}".format(scale.toString(), scale.name()))
                     timescale = random.choices([1., 2., .5, 2./3., 4./3.], [12, 2, 2, 2, 2], k=1)[0]
@@ -394,7 +394,7 @@ i_pitch_correction = 44100 / sr
 id vst3note gi_Organteq, i_instrument, i_midi_key, i_midi_velocity, i_duration
 endin
 
-instr OrgantecCombination
+instr OrganteqCombination
 prints "\\n****************************************************************************************\\n\\n"
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 prints "\\n****************************************************************************************\\n\\n"
@@ -703,9 +703,9 @@ k_gain = ampdb(gk_OrganOutOrganteq_level)
 i_overall_amps = 100
 i_normalization = ampdb(-i_overall_amps) * 2
 i_amplitude = ampdb(80) * i_normalization
-if gi_OrganOutOrganteq_print == 1 then
-  vst3info gi_Organteq
-endif
+;;;if gi_OrganOutOrganteq_print == 1 then
+;;;  vst3info gi_Organteq
+;;;endif
 i_instrument = p1
 i_time = p2
 i_duration = p3
@@ -718,7 +718,7 @@ a_signal = aoutleft + aoutright
 a_signal *= k_gain
 a_signal *= i_amplitude
 a_out_left, a_out_right pan2 a_signal, gk_OrganOutOrganteq_left_to_right
-; printks "vstaudio:       %9.4f   %9.4f\\n", 0.5, aoutleft, aoutright
+printks "vstaudio:       %9.4f   %9.4f\\n", 0.5, aoutleft, aoutright
 #ifdef USE_SPATIALIZATION
 a_signal = a_out_left + a_out_right
 a_spatial_reverb_send init 0
@@ -735,22 +735,12 @@ prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrs
 endin
 
 gk_Freeverb_level init 0
-gk_Freeverb_Mix init .5
-gk_Freeverb_Pre_delay init 0.25
-gk_Freeverb_Early_late_mix init 0.25
-gk_Freeverb_Size init 0.5
-gk_Freeverb_Density init 0.5
-gk_Freeverb_Bandwith_Frequency init 0.5
-gk_Freeverb_Decay init 0.55
-gk_Freeverb_Damping_Frequency init 0.5
-gk_Freeverb_Gain init 1
-gi_Freeverb_Program init 4
 instr Freeverb
 ;aoutL, aoutR freeverb ainL, ainR, kRoomSize, kHFDamp[, iSRate[, iSkip]] 
 k_gain = ampdb(gk_Freeverb_level)
 ainleft inleta "inleft"
 ainright inleta "inright"
-aoutleft, aoutright freeverb ainleft, ainright, 12., 12000., sr
+aoutleft, aoutright freeverb ainleft, ainright, .8, .8, sr
 outleta "outleft", aoutleft
 outleta "outright", aoutright
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)

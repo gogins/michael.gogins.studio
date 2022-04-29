@@ -47,7 +47,7 @@ run time to enable tweaking the sounds of the instruments.
 
 The piece uses the vst3 opcodes, partly written and now maintained by 
 me, for hosting the Pianoteq physically modelled piano as a VST2 plugin, and 
-for using the freeware Mverb2020 plugin, which provides a good implementation 
+for using the freeware Freeverb plugin, which provides a good implementation 
 of Jon Dattoro's mesh reverb.
 
 Source code for this piece is available at 
@@ -97,10 +97,8 @@ gi_maximum_voices init 10
 // VST plugins must be loaded ahead of instruments that use them.
 
 ;;; gi_Pianoteq vst3init "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", 0
-gi_Pianoteq vst3init "/Library/Audio/Plug-Ins/VST3/Pianoteq 7.vst3", "Pianoteq 7", 1
+gi_Pianoteq vst3init "/Library/Audio/Plug-Ins/VST3/Pianoteq 7.vst3", "Pianoteq 7", 0 ; 1
 vst3info gi_Pianoteq
-
-gi_Mverb2020 vst3init "/home/mkg/.local/lib/Mverb2020.so", 1
 
 // The following C++ code defines two invokable "opcodes" that compute a 
 // phase-synchronous Gaussian chirp grain, or a phase-synchronous cosine 
@@ -586,8 +584,8 @@ outleta "outright", a_out_right
 #end
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
-connect "FMWaterBell", "outleft",  "Mverb2020", "inleft"
-connect "FMWaterBell", "outright", "Mverb2020", "inright"
+connect "FMWaterBell", "outleft",  "Freeverb", "inleft"
+connect "FMWaterBell", "outright", "Freeverb", "inright"
 gk_FMWaterBell_level init 0
 gi_FMWaterBell_attack init 0.002
 gi_FMWaterBell_release init 0.01
@@ -705,8 +703,8 @@ outleta "outright", a_right
 #end
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
-connect "FaustBubble", "outleft",  "Mverb2020", "inleft"
-connect "FaustBubble", "outright", "Mverb2020", "inright"
+connect "FaustBubble", "outleft",  "Freeverb", "inleft"
+connect "FaustBubble", "outright", "Freeverb", "inright"
 gk_FaustBubble_level init 0
 maxalloc "FaustBubble", gi_maximum_voices
 //////////////////////////////////////////////////////////////////////////////
@@ -766,8 +764,8 @@ outleta "outright", a_out_right
 #end
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
-connect "Rhodes", "outleft",  "Mverb2020", "inleft"
-connect "Rhodes", "outright", "Mverb2020", "inright"
+connect "Rhodes", "outleft",  "Freeverb", "inleft"
+connect "Rhodes", "outright", "Freeverb", "inright"
 gk_Rhodes_level init 0
 maxalloc "Rhodes", gi_maximum_voices
 //////////////////////////////////////////////////////////////////////////////
@@ -1015,8 +1013,8 @@ outleta "outright", a_out_right
 #end
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
-connect "ZakianFlute", "outleft",  "Mverb2020", "inleft"
-connect "ZakianFlute", "outright", "Mverb2020", "inright"
+connect "ZakianFlute", "outleft",  "Freeverb", "inleft"
+connect "ZakianFlute", "outright", "Freeverb", "inright"
 gk_ZakianFlute_midi_dynamic_range init 20
 gk_ZakianFlute_level init 0
 maxalloc "ZakianFlute", gi_maximum_voices
@@ -1092,8 +1090,8 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
-connect "CosineGrain", "outleft",  "Mverb2020", "inleft"
-connect "CosineGrain", "outright", "Mverb2020", "inright"
+connect "CosineGrain", "outleft",  "Freeverb", "inleft"
+connect "CosineGrain", "outright", "Freeverb", "inright"
 gk_CosineGrain_level init 0
 gk_CosineGrain_midi_dynamic_range init 20
 maxalloc "CosineGrain", gi_maximum_voices
@@ -1136,17 +1134,13 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
-connect "JonesParksGrain", "outleft",  "Mverb2020", "inleft"
-connect "JonesParksGrain", "outright", "Mverb2020", "inright"
+connect "JonesParksGrain", "outleft",  "Freeverb", "inleft"
+connect "JonesParksGrain", "outright", "Freeverb", "inright"
 gk_JonesParksGrain_level init 0
 gk_JonesParksGrain_midi_dynamic_range init 20
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
-// This must be initialized in the orc header before any #includes.
-
-gi_Pianoteq vst3init "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", 0
-vst3info gi_Pianoteq 
 
 gk_PianoOutPianoteq_level chnexport "gk_PianoOutPianoteq_level", 3 ;  0
 gi_PianoOutPianoteq_print chnexport "gi_PianoOutPianoteq_print", 3 ;  1
@@ -1203,74 +1197,49 @@ outleta "outright", a_out_right
 #end
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
-connect "PianoOutPianoteq", "outleft",  "Mverb2020", "inleft"
-connect "PianoOutPianoteq", "outright", "Mverb2020", "inright"
+connect "PianoOutPianoteq", "outleft",  "Freeverb", "inleft"
+connect "PianoOutPianoteq", "outright", "Freeverb", "inright"
 gk_PianoOutPianoteq_level init -25
 alwayson "PianoOutPianoteq"
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
-; Use with, e.g.: gi_Mverb2020 vst3init "/home/mkg/.local/lib/Mverb2020.so", 1
-; Obtain from: http://socalabs.com/effects/mverb2020/
+gk_Freeverb_level chnexport "gk_Freeverb_level", 3 ; 0
+gk_Freeverb_Mix chnexport "gk_Freeverb_Mix", 3 ; .5
+gk_Freeverb_Pre_delay chnexport "gk_Freeverb_Pre_delay", 3 ; 0.5
+gk_Freeverb_Early_late_mix chnexport "gk_Freeverb_Early_late_mix", 3 ; 0.5
+gk_Freeverb_Size chnexport "gk_Freeverb_Size", 3 ; 0.5
+gk_Freeverb_Density chnexport "gk_Freeverb_Density", 3 ; 0.5
+gk_Freeverb_Bandwith_Frequency chnexport "gk_Freeverb_Bandwith_Frequency", 3 ; 0.5
+gk_Freeverb_Decay chnexport "gk_Freeverb_Decay", 3 ; 0.85
+gk_Freeverb_Damping_Frequency chnexport "gk_Freeverb_Damping_Frequency", 3 ; 0.5
+gk_Freeverb_Gain chnexport "gk_Freeverb_Gain", 3 ; 1
+gi_Freeverb_Program chnexport "gi_Freeverb_Program", 3 ; 4
 
-gk_Mverb2020_level chnexport "gk_Mverb2020_level", 3 ; 0
-gk_Mverb2020_Mix chnexport "gk_Mverb2020_Mix", 3 ; .5
-gk_Mverb2020_Pre_delay chnexport "gk_Mverb2020_Pre_delay", 3 ; 0.5
-gk_Mverb2020_Early_late_mix chnexport "gk_Mverb2020_Early_late_mix", 3 ; 0.5
-gk_Mverb2020_Size chnexport "gk_Mverb2020_Size", 3 ; 0.5
-gk_Mverb2020_Density chnexport "gk_Mverb2020_Density", 3 ; 0.5
-gk_Mverb2020_Bandwith_Frequency chnexport "gk_Mverb2020_Bandwith_Frequency", 3 ; 0.5
-gk_Mverb2020_Decay chnexport "gk_Mverb2020_Decay", 3 ; 0.85
-gk_Mverb2020_Damping_Frequency chnexport "gk_Mverb2020_Damping_Frequency", 3 ; 0.5
-gk_Mverb2020_Gain chnexport "gk_Mverb2020_Gain", 3 ; 1
-gi_Mverb2020_Program chnexport "gi_Mverb2020_Program", 3 ; 4
+gk_Freeverb_level init 0
+gk_Freeverb_Mix init .5
+gk_Freeverb_Pre_delay init 0.5
+gk_Freeverb_Early_late_mix init 0.5
+gk_Freeverb_Size init 0.5
+gk_Freeverb_Density init 0.5
+gk_Freeverb_Bandwith_Frequency init 0.5
+gk_Freeverb_Decay init 0.6
+gk_Freeverb_Damping_Frequency init 0.5
+gk_Freeverb_Gain init 1
+gi_Freeverb_Program init 4
 
-gk_Mverb2020_level init 0
-gk_Mverb2020_Mix init .5
-gk_Mverb2020_Pre_delay init 0.5
-gk_Mverb2020_Early_late_mix init 0.5
-gk_Mverb2020_Size init 0.5
-gk_Mverb2020_Density init 0.5
-gk_Mverb2020_Bandwith_Frequency init 0.5
-gk_Mverb2020_Decay init 0.6
-gk_Mverb2020_Damping_Frequency init 0.5
-gk_Mverb2020_Gain init 1
-gi_Mverb2020_Program init 4
-
-instr Mverb2020
-vst3progset gi_Mverb2020, gi_Mverb2020_Program
-vst3paramset gi_Mverb2020, 1, gk_Mverb2020_Mix
-;vstparamset gi_Mverb2020, 1, gk_Mverb2020_Pre_delay
-;vstparamset gi_Mverb2020, 2, gk_Mverb2020_Early_late_mix
-;vstparamset gi_Mverb2020, 3, gk_Mverb2020_Size
-;vstparamset gi_Mverb2020, 4, gk_Mverb2020_Density
-;vstparamset gi_Mverb2020, 5, gk_Mverb2020_Bandwith_Frequency
-vst3paramset gi_Mverb2020, 6, gk_Mverb2020_Decay
-;vstparamset gi_Mverb2020, 7, gk_Mverb2020_Damping_Frequency
-;vstparamset gi_Mverb2020, 8, gk_Mverb2020_Gain
-k_gain = ampdb(gk_Mverb2020_level)
+gk_Freeverb_level init 0
+instr Freeverb
+;aoutL, aoutR freeverb ainL, ainR, kRoomSize, kHFDamp[, iSRate[, iSkip]] 
+k_gain = ampdb(gk_Freeverb_level)
 ainleft inleta "inleft"
 ainright inleta "inright"
-aoutleft, aoutright vst3audio gi_Mverb2020, ainleft, ainright
+aoutleft, aoutright freeverb ainleft, ainright, .8, .8, sr
 outleta "outleft", aoutleft
 outleta "outright", aoutright
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f -- %3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
-connect "Mverb2020", "outleft",  "MasterOutput", "inleft"
-connect "Mverb2020", "outright", "MasterOutput", "inright"
-gk_Mverb2020_level init 0
-gk_Mverb2020_Mix init .5
-gk_Mverb2020_Pre_delay init 0.5
-gk_Mverb2020_Early_late_mix init 0.5
-gk_Mverb2020_Size init 0.5
-gk_Mverb2020_Density init 0.5
-gk_Mverb2020_Bandwith_Frequency init 0.5
-gk_Mverb2020_Decay init 0.45
-gk_Mverb2020_Damping_Frequency init 0.5
-gk_Mverb2020_Gain init 1
-gi_Mverb2020_Program init 2
-alwayson "Mverb2020"
-//////////////////////////////////////////////////////////////////////////////
+
 
 //////////////////////////////////////////////////////////////////////////////
 gk_MasterOutput_level chnexport "gk_MasterOutput_level", 3 ; 0
@@ -1303,16 +1272,6 @@ gk_MasterOutput_level init 10
 gS_MasterOutput_filename init ""
 alwayson "MasterOutput"
 //////////////////////////////////////////////////////////////////////////////
-
-//////////////////////////////////////////////////////////////////////////////
-// This instrument defines a WebKit browser that provides sliders for 
-// real-time tweaking of instrument parameters, as well as a display of 
-// Csound's diagnostic messages.
-//
-// Control values that are saved by clicking the "Save" button will
-// automatically be restored on the next run of Csound.
-instr Browser
-
 // The following HTML5 code is pretty much the standard sort of thing for Web 
 // pages.
 //
@@ -1543,29 +1502,29 @@ gS_html init {{<!DOCTYPE html>
     <tr/>
     <tr>
     <td>
-    <label for=gk_Mverb2020_level>Mverb2020 reverb level (dB)</label>
+    <label for=gk_Freeverb_level>Freeverb reverb level (dB)</label>
     <td>
-    <input class=persistent-element type=range min=-40 max=40 value=-6 id=gk_Mverb2020_level step=.001>
+    <input class=persistent-element type=range min=-40 max=40 value=-6 id=gk_Freeverb_level step=.001>
     <td>
-    <output for=gk_Mverb2020_level id=gk_Mverb2020_level_output>-6</output>
+    <output for=gk_Freeverb_level id=gk_Freeverb_level_output>-6</output>
     </tr>
     
     <tr>
     <td>
-    <label for=gk_Mverb2020_Mix>Mverb2020 reverb Mix</label>
+    <label for=gk_Freeverb_Mix>Freeverb reverb Mix</label>
     <td>
-    <input class=persistent-element type=range min=0 max=1 value=.5 id=gk_Mverb2020_Mix step=.001>
+    <input class=persistent-element type=range min=0 max=1 value=.5 id=gk_Freeverb_Mix step=.001>
     <td>
-    <output for=gk_Mverb2020_Mix id=gk_Mverb2020_Mix_output>.5</output>
+    <output for=gk_Freeverb_Mix id=gk_Freeverb_Mix_output>.5</output>
     </tr>
     
     <tr>
     <td>
-    <label for=gk_Mverb2020_Decay>Mverb2020 reverb Decay</label>
+    <label for=gk_Freeverb_Decay>Freeverb reverb Decay</label>
     <td>
-    <input class=persistent-element type=range min=0 max=1 value=.5 id=gk_Mverb2020_Decay step=.001>
+    <input class=persistent-element type=range min=0 max=1 value=.5 id=gk_Freeverb_Decay step=.001>
     <td>
-    <output for=gk_Mverb2020_Decay id=gk_Mverb2020_Decay_output>.5</output>
+    <output for=gk_Freeverb_Decay id=gk_Freeverb_Decay_output>.5</output>
     </tr>
     
     <tr/>
@@ -1584,171 +1543,7 @@ gS_html init {{<!DOCTYPE html>
     </form>   
 </script>
 <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
-<script>
-/**
- * This file is generated by jsonrpcstub, DO NOT CHANGE IT MANUALLY!
- */
-function Csound(url) {
-    this.url = url;
-    var id = 1;
-    
-    function doJsonRpcRequest(method, params, methodCall, callback_success, callback_error) {
-        var request = {};
-        if (methodCall)
-            request.id = id++;
-        request.jsonrpc = "2.0";
-        request.method = method;
-        if (params !== null) {
-            request.params = params;
-        }
-        JSON.stringify(request);
-        
-        $.ajax({
-            type: "POST",
-            url: url,
-            data: JSON.stringify(request),
-            success: function (response) {
-                if (methodCall) {
-                    if (response.hasOwnProperty("result") && response.hasOwnProperty("id")) {
-                        callback_success(response.id, response.result);
-                    } else if (response.hasOwnProperty("error")) {
-                        if (callback_error != null)
-                            callback_error(response.error.code,response.error.message);
-                    } else {
-                        if (callback_error != null)
-                            callback_error(-32001, "Invalid Server response: " + response);
-                    }
-                }
-            },
-            error: function () {
-                if (methodCall)
-                    callback_error(-32002, "AJAX Error");
-            },
-            dataType: "json"
-        });
-        return id-1;
-    }
-    this.doRPC = function(method, params, methodCall, callback_success, callback_error) {
-        return doJsonRpcRequest(method, params, methodCall, callback_success, callback_error);
-    }
-}
-
-Csound.prototype.CompileCsdText = function(csd_text, callbackSuccess, callbackError) {
-    var params = {csd_text : csd_text};
-    return this.doRPC("CompileCsdText", params, true, callbackSuccess, callbackError);
-};
-Csound.prototype.CompileOrc = function(orc_code, callbackSuccess, callbackError) {
-    var params = {orc_code : orc_code};
-    return this.doRPC("CompileOrc", params, true, callbackSuccess, callbackError);
-};
-Csound.prototype.EvalCode = function(orc_code, callbackSuccess, callbackError) {
-    var params = {orc_code : orc_code};
-    return this.doRPC("EvalCode", params, true, callbackSuccess, callbackError);
-};
-Csound.prototype.Get0dBFS = function(callbackSuccess, callbackError) {
-    var params = null;
-    return this.doRPC("Get0dBFS", params, true, callbackSuccess, callbackError);
-};
-Csound.prototype.GetAudioChannel = function(channel_name, callbackSuccess, callbackError) {
-    var params = {channel_name : channel_name};
-    return this.doRPC("GetAudioChannel", params, true, callbackSuccess, callbackError);
-};
-Csound.prototype.GetControlChannel = function(channel_name, callbackSuccess, callbackError) {
-    var params = {channel_name : channel_name};
-    return this.doRPC("GetControlChannel", params, true, callbackSuccess, callbackError);
-};
-Csound.prototype.GetDebug = function(callbackSuccess, callbackError) {
-    var params = null;
-    return this.doRPC("GetDebug", params, true, callbackSuccess, callbackError);
-};
-Csound.prototype.GetKsmps = function(callbackSuccess, callbackError) {
-    var params = null;
-    return this.doRPC("GetKsmps", params, true, callbackSuccess, callbackError);
-};
-Csound.prototype.GetNchnls = function(callbackSuccess, callbackError) {
-    var params = null;
-    return this.doRPC("GetNchnls", params, true, callbackSuccess, callbackError);
-};
-Csound.prototype.GetNchnlsInput = function(callbackSuccess, callbackError) {
-    var params = null;
-    return this.doRPC("GetNchnlsInput", params, true, callbackSuccess, callbackError);
-};
-Csound.prototype.GetScoreOffsetSeconds = function(callbackSuccess, callbackError) {
-    var params = null;
-    return this.doRPC("GetScoreOffsetSeconds", params, true, callbackSuccess, callbackError);
-};
-Csound.prototype.GetScoreTime = function(callbackSuccess, callbackError) {
-    var params = null;
-    return this.doRPC("GetScoreTime", params, true, callbackSuccess, callbackError);
-};
-Csound.prototype.GetSr = function(callbackSuccess, callbackError) {
-    var params = null;
-    return this.doRPC("GetSr", params, true, callbackSuccess, callbackError);
-};
-Csound.prototype.GetStringChannel = function(channel_name, callbackSuccess, callbackError) {
-    var params = {channel_name : channel_name};
-    return this.doRPC("GetStringChannel", params, true, callbackSuccess, callbackError);
-};
-Csound.prototype.InputMessage = function(sco_code, callbackSuccess, callbackError) {
-    var params = {sco_code : sco_code};
-    return this.doRPC("InputMessage", params, true, callbackSuccess, callbackError);
-};
-Csound.prototype.IsScorePending = function(callbackSuccess, callbackError) {
-    var params = null;
-    return this.doRPC("IsScorePending", params, true, callbackSuccess, callbackError);
-};
-Csound.prototype.Message = function(message, callbackSuccess, callbackError) {
-    var params = {message : message};
-    this.doRPC("Message", params, false, callbackSuccess, callbackError);
-};
-Csound.prototype.ReadScore = function(sco_code, callbackSuccess, callbackError) {
-    var params = {sco_code : sco_code};
-    return this.doRPC("ReadScore", params, true, callbackSuccess, callbackError);
-};
-Csound.prototype.RewindScore = function(callbackSuccess, callbackError) {
-    var params = null;
-    return this.doRPC("RewindScore", params, true, callbackSuccess, callbackError);
-};
-Csound.prototype.ScoreEvent = function(opcode_code, pfields, callbackSuccess, callbackError) {
-    var params = {opcode_code : opcode_code, pfields : pfields};
-    return this.doRPC("ScoreEvent", params, true, callbackSuccess, callbackError);
-};
-Csound.prototype.SetControlChannel = function(channel_name, channel_value, callbackSuccess, callbackError) {
-    var params = {channel_name : channel_name, channel_value : channel_value};
-    return this.doRPC("SetControlChannel", params, true, callbackSuccess, callbackError);
-};
-Csound.prototype.SetDebug = function(enabled, callbackSuccess, callbackError) {
-    var params = {enabled : enabled};
-    return this.doRPC("SetDebug", params, true, callbackSuccess, callbackError);
-};
-Csound.prototype.SetMessageCallback = function(callback, callbackSuccess, callbackError) {
-    var params = {callback : callback};
-    return this.doRPC("SetMessageCallback", params, true, callbackSuccess, callbackError);
-};
-Csound.prototype.SetScoreOffsetSeconds = function(score_time, callbackSuccess, callbackError) {
-    var params = {score_time : score_time};
-    return this.doRPC("SetScoreOffsetSeconds", params, true, callbackSuccess, callbackError);
-};
-Csound.prototype.SetScorePending = function(pending, callbackSuccess, callbackError) {
-    var params = {pending : pending};
-    return this.doRPC("SetScorePending", params, true, callbackSuccess, callbackError);
-};
-Csound.prototype.SetStringChannel = function(channel_name, channel_value, callbackSuccess, callbackError) {
-    var params = {channel_name : channel_name, channel_value : channel_value};
-    return this.doRPC("SetStringChannel", params, true, callbackSuccess, callbackError);
-};
-Csound.prototype.TableLength = function(table_number, callbackSuccess, callbackError) {
-    var params = {table_number : table_number};
-    return this.doRPC("TableLength", params, true, callbackSuccess, callbackError);
-};
-Csound.prototype.TableGet = function(index, table_number, callbackSuccess, callbackError) {
-    var params = {index : index, table_number : table_number};
-    return this.doRPC("TableGet", params, true, callbackSuccess, callbackError);
-};
-Csound.prototype.TableSet = function(index, table_number, value, callbackSuccess, callbackError) {
-    var params = {index : index, table_number : table_number, value : value};
-    return this.doRPC("TableSet", params, true, callbackSuccess, callbackError);
-};
+<script src="csound_jsonrpc_stub.js"></script>
 </script>
 <script>   
 
@@ -1760,7 +1555,7 @@ Csound.prototype.TableSet = function(index, table_number, value, callbackSuccess
 
     var number_format = new Intl.NumberFormat('en-US', {minimumFractionDigits: 3, maximumFractionDigits: 3 });
     $(document).ready(function() {
-        var csound = new Csound("http://localhost:8383");
+        var csound = new Csound("http://localhost:8080");
         $('input').on('input', function(event) {
             var slider_value = parseFloat(event.target.value);
             csound.SetControlChannel(event.target.id, slider_value, showResult, showError);
@@ -1789,17 +1584,16 @@ Csound.prototype.TableSet = function(index, table_number, value, callbackSuccess
 </html>
 }}
 
-gi_browser webkit_create 8383, 0
-// The following lines find the current working directory from Csound, 
-// and then use that to construct the base URI of the HTML code.
-S_pwd pwd
-S_base_uri sprintf "file://%s/", S_pwd
-prints S_base_uri
-webkit_open_html gi_browser, "Iterated Function System Study No. 6", gS_html, S_base_uri, 12000, 10000, 0
-endin
-alwayson "Browser"
-//////////////////////////////////////////////////////////////////////////////
+//gS_open init "xdg-open"
+gS_open init "open"
 
+//gi_webserver webserver_create "/Users/michaelgogins/csound-webserver-opcodes/examples/", 8080, 0
+
+gi_webserver webserver_create "/Users/michaelgogins/michael.gogins.studio/music/apnm-renderings/", 8080, 0
+
+webserver_open_html gi_webserver, gS_html, gS_open
+
+//////////////////////////////////////////////////////////////////////////////
 // The following C++ code defines and executes a score generator that 
 // implements the "multiple copy reducing machine" algorithm for computing an 
 // iterated function system (IFS).
