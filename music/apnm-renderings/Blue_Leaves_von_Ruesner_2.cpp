@@ -60,7 +60,7 @@ int main(int argc, const char **argv)
     csound::MusicModel model;
     // These fields determine output filenames and ID 3 tags.
     model.setTitle("Blue Leaves von Ruesner 2");
-    model.setFilename("Blue_Leaves_von_Ruesner-2");
+    model.setFilename("Blue_Leaves_von_Ruesner_2");
     model.setAlbum("Silence");
     model.setArtist("Michael Gogins");
     model.setAuthor("Michael Gogins");
