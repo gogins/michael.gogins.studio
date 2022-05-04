@@ -1,7 +1,7 @@
 <CsoundSyntheizer>
 <CsLicense>
 
-R E D   L E A V E S   V E R S I O N   8 . 4
+R E D   L E A V E S   V E R S I O N   8 . 4 . 1
 
 Michael Gogins, 2021
 
@@ -33,45 +33,9 @@ plugin Csound opcodes used in this piece are available on GitHub at
 https://github.com/gogins, except for the vst4cs opcodes which can be 
 downloaded from https://michaelgogins.tumblr.com/csound_extended. 
 
-//////////////////////////////////////////////////////////////////////////////
-// Tutorial comments like this are provided throughout the piece. 
-//////////////////////////////////////////////////////////////////////////////
-
-This piece has the following external dependencies, given for an Ubuntu Linux 
-installation. 
-
- 1. Csound 6.16 or later (https://github.com/csound/csound/actions/ for 
-    GitHub builds, https://github.com/csound/csound/releases for official releases).
- 2. The Csound opcodes for Faust 
-    (https://github.com/csound/plugins/tree/develop/faustcsound).
- 3. The Faust just-in-time compiler library 
-    (https://github.com/grame-cncm/faust/releases).
- 4. The Csound opcodes for the Clang/LLVM just-in-time C++ compiler 
-    (https://github.com/gogins/clang-opcodes/releases).
- 5. The Clang/LLVM infrastucture, version 13 (https://apt.llvm.org/, 
-    "Install Stable Branch").
- 6. The CsoundAC library (https://github.com/gogins/csound-extended/releases).
- 7. The Csound opcodes for the WebKit browser 
-    (https://github.com/gogins/webkit-opcodes/releases).
- 8. The WebKit2Gtk+ library (https://webkitgtk.org/, system packages 
-    `sudo apt-get install libwebkit2gtk-4.0-dev`).
- 9. The libjson-rpc-cpp library (https://github.com/cinemast/libjson-rpc-cpp, 
-    system packages `sudo apt-get install libjsonrpccpp-dev libjsonrpccpp-tools`).
-10. The Csound vst4cs opcodes for hosting VST2 plugins 
-    (https://href.li/?https://drive.google.com/file/d/1mYHyjoD7RUrPpST3ISa9CsxIg5wTspXc/view?usp=sharing).
-11. The Pianoteq physically modelled piano synth plugin from Modartt 
-    (https://www.modartt.com/pianoteq), this is a truly excellent 
-    commercial product.
-
-This is indeed a lot of stuff, but it makes for an_extremely_ powerful 
-computer music system.
-
-Even if you don't get everything here running, you may still find useful 
-information on how to use some of these features in your own pieces.
-
 </CsLicense>
 <CsOptions>
--+msg_color=0 -m3 -d -odac 
+-+msg_color=0 -m3 -d -odac:plughw:2,0
 </CsOptions>
 <CsInstruments>
 
@@ -284,7 +248,7 @@ k_y = i_radius * sin(i_onset + ((k_time - i_onset) * i_rate))
 xout k_x, k_y
 endop
 
-gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", 1
+gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", 0
 #include "PianoNotePianoteq.inc"
 #include "FMWaterBell.inc"
 #include "Phaser.inc"
@@ -577,16 +541,6 @@ gk_PianoOutPianoteq_level init 37
 
 gi_Spatialize3D_speaker_rig init 31
 
-//////////////////////////////////////////////////////////////////////////////
-// This instrument defines a WebKit browser embedded in Csound. The following 
-// HTML5 code is pretty much the standard sort of thing for Web pages.
-//
-// However, the <csound.js> script brings a proxy for the instance of Csound 
-// that is performing into the JavaScript context of the Web page, so the 
-// event handlers of the sliders on the page can call Csound to set control 
-// channel values.
-//////////////////////////////////////////////////////////////////////////////
-instr Browser
 gS_html init {{<!DOCTYPE html>
 <html>
 <head>
@@ -641,7 +595,7 @@ gS_html init {{<!DOCTYPE html>
     -->
     <script src="TrackballControls.js"></script>
     <script src="PianoRoll3D.js"></script>    
-    <script src="csound.js"></script>    
+    <script src="csound_jsonrpc_stub.js"></script>
 </head>
 <body style="background-color:black;box-sizing:border-box;padding:10px;:fullscreen">
     <canvas id="canvas" style="block;height:100vh;width:100vw">
@@ -651,7 +605,7 @@ gS_html init {{<!DOCTYPE html>
         // This is the JSON-RPC proxy for the instance of Csound that is 
         // performing this piece.
         //////////////////////////////////////////////////////////////////////
-        csound = new Csound("http://localhost:8383");
+        csound = new Csound(origin);
         //////////////////////////////////////////////////////////////////////
         // This hooks up JavaScript code for displaying a 3-dimensional piano 
         // roll display of the algorithmically generated score.
@@ -917,17 +871,11 @@ gS_html init {{<!DOCTYPE html>
 </html>
 }}
 
-gi_browser webkit_create 8383, 0
-//////////////////////////////////////////////////////////////////////////////
-// The following lines find the current working directory from Csound, 
-// and then use that to construct the base URI for the Web page.
-//////////////////////////////////////////////////////////////////////////////
-S_pwd pwd
-S_base_uri sprintf "file://%s/", S_pwd
-prints S_base_uri
-webkit_open_html gi_browser, "Red Leaves version 8", gS_html, S_base_uri, 12000, 10000, 0
-endin
-alwayson "Browser"
+gS_open init "xdg-open"
+//gS_open init "open"
+gi_webserver webserver_create "/home/mkg/michael.gogins.studio/2022-NYCEMF/", 8080, 0
+//gi_webserver webserver_create "/Users/michaelgogins/csound-webserver-opcodes/examples/", 8080, 0
+webserver_open_html gi_webserver, gS_html, gS_open
 
 //////////////////////////////////////////////////////////////////////////////
 // The following C++ code defines and executes a score generator that 
@@ -958,6 +906,7 @@ S_score_generator_code init {{
 #include <random>
 #include <ScoreNode.hpp>
 #include <VoiceleadingNode.hpp>
+#include "cxx_invokable.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 // This symbol is used by a number of C++ libraries, but is not defined in the
@@ -1175,6 +1124,7 @@ extern "C" int score_generator(CSOUND *csound) {
     //////////////////////////////////////////////////////////////////////////
     std::string javascript_code = "piano_roll.fromJson(`" + json_score + "`);";
     //std::fprintf(stderr, "javascript_code: %s\\n", javascript_code.c_str());
+    // TODO: Replace this with a server-sent event.
     ///webkit_run_javascript(csound, 0, javascript_code);
     return result;
 };
@@ -1188,9 +1138,13 @@ extern "C" int score_generator(CSOUND *csound) {
 // Note that dynamic link libraries must be passed as complete filepaths.
 //////////////////////////////////////////////////////////////////////////////
 
-//i_result cxx_compile "score_generator", S_score_generator_code, "g++ -v -g -O2 -std=c++17 -I/home/mkg/clang-opcodes -I/home/mkg/csound-extended/CsoundAC -I/usr/local/include/csound -I/user/local/eigen3", "/usr/lib/libCsoundAC.so.6.0 /usr/lib/gcc/x86_64-linux-gnu/9/libstdc++.so /usr/lib/gcc/x86_64-linux-gnu/9/libgcc_s.so /home/mkg/webkit-opcodes/webkit_opcodes.so /usr/lib/x86_64-linux-gnu/libm.so /usr/lib/x86_64-linux-gnu/libpthread.so"
+// Works elsewhere:
+// i_result cxx_compile "score_generator", S_score_generator_code, "g++ -g -v -O2 -fPIC -shared -std=c++17 -DUSE_DOUBLE -I/usr/local/include/csound -I/usr/include/eigen3 -lpthread"
 
-i_result cxx_compile "score_generator", S_score_generator_code, "g++ -v -g -O2 -std=c++17 -I/home/mkg/csound-extended/CsoundAC -I/usr/local/include/csound -I/home/mkg/csound/interfaces -I/usr/include/eigen3 -lCsoundAC -lm -lpthread"
+
+//i_result cxx_compile "score_generator", S_score_generator_code, "g++ -v -g -O2 -std=c++17 -I. -I/home/mkg/clang-opcodes -I/home/mkg/csound-extended/CsoundAC -I/usr/local/include/csound -I/user/local/eigen3", "/usr/lib/libCsoundAC.so.6.0 /usr/lib/gcc/x86_64-linux-gnu/9/libstdc++.so /usr/lib/gcc/x86_64-linux-gnu/9/libgcc_s.so /home/mkg/webkit-opcodes/webkit_opcodes.so /usr/lib/x86_64-linux-gnu/libm.so /usr/lib/x86_64-linux-gnu/libpthread.so"
+
+i_result cxx_compile "score_generator", S_score_generator_code, "g++ -v -g -O2 -std=c++17 -shared -fPIC -DUSE_DOUBLE -I. -I/usr/local/include/csound -I/home/mkg/csound/interfaces -I/usr/include/eigen3 -I/home/mkg/csound-extended/CsoundAC -L/usr/lib -lCsoundAC -lpthread"
 
 instr Exit
 prints "exitnow i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
