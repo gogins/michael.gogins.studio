@@ -350,9 +350,9 @@ nchnls = 2
 
 seed 29384 ;38493
 
-;;; gi_MverbVst vstinit "/home/mkg/.local/lib/Mverb2020.so", 1
-;;; gi_Organteq vstinit "/home/mkg/Organteq\ 1/x86-64bit/Organteq\ 1.lv2/Organteq_1.so", 0
-gi_Organteq vst3init "/Library/Audio/Plug-ins/VST3\Organtec/ 1.vst3"
+gi_MverbVst vstinit "/home/mkg/.local/lib/Mverb2020.so", 1
+gi_Organteq vstinit "/home/mkg/Organteq\ 1/x86-64bit/Organteq\ 1.lv2/Organteq_1.so", 0
+;;; gi_Organteq vst3init "/Library/Audio/Plug-ins/VST3\Organtec/ 1.vst3"
 
 alwayson "OrganOutOrganteq"
 alwayson "MverbVst"
@@ -389,8 +389,8 @@ prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrs
 i_pitch_correction = 44100 / sr
 ; prints "Pitch factor:   %9.4f\\n", i_pitch_correction
 ;vstnote gi_Organteq, 3, i_midi_key, i_midi_velocity, i_duration
-;;;vstnote gi_Organteq, i_instrument, i_midi_key, i_midi_velocity, i_duration
-id vst3note gi_Organteq, i_instrument, i_midi_key, i_midi_velocity, i_duration
+vstnote gi_Organteq, i_instrument, i_midi_key, i_midi_velocity, i_duration
+;;;id vst3note gi_Organteq, i_instrument, i_midi_key, i_midi_velocity, i_duration
 endin
 
 instr OrgantecCombination
@@ -745,11 +745,10 @@ gk_MverbVst_Damping_Frequency init 0.5
 gk_MverbVst_Gain init 1
 gi_MverbVst_Program init 4
 instr MverbVst
-;aoutL, aoutR freeverb ainL, ainR, kRoomSize, kHFDamp[, iSRate[, iSkip]] 
 k_gain = ampdb(gk_MverbVst_level)
 ainleft inleta "inleft"
 ainright inleta "inright"
-aoutleft, aoutright freeverb 12., 12000, sr, ainleft, ainright
+aoutleft, aoutright vstaudio gi_MverbVst, ainleft, ainright
 outleta "outleft", aoutleft
 outleta "outright", aoutright
 prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
