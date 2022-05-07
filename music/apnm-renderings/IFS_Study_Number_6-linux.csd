@@ -361,7 +361,7 @@ extern "C" {
 
 //i_result cxx_compile "grain_main", S_grain_code, "g++ -g -Ofast -march=native -std=c++14 -I/home/mkg/csound-cxx-opcodes -I/usr/local/include/csound  -I. -stdlib=libstdc++", "/usr/lib/gcc/x86_64-linux-gnu/9/libstdc++.so /usr/lib/gcc/x86_64-linux-gnu/9/libgcc_s.so /usr/local/lib/libstk.so /usr/lib/x86_64-linux-gnu/libm.so /usr/lib/x86_64-linux-gnu/libpthread.so"
 
-i_result cxx_compile "grain_main", S_grain_code, "g++ -g -v -O2 -fPIC -shared -std=c++17 -DUSE_DOUBLE -I/usr/local/include -I/usr/local/include/csound -I. -L/usr/local/lib -lstk -lm -lpthread"
+i_result cxx_compile "grain_main", S_grain_code, "g++ -g -v -O2 -fPIC -shared -std=c++17 -DUSE_DOUBLE -I/usr/local/include -I/usr/local/include/csound -I. -L/usr/local/lib -lstk -lpthread -lm"
 
 // Instruments are defined in blocks, along with their signal flow graph 
 // connections, the initial values of their control parameters, and whether 
@@ -1784,7 +1784,7 @@ int score_generator(CSOUND *csound) {
 
 //i_result cxx_compile "score_generator", S_score_generator_code, "g++ -g -O2 -std=c++14 -I/home/mkg/csound-cxx-opcodes -I/usr/local/include/csound -stdlib=libstdc++", "/usr/lib/gcc/x86_64-linux-gnu/9/libstdc++.so /usr/lib/gcc/x86_64-linux-gnu/9/libgcc_s.so /home/mkg/webkit-opcodes/webkit_opcodes.so /usr/lib/x86_64-linux-gnu/libm.so /usr/lib/x86_64-linux-gnu/libpthread.so"
 
-i_result cxx_compile "score_generator", S_score_generator_code, "g++ -g -O2 -fPIC -shared -std=c++17 -DUSE_DOUBLE -I/usr/local/include -I/usr/local/include/csound -I. -L/usr/local/lib -lstk -lm -lpthread"
+i_result cxx_compile "score_generator", S_score_generator_code, "g++ -g -O2 -fPIC -shared -std=c++17 -DUSE_DOUBLE -I/usr/local/include -I/usr/local/include/csound -I. -L/usr/local/lib -lstk -lpthread -lm"
 
 instr Exit
 exitnow 0
