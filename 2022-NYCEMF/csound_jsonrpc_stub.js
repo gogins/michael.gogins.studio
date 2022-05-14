@@ -124,8 +124,33 @@ class Csound {
         var params = {enabled : enabled};
         return this.invoke_rpc("SetDebug", params);
     };
+    /** 
+     * To use this, the Csound orchestra must use the `webserver_send` opcode 
+     * to create an event stream and send JSON-encoded messages in it. These 
+     * messages will first be decoded, then received in the callback.
+     */
+    async SetEventSourceCallback(event_stream_name, callback) {
+        // The event source URL will become: origin + "/" + event_stream_name.
+        let event_source = new EventSource(event_stream_name);
+        event_source.onmessage = function(event) {
+            try {
+                let parsed_data = JSON.parse(event.data);
+                callback(parsed_data);
+            } catch (e) {
+                console.log("Failed to parse: ");
+                console.log(typeof event.data);
+                console.log(event.data);
+                console.log(e);
+           };
+        };
+    };
+    /** 
+     * Implements csoundSetMessageCallback using server-sent events.
+     */
     async SetMessageCallback(callback) {
-        var params = {callback : callback};
+        var channel_name = "csound_message_callback";
+        var params = {channel_name : channel_name};
+        this.SetEventSourceCallback(channel_name, callback);
         return this.invoke_rpc("SetMessageCallback", params);
     };
     async SetScoreOffsetSeconds(score_time) {
