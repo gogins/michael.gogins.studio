@@ -171,31 +171,38 @@ prints "SPARTA Suite:\n"
 prints "----------------------------------------------------\n"
 prints "Send N instruments to one channel of one of these...\n"
 prints "````````````````````````````````````````````````````\n"
-gi_sparta_ambi_enc vstinit "/home/mkg/.vst/libsparta_ambiENC.so"
+///gi_sparta_ambi_enc vstinit "/home/mkg/.vst/libsparta_ambiENC.so"
+gi_sparta_ambi_enc vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/sparta_ambiENC.vst"
 vstinfo gi_sparta_ambi_enc
 prints "...or to N of these (need 2 of these at 2nd order):\n"
 prints "````````````````````````````````````````````````````\n"
-gi_sparta_ambi_room_sim vstinit "/home/mkg/.vst/libsparta_ambiRoomSim.so"
+///gi_sparta_ambi_room_sim vstinit "/home/mkg/.vst/libsparta_ambiRoomSim.so"
+gi_sparta_ambi_room_sim vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/sparta_ambiRoomSim.vst"
 vstinfo gi_sparta_ambi_room_sim
 prints "Not sure if this makes sense or can be controlled with parameters.\n"
 prints "````````````````````````````````````````````````````\n"
-gi_compass_spatedit vstinit "/home/mkg/.vst/libcompass_spatedit.so"
+///gi_compass_spatedit vstinit "/home/mkg/.vst/libcompass_spatedit.so"
+gi_compass_spatedit vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/compass_spatedit.vst"
 vstinfo gi_compass_spatedit
 prints "Then to this (N channels or binaural):\n"
 prints "````````````````````````````````````````````````````\n"
-gi_sparta_ambi_dec vstinit "/home/mkg/.vst/libsparta_ambiDEC.so"
+///gi_sparta_ambi_dec vstinit "/home/mkg/.vst/libsparta_ambiDEC.so"
+gi_sparta_ambi_dec vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/sparta_ambiDEC.vst"
 vstinfo gi_sparta_ambi_dec
 prints "Or this:\n"
 prints "````````````````````````````````````````````````````\n"
-gi_sparta_ambi_bin vstinit "/home/mkg/.vst/libsparta_ambiBIN.so"
+///gi_sparta_ambi_bin vstinit "/home/mkg/.vst/libsparta_ambiBIN.so"
+gi_sparta_ambi_bin vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/sparta_ambiBIN.vst"
 vstinfo gi_sparta_ambi_bin
 prints "Or this:\n"
 prints "````````````````````````````````````````````````````\n"
-gi_compass_decoder vstinit "/home/mkg/.vst/libcompass_decoder.so"
+///gi_compass_decoder vstinit "/home/mkg/.vst/libcompass_decoder.so"
+gi_compass_decoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/compass_decoder.vst"
 vstinfo gi_compass_decoder
 prints "Or this (probably best for binaural):\n"
 prints "````````````````````````````````````````````````````\n"
-gi_compass_binaural vstinit "/home/mkg/.vst/libcompass_binaural.so"
+///gi_compass_binaural vstinit "/home/mkg/.vst/libcompass_binaural.so"
+gi_compass_binaural vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/compass_binaural.vst"
 vstinfo gi_compass_binaural
 prints "====================================================\n"
 
@@ -256,7 +263,9 @@ k_y = i_radius * sin(i_onset + ((k_time - i_onset) * i_rate))
 xout k_x, k_y
 endop
 
-gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", 0
+///gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", 0
+gi_Pianoteq vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/Pianoteq\ 7.vst", 0
+
 #include "PianoNotePianoteq.inc"
 #include "FMWaterBell.inc"
 #include "Phaser.inc"
@@ -1005,11 +1014,13 @@ extern "C" int score_generator(CSOUND *csound) {
     // Note: for this to work, libcsound_webserver.so (or the equivalent 
     // filename on other platforms) must be in the link library list for THIS 
     // code in order to be loaded, linked, and resolved.
-    webserver_send_message_ = (void (*)(CSOUND *, int, const char *, const char *)) csound->GetLibrarySymbol(0, "webserver_send_message");
+    auto library_handle = dlopen("/Users/michaelgogins/csound-webserver-opcodes/build/libcsound_webserver.dylib", RTLD_NOW | RTLD_GLOBAL);
+    webserver_send_message_ = (void (*)(CSOUND *, int, const char *, const char *)) csound->GetLibrarySymbol(library_handle, "webserver_send_message");
     csound->Message(csound, "webserver_send_message_: %p\\n", webserver_send_message_);
-#if defined(__linux__)
+        csound->Message(csound, "dlerror: %s\\n", dlerror());
+#if (defined(__linux__) || defined(__MACH__))
     if (webserver_send_message_ == 0) {
-        csound->Message(csound, "dlerror: %s\\n",dlerror());
+        csound->Message(csound, "dlerror: %s\\n", dlerror());
     }
 #endif
     int result = OK;
@@ -1182,12 +1193,9 @@ extern "C" int score_generator(CSOUND *csound) {
 // Note that dynamic link libraries must be passed as complete filepaths.
 //////////////////////////////////////////////////////////////////////////////
 
-// Works elsewhere:
-// i_result cxx_compile "score_generator", S_score_generator_code, "g++ -g -v -O2 -fPIC -shared -std=c++17 -DUSE_DOUBLE -I/usr/local/include/csound -I/usr/include/eigen3 -lpthread"
+//i_result cxx_compile "score_generator", S_score_generator_code, "g++ -v -g -O2 -std=c++17 -shared -fPIC -DUSE_DOUBLE -I. -I/usr/local/include/csound -I/home/mkg/csound/interfaces -I/usr/include/eigen3 -I/System/Volumes/Data/opt/homebrew/include/eigen3 -I/opt/homebrew/Cellar/csound/6.17.0_5/Frameworks/CsoundLib64.framework/Versions/6.0/Headers -I/opt/homebrew/Cellar/boost/1.78.0_1/include -I/home/mkg/csound-extended/CsoundAC -lCsoundAC -lpthread -lm", "libcsound_webserver.so libCsoundAC.so"
 
-//i_result cxx_compile "score_generator", S_score_generator_code, "g++ -v -g -O2 -std=c++17 -I. -I/home/mkg/clang-opcodes -I/home/mkg/csound-extended/CsoundAC -I/usr/local/include/csound -I/user/local/eigen3", "/usr/lib/libCsoundAC.so.6.0 /usr/lib/gcc/x86_64-linux-gnu/9/libstdc++.so /usr/lib/gcc/x86_64-linux-gnu/9/libgcc_s.so /home/mkg/webkit-opcodes/webkit_opcodes.so /usr/lib/x86_64-linux-gnu/libm.so /usr/lib/x86_64-linux-gnu/libpthread.so"
-
-i_result cxx_compile "score_generator", S_score_generator_code, "g++ -v -g -O2 -std=c++17 -shared -fPIC -DUSE_DOUBLE -I. -I/usr/local/include/csound -I/home/mkg/csound/interfaces -I/usr/include/eigen3 -I/home/mkg/csound-extended/CsoundAC -lCsoundAC -lpthread -lm", "libcsound_webserver.so libCsoundAC.so"
+i_result cxx_compile "score_generator", S_score_generator_code, "g++ -v -g -O2 -std=c++17 -shared -fPIC -DUSE_DOUBLE -I. -I/usr/local/include/csound -I/home/mkg/csound/interfaces -I/usr/include/eigen3 -I/System/Volumes/Data/opt/homebrew/include/eigen3 -I/opt/homebrew/Cellar/csound/6.17.0_5/Frameworks/CsoundLib64.framework/Versions/6.0/Headers -I/opt/homebrew/Cellar/boost/1.78.0_1/include -I/home/mkg/csound-extended/CsoundAC -lCsoundAC -lpthread -lm", "/Users/michaelgogins/csound-webserver-opcodes/build/libcsound_webserver.dylib libCsoundAC.dylib"
 
 instr Exit
 prints "exitnow i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
