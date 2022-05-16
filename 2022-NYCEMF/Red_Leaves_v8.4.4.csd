@@ -1017,7 +1017,6 @@ extern "C" int score_generator(CSOUND *csound) {
     auto library_handle = dlopen("/Users/michaelgogins/csound-webserver-opcodes/build/libcsound_webserver.dylib", RTLD_NOW | RTLD_GLOBAL);
     webserver_send_message_ = (void (*)(CSOUND *, int, const char *, const char *)) csound->GetLibrarySymbol(library_handle, "webserver_send_message");
     csound->Message(csound, "webserver_send_message_: %p\\n", webserver_send_message_);
-        csound->Message(csound, "dlerror: %s\\n", dlerror());
 #if (defined(__linux__) || defined(__MACH__))
     if (webserver_send_message_ == 0) {
         csound->Message(csound, "dlerror: %s\\n", dlerror());
@@ -1173,7 +1172,7 @@ extern "C" int score_generator(CSOUND *csound) {
     // form.
     //////////////////////////////////////////////////////////////////////////
     auto json_score = score.toJson();
-    std::fprintf(stderr, json_score.c_str());
+    //std::fprintf(stderr, json_score.c_str());
     //////////////////////////////////////////////////////////////////////////
     // The Web page has already defined a canvas with a PianoRoll3D attached.
     // Here, the PianoRoll3D instance is called to send our JSON score to 
