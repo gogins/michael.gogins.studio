@@ -53,6 +53,10 @@ nchnls = 2
 //////////////////////////////////////////////////////////////////////////////
 seed 88818145
 
+gS_os, gS_macros cxx_os
+
+prints "Operating system: %s\n", gS_os
+
 gi_size init 20
 
 // Define just one of these.
@@ -130,39 +134,71 @@ prints "====================================================\n"
 prints "IEM Plugin Suite:\n"
 prints "----------------------------------------------------\n"
 prints "Send N instruments to one channel of one of these...\n"
-///gi_iem_multi_encoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/MultiEncoder.so"
+if strcmp(gS_os, "Linux") == 0 then
+gi_iem_multi_encoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/MultiEncoder.so"
+endif
+if strcmp(gS_os, "macOS") == 0 then
 gi_iem_multi_encoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/MultiEncoder.vst"
+endif
 vstinfo gi_iem_multi_encoder
 prints "````````````````````````````````````````````````````\n"
 prints "...or to N of these.\n"
-///gi_iem_stereo_encoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/StereoEncoder.so"
+if strcmp(gS_os, "Linux") == 0 then
+gi_iem_stereo_encoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/StereoEncoder.so"
+endif
+if strcmp(gS_os, "macOS") == 0 then
 gi_iem_stereo_encoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/StereoEncoder.vst"
+endif
 vstinfo gi_iem_stereo_encoder
 prints "````````````````````````````````````````````````````\n"
 prints "Then to the \"buss.\"\n"
-///gi_iem_omni_compressor vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/OmniCompressor.so"
-gi_iem_omni_compressor vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/OmniCompressor.vst"
+if strcmp(gS_os, "Linux") == 0 then
+gi_iem_omni_compressor vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/OmniCompressor.so"
+endif
+if strcmp(gS_os, "macOS") == 0 then
+i_iem_omni_compressor vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/OmniCompressor.vst"
+endif
 vstinfo gi_iem_omni_compressor
 prints "````````````````````````````````````````````````````\n"
 prints "Then to the room encoder (which does Doppler effects):\n"
-///gi_iem_room_encoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/RoomEncoder.so"
+if strcmp(gS_os, "Linux") == 0 then
+gi_iem_room_encoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/RoomEncoder.so"
+endif
+if strcmp(gS_os, "macOS") == 0 then
 gi_iem_room_encoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/RoomEncoder.vst"
+endif
 vstinfo gi_iem_room_encoder
 prints "````````````````````````````````````````````````````\n"
 prints "Then to the FDN reverb:\n"
-///gi_iem_fdn_reverb vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/FdnReverb.so"
+if strcmp(gS_os, "Linux") == 0 then
+gi_iem_fdn_reverb vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/FdnReverb.so"
+endif
+if strcmp(gS_os, "macOS") == 0 then
 gi_iem_fdn_reverb vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/FdnReverb.vst"
+endif
 vstinfo gi_iem_fdn_reverb
 prints "````````````````````````````````````````````````````\n"
 prints "Then to one of these outputs:\n"
-///gi_iem_simple_decoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/SimpleDecoder.so"
+if strcmp(gS_os, "Linux") == 0 then
+gi_iem_simple_decoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/SimpleDecoder.so"
+endif
+if strcmp(gS_os, "macOS") == 0 then
 gi_iem_simple_decoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/SimpleDecoder.vst"
+endif
 vstinfo gi_iem_simple_decoder
-///gi_iem_allra_decoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/AllRADecoder.so"
+if strcmp(gS_os, "Linux") == 0 then
+gi_iem_allra_decoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/AllRADecoder.so"
+endif
+if strcmp(gS_os, "macOS") == 0 then
 gi_iem_allra_decoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/AllRADecoder.vst"
+endif
 vstinfo gi_iem_allra_decoder
-///gi_iem_binaural_decoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/BinauralDecoder.so"
+if strcmp(gS_os, "Linux") == 0 then
+gi_iem_binaural_decoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/BinauralDecoder.so"
+endif
+if strcmp(gS_os, "macOS") == 0 then
 gi_iem_binaural_decoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/BinauralDecoder.vst"
+endif
 vstinfo gi_iem_binaural_decoder
 prints "====================================================\n"
 
@@ -171,41 +207,68 @@ prints "SPARTA Suite:\n"
 prints "----------------------------------------------------\n"
 prints "Send N instruments to one channel of one of these...\n"
 prints "````````````````````````````````````````````````````\n"
-///gi_sparta_ambi_enc vstinit "/home/mkg/.vst/libsparta_ambiENC.so"
-gi_sparta_ambi_enc vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/sparta_ambiENC.vst"
+if strcmp(gS_os, "Linux") == 0 then
+gi_sparta_ambi_enc vstinit "/home/mkg/.vst/libsparta_ambiENC.so"
+endif
+if strcmp(gS_os, "macOS") == 0 then
+gi_sparta_ambi_enc vstinit "System/Volumes/Data/Library/Audio/Plug-Ins/VST/sparta_ambiENC.vst"
+endif
 vstinfo gi_sparta_ambi_enc
 prints "...or to N of these (need 2 of these at 2nd order):\n"
 prints "````````````````````````````````````````````````````\n"
-///gi_sparta_ambi_room_sim vstinit "/home/mkg/.vst/libsparta_ambiRoomSim.so"
-gi_sparta_ambi_room_sim vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/sparta_ambiRoomSim.vst"
+if strcmp(gS_os, "Linux") == 0 then
+gi_sparta_ambi_room_sim vstinit "/home/mkg/.vst/libsparta_ambiRoomSim.so"
+endif
+if strcmp(gS_os, "macOS") == 0 then
+gi_sparta_ambi_room_sim vstinit "System/Volumes/Data/Library/Audio/Plug-Ins/VST/sparta_ambiRoomSim.vst"
+endif
 vstinfo gi_sparta_ambi_room_sim
 prints "Not sure if this makes sense or can be controlled with parameters.\n"
 prints "````````````````````````````````````````````````````\n"
-///gi_compass_spatedit vstinit "/home/mkg/.vst/libcompass_spatedit.so"
-gi_compass_spatedit vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/compass_spatedit.vst"
+if strcmp(gS_os, "Linux") == 0 then
+gi_compass_spatedit vstinit "/home/mkg/.vst/libcompass_spatedit.so"
+endif
+if strcmp(gS_os, "macOS") == 0 then
+gi_compass_spatedit vstinit "System/Volumes/Data/Library/Audio/Plug-Ins/VST/compass_spatedit.vst"
+endif
 vstinfo gi_compass_spatedit
 prints "Then to this (N channels or binaural):\n"
 prints "````````````````````````````````````````````````````\n"
-///gi_sparta_ambi_dec vstinit "/home/mkg/.vst/libsparta_ambiDEC.so"
-gi_sparta_ambi_dec vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/sparta_ambiDEC.vst"
+if strcmp(gS_os, "Linux") == 0 then
+gi_sparta_ambi_dec vstinit "/home/mkg/.vst/libsparta_ambiDEC.so"
+endif
+if strcmp(gS_os, "macOS") == 0 then
+gi_sparta_ambi_dec vstinit "System/Volumes/Data/Library/Audio/Plug-Ins/VST/sparta_ambiDEC.vst"
+endif
 vstinfo gi_sparta_ambi_dec
 prints "Or this:\n"
 prints "````````````````````````````````````````````````````\n"
-///gi_sparta_ambi_bin vstinit "/home/mkg/.vst/libsparta_ambiBIN.so"
-gi_sparta_ambi_bin vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/sparta_ambiBIN.vst"
+if strcmp(gS_os, "Linux") == 0 then
+gi_sparta_ambi_bin vstinit "/home/mkg/.vst/libsparta_ambiBIN.so"
+endif
+if strcmp(gS_os, "macOS") == 0 then
+gi_sparta_ambi_bin vstinit "System/Volumes/Data/Library/Audio/Plug-Ins/VST/sparta_ambiBIN.vst"
+endif
 vstinfo gi_sparta_ambi_bin
 prints "Or this:\n"
 prints "````````````````````````````````````````````````````\n"
-///gi_compass_decoder vstinit "/home/mkg/.vst/libcompass_decoder.so"
-gi_compass_decoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/compass_decoder.vst"
+if strcmp(gS_os, "Linux") == 0 then
+gi_compass_decoder vstinit "/home/mkg/.vst/libcompass_decoder.so"
+endif
+if strcmp(gS_os, "macOS") == 0 then
+gi_compass_decoder vstinit "System/Volumes/Data/Library/Audio/Plug-Ins/VST/compass_decoder.vst"
+endif
 vstinfo gi_compass_decoder
 prints "Or this (probably best for binaural):\n"
 prints "````````````````````````````````````````````````````\n"
-///gi_compass_binaural vstinit "/home/mkg/.vst/libcompass_binaural.so"
-gi_compass_binaural vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/compass_binaural.vst"
+if strcmp(gS_os, "Linux") == 0 then
+gi_compass_binaural vstinit "/home/mkg/.vst/libcompass_binaural.so"
+endif
+if strcmp(gS_os, "macOS") == 0 then
+gi_compass_binaural vstinit "System/Volumes/Data/Library/Audio/Plug-Ins/VST/compass_binaural.vst"
+endif
 vstinfo gi_compass_binaural
 prints "====================================================\n"
-
 
 #ifdef SPATIALIZE_GOGINS
 #include "Spatialize3D.inc"
@@ -263,8 +326,13 @@ k_y = i_radius * sin(i_onset + ((k_time - i_onset) * i_rate))
 xout k_x, k_y
 endop
 
-///gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", 0
+if strcmp(gS_os, "Linux") == 0 then
+gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", 0
+endif
+if strcmp(gS_os, "macOS") == 0 then
 gi_Pianoteq vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/Pianoteq\ 7.vst", 0
+endif
+vstinfo gi_Pianoteq
 
 #include "PianoNotePianoteq.inc"
 #include "FMWaterBell.inc"
@@ -908,8 +976,12 @@ gS_html init {{<!DOCTYPE html>
 </html>
 }}
 
-//gi_webserver webserver_create "/home/mkg/michael.gogins.studio/2022-NYCEMF/", 8080, 0
+if strcmp(gS_os, "Linux") == 0 then
+gi_webserver webserver_create "/home/mkg/michael.gogins.studio/2022-NYCEMF/", 8080, 0
+endif
+if strcmp(gS_os, "macOS") == 0 then
 gi_webserver webserver_create "/Users/michaelgogins/csound-webserver-opcodes/examples/", 8080, 0
+endif
 // The following event source has to be created before we actually send it a 
 // score to display.
 webserver_send gi_webserver, "score_display", ""
@@ -1192,9 +1264,12 @@ extern "C" int score_generator(CSOUND *csound) {
 // Note that dynamic link libraries must be passed as complete filepaths.
 //////////////////////////////////////////////////////////////////////////////
 
-//i_result cxx_compile "score_generator", S_score_generator_code, "g++ -v -g -O2 -std=c++17 -shared -fPIC -DUSE_DOUBLE -I. -I/usr/local/include/csound -I/home/mkg/csound/interfaces -I/usr/include/eigen3 -I/System/Volumes/Data/opt/homebrew/include/eigen3 -I/opt/homebrew/Cellar/csound/6.17.0_5/Frameworks/CsoundLib64.framework/Versions/6.0/Headers -I/opt/homebrew/Cellar/boost/1.78.0_1/include -I/home/mkg/csound-extended/CsoundAC -lCsoundAC -lpthread -lm", "libcsound_webserver.so libCsoundAC.so"
-
+if strcmp(gS_os, "Linux") == 0 then
+i_result cxx_compile "score_generator", S_score_generator_code, "g++ -v -g -O2 -std=c++17 -shared -fPIC -DUSE_DOUBLE -I. -I/usr/local/include/csound -I/home/mkg/csound/interfaces -I/usr/include/eigen3 -I/home/mkg/csound-extended/CsoundAC -lCsoundAC -lpthread -lm", "libcsound_webserver.so libCsoundAC.so"
+endif
+if strcmp(gS_os, "macOS") == 0 then
 i_result cxx_compile "score_generator", S_score_generator_code, "g++ -v -g -O2 -std=c++17 -shared -fPIC -DUSE_DOUBLE -I. -I/usr/local/include/csound -I/home/mkg/csound/interfaces -I/usr/include/eigen3 -I/System/Volumes/Data/opt/homebrew/include/eigen3 -I/opt/homebrew/Cellar/csound/6.17.0_5/Frameworks/CsoundLib64.framework/Versions/6.0/Headers -I/opt/homebrew/Cellar/boost/1.78.0_1/include -I/home/mkg/csound-extended/CsoundAC -lCsoundAC -lpthread -lm", "/Users/michaelgogins/csound-webserver-opcodes/build/libcsound_webserver.dylib libCsoundAC.dylib"
+endif
 
 instr Exit
 prints "exitnow i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
