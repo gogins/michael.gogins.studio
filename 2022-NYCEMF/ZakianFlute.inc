@@ -264,7 +264,7 @@ a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 k_time times
-printks "%-24s             t %9.4f L %9.4f R %9.4f\n", 1, nstrstr(p1), k_time, downsamp(a_out_left), downsamp(a_out_right)
+;printks "%-24s             t %9.4f L %9.4f R %9.4f\n", 1, nstrstr(p1), k_time, downsamp(a_out_left), downsamp(a_out_right)
 #end
 prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin

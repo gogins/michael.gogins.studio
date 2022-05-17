@@ -8,9 +8,9 @@ instr MasterOutput
 aleft inleta "inleft"
 aright inleta "inright"
 k_time times
-printks "%-24s             t %9.4f L %9.4f R %9.4f\n", 1, nstrstr(p1), k_time, downsamp(aleft), downsamp(aright)
+;printks "%-24s             t %9.4f L %9.4f R %9.4f\n", 1, nstrstr(p1), k_time, downsamp(aleft), downsamp(aright)
 k_gain = ampdb(gk_MasterOutput_level)
-printks2 "Master gain: %f\n", k_gain
+;printks2 "Master gain: %f\n", k_gain
 iamp init 1
 aleft butterlp aleft, 18000
 aright butterlp aright, 18000
