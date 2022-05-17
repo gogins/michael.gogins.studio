@@ -605,7 +605,7 @@ gS_html init {{<!DOCTYPE html>
     <div>
         <canvas id = 'piano_roll' class='canvas' style="width:98vw;height:98vh;"/>
         </canvas>
-        <textarea id="csound_diagnostics" style="position:absolute;top:1vh;left:1vw;color:SkyBlue;background-color:transparent;border:none;text-align:left;overflow:auto;padding:0;margin:0;border-collapse:collapse;font-family:Courier, sans-serif;font-size:9pt;">
+        <textarea id="csound_diagnostics" style="position:absolute;top:1vh;left:1vw;color:#87CEEBC0;background-color:transparent;border:none;text-align:left;overflow:auto;padding:0;margin:0;border-collapse:collapse;font-family:Courier, sans-serif;font-size:7pt;">
         </textarea>
     </div>
      <script>
@@ -1011,7 +1011,8 @@ extern "C" int score_generator(CSOUND *csound) {
     Cursor pen;
     modality.fromString("0 4 7 11 14");
     pen.chord = modality;
-    pen.note = csound::Event{1,35,144,1,1,1,0,0,0,0,1};
+    ///pen.note = csound::Event{1,35,144,1,1,1,0,0,0,0,1};
+    pen.note = csound::Event{1,4,144,1,1,1,0,0,0,0,1};
     int base_level = 1;
     std::vector<std::function<Cursor(const Cursor &, int, csound::Score &)>> generators;
     auto g1 = [&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
@@ -1071,7 +1072,7 @@ extern "C" int score_generator(CSOUND *csound) {
     // Before iterating, ensure that the score does start with a chord.
     //////////////////////////////////////////////////////////////////////////////
     chordsForTimes[-100.] = pen.chord;
-    recurrent(generators, transitions, 7, 0, pen, score);
+    recurrent(generators, transitions, 8, 0, pen, score);
     std::cout << "Generated duration:     " << score.getDuration() << std::endl;
     //////////////////////////////////////////////////////////////////////////////
     // We apply the chords that were generated along WITH the notes, TO the notes.
@@ -1154,7 +1155,7 @@ extern "C" int score_generator(CSOUND *csound) {
     // form.
     //////////////////////////////////////////////////////////////////////////
     auto json_score = score.toJson();
-    std::fprintf(stderr, json_score.c_str());
+    //std::fprintf(stderr, json_score.c_str());
     //////////////////////////////////////////////////////////////////////////
     // The Web page has already defined a canvas with a PianoRoll3D attached.
     // Here, the PianoRoll3D instance is called to send our JSON score to 
