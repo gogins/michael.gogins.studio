@@ -1,7 +1,7 @@
 // This must be initialized in the orc header before any #includes.
 
 // gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", 0
-vstinfo gi_Pianoteq 
+//vstinfo gi_Pianoteq 
 
 gk_PianoOutPianoteq_level chnexport "gk_PianoOutPianoteq_level", 3 ;  0
 gi_PianoOutPianoteq_print chnexport "gi_PianoOutPianoteq_print", 3 ;  1
@@ -43,7 +43,7 @@ a_out_left, a_out_right pan2 a_signal, gk_PianoOutPianoteq_left_to_right
 k_1 rms aoutleft
 k_2 rms aoutright
 
-;printks "%-24s l %9.4f r %9.4f\n", 0.5, nstrstr(p1), k_1, k_2
+printks "%-24s l %9.4f r %9.4f\n", 0.5, nstrstr(p1), k_1, k_2
 prints  "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 k_time times
 k_space_front_to_back = .25

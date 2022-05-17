@@ -211,7 +211,7 @@ if strcmp(gS_os, "Linux") == 0 then
 gi_sparta_ambi_enc vstinit "/home/mkg/.vst/libsparta_ambiENC.so"
 endif
 if strcmp(gS_os, "macOS") == 0 then
-gi_sparta_ambi_enc vstinit "System/Volumes/Data/Library/Audio/Plug-Ins/VST/sparta_ambiENC.vst"
+gi_sparta_ambi_enc vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/sparta_ambiENC.vst"
 endif
 vstinfo gi_sparta_ambi_enc
 prints "...or to N of these (need 2 of these at 2nd order):\n"
@@ -220,7 +220,7 @@ if strcmp(gS_os, "Linux") == 0 then
 gi_sparta_ambi_room_sim vstinit "/home/mkg/.vst/libsparta_ambiRoomSim.so"
 endif
 if strcmp(gS_os, "macOS") == 0 then
-gi_sparta_ambi_room_sim vstinit "System/Volumes/Data/Library/Audio/Plug-Ins/VST/sparta_ambiRoomSim.vst"
+gi_sparta_ambi_room_sim vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/sparta_ambiRoomSim.vst"
 endif
 vstinfo gi_sparta_ambi_room_sim
 prints "Not sure if this makes sense or can be controlled with parameters.\n"
@@ -229,7 +229,7 @@ if strcmp(gS_os, "Linux") == 0 then
 gi_compass_spatedit vstinit "/home/mkg/.vst/libcompass_spatedit.so"
 endif
 if strcmp(gS_os, "macOS") == 0 then
-gi_compass_spatedit vstinit "System/Volumes/Data/Library/Audio/Plug-Ins/VST/compass_spatedit.vst"
+gi_compass_spatedit vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/compass_spatedit.vst"
 endif
 vstinfo gi_compass_spatedit
 prints "Then to this (N channels or binaural):\n"
@@ -238,7 +238,7 @@ if strcmp(gS_os, "Linux") == 0 then
 gi_sparta_ambi_dec vstinit "/home/mkg/.vst/libsparta_ambiDEC.so"
 endif
 if strcmp(gS_os, "macOS") == 0 then
-gi_sparta_ambi_dec vstinit "System/Volumes/Data/Library/Audio/Plug-Ins/VST/sparta_ambiDEC.vst"
+gi_sparta_ambi_dec vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/sparta_ambiDEC.vst"
 endif
 vstinfo gi_sparta_ambi_dec
 prints "Or this:\n"
@@ -247,7 +247,7 @@ if strcmp(gS_os, "Linux") == 0 then
 gi_sparta_ambi_bin vstinit "/home/mkg/.vst/libsparta_ambiBIN.so"
 endif
 if strcmp(gS_os, "macOS") == 0 then
-gi_sparta_ambi_bin vstinit "System/Volumes/Data/Library/Audio/Plug-Ins/VST/sparta_ambiBIN.vst"
+gi_sparta_ambi_bin vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/sparta_ambiBIN.vst"
 endif
 vstinfo gi_sparta_ambi_bin
 prints "Or this:\n"
@@ -256,7 +256,7 @@ if strcmp(gS_os, "Linux") == 0 then
 gi_compass_decoder vstinit "/home/mkg/.vst/libcompass_decoder.so"
 endif
 if strcmp(gS_os, "macOS") == 0 then
-gi_compass_decoder vstinit "System/Volumes/Data/Library/Audio/Plug-Ins/VST/compass_decoder.vst"
+gi_compass_decoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/compass_decoder.vst"
 endif
 vstinfo gi_compass_decoder
 prints "Or this (probably best for binaural):\n"
@@ -265,7 +265,7 @@ if strcmp(gS_os, "Linux") == 0 then
 gi_compass_binaural vstinit "/home/mkg/.vst/libcompass_binaural.so"
 endif
 if strcmp(gS_os, "macOS") == 0 then
-gi_compass_binaural vstinit "System/Volumes/Data/Library/Audio/Plug-Ins/VST/compass_binaural.vst"
+gi_compass_binaural vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/compass_binaural.vst"
 endif
 vstinfo gi_compass_binaural
 prints "====================================================\n"
@@ -487,53 +487,6 @@ gk_FMWaterBell_bottom_to_top init -3
 // channels that can be controlled from the Web page.
 //////////////////////////////////////////////////////////////////////////////
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-gk_ReverbSC_feedback init 0.8586010817421159
-gk_MasterOutput_level init -24.743954301212316
-gi_FMWaterBell_attack init 0.002936276551436901
-gi_FMWaterBell_release init 0.022698875468554768
-gi_FMWaterBell_exponent init 8.72147623362715
-gi_FMWaterBell_sustain init 5.385256143273636
-gi_FMWaterBell_sustain_level init 0.08267388588088297
-gk_FMWaterBell_crossfade init 0.1234039047697504
-gk_FMWaterBell_index init 1.1401499375260309
-gk_FMWaterBell_vibrato_depth init 0.28503171595683335
-gk_FMWaterBell_vibrato_rate init 2.4993821566850647
-gk_FMWaterBell_level init 36.610575732712434
-gk_Phaser_ratio1 init 1.0388005601779389
-gk_Phaser_ratio2 init 3.0422604827415767
-gk_Phaser_index1 init 0.5066315182469726
-gk_Phaser_index2 init 0.5066315182469726
-gk_Phaser_level init 32.17116524092492
-gk_STKBowed_vibrato_level init 2.8
-gk_STKBowed_bow_pressure init 110
-gk_STKBowed_bow_position init 20
-gk_STKBowed_vibrato_frequency init 50.2
-gk_STKBowed_level init 0
-gk_Droner_partial1 init 0.15243200594152428
-gk_Droner_partial2 init 0.537136054698563
-gk_Droner_partial3 init 0.11921634014172572
-gk_Droner_partial4 init 0.23148078308338157
-gk_Droner_partial5 init 0.5845653209836774
-gk_Droner_level init 43.237994040784926
-gk_Sweeper_britel init 0.43034846362962353
-gk_Sweeper_briteh init 3.635884339731444
-gk_Sweeper_britels init 1.801136831699481
-gk_Sweeper_britehs init 3.572617184282066
-gk_Sweeper_level init 32.6981570885373
-gk_Buzzer_harmonics init 6.958151412801714
-gk_Buzzer_level init 20.61650089678787
-gk_Shiner_level init 18.3642589271156
-gk_Blower_grainDensity init 79.99177885109444
-gk_Blower_grainDuration init 0.2
-gk_Blower_grainAmplitudeRange init 87.88408180043162
-gk_Blower_grainFrequencyRange init 30.596081700708627
-gk_Blower_level init 7.754769280939186
-gk_ZakianFlute_level init 35.04532436404895
-gk_PianoOutPianoteq_level init 20
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-gi_Spatialize3D_speaker_rig init 31
 
 gS_html init {{<!DOCTYPE html>
 <html>
@@ -1154,7 +1107,7 @@ extern "C" int score_generator(CSOUND *csound) {
     // form.
     //////////////////////////////////////////////////////////////////////////
     auto json_score = score.toJson();
-    //std::fprintf(stderr, json_score.c_str());
+    std::fprintf(stderr, json_score.c_str());
     //////////////////////////////////////////////////////////////////////////
     // The Web page has already defined a canvas with a PianoRoll3D attached.
     // Here, the PianoRoll3D instance is called to send our JSON score to 
@@ -1192,6 +1145,6 @@ endin
 ; turns off Csound.
 ; a 0 1 270
 i "Exit" [12 * 60 + 5]
-;f 0 [6 * 60 + 5]
+f 0 [6 * 60 + 5]
 </CsScore>
 </CsoundSynthesizer>
