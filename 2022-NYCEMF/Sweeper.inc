@@ -1,19 +1,19 @@
 gk_Sweeper_midi_dynamic_range chnexport "gk_Sweeper_midi_dynamic_range", 3 ;  127
 gk_Sweeper_attack chnexport "gk_Sweeper_attack", 3 ;  .125
 gk_Sweeper_release chnexport "gk_Sweeper_release", 3 ;  .25
-gk_Sweeper_britel chnexport "gk_Sweeper_britel", 3 ;  0.1
-gk_Sweeper_briteh chnexport "gk_Sweeper_briteh", 3 ;  2.9
-gk_Sweeper_britels chnexport "gk_Sweeper_britels", 3 ;  2
-gk_Sweeper_britehs chnexport "gk_Sweeper_britehs", 3 ;  1
+gk_Sweeper_bright_min chnexport "gk_Sweeper_bright_min", 3 ;  0.1
+gk_Sweeper_bright_max chnexport "gk_Sweeper_bright_max", 3 ;  2.9
+gk_Sweeper_rate_min chnexport "gk_Sweeper_rate_min", 3 ;  2
+gk_Sweeper_rate_max chnexport "gk_Sweeper_rate_max", 3 ;  1
 gk_Sweeper_level chnexport "gk_Sweeper_level", 3 ;  0
 
 gk_Sweeper_midi_dynamic_range init 20
 gk_Sweeper_attack init .125
 gk_Sweeper_release init .25
-gk_Sweeper_britel init 0.1
-gk_Sweeper_briteh init 2.9
-gk_Sweeper_britels init 2
-gk_Sweeper_britehs init 1
+gk_Sweeper_bright_min init 0.1
+gk_Sweeper_bright_max init 2.9
+gk_Sweeper_rate_min init 2
+gk_Sweeper_rate_max init 1
 gk_Sweeper_level init 0
 
 gk_Sweeper_front_to_back chnexport "gk_Sweeper_front_to_back", 3 ;  0
@@ -53,19 +53,59 @@ iattack = i(gk_Sweeper_attack)
 irelease = i(gk_Sweeper_release)
 isustain = p3
 xtratim iattack + irelease
-kenvelope transegr 0.0, iattack / 2.0, 1.5, i_amplitude / 2.0, iattack / 2.0, -1.5, i_amplitude, isustain, 0.0, i_amplitude, irelease / 2.0, 1.5, i_amplitude / 2.0, irelease / 2.0, -1.5, 0
+k_envelope transegr 0.0, iattack / 2.0, 1.5, i_amplitude / 2.0, iattack / 2.0, -1.5, i_amplitude, isustain, 0.0, i_amplitude, irelease / 2.0, 1.5, i_amplitude / 2.0, irelease / 2.0, -1.5, 0
 ihertz = i_frequency
 icps = ihertz
 kamp expseg 0.001,0.02,0.2,p3-0.01,0.001
-ktonemoddep jspline 0.01,0.05,0.2
-ktonemodrte jspline 6,0.1,0.2
-ktone poscil3 ktonemoddep, ktonemodrte, gi_Sweeper_sine
-kbrite rspline gk_Sweeper_britel, gk_Sweeper_briteh, gk_Sweeper_britels, gk_Sweeper_britehs
-ibasfreq init icps
-ioctcnt init 3
-iphs init 0
-a1 hsboscil kenvelope, ktone, kbrite, ibasfreq, gi_Sweeper_sine, gi_Sweeper_octfn, ioctcnt, iphs
-amod poscil3 0.25, ibasfreq*(1/3), gi_Sweeper_sine
+k_tonality_mod_depth jspline 0.01,0.05,0.2
+k_tonality_mod_rate jspline 6,0.1,0.2
+k_cyclic_tonality poscil3 k_tonality_mod_depth, k_tonality_mod_rate, gi_Sweeper_sine
+k_brightness rspline gk_Sweeper_bright_min, gk_Sweeper_bright_max, gk_Sweeper_rate_min, gk_Sweeper_rate_max
+i_base_frequency init icps
+i_octave_count init 3
+i_initial_phase init 0
+
+gS_comment init {{
+I keep forgetting what the parameters do...
+
+k_envelope --                   amplitude of note.
+k_cyclic_tonality --            cyclic tonality parameter relative to 
+                                i_base_frequency in logarithmic octave, range 
+                                0 to 1, values > 1 can be used, and are 
+                                internally reduced to frac(k_cyclic_tonality).
+k_brightness --                 brightness parameter relative to i_base_frequency, 
+                                achieved by weighting i_octave_count octaves. 
+                                It is scaled in such a way, that a value of 0 
+                                corresponds to the orignal value of i_base_frequency, 
+                                1 corresponds to one octave above ibasfreq, 
+                                -2 corresponds to two octaves below i_base_frequency,
+                                etc. k_brightness may be fractional.
+i_base_frequency --             base frequency to which tonality and brighness 
+                                are relative.
+gi_Sweeper_sine --              function table of the waveform, usually a sine
+gi_Sweeper_octfn --             function table used for weighting the octaves, 
+                                usually something like:
+                                f1 0  1024  -19  1  0.5  270  0.5.
+i_octave_count --               number of octaves used for brightness blending. 
+                                Must be in the range 2 to 10. Default is 3.
+i_initial_phase --              initial phase of the oscillator. If 
+                                i_initial_phase = -1, initialization is skipped.
+
+hsboscil takes tonality and brightness as arguments, relative to a base frequency 
+(i_base_frequency). Tonality is a cyclic parameter in the logarithmic octave, 
+brightness is realized by mixing multiple weighted octaves.It is useful when tone 
+space is understood in a concept of polar coordinates.
+
+Making k_cyclic_tonality a line, and k_brightness a constant, produces Risset's 
+glissando.
+
+Oscillator table iwfn is always read interpolated. Performance time requires 
+about i_octave_count * oscili.
+
+}}
+
+a1 hsboscil k_envelope, k_cyclic_tonality, k_brightness, i_base_frequency, gi_Sweeper_sine, gi_Sweeper_octfn, i_octave_count, i_initial_phase
+amod poscil3 0.25, i_base_frequency*(1/3), gi_Sweeper_sine
 arm = a1*amod
 kmix expseg 0.001, 0.01, rnd(1), rnd(3)+0.3, 0.001
 kmix=.25

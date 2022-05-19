@@ -516,10 +516,10 @@ gk_Droner_partial3 init 0.07281366230321482
 gk_Droner_partial4 init 0.15702419538190301
 gk_Droner_partial5 init 0.6307084439495242
 gk_Droner_level init -24.297579658715474
-gk_Sweeper_britel init 0.43034846362962353
-gk_Sweeper_briteh init 2.564939042337441
-gk_Sweeper_britels init 0.5017809819095798
-gk_Sweeper_britehs init 2.6491495754161294
+gk_Sweeper_bright_min init 0.43034846362962353
+gk_Sweeper_bright_max init 2.564939042337441
+gk_Sweeper_rate_min init 0.5017809819095798
+gk_Sweeper_rate_max init 2.6491495754161294
 gk_Sweeper_level init 26.755056020239252
 gk_Buzzer_harmonics init 11.958151412801714
 gk_Buzzer_level init 23.61650089678787
@@ -561,10 +561,10 @@ gk_Droner_partial3 init 0.11921634014172572
 gk_Droner_partial4 init 0.06586077532305128
 gk_Droner_partial5 init 0.6616645824649159
 gk_Droner_level init 29.76521954032458
-gk_Sweeper_britel init 0.43034846362962353
-gk_Sweeper_briteh init 3.635884339731444
-gk_Sweeper_britels init 1.801136831699481
-gk_Sweeper_britehs init 3.572617184282066
+gk_Sweeper_bright_min init 0.43034846362962353
+gk_Sweeper_bright_max init 3.635884339731444
+gk_Sweeper_rate_min init 1.801136831699481
+gk_Sweeper_rate_max init 3.572617184282066
 gk_Sweeper_level init 20.486036741082465
 gk_Buzzer_harmonics init 2.7131023723500283
 gk_Buzzer_level init 23.61650089678787
@@ -606,10 +606,10 @@ gk_Droner_partial3 init 0.11921634014172572
 gk_Droner_partial4 init 0.06586077532305128
 gk_Droner_partial5 init 0.6616645824649159
 gk_Droner_level init 29.76521954032458
-gk_Sweeper_britel init 0.43034846362962353
-gk_Sweeper_briteh init 3.635884339731444
-gk_Sweeper_britels init 1.801136831699481
-gk_Sweeper_britehs init 3.572617184282066
+gk_Sweeper_bright_min init 0.
+gk_Sweeper_bright_max init 3.
+gk_Sweeper_rate_min init .3
+gk_Sweeper_rate_max init 1.
 gk_Sweeper_level init 20.486036741082465
 gk_Buzzer_harmonics init 11.958151412801714
 gk_Buzzer_level init 23.61650089678787
@@ -622,6 +622,52 @@ gk_Blower_level init 7.754769280939186
 gk_ZakianFlute_level init 25.125628140703512
 gk_PianoOutPianoteq_level init 10.523052921654475
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+gk_ReverbSC_feedback init 0.7252331341474114
+gk_MasterOutput_level init -3.0424589400956634
+gi_FMWaterBell_attack init 0.002936276551436901
+gi_FMWaterBell_release init 0.022698875468554768
+gi_FMWaterBell_exponent init 0
+gi_FMWaterBell_sustain init 5.385256143273636
+gi_FMWaterBell_sustain_level init 0.08267388588088297
+gk_FMWaterBell_crossfade init 0.1234039047697504
+gk_FMWaterBell_index init 1.1401499375260309
+gk_FMWaterBell_vibrato_depth init 0.28503171595683335
+gk_FMWaterBell_vibrato_rate init 2.4993821566850647
+gk_FMWaterBell_level init 26
+gk_Phaser_ratio1 init 1.0388005601779389
+gk_Phaser_ratio2 init 3.0422604827415767
+gk_Phaser_index1 init 0.5066315182469726
+gk_Phaser_index2 init 0.5066315182469726
+gk_Phaser_level init 8.25438668753604
+gk_STKBowed_vibrato_level init 1.3252461588017446
+gk_STKBowed_bow_pressure init 110
+gk_STKBowed_bow_position init 20
+gk_STKBowed_vibrato_frequency init 50.2
+gk_STKBowed_level init 12.610054746539113
+gk_Droner_partial1 init 0.11032374600527997
+gk_Droner_partial2 init 0.4927052938724468
+gk_Droner_partial3 init 0.11921634014172572
+gk_Droner_partial4 init 0.06586077532305128
+gk_Droner_partial5 init 0.6616645824649159
+gk_Droner_level init 29.76521954032458
+gk_Sweeper_bright_min init 0.2921802554838492
+gk_Sweeper_bright_max init 1.3148111496773214
+gk_Sweeper_rate_min init 0.16696014599077097
+gk_Sweeper_rate_max init 0.7095806204607766
+gk_Sweeper_level init 20.486036741082465
+gk_Buzzer_harmonics init 11.958151412801714
+gk_Buzzer_level init 23.61650089678787
+gk_Shiner_level init 22.3642589271156
+gk_Blower_grainDensity init 79.99177885109444
+gk_Blower_grainDuration init 0.2
+gk_Blower_grainAmplitudeRange init 87.88408180043162
+gk_Blower_grainFrequencyRange init 30.596081700708627
+gk_Blower_level init 7.754769280939186
+gk_ZakianFlute_level init 14.697056571423744
+gk_PianoOutPianoteq_level init 10.523052921654475
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 
 gi_Spatialize3D_speaker_rig init 31
@@ -797,10 +843,10 @@ gS_html init {{<!DOCTYPE html>
             gk_Droner_partial4: 0.06586077532305128,
             gk_Droner_partial5: 0.6616645824649159,
             gk_Droner_level: 29.76521954032458,
-            gk_Sweeper_britel: 0.43034846362962353,
-            gk_Sweeper_briteh: 3.635884339731444,
-            gk_Sweeper_britels: 1.801136831699481,
-            gk_Sweeper_britehs: 3.572617184282066,
+            gk_Sweeper_bright_min: 0.43034846362962353,
+            gk_Sweeper_bright_max: 3.635884339731444,
+            gk_Sweeper_rate_min: 1.801136831699481,
+            gk_Sweeper_rate_max: 3.572617184282066,
             gk_Sweeper_level: 20.486036741082465,
             gk_Buzzer_harmonics: 11.958151412801714,
             gk_Buzzer_level: 23.61650089678787,
@@ -828,7 +874,7 @@ gS_html init {{<!DOCTYPE html>
         // We do NOT use dat.gui's persistence mechanism based on HTML5 local 
         // storage, hence no "gui.remember()."
         //////////////////////////////////////////////////////////////////////
-        window.onload = function() {
+        window.onload = async function() {
             gui = new dat.GUI({load: parameters, width: 500});
             gui.add(parameters, 'save_controls').name('Save control values [Ctrl-S]');
             gui.add(parameters, 'recenter').name('Re-center piano roll [Ctrl-C]');
@@ -866,10 +912,10 @@ gS_html init {{<!DOCTYPE html>
             add_slider(Droner, 'gk_Droner_partial5', 0, 1);
             add_slider(Droner, 'gk_Droner_level', -50, 50);
             var Sweeper = gui.addFolder('Sweeper');
-            add_slider(Sweeper, 'gk_Sweeper_britel', 0, 4);
-            add_slider(Sweeper, 'gk_Sweeper_briteh', 0, 4);
-            add_slider(Sweeper, 'gk_Sweeper_britels', 0, 4);
-            add_slider(Sweeper, 'gk_Sweeper_britehs', 0, 4);
+            add_slider(Sweeper, 'gk_Sweeper_bright_min', 0, 4);
+            add_slider(Sweeper, 'gk_Sweeper_bright_max', 0, 4);
+            add_slider(Sweeper, 'gk_Sweeper_rate_min', 0, 4);
+            add_slider(Sweeper, 'gk_Sweeper_rate_max', 0, 4);
             add_slider(Sweeper, 'gk_Sweeper_level', -50, 50);
             var Buzzer = gui.addFolder('Buzzer');
             add_slider(Buzzer, 'gk_Buzzer_harmonics', 0, 20);
@@ -897,17 +943,16 @@ gS_html init {{<!DOCTYPE html>
             // Initializes the values of HTML controls with the values of the 
             // Csound control channels/variables with the same names.
             //////////////////////////////////////////////////////////////////////
-            console.log("Updating widgets with Csound control values...");
+            csound.Message("Updating widgets with Csound control values...\\n");
             for (const [key, value] of Object.entries(parameters)) {
                 if (typeof value !== 'function') {
-                    console.log(`parameter ${key} = ${value} (${typeof value})`);
-                    csound.GetControlChannel(key, function(id, value_) {
-                        parameters[key] = value_;
-                        console.log(`Initialized gui: ${key} = ${value_}`);
-                    });
-                }
+                    csound.Message(`parameter ${key} = ${value} (${typeof value})\n`);
+                    let value_ = await csound.GetControlChannel(key);
+                    parameters[key] = value_;
+                    csound.Message(`Initialized gui: ${key} = ${value_}\n`);
+                 }
             };
-            console.log("Updated widgets with Csound control values.");
+            csound.Message("Updated widgets with Csound control values.\\n");
             //////////////////////////////////////////////////////////////////////
             // When the user clicks on the "Save control values" command, the 
             // current state of the control parameters is printed to the terminal
@@ -1172,7 +1217,7 @@ extern "C" int score_generator(CSOUND *csound) {
     // This creates an algorithmically generated chord progression.
     //////////////////////////////////////////////////////////////////////////////
     score.sort();
-    score.rescale(csound::Event::KEY, true, 24.0, true,  72.0);
+    score.rescale(csound::Event::KEY, true, 24.0, true,  66.0);
     score.temper(12.);
     std::cout << "Generated notes:        " << score.size() << std::endl;
     double endTime = score.back().getTime();
@@ -1235,6 +1280,9 @@ extern "C" int score_generator(CSOUND *csound) {
         evtblk.p[4] = note.getKey();
         if (evtblk.p[1] == 1) {
             evtblk.p[4] += 12;
+        }
+        if (evtblk.p[1] == 5) {
+            evtblk.p[3] *= 4;
         }
         evtblk.p[5] = note.getVelocity();
         evtblk.p[6] = note.getDepth();
