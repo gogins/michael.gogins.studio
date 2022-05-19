@@ -1,9 +1,9 @@
 <CsoundSyntheizer>
 <CsLicense>
 
-R E D   L E A V E S   V E R S I O N   8 . 4 . 5
+R E D   L E A V E S   V E R S I O N   8 . 4 . 6
 
-Michael Gogins, 2021
+Michael Gogins, 2022
 
 This piece is another in my "Leaves" series of pieces of electroacoustic 
 concert music, algorithmically composed, available on electronic distribution. 
@@ -577,13 +577,59 @@ gk_Blower_level init 7.754769280939186
 gk_ZakianFlute_level init 25.125628140703512
 gk_PianoOutPianoteq_level init 8.957801552990993
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+gk_ReverbSC_feedback init 0.94060466265755
+gk_MasterOutput_level init -3.0424589400956634
+gi_FMWaterBell_attack init 0.002936276551436901
+gi_FMWaterBell_release init 0.022698875468554768
+gi_FMWaterBell_exponent init 8.72147623362715
+gi_FMWaterBell_sustain init 5.385256143273636
+gi_FMWaterBell_sustain_level init 0.08267388588088297
+gk_FMWaterBell_crossfade init 0.1234039047697504
+gk_FMWaterBell_index init 1.1401499375260309
+gk_FMWaterBell_vibrato_depth init 0.28503171595683335
+gk_FMWaterBell_vibrato_rate init 2.4993821566850647
+gk_FMWaterBell_level init 26
+gk_Phaser_ratio1 init 1.0388005601779389
+gk_Phaser_ratio2 init 3.0422604827415767
+gk_Phaser_index1 init 0.5066315182469726
+gk_Phaser_index2 init 0.5066315182469726
+gk_Phaser_level init 8.25438668753604
+gk_STKBowed_vibrato_level init 2.8
+gk_STKBowed_bow_pressure init 110
+gk_STKBowed_bow_position init 20
+gk_STKBowed_vibrato_frequency init 50.2
+gk_STKBowed_level init 0
+gk_Droner_partial1 init 0.11032374600527997
+gk_Droner_partial2 init 0.4927052938724468
+gk_Droner_partial3 init 0.11921634014172572
+gk_Droner_partial4 init 0.06586077532305128
+gk_Droner_partial5 init 0.6616645824649159
+gk_Droner_level init 29.76521954032458
+gk_Sweeper_britel init 0.43034846362962353
+gk_Sweeper_briteh init 3.635884339731444
+gk_Sweeper_britels init 1.801136831699481
+gk_Sweeper_britehs init 3.572617184282066
+gk_Sweeper_level init 20.486036741082465
+gk_Buzzer_harmonics init 11.958151412801714
+gk_Buzzer_level init 23.61650089678787
+gk_Shiner_level init 22.3642589271156
+gk_Blower_grainDensity init 79.99177885109444
+gk_Blower_grainDuration init 0.2
+gk_Blower_grainAmplitudeRange init 87.88408180043162
+gk_Blower_grainFrequencyRange init 30.596081700708627
+gk_Blower_level init 7.754769280939186
+gk_ZakianFlute_level init 25.125628140703512
+gk_PianoOutPianoteq_level init 10.523052921654475
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 gi_Spatialize3D_speaker_rig init 31
 
 gS_html init {{<!DOCTYPE html>
 <html>
 <head>
-    <title>Red Leaves version 8.4.5</title>
+    <title>Red Leaves version 8.4.6</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!--
 //////////////////////////////////////////////////////////////////////////////
@@ -1119,7 +1165,7 @@ extern "C" int score_generator(CSOUND *csound) {
     // Before iterating, ensure that the score does start with a chord.
     //////////////////////////////////////////////////////////////////////////////
     chordsForTimes[-100.] = pen.chord;
-    recurrent(generators, transitions, 6, 0, pen, score);
+    recurrent(generators, transitions, 7, 0, pen, score);
     std::cout << "Generated duration:     " << score.getDuration() << std::endl;
     //////////////////////////////////////////////////////////////////////////////
     // We apply the chords that were generated along WITH the notes, TO the notes.

@@ -20,12 +20,11 @@ This piece is written in Csound using opcodes by me that enable embedding C++ an
 
 ## Porphyry v7.4.2
 
-This piece is written in Python and rendered using Csound. The conceit of the piece is that the actual measures from Mozart's musical dice game are used as motival cells, played in sequence a random number of times as in Terry Riley's "In C." Additionally, chord progressions and modulations for these motival cells are generated at random using my code for ideas of Dmitri Tymoczko.
+This piece is written in Python and rendered using Csound. The conceit of the piece is that the actual measures from Mozart's musical dice game are used as motivaic cells, played in sequence a random number of times as in Terry Riley's "In C." Additionally, chord progressions and modulations for these motivic cells are generated at random using my code for ideas of Dmitri Tymoczko.
 
 ## Three Trees 1
 
-This piece is written in Java and rendered using Csound. The score is generated using a Lindenmayer system.
-
+This piece was originally written in 1996 or so, and re-rendered with significantly fewer artifacts in 2017. The score is generated using a Lindenmayer system that is part of Silence, an algorithmic composition system written by me in Java ("Music Graphs for Algorithmic Composition and Synthesis with an Extensible Implementation in Java," _Proceedings of the International Computer Music Conference_, September 1998). The score is rendered exclusively by direct synthesis (no samples or post-processing) in Csound.
 
 
 
