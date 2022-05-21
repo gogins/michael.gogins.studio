@@ -27,6 +27,9 @@ gk_Sweeper_bottom_to_top init 0
 gi_Sweeper_sine ftgen 0, 0, 65537, 10, 1
 gi_Sweeper_octfn ftgen 0, 0, 65537, -19, 1, 0.5, 270, 0.5
 
+#define SPATIALIZE_STEREO #1#
+
+
 instr Sweeper
 //////////////////////////////////////////////
 // Original by Iain McCurdy.
@@ -60,6 +63,7 @@ kamp expseg 0.001,0.02,0.2,p3-0.01,0.001
 k_tonality_mod_depth jspline 0.01,0.05,0.2
 k_tonality_mod_rate jspline 6,0.1,0.2
 k_cyclic_tonality poscil3 k_tonality_mod_depth, k_tonality_mod_rate, gi_Sweeper_sine
+; kres rspline krangeMin, krangeMax, kcpsMin, kcpsMax
 k_brightness rspline gk_Sweeper_bright_min, gk_Sweeper_bright_max, gk_Sweeper_rate_min, gk_Sweeper_rate_max
 i_base_frequency init icps
 i_octave_count init 3

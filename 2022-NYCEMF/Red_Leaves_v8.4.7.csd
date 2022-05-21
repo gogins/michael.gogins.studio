@@ -1,7 +1,7 @@
 <CsoundSyntheizer>
 <CsLicense>
 
-R E D   L E A V E S   V E R S I O N   8 . 4 . 6
+R E D   L E A V E S   V E R S I O N   8 . 4 . 7
 
 Michael Gogins, 2022
 
@@ -291,8 +291,6 @@ connect "Blower", "outleft", "ReverbSC", "inleft"
 connect "Blower", "outright", "ReverbSC", "inright"
 connect "STKBowed", "outleft", "ReverbSC", "inleft"
 connect "STKBowed", "outright", "ReverbSC", "inright"
-connect "Buzzer", "outleft", "ReverbSC", "inleft"
-connect "Buzzer", "outright", "ReverbSC", "inright"
 connect "Droner", "outleft", "ReverbSC", "inleft"
 connect "Droner", "outright", "ReverbSC", "inright"
 connect "FMWaterBell", "outleft", "ReverbSC", "inleft"
@@ -303,8 +301,6 @@ connect "PianoOutPianoteq", "outleft", "ReverbSC", "inleft"
 connect "PianoOutPianoteq", "outright", "ReverbSC", "inright"
 connect "Sweeper", "outleft", "ReverbSC", "inleft"
 connect "Sweeper", "outright", "ReverbSC", "inright"
-connect "Shiner", "outleft", "ReverbSC", "inleft"
-connect "Shiner", "outright", "ReverbSC", "inright"
 connect "ZakianFlute", "outleft", "ReverbSC", "inleft"
 connect "ZakianFlute", "outright", "ReverbSC", "inright"
 connect "ReverbSC", "outleft", "MasterOutput", "inleft"
@@ -339,8 +335,6 @@ vstinfo gi_Pianoteq
 #include "Phaser.inc"
 #include "Droner.inc"
 #include "Sweeper.inc"
-#include "Buzzer.inc"
-#include "Shiner.inc"
 #include "Blower.inc"
 #include "ZakianFlute.inc"
 #include "STKBowed.inc"
@@ -385,13 +379,11 @@ alwayson "PianoOutPianoteq"
 
 connect "Blower", "iem_out", "SpatializeIEM", "iem_in"
 connect "STKBowed", "iem_out", "SpatializeIEM", "iem_in"
-connect "Buzzer", "iem_out", "SpatializeIEM", "iem_in"
 connect "Droner", "iem_out", "SpatializeIEM", "iem_in"
 connect "FMWaterBell", "iem_out", "SpatializeIEM", "iem_in"
 connect "Phaser", "iem_out", "SpatializeIEM", "iem_in"
 connect "PianoOutPianoteq", "iem_out", "SpatializeIEM", "iem_in"
 connect "Sweeper", "iem_out", "SpatializeIEM", "iem_in"
-connect "Shiner", "iem_out", "SpatializeIEM", "iem_in"
 connect "ZakianFlute", "iem_out", "SpatializeIEM", "iem_in"
 #end
 
@@ -464,13 +456,11 @@ alwayson "SpatializeAALTO"
 
 connect "Blower", "aalto_out", "SpatializeAALTO", "aalto_in"
 connect "STKBowed", "aalto_out", "SpatializeAALTO", "aalto_in"
-connect "Buzzer", "aalto_out", "SpatializeAALTO", "aalto_in"
 connect "Droner", "aalto_out", "SpatializeAALTO", "aalto_in"
 connect "FMWaterBell", "aalto_out", "SpatializeAALTO", "aalto_in"
 connect "Phaser", "aalto_out", "SpatializeAALTO", "aalto_in"
 connect "PianoOutPianoteq", "aalto_out", "SpatializeAALTO", "aalto_in"
 connect "Sweeper", "aalto_out", "SpatializeAALTO", "aalto_in"
-connect "Shiner", "aalto_out", "SpatializeAALTO", "aalto_in"
 connect "ZakianFlute", "aalto_out", "SpatializeAALTO", "aalto_in"
 #end
 
@@ -667,6 +657,97 @@ gk_Blower_level init 7.754769280939186
 gk_ZakianFlute_level init 14.697056571423744
 gk_PianoOutPianoteq_level init 10.523052921654475
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+gk_ReverbSC_feedback init 0.7252331341474114
+gk_MasterOutput_level init -3.0424589400956634
+gi_FMWaterBell_attack init 0.002936276551436901
+gi_FMWaterBell_release init 0.022698875468554768
+gi_FMWaterBell_exponent init 0
+gi_FMWaterBell_sustain init 5.385256143273636
+gi_FMWaterBell_sustain_level init 0.08267388588088297
+gk_FMWaterBell_crossfade init 0.1234039047697504
+gk_FMWaterBell_index init 1.1401499375260309
+gk_FMWaterBell_vibrato_depth init 0.28503171595683335
+gk_FMWaterBell_vibrato_rate init 2.4993821566850647
+gk_FMWaterBell_level init 26
+gk_Phaser_ratio1 init 1.0388005601779389
+gk_Phaser_ratio2 init 0.704363115898565
+gk_Phaser_index1 init 0.31305027373269556
+gk_Phaser_index2 init 0.15652513686634778
+gk_Phaser_level init 28.262568433173882
+gk_STKBowed_vibrato_level init 0
+gk_STKBowed_bow_pressure init 110
+gk_STKBowed_bow_position init 20
+gk_STKBowed_vibrato_frequency init 50.2
+gk_STKBowed_level init 27.74081797695274
+gk_Droner_partial1 init 0.11032374600527997
+gk_Droner_partial2 init 0.4927052938724468
+gk_Droner_partial3 init 0.11921634014172572
+gk_Droner_partial4 init 0.06586077532305128
+gk_Droner_partial5 init 0.6616645824649159
+gk_Droner_level init 29.76521954032458
+gk_Sweeper_bright_min init 0
+gk_Sweeper_bright_max init 2
+gk_Sweeper_rate_min init 0.1
+gk_Sweeper_rate_max init 0.5
+gk_Sweeper_level init 18
+gk_Buzzer_harmonics init 0
+gk_Buzzer_level init 0
+gk_Shiner_level init 0
+gk_Blower_grainDensity init 79.99177885109444
+gk_Blower_grainDuration init 0.2
+gk_Blower_grainAmplitudeRange init 87.88408180043162
+gk_Blower_grainFrequencyRange init 30.596081700708627
+gk_Blower_level init 7.754769280939186
+gk_ZakianFlute_level init 14.697056571423744
+gk_PianoOutPianoteq_level init 2.69679607833708
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+gk_ReverbSC_feedback init 0.7252331341474114
+gk_MasterOutput_level init -3.0424589400956634
+gi_FMWaterBell_attack init 0.002936276551436901
+gi_FMWaterBell_release init 0.022698875468554768
+gi_FMWaterBell_exponent init 0
+gi_FMWaterBell_sustain init 5.385256143273636
+gi_FMWaterBell_sustain_level init 0.08267388588088297
+gk_FMWaterBell_crossfade init 0.1234039047697504
+gk_FMWaterBell_index init 1.1401499375260309
+gk_FMWaterBell_vibrato_depth init 0.28503171595683335
+gk_FMWaterBell_vibrato_rate init 2.4993821566850647
+gk_FMWaterBell_level init 26
+gk_Phaser_ratio1 init 1.0388005601779389
+gk_Phaser_ratio2 init 0.026087522811057966
+gk_Phaser_index1 init 0.6261005474653911
+gk_Phaser_index2 init 0.5478379790322172
+gk_Phaser_level init -5.651211221201464
+gk_STKBowed_vibrato_level init 0
+gk_STKBowed_bow_pressure init 94.75510035432474
+gk_STKBowed_bow_position init 72.22591565469507
+gk_STKBowed_vibrato_frequency init 50.2
+gk_STKBowed_level init 26.17556660828926
+gk_Droner_partial1 init 0.4382703832257738
+gk_Droner_partial2 init 0.10435009124423185
+gk_Droner_partial3 init 0.07826256843317389
+gk_Droner_partial4 init 0.46435790603683175
+gk_Droner_partial5 init 0.2921802554838492
+gk_Droner_level init 12.610054746539113
+gk_Sweeper_bright_min init 0
+gk_Sweeper_bright_max init 2
+gk_Sweeper_rate_min init 0.1
+gk_Sweeper_rate_max init 0.5
+gk_Sweeper_level init 18
+gk_Buzzer_harmonics init 0
+gk_Buzzer_level init 0
+gk_Shiner_level init 0
+gk_Blower_grainDensity init 79.99177885109444
+gk_Blower_grainDuration init 0.2
+gk_Blower_grainAmplitudeRange init 87.88408180043162
+gk_Blower_grainFrequencyRange init 30.596081700708627
+gk_Blower_level init 2.69679607833708
+gk_ZakianFlute_level init 14.697056571423744
+gk_PianoOutPianoteq_level init -1.9989580276533445
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 gi_Spatialize3D_speaker_rig init 31
 
@@ -917,11 +998,6 @@ gS_html init {{<!DOCTYPE html>
             add_slider(Sweeper, 'gk_Sweeper_rate_min', 0, 4);
             add_slider(Sweeper, 'gk_Sweeper_rate_max', 0, 4);
             add_slider(Sweeper, 'gk_Sweeper_level', -50, 50);
-            var Buzzer = gui.addFolder('Buzzer');
-            add_slider(Buzzer, 'gk_Buzzer_harmonics', 0, 20);
-            add_slider(Buzzer, 'gk_Buzzer_level', -50, 50);
-            var Shiner = gui.addFolder('Shiner');
-            add_slider(Shiner, 'gk_Shiner_level', -50, 50);
             var Blower = gui.addFolder('Blower');
             add_slider(Blower, 'gk_Blower_grainDensity', 0, 400);
             add_slider(Blower, 'gk_Blower_grainDuration', 0, .5);
@@ -1147,7 +1223,7 @@ extern "C" int score_generator(CSOUND *csound) {
     modality.fromString("0 4 7 11 14");
     pen.chord = modality;
     ///pen.note = csound::Event{1,35,144,1,1,1,0,0,0,0,1};
-    pen.note = csound::Event{1,1,144,1,1,1,0,0,0,0,1};
+    pen.note = csound::Event{1,6,144,1,1,1,0,0,0,0,1};
     int base_level = 1;
     std::vector<std::function<Cursor(const Cursor &, int, csound::Score &)>> generators;
     auto g1 = [&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
@@ -1172,7 +1248,7 @@ extern "C" int score_generator(CSOUND *csound) {
             ///pen.chord = pen.chord.T(-.1);
             pen.chord = pen.chord.Q(3, modality);
         }
-        pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (900 + 20);
+        pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (500 + 20);
         pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .5) - .5;
         
         pen.note[csound::Event::VELOCITY] =  std::cos(pen.note[csound::Event::TIME]);                    
@@ -1192,7 +1268,7 @@ extern "C" int score_generator(CSOUND *csound) {
     generators.push_back(g3);
     auto g4 = [&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
         Cursor pen = pen_;
-        pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (900 + 50);
+        pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (500 - 15);
         pen.note[csound::Event::DURATION] = (pen.note[csound::Event::DURATION] * 1.02875);
         pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .5) + 1.;
         
@@ -1247,7 +1323,7 @@ extern "C" int score_generator(CSOUND *csound) {
     }
     std::cout << "Conformed notes:        " << size << std::endl;
     score.rescale(csound::Event::TIME,          true,  0.0, false,  0.0);
-    score.rescale(csound::Event::INSTRUMENT,    true,  1.0, true,   9.999);
+    score.rescale(csound::Event::INSTRUMENT,    true,  1.0, true,   7.999);
     score.rescale(csound::Event::VELOCITY,      true, 40.0, true,  20.0);
     score.rescale(csound::Event::PAN,           true,  0.0, true,   0.0);
     std::cout << "Move to origin duration:" << score.getDuration() << std::endl;
@@ -1282,9 +1358,6 @@ extern "C" int score_generator(CSOUND *csound) {
         evtblk.p[4] = note.getKey();
         if (evtblk.p[1] == 1) {
             evtblk.p[4] += 12;
-        }
-        if (evtblk.p[1] == 5) {
-            evtblk.p[3] *= 6;
         }
         evtblk.p[5] = note.getVelocity();
         evtblk.p[6] = note.getDepth();
@@ -1335,7 +1408,7 @@ endin
 ; f 0 does not work here, we actually need to schedule an instrument that 
 ; turns off Csound.
 ; a 0 1 270
-i "Exit" [12 * 60 + 5]
-f 0 [6 * 60 + 5]
+i "Exit" [740]
+;f 0 [6 * 60 + 5]
 </CsScore>
 </CsoundSynthesizer>

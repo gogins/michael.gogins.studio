@@ -1,9 +1,9 @@
 <CsoundSyntheizer>
 <CsLicense>
 
-R E D   L E A V E S   V E R S I O N   8 . 4 . 6
+R E D   L E A V E S   V E R S I O N   8 . 4 . 1
 
-Michael Gogins, 2022
+Michael Gogins, 2021
 
 This piece is another in my "Leaves" series of pieces of electroacoustic 
 concert music, algorithmically composed, available on electronic distribution. 
@@ -45,17 +45,14 @@ downloaded from https://michaelgogins.tumblr.com/csound_extended.
 sr = 48000
 ksmps = 128
 nchnls = 2
-0dbfs = 20
+0dbfs = 10
+;0dbfs = 100000000000
 //////////////////////////////////////////////////////////////////////////////
 // This random seed ensures that the same random stream  is used for each 
 // rendering. Note that rand, randh, randi, rnd(x) and birnd(x) are not 
 // affected by seed.
 //////////////////////////////////////////////////////////////////////////////
 seed 88818145
-
-gS_os, gS_macros cxx_os
-
-prints "Operating system: %s\n", gS_os
 
 gi_size init 20
 
@@ -84,7 +81,7 @@ gi_pi init 3.141592653589793
         radius = sqrt(xSquared + ySquared + z * z);
         azimuthInRadians = atan2(y, x);
         elevationInRadians = atan2(z, sqrt(xSquared + ySquared));
-    };
+    } 9MT32V)@W4
 
 */
 opcode iem_cartesian_to_spherical, kkk, kkk
@@ -120,7 +117,7 @@ S_template init {{%-24.24s i: %3d t: %9.4f max radius: %9.4f
   => Normalized: a: %9.4f e: %9.4f r: %9.4f
 }}
 k_time times
-;printks S_template, .5, nstrstr(p1), int(p1), k_time, i_maximum_radius, k_x, k_y, k_z, k_azimuth, k_elevation, k_radius, k_azimuth * 180 / gi_pi, k_elevation * 180 / gi_pi, k_radius, k_azimuth_vst, k_elevation_vst, k_radius_vst
+printks S_template, .5, nstrstr(p1), int(p1), k_time, i_maximum_radius, k_x, k_y, k_z, k_azimuth, k_elevation, k_radius, k_azimuth * 180 / gi_pi, k_elevation * 180 / gi_pi, k_radius, k_azimuth_vst, k_elevation_vst, k_radius_vst
 xout k_azimuth_vst, k_elevation_vst, k_radius_vst
 endop
 
@@ -134,71 +131,31 @@ prints "====================================================\n"
 prints "IEM Plugin Suite:\n"
 prints "----------------------------------------------------\n"
 prints "Send N instruments to one channel of one of these...\n"
-if strcmp(gS_os, "Linux") == 0 then
 gi_iem_multi_encoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/MultiEncoder.so"
-endif
-if strcmp(gS_os, "macOS") == 0 then
-gi_iem_multi_encoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/MultiEncoder.vst"
-endif
 vstinfo gi_iem_multi_encoder
 prints "````````````````````````````````````````````````````\n"
 prints "...or to N of these.\n"
-if strcmp(gS_os, "Linux") == 0 then
 gi_iem_stereo_encoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/StereoEncoder.so"
-endif
-if strcmp(gS_os, "macOS") == 0 then
-gi_iem_stereo_encoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/StereoEncoder.vst"
-endif
 vstinfo gi_iem_stereo_encoder
 prints "````````````````````````````````````````````````````\n"
 prints "Then to the \"buss.\"\n"
-if strcmp(gS_os, "Linux") == 0 then
 gi_iem_omni_compressor vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/OmniCompressor.so"
-endif
-if strcmp(gS_os, "macOS") == 0 then
-i_iem_omni_compressor vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/OmniCompressor.vst"
-endif
 vstinfo gi_iem_omni_compressor
 prints "````````````````````````````````````````````````````\n"
 prints "Then to the room encoder (which does Doppler effects):\n"
-if strcmp(gS_os, "Linux") == 0 then
 gi_iem_room_encoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/RoomEncoder.so"
-endif
-if strcmp(gS_os, "macOS") == 0 then
-gi_iem_room_encoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/RoomEncoder.vst"
-endif
 vstinfo gi_iem_room_encoder
 prints "````````````````````````````````````````````````````\n"
 prints "Then to the FDN reverb:\n"
-if strcmp(gS_os, "Linux") == 0 then
 gi_iem_fdn_reverb vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/FdnReverb.so"
-endif
-if strcmp(gS_os, "macOS") == 0 then
-gi_iem_fdn_reverb vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/FdnReverb.vst"
-endif
 vstinfo gi_iem_fdn_reverb
 prints "````````````````````````````````````````````````````\n"
 prints "Then to one of these outputs:\n"
-if strcmp(gS_os, "Linux") == 0 then
 gi_iem_simple_decoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/SimpleDecoder.so"
-endif
-if strcmp(gS_os, "macOS") == 0 then
-gi_iem_simple_decoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/SimpleDecoder.vst"
-endif
 vstinfo gi_iem_simple_decoder
-if strcmp(gS_os, "Linux") == 0 then
 gi_iem_allra_decoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/AllRADecoder.so"
-endif
-if strcmp(gS_os, "macOS") == 0 then
-gi_iem_allra_decoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/AllRADecoder.vst"
-endif
 vstinfo gi_iem_allra_decoder
-if strcmp(gS_os, "Linux") == 0 then
 gi_iem_binaural_decoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/BinauralDecoder.so"
-endif
-if strcmp(gS_os, "macOS") == 0 then
-gi_iem_binaural_decoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/BinauralDecoder.vst"
-endif
 vstinfo gi_iem_binaural_decoder
 prints "====================================================\n"
 
@@ -207,68 +164,34 @@ prints "SPARTA Suite:\n"
 prints "----------------------------------------------------\n"
 prints "Send N instruments to one channel of one of these...\n"
 prints "````````````````````````````````````````````````````\n"
-if strcmp(gS_os, "Linux") == 0 then
 gi_sparta_ambi_enc vstinit "/home/mkg/.vst/libsparta_ambiENC.so"
-endif
-if strcmp(gS_os, "macOS") == 0 then
-gi_sparta_ambi_enc vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/sparta_ambiENC.vst"
-endif
 vstinfo gi_sparta_ambi_enc
 prints "...or to N of these (need 2 of these at 2nd order):\n"
 prints "````````````````````````````````````````````````````\n"
-if strcmp(gS_os, "Linux") == 0 then
 gi_sparta_ambi_room_sim vstinit "/home/mkg/.vst/libsparta_ambiRoomSim.so"
-endif
-if strcmp(gS_os, "macOS") == 0 then
-gi_sparta_ambi_room_sim vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/sparta_ambiRoomSim.vst"
-endif
 vstinfo gi_sparta_ambi_room_sim
 prints "Not sure if this makes sense or can be controlled with parameters.\n"
 prints "````````````````````````````````````````````````````\n"
-if strcmp(gS_os, "Linux") == 0 then
 gi_compass_spatedit vstinit "/home/mkg/.vst/libcompass_spatedit.so"
-endif
-if strcmp(gS_os, "macOS") == 0 then
-gi_compass_spatedit vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/compass_spatedit.vst"
-endif
 vstinfo gi_compass_spatedit
 prints "Then to this (N channels or binaural):\n"
 prints "````````````````````````````````````````````````````\n"
-if strcmp(gS_os, "Linux") == 0 then
 gi_sparta_ambi_dec vstinit "/home/mkg/.vst/libsparta_ambiDEC.so"
-endif
-if strcmp(gS_os, "macOS") == 0 then
-gi_sparta_ambi_dec vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/sparta_ambiDEC.vst"
-endif
 vstinfo gi_sparta_ambi_dec
 prints "Or this:\n"
 prints "````````````````````````````````````````````````````\n"
-if strcmp(gS_os, "Linux") == 0 then
 gi_sparta_ambi_bin vstinit "/home/mkg/.vst/libsparta_ambiBIN.so"
-endif
-if strcmp(gS_os, "macOS") == 0 then
-gi_sparta_ambi_bin vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/sparta_ambiBIN.vst"
-endif
 vstinfo gi_sparta_ambi_bin
 prints "Or this:\n"
 prints "````````````````````````````````````````````````````\n"
-if strcmp(gS_os, "Linux") == 0 then
 gi_compass_decoder vstinit "/home/mkg/.vst/libcompass_decoder.so"
-endif
-if strcmp(gS_os, "macOS") == 0 then
-gi_compass_decoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/compass_decoder.vst"
-endif
 vstinfo gi_compass_decoder
 prints "Or this (probably best for binaural):\n"
 prints "````````````````````````````````````````````````````\n"
-if strcmp(gS_os, "Linux") == 0 then
 gi_compass_binaural vstinit "/home/mkg/.vst/libcompass_binaural.so"
-endif
-if strcmp(gS_os, "macOS") == 0 then
-gi_compass_binaural vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/compass_binaural.vst"
-endif
 vstinfo gi_compass_binaural
 prints "====================================================\n"
+
 
 #ifdef SPATIALIZE_GOGINS
 #include "Spatialize3D.inc"
@@ -326,14 +249,7 @@ k_y = i_radius * sin(i_onset + ((k_time - i_onset) * i_rate))
 xout k_x, k_y
 endop
 
-if strcmp(gS_os, "Linux") == 0 then
 gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", 0
-endif
-if strcmp(gS_os, "macOS") == 0 then
-gi_Pianoteq vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/Pianoteq\ 7.vst", 0
-endif
-vstinfo gi_Pianoteq
-
 #include "PianoNotePianoteq.inc"
 #include "FMWaterBell.inc"
 #include "Phaser.inc"
@@ -367,7 +283,7 @@ a_iem_encoder_in inletv "iem_in"
 k_1 rms a_iem_encoder_in[0]
 k_2 rms a_iem_encoder_in[1]
 k_3 rms a_iem_encoder_in[2]
-;printks "SpatializeIEM: a_iem_encoder_in: %9.4f %9.4f %9.4f\n", .5, k_1, k_2, k_3
+printks "SpatializeIEM: a_iem_encoder_in: %9.4f %9.4f %9.4f\n", .5, k_1, k_2, k_3
 a_iem_encoder_out[] init 64
 vstparamset gi_iem_multi_encoder, 0, 10
 a_iem_encoder_out vstaudio gi_iem_multi_encoder, a_iem_encoder_in
@@ -377,7 +293,7 @@ a_iem_decoder_out[] init 64
 a_iem_decoder_out vstaudio gi_iem_binaural_decoder, a_iem_reverb_out
 k_left rms a_iem_decoder_out[0]
 k_right rms a_iem_decoder_out[1]
-;printks "%-24.24s i %9.4f t %9.4f d %9.4f l %9.4f r %9.4f #%3d\n", 1, nstrstr(p1), p1, p2, p3, k_left, k_right, p7, active(p1)
+printks "%-24.24s i %9.4f t %9.4f d %9.4f l %9.4f r %9.4f #%3d\n", 1, nstrstr(p1), p1, p2, p3, k_left, k_right, p7, active(p1)
 out a_iem_decoder_out
 endin
 alwayson "SpatializeIEM"
@@ -418,7 +334,7 @@ vstparamset gi_sparta_ambi_room_sim, 55, .5
 a_aalto_encoder_out vstaudio gi_sparta_ambi_room_sim, a_aalto_encoder_in
 k_left rms a_aalto_encoder_out[0]
 k_right rms a_aalto_encoder_out[1]
-;printks "%-24.24s i %9.4f t %9.4f d %9.4f a %9.4f e %9.4f #%3d\n", 1, nstrstr(p1), p1, p2, p3, k_left, k_right, p7, active(p1)
+printks "%-24.24s i %9.4f t %9.4f d %9.4f a %9.4f e %9.4f #%3d\n", 1, nstrstr(p1), p1, p2, p3, k_left, k_right, p7, active(p1)
 a_aalto_decoder_out[] init 64
 a_iem_reverb_out[] init 64
 a_iem_reverb_out vstaudio gi_iem_fdn_reverb, a_aalto_encoder_out
@@ -458,7 +374,7 @@ a_aalto_decoder_out vstaudio gi_sparta_ambi_bin, a_iem_reverb_out
 out a_aalto_decoder_out
 k_left rms a_aalto_decoder_out[0]
 k_right rms a_aalto_decoder_out[1]
-;printks "%-24.24s i %9.4f t %9.4f d %9.4f l %9.4f r %9.4f #%3d\n", 1, nstrstr(p1), p1, p2, p3, k_left, k_right, p7, active(p1)
+printks "%-24.24s i %9.4f t %9.4f d %9.4f l %9.4f r %9.4f #%3d\n", 1, nstrstr(p1), p1, p2, p3, k_left, k_right, p7, active(p1)
 endin
 alwayson "SpatializeAALTO"
 
@@ -482,149 +398,15 @@ gk_FMWaterBell_front_to_back init -3
 gk_FMWaterBell_left_to_right init 1
 gk_FMWaterBell_bottom_to_top init -3
 
+
 //////////////////////////////////////////////////////////////////////////////
 // These define the initial values of all the global variables/control 
 // channels that can be controlled from the Web page.
 //////////////////////////////////////////////////////////////////////////////
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-gk_ReverbSC_feedback init 0.8962922460425744
-gk_MasterOutput_level init -7.455473042977829
-gi_FMWaterBell_attack init 0.002936276551436901
-gi_FMWaterBell_release init 0.022698875468554768
-gi_FMWaterBell_exponent init 8.72147623362715
-gi_FMWaterBell_sustain init 5.385256143273636
-gi_FMWaterBell_sustain_level init 0.08267388588088297
-gk_FMWaterBell_crossfade init 0.1234039047697504
-gk_FMWaterBell_index init 1.1401499375260309
-gk_FMWaterBell_vibrato_depth init 0.28503171595683335
-gk_FMWaterBell_vibrato_rate init 2.4993821566850647
-gk_FMWaterBell_level init 26
-gk_Phaser_ratio1 init 1.0388005601779389
-gk_Phaser_ratio2 init 3.0422604827415767
-gk_Phaser_index1 init 0.5066315182469726
-gk_Phaser_index2 init 0.5066315182469726
-gk_Phaser_level init 7.8346468747999225
-gk_STKBowed_vibrato_level init 2.8
-gk_STKBowed_bow_pressure init 110
-gk_STKBowed_bow_position init 20
-gk_STKBowed_vibrato_frequency init 50.2
-gk_STKBowed_level init 4.6497910870835995
-gk_Droner_partial1 init 0.21491893687350117
-gk_Droner_partial2 init 0.56228738582309
-gk_Droner_partial3 init 0.07281366230321482
-gk_Droner_partial4 init 0.15702419538190301
-gk_Droner_partial5 init 0.6307084439495242
-gk_Droner_level init -24.297579658715474
-gk_Sweeper_bright_min init 0.43034846362962353
-gk_Sweeper_bright_max init 2.564939042337441
-gk_Sweeper_rate_min init 0.5017809819095798
-gk_Sweeper_rate_max init 2.6491495754161294
-gk_Sweeper_level init 26.755056020239252
-gk_Buzzer_harmonics init 11.958151412801714
-gk_Buzzer_level init 23.61650089678787
-gk_Shiner_level init 22.3642589271156
-gk_Blower_grainDensity init 79.99177885109444
-gk_Blower_grainDuration init 0.2
-gk_Blower_grainAmplitudeRange init 87.88408180043162
-gk_Blower_grainFrequencyRange init 30.596081700708627
-gk_Blower_level init 7.754769280939186
-gk_ZakianFlute_level init 18.780321175104973
-gk_PianoOutPianoteq_level init 14.610540489274484
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-gk_ReverbSC_feedback init 0.94060466265755
-gk_MasterOutput_level init 23.199086906897115
-gi_FMWaterBell_attack init 0.002936276551436901
-gi_FMWaterBell_release init 0.022698875468554768
-gi_FMWaterBell_exponent init 8.72147623362715
-gi_FMWaterBell_sustain init 5.385256143273636
-gi_FMWaterBell_sustain_level init 0.08267388588088297
-gk_FMWaterBell_crossfade init 0.1234039047697504
-gk_FMWaterBell_index init 1.1401499375260309
-gk_FMWaterBell_vibrato_depth init 0.28503171595683335
-gk_FMWaterBell_vibrato_rate init 2.4993821566850647
-gk_FMWaterBell_level init 26
-gk_Phaser_ratio1 init 1.0388005601779389
-gk_Phaser_ratio2 init 3.0422604827415767
-gk_Phaser_index1 init 0.5066315182469726
-gk_Phaser_index2 init 0.5066315182469726
-gk_Phaser_level init 8.25438668753604
-gk_STKBowed_vibrato_level init 2.8
-gk_STKBowed_bow_pressure init 110
-gk_STKBowed_bow_position init 20
-gk_STKBowed_vibrato_frequency init 50.2
-gk_STKBowed_level init 0
-gk_Droner_partial1 init 0.11032374600527997
-gk_Droner_partial2 init 0.4927052938724468
-gk_Droner_partial3 init 0.11921634014172572
-gk_Droner_partial4 init 0.06586077532305128
-gk_Droner_partial5 init 0.6616645824649159
-gk_Droner_level init 29.76521954032458
-gk_Sweeper_bright_min init 0.43034846362962353
-gk_Sweeper_bright_max init 3.635884339731444
-gk_Sweeper_rate_min init 1.801136831699481
-gk_Sweeper_rate_max init 3.572617184282066
-gk_Sweeper_level init 20.486036741082465
-gk_Buzzer_harmonics init 2.7131023723500283
-gk_Buzzer_level init 23.61650089678787
-gk_Shiner_level init 22.3642589271156
-gk_Blower_grainDensity init 79.99177885109444
-gk_Blower_grainDuration init 0.2
-gk_Blower_grainAmplitudeRange init 87.88408180043162
-gk_Blower_grainFrequencyRange init 30.596081700708627
-gk_Blower_level init 7.754769280939186
-gk_ZakianFlute_level init 25.125628140703512
-gk_PianoOutPianoteq_level init 8.957801552990993
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-gk_ReverbSC_feedback init 0.94060466265755
-gk_MasterOutput_level init -3.0424589400956634
-gi_FMWaterBell_attack init 0.002936276551436901
-gi_FMWaterBell_release init 0.022698875468554768
-gi_FMWaterBell_exponent init 8.72147623362715
-gi_FMWaterBell_sustain init 5.385256143273636
-gi_FMWaterBell_sustain_level init 0.08267388588088297
-gk_FMWaterBell_crossfade init 0.1234039047697504
-gk_FMWaterBell_index init 1.1401499375260309
-gk_FMWaterBell_vibrato_depth init 0.28503171595683335
-gk_FMWaterBell_vibrato_rate init 2.4993821566850647
-gk_FMWaterBell_level init 26
-gk_Phaser_ratio1 init 1.0388005601779389
-gk_Phaser_ratio2 init 3.0422604827415767
-gk_Phaser_index1 init 0.5066315182469726
-gk_Phaser_index2 init 0.5066315182469726
-gk_Phaser_level init 8.25438668753604
-gk_STKBowed_vibrato_level init 2.8
-gk_STKBowed_bow_pressure init 110
-gk_STKBowed_bow_position init 20
-gk_STKBowed_vibrato_frequency init 50.2
-gk_STKBowed_level init 0
-gk_Droner_partial1 init 0.11032374600527997
-gk_Droner_partial2 init 0.4927052938724468
-gk_Droner_partial3 init 0.11921634014172572
-gk_Droner_partial4 init 0.06586077532305128
-gk_Droner_partial5 init 0.6616645824649159
-gk_Droner_level init 29.76521954032458
-gk_Sweeper_bright_min init 0.
-gk_Sweeper_bright_max init 3.
-gk_Sweeper_rate_min init .3
-gk_Sweeper_rate_max init 1.
-gk_Sweeper_level init 20.486036741082465
-gk_Buzzer_harmonics init 11.958151412801714
-gk_Buzzer_level init 23.61650089678787
-gk_Shiner_level init 22.3642589271156
-gk_Blower_grainDensity init 79.99177885109444
-gk_Blower_grainDuration init 0.2
-gk_Blower_grainAmplitudeRange init 87.88408180043162
-gk_Blower_grainFrequencyRange init 30.596081700708627
-gk_Blower_level init 7.754769280939186
-gk_ZakianFlute_level init 25.125628140703512
-gk_PianoOutPianoteq_level init 10.523052921654475
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-gk_ReverbSC_feedback init 0.7252331341474114
-gk_MasterOutput_level init -3.0424589400956634
+gk_ReverbSC_feedback init 0.86
+gk_MasterOutput_level init 46.
 gi_FMWaterBell_attack init 0.002936276551436901
 gi_FMWaterBell_release init 0.022698875468554768
 gi_FMWaterBell_exponent init 0
@@ -634,38 +416,128 @@ gk_FMWaterBell_crossfade init 0.1234039047697504
 gk_FMWaterBell_index init 1.1401499375260309
 gk_FMWaterBell_vibrato_depth init 0.28503171595683335
 gk_FMWaterBell_vibrato_rate init 2.4993821566850647
-gk_FMWaterBell_level init 26
+gk_FMWaterBell_level init 22.
 gk_Phaser_ratio1 init 1.0388005601779389
 gk_Phaser_ratio2 init 3.0422604827415767
 gk_Phaser_index1 init 0.5066315182469726
 gk_Phaser_index2 init 0.5066315182469726
 gk_Phaser_level init 8.25438668753604
-gk_STKBowed_vibrato_level init 1.3252461588017446
+gk_STKBowed_vibrato_level init 0
 gk_STKBowed_bow_pressure init 110
 gk_STKBowed_bow_position init 20
 gk_STKBowed_vibrato_frequency init 50.2
-gk_STKBowed_level init 12.610054746539113
+gk_STKBowed_level init 0
 gk_Droner_partial1 init 0.11032374600527997
 gk_Droner_partial2 init 0.4927052938724468
 gk_Droner_partial3 init 0.11921634014172572
 gk_Droner_partial4 init 0.06586077532305128
 gk_Droner_partial5 init 0.6616645824649159
-gk_Droner_level init 29.76521954032458
-gk_Sweeper_bright_min init 0.
-gk_Sweeper_bright_max init 2.
-gk_Sweeper_rate_min init 0.1
-gk_Sweeper_rate_max init 0.5
-gk_Sweeper_level init 18.
-gk_Buzzer_harmonics init 3.5
+gk_Droner_level init 18.563508886352523
+gk_Sweeper_britel init 0.4258927115604109
+gk_Sweeper_briteh init 3.635884339731444
+gk_Sweeper_britels init 1.1354964943746944
+gk_Sweeper_britehs init 3.222566443828469
+gk_Sweeper_level init 7.606391651720202
+gk_Buzzer_harmonics init 11.958151412801714
 gk_Buzzer_level init 23.61650089678787
 gk_Shiner_level init 22.3642589271156
-gk_Blower_grainDensity init 79.99177885109444
-gk_Blower_grainDuration init 0.2
-gk_Blower_grainAmplitudeRange init 87.88408180043162
-gk_Blower_grainFrequencyRange init 30.596081700708627
-gk_Blower_level init 7.754769280939186
-gk_ZakianFlute_level init 14.697056571423744
-gk_PianoOutPianoteq_level init 10.523052921654475
+gk_Blower_grainDensity init 132.3332789825534
+gk_Blower_grainDuration init 0.2854231208217838
+gk_Blower_grainAmplitudeRange init 174.0746779716289
+gk_Blower_grainFrequencyRange init 62.82406652535464
+gk_Blower_level init 6.562856676993313
+gk_ZakianFlute_level init 25.125628140703512
+gk_PianoOutPianoteq_level init -44.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+gk_ReverbSC_feedback init 0.86
+gk_MasterOutput_level init 46
+gi_FMWaterBell_attack init 0.002936276551436901
+gi_FMWaterBell_release init 0.022698875468554768
+gi_FMWaterBell_exponent init 0
+gi_FMWaterBell_sustain init 5.385256143273636
+gi_FMWaterBell_sustain_level init 0.08267388588088297
+gk_FMWaterBell_crossfade init 0.1234039047697504
+gk_FMWaterBell_index init 1.1401499375260309
+gk_FMWaterBell_vibrato_depth init 0.28503171595683335
+gk_FMWaterBell_vibrato_rate init 2.4993821566850647
+gk_FMWaterBell_level init 22
+gk_Phaser_ratio1 init 1.0388005601779389
+gk_Phaser_ratio2 init 3
+gk_Phaser_index1 init 0.5
+gk_Phaser_index2 init 1
+gk_Phaser_level init 6
+gk_STKBowed_vibrato_level init 0
+gk_STKBowed_bow_pressure init 110
+gk_STKBowed_bow_position init 20
+gk_STKBowed_vibrato_frequency init 50.2
+gk_STKBowed_level init 0
+gk_Droner_partial1 init 0.11032374600527997
+gk_Droner_partial2 init 0.4927052938724468
+gk_Droner_partial3 init 0.11921634014172572
+gk_Droner_partial4 init 0.06586077532305128
+gk_Droner_partial5 init 0.6616645824649159
+gk_Droner_level init 18.563508886352523
+gk_Sweeper_britel init 0.4258927115604109
+gk_Sweeper_briteh init 3.635884339731444
+gk_Sweeper_britels init 1.1354964943746944
+gk_Sweeper_britehs init 3.222566443828469
+gk_Sweeper_level init 7.606391651720202
+gk_Buzzer_harmonics init 11.958151412801714
+gk_Buzzer_level init 23.61650089678787
+gk_Shiner_level init 22.3642589271156
+gk_Blower_grainDensity init 132.3332789825534
+gk_Blower_grainDuration init 0.2854231208217838
+gk_Blower_grainAmplitudeRange init 174.0746779716289
+gk_Blower_grainFrequencyRange init 62.82406652535464
+gk_Blower_level init 6.562856676993313
+gk_ZakianFlute_level init 25.125628140703512
+gk_PianoOutPianoteq_level init -38
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+gk_ReverbSC_feedback init 0.86
+gk_MasterOutput_level init -46
+gi_FMWaterBell_attack init 0.002936276551436901
+gi_FMWaterBell_release init 0.022698875468554768
+gi_FMWaterBell_exponent init 0
+gi_FMWaterBell_sustain init 5.385256143273636
+gi_FMWaterBell_sustain_level init 0.08267388588088297
+gk_FMWaterBell_crossfade init 0.1234039047697504
+gk_FMWaterBell_index init 1.1401499375260309
+gk_FMWaterBell_vibrato_depth init 0.28503171595683335
+gk_FMWaterBell_vibrato_rate init 2.4993821566850647
+gk_FMWaterBell_level init 21
+gk_Phaser_ratio1 init 1.0388005601779389
+gk_Phaser_ratio2 init 3
+gk_Phaser_index1 init 0.5
+gk_Phaser_index2 init 1
+gk_Phaser_level init 6
+gk_STKBowed_vibrato_level init 0
+gk_STKBowed_bow_pressure init 110
+gk_STKBowed_bow_position init 20
+gk_STKBowed_vibrato_frequency init 50.2
+gk_STKBowed_level init 0
+gk_Droner_partial1 init 0.19517365074188814
+gk_Droner_partial2 init 0.2577857492255014
+gk_Droner_partial3 init 0.11169085276373716
+gk_Droner_partial4 init 0.15343225175281267
+gk_Droner_partial5 init 0.4456220446763411
+gk_Droner_level init 27.433556171531066
+gk_Sweeper_britel init 0.4258927115604109
+gk_Sweeper_briteh init 3.635884339731444
+gk_Sweeper_britels init 1.1354964943746944
+gk_Sweeper_britehs init 3.222566443828469
+gk_Sweeper_level init 7.606391651720202
+gk_Buzzer_harmonics init 6.61666394912767
+gk_Buzzer_level init 0
+gk_Shiner_level init -16.91668025436165
+gk_Blower_grainDensity init 132.3332789825534
+gk_Blower_grainDuration init 0.2854231208217838
+gk_Blower_grainAmplitudeRange init 174.0746779716289
+gk_Blower_grainFrequencyRange init 62.82406652535464
+gk_Blower_level init 6.562856676993313
+;gk_ZakianFlute_level init 25.125628140703512
+gk_ZakianFlute_level init 23.
+;gk_PianoOutPianoteq_level init -30
+gk_PianoOutPianoteq_level init 37
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 gi_Spatialize3D_speaker_rig init 31
@@ -673,8 +545,7 @@ gi_Spatialize3D_speaker_rig init 31
 gS_html init {{<!DOCTYPE html>
 <html>
 <head>
-    <title>Red Leaves version 8.4.6</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Red Leaves version 1</title>
     <!--
 //////////////////////////////////////////////////////////////////////////////
 // Override the CSS style of the numerical values shown for dat-gui sliders.
@@ -707,15 +578,6 @@ gS_html init {{<!DOCTYPE html>
         margin-top: -4px;
         border-radius: 10px;
     }
-    textarea {
-        min-width: 100%;
-        max-width: 100%;
-        min-height: 100%;
-        max-height: 100%;
-        -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-        -moz-box-sizing: border-box;    /* Firefox, other Gecko */
-        box-sizing: border-box;         /* Opera/IE 8+ */
-    }
     </style>
     <!--
     //////////////////////////////////////////////////////////////////////////
@@ -737,52 +599,39 @@ gS_html init {{<!DOCTYPE html>
     <script src="csound_jsonrpc_stub.js"></script>
 </head>
 <body style="background-color:black;box-sizing:border-box;padding:10px;:fullscreen">
-    <div>
-        <canvas id = 'piano_roll' class='canvas' style="width:98vw;height:98vh;"/>
-        </canvas>
-        <!--
-        <textarea id="csound_diagnostics" style="position:absolute;top:1vh;left:1vw;color:#87CEEBC0;background-color:transparent;border:none;text-align:left;overflow:auto;padding:0;margin:0;border-collapse:collapse;font-family:Courier, sans-serif;font-size:7pt;">
-        </textarea>
-        -->
-    </div>
-     <script>
+    <canvas id="canvas" style="block;height:100vh;width:100vw">
+    </canvas>
+    <script>
         //////////////////////////////////////////////////////////////////////
         // This is the JSON-RPC proxy for the instance of Csound that is 
         // performing this piece.
         //////////////////////////////////////////////////////////////////////
         csound = new Csound(origin);
-        //~ csound.SetMessageCallback(function(message) {
-            //~ let notifications_textarea = document.getElementById("csound_diagnostics");
-            //~ let existing_notifications = notifications_textarea.value;
-            //~ notifications_textarea.value = existing_notifications + message;
-            //~ notifications_textarea.scrollTop = notifications_textarea.scrollHeight;
-        //~ });
         //////////////////////////////////////////////////////////////////////
         // This hooks up JavaScript code for displaying a 3-dimensional piano 
         // roll display of the algorithmically generated score.
         //////////////////////////////////////////////////////////////////////
-        var canvas = document.getElementById("piano_roll");
+        var canvas = document.getElementById("canvas");
         var piano_roll = new PianoRoll.PianoRoll3D(canvas);
         let score_time = 0;
         let video_frame = 0;
-        csound.SetEventSourceCallback("score_display", function(data) {
-            console.log("score_display callback...");
-            console.log(typeof data);
-            /// console.log(data);
-            piano_roll.fromJson(data);        
-        });
         //////////////////////////////////////////////////////////////////////
         // The piano roll display is animated (a) to show a red ball that 
         // follows the score, and (b) to enable the use of the mouse or 
         // trackball to rotate, and zoom around in, the piano roll display.
         //////////////////////////////////////////////////////////////////////
-        async function animate() {
+        function animate() {
             //////////////////////////////////////////////////////////////////
             // By rendering the visual display only on every nth video frame, 
             // more time is given to Csound's audio rendering.
             //////////////////////////////////////////////////////////////////
-            if (video_frame % 30 == 0) {
-                score_time = await csound.GetScoreTime(function(id, result) {
+            if (video_frame % 3 == 0) {
+                //////////////////////////////////////////////////////////////
+                // This is the pattern for obtaining return values for all of 
+                // the Csound API's asynchronous JSON-RPC methods: by 
+                // callback.
+                //////////////////////////////////////////////////////////////
+                csound.GetScoreTime(function(id, result) {
                     score_time = result; 
                 });
                 if (typeof piano_roll !== "undefined") {
@@ -843,10 +692,10 @@ gS_html init {{<!DOCTYPE html>
             gk_Droner_partial4: 0.06586077532305128,
             gk_Droner_partial5: 0.6616645824649159,
             gk_Droner_level: 29.76521954032458,
-            gk_Sweeper_bright_min: 0.43034846362962353,
-            gk_Sweeper_bright_max: 3.635884339731444,
-            gk_Sweeper_rate_min: 1.801136831699481,
-            gk_Sweeper_rate_max: 3.572617184282066,
+            gk_Sweeper_britel: 0.43034846362962353,
+            gk_Sweeper_briteh: 3.635884339731444,
+            gk_Sweeper_britels: 1.801136831699481,
+            gk_Sweeper_britehs: 3.572617184282066,
             gk_Sweeper_level: 20.486036741082465,
             gk_Buzzer_harmonics: 11.958151412801714,
             gk_Buzzer_level: 23.61650089678787,
@@ -874,7 +723,7 @@ gS_html init {{<!DOCTYPE html>
         // We do NOT use dat.gui's persistence mechanism based on HTML5 local 
         // storage, hence no "gui.remember()."
         //////////////////////////////////////////////////////////////////////
-        window.onload = async function() {
+        window.onload = function() {
             gui = new dat.GUI({load: parameters, width: 500});
             gui.add(parameters, 'save_controls').name('Save control values [Ctrl-S]');
             gui.add(parameters, 'recenter').name('Re-center piano roll [Ctrl-C]');
@@ -912,10 +761,10 @@ gS_html init {{<!DOCTYPE html>
             add_slider(Droner, 'gk_Droner_partial5', 0, 1);
             add_slider(Droner, 'gk_Droner_level', -50, 50);
             var Sweeper = gui.addFolder('Sweeper');
-            add_slider(Sweeper, 'gk_Sweeper_bright_min', 0, 4);
-            add_slider(Sweeper, 'gk_Sweeper_bright_max', 0, 4);
-            add_slider(Sweeper, 'gk_Sweeper_rate_min', 0, 4);
-            add_slider(Sweeper, 'gk_Sweeper_rate_max', 0, 4);
+            add_slider(Sweeper, 'gk_Sweeper_britel', 0, 4);
+            add_slider(Sweeper, 'gk_Sweeper_briteh', 0, 4);
+            add_slider(Sweeper, 'gk_Sweeper_britels', 0, 4);
+            add_slider(Sweeper, 'gk_Sweeper_britehs', 0, 4);
             add_slider(Sweeper, 'gk_Sweeper_level', -50, 50);
             var Buzzer = gui.addFolder('Buzzer');
             add_slider(Buzzer, 'gk_Buzzer_harmonics', 0, 20);
@@ -943,15 +792,17 @@ gS_html init {{<!DOCTYPE html>
             // Initializes the values of HTML controls with the values of the 
             // Csound control channels/variables with the same names.
             //////////////////////////////////////////////////////////////////////
-            //csound.Message("Updating widgets with Csound control values...\\n");
+            console.log("Updating widgets with Csound control values...");
             for (const [key, value] of Object.entries(parameters)) {
                 if (typeof value !== 'function') {
-                    let value_ = await csound.GetControlChannel(key);
-                    parameters[key] = value_;
-                    csound.Message(`Initialized gui: ${key} = ${value_}\n`);
-                 }
+                    console.log(`parameter ${key} = ${value} (${typeof value})`);
+                    csound.GetControlChannel(key, function(id, value_) {
+                        parameters[key] = value_;
+                        console.log(`Initialized gui: ${key} = ${value_}`);
+                    });
+                }
             };
-            //csound.Message("Updated widgets with Csound control values.\\n");
+            console.log("Updated widgets with Csound control values.");
             //////////////////////////////////////////////////////////////////////
             // When the user clicks on the "Save control values" command, the 
             // current state of the control parameters is printed to the terminal
@@ -973,10 +824,10 @@ gS_html init {{<!DOCTYPE html>
                     }
                 };
                 text = text + delimiter;
-                navigator.clipboard.writeText(text);
+                ///navigator.clipboard.writeText(text);
                 console.log("Saved control values:\\n" + text);
             };
-            //////////////////////////////////////////////////////////////////
+             //////////////////////////////////////////////////////////////////
             // The 'Ctrl-H' key hides and unhides everything on the Web page 
             // except for the piano roll score display.
             //////////////////////////////////////////////////////////////////    
@@ -1021,16 +872,11 @@ gS_html init {{<!DOCTYPE html>
 </html>
 }}
 
-if strcmp(gS_os, "Linux") == 0 then
+gS_open init "xdg-open"
+//gS_open init "open"
 gi_webserver webserver_create "/home/mkg/michael.gogins.studio/2022-NYCEMF/", 8080, 0
-endif
-if strcmp(gS_os, "macOS") == 0 then
-gi_webserver webserver_create "/Users/michaelgogins/csound-webserver-opcodes/examples/", 8080, 0
-endif
-// The following event source has to be created before we actually send it a 
-// score to display.
-webserver_send gi_webserver, "score_display", ""
-webserver_open_html gi_webserver, gS_html
+//gi_webserver webserver_create "/Users/michaelgogins/csound-webserver-opcodes/examples/", 8080, 0
+webserver_open_html gi_webserver, gS_html, gS_open
 
 //////////////////////////////////////////////////////////////////////////////
 // The following C++ code defines and executes a score generator that 
@@ -1050,7 +896,6 @@ S_score_generator_code init {{
 #include <Eigen/Dense>
 #include <csound.h>
 #include <csdl.h>
-#include <dlfcn.h>
 #include <iostream>
 #include <cstdio>
 #include <random>
@@ -1116,29 +961,11 @@ void recurrent(std::vector< std::function<Cursor(const Cursor &,int, csound::Sco
     }
 }
 
-extern "C" {
-    void (*webserver_send_message_)(CSOUND *csound, int webserver_handle, const char *channel_name, const char *message);
-};
-
 //////////////////////////////////////////////////////////////////////////////
 // This is the entry point for this C++ module. It will be called by Csound 
 // immediately once the module has been compiled and linked.
 //////////////////////////////////////////////////////////////////////////////
-
 extern "C" int score_generator(CSOUND *csound) {
-    // Load: extern "C" void webserver_send_message(CSOUND *csound, int webserver_handle, const char *channel_name, const char *message);
-    // Library handle 0 means: search all symbols in the process.
-    // Note: for this to work, libcsound_webserver.so (or the equivalent 
-    // filename on other platforms) must be in the link library list for THIS 
-    // code in order to be loaded, linked, and resolved.
-    auto library_handle = dlopen("/Users/michaelgogins/csound-webserver-opcodes/build/libcsound_webserver.dylib", RTLD_NOW | RTLD_GLOBAL);
-    webserver_send_message_ = (void (*)(CSOUND *, int, const char *, const char *)) csound->GetLibrarySymbol(library_handle, "webserver_send_message");
-    csound->Message(csound, "webserver_send_message_: %p\\n", webserver_send_message_);
-#if (defined(__linux__) || defined(__MACH__))
-    if (webserver_send_message_ == 0) {
-        csound->Message(csound, "dlerror: %s\\n", dlerror());
-    }
-#endif
     int result = OK;
     csound::ScoreModel model;
     std::map<double, csound::Chord> chordsForTimes;
@@ -1146,8 +973,7 @@ extern "C" int score_generator(CSOUND *csound) {
     Cursor pen;
     modality.fromString("0 4 7 11 14");
     pen.chord = modality;
-    ///pen.note = csound::Event{1,35,144,1,1,1,0,0,0,0,1};
-    pen.note = csound::Event{1,1,144,1,1,1,0,0,0,0,1};
+    pen.note = csound::Event{1,35,144,1,1,1,0,0,0,0,1};
     int base_level = 1;
     std::vector<std::function<Cursor(const Cursor &, int, csound::Score &)>> generators;
     auto g1 = [&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
@@ -1156,57 +982,52 @@ extern "C" int score_generator(CSOUND *csound) {
             pen.chord = pen.chord.T(4);
             chordsForTimes[pen.note.getTime()] = pen.chord;
         }
-        pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (0 - 10);
-        pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .5);
+        pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (0 - 5);
+        pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .75);
         return pen;
     };
     generators.push_back(g1);
     auto g2 = [&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
         Cursor pen = pen_;
-        if ((depth + base_level) == 5) {
+        if ((depth + base_level) == 3) {
             pen.chord = pen.chord.K();
             chordsForTimes[pen.note.getTime()] = pen.chord;
         }
-        if ((depth + base_level) == 4) {
+        if ((depth + base_level) == 6) {
             ///pen.chord = pen.chord.Q(-1, modality);
-            ///pen.chord = pen.chord.T(-.1);
+            ///pen.chord = pen.chord.T(-1);
             pen.chord = pen.chord.Q(3, modality);
         }
-        pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (900 + 20);
-        pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .5) - .5;
-        
+        pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (1000 + 1);
+        pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .76) - .25;
         pen.note[csound::Event::VELOCITY] =  std::cos(pen.note[csound::Event::TIME]);                    
         return pen;
     };
     generators.push_back(g2);
     auto g3 = [&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
         Cursor pen = pen_;
-        pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (0 + 10);
-        pen.note[csound::Event::DURATION] = (pen.note[csound::Event::DURATION] * 1.04);
-        pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .5) + 2.05;
-        
+        pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (0 + 7);
+        pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .715) + 1.05;
         pen.note[csound::Event::INSTRUMENT] = std::cos(pen.note[csound::Event::TIME]);
-        pen.note[csound::Event::VELOCITY] = std::cos(pen.note[csound::Event::TIME]);
+        pen.note[csound::Event::VELOCITY] =  std::cos(pen.note[csound::Event::TIME]);
         return pen;
     };
     generators.push_back(g3);
     auto g4 = [&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
         Cursor pen = pen_;
-        pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (900 + 50);
-        pen.note[csound::Event::DURATION] = (pen.note[csound::Event::DURATION] * 1.02875);
-        pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .5) + 1.;
-        
-        pen.note[csound::Event::INSTRUMENT] = std::sin(pen.note[csound::Event::TIME]);
-        pen.note[csound::Event::VELOCITY] =  std::cos(pen.note[csound::Event::TIME] * .5);
+        pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (1000 - 5);
+        pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .77) + 1.;
+        pen.note[csound::Event::INSTRUMENT] = 2*std::sin(pen.note[csound::Event::TIME]);
+        pen.note[csound::Event::VELOCITY] =  std::cos(pen.note[csound::Event::TIME]);
         return pen;
     };
     generators.push_back(g4);
     // Generate the score.
-    Eigen::MatrixXd transitions(4, 4);
-    transitions <<  1, 1, 1, 1,
+    Eigen::MatrixXd transitions(4,4);
+    transitions <<  1, 0, 1, 1,
                     1, 1, 1, 1,
-                    1, 1, 0, 1,
-                    1, 1, 1, 1;
+                    1, 1, 1, 1,
+                    1, 1, 0, 1;
     csound::Score score;
     //////////////////////////////////////////////////////////////////////////////
     // Before iterating, ensure that the score does start with a chord.
@@ -1219,7 +1040,7 @@ extern "C" int score_generator(CSOUND *csound) {
     // This creates an algorithmically generated chord progression.
     //////////////////////////////////////////////////////////////////////////////
     score.sort();
-    score.rescale(csound::Event::KEY, true, 20.0, true,  72.0);
+    score.rescale(csound::Event::KEY, true, 24.0, true,  72.0);
     score.temper(12.);
     std::cout << "Generated notes:        " << score.size() << std::endl;
     double endTime = score.back().getTime();
@@ -1283,9 +1104,6 @@ extern "C" int score_generator(CSOUND *csound) {
         if (evtblk.p[1] == 1) {
             evtblk.p[4] += 12;
         }
-        if (evtblk.p[1] == 5) {
-            evtblk.p[3] *= 6;
-        }
         evtblk.p[5] = note.getVelocity();
         evtblk.p[6] = note.getDepth();
         evtblk.p[7] = note.getPan();
@@ -1298,14 +1116,17 @@ extern "C" int score_generator(CSOUND *csound) {
     // form.
     //////////////////////////////////////////////////////////////////////////
     auto json_score = score.toJson();
-    //std::fprintf(stderr, json_score.c_str());
     //////////////////////////////////////////////////////////////////////////
     // The Web page has already defined a canvas with a PianoRoll3D attached.
-    // Here, the PianoRoll3D instance is called to send our JSON score to 
-    // the Web page, which will render it as an animated, three-dimensional 
-    // piano roll.
+    // Here, the PianoRoll3D instance is called to render our JSON score on 
+    // that canvas as an animated, three-dimensional piano roll. Note the use 
+    // of a JavaScript template string (delimited by `) to hold the multi-line 
+    // JSON text with its embedded quotation marks and such.
     //////////////////////////////////////////////////////////////////////////
-    webserver_send_message_(csound, 0, "score_display", json_score.c_str());
+    std::string javascript_code = "piano_roll.fromJson(`" + json_score + "`);";
+    //std::fprintf(stderr, "javascript_code: %s\\n", javascript_code.c_str());
+    // TODO: Replace this with a server-sent event.
+    ///webkit_run_javascript(csound, 0, javascript_code);
     return result;
 };
 
@@ -1318,12 +1139,13 @@ extern "C" int score_generator(CSOUND *csound) {
 // Note that dynamic link libraries must be passed as complete filepaths.
 //////////////////////////////////////////////////////////////////////////////
 
-if strcmp(gS_os, "Linux") == 0 then
-i_result cxx_compile "score_generator", S_score_generator_code, "g++ -v -g -O2 -std=c++17 -shared -fPIC -DUSE_DOUBLE -I. -I/usr/local/include/csound -I/home/mkg/csound/interfaces -I/usr/include/eigen3 -I/home/mkg/csound-extended/CsoundAC -lCsoundAC -lpthread -lm", "libcsound_webserver.so libCsoundAC.so"
-endif
-if strcmp(gS_os, "macOS") == 0 then
-i_result cxx_compile "score_generator", S_score_generator_code, "g++ -v -g -O2 -std=c++17 -shared -fPIC -DUSE_DOUBLE -I. -I/usr/local/include/csound -I/home/mkg/csound/interfaces -I/usr/include/eigen3 -I/System/Volumes/Data/opt/homebrew/include/eigen3 -I/opt/homebrew/Cellar/csound/6.17.0_5/Frameworks/CsoundLib64.framework/Versions/6.0/Headers -I/opt/homebrew/Cellar/boost/1.78.0_1/include -I/home/mkg/csound-extended/CsoundAC -lCsoundAC -lpthread -lm", "/Users/michaelgogins/csound-webserver-opcodes/build/libcsound_webserver.dylib libCsoundAC.dylib"
-endif
+// Works elsewhere:
+// i_result cxx_compile "score_generator", S_score_generator_code, "g++ -g -v -O2 -fPIC -shared -std=c++17 -DUSE_DOUBLE -I/usr/local/include/csound -I/usr/include/eigen3 -lpthread"
+
+
+//i_result cxx_compile "score_generator", S_score_generator_code, "g++ -v -g -O2 -std=c++17 -I. -I/home/mkg/clang-opcodes -I/home/mkg/csound-extended/CsoundAC -I/usr/local/include/csound -I/user/local/eigen3", "/usr/lib/libCsoundAC.so.6.0 /usr/lib/gcc/x86_64-linux-gnu/9/libstdc++.so /usr/lib/gcc/x86_64-linux-gnu/9/libgcc_s.so /home/mkg/webkit-opcodes/webkit_opcodes.so /usr/lib/x86_64-linux-gnu/libm.so /usr/lib/x86_64-linux-gnu/libpthread.so"
+
+i_result cxx_compile "score_generator", S_score_generator_code, "g++ -v -g -O2 -std=c++17 -shared -fPIC -DUSE_DOUBLE -I. -I/usr/local/include/csound -I/home/mkg/csound/interfaces -I/usr/include/eigen3 -I/home/mkg/csound-extended/CsoundAC -lCsoundAC -lpthread -lm", "libCsoundAC.so"
 
 instr Exit
 prints "exitnow i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
@@ -1336,6 +1158,6 @@ endin
 ; turns off Csound.
 ; a 0 1 270
 i "Exit" [12 * 60 + 5]
-f 0 [6 * 60 + 5]
+;f 0 [6 * 60 + 5]
 </CsScore>
 </CsoundSynthesizer>
