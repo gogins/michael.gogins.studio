@@ -1015,7 +1015,7 @@ gS_html init {{<!DOCTYPE html>
             notifications_textarea.value = existing_notifications + message;
             notifications_textarea.scrollTop = notifications_textarea.scrollHeight;
         }; 
-        csound.SetMessageCallback(message_callback_, true);
+        ///csound.SetMessageCallback(message_callback_, true);
         //////////////////////////////////////////////////////////////////////
         // This hooks up JavaScript code for displaying a 3-dimensional piano 
         // roll display of the algorithmically generated score.
@@ -1437,7 +1437,7 @@ extern "C" int score_generator(CSOUND *csound) {
         Cursor pen = pen_;
         pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (0 + 10);
         pen.note[csound::Event::DURATION] = (pen.note[csound::Event::DURATION] * 1.04);
-        pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .5) + 2.05;
+        pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .85) + 1.5;
         
         pen.note[csound::Event::INSTRUMENT] = std::cos(pen.note[csound::Event::TIME]/5.);
         pen.note[csound::Event::VELOCITY] = std::cos(pen.note[csound::Event::TIME]/30);
@@ -1448,7 +1448,7 @@ extern "C" int score_generator(CSOUND *csound) {
         Cursor pen = pen_;
         pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (500 - 15);
         pen.note[csound::Event::DURATION] = (pen.note[csound::Event::DURATION] * 1.02875);
-        pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .5) + 1.;
+        pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .5) + 2.;
         
         pen.note[csound::Event::INSTRUMENT] = std::sin(pen.note[csound::Event::TIME]/5.);
         pen.note[csound::Event::VELOCITY] =  std::cos(pen.note[csound::Event::TIME] * .5);
@@ -1466,7 +1466,7 @@ extern "C" int score_generator(CSOUND *csound) {
     // Before iterating, ensure that the score does start with a chord.
     //////////////////////////////////////////////////////////////////////////////
     chordsForTimes[-100.] = pen.chord;
-    recurrent(generators, transitions, 5, 0, pen, score);
+    recurrent(generators, transitions, 7, 0, pen, score);
     std::cout << "Generated duration:     " << score.getDuration() << std::endl;
     //////////////////////////////////////////////////////////////////////////////
     // We apply the chords that were generated along WITH the notes, TO the notes.
