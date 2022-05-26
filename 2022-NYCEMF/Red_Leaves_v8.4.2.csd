@@ -1116,17 +1116,14 @@ extern "C" int score_generator(CSOUND *csound) {
     // form.
     //////////////////////////////////////////////////////////////////////////
     auto json_score = score.toJson();
+    //std::fprintf(stderr, json_score.c_str());
     //////////////////////////////////////////////////////////////////////////
     // The Web page has already defined a canvas with a PianoRoll3D attached.
-    // Here, the PianoRoll3D instance is called to render our JSON score on 
-    // that canvas as an animated, three-dimensional piano roll. Note the use 
-    // of a JavaScript template string (delimited by `) to hold the multi-line 
-    // JSON text with its embedded quotation marks and such.
+    // Here, the PianoRoll3D instance is called to send our JSON score to 
+    // the Web page, which will render it as an animated, three-dimensional 
+    // piano roll.
     //////////////////////////////////////////////////////////////////////////
-    std::string javascript_code = "piano_roll.fromJson(`" + json_score + "`);";
-    //std::fprintf(stderr, "javascript_code: %s\\n", javascript_code.c_str());
-    // TODO: Replace this with a server-sent event.
-    ///webkit_run_javascript(csound, 0, javascript_code);
+    webserver_send_message_(csound, 0, "score_display", json_score.c_str());
     return result;
 };
 

@@ -1,7 +1,7 @@
 <CsoundSyntheizer>
 <CsLicense>
 
-R E D   L E A V E S   V E R S I O N   8 . 4 . 3
+R E D   L E A V E S   V E R S I O N   8 . 4 . 11
 
 Michael Gogins, 2022
 
@@ -35,7 +35,7 @@ downloaded from https://michaelgogins.tumblr.com/csound_extended.
 
 </CsLicense>
 <CsOptions>
--+msg_color=0 -m3 -d -odac:plughw:2,0
+-+msg_color=0 -m162 -d -odac:plughw:2,0
 </CsOptions>
 <CsInstruments>
 
@@ -678,7 +678,6 @@ gi_Spatialize3D_speaker_rig init 31
 gS_html init {{<!DOCTYPE html>
 <html>
 <head>
-    <title>Red Leaves version 8.4.3</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!--
 //////////////////////////////////////////////////////////////////////////////
@@ -748,7 +747,7 @@ gS_html init {{<!DOCTYPE html>
         <textarea id="csound_diagnostics" style="position:absolute;top:1vh;left:1vw;color:#87CEEBC0;background-color:transparent;border:none;text-align:left;overflow:auto;padding:0;margin:0;border-collapse:collapse;font-family:Courier, sans-serif;font-size:7pt;">
         </textarea>
     </div>
-     <script>
+    <script>
         //////////////////////////////////////////////////////////////////////
         // This is the JSON-RPC proxy for the instance of Csound that is 
         // performing this piece.
@@ -772,7 +771,6 @@ gS_html init {{<!DOCTYPE html>
         csound.SetEventSourceCallback("score_display", function(data) {
             console.log("score_display callback...");
             console.log(typeof data);
-            /// console.log(data);
             piano_roll.fromJson(data);        
         });
         //////////////////////////////////////////////////////////////////////
@@ -801,15 +799,22 @@ gS_html init {{<!DOCTYPE html>
             requestAnimationFrame(animate)
         }
         
-        //////////////////////////////////////////////////////////////////////
-        // This is a stub that will be replaced with the actual code after all
-        // the dat.gui controls have been created.
-        //////////////////////////////////////////////////////////////////////
+        /**
+         * Placeholder or stub, later replaced with actual function.
+         */
         var save_controls = function() {
         }
-
+ 
         var recenter = function() {
             piano_roll.draw3D(canvas);
+        }
+        
+        var toggle_messages = function() {
+            if (csound_diagnostics.style.display === "none") {
+                csound_diagnostics.style.display = "block";
+            } else {
+                csound_diagnostics.style.display = "none";
+            }
         }
         
         //////////////////////////////////////////////////////////////////////
@@ -863,6 +868,7 @@ gS_html init {{<!DOCTYPE html>
             gk_ZakianFlute_level: 25.125628140703512,
             gk_PianoOutPianoteq_level: -44,
             save_controls: save_controls,
+            toggle_messages: toggle_messages,
             recenter: recenter
         };
         
@@ -876,11 +882,13 @@ gS_html init {{<!DOCTYPE html>
         // the page has been loaded.
         //
         // We do NOT use dat.gui's persistence mechanism based on HTML5 local 
-        // storage, hence no "gui.remember()."
+        // storage.
         //////////////////////////////////////////////////////////////////////
         window.onload = async function() {
-            gui = new dat.GUI({load: parameters, width: 500});
-            gui.add(parameters, 'save_controls').name('Save control values [Ctrl-S]');
+            gui = new dat.GUI({width: 500});
+            gui.remember(parameters);
+            gui.add(parameters, 'save_controls').name('Save control values as Csound values [Ctrl-S]');
+            gui.add(parameters, 'toggle_messages').name('Toggle visibility of Csound diagnostics');
             gui.add(parameters, 'recenter').name('Re-center piano roll [Ctrl-C]');
             var Master = gui.addFolder('Master');
             add_slider(Master, 'gk_ReverbSC_feedback', 0, 1);
@@ -955,11 +963,13 @@ gS_html init {{<!DOCTYPE html>
                     csound.Message(`Initialized gui: ${key} = ${value_}\n`);
                  }
             };
+            var saved_gui_parameters = gui.getSaveObject();
+            gui.remember(saved_gui_parameters);
             console.log("Updated widgets with Csound control values.");
             //////////////////////////////////////////////////////////////////////
             // When the user clicks on the "Save control values" command, the 
             // current state of the control parameters is printed to the terminal
-            // in the form of Csound orchestra code. These can be copied from the 
+            // in the form of Csound orchestra code. This can be copied from the 
             // terminal, and pasted over the existing initial control channel 
             // values in the Csound orchestra. Currently, Web browsers do not 
             // permit writing to the user's filesystem except in the Downloads 
@@ -978,6 +988,8 @@ gS_html init {{<!DOCTYPE html>
                 };
                 text = text + delimiter;
                 navigator.clipboard.writeText(text);
+                ///gui.remember(parameters);
+                saved_gui_parameters = gui.getSaveObject();
                 console.log("Saved control values:\\n" + text);
             };
             //////////////////////////////////////////////////////////////////
@@ -1157,13 +1169,16 @@ extern "C" int score_generator(CSOUND *csound) {
     Cursor pen;
     modality.fromString("0 4 7 11 14");
     pen.chord = modality;
-    pen.note = csound::Event{1,35,144,1,1,1,0,0,0,0,1};
+    pen.note = csound::Event{1,8,144,1,1,1,0,0,0,0,1};
     int base_level = 1;
     std::vector<std::function<Cursor(const Cursor &, int, csound::Score &)>> generators;
     auto g1 = [&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
         Cursor pen = pen_;
-        if ((depth + base_level) == 4) {
-            pen.chord = pen.chord.T(4);
+        //~ if ((depth + base_level) == 4) {
+            //~ pen.chord = pen.chord.T(4);
+        if ((depth + base_level) == 2) {
+            pen.chord = pen.chord.T(5);
+            pen.chord = pen.chord.T(5);
             chordsForTimes[pen.note.getTime()] = pen.chord;
         }
         pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (0 - 5);
@@ -1173,15 +1188,25 @@ extern "C" int score_generator(CSOUND *csound) {
     generators.push_back(g1);
     auto g2 = [&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
         Cursor pen = pen_;
-        if ((depth + base_level) == 3) {
+        //~ if ((depth + base_level) == 3) {
+            //~ pen.chord = pen.chord.K();
+            //~ chordsForTimes[pen.note.getTime()] = pen.chord;
+        //~ }
+        //~ if ((depth + base_level) == 6) {
+            //~ ///pen.chord = pen.chord.Q(-1, modality);
+            //~ ///pen.chord = pen.chord.T(-1);
+            //~ pen.chord = pen.chord.Q(3, modality);
+        //~ }
+        if ((depth + base_level) == 1) {
             pen.chord = pen.chord.K();
             chordsForTimes[pen.note.getTime()] = pen.chord;
         }
-        if ((depth + base_level) == 6) {
+        if ((depth + base_level) == 2) {
             ///pen.chord = pen.chord.Q(-1, modality);
-            ///pen.chord = pen.chord.T(-1);
-            pen.chord = pen.chord.Q(3, modality);
+            ///pen.chord = pen.chord.T(-.1);
+            pen.chord = pen.chord.Q(4, modality);
         }
+        
         pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (1000 + 1);
         pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .76) - .25;
         pen.note[csound::Event::VELOCITY] =  std::cos(pen.note[csound::Event::TIME]);                    

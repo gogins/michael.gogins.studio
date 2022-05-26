@@ -678,7 +678,6 @@ gi_Spatialize3D_speaker_rig init 31
 gS_html init {{<!DOCTYPE html>
 <html>
 <head>
-    <title>Red Leaves version 8.4.3</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!--
 //////////////////////////////////////////////////////////////////////////////

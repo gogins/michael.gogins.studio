@@ -45,7 +45,7 @@ downloaded from https://michaelgogins.tumblr.com/csound_extended.
 sr = 48000
 ksmps = 128
 nchnls = 2
-0dbfs = 20
+0dbfs = 10
 //////////////////////////////////////////////////////////////////////////////
 // This random seed ensures that the same random stream  is used for each 
 // rendering. Note that rand, randh, randi, rnd(x) and birnd(x) are not 
@@ -912,10 +912,10 @@ gk_Droner_partial4 init 0.09913258668202025
 gk_Droner_partial5 init 0.6887106022119303
 gk_Droner_level init -5.651211221201464
 gk_Sweeper_bright_min init 0
-gk_Sweeper_bright_max init 3
-gk_Sweeper_rate_min init 0.08348007299538548
-gk_Sweeper_rate_max init 0.5
-gk_Sweeper_level init -1.4772075714321886
+gk_Sweeper_bright_max init 5
+gk_Sweeper_rate_min init 0.1
+gk_Sweeper_rate_max init 1.
+gk_Sweeper_level init -2
 gk_Buzzer_harmonics init 0
 gk_Buzzer_level init 0
 gk_Shiner_level init 0
@@ -927,6 +927,52 @@ gk_Blower_level init -7.085959852537982
 gk_ZakianFlute_level init -29.65173220737479
 gk_PianoOutPianoteq_level init -23.39072673272088
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+gk_ReverbSC_feedback init 0.7408856478340462
+gk_MasterOutput_level init 7.914300640548674
+gi_FMWaterBell_attack init 0.002936276551436901
+gi_FMWaterBell_release init 0.022698875468554768
+gi_FMWaterBell_exponent init 0
+gi_FMWaterBell_sustain init 5.385256143273636
+gi_FMWaterBell_sustain_level init 0.08267388588088297
+gk_FMWaterBell_crossfade init 0.1234039047697504
+gk_FMWaterBell_index init 1.1401499375260309
+gk_FMWaterBell_vibrato_depth init 0.28503171595683335
+gk_FMWaterBell_vibrato_rate init 2.4993821566850647
+gk_FMWaterBell_level init 5.305548359442881
+gk_Phaser_ratio1 init 0
+gk_Phaser_ratio2 init 2
+gk_Phaser_index1 init 0.6261005474653911
+gk_Phaser_index2 init 1.5652513686634777
+gk_Phaser_level init -11.91221669585537
+gk_STKBowed_vibrato_level init 0
+gk_STKBowed_bow_pressure init 47.46860990621803
+gk_STKBowed_bow_position init 29.39805945158946
+gk_STKBowed_vibrato_frequency init 2.6268735928804636
+gk_STKBowed_level init 9.510515793592504
+gk_Droner_partial1 init 0.8817582710137591
+gk_Droner_partial2 init 0.7408856478340462
+gk_Droner_partial3 init 0.2608752281105796
+gk_Droner_partial4 init 0.09913258668202025
+gk_Droner_partial5 init 0.6887106022119303
+gk_Droner_level init -5.651211221201464
+gk_Sweeper_bright_min init 0
+gk_Sweeper_bright_max init 5
+gk_Sweeper_rate_min init 0.1
+gk_Sweeper_rate_max init 1
+gk_Sweeper_level init -2
+gk_Buzzer_harmonics init 0
+gk_Buzzer_level init 0
+gk_Shiner_level init 0
+gk_Blower_grainDensity init 121.04610584330895
+gk_Blower_grainDuration init 0.08348007299538548
+gk_Blower_grainAmplitudeRange init 87.88408180043162
+gk_Blower_grainFrequencyRange init 17.217765055298255
+gk_Blower_level init -7.085959852537982
+gk_ZakianFlute_level init -29.65173220737479
+gk_PianoOutPianoteq_level init -23.39072673272088
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 gi_Spatialize3D_speaker_rig init 31
 
@@ -1015,7 +1061,7 @@ gS_html init {{<!DOCTYPE html>
             notifications_textarea.value = existing_notifications + message;
             notifications_textarea.scrollTop = notifications_textarea.scrollHeight;
         }; 
-        ///csound.SetMessageCallback(message_callback_, true);
+        csound.SetMessageCallback(message_callback_, true);
         //////////////////////////////////////////////////////////////////////
         // This hooks up JavaScript code for displaying a 3-dimensional piano 
         // roll display of the algorithmically generated score.
@@ -1302,6 +1348,7 @@ webserver_open_html gi_webserver, gS_html
 S_score_generator_code init {{
 
 #include <Eigen/Dense>
+#include <csignal>
 #include <csound.h>
 #include <csdl.h>
 #include <dlfcn.h>
@@ -1380,6 +1427,11 @@ extern "C" {
 //////////////////////////////////////////////////////////////////////////////
 
 extern "C" int score_generator(CSOUND *csound) {
+    // Turn off Csound-installed signal handlers.
+    std::signal(SIGTERM, SIG_DFL);
+    std::signal(SIGABRT, SIG_DFL);
+    std::signal(SIGSEGV, SIG_DFL);
+
     // Load: extern "C" void webserver_send_message(CSOUND *csound, int webserver_handle, const char *channel_name, const char *message);
     // Library handle 0 means: search all symbols in the process.
     // Note: for this to work, libcsound_webserver.so (or the equivalent 
@@ -1401,8 +1453,8 @@ extern "C" int score_generator(CSOUND *csound) {
     modality.fromString("0 4 7 11 14");
     pen.chord = modality;
     ///pen.note = csound::Event{1,35,144,1,1,1,0,0,0,0,1};
-    pen.note = csound::Event{1,6,144,1,1,1,0,0,0,0,1};
-    int base_level = 0;
+    pen.note = csound::Event{1,4,144,1,1,1,0,0,0,0,1};
+    int base_level = 2;
     std::vector<std::function<Cursor(const Cursor &, int, csound::Score &)>> generators;
     auto g1 = [&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
         Cursor pen = pen_;
@@ -1410,7 +1462,7 @@ extern "C" int score_generator(CSOUND *csound) {
             pen.chord = pen.chord.T(5);
             chordsForTimes[pen.note.getTime()] = pen.chord;
         }
-        pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (0 - 10);
+        pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .51) + (0 - 10);
         pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .5);
         return pen;
     };
@@ -1473,7 +1525,7 @@ extern "C" int score_generator(CSOUND *csound) {
     // This creates an algorithmically generated chord progression.
     //////////////////////////////////////////////////////////////////////////////
     score.sort();
-    score.rescale(csound::Event::KEY, true, 20.0, true,  72.0);
+    score.rescale(csound::Event::KEY, true, 22.0, true,  62.0);
     score.temper(12.);
     std::cout << "Generated notes:        " << score.size() << std::endl;
     double endTime = score.back().getTime();
@@ -1502,7 +1554,7 @@ extern "C" int score_generator(CSOUND *csound) {
     std::cout << "Conformed notes:        " << size << std::endl;
     score.rescale(csound::Event::TIME,          true,  0.0, false,  0.0);
     score.rescale(csound::Event::INSTRUMENT,    true,  1.0, true,   7.999);
-    score.rescale(csound::Event::VELOCITY,      true, 40.0, true,  12.0);
+    score.rescale(csound::Event::VELOCITY,      true, 40.0, true,   3.0);
     score.rescale(csound::Event::PAN,           true,  0.0, true,   0.0);
     std::cout << "Move to origin duration:" << score.getDuration() << std::endl;
     score.setDuration(380.0 * 2.);
@@ -1531,12 +1583,17 @@ extern "C" int score_generator(CSOUND *csound) {
         evtblk.opcod = 'i';
         evtblk.pcnt = 9;
         evtblk.p[1] = std::floor(note.getInstrument());
-        //evtblk.p[1] = 1;
+        evtblk.p[1] = 1.;
         evtblk.p[2] = note.getTime();
         evtblk.p[3] = note.getDuration();
         evtblk.p[4] = note.getKey();
         if (evtblk.p[1] == 1) {
             evtblk.p[4] += 12;
+        }
+        if (evtblk.p[1] == 5.) {
+            while (evtblk.p[4] > 48.) {
+                evtblk.p[4] -= 12.;
+            }
         }
         evtblk.p[5] = note.getVelocity();
         evtblk.p[6] = note.getDepth();
@@ -1578,8 +1635,8 @@ i_result cxx_compile "score_generator", S_score_generator_code, "g++ -v -g -O2 -
 endif
 
 instr Exit
-prints "exitnow i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
-exitnow
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+cxx_raise "SIGTERM"
 endin
 
 </CsInstruments>

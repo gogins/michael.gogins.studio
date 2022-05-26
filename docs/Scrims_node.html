@@ -1604,7 +1604,7 @@ endin
             add_slider(Generate, 'Notes_per_second', 0.25, 32).name('Notes per second');
             add_slider(Generate, 'Camera_X', -500, 500).name('Camera X');
             add_slider(Generate, 'Camera_Y', -500, 500).name('Camera Y');
-           gui.revert();
+            gui.revert();
         }
         function gk_update(name, value) {
             if (typeof csound !== 'undefined') {

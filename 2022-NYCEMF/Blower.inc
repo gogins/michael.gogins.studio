@@ -68,7 +68,7 @@ igdur = 0.2
 iattack = p3/3.
 i_sustain = p3/3.
 idecay = p3/3.
-print iattack, i_sustain, idecay
+;print iattack, i_sustain, idecay
 ;tratim iattack + idecay
 a_declicking transegr 0.0, iattack / 2.0, 1.5, .5, iattack / 2.0, -1.5, 1, i_sustain, 0.0, 1, idecay / 2.0, 1.5, .5, idecay / 2.0, -1.5, 0
 ; kamp linseg 0, ifade, 1, idur - 2 * ifade, 1, ifade, 0
