@@ -9,4 +9,7 @@ This subdirectory of my Git repository contains Csound files and other resources
 
 This subdirectory will be updated with additional resources in the coming days before the workshop.
 
-[AdvancedCsound.pdf](https://github.com/gogins/michael.gogins.studio/files/8786617/AdvancedCsound.pdf)
+[Slides for the workshop](https://github.com/gogins/michael.gogins.studio/files/8786617/AdvancedCsound.pdf)
+
+
+
