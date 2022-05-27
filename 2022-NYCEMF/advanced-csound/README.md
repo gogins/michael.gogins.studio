@@ -11,5 +11,7 @@ This subdirectory will be updated with additional resources in the coming days b
 
 [Slides for the workshop](https://github.com/gogins/michael.gogins.studio/files/8786617/AdvancedCsound.pdf)
 
+Resources for exercises may be downloaded individually from the [exercises](https://github.com/gogins/michael.gogins.studio/tree/master/2022-NYCEMF/advanced-csound/exercises) folder.
+
 
 
