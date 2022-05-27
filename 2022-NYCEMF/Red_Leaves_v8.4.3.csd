@@ -1141,8 +1141,8 @@ extern "C" int score_generator(CSOUND *csound) {
     // Note: for this to work, libcsound_webserver.so (or the equivalent 
     // filename on other platforms) must be in the link library list for THIS 
     // code in order to be loaded, linked, and resolved.
-    //auto library_handle = dlopen("/Users/michaelgogins/csound-webserver-opcodes/build/libcsound_webserver.dylib", RTLD_NOW | RTLD_GLOBAL);
-    auto library_handle = dlopen("/home/mkg/csound-webserver-opcodes/build/libcsound_webserver.so", RTLD_NOW | RTLD_GLOBAL);
+    auto library_handle = dlopen("/Users/michaelgogins/csound-webserver-opcodes/build/libcsound_webserver.dylib", RTLD_NOW | RTLD_GLOBAL);
+    //auto library_handle = dlopen("/home/mkg/csound-webserver-opcodes/build/libcsound_webserver.so", RTLD_NOW | RTLD_GLOBAL);
     webserver_send_message_ = (void (*)(CSOUND *, int, const char *, const char *)) csound->GetLibrarySymbol(library_handle, "webserver_send_message");
     csound->Message(csound, "webserver_send_message_: %p\\n", webserver_send_message_);
 #if (defined(__linux__) || defined(__MACH__))
