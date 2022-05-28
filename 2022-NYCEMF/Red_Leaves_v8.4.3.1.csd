@@ -276,24 +276,24 @@ gi_Spatialize3D_room_table ftgen 1, 0, 64, -2,                                  
 
 connect "Blower", "outleft", "ReverbSC", "inleft"
 connect "Blower", "outright", "ReverbSC", "inright"
-connect "STKBowed", "outleft", "ReverbSC", "inleft"
-connect "STKBowed", "outright", "ReverbSC", "inright"
-connect "Buzzer", "outleft", "ReverbSC", "inleft"
-connect "Buzzer", "outright", "ReverbSC", "inright"
-connect "Droner", "outleft", "ReverbSC", "inleft"
-connect "Droner", "outright", "ReverbSC", "inright"
+;connect "STKBowed", "outleft", "ReverbSC", "inleft"
+;connect "STKBowed", "outright", "ReverbSC", "inright"
+;onnect "Buzzer", "outleft", "ReverbSC", "inleft"
+;connect "Buzzer", "outright", "ReverbSC", "inright"
+;connect "Droner", "outleft", "ReverbSC", "inleft"
+;connect "Droner", "outright", "ReverbSC", "inright"
 connect "FMWaterBell", "outleft", "ReverbSC", "inleft"
 connect "FMWaterBell", "outright", "ReverbSC", "inright"
-connect "Phaser", "outleft", "ReverbSC", "inleft"
-connect "Phaser", "outright", "ReverbSC", "inright"
+;connect "Phaser", "outleft", "ReverbSC", "inleft"
+;connect "Phaser", "outright", "ReverbSC", "inright"
 connect "PianoOutPianoteq", "outleft", "ReverbSC", "inleft"
 connect "PianoOutPianoteq", "outright", "ReverbSC", "inright"
-connect "Sweeper", "outleft", "ReverbSC", "inleft"
-connect "Sweeper", "outright", "ReverbSC", "inright"
-connect "Shiner", "outleft", "ReverbSC", "inleft"
-connect "Shiner", "outright", "ReverbSC", "inright"
-connect "ZakianFlute", "outleft", "ReverbSC", "inleft"
-connect "ZakianFlute", "outright", "ReverbSC", "inright"
+;connect "Sweeper", "outleft", "ReverbSC", "inleft"
+;connect "Sweeper", "outright", "ReverbSC", "inright"
+;connect "Shiner", "outleft", "ReverbSC", "inleft"
+;connect "Shiner", "outright", "ReverbSC", "inright"
+;connect "ZakianFlute", "outleft", "ReverbSC", "inleft"
+;connect "ZakianFlute", "outright", "ReverbSC", "inright"
 connect "ReverbSC", "outleft", "MasterOutput", "inleft"
 connect "ReverbSC", "outright", "MasterOutput", "inright"
 #end
@@ -652,8 +652,8 @@ gk_Blower_grainDensity init 132.3332789825534
 gk_Blower_grainDuration init 0.2854231208217838
 gk_Blower_grainAmplitudeRange init 174.0746779716289
 gk_Blower_grainFrequencyRange init 62.82406652535464
-gk_Blower_level init 6.562856676993313
-gk_ZakianFlute_level init 18
+gk_Blower_level init 4;6.562856676993313
+gk_ZakianFlute_level init 12;18
 gk_PianoOutPianoteq_level init 6.0
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1156,13 +1156,13 @@ extern "C" int score_generator(CSOUND *csound) {
     Cursor pen;
     modality.fromString("0 4 7 11 14");
     pen.chord = modality;
-    pen.note = csound::Event{1,35,144,1,1,1,0,0,0,0,1};
-    int base_level = 1;
+    pen.note = csound::Event{1,35/1.25,144,1,1,1,0,0,0,0,1};
+    int base_level = 2;
     std::vector<std::function<Cursor(const Cursor &, int, csound::Score &)>> generators;
     auto g1 = [&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
         Cursor pen = pen_;
-        if ((depth + base_level) == 4) {
-            pen.chord = pen.chord.T(4);
+        if ((depth + base_level) == 2) {
+            pen.chord = pen.chord.T(5);
             chordsForTimes[pen.note.getTime()] = pen.chord;
         }
         pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (0 - 5);
@@ -1172,11 +1172,11 @@ extern "C" int score_generator(CSOUND *csound) {
     generators.push_back(g1);
     auto g2 = [&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
         Cursor pen = pen_;
-        if ((depth + base_level) == 3) {
+        if ((depth + base_level) == 2) {
             pen.chord = pen.chord.K();
             chordsForTimes[pen.note.getTime()] = pen.chord;
         }
-        if ((depth + base_level) == 6) {
+        if ((depth + base_level) == 1) {
             pen.chord = pen.chord.Q(3, modality);
         }
         pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (1000 + 1);
@@ -1198,7 +1198,10 @@ extern "C" int score_generator(CSOUND *csound) {
         Cursor pen = pen_;
         pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (1000 - 5);
         pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .77) + 1.;
-        pen.note[csound::Event::INSTRUMENT] = std::sin(pen.note[csound::Event::TIME]);
+        if ((depth + base_level) == 3) {
+            pen.chord = pen.chord.T(3);
+        }
+       pen.note[csound::Event::INSTRUMENT] = std::sin(pen.note[csound::Event::TIME]);
         pen.note[csound::Event::VELOCITY] =  std::cos(pen.note[csound::Event::TIME]);
         return pen;
     };

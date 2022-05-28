@@ -53,6 +53,8 @@ nchnls = 2
 //////////////////////////////////////////////////////////////////////////////
 seed 88818145
 
+gi_vstinfo init 0
+
 gS_os, gS_macros cxx_os
 
 prints "Operating system: %s\n", gS_os
@@ -140,66 +142,58 @@ endif
 if strcmp(gS_os, "macOS") == 0 then
 gi_iem_multi_encoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/MultiEncoder.vst"
 endif
-;;; vstinfo gi_iem_multi_encoder
 prints "````````````````````````````````````````````````````\n"
 prints "...or to N of these.\n"
 if strcmp(gS_os, "Linux") == 0 then
-gi_iem_stereo_encoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/StereoEncoder.so"
+gi_iem_stereo_encoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/StereoEncoder.so", gi_vstinfo
 endif
 if strcmp(gS_os, "macOS") == 0 then
-gi_iem_stereo_encoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/StereoEncoder.vst"
+gi_iem_stereo_encoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/StereoEncoder.vst", gi_vstinfo
 endif
-;;; vstinfo gi_iem_stereo_encoder
 prints "````````````````````````````````````````````````````\n"
 prints "Then to the \"buss.\"\n"
 if strcmp(gS_os, "Linux") == 0 then
-gi_iem_omni_compressor vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/OmniCompressor.so"
+gi_iem_omni_compressor vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/OmniCompressor.so", gi_vstinfo
 endif
 if strcmp(gS_os, "macOS") == 0 then
-i_iem_omni_compressor vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/OmniCompressor.vst"
+i_iem_omni_compressor vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/OmniCompressor.vst", gi_vstinfo
 endif
-;;; vstinfo gi_iem_omni_compressor
 prints "````````````````````````````````````````````````````\n"
 prints "Then to the room encoder (which does Doppler effects):\n"
 if strcmp(gS_os, "Linux") == 0 then
-gi_iem_room_encoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/RoomEncoder.so"
+gi_iem_room_encoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/RoomEncoder.so", gi_vstinfo
 endif
 if strcmp(gS_os, "macOS") == 0 then
-gi_iem_room_encoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/RoomEncoder.vst"
+gi_iem_room_encoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/RoomEncoder.vst", gi_vstinfo
 endif
-;;; vstinfo gi_iem_room_encoder
 prints "````````````````````````````````````````````````````\n"
 prints "Then to the FDN reverb:\n"
 if strcmp(gS_os, "Linux") == 0 then
-gi_iem_fdn_reverb vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/FdnReverb.so"
+gi_iem_fdn_reverb vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/FdnReverb.so", gi_vstinfo
 endif
 if strcmp(gS_os, "macOS") == 0 then
-gi_iem_fdn_reverb vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/FdnReverb.vst"
+gi_iem_fdn_reverb vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/FdnReverb.vst", gi_vstinfo
 endif
-;;; vstinfo gi_iem_fdn_reverb
 prints "````````````````````````````````````````````````````\n"
 prints "Then to one of these outputs:\n"
 if strcmp(gS_os, "Linux") == 0 then
-gi_iem_simple_decoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/SimpleDecoder.so"
+gi_iem_simple_decoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/SimpleDecoder.so", gi_vstinfo
 endif
 if strcmp(gS_os, "macOS") == 0 then
-gi_iem_simple_decoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/SimpleDecoder.vst"
+gi_iem_simple_decoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/SimpleDecoder.vst", gi_vstinfo
 endif
-;;; vstinfo gi_iem_simple_decoder
 if strcmp(gS_os, "Linux") == 0 then
-gi_iem_allra_decoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/AllRADecoder.so"
+gi_iem_allra_decoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/AllRADecoder.so", gi_vstinfo
 endif
 if strcmp(gS_os, "macOS") == 0 then
-gi_iem_allra_decoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/AllRADecoder.vst"
+gi_iem_allra_decoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/AllRADecoder.vst", gi_vstinfo
 endif
-;;; vstinfo gi_iem_allra_decoder
 if strcmp(gS_os, "Linux") == 0 then
-gi_iem_binaural_decoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/BinauralDecoder.so"
+gi_iem_binaural_decoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/BinauralDecoder.so", gi_vstinfo
 endif
 if strcmp(gS_os, "macOS") == 0 then
-gi_iem_binaural_decoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/BinauralDecoder.vst"
+gi_iem_binaural_decoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/BinauralDecoder.vst", gi_vstinfo
 endif
-;;; vstinfo gi_iem_binaural_decoder
 prints "====================================================\n"
 
 prints "====================================================\n"
@@ -208,66 +202,59 @@ prints "----------------------------------------------------\n"
 prints "Send N instruments to one channel of one of these...\n"
 prints "````````````````````````````````````````````````````\n"
 if strcmp(gS_os, "Linux") == 0 then
-gi_sparta_ambi_enc vstinit "/home/mkg/.vst/libsparta_ambiENC.so"
+gi_sparta_ambi_enc vstinit "/home/mkg/.vst/libsparta_ambiENC.so", gi_vstinfo
 endif
 if strcmp(gS_os, "macOS") == 0 then
-gi_sparta_ambi_enc vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/sparta_ambiENC.vst"
+gi_sparta_ambi_enc vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/sparta_ambiENC.vst", gi_vstinfo
 endif
-;;; vstinfo gi_sparta_ambi_enc
 prints "...or to N of these (need 2 of these at 2nd order):\n"
 prints "````````````````````````````````````````````````````\n"
 if strcmp(gS_os, "Linux") == 0 then
-gi_sparta_ambi_room_sim vstinit "/home/mkg/.vst/libsparta_ambiRoomSim.so"
+gi_sparta_ambi_room_sim vstinit "/home/mkg/.vst/libsparta_ambiRoomSim.so", gi_vstinfo
 endif
 if strcmp(gS_os, "macOS") == 0 then
-gi_sparta_ambi_room_sim vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/sparta_ambiRoomSim.vst"
+gi_sparta_ambi_room_sim vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/sparta_ambiRoomSim.vst", gi_vstinfo
 endif
-;;; vstinfo gi_sparta_ambi_room_sim
-prints "Not sure if this makes sense or can be controlled with parameters.\n"
+;prints "Not sure if this makes sense or can be controlled with parameters.\n"
 prints "````````````````````````````````````````````````````\n"
 if strcmp(gS_os, "Linux") == 0 then
-gi_compass_spatedit vstinit "/home/mkg/.vst/libcompass_spatedit.so"
+gi_compass_spatedit vstinit "/home/mkg/.vst/libcompass_spatedit.so", gi_vstinfo
 endif
 if strcmp(gS_os, "macOS") == 0 then
-gi_compass_spatedit vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/compass_spatedit.vst"
+gi_compass_spatedit vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/compass_spatedit.vst", gi_vstinfo
 endif
-;;; vstinfo gi_compass_spatedit
 prints "Then to this (N channels or binaural):\n"
 prints "````````````````````````````````````````````````````\n"
 if strcmp(gS_os, "Linux") == 0 then
-gi_sparta_ambi_dec vstinit "/home/mkg/.vst/libsparta_ambiDEC.so"
+gi_sparta_ambi_dec vstinit "/home/mkg/.vst/libsparta_ambiDEC.so", gi_vstinfo
 endif
 if strcmp(gS_os, "macOS") == 0 then
-gi_sparta_ambi_dec vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/sparta_ambiDEC.vst"
+gi_sparta_ambi_dec vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/sparta_ambiDEC.vst", gi_vstinfo
 endif
-;;; vstinfo gi_sparta_ambi_dec
 prints "Or this:\n"
 prints "````````````````````````````````````````````````````\n"
 if strcmp(gS_os, "Linux") == 0 then
-gi_sparta_ambi_bin vstinit "/home/mkg/.vst/libsparta_ambiBIN.so"
+gi_sparta_ambi_bin vstinit "/home/mkg/.vst/libsparta_ambiBIN.so", gi_vstinfo
 endif
 if strcmp(gS_os, "macOS") == 0 then
-gi_sparta_ambi_bin vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/sparta_ambiBIN.vst"
+gi_sparta_ambi_bin vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/sparta_ambiBIN.vst", gi_vstinfo
 endif
-;;; vstinfo gi_sparta_ambi_bin
-prints "Or this:\n"
+;prints "Or this:\n"
 prints "````````````````````````````````````````````````````\n"
 if strcmp(gS_os, "Linux") == 0 then
-gi_compass_decoder vstinit "/home/mkg/.vst/libcompass_decoder.so"
+gi_compass_decoder vstinit "/home/mkg/.vst/libcompass_decoder.so", gi_vstinfo
 endif
 if strcmp(gS_os, "macOS") == 0 then
-gi_compass_decoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/compass_decoder.vst"
+gi_compass_decoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/compass_decoder.vst", gi_vstinfo
 endif
-;;; vstinfo gi_compass_decoder
 prints "Or this (probably best for binaural):\n"
 prints "````````````````````````````````````````````````````\n"
 if strcmp(gS_os, "Linux") == 0 then
-gi_compass_binaural vstinit "/home/mkg/.vst/libcompass_binaural.so"
+gi_compass_binaural vstinit "/home/mkg/.vst/libcompass_binaural.so", gi_vstinfo
 endif
 if strcmp(gS_os, "macOS") == 0 then
-gi_compass_binaural vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/compass_binaural.vst"
+gi_compass_binaural vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/compass_binaural.vst", gi_vstinfo
 endif
-;;; vstinfo gi_compass_binaural
 prints "====================================================\n"
 
 
@@ -328,12 +315,11 @@ xout k_x, k_y
 endop
 
 if strcmp(gS_os, "Linux") == 0 then
-gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", 0
+gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", gi_vstinfo
 endif
 if strcmp(gS_os, "macOS") == 0 then
-gi_Pianoteq vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/Pianoteq\ 7.vst", 0
+gi_Pianoteq vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/Pianoteq\ 7.vst", gi_vstinfo
 endif
-;;; vstinfo gi_Pianoteq
 
 #include "PianoNotePianoteq.inc"
 #include "FMWaterBell.inc"
@@ -672,14 +658,12 @@ gk_ZakianFlute_level init 18
 gk_PianoOutPianoteq_level init 6.0
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
-
-
 gi_Spatialize3D_speaker_rig init 31
 
 gS_html init {{<!DOCTYPE html>
 <html>
 <head>
+    <title>Red Leaves version 8.4.13</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!--
 //////////////////////////////////////////////////////////////////////////////
@@ -806,7 +790,7 @@ gS_html init {{<!DOCTYPE html>
          */
         var save_controls = function() {
         }
- 
+
         var recenter = function() {
             piano_roll.draw3D(canvas);
         }
@@ -990,8 +974,6 @@ gS_html init {{<!DOCTYPE html>
                 };
                 text = text + delimiter;
                 navigator.clipboard.writeText(text);
-                ///gui.remember(parameters);
-                saved_gui_parameters = gui.getSaveObject();
                 console.log("Saved control values:\\n" + text);
             };
             //////////////////////////////////////////////////////////////////
@@ -1155,8 +1137,12 @@ extern "C" int score_generator(CSOUND *csound) {
     // Note: for this to work, libcsound_webserver.so (or the equivalent 
     // filename on other platforms) must be in the link library list for THIS 
     // code in order to be loaded, linked, and resolved.
+    #ifdef __MACH__
     auto library_handle = dlopen("/Users/michaelgogins/csound-webserver-opcodes/build/libcsound_webserver.dylib", RTLD_NOW | RTLD_GLOBAL);
-    //auto library_handle = dlopen("/home/mkg/csound-webserver-opcodes/build/libcsound_webserver.so", RTLD_NOW | RTLD_GLOBAL);
+    #endif
+    #ifdef __linux__
+    auto library_handle = dlopen("/home/mkg/csound-webserver-opcodes/build/libcsound_webserver.so", RTLD_NOW | RTLD_GLOBAL);
+    #endif
     webserver_send_message_ = (void (*)(CSOUND *, int, const char *, const char *)) csound->GetLibrarySymbol(library_handle, "webserver_send_message");
     csound->Message(csound, "webserver_send_message_: %p\\n", webserver_send_message_);
 #if (defined(__linux__) || defined(__MACH__))
@@ -1171,13 +1157,11 @@ extern "C" int score_generator(CSOUND *csound) {
     Cursor pen;
     modality.fromString("0 4 7");// 11 14");
     pen.chord = modality;
-    pen.note = csound::Event{1,13,144,1,1,1,0,0,0,0,1};
+    pen.note = csound::Event{1,35,144,1,1,1,0,0,0,0,1};
     int base_level = 0;
     std::vector<std::function<Cursor(const Cursor &, int, csound::Score &)>> generators;
     auto g1 = [&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
         Cursor pen = pen_;
-        //~ if ((depth + base_level) == 4) {
-            //~ pen.chord = pen.chord.T(4);
         if ((depth + base_level) == 2) {
             pen.chord = pen.chord.T(5);
             chordsForTimes[pen.note.getTime()] = pen.chord;
@@ -1189,25 +1173,13 @@ extern "C" int score_generator(CSOUND *csound) {
     generators.push_back(g1);
     auto g2 = [&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
         Cursor pen = pen_;
-        //~ if ((depth + base_level) == 3) {
-            //~ pen.chord = pen.chord.K();
-            //~ chordsForTimes[pen.note.getTime()] = pen.chord;
-        //~ }
-        //~ if ((depth + base_level) == 6) {
-            //~ ///pen.chord = pen.chord.Q(-1, modality);
-            //~ ///pen.chord = pen.chord.T(-1);
-            //~ pen.chord = pen.chord.Q(3, modality);
-        //~ }
         if ((depth + base_level) == 2) {
             pen.chord = pen.chord.K();
             chordsForTimes[pen.note.getTime()] = pen.chord;
         }
         if ((depth + base_level) == 1) {
-            ///pen.chord = pen.chord.Q(-1, modality);
-            ///pen.chord = pen.chord.T(-.1);
             pen.chord = pen.chord.Q(3, modality);
         }
-        
         pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (1000 + 10);
         pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .5) - .25;
         pen.note[csound::Event::VELOCITY] =  std::cos(pen.note[csound::Event::TIME]);                    
@@ -1228,8 +1200,6 @@ extern "C" int score_generator(CSOUND *csound) {
         pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (1000 - 5);
         pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .77) + 1.;
         if ((depth + base_level) == 3) {
-            ///pen.chord = pen.chord.Q(-1, modality);
-            ///pen.chord = pen.chord.T(-.1);
             pen.chord = pen.chord.T(3);
         }
         pen.note[csound::Event::INSTRUMENT] = std::sin(pen.note[csound::Event::TIME])/2.;
