@@ -1063,7 +1063,6 @@ S_score_generator_code init {{
 #include <random>
 #include <ScoreNode.hpp>
 #include <VoiceleadingNode.hpp>
-#include "cxx_invokable.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 // This symbol is used by a number of C++ libraries, but is not defined in the
