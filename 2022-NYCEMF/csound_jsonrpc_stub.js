@@ -1,1 +1,1 @@
-/home/mkg/csound-webserver-opcodes/examples/csound_jsonrpc_stub.js
+/Users/michaelgogins/csound-webserver-opcodes/examples/csound_jsonrpc_stub.js
