@@ -972,6 +972,52 @@ gk_Blower_level init -7.085959852537982
 gk_ZakianFlute_level init -29.65173220737479
 gk_PianoOutPianoteq_level init -23.39072673272088
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+gk_ReverbSC_feedback init 0.7408856478340462
+gk_MasterOutput_level init 7.914300640548674
+gi_FMWaterBell_attack init 0.002936276551436901
+gi_FMWaterBell_release init 0.022698875468554768
+gi_FMWaterBell_exponent init 0
+gi_FMWaterBell_sustain init 5.385256143273636
+gi_FMWaterBell_sustain_level init 0.08267388588088297
+gk_FMWaterBell_crossfade init 0.1234039047697504
+gk_FMWaterBell_index init 1.1401499375260309
+gk_FMWaterBell_vibrato_depth init 0.28503171595683335
+gk_FMWaterBell_vibrato_rate init 2.4993821566850647
+gk_FMWaterBell_level init 5.305548359442881
+gk_Phaser_ratio1 init 0
+gk_Phaser_ratio2 init 2
+gk_Phaser_index1 init 0.6261005474653911
+gk_Phaser_index2 init 1.5652513686634777
+gk_Phaser_level init -11.91221669585537
+gk_STKBowed_vibrato_level init 0
+gk_STKBowed_bow_pressure init 47.46860990621803
+gk_STKBowed_bow_position init 29.39805945158946
+gk_STKBowed_vibrato_frequency init 2.6268735928804636
+gk_STKBowed_level init 9.510515793592504
+gk_Droner_partial1 init 0.8817582710137591
+gk_Droner_partial2 init 0.7408856478340462
+gk_Droner_partial3 init 0.2608752281105796
+gk_Droner_partial4 init 0.09913258668202025
+gk_Droner_partial5 init 0.6887106022119303
+gk_Droner_level init -5.651211221201464
+gk_Sweeper_bright_min init 0
+gk_Sweeper_bright_max init 5
+gk_Sweeper_rate_min init 0.1
+gk_Sweeper_rate_max init 1
+gk_Sweeper_level init -2
+gk_Buzzer_harmonics init 0
+gk_Buzzer_level init 0
+gk_Shiner_level init 0
+gk_Blower_grainDensity init 121.04610584330895
+gk_Blower_grainDuration init 0.08348007299538548
+gk_Blower_grainAmplitudeRange init 87.88408180043162
+gk_Blower_grainFrequencyRange init 17.217765055298255
+gk_Blower_level init -7.085959852537982
+gk_ZakianFlute_level init -29.65173220737479
+gk_PianoOutPianoteq_level init -19.00375020381542
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 
 gi_Spatialize3D_speaker_rig init 31
@@ -1363,7 +1409,6 @@ S_score_generator_code init {{
 #include <random>
 #include <ScoreNode.hpp>
 #include <VoiceleadingNode.hpp>
-#include "cxx_invokable.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 // This symbol is used by a number of C++ libraries, but is not defined in the
@@ -1583,7 +1628,7 @@ extern "C" int score_generator(CSOUND *csound) {
         evtblk.opcod = 'i';
         evtblk.pcnt = 9;
         evtblk.p[1] = std::floor(note.getInstrument());
-        evtblk.p[1] = 1.;
+        //evtblk.p[1] = 1.;
         evtblk.p[2] = note.getTime();
         evtblk.p[3] = note.getDuration();
         evtblk.p[4] = note.getKey();

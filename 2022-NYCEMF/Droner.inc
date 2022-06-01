@@ -61,10 +61,10 @@ k8 = gk_Droner_partial8
 k9 = gk_Droner_partial9
 k10 = gk_Droner_partial10
 iwaveform = gi_Droner_waveform
-iattack = .5
-idecay = .5
+iattack = p3/3.
+isustain = p3/3.
+idecay = p3/3.
 xtratim iattack + idecay
-isustain = p3
 aenvelope transegr 0.0, iattack / 2.0, 1.5, 1 / 2.0, iattack / 2.0, -1.5, 1, isustain, 0.0, 1, idecay / 2.0, 1.5, 1 / 2.0, idecay / 2.0, -1.5, 0
 ihertz = cpsmidinn(i_midi_key)
 if iwaveform == 0 goto i_waveform_0

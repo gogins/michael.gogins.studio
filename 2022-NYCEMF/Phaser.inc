@@ -43,11 +43,11 @@ i_level_correction = 81
 i_normalization = ampdb(-i_level_correction) / 2
 i_amplitude = ampdb(i_midi_velocity) * i_normalization
 k_gain = ampdb(gk_Phaser_level)
-i_attack = i(gk_Phaser_attack)
-i_release = i(gk_Phaser_release)
-i_sustain = 1000
-xtratim i_attack + i_release
-a_envelope transegr 0.0, i_attack / 2.0, 1.5, i_amplitude / 2.0, i_attack / 2.0, -1.5, i_amplitude, i_sustain, 0.0, i_amplitude, i_release / 2.0, 1.5, i_amplitude / 2.0, i_release / 2.0, -1.5, 0
+iattack = p3/3.
+isustain = p3/3.
+idecay = p3/3.
+xtratim iattack + idecay
+a_envelope transegr 0.0, iattack / 2.0, 1.5, i_amplitude / 2.0, iattack / 2.0, -1.5, i_amplitude, isustain, 0.0, i_amplitude, idecay / 2.0, 1.5, i_amplitude / 2.0, idecay / 2.0, -1.5, 0
 a1,a2 crosspm gk_Phaser_ratio1, gk_Phaser_ratio2, gk_Phaser_index1, gk_Phaser_index2, i_frequency, gi_Phaser_sine, gi_Phaser_sine
 a_signal = (a1 + a2) * k_gain * a_envelope
 

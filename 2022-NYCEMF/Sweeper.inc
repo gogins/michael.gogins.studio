@@ -52,11 +52,11 @@ i_normalization = ampdb(-i_level_correction) / 2
 i_amplitude = ampdb(i_midi_velocity) * i_normalization
 k_gain = ampdb(gk_Sweeper_level)
 
-iattack = i(gk_Sweeper_attack)
-irelease = i(gk_Sweeper_release)
-isustain = p3
-xtratim iattack + irelease
-k_envelope transegr 0.0, iattack / 2.0, 1.5, i_amplitude / 2.0, iattack / 2.0, -1.5, i_amplitude, isustain, 0.0, i_amplitude, irelease / 2.0, 1.5, i_amplitude / 2.0, irelease / 2.0, -1.5, 0
+iattack = p3/3.
+isustain = p3/3.
+idecay = p3/3.
+xtratim iattack + idecay
+k_envelope transegr 0.0, iattack / 2.0, 1.5, i_amplitude / 2.0, iattack / 2.0, -1.5, i_amplitude, isustain, 0.0, i_amplitude, idecay / 2.0, 1.5, i_amplitude / 2.0, idecay / 2.0, -1.5, 0
 ihertz = i_frequency
 icps = ihertz
 kamp expseg 0.001,0.02,0.2,p3-0.01,0.001

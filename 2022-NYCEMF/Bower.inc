@@ -37,10 +37,10 @@ i_level_correction = 66
 i_normalization = ampdb(-i_level_correction) / 2
 i_amplitude = ampdb(i_midi_velocity) * i_normalization
 k_gain = ampdb(gk_Bower_level)
-iattack = i(gk_Bower_attack)
-idecay = i(gk_Bower_release)
-isustain = p3
 iamp = i_amplitude
+iattack = p3/3.
+isustain = p3/3.
+idecay = p3/3.
 xtratim iattack + idecay
 kenvelope transegr 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
 ihertz = cpsmidinn(i_midi_key)

@@ -48,16 +48,18 @@ i_normalization = ampdb(-i_overall_amps) / 2
 i_midi_dynamic_range = i(gk_ZakianFlute_midi_dynamic_range)
 i_midi_velocity = p5 * i_midi_dynamic_range / 127 + (63.5 - i_midi_dynamic_range / 2)
 i_amplitude = ampdb(i_midi_velocity) * i_normalization
+iamp = i_amplitude
 k_gain = ampdb(gk_ZakianFlute_level)
-;;;iattack = .002
-;;;isustain = p3
-;;;irelease = .3
-;;;xtratim iattack + irelease
+iattack = p3/3.
+isustain = p3/3.
+idecay = p3/3.
+xtratim iattack + idecay
+aenvelope transegr 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
 iHz = cpsmidinn(i_midi_key)
 kHz = k(iHz)
 // Bug?
 // aenvelope transeg 1.0, 20.0, -10.0, 0.05
-aenvelope transegr 1.0, 20.0, -10.0, 0.05
+;aenvelope transegr 1.0, 20.0, -10.0, 0.05
 ip3 = (p3 < 3.0 ? p3 : 3.0)
 ; parameters
 ; p4 overall amplitude scaling factor

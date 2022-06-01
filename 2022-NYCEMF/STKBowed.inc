@@ -28,11 +28,11 @@ i_normalization = ampdb(-i_overall_amps) / 2
 i_amplitude = ampdb(i_midi_velocity) * i_normalization
 k_gain = ampdb(gk_STKBowed_level)
 a_signal STKBowed i_frequency, 1.0, 1, gk_STKBowed_vibrato_level, 2, gk_STKBowed_bow_pressure, 4, gk_STKBowed_bow_position, 11, gk_STKBowed_vibrato_frequency
-i_attack = .002
-i_sustain = p3
-i_release = 0.01
-xtratim i_attack + i_release
-a_declicking linsegr 0, i_attack, 1, i_sustain, 1, i_release, 0
+iattack = p3/3.
+isustain = p3/3.
+idecay = p3/3.
+xtratim iattack + idecay
+a_declicking transegr 0.0, iattack / 2.0, 1.5, i_amplitude / 2.0, iattack / 2.0, -1.5, i_amplitude, isustain, 0.0, i_amplitude, idecay / 2.0, 1.5, i_amplitude / 2.0, idecay / 2.0, -1.5, 0
 a_signal = a_signal * i_amplitude * a_declicking * k_gain 
 
 k_time times

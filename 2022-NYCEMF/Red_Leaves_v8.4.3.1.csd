@@ -214,7 +214,6 @@ endif
 if strcmp(gS_os, "macOS") == 0 then
 gi_sparta_ambi_room_sim vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/sparta_ambiRoomSim.vst", gi_vstinfo
 endif
-prints "Not sure if this makes sense or can be controlled with parameters.\n"
 prints "````````````````````````````````````````````````````\n"
 if strcmp(gS_os, "Linux") == 0 then
 gi_compass_spatedit vstinit "/home/mkg/.vst/libcompass_spatedit.so", gi_vstinfo
@@ -255,7 +254,6 @@ if strcmp(gS_os, "macOS") == 0 then
 gi_compass_binaural vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/compass_binaural.vst", gi_vstinfo
 endif
 prints "====================================================\n"
-
 
 #ifdef SPATIALIZE_GOGINS
 #include "Spatialize3D.inc"
@@ -304,7 +302,7 @@ connect "ReverbSC", "outright", "MasterOutput", "inright"
 
 opcode instrument_position, kk, iii
 i_onset, i_radius, i_rate xin
-i_rate = (i_rate /3) + (i_rate / 66)
+i_rate = (i_rate /8) + (i_rate / 66)
 k_time times
 // Depth.
 k_x = i_radius * cos(i_onset + ((k_time - i_onset) * i_rate))
@@ -475,374 +473,6 @@ gk_FMWaterBell_bottom_to_top init -3
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 gk_ReverbSC_feedback init 0.86
-gk_MasterOutput_level init 46.
-gi_FMWaterBell_attack init 0.002936276551436901
-gi_FMWaterBell_release init 0.022698875468554768
-gi_FMWaterBell_exponent init 0
-gi_FMWaterBell_sustain init 5.385256143273636
-gi_FMWaterBell_sustain_level init 0.08267388588088297
-gk_FMWaterBell_crossfade init 0.1234039047697504
-gk_FMWaterBell_index init 1.1401499375260309
-gk_FMWaterBell_vibrato_depth init 0.28503171595683335
-gk_FMWaterBell_vibrato_rate init 2.4993821566850647
-gk_FMWaterBell_level init 22.
-gk_Phaser_ratio1 init 1.0388005601779389
-gk_Phaser_ratio2 init 3.0422604827415767
-gk_Phaser_index1 init 0.5066315182469726
-gk_Phaser_index2 init 0.5066315182469726
-gk_Phaser_level init 8.25438668753604
-gk_STKBowed_vibrato_level init 0
-gk_STKBowed_bow_pressure init 110
-gk_STKBowed_bow_position init 20
-gk_STKBowed_vibrato_frequency init 50.2
-gk_STKBowed_level init 0
-gk_Droner_partial1 init 0.11032374600527997
-gk_Droner_partial2 init 0.4927052938724468
-gk_Droner_partial3 init 0.11921634014172572
-gk_Droner_partial4 init 0.06586077532305128
-gk_Droner_partial5 init 0.6616645824649159
-gk_Droner_level init 18.563508886352523
-gk_Sweeper_britel init 0.4258927115604109
-gk_Sweeper_briteh init 3.635884339731444
-gk_Sweeper_britels init 1.1354964943746944
-gk_Sweeper_britehs init 3.222566443828469
-gk_Sweeper_level init 7.606391651720202
-gk_Buzzer_harmonics init 11.958151412801714
-gk_Buzzer_level init 23.61650089678787
-gk_Shiner_level init 22.3642589271156
-gk_Blower_grainDensity init 132.3332789825534
-gk_Blower_grainDuration init 0.2854231208217838
-gk_Blower_grainAmplitudeRange init 174.0746779716289
-gk_Blower_grainFrequencyRange init 62.82406652535464
-gk_Blower_level init 6.562856676993313
-gk_ZakianFlute_level init 25.125628140703512
-gk_PianoOutPianoteq_level init -44.
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-gk_ReverbSC_feedback init 0.86
-gk_MasterOutput_level init 46
-gi_FMWaterBell_attack init 0.002936276551436901
-gi_FMWaterBell_release init 0.022698875468554768
-gi_FMWaterBell_exponent init 0
-gi_FMWaterBell_sustain init 5.385256143273636
-gi_FMWaterBell_sustain_level init 0.08267388588088297
-gk_FMWaterBell_crossfade init 0.1234039047697504
-gk_FMWaterBell_index init 1.1401499375260309
-gk_FMWaterBell_vibrato_depth init 0.28503171595683335
-gk_FMWaterBell_vibrato_rate init 2.4993821566850647
-gk_FMWaterBell_level init 22
-gk_Phaser_ratio1 init 1.0388005601779389
-gk_Phaser_ratio2 init 3
-gk_Phaser_index1 init 0.5
-gk_Phaser_index2 init 1
-gk_Phaser_level init 6
-gk_STKBowed_vibrato_level init 0
-gk_STKBowed_bow_pressure init 110
-gk_STKBowed_bow_position init 20
-gk_STKBowed_vibrato_frequency init 50.2
-gk_STKBowed_level init 0
-gk_Droner_partial1 init 0.11032374600527997
-gk_Droner_partial2 init 0.4927052938724468
-gk_Droner_partial3 init 0.11921634014172572
-gk_Droner_partial4 init 0.06586077532305128
-gk_Droner_partial5 init 0.6616645824649159
-gk_Droner_level init 18.563508886352523
-gk_Sweeper_britel init 0.4258927115604109
-gk_Sweeper_briteh init 3.635884339731444
-gk_Sweeper_britels init 1.1354964943746944
-gk_Sweeper_britehs init 3.222566443828469
-gk_Sweeper_level init 7.606391651720202
-gk_Buzzer_harmonics init 11.958151412801714
-gk_Buzzer_level init 23.61650089678787
-gk_Shiner_level init 22.3642589271156
-gk_Blower_grainDensity init 132.3332789825534
-gk_Blower_grainDuration init 0.2854231208217838
-gk_Blower_grainAmplitudeRange init 174.0746779716289
-gk_Blower_grainFrequencyRange init 62.82406652535464
-gk_Blower_level init 6.562856676993313
-gk_ZakianFlute_level init 25.125628140703512
-gk_PianoOutPianoteq_level init -38
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-gk_ReverbSC_feedback init 0.86
-gk_MasterOutput_level init 46
-gi_FMWaterBell_attack init 0.002936276551436901
-gi_FMWaterBell_release init 0.022698875468554768
-gi_FMWaterBell_exponent init 0
-gi_FMWaterBell_sustain init 5.385256143273636
-gi_FMWaterBell_sustain_level init 0.08267388588088297
-gk_FMWaterBell_crossfade init 0.1234039047697504
-gk_FMWaterBell_index init 1.1401499375260309
-gk_FMWaterBell_vibrato_depth init 0.28503171595683335
-gk_FMWaterBell_vibrato_rate init 2.4993821566850647
-gk_FMWaterBell_level init 21
-gk_Phaser_ratio1 init 1.0388005601779389
-gk_Phaser_ratio2 init 3
-gk_Phaser_index1 init 0.5
-gk_Phaser_index2 init 1
-gk_Phaser_level init 6
-gk_STKBowed_vibrato_level init 0
-gk_STKBowed_bow_pressure init 110
-gk_STKBowed_bow_position init 20
-gk_STKBowed_vibrato_frequency init 50.2
-gk_STKBowed_level init 0
-gk_Droner_partial1 init 0.19517365074188814
-gk_Droner_partial2 init 0.2577857492255014
-gk_Droner_partial3 init 0.11169085276373716
-gk_Droner_partial4 init 0.15343225175281267
-gk_Droner_partial5 init 0.4456220446763411
-gk_Droner_level init 27.433556171531066
-
-gk_Sweeper_bright_min init 0
-gk_Sweeper_bright_max init 5
-gk_Sweeper_rate_min init 0.1
-gk_Sweeper_rate_max init 1
-gk_Sweeper_level init -2
-
-gk_Buzzer_harmonics init 6.61666394912767
-gk_Buzzer_level init 0
-gk_Shiner_level init -16.91668025436165
-gk_Blower_grainDensity init 132.3332789825534
-gk_Blower_grainDuration init 0.2854231208217838
-gk_Blower_grainAmplitudeRange init 174.0746779716289
-gk_Blower_grainFrequencyRange init 62.82406652535464
-gk_Blower_level init 6.562856676993313
-;gk_ZakianFlute_level init 25.125628140703512
-gk_ZakianFlute_level init 23.
-;gk_PianoOutPianoteq_level init -30
-gk_PianoOutPianoteq_level init 37
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-gk_ReverbSC_feedback init 0.86
-gk_MasterOutput_level init 0.08804379723128619
-gi_FMWaterBell_attack init 0.002936276551436901
-gi_FMWaterBell_release init 0.022698875468554768
-gi_FMWaterBell_exponent init 0
-gi_FMWaterBell_sustain init 5.385256143273636
-gi_FMWaterBell_sustain_level init 0.08267388588088297
-gk_FMWaterBell_crossfade init 0.1234039047697504
-gk_FMWaterBell_index init 1.1401499375260309
-gk_FMWaterBell_vibrato_depth init 0.28503171595683335
-gk_FMWaterBell_vibrato_rate init 2.4993821566850647
-gk_FMWaterBell_level init 21
-gk_Phaser_ratio1 init 1.0388005601779389
-gk_Phaser_ratio2 init 3
-gk_Phaser_index1 init 0.5
-gk_Phaser_index2 init 1
-gk_Phaser_level init 4
-gk_STKBowed_vibrato_level init 0
-gk_STKBowed_bow_pressure init 110
-gk_STKBowed_bow_position init 20
-gk_STKBowed_vibrato_frequency init 50
-gk_STKBowed_level init 18
-gk_Droner_partial1 init 0.19517365074188814
-gk_Droner_partial2 init 0.2577857492255014
-gk_Droner_partial3 init 0.11169085276373716
-gk_Droner_partial4 init 0.15343225175281267
-gk_Droner_partial5 init 0.4456220446763411
-gk_Droner_level init 27.433556171531066
-gk_Sweeper_bright_min init 0
-gk_Sweeper_bright_max init 5
-gk_Sweeper_rate_min init 0.1
-gk_Sweeper_rate_max init 1
-gk_Sweeper_level init -2
-gk_Buzzer_harmonics init 6.61666394912767
-gk_Buzzer_level init 0
-gk_Shiner_level init -16.91668025436165
-gk_Blower_grainDensity init 132.3332789825534
-gk_Blower_grainDuration init 0.2854231208217838
-gk_Blower_grainAmplitudeRange init 174.0746779716289
-gk_Blower_grainFrequencyRange init 62.82406652535464
-gk_Blower_level init 4;6.562856676993313
-gk_ZakianFlute_level init 12;18
-gk_PianoOutPianoteq_level init 6.0
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-gk_ReverbSC_feedback init 0.86
-gk_MasterOutput_level init 0.08804379723128619
-gi_FMWaterBell_attack init 0.002936276551436901
-gi_FMWaterBell_release init 0.022698875468554768
-gi_FMWaterBell_exponent init 0
-gi_FMWaterBell_sustain init 5.385256143273636
-gi_FMWaterBell_sustain_level init 0.08267388588088297
-gk_FMWaterBell_crossfade init 0.1234039047697504
-gk_FMWaterBell_index init 1.1401499375260309
-gk_FMWaterBell_vibrato_depth init 0.28503171595683335
-gk_FMWaterBell_vibrato_rate init 2.4993821566850647
-gk_FMWaterBell_level init 21
-gk_Phaser_ratio1 init 1.0388005601779389
-gk_Phaser_ratio2 init 3
-gk_Phaser_index1 init 0.5
-gk_Phaser_index2 init 1
-gk_Phaser_level init 4
-gk_STKBowed_vibrato_level init 2.621064356307683
-gk_STKBowed_bow_pressure init 110
-gk_STKBowed_bow_position init 21.81769218869982
-gk_STKBowed_vibrato_frequency init 50.2
-gk_STKBowed_level init 17.737876003647344
-gk_Droner_partial1 init 0.19517365074188814
-gk_Droner_partial2 init 0.2577857492255014
-gk_Droner_partial3 init 0.11169085276373716
-gk_Droner_partial4 init 0.15343225175281267
-gk_Droner_partial5 init 0.4456220446763411
-gk_Droner_level init 27.433556171531066
-gk_Sweeper_bright_min init 0
-gk_Sweeper_bright_max init 4
-gk_Sweeper_rate_min init 0.1
-gk_Sweeper_rate_max init 1
-gk_Sweeper_level init -2
-gk_Buzzer_harmonics init 6.61666394912767
-gk_Buzzer_level init 0
-gk_Shiner_level init -16.91668025436165
-gk_Blower_grainDensity init 132.3332789825534
-gk_Blower_grainDuration init 0.2854231208217838
-gk_Blower_grainAmplitudeRange init 174.0746779716289
-gk_Blower_grainFrequencyRange init 62.82406652535464
-gk_Blower_level init 4
-gk_ZakianFlute_level init 12
-gk_PianoOutPianoteq_level init 6
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-gk_ReverbSC_feedback init 0.86
-gk_MasterOutput_level init 0.08804379723128619
-gi_FMWaterBell_attack init 0.002936276551436901
-gi_FMWaterBell_release init 0.022698875468554768
-gi_FMWaterBell_exponent init 0
-gi_FMWaterBell_sustain init 5.385256143273636
-gi_FMWaterBell_sustain_level init 0.08267388588088297
-gk_FMWaterBell_crossfade init 0.1234039047697504
-gk_FMWaterBell_index init 1.1401499375260309
-gk_FMWaterBell_vibrato_depth init 0.28503171595683335
-gk_FMWaterBell_vibrato_rate init 2.4993821566850647
-gk_FMWaterBell_level init 21
-gk_Phaser_ratio1 init 1.0388005601779389
-gk_Phaser_ratio2 init 3
-gk_Phaser_index1 init 0.5
-gk_Phaser_index2 init 1
-gk_Phaser_level init 4
-gk_STKBowed_vibrato_level init 0
-gk_STKBowed_bow_pressure init 110
-gk_STKBowed_bow_position init 21.81769218869982
-gk_STKBowed_vibrato_frequency init 50.2
-gk_STKBowed_level init 17.737876003647344
-gk_Droner_partial1 init 0.19517365074188814
-gk_Droner_partial2 init 0.2577857492255014
-gk_Droner_partial3 init 0.11169085276373716
-gk_Droner_partial4 init 0.15343225175281267
-gk_Droner_partial5 init 0.4456220446763411
-gk_Droner_level init 27.433556171531066
-gk_Sweeper_bright_min init 3.5147562367519973
-gk_Sweeper_bright_max init 0
-gk_Sweeper_rate_min init 0.48850481004402413
-gk_Sweeper_rate_max init 3.452144138268384
-gk_Sweeper_level init -2
-gk_Buzzer_harmonics init 6.61666394912767
-gk_Buzzer_level init 0
-gk_Shiner_level init -16.91668025436165
-gk_Blower_grainDensity init 132.3332789825534
-gk_Blower_grainDuration init 0.2854231208217838
-gk_Blower_grainAmplitudeRange init 174.0746779716289
-gk_Blower_grainFrequencyRange init 62.82406652535464
-gk_Blower_level init 4
-gk_ZakianFlute_level init 12
-gk_PianoOutPianoteq_level init 6
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-gk_ReverbSC_feedback init 0.86
-gk_MasterOutput_level init 0.08804379723128619
-gi_FMWaterBell_attack init 0.002936276551436901
-gi_FMWaterBell_release init 0.022698875468554768
-gi_FMWaterBell_exponent init 0
-gi_FMWaterBell_sustain init 5.385256143273636
-gi_FMWaterBell_sustain_level init 0.08267388588088297
-gk_FMWaterBell_crossfade init 0.1234039047697504
-gk_FMWaterBell_index init 1.1401499375260309
-gk_FMWaterBell_vibrato_depth init 0.28503171595683335
-gk_FMWaterBell_vibrato_rate init 2.4993821566850647
-gk_FMWaterBell_level init 21
-gk_Phaser_ratio1 init 1.0388005601779389
-gk_Phaser_ratio2 init 3
-gk_Phaser_index1 init 0.5
-gk_Phaser_index2 init 1
-gk_Phaser_level init 4
-gk_STKBowed_vibrato_level init 0
-gk_STKBowed_bow_pressure init 110
-gk_STKBowed_bow_position init 21.81769218869982
-gk_STKBowed_vibrato_frequency init 50.2
-gk_STKBowed_level init 17.737876003647344
-gk_Droner_partial1 init 0.4664927441708788
-gk_Droner_partial2 init 0.16386760150008153
-gk_Droner_partial3 init 0.13777922713190935
-gk_Droner_partial4 init 0.4664927441708788
-gk_Droner_partial5 init 0.15343225175281267
-gk_Droner_level init 27.433556171531066
-gk_Sweeper_bright_min init 3.5147562367519973
-gk_Sweeper_bright_max init 0
-gk_Sweeper_rate_min init 0.48850481004402413
-gk_Sweeper_rate_max init 3.452144138268384
-gk_Sweeper_level init -2
-gk_Buzzer_harmonics init 6.61666394912767
-gk_Buzzer_level init 0
-gk_Shiner_level init -16.91668025436165
-gk_Blower_grainDensity init 132.3332789825534
-gk_Blower_grainDuration init 0.2854231208217838
-gk_Blower_grainAmplitudeRange init 174.0746779716289
-gk_Blower_grainFrequencyRange init 62.82406652535464
-gk_Blower_level init 4
-gk_ZakianFlute_level init 12
-gk_PianoOutPianoteq_level init 6
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-gk_ReverbSC_feedback init 0.86
-gk_MasterOutput_level init 0.08804379723128619
-gi_FMWaterBell_attack init 0.002936276551436901
-gi_FMWaterBell_release init 0.022698875468554768
-gi_FMWaterBell_exponent init 0
-gi_FMWaterBell_sustain init 5.385256143273636
-gi_FMWaterBell_sustain_level init 0.08267388588088297
-gk_FMWaterBell_crossfade init 0.1234039047697504
-gk_FMWaterBell_index init 1.1401499375260309
-gk_FMWaterBell_vibrato_depth init 0.28503171595683335
-gk_FMWaterBell_vibrato_rate init 2.4993821566850647
-gk_FMWaterBell_level init 21
-gk_Phaser_ratio1 init 1.028045002445785
-gk_Phaser_ratio2 init 0.010598402087069948
-gk_Phaser_index1 init 0.9709766835154084
-gk_Phaser_index2 init 0.7361813142018588
-gk_Phaser_level init 4
-gk_STKBowed_vibrato_level init 0
-gk_STKBowed_bow_pressure init 110
-gk_STKBowed_bow_position init 21.81769218869982
-gk_STKBowed_vibrato_frequency init 50.2
-gk_STKBowed_level init 17.737876003647344
-gk_Droner_partial1 init 0.4664927441708788
-gk_Droner_partial2 init 0.16386760150008153
-gk_Droner_partial3 init 0.13777922713190935
-gk_Droner_partial4 init 0.4664927441708788
-gk_Droner_partial5 init 0.15343225175281267
-gk_Droner_level init 27.433556171531066
-gk_Sweeper_bright_min init 3.5147562367519973
-gk_Sweeper_bright_max init 0
-gk_Sweeper_rate_min init 0.48850481004402413
-gk_Sweeper_rate_max init 3.452144138268384
-gk_Sweeper_level init -2
-gk_Buzzer_harmonics init 6.61666394912767
-gk_Buzzer_level init 0
-gk_Shiner_level init -16.91668025436165
-gk_Blower_grainDensity init 132.3332789825534
-gk_Blower_grainDuration init 0.2854231208217838
-gk_Blower_grainAmplitudeRange init 174.0746779716289
-gk_Blower_grainFrequencyRange init 62.82406652535464
-gk_Blower_level init 4
-gk_ZakianFlute_level init 12
-gk_PianoOutPianoteq_level init 6
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-gk_ReverbSC_feedback init 0.86
 gk_MasterOutput_level init 0.08804379723128619
 gi_FMWaterBell_attack init 0.002936276551436901
 gi_FMWaterBell_release init 0.022698875468554768
@@ -887,14 +517,12 @@ gk_ZakianFlute_level init 12
 gk_PianoOutPianoteq_level init 27
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
-
 gi_Spatialize3D_speaker_rig init 31
 
 gS_html init {{<!DOCTYPE html>
 <html>
 <head>
-    <title>Red Leaves version 8.4.3</title>
+    <title>Red Leaves version 8.4.3.1</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!--
 //////////////////////////////////////////////////////////////////////////////
