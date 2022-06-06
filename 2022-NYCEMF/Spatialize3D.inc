@@ -319,6 +319,8 @@ gi_Spatialize3D_decoder_mix init 0
 gS_Spatialize3D_hrtf_left init "hrtf-48000-left.dat"
 gS_Spatialize3D_hrtf_right init "hrtf-48000-right.dat"
 
+gi_Spatialize3D_verbose init 0
+
 opcode Spatialize3D, 0, akkk
 a_spatialized[] init nchnls
 a_signal, k_x, k_y, k_z xin
@@ -333,19 +335,19 @@ i_left table 47, gi_Spatialize3D_room_table
 i_h = i_ceiling + i_floor
 i_d = i_front + i_back
 i_w = i_right + i_left
-prints "i_floor:            %9.4f\n", i_floor
-prints "i_ceiling:          %9.4f\n", i_ceiling
-prints "i_back:             %9.4f\n", i_back
-prints "i_front:            %9.4f\n", i_front
-prints "i_left:             %9.4f\n", i_left
-prints "i_right:            %9.4f\n", i_right
 i_distance = sqrt(i_w * i_w + i_h * i_h + i_d * i_d)
 k_distance = sqrt(k_x * k_x + k_y * k_y + k_z * k_z)
-k_print = 1
-printf "i_distance:         %9.4f initial k_distance: %9.4f\n", k_print, i_distance, k_distance
-k_print = 0
 i_maximum_delay = ((i_r + 1) * i_distance / gi_Spatialize3D_Mach) * 2
-prints "i_maximum_delay:    %9.4f\n", i_maximum_delay
+; if gi_Spatialize3D_verbose == 1 then
+; prints "i_floor:            %9.4f\n", i_floor
+; prints "i_ceiling:          %9.4f\n", i_ceiling
+; prints "i_back:             %9.4f\n", i_back
+; prints "i_front:            %9.4f\n", i_front
+; prints "i_left:             %9.4f\n", i_left
+; prints "i_right:            %9.4f\n", i_right
+; prints "i_distance:         %9.4f initial k_distance: %9.4f\n", i_distance, k_distance
+; prints "i_maximum_delay:    %9.4f\n", i_maximum_delay
+; endif
 i_minimum_distance = (gi_Spatialize3D_Mach * 18) / sr
 ;k_trigger changed k_distance
 ;printf "Spatialize3D: p%3d: i_minimum_distance: %9.4f k_distance: %9.4f\n", k_trigger, p1, i_minimum_distance, k_distance
@@ -354,6 +356,9 @@ ab_signal[0] = a_w
 ab_signal[1] = a_x
 ab_signal[2] = a_y
 ab_signal[3] = a_z
+
+// NOTE: FuMa (original format): WXYZ ACN (Current format!): WYZX. 
+
 a_spatialized bformdec2 gi_Spatialize3D_speaker_rig, ab_signal, gi_Spatialize3D_decoder, i_distance, gi_Spatialize3D_crossover_hz, gi_Spatialize3D_decoder_mix, gS_Spatialize3D_hrtf_right, gS_Spatialize3D_hrtf_left
 ; if k_distance < i_minimum_distance then
   ; prints "too close to listener: p1: %9.4f i_minimum_distance: %9.4f k_distance: %9.4f\n", p1, i_minimum_distance, k_distance

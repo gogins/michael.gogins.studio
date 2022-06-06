@@ -81,7 +81,7 @@ asignal vco2 1, ihertz, 12 ; triangle
 i_waveform_endif:
 asignal chebyshevpoly asignal, 0, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10
 adeclicking linsegr 0, .004, 1, p3 - .014, 1, .1, 0
-a_signal = asignal * adeclicking
+a_signal = asignal * adeclicking * aenvelope
 a_signal = a_signal * i_amplitude * k_gain * 1.4
 
 prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)

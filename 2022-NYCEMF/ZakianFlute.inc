@@ -234,7 +234,7 @@ i_sustain = p3
 i_release = 0.01
 xtratim i_attack + i_release
 a_declicking linseg 0, i_attack, 1, i_sustain, 1, i_release, 0
-a_signal = a_signal * i_amplitude * a_declicking * k_gain
+a_signal = a_signal * a_declicking * aenvelope * k_gain
 
 prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 k_time times
