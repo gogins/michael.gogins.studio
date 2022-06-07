@@ -18,7 +18,7 @@ gk_PianoOutPianoteq_bottom_to_top init 0
 instr PianoOutPianoteq
 vstprogset gi_Pianoteq, 1
 ; Sustain off.
-vstparamset gi_Pianoteq, 6, 1
+vstparamset gi_Pianoteq, 6, 0
 ; Reverb switch off.
 vstparamset gi_Pianoteq, 93, 0
 k_gain = ampdb(gk_PianoOutPianoteq_level)
@@ -43,22 +43,22 @@ a_out_left, a_out_right pan2 a_signal, gk_PianoOutPianoteq_left_to_right
 k_1 rms aoutleft
 k_2 rms aoutright
 
+kx, ky instrument_position p2, 10, p1
+kz init 0
+
+#ifdef SPATIALIZE_GOGINS
 absignal[] init 16
 aspatialreverbsend init 0
-k_space_front_to_back init 0
-k_space_left_to_right init 0
-k_space_bottom_to_top init 0
 ; opcode Spatialize, a[]a, akkk
-absignal, aspatialreverbsend Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
-k_signal_rms rms a_signal
-kw = k(absignal[0])
-kx = k(absignal[1])
-ky = k(absignal[2])
-kz = k(absignal[3])
-ksend = k(aspatialreverbsend)
-printks "%-24s rms %9.4f W %9.4f X %9.4f Y %9.4f Z%9.4f  send %9.4f \n", 0.5, nstrstr(p1), k_signal_rms, kw, kx, ky, kz, ksend
+absignal, aspatialreverbsend Spatialize a_signal, kx, ky, kz
 outletv "outbformat", absignal
 outleta "out", aspatialreverbsend
+#end
 
+#ifdef SPATIALIZE_STEREO
+a_out_left, a_out_right pan2 a_signal, ky
+outleta "outleft", a_out_left
+outleta "outright", a_out_right
+#end
 prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin

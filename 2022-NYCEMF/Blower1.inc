@@ -70,25 +70,22 @@ aoutr grain ip4, ifqc, gk_Blower_grainDensity, gk_Blower_grainAmplitudeRange, gk
 a_signal = aoutl + aoutr
 a_signal = a_signal * iamp * a_declicking * k_gain
 
-prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
-#ifdef USE_SPATIALIZATION
+kx, ky instrument_position p2, 10, p1
+kz init 0
 
-k_time times
-k_space_front_to_back = sin(k_time / p1)
-k_space_left_to_right = cos(k_time / p1)
-k_space_bottom_to_top = .5
-
+#ifdef SPATIALIZE_GOGINS
 absignal[] init 16
-absignal, aspatialreverbsend Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
+aspatialreverbsend init 0
+; opcode Spatialize, a[]a, akkk
+absignal, aspatialreverbsend Spatialize a_signal, kx, ky, kz
 outletv "outbformat", absignal
 outleta "out", aspatialreverbsend
+#end
 
-kelapsed timeinsts
-prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
-
-#else
-a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+#ifdef SPATIALIZE_STEREO
+a_out_left, a_out_right pan2 a_signal, ky
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #end
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin

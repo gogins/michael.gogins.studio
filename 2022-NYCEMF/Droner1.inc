@@ -76,16 +76,22 @@ adeclicking linsegr 0, .004, 1, p3 - .014, 1, .1, 0
 a_signal = asignal * adeclicking
 a_signal = a_signal * i_amplitude * k_gain * 1.4
 
-prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
-#ifdef USE_SPATIALIZATION
-a_spatial_reverb_send init 0
-a_bsignal[] init 16
-a_bsignal, a_spatial_reverb_send Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
-outletv "outbformat", a_bsignal
-outleta "out", a_spatial_reverb_send
-#else
-a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+kx, ky instrument_position p2, 10, p1
+kz init 0
+
+#ifdef SPATIALIZE_GOGINS
+absignal[] init 16
+aspatialreverbsend init 0
+; opcode Spatialize, a[]a, akkk
+absignal, aspatialreverbsend Spatialize a_signal, kx, ky, kz
+outletv "outbformat", absignal
+outleta "out", aspatialreverbsend
+#end
+
+#ifdef SPATIALIZE_STEREO
+a_out_left, a_out_right pan2 a_signal, ky
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #end
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin

@@ -9,7 +9,7 @@ This piece is another in my "Leaves" series of pieces of electroacoustic
 concert music, algorithmically composed, available on electronic distribution. 
 This is the first piece in the series that I have attempted to spatialize. The 
 complete source code for this composition is available at 
-https://github.com/gogins/michael.gogins.studio/blob/master/2022-NYCEMF/Red_Leaves_v8.4.csd. 
+https://github.com/gogins/michael.gogins.studio/blob/master/2022-NYCEMF/Red_Leaves_v8.4.3.3.csd. 
 
 This piece is algorithmically composed using a deterministic iterated 
 function system (IFS), implemented using my CsoundAC library for algorithmic 
@@ -40,12 +40,20 @@ downloaded from https://michaelgogins.tumblr.com/csound_extended.
 <CsInstruments>
 
 //////////////////////////////////////////////////////////////////////////////
+// Define just one of these to specify the spatialization system.
+//////////////////////////////////////////////////////////////////////////////
+;#define SPATIALIZE_STEREO #1#
+;#define SPATIALIZE_IEM #2#
+;#define SPATIALIZE_AALTO #3#
+#define SPATIALIZE_GOGINS #4#
+
+//////////////////////////////////////////////////////////////////////////////
 // Change to sr=96000 with ksmps=1 for final rendering to soundfile.
 //////////////////////////////////////////////////////////////////////////////
 sr = 48000
 ksmps = 128
 nchnls = 2
-0dbfs = 10
+0dbfs = 1000000
 //////////////////////////////////////////////////////////////////////////////
 // This random seed ensures that the same random stream  is used for each 
 // rendering. Note that rand, randh, randi, rnd(x) and birnd(x) are not 
@@ -283,21 +291,20 @@ gk_BformatDecoder_MasterLevel init 20
 gk_BformatDecoder_SpeakerRig init 1
 gk_BformatDecoder2_SpeakerRig init 31
 gk_Spatialize_SpeakerRigRadius init 5.0
-gk_SpatialReverb_ReverbDecay init 0.96
+gk_SpatialReverb_ReverbDecay init 0.;76
 gk_SpatialReverb_CutoffHz init sr
-gk_SpatialReverb_RandomDelayModulation init 4.0
-gk_LocalReverbByDistance_Wet init 0.75
+gk_SpatialReverb_RandomDelayModulation init .0;01
+gk_LocalReverbByDistance_Wet init 0.25
 ; This is a fraction of the speaker rig radius.
 gk_LocalReverbByDistance_FrontWall init 0.9
-gk_LocalReverbByDistance_ReverbDecay init 0.6
+gk_LocalReverbByDistance_ReverbDecay init 0.;6
 gk_LocalReverbByDistance_CutoffHz init 20000
-gk_LocalReverbByDistance_RandomDelayModulation init 1.0
+gk_LocalReverbByDistance_RandomDelayModulation init .0;01
 gk_Spatialize_Verbose init 0
 
 alwayson "PianoOutPianoteq"
 alwayson "SpatialReverb"
 alwayson "BformatDecoder"
-
 
 //////////////////////////////////////////////////////////////////////////////
 // These are all the Csound instruments and effects used in this piece.
@@ -322,82 +329,26 @@ gi_Pianoteq vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/Pianoteq\ 7
 endif
 
 #include "PianoNotePianoteq.inc"
-;#include "FMWaterBell.inc"
-;#include "Phaser.inc"
-;#include "Droner.inc"
-;#include "Sweeper.inc"
-;#include "Buzzer.inc"
-;#include "Shiner.inc"
-;#include "Blower.inc"
-;#include "ZakianFlute.inc"
-;#include "STKBowed.inc"
+#include "FMWaterBell1.inc"
+#include "Phaser1.inc"
+#include "Droner1.inc"
+#include "Sweeper1.inc"
+#include "Buzzer1.inc"
+#include "Shiner1.inc"
+#include "Blower1.inc"
+#include "ZakianFlute1.inc"
+;#include "STKBowed1.inc"
 
 // This must be initialized in the orc header before any #includes.
 
-// gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", 0
-//vstinfo gi_Pianoteq 
+// gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", gi_vstinfo
 
-gk_PianoOutPianoteq_level chnexport "gk_PianoOutPianoteq_level", 3 ;  0
-gi_PianoOutPianoteq_print chnexport "gi_PianoOutPianoteq_print", 3 ;  1
-gk_PianoOutPianoteq_front_to_back chnexport "gk_PianoOutPianoteq_front_to_back", 3 ;  0
-gk_PianoOutPianoteq_left_to_right chnexport "gk_PianoOutPianoteq_left_to_right", 3 ;  0.5
-gk_PianoOutPianoteq_bottom_to_top chnexport "gk_PianoOutPianoteq_bottom_to_top", 3 ;  0
-
-gk_PianoOutPianoteq_level init 0
-gi_PianoOutPianoteq_print init 1
-gk_PianoOutPianoteq_front_to_back init 0
-gk_PianoOutPianoteq_left_to_right init 0.5
-gk_PianoOutPianoteq_bottom_to_top init 0
-
-instr PianoOutPianoteq
-vstprogset gi_Pianoteq, 1
-; Sustain off.
-vstparamset gi_Pianoteq, 6, 1
-; Reverb switch off.
-vstparamset gi_Pianoteq, 93, 0
-k_gain = ampdb(gk_PianoOutPianoteq_level)
-i_overall_amps = 87
-i_normalization = ampdb(-i_overall_amps) * 2
-i_amplitude = ampdb(80) * i_normalization
-if gi_PianoOutPianoteq_print == 1 then
-  vstinfo gi_PianoOutPianoteq_print
-endif
-i_instrument = p1
-i_time = p2
-i_duration = p3
-i_midi_key = p4
-i_midi_velocity = p5
-ainleft init 0
-ainright init 0
-aoutleft, aoutright vstaudio gi_Pianoteq, ainleft, ainright
-a_signal = aoutleft + aoutright
-a_signal *= k_gain
-a_signal *= i_amplitude
-absignal[] init 16
-aspatialreverbsend init 0
-k_space_front_to_back init .25
-k_space_left_to_right init .25
-k_space_bottom_to_top init .25
-; opcode Spatialize, a[]a, akkk
-absignal, aspatialreverbsend Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
-k_signal_rms rms a_signal
-kw = k(absignal[0])
-kx = k(absignal[1])
-ky = k(absignal[2])
-kz = k(absignal[3])
-ksend = k(aspatialreverbsend)
-
-printks "%-24s rms %9.4f W %9.4f X %9.4f Y %9.4f Z%9.4f  send %9.4f \n", 0.5, nstrstr(p1), k_signal_rms, kw, kx, ky, kz, ksend
-outletv "outbformat", absignal
-outleta "out", aspatialreverbsend
-
-prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
-endin
-alwayson "PianoOutPianoteq"
-
+#include "PianoOutPianoteq1.inc"
 gk_PianoOutPianoteq_front_to_back init -3
 gk_PianoOutPianoteq_left_to_right init .5
 gk_PianoOutPianoteq_bottom_to_top init 3
+
+alwayson "PianoOutPianoteq"
 
 gk_FMWaterBell_front_to_back init -3
 gk_FMWaterBell_left_to_right init 1
@@ -409,7 +360,7 @@ gk_FMWaterBell_bottom_to_top init -3
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 gk_ReverbSC_feedback init 0.86
-gk_MasterOutput_level init 0.08804379723128619
+gk_MasterOutput_level init -12
 gi_FMWaterBell_attack init 0.002936276551436901
 gi_FMWaterBell_release init 0.022698875468554768
 gi_FMWaterBell_exponent init 0
@@ -419,7 +370,7 @@ gk_FMWaterBell_crossfade init 0.1234039047697504
 gk_FMWaterBell_index init 1.1401499375260309
 gk_FMWaterBell_vibrato_depth init 0.28503171595683335
 gk_FMWaterBell_vibrato_rate init 2.4993821566850647
-gk_FMWaterBell_level init 31
+gk_FMWaterBell_level init 10
 gk_Phaser_ratio1 init 1.028045002445785
 gk_Phaser_ratio2 init 0.010598402087069948
 gk_Phaser_index1 init 0.9709766835154084
@@ -450,7 +401,7 @@ gk_Blower_grainAmplitudeRange init 174.0746779716289
 gk_Blower_grainFrequencyRange init 62.82406652535464
 gk_Blower_level init 4
 gk_ZakianFlute_level init 12
-gk_PianoOutPianoteq_level init 10
+gk_PianoOutPianoteq_level init 0
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 //////////////////////////////////////////////////////////////////////////////
@@ -465,7 +416,7 @@ gi_Spatialize3D_speaker_rig init 31
 gS_html init {{<!DOCTYPE html>
 <html>
 <head>
-    <title>Red Leaves version 8.4.3.1</title>
+    <title>Red Leaves version 8.4.3.31</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!--
 //////////////////////////////////////////////////////////////////////////////
@@ -1075,9 +1026,9 @@ extern "C" int score_generator(CSOUND *csound) {
         evtblk.scnt = 0;
         evtblk.opcod = 'i';
         evtblk.pcnt = 9;
-        // Add 5 to p1 only for SPATIALIZE_GOGINS.
-        evtblk.p[1] = std::floor(note.getInstrument() + 5);
-        evtblk.p[1] = 5;
+        // Add 4 to p1 only for SPATIALIZE_GOGINS.
+        evtblk.p[1] = std::floor(note.getInstrument() + 4);
+        //evtblk.p[1] = 6;
         evtblk.p[2] = note.getTime();
         evtblk.p[3] = note.getDuration();
         evtblk.p[4] = note.getKey();

@@ -521,7 +521,7 @@ gk_FMWaterBell_crossfade init 0.1234039047697504
 gk_FMWaterBell_index init 1.1401499375260309
 gk_FMWaterBell_vibrato_depth init 0.28503171595683335
 gk_FMWaterBell_vibrato_rate init 2.4993821566850647
-gk_FMWaterBell_level init 31
+gk_FMWaterBell_level init 28
 gk_Phaser_ratio1 init 1.028045002445785
 gk_Phaser_ratio2 init 0.010598402087069948
 gk_Phaser_index1 init 0.9709766835154084

@@ -9,7 +9,6 @@ gk_FdnReverb_lowQ chnexport "gk_FdnReverb_lowQ", 3
 gk_FdnReverb_lowGain chnexport "gk_FdnReverb_lowGain", 3
 gk_FdnReverb_wet chnexport "gk_FdnReverb_wet", 3
 
-
 gk_FdnReverb_revTime init 0.01
 gk_FdnReverb_fadeInTime init 0.01
 gi_FdnReverb_delayLength init 0.8

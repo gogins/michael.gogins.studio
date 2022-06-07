@@ -95,10 +95,12 @@ adopplered doppler asignal, kdistance, 0, i(gi_Spatialize3D_Mach), 6
 xout adopplered
 endop
 
-; Zero distance blows this up.
 opcode LowpassByDistance, a, ak
 asignal, kdistance xin
-afiltered butterlp asignal, 22000 * sqrt(1.0 / kdistance) + .000001
+if kdistance == 0 then
+  kdistance = .0000001
+end
+afiltered butterlp asignal, 22000 * sqrt(1.0 / kdistance)
 abalanced balance afiltered, asignal
 xout abalanced
 endop
@@ -300,6 +302,8 @@ gi_Spatialize3D_speaker_rig init 31
  * 1 -- Velocity decoder.
  * 2 -- Energy decoder.
  */
+gi_Spatialize3D_lowpass_cutoff init 0
+
 gi_Spatialize3D_decoder init 0
 /**
  * Band splitter crossover frequency for dual decoders.
@@ -321,7 +325,7 @@ gS_Spatialize3D_hrtf_right init "hrtf-48000-right.dat"
 
 gi_Spatialize3D_verbose init 0
 
-opcode Spatialize3D, 0, akkk
+opcode Spatialize3D, a[], akkk
 a_spatialized[] init nchnls
 a_signal, k_x, k_y, k_z xin
 ab_signal[] init 4
@@ -349,6 +353,9 @@ i_maximum_delay = ((i_r + 1) * i_distance / gi_Spatialize3D_Mach) * 2
 ; prints "i_maximum_delay:    %9.4f\n", i_maximum_delay
 ; endif
 i_minimum_distance = (gi_Spatialize3D_Mach * 18) / sr
+; if k_distance < i_minimum_distance then
+  ; prints "too close to listener: p1: %9.4f i_minimum_distance: %9.4f k_distance: %9.4f\n", p1, i_minimum_distance, k_distance
+; endif
 ;k_trigger changed k_distance
 ;printf "Spatialize3D: p%3d: i_minimum_distance: %9.4f k_distance: %9.4f\n", k_trigger, p1, i_minimum_distance, k_distance
 a_w, a_x, a_y, a_z spat3d a_signal, k_x, k_y, k_z, gi_Spatialize3D_unit_circle_radius, gi_Spatialize3D_room_table, 3, i_maximum_delay, gi_Spatialize3D_oversampling
@@ -360,9 +367,7 @@ ab_signal[3] = a_z
 // NOTE: FuMa (original format): WXYZ ACN (Current format!): WYZX. 
 
 a_spatialized bformdec2 gi_Spatialize3D_speaker_rig, ab_signal, gi_Spatialize3D_decoder, i_distance, gi_Spatialize3D_crossover_hz, gi_Spatialize3D_decoder_mix, gS_Spatialize3D_hrtf_right, gS_Spatialize3D_hrtf_left
-; if k_distance < i_minimum_distance then
-  ; prints "too close to listener: p1: %9.4f i_minimum_distance: %9.4f k_distance: %9.4f\n", p1, i_minimum_distance, k_distance
-; endif
+xout ab_spatialized
 out a_spatialized
 endop
 

@@ -120,7 +120,7 @@ aleft delay a1, rnd(0.1)
 aright delay a2, rnd(0.11)
 a_signal = (aleft + aright) * k_gain
 
-#ifdef USE_SPATIALIZATION
+#ifdef SPATIALIZE_GOGINS
 
 k_time times
 k_space_front_to_back = sin(k_time / p1)
@@ -131,13 +131,14 @@ absignal[] init 16
 absignal, aspatialreverbsend Spatialize a_signal, k_space_front_to_back, k_space_left_to_right, k_space_bottom_to_top
 outletv "outbformat", absignal
 outleta "out", aspatialreverbsend
+#end
 
-kelapsed timeinsts
-prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
-
-#else
+#ifdef SPATIALIZE_STEREO
 a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #end
+
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+
 endin
