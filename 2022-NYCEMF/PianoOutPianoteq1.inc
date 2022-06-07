@@ -43,8 +43,9 @@ a_out_left, a_out_right pan2 a_signal, gk_PianoOutPianoteq_left_to_right
 k_1 rms aoutleft
 k_2 rms aoutright
 
-kx, ky instrument_position p2, 10, p1
-kz init 0
+kx = gk_PianoOutPianoteq_front_to_back
+ky = gk_PianoOutPianoteq_left_to_right
+kz = gk_PianoOutPianoteq_bottom_to_top
 
 #ifdef SPATIALIZE_GOGINS
 absignal[] init 16

@@ -56,8 +56,9 @@ a_envelope linsegr 0, gi_FMWaterBell_attack, 1, i_sustain, 1, gi_FMWaterBell_rel
 ; a_envelope transegr 0, gi_FMWaterBell_attack, 12, 1, i_sustain, 12, gi_FMWaterBell_sustain_level, gi_FMWaterBell_release, 12, 0
 a_signal = a_signal * i_amplitude * a_envelope * k_gain
 
-kx, ky instrument_position p2, 10, p1
-kz init 0
+kx = gk_FMWaterBell_front_to_back
+ky = gk_FMWaterBell_left_to_right
+kz = gk_FMWaterBell_bottom_to_top
 
 #ifdef SPATIALIZE_GOGINS
 absignal[] init 16

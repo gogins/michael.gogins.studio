@@ -297,7 +297,7 @@ gk_SpatialReverb_RandomDelayModulation init .0;01
 gk_LocalReverbByDistance_Wet init 0.25
 ; This is a fraction of the speaker rig radius.
 gk_LocalReverbByDistance_FrontWall init 0.9
-gk_LocalReverbByDistance_ReverbDecay init 0.;6
+gk_LocalReverbByDistance_ReverbDecay init 0.6
 gk_LocalReverbByDistance_CutoffHz init 20000
 gk_LocalReverbByDistance_RandomDelayModulation init .0;01
 gk_Spatialize_Verbose init 0
@@ -312,7 +312,7 @@ alwayson "BformatDecoder"
 
 opcode instrument_position, kk, iii
 i_onset, i_radius, i_rate xin
-i_rate = (i_rate / 15.)
+i_rate = (i_rate / 50.)
 k_time times
 // Depth.
 k_x = i_radius * cos(i_onset + ((k_time - i_onset) * i_rate))
@@ -337,7 +337,7 @@ endif
 #include "Shiner1.inc"
 #include "Blower1.inc"
 #include "ZakianFlute1.inc"
-;#include "STKBowed1.inc"
+#include "STKBowed1.inc"
 
 // This must be initialized in the orc header before any #includes.
 
@@ -416,7 +416,7 @@ gi_Spatialize3D_speaker_rig init 31
 gS_html init {{<!DOCTYPE html>
 <html>
 <head>
-    <title>Red Leaves version 8.4.3.31</title>
+    <title>Red Leaves version 8.4.3.3</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!--
 //////////////////////////////////////////////////////////////////////////////
@@ -563,7 +563,6 @@ gS_html init {{<!DOCTYPE html>
         // but the initial values actually come from the CSound channels.
         //////////////////////////////////////////////////////////////////////
         var parameters = {
-            gk_ReverbSC_feedback: 0.94060466265755,
             gk_MasterOutput_level: 23.199086906897115,
             gi_FMWaterBell_attack: 0.002936276551436901,
             gi_FMWaterBell_release: 0.022698875468554768,
@@ -630,7 +629,6 @@ gS_html init {{<!DOCTYPE html>
             gui.add(parameters, 'toggle_messages').name('Toggle visibility of Csound diagnostics');
             gui.add(parameters, 'recenter').name('Re-center piano roll [Ctrl-C]');
             var Master = gui.addFolder('Master');
-            add_slider(Master, 'gk_ReverbSC_feedback', 0, 1);
             add_slider(Master, 'gk_MasterOutput_level', -50, 50);
             var FMWaterBell = gui.addFolder('FMWaterBell');
             add_slider(FMWaterBell, 'gi_FMWaterBell_attack', 0, .1);
