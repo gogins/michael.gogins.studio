@@ -109,7 +109,9 @@ TODO
 ; Global parameters that can be re-defined in the orchestra header.
 
 gk_Spatialize_Verbose init 0
+gk_BformatDecoder_SpeakerRig chnexport "gk_BformatDecoder_SpeakerRig", 3 ; 0
 gk_BformatDecoder_SpeakerRig init 5
+gk_Spatialize_SpeakerRigRadius chnexport "gk_Spatialize_SpeakerRigRadius", 3 ; 0
 gk_Spatialize_SpeakerRigRadius init 5.0
 
 opcode CartesianToPolar, kkk, kkk
@@ -161,6 +163,7 @@ xout kangle, kelevation, kdistance
 endop
 
 ; Zero distance blows this up.
+gk_DopplerByDistance_Mach chnexport "gk_DopplerByDistance_Mach", 3 ; 0
 gk_DopplerByDistance_Mach init 340.29
 opcode DopplerByDistance, a, ak
 asignal, kdistance xin
@@ -287,11 +290,16 @@ aoutput = aoutwet + aoutdry
 xout aoutput
 endop
 
+gk_LocalReverbByDistance_Wet chnexport "gk_LocalReverbByDistance_Wet", 3 ; 0
 gk_LocalReverbByDistance_Wet init 0.2
 ; This is a fraction of the speaker rig radius.
+gk_LocalReverbByDistance_FrontWall chnexport "gk_LocalReverbByDistance_FrontWall", 3 ; 0
 gk_LocalReverbByDistance_FrontWall init 0.9
+gk_LocalReverbByDistance_ReverbDecay chnexport "gk_LocalReverbByDistance_ReverbDecay", 3 ; 0
 gk_LocalReverbByDistance_ReverbDecay init 0.6
+gk_LocalReverbByDistance_CutoffHz chnexport "gk_LocalReverbByDistance_CutoffHz", 3 ; 0
 gk_LocalReverbByDistance_CutoffHz init sr
+gk_LocalReverbByDistance_RandomDelayModulation chnexport "gk_LocalReverbByDistance_RandomDelayModulation", 3 ; 0
 gk_LocalReverbByDistance_RandomDelayModulation init 1.0
 
 opcode LocalReverbByDistance, aa, ak
@@ -1701,32 +1709,39 @@ endin
 21. 2D binaural configuration. This first decodes to a octagon configuration and then applies HRTF filters.
 31. 3D binaural configuration. This first decodes to a dodecahedron configuration and then applies HRTF filters.
 */
+gi_BformatDecoder2_SpeakerRig chnexport "gi_BformatDecoder2_SpeakerRig", 3 ; 0
 gi_BformatDecoder2_SpeakerRig init 31
 /*
 0. Dual decoder (velocity and energy decoders using dual-band splitting).
 1. Velocity decoder.
 2. Energy decoder.
 */
+gi_BformatDecoder2_Decoder chnexport "gi_BformatDecoder2_Decoder", 3 ; 0
 gi_BformatDecoder2_Decoder init 0
 /*
 Radius of speaker rig in meters.
 */
+gi_BformatDecoder2_Distance chnexport "gi_BformatDecoder2_Distance", 3 ; 0
 gi_BformatDecoder2_Distance init 1
 /*
 Only effective for dual decoder.
 */
+gi_BformatDecoder2_SplitHz chnexport "gi_BformatDecoder2_SplitHz", 3 ; 0
 gi_BformatDecoder2_SplitHz init 400
 /*
 0. Energy
 1. RMS
 2. Amplitude
 */
+gi_BformatDecoder2_DecoderMix chnexport "gi_BformatDecoder2_DecoderMix", 3 ; 0
 gi_BformatDecoder2_DecoderMix init 0
 gS_BformatDecoder2_LeftFile init "hrtf-96000-left.dat"
 gS_BformatDecoder2_RightFile init "hrtf-96000-right.dat"
+gk_BformatDecoder2_MasterLevel chnexport "gk_BformatDecoder2_MasterLevel", 3 ; 0
 gk_BformatDecoder2_MasterLevel init 0
 instr BformatDecoder2
 kmasterlevel = pow(10, gk_BformatDecoder2_MasterLevel / 20)
+printks2 "gk_BformatDecoder2_MasterLevel", gk_BformatDecoder2_MasterLevel
 asignal[] init nchnls
 aoutsignal[] init nchnls
 absignal[] init 16

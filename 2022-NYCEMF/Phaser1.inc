@@ -51,7 +51,7 @@ a_envelope transegr 0.0, iattack / 2.0, 1.5, i_amplitude / 2.0, iattack / 2.0, -
 a1,a2 crosspm gk_Phaser_ratio1, gk_Phaser_ratio2, gk_Phaser_index1, gk_Phaser_index2, i_frequency, gi_Phaser_sine, gi_Phaser_sine
 a_signal = (a1 + a2) * k_gain * a_envelope
 
-kx, ky instrument_position p2, 10, p1
+kx, ky instrument_position -p2, 10, p1
 kz init 0
 
 #ifdef SPATIALIZE_GOGINS

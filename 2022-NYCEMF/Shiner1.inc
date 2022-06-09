@@ -42,19 +42,16 @@ iattack = p3/3.
 i_sustain = p3/3.
 idecay = p3/3.
 ;print iattack, i_sustain, idecay
-;tratim iattack + idecay
+xtratim idecay
 kenvelope transegr 0.0, iattack / 2.0, 1.5, .5, iattack / 2.0, -1.5, 1, i_sustain, 0.0, 1, idecay / 2.0, 1.5, .5, idecay / 2.0, -1.5, 0
 
-xtratim iattack + idecay
-;;;kenvelope transeg 0.0, iattack / 2.0, 1.5, i_amplitude / 2.0, iattack / 2.0, -1.5, i_amplitude, isustain, 0.0, i_amplitude, idecay / 2.0, 1.5, i_amplitude / 2.0, idecay / 2.0, -1.5, 0
 ihertz = cpsmidinn(i_midi_key)
 gk_Harmonics = 1 * 20
 asignal vco2 kenvelope * 4, ihertz, 12
 kgain = ampdb(gk_Shiner_level) * .5
-adamping linseg 0, 0.03, 1, p3 - 0.1, 1, 0.07, 0
-a_signal = asignal * kgain * adamping
+a_signal = asignal * kgain * i_amplitude
 
-kx, ky instrument_position p2, 10, p1
+kx, ky instrument_position -p2, 10, p1
 kz init 0
 
 #ifdef SPATIALIZE_GOGINS

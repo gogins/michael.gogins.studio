@@ -53,7 +53,7 @@ k_gain = ampdb(gk_ZakianFlute_level)
 iattack = p3/3.
 isustain = p3/3.
 idecay = p3/3.
-xtratim iattack + idecay
+xtratim idecay
 aenvelope transegr 0.0, iattack / 2.0, 1.5, iamp / 2.0, iattack / 2.0, -1.5, iamp, isustain, 0.0, iamp, idecay / 2.0, 1.5, iamp / 2.0, idecay / 2.0, -1.5, 0
 iHz = cpsmidinn(i_midi_key)
 kHz = k(iHz)
@@ -232,11 +232,10 @@ a_signal balance afilt, asig
 i_attack = .002
 i_sustain = p3
 i_release = 0.01
-xtratim i_attack + i_release
 a_declicking linseg 0, i_attack, 1, i_sustain, 1, i_release, 0
 a_signal = a_signal * a_declicking * aenvelope * k_gain
 
-kx, ky instrument_position p2, 10, p1
+kx, ky instrument_position -p2, 10, p1
 kz init 0
 
 #ifdef SPATIALIZE_GOGINS

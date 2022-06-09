@@ -1,7 +1,6 @@
 // This must be initialized in the orc header before any #includes.
 
 // gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", 0
-//vstinfo gi_Pianoteq 
 
 gk_PianoOutPianoteq_level chnexport "gk_PianoOutPianoteq_level", 3 ;  0
 gi_PianoOutPianoteq_print chnexport "gi_PianoOutPianoteq_print", 3 ;  1
@@ -25,9 +24,6 @@ k_gain = ampdb(gk_PianoOutPianoteq_level)
 i_overall_amps = 87
 i_normalization = ampdb(-i_overall_amps) * 2
 i_amplitude = ampdb(80) * i_normalization
-if gi_PianoOutPianoteq_print == 1 then
-  vstinfo gi_PianoOutPianoteq_print
-endif
 i_instrument = p1
 i_time = p2
 i_duration = p3

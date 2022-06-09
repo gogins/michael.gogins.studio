@@ -31,7 +31,7 @@ a_signal STKBowed i_frequency, 1.0, 1, gk_STKBowed_vibrato_level, 2, gk_STKBowed
 iattack = p3/3.
 isustain = p3/3.
 idecay = p3/3.
-xtratim iattack + idecay
+xtratim idecay
 a_declicking transegr 0.0, iattack / 2.0, 1.5, i_amplitude / 2.0, iattack / 2.0, -1.5, i_amplitude, isustain, 0.0, i_amplitude, idecay / 2.0, 1.5, i_amplitude / 2.0, idecay / 2.0, -1.5, 0
 a_signal = a_signal * i_amplitude * a_declicking * k_gain 
 

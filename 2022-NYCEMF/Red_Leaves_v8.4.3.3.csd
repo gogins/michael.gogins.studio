@@ -43,8 +43,6 @@ downloaded from https://michaelgogins.tumblr.com/csound_extended.
 // Define just one of these to specify the spatialization system.
 //////////////////////////////////////////////////////////////////////////////
 ;#define SPATIALIZE_STEREO #1#
-;#define SPATIALIZE_IEM #2#
-;#define SPATIALIZE_AALTO #3#
 #define SPATIALIZE_GOGINS #4#
 
 //////////////////////////////////////////////////////////////////////////////
@@ -53,7 +51,7 @@ downloaded from https://michaelgogins.tumblr.com/csound_extended.
 sr = 48000
 ksmps = 128
 nchnls = 2
-0dbfs = 1000000
+0dbfs = 100
 //////////////////////////////////////////////////////////////////////////////
 // This random seed ensures that the same random stream  is used for each 
 // rendering. Note that rand, randh, randi, rnd(x) and birnd(x) are not 
@@ -134,177 +132,49 @@ k_time times
 xout k_azimuth_vst, k_elevation_vst, k_radius_vst
 endop
 
-// Are the SPARTA and IEM Ambisonic conventions the same? Both seem to use 
-// SN3D, but IEM uses azimuth, elevation, radius while SPARTA only seems to 
-// use azimuth, elevation -- except for ambiRoomSim!
-
-// N of the 64 channels are assigned and used in order, and unused channels are left as 0.
-
-prints "====================================================\n"
-prints "IEM Plugin Suite:\n"
-prints "----------------------------------------------------\n"
-prints "Send N instruments to one channel of one of these...\n"
-if strcmp(gS_os, "Linux") == 0 then
-gi_iem_multi_encoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/MultiEncoder.so"
-endif
-if strcmp(gS_os, "macOS") == 0 then
-gi_iem_multi_encoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/MultiEncoder.vst"
-endif
-prints "````````````````````````````````````````````````````\n"
-prints "...or to N of these.\n"
-if strcmp(gS_os, "Linux") == 0 then
-gi_iem_stereo_encoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/StereoEncoder.so", gi_vstinfo
-endif
-if strcmp(gS_os, "macOS") == 0 then
-gi_iem_stereo_encoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/StereoEncoder.vst", gi_vstinfo
-endif
-prints "````````````````````````````````````````````````````\n"
-prints "Then to the \"buss.\"\n"
-if strcmp(gS_os, "Linux") == 0 then
-gi_iem_omni_compressor vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/OmniCompressor.so", gi_vstinfo
-endif
-if strcmp(gS_os, "macOS") == 0 then
-i_iem_omni_compressor vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/OmniCompressor.vst", gi_vstinfo
-endif
-prints "````````````````````````````````````````````````````\n"
-prints "Then to the room encoder (which does Doppler effects):\n"
-if strcmp(gS_os, "Linux") == 0 then
-gi_iem_room_encoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/RoomEncoder.so", gi_vstinfo
-endif
-if strcmp(gS_os, "macOS") == 0 then
-gi_iem_room_encoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/RoomEncoder.vst", gi_vstinfo
-endif
-prints "````````````````````````````````````````````````````\n"
-prints "Then to the FDN reverb:\n"
-if strcmp(gS_os, "Linux") == 0 then
-gi_iem_fdn_reverb vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/FdnReverb.so", gi_vstinfo
-endif
-if strcmp(gS_os, "macOS") == 0 then
-gi_iem_fdn_reverb vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/FdnReverb.vst", gi_vstinfo
-endif
-prints "````````````````````````````````````````````````````\n"
-prints "Then to one of these outputs:\n"
-if strcmp(gS_os, "Linux") == 0 then
-gi_iem_simple_decoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/SimpleDecoder.so", gi_vstinfo
-endif
-if strcmp(gS_os, "macOS") == 0 then
-gi_iem_simple_decoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/SimpleDecoder.vst", gi_vstinfo
-endif
-if strcmp(gS_os, "Linux") == 0 then
-gi_iem_allra_decoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/AllRADecoder.so", gi_vstinfo
-endif
-if strcmp(gS_os, "macOS") == 0 then
-gi_iem_allra_decoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/AllRADecoder.vst", gi_vstinfo
-endif
-if strcmp(gS_os, "Linux") == 0 then
-gi_iem_binaural_decoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/BinauralDecoder.so", gi_vstinfo
-endif
-if strcmp(gS_os, "macOS") == 0 then
-gi_iem_binaural_decoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/BinauralDecoder.vst", gi_vstinfo
-endif
-
-prints "====================================================\n"
-prints "SPARTA Suite:\n"
-prints "----------------------------------------------------\n"
-prints "Send N instruments to one channel of one of these...\n"
-prints "````````````````````````````````````````````````````\n"
-if strcmp(gS_os, "Linux") == 0 then
-gi_sparta_ambi_enc vstinit "/home/mkg/.vst/libsparta_ambiENC.so", gi_vstinfo
-endif
-if strcmp(gS_os, "macOS") == 0 then
-gi_sparta_ambi_enc vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/sparta_ambiENC.vst", gi_vstinfo
-endif
-prints "...or to N of these (need 2 of these at 2nd order):\n"
-prints "````````````````````````````````````````````````````\n"
-if strcmp(gS_os, "Linux") == 0 then
-gi_sparta_ambi_room_sim vstinit "/home/mkg/.vst/libsparta_ambiRoomSim.so", gi_vstinfo
-endif
-if strcmp(gS_os, "macOS") == 0 then
-gi_sparta_ambi_room_sim vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/sparta_ambiRoomSim.vst", gi_vstinfo
-endif
-prints "````````````````````````````````````````````````````\n"
-if strcmp(gS_os, "Linux") == 0 then
-gi_compass_spatedit vstinit "/home/mkg/.vst/libcompass_spatedit.so", gi_vstinfo
-endif
-if strcmp(gS_os, "macOS") == 0 then
-gi_compass_spatedit vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/compass_spatedit.vst", gi_vstinfo
-endif
-prints "Then to this (N channels or binaural):\n"
-prints "````````````````````````````````````````````````````\n"
-if strcmp(gS_os, "Linux") == 0 then
-gi_sparta_ambi_dec vstinit "/home/mkg/.vst/libsparta_ambiDEC.so", gi_vstinfo
-endif
-if strcmp(gS_os, "macOS") == 0 then
-gi_sparta_ambi_dec vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/sparta_ambiDEC.vst", gi_vstinfo
-endif
-prints "Or this:\n"
-prints "````````````````````````````````````````````````````\n"
-if strcmp(gS_os, "Linux") == 0 then
-gi_sparta_ambi_bin vstinit "/home/mkg/.vst/libsparta_ambiBIN.so", gi_vstinfo
-endif
-if strcmp(gS_os, "macOS") == 0 then
-gi_sparta_ambi_bin vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/sparta_ambiBIN.vst", gi_vstinfo
-endif
-prints "Or this:\n"
-prints "````````````````````````````````````````````````````\n"
-if strcmp(gS_os, "Linux") == 0 then
-gi_compass_decoder vstinit "/home/mkg/.vst/libcompass_decoder.so", gi_vstinfo
-endif
-if strcmp(gS_os, "macOS") == 0 then
-gi_compass_decoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/compass_decoder.vst", gi_vstinfo
-endif
-prints "Or this (probably best for binaural):\n"
-prints "````````````````````````````````````````````````````\n"
-if strcmp(gS_os, "Linux") == 0 then
-gi_compass_binaural vstinit "/home/mkg/.vst/libcompass_binaural.so", gi_vstinfo
-endif
-if strcmp(gS_os, "macOS") == 0 then
-gi_compass_binaural vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/compass_binaural.vst", gi_vstinfo
-endif
-prints "====================================================\n"
-
-connect "Blower",           "outbformat",   "BformatDecoder",  "inbformat"
+connect "Blower",           "outbformat",   "BformatDecoder2",  "inbformat"
 connect "Blower",           "out",          "SpatialReverb",    "in"
-connect "STKBowed",         "outbformat",   "BformatDecoder",  "inbformat"
+connect "STKBowed",         "outbformat",   "BformatDecoder2",  "inbformat"
 connect "STKBowed",         "out",          "SpatialReverb",    "in"
-connect "Buzzer",           "outbformat",   "BformatDecoder",  "inbformat"
+connect "Buzzer",           "outbformat",   "BformatDecoder2",  "inbformat"
 connect "Buzzer",           "out",          "SpatialReverb",    "in"
-connect "Droner",           "outbformat",   "BformatDecoder",  "inbformat"
+connect "Droner",           "outbformat",   "BformatDecoder2",  "inbformat"
 connect "Droner",           "out",          "SpatialReverb",    "in"
-connect "FMWaterBell",      "outbformat",   "BformatDecoder",  "inbformat"
+connect "FMWaterBell",      "outbformat",   "BformatDecoder2",  "inbformat"
 connect "FMWaterBell",      "out",          "SpatialReverb",    "in"
-connect "Phaser",           "outbformat",   "BformatDecoder",  "inbformat"
+connect "Phaser",           "outbformat",   "BformatDecoder2",  "inbformat"
 connect "Phaser",           "out",          "SpatialReverb",    "in"
-connect "PianoOutPianoteq", "outbformat",   "BformatDecoder",  "inbformat"
+connect "PianoOutPianoteq", "outbformat",   "BformatDecoder2",  "inbformat"
 connect "PianoOutPianoteq", "out",          "SpatialReverb",    "in"
-connect "Sweeper",          "outbformat",   "BformatDecoder",  "inbformat"
+connect "Sweeper",          "outbformat",   "BformatDecoder2",  "inbformat"
 connect "Sweeper",          "out",          "SpatialReverb",    "in"
-connect "Shiner",           "outbformat",   "BformatDecoder",  "inbformat"
+connect "Shiner",           "outbformat",   "BformatDecoder2",  "inbformat"
 connect "Shiner",           "out",          "SpatialReverb",    "in"
-connect "ZakianFlute",      "outbformat",   "BformatDecoder",  "inbformat"
+connect "ZakianFlute",      "outbformat",   "BformatDecoder2",  "inbformat"
 connect "ZakianFlute",      "out",          "SpatialReverb",    "in"
-connect "SpatialReverb",    "outbformat",   "BformatDecoder",  "inbformat"
+connect "SpatialReverb",    "outbformat",   "BformatDecoder2",  "inbformat"
 
 #include "Spatialize1.inc"
 
-gk_BformatDecoder_MasterLevel init 20
+gk_BformatDecoder_MasterLevel init 0
+gk_BformatDecoder2_MasterLevel init 12
 gk_BformatDecoder_SpeakerRig init 1
 gk_BformatDecoder2_SpeakerRig init 31
 gk_Spatialize_SpeakerRigRadius init 5.0
-gk_SpatialReverb_ReverbDecay init 0.;76
+gk_SpatialReverb_ReverbDecay init 0.76
 gk_SpatialReverb_CutoffHz init sr
-gk_SpatialReverb_RandomDelayModulation init .0;01
-gk_LocalReverbByDistance_Wet init 0.25
+gk_SpatialReverb_RandomDelayModulation init .002
+gk_LocalReverbByDistance_Wet init 0.5
 ; This is a fraction of the speaker rig radius.
 gk_LocalReverbByDistance_FrontWall init 0.9
 gk_LocalReverbByDistance_ReverbDecay init 0.6
 gk_LocalReverbByDistance_CutoffHz init 20000
-gk_LocalReverbByDistance_RandomDelayModulation init .0;01
+gk_LocalReverbByDistance_RandomDelayModulation init .002
 gk_Spatialize_Verbose init 0
 
 alwayson "PianoOutPianoteq"
 alwayson "SpatialReverb"
-alwayson "BformatDecoder"
+alwayson "BformatDecoder2"
 
 //////////////////////////////////////////////////////////////////////////////
 // These are all the Csound instruments and effects used in this piece.
@@ -329,19 +199,15 @@ gi_Pianoteq vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/Pianoteq\ 7
 endif
 
 #include "PianoNotePianoteq.inc"
-#include "FMWaterBell1.inc"
-#include "Phaser1.inc"
-#include "Droner1.inc"
-#include "Sweeper1.inc"
-#include "Buzzer1.inc"
-#include "Shiner1.inc"
-#include "Blower1.inc"
-#include "ZakianFlute1.inc"
-#include "STKBowed1.inc"
-
-// This must be initialized in the orc header before any #includes.
-
-// gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", gi_vstinfo
+#include "FMWaterBell1.inc" // Normalized.
+#include "Phaser1.inc"      // Normalized.
+#include "Droner1.inc"      // Normalized.
+#include "Sweeper1.inc"     // Normalized.
+#include "Buzzer1.inc"      // Normalized.
+#include "Shiner1.inc"      // Normalized.
+#include "Blower1.inc"      // Normalized.
+#include "ZakianFlute1.inc" // Normalized.
+#include "STKBowed1.inc"    // Normalized.
 
 #include "PianoOutPianoteq1.inc"
 gk_PianoOutPianoteq_front_to_back init -3
@@ -361,6 +227,7 @@ gk_FMWaterBell_bottom_to_top init -3
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 gk_ReverbSC_feedback init 0.86
 gk_MasterOutput_level init -12
+gk_BformatDecoder2_MasterLevel init -12
 gi_FMWaterBell_attack init 0.002936276551436901
 gi_FMWaterBell_release init 0.022698875468554768
 gi_FMWaterBell_exponent init 0
@@ -370,7 +237,7 @@ gk_FMWaterBell_crossfade init 0.1234039047697504
 gk_FMWaterBell_index init 1.1401499375260309
 gk_FMWaterBell_vibrato_depth init 0.28503171595683335
 gk_FMWaterBell_vibrato_rate init 2.4993821566850647
-gk_FMWaterBell_level init 10
+gk_FMWaterBell_level init 25
 gk_Phaser_ratio1 init 1.028045002445785
 gk_Phaser_ratio2 init 0.010598402087069948
 gk_Phaser_index1 init 0.9709766835154084
@@ -401,18 +268,9 @@ gk_Blower_grainAmplitudeRange init 174.0746779716289
 gk_Blower_grainFrequencyRange init 62.82406652535464
 gk_Blower_level init 4
 gk_ZakianFlute_level init 12
-gk_PianoOutPianoteq_level init 0
+gk_PianoOutPianoteq_level init -12
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-//////////////////////////////////////////////////////////////////////////////
-// Define the speaker rig for the Spatialize3D system.
-//////////////////////////////////////////////////////////////////////////////
-gi_Spatialize3D_speaker_rig init 31
-
-//////////////////////////////////////////////////////////////////////////////
-// Define all HTML and JavaScript for the browser-based user interface.
-//////////////////////////////////////////////////////////////////////////////
-gi_Spatialize3D_speaker_rig init 31
 gS_html init {{<!DOCTYPE html>
 <html>
 <head>
@@ -564,6 +422,8 @@ gS_html init {{<!DOCTYPE html>
         //////////////////////////////////////////////////////////////////////
         var parameters = {
             gk_MasterOutput_level: 23.199086906897115,
+            gk_BformatDecoder2_MasterLevel: -12,
+            gk_PianoOutPianoteq_level: -44,
             gi_FMWaterBell_attack: 0.002936276551436901,
             gi_FMWaterBell_release: 0.022698875468554768,
             gi_FMWaterBell_exponent: 8.72147623362715,
@@ -604,7 +464,6 @@ gS_html init {{<!DOCTYPE html>
             gk_Blower_grainFrequencyRange: 30.596081700708627,
             gk_Blower_level: 7.754769280939186,
             gk_ZakianFlute_level: 25.125628140703512,
-            gk_PianoOutPianoteq_level: -44,
             save_controls: save_controls,
             toggle_messages: toggle_messages,
             recenter: recenter
@@ -629,7 +488,9 @@ gS_html init {{<!DOCTYPE html>
             gui.add(parameters, 'toggle_messages').name('Toggle visibility of Csound diagnostics');
             gui.add(parameters, 'recenter').name('Re-center piano roll [Ctrl-C]');
             var Master = gui.addFolder('Master');
-            add_slider(Master, 'gk_MasterOutput_level', -50, 50);
+            add_slider(Master, 'gk_BformatDecoder2_MasterLevel', -50, 50);
+            var Pianoteq = gui.addFolder('Pianoteq');
+            add_slider(Pianoteq, 'gk_PianoOutPianoteq_level', -50, 50);
             var FMWaterBell = gui.addFolder('FMWaterBell');
             add_slider(FMWaterBell, 'gi_FMWaterBell_attack', 0, .1);
             add_slider(FMWaterBell, 'gi_FMWaterBell_release', 0, .1);
@@ -647,12 +508,6 @@ gS_html init {{<!DOCTYPE html>
             add_slider(Phaser, 'gk_Phaser_index1', 0, 15);
             add_slider(Phaser, 'gk_Phaser_index2', 0, 15);
             add_slider(Phaser, 'gk_Phaser_level', -50, 50);
-            var STKBowed = gui.addFolder('STKBowed');
-            add_slider(STKBowed, 'gk_STKBowed_vibrato_level', 0, 127);
-            add_slider(STKBowed, 'gk_STKBowed_bow_pressure', 0, 127);
-            add_slider(STKBowed, 'gk_STKBowed_bow_position', 0, 127);
-            add_slider(STKBowed, 'gk_STKBowed_vibrato_frequency', 0, 127);
-            add_slider(STKBowed, 'gk_STKBowed_level', -50, 50);
             var Droner = gui.addFolder('Droner');
             add_slider(Droner, 'gk_Droner_partial1', 0, 1);
             add_slider(Droner, 'gk_Droner_partial2', 0, 1);
@@ -677,11 +532,15 @@ gS_html init {{<!DOCTYPE html>
             add_slider(Blower, 'gk_Blower_grainAmplitudeRange', 0, 400);
             add_slider(Blower, 'gk_Blower_grainFrequencyRange', 0, 100);
             add_slider(Blower, 'gk_Blower_level', -50, 50);
+            var STKBowed = gui.addFolder('STKBowed');
+            add_slider(STKBowed, 'gk_STKBowed_vibrato_level', 0, 127);
+            add_slider(STKBowed, 'gk_STKBowed_bow_pressure', 0, 127);
+            add_slider(STKBowed, 'gk_STKBowed_bow_position', 0, 127);
+            add_slider(STKBowed, 'gk_STKBowed_vibrato_frequency', 0, 127);
+            add_slider(STKBowed, 'gk_STKBowed_level', -50, 50);
             var Flute = gui.addFolder('Zakian Flute');
             add_slider(Flute, 'gk_ZakianFlute_level', -50, 50);
-            var Pianoteq = gui.addFolder('Pianoteq');
-            add_slider(Pianoteq, 'gk_PianoOutPianoteq_level', -50, 50);
-            $('input').on('input', function(event) {
+             $('input').on('input', function(event) {
                 var slider_value = parseFloat(event.target.value);
                 csound.SetControlChannel(event.target.id, slider_value, function(id, result){}, function(id,message){});
                 var output_selector = '#' + event.target.id + '_output';
@@ -718,7 +577,7 @@ gS_html init {{<!DOCTYPE html>
                 let text = delimiter;
                 for (const [key, value] of Object.entries(parameters)) {
                     if (typeof value !== 'function') {
-                        ///console.log(`parameter: ${key} = ${value}`);
+                        console.log(`parameter: ${key} = ${value}`);
                         let line = `${key} init ${value}\n`;
                         text = text + line;
                     }
