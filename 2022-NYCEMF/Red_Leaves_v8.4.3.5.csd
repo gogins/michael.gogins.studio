@@ -1,7 +1,7 @@
 <CsoundSyntheizer>
 <CsLicense>
 
-R E D   L E A V E S   V E R S I O N   8 . 4 . 3 . 3
+R E D   L E A V E S   V E R S I O N   8 . 4 . 3 . 5
 
 Michael Gogins, 2022
 
@@ -180,10 +180,6 @@ alwayson "PianoOutPianoteq"
 alwayson "SpatialReverb"
 alwayson "BformatDecoder2"
 
-//////////////////////////////////////////////////////////////////////////////
-// These are all the Csound instruments and effects used in this piece.
-//////////////////////////////////////////////////////////////////////////////
-
 gi_instrument_position_rate chnexport "gi_instrument_position_rate", 3 ;  0
 gi_instrument_position_rate init 50
 opcode instrument_position, kk, iii
@@ -266,7 +262,7 @@ endif
 
 #include "PianoOutPianoteq1.inc"
 gk_PianoOutPianoteq_front_to_back init -3
-gk_PianoOutPianoteq_left_to_right init -2
+gk_PianoOutPianoteq_left_to_right init .4
 gk_PianoOutPianoteq_bottom_to_top init 3
 
 alwayson "PianoOutPianoteq"
@@ -282,7 +278,7 @@ alwayson "MasterOutput"
 #end
 
 gk_FMWaterBell_front_to_back init -3
-gk_FMWaterBell_left_to_right init 2
+gk_FMWaterBell_left_to_right init .6
 gk_FMWaterBell_bottom_to_top init -3
 
 //////////////////////////////////////////////////////////////////////////////
@@ -555,7 +551,7 @@ gk_MasterOutputLevel init 0.
 gS_html init {{<!DOCTYPE html>
 <html>
 <head>
-    <title>Red Leaves version 8.4.3.3</title>
+    <title>Red Leaves version 8.4.3.5</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!--
 //////////////////////////////////////////////////////////////////////////////
@@ -709,7 +705,6 @@ gS_html init {{<!DOCTYPE html>
             gk_LocalReverbByDistance_Wet: 0.2,
             gk_SpatialReverb_ReverbDecay: .2,
             gi_instrument_position_rate: 0.01,
-
             gk_BformatDecoder2_MasterLevel: -12.,
             
             gk_ReverbSC_feedback: 0.875,
@@ -1194,8 +1189,8 @@ extern "C" int score_generator(CSOUND *csound) {
         evtblk.opcod = 'i';
         evtblk.pcnt = 9;
         // Add 4 to p1 only for SPATIALIZE_GOGINS.
-        evtblk.p[1] = std::floor(note.getInstrument() + 4);
-        //evtblk.p[1] = 6;
+        //evtblk.p[1] = std::floor(note.getInstrument() + 4);
+        evtblk.p[1] = std::floor(note.getInstrument());
         evtblk.p[2] = note.getTime();
         evtblk.p[3] = note.getDuration();
         evtblk.p[4] = note.getKey();
