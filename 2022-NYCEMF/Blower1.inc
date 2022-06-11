@@ -72,6 +72,7 @@ a_signal = a_signal * iamp * a_declicking * k_gain
 
 kx, ky instrument_position p2, 10, p1
 kz init 0
+;;printks "p1 %d kx %f ky %f\n", 1, p1, kx, ky
 
 #ifdef SPATIALIZE_GOGINS
 absignal[] init 16

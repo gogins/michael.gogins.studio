@@ -846,8 +846,11 @@ SpeakerRig_endif:
 xout abspatializedSignal, asend
 endop
 
+gk_SpatialReverb_ReverbDecay chnexport "gk_SpatialReverb_ReverbDecay", 3
 gk_SpatialReverb_ReverbDecay init 0.6
+gk_SpatialReverb_CutoffHz chnexport "gk_SpatialReverb_CutoffHz", 3
 gk_SpatialReverb_CutoffHz init sr
+gk_SpatialReverb_RandomDelayModulation chnexport "gk_SpatialReverb_RandomDelayModulation", 3
 gk_SpatialReverb_RandomDelayModulation init 1.0
 
 instr SpatialReverb2

@@ -48,8 +48,8 @@ kenvelope transegr 0.0, iattack / 2.0, 1.5, .5, iattack / 2.0, -1.5, 1, i_sustai
 ihertz = cpsmidinn(i_midi_key)
 gk_Harmonics = 1 * 20
 asignal vco2 kenvelope * 4, ihertz, 12
-kgain = ampdb(gk_Shiner_level) * .5
-a_signal = asignal * kgain * i_amplitude
+k_gain = ampdb(gk_Shiner_level) * .5
+a_signal = asignal * k_gain * i_amplitude
 
 kx, ky instrument_position -p2, 10, p1
 kz init 0
