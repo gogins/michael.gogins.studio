@@ -42,8 +42,8 @@ https://michaelgogins.tumblr.com/csound_extended.
 //////////////////////////////////////////////////////////////////////////////
 // Define just one of these to specify the spatialization system.
 //////////////////////////////////////////////////////////////////////////////
-;#define SPATIALIZE_STEREO #1#
-#define SPATIALIZE_GOGINS #4#
+#define SPATIALIZE_STEREO #1#
+;#define SPATIALIZE_GOGINS #4#
 
 //////////////////////////////////////////////////////////////////////////////
 // Change to sr=96000 with ksmps=1 for final rendering to soundfile.
@@ -539,7 +539,7 @@ gk_Blower_grainAmplitudeRange init 174.0746779716289
 gk_Blower_grainFrequencyRange init 62.82406652535464
 gk_Blower_level init -5.959563019729337
 gk_ZakianFlute_level init 12
-gk_ReverbSC_feedback init 0.875
+gk_ReverbSC_feedback init 0.82
 gk_ReverbSC_wet init 0.5
 gi_ReverbSC_delay_modulation init 0.0075
 gk_ReverbSC_frequency_cutoff init 15000
@@ -1066,7 +1066,7 @@ extern "C" int score_generator(CSOUND *csound) {
     std::map<double, csound::Chord> chordsForTimes;
     csound::Chord modality;
     Cursor pen;
-    modality.fromString("0 4 7 11 14");
+    modality.fromString("0 4 6 10");
     pen.chord = modality;
     ///pen.note = csound::Event{1,35/1.25,144,1,1,1,0,0,0,0,1};
     pen.note = csound::Event{1,40,144,1,1,1,0,0,0,0,1};
