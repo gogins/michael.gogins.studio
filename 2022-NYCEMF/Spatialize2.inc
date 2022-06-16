@@ -330,20 +330,28 @@ xout alocalReverberatedSignal, aglobalReverbSendDelayed
 endop
 
 ; Switch on/off diffuse reflections [0=off, 1=on] and adjust gain of reflection (e.g.: 1= normal gain, 2= twice as loud, 0.5 = half as loud).
+gk_EarlyReflection_diffref chnexport "gk_EarlyReflection_diffref", 3 ; , 0
 gk_EarlyReflection_diffref init 0 * 0
 ; Switch on/off specular reflections [0=off, 1=on] and adjust gain of reflection (e.g.: 1= normal gain, 2= twice as loud, 0.5 = half as loud).
+gk_EarlyReflection_specref chnexport "gk_EarlyReflection_specref", 3 ; , 0
 gk_EarlyReflection_specref init 0 * 0
 ; Position of FrontWall at the x-axis [units] for calculation of early reflections.
+gk_EarlyReflection_FrontWall chnexport "gk_EarlyReflection_FrontWall", 3 ; , 0
 gk_EarlyReflection_FrontWall init 1.6
 ; Position of SideWall at the y-axis [units] for calculation of early reflections.
+gk_EarlyReflection_SideWall chnexport "gk_EarlyReflection_SideWall", 3 ; , 0
 gk_EarlyReflection_SideWall init 1.3
 ; Height of the Ceiling measured from the zero-point of the coordinate-system [units] for calculation of early reflections.
+gk_EarlyReflection_Ceiling chnexport "gk_EarlyReflection_Ceiling", 3 ; , 0
 gk_EarlyReflection_Ceiling init 1.1
 ; Damping factor of the reflecting surface (gain of reverb).
+gk_EarlyReflection_damp chnexport "gk_EarlyReflection_damp", 3 ; , 0
 gk_EarlyReflection_damp init 0.1
 ; Absorbtion characteristics of the wall in respect to high frequencies: frequencies above ihighdamp get filtered out.
+gk_EarlyReflection_highdamp chnexport "gk_EarlyReflection_highdamp", 3 ; , 0
 gk_EarlyReflection_highdamp init 15000
 ; Low frequency boost for sources near a wall.
+gk_EarlyReflection_lfboost chnexport "gk_EarlyReflection_lfboost", 3 ; , 0
 gk_EarlyReflection_lfboost init 1
 opcode DiffuseEarlyReflect, a[], akkki
 asignal, kx, ky, kz, iwhichwall xin
@@ -439,9 +447,9 @@ xout absignal
 endop
 
 opcode DiffuseEarlyReflections, a[], akkk
-asignal, kx, ky, kz xin
+asignalin, kx, ky, kz xin
 ; Filter high frequencies to represent absorbtion by the wall.
-asignal tone asignal, gk_EarlyReflection_highdamp
+asignal tone asignalin, gk_EarlyReflection_highdamp
 absignal[] init 16
 abreflectedSignal[] init 16
 ; Bounce the signal off each of the walls.
