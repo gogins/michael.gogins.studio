@@ -160,10 +160,32 @@ connect "SpatialReverb",    "outbformat",   "BformatDecoder2",  "inbformat"
 
 #include "Spatialize2.inc"
 
-gk_BformatDecoder_MasterLevel init 0
-gk_BformatDecoder2_MasterLevel init 12
+; bformdec1
+
+; 0 Ambisonic stereo with minimal distance cues (possibly the best choice for efficiency in live performance).
+; 1 Ambisonic binaural with HRTF decoding (periphonic, a suitable choicefor checking in stereophonic studio work).
+; 2 Ambisonic quadraphonic.
+; 3 Ambisonic pentaphonic or 5.0 (might work for 5.1, omit .1)
+; 4 Ambisonic octaphonic.
+; 5 Ambisonic cubic (periphonic, probably the best choice for concerts).
+
+; bformdec2
+
+; 1 Stereo - L(90), R(-90); this is an M+S style stereo decode.
+; 2 Quad - FL(45), BL(135), BR(-135), FR(-45). This is a first-order decode.
+; 3 5.0 - L(30), R(-30), C(0), BL(110), BR(-110). Note that many people do not actually use the angles above for their speaker arrays and a good decode for DVD etc can be achieved using the Quad configuration to feed L, R, BL and BR (leaving C silent).
+; 4 Octagon - FFL(22.5), FLL(67.5), BLL(112.5), BBL(157.5), BBR(-157.5), BRR(-112.5), FRR(-67.5), FFR(-22.5). This is a first-, second- or third-order decode, depending on the number of input channels.
+; 5 Cube - FLD(45,-35.26), FLU(45,35.26), BLD(135,-35.26), BLU(135,35.26), BRD(-135,-35.26), BRU(-135,35.26), FRD(-45,-35.26), FRU(-45,35.26). This is a first-order decode.
+; 6 Hexagon - FL(30), L(90) BL(150), BR(-150), R(-90), FR(-30). This is a first- or second- order decode.
+; 21 2D binaural configuration. This first decodes to a octagon configuration and then applies HRTF filters.
+; 31 3D binaural configuration. This first decodes to a dodecahedron configuration and then applies HRTF filters.
+
+; Should be 0, 1 for stereo or 1, 31 for binaural periphonic or 2, 2 for quadrophonic.
 gk_BformatDecoder_SpeakerRig init 2
 gk_BformatDecoder2_SpeakerRig init 2
+
+gk_BformatDecoder_MasterLevel init 0
+gk_BformatDecoder2_MasterLevel init 12
 gk_Spatialize_SpeakerRigRadius init 5.0
 gk_SpatialReverb_ReverbDecay init 0.76
 gk_SpatialReverb_CutoffHz init sr

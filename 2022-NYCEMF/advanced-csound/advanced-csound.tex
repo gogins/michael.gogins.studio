@@ -183,7 +183,7 @@ I present a command-line version because CsoundQt does not work with brew Csound
 
 \begin{frame}{Main playpen commands}
 \begin{example}
-Change to the \texttt{erxercises/playpen} directory of your workshop directory.
+Change to the \texttt{exercises/playpen} directory of your workshop directory.
 \begin{itemize}
 \item Execute \texttt{$\sim$/playpen.py} to view help.
 \item Execute \texttt{$\sim$/playpen.py csd-audio oblivion.csd} to run \texttt{oblivion.csd} and hear it in real time.
@@ -243,7 +243,7 @@ Ideally, you should get a hearing test from an audiologist.
 \item The second set of arcs shows aliasing of an FM tone as the frequency of the modulating signal increases. 
 Note the \emph{negative} aliasing, which reflects off frequency 0.
 \item After the arcs, there is a single cosine grain .01 seconds long.
-\item Then there are two notes with non-releasing and releasing envelopes.
+\item Then there is a note with a non-releasing envelope, and the same note with a releasing envelope.
 \item Finally, there are bands where a source sound is convolved with an increasingly longer impulse sound.
 \end{itemize}
 \end{frame}
@@ -262,12 +262,12 @@ Note the \emph{negative} aliasing, which reflects off frequency 0.
 
 \begin{frame}{Hearing electroacoustically}
 \begin{itemize}
-\item In Audacity, zoom in on the two notes following the single grain.
+\item In Audacity, zoom in on the two notes after the grain.
 \item The first note uses a long exponential decay with no release, so it just cuts off at the end of the note.
 \item This causes a discontinuity in the waveform, which is the same as noise in the frequency domain. The spectrogram shows this as  energy spread out in the vertical dimension.
 \item The second note is exactly the same, but using the releasing form of the envelope.
 \item Clicks are a bedeviling artifact of digital audio, because avoiding discontinuities in digital signals is hard.
-\item Natural sounds don't have such discontinuities, because physical energy always takes time to build up or to release.
+\item Natural sounds don't tend to have such discontinuities, as physical energy takes time to build up or to release.
 \item Always use a releasing envelope or a de-clicking envelope.
 \end{itemize}
 \end{frame}
@@ -282,7 +282,7 @@ Note the \emph{negative} aliasing, which reflects off frequency 0.
 \item Junk convolved with a 1 second bell sound. The original sounds are obscured by the ringing of the long impulse.
 \end{enumerate}
 \item The ringing is an artifact \emph{in some contexts}, I call it "convolution smear."
-\item What is true of convolution is true of every linear time-invariant system. A positive frequency in the impulse produces ringing, a negative frequency notching. Maybe you \emph{want} it, maybe not, but \emph{notice} it.
+\item What is true of convolution is true of every linear time-invariant system. A positive frequency in the impulse produces ringing, a negative frequency causes notching. Maybe you \emph{want} it, maybe not, but \emph{notice} it.
 \end{itemize}
 \end{frame}
 
@@ -431,7 +431,7 @@ Change to the \texttt{exercises/coding} directory of your workshop directory.
 \end{itemize}
 Read the code...
 \begin{itemize}
-\item Note creation of the function table as a global variable associated with the instrument definition.
+\item Function tables are created as global variables associated with the instrument definition.
 \item To that end, namespaces are implemented using prefixes to names.
 \item Note "natural" units (MIDI key, MIDI velocity) in the score.
 \item Note instruments can be re-ordered, added, removed; all connections are made in the orc header.
