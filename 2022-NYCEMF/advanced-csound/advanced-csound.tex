@@ -70,6 +70,18 @@
 \end{itemize}
 \end{frame}
 
+\begin{frame}{A Moderately Sophisticated Piece}
+\begin{itemize}
+\item I will discuss my piece \emph{\textbf{Red Leaves v8.4.3.4.stereo}}, which I performed here last Wednesday evening.
+\item I coded this piece for fixed media using iterative refinement.
+\item It is a single .csd file that also embeds an HTML page with JavaScript and some C++ source code.
+\item I committed every variant to my GitHub repository so I could restore it if needed.
+\item This piece has a number of dependencies so I will just play it and talk about it. 
+\item You should load it in your editor and follow along as I speak. 
+\item Ask any question at any time!
+\end{itemize}
+\end{frame}
+
 \section{Installing Csound}
 \begin{frame}{Getting Csound}
 Install with brew on macOS, apt on Linux, vcpkg on Windows, or 
@@ -282,7 +294,7 @@ Note the \emph{negative} aliasing, which reflects off frequency 0.
 \item Junk convolved with a 1 second bell sound. The original sounds are obscured by the ringing of the long impulse.
 \end{enumerate}
 \item The ringing is an artifact \emph{in some contexts}, I call it "convolution smear."
-\item What is true of convolution is true of every linear time-invariant system. A positive frequency in the impulse produces ringing, a negative frequency causes notching. Maybe you \emph{want} it, maybe not, but \emph{notice} it.
+\item What is true of convolution is true also of filters and time/frequency operations. A positive frequency in the impulse produces ringing, a negative frequency causes notching. Maybe you \emph{want} this, maybe not, but \emph{notice} it.
 \end{itemize}
 \end{frame}
 
