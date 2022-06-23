@@ -388,36 +388,42 @@ Change to the \texttt{exercises/opcodes} directory of your workshop directory.
 \end{example}
 \end{frame}
 
-\begin{frame}{FluidSynth opcodes}
-\begin{example}
-Sampling in Csound can be done using:
+\begin{frame}{FluidSynth opcodes I}
+Sampling in Csound:
 \begin{itemize}
-\item Function tables load the samples (GEN 01) and you play them an oscillator.
-\item Low-level "sf" opcodes.
-\item High-level "FluidSynth" opcodes.
-\item Various open source and commercial plugins, some of them \emph{far} better than the above.
+\item Load samples into function tables using GEN01 and play them with oscillators.
+\item Low-level \texttt{sf} opcodes to play SoundFonts, built in to Csound.
+\item High-level \texttt{fluid} opcodes to play SoundFonts, available from \url{https://github.com/csound/plugins/tree/develop/fluidOpcodes}.
+\item Various open source and commercial plugins, some \emph{far} better than the above.
 \end{itemize}
-Here we discuss the FluidSynth opcodes as they are free and work pretty well. Change to the \texttt{exercises/fluid} directory of your workshop directory.
+Here we discuss the FluidSynth opcodes as they are free,  simple to use, and work pretty well. 
+\end{frame}
+
+\begin{frame}{FluidSynth opcodes II}
+\begin{example}
 \begin{itemize}
-\item TODO
+\item Execute \texttt{$\sim$/playpen.py csd-play fluidsynth.csd} and view the soundfile in Audacity.
+\item You can load another SoundFont (just change the filename) or select a different preset (just change the preset parameter for the \texttt{fluidLoad} opcode) and see what happens.
 \end{itemize}
 \end{example}
 \end{frame}
 
 \begin{frame}{Faust opcodes}
+The Faust opcodes are available from \url{https://github.com/csound/plugins/tree/develop/faustcsound}.
 \begin{example}
 Change to the \texttt{exercises/faust} directory of your workshop directory.
 \begin{itemize}
-\item TODO
+\item TODO A reverb?
 \end{itemize}
 \end{example}
 \end{frame}
 
 \begin{frame}{PVS opcodes}
+The Phase Vocoder Streaming opcodes are built in to standard Csound.
 \begin{example}
 Change to the \texttt{exercises/pvs} directory of your workshop directory.
 \begin{itemize}
-\item TODO
+\item TODO Something fun with the existing convolution source soundfile?
 \end{itemize}
 \end{example}
 \end{frame}
@@ -580,7 +586,7 @@ Change to the \texttt{exercises/languages} directory of your workshop directory.
 \item The score is generated in C++ using CsoundAC's multiple copy reducing machine algorithm, which produces many types of fractals.
 \item This MCRM shrinks the score down onto each of its four quarters, iterating 7 times. Each "lens" is a bit different to create melodies, canons, and variations.
 \item The "lenses" in the MCRM algorithm are C++ lambdas, so I can do more than just apply transformation matrices.
-\item At specific levels of iteration, i.e.  specific time scales, I transform the major/minor 9th chord that controls the harmony. This enables the generation of root progressions, mutations, and quasi-tonal modulations.
+\item E.g. at specific levels of iteration, i.e.  specific time scales, I transform the major/minor 9th chord that controls the harmony. This enables the generation of root progressions, mutations, and quasi-tonal modulations.
 \item The geometric transformations in the "lenses" make it easy to change the structure of the entire piece by changing a few numbers.
 \end{itemize}
 \end{frame}
