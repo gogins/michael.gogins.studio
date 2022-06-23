@@ -72,12 +72,12 @@
 
 \begin{frame}{A Moderately Sophisticated Piece}
 \begin{itemize}
-\item I will discuss my piece \emph{\textbf{Red Leaves v8.4.3.4.stereo}}, which I performed here last Wednesday evening.
+\item I will demonstrate my piece \emph{\textbf{Red Leaves v8.4.3.5.stereo}}, which was performed here last Wednesday evening.
 \item I coded this piece for fixed media using iterative refinement.
-\item It is a single .csd file that also embeds an HTML page with JavaScript and some C++ source code.
-\item I committed every variant to my GitHub repository so I could restore it if needed.
-\item This piece has a number of dependencies so I will just play it and talk about it. 
-\item You should load it in your editor and follow along as I speak. 
+\item It is a single .csd file, that also embeds an HTML page with JavaScript, and some C++ source code.
+\item I committed every variant to my GitHub repository, so I could restore previous versions if needed.
+\item This piece has a number of dependencies, so I will just play it and talk about it. 
+\item You should open the piece in your editor and follow along as I speak. 
 \item Ask any question at any time!
 \end{itemize}
 \end{frame}
@@ -202,6 +202,18 @@ Change to the \texttt{exercises/playpen} directory of your workshop directory.
 \item Execute \texttt{$\sim$/playpen.py csd-play oblivion.csd} to run \texttt{oblivion.csd} , render it to a soundfile, post-process it, tag it with your metadata, and open it in Audacity.
 \end{itemize}
 \end{example}
+\end{frame}
+
+\begin{frame}{A Moderately Sophisticated Piece (workflow)}
+\begin{itemize}
+\item All code is edited in one editor and in one file.
+\item Instantly hear the results of any edit.
+\item Instantly see a piano roll view of the generated score.
+\item Instantly see a (roughly) notated version of the generated score.
+\item See all Csound diagnostic messages.
+\item Tweak sensitive parameters of instruments during performance.
+\item Produce finished, tagged soundfiles in various formats with one click.
+\end{itemize}
 \end{frame}
 
 \section{Best practices for core Csound}
@@ -403,7 +415,6 @@ Change to the \texttt{exercises/pvs} directory of your workshop directory.
 \end{example}
 \end{frame}
 
-
 \section{Coding for Csound}
 \begin{frame}{Software design}
 \begin{itemize}
@@ -544,6 +555,27 @@ Change to the \texttt{exercises/languages} directory of your workshop directory.
 \item Execute \texttt{open csound-in-cplusplus.wav} to view and hear the soundfile.
 \end{itemize}
 \end{example}
+\end{frame}
+
+\begin{frame}{A Moderately Sophisticated Piece (design)}
+\begin{itemize}
+\item The piece uses C++ for score generation, HTML for the user interface, and Csound for synthesis.
+\item The Csound orchestra embeds the C++ and HTML5 code.
+\item The orchestra uses modular instruments with signal flow graph connections between instruments and effects.
+\item With the HTML user interface I intensively fine-tuned levels and other parameters during trial renderings.
+\item Instruments include the Pianoteq VST3 physically modeled piano, and Csound instruments by other musicians that I have adapted.
+\item The piece uses the \texttt{cxx\_os} opcode to load resources from specific locations depending on operating system (macOS/Linux). Thus I can run my piece on both macOS and Linux without editing it.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{A Moderately Sophisticated Piece (composition)}
+\begin{itemize}
+\item The score is generated in C++ using CsoundAC's multiple copy reducing machine algorithm, which produces many types of fractals.
+\item This MCRM shrinks the score down onto each of its four quarters, iterating 7 times. Each "lens" is a bit different to create melodies, canons, and variations.
+\item The "lenses" in the MCRM algorithm are C++ lambdas, so I can do more than just apply transformation matrices.
+\item At specific levels of iteration, i.e.  specific time scales, I transform the major/minor 9th chord that controls the harmony. This enables the generation of root progressions, mutations, and quasi-tonal modulations.
+\item The geometric transformations in the "lenses" make it easy to change the structure of the entire piece by changing a few numbers.
+\end{itemize}
 \end{frame}
 
 \end{document}
