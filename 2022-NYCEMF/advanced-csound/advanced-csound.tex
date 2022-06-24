@@ -98,8 +98,8 @@ Linux, build from sources
 \begin{frame}{Configuring}
 \begin{itemize}
 \item The \texttt{csound} program should be in your environment's \texttt{PATH} variable.
-\item For the \texttt{vst4cs opcodes}, we configure Csound to load them from their build or download directories.
-\item For the Csound plugins repository, we build them locally and install using \texttt{sudo make install}.
+\item For the \texttt{vst4cs opcodes}, configure Csound to load them from their build or download directories.
+\item For the Csound plugins repository, build them locally and install using \texttt{sudo make install}.
 \item Shown for macOS, but the same variables should be set with appropriate values on Linux or Windows.
 \end{itemize}
 \end{frame}
@@ -209,7 +209,6 @@ Change to the \texttt{exercises/playpen} directory of your workshop directory.
 \item All code is edited in one editor and in one file.
 \item Instantly hear the results of any edit.
 \item Instantly see a piano roll view of the generated score.
-\item Instantly see a (roughly) notated version of the generated score.
 \item See all Csound diagnostic messages.
 \item Tweak sensitive parameters of instruments during performance.
 \item Produce finished, tagged soundfiles in various formats with one click.
@@ -374,7 +373,7 @@ Change to the \texttt{exercises/opcodes} directory of your workshop directory.
 \begin{itemize}
 \item Observe that an exponent of 0 creates linear segments, a negative exponent creates concave segments.
 \item See how the \texttt{r} (release) suffix handles termination of notes without clicking.
-\item No need for any other envelope opcode.
+\item There is seldom a need for any other envelope opcode.
 \end{itemize}
 \end{frame}
 
@@ -389,7 +388,7 @@ Change to the \texttt{exercises/opcodes} directory of your workshop directory.
 \end{frame}
 
 \begin{frame}{FluidSynth opcodes I}
-Sampling in Csound:
+Ways to use sampled sounds in Csound:
 \begin{itemize}
 \item Load samples into function tables using GEN01 and play them with oscillators.
 \item Low-level \texttt{sf} opcodes to play SoundFonts, built in to Csound.
@@ -410,22 +409,22 @@ Here we discuss the FluidSynth opcodes as they are free,  simple to use, and wor
 
 \begin{frame}{Faust opcodes}
 The Faust opcodes are available from \url{https://github.com/csound/plugins/tree/develop/faustcsound}.
-\begin{example}
-Change to the \texttt{exercises/faust} directory of your workshop directory.
 \begin{itemize}
-\item Oops! I didn't have time to get this working on my Mac.  
-\item But check out the online Faust playpen at \url{https://faustide.grame.fr/}.
+\item Oops! I didn't have time to get the Faust opcodes working on my Mac! 
+\item But, check out the online Faust IDE at \url{https://faustide.grame.fr/}.
 \item You can actually write Faust code online, compile it online, and download the result as a plugin Csound opcode.
+\item The Faust opcodes are documented in the standard Csound Reference Manual.
 \end{itemize}
-\end{example}
 \end{frame}
 
 \begin{frame}{PVS opcodes}
-The Phase Vocoder Streaming opcodes are built in to standard Csound.
+The Phase Vocoder Streaming opcodes are built in to standard Csound. Kudos to Victor Lazzarini for developing this clean and flexible toolkit.
 \begin{example}
-Change to the \texttt{exercises/pvs} directory of your workshop directory.
+Change to the \texttt{exercises/opcodes} directory of your workshop directory.
 \begin{itemize}
-\item TODO Something fun with the existing convolution source soundfile?
+\item There are a number of \texttt{pvs*.csd} examples in this directory, as well as required input soundfiles.
+\item Just run each example and listen. 
+\item \emph{Just keep in mind -- everything you hear here, can also easily be done with real-time audio input.}
 \end{itemize}
 \end{example}
 \end{frame}
@@ -592,5 +591,12 @@ Change to the \texttt{exercises/languages} directory of your workshop directory.
 \item The geometric transformations in the "lenses" make it easy to change the structure of the entire piece by changing a few numbers.
 \end{itemize}
 \end{frame}
+
+\begin{frame}{Questions?)}
+Please ask some questions! They can be about Csound, about programming, or about computer music in general.
+\end{frame}
+
+
+
 
 \end{document}
