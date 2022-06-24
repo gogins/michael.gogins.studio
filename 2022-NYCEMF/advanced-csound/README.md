@@ -9,9 +9,7 @@ This subdirectory of my Git repository contains Csound files and other resources
 
 This subdirectory will be updated with additional resources in the coming days before the workshop.
 
-[Slides.](https://github.com/gogins/michael.gogins.studio/tree/master/2022-NYCEMF/advanced-csound/advanced-csound.pdf)
-
-[Exercises and other resources.](https://github.com/gogins/michael.gogins.studio/tree/master/2022-NYCEMF/advanced_csound.zip)
+Materials for the workshop may be downloaded here: https://github.com/gogins/michael.gogins.studio/releases/download/2022-nycemf/advanced_csound.zip.
 
 Resources for exercises may be downloaded individually from the [exercises](https://github.com/gogins/michael.gogins.studio/tree/master/2022-NYCEMF/advanced-csound/exercises) folder.
 
