@@ -2,7 +2,7 @@
 <CsOptions>
 ; Select audio/midi flags here according to platform
 ; Audio out   Audio in
--odac    ;;;RT audio I/O
+-odac
 ; For Non-realtime ouput leave only the line below:
 ; -o pvsmorph-2.wav -W ;;; for file output any platform
 </CsOptions>

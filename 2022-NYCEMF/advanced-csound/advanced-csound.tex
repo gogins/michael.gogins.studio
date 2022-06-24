@@ -31,7 +31,7 @@
 {Michael Gogins \\ \url{http://michaelgogins.tumblr.com}}
 
 \institute[Irreducible Productions]{Irreducible Productions \\ New York}
-\date[NYCEMF 2022]{NYCEMF 2022}
+\date[NYCEMF 2022]{NYCEMF 2022  \\  Workshop materials: \url{advanced-csound.zip}}
 
 \subject{Computer Music}
 \expandafter\def\expandafter\insertshorttitle\expandafter{%
@@ -313,7 +313,7 @@ Note the \emph{negative} aliasing, which reflects off frequency 0.
 \begin{itemize}
 \item Many of Csound's opcodes, man pages, and examples are old, and
 prioritize memory and run time over audio quality.
-\item \textit{Today, \textbf{prioritize audio quality} in all cases}.
+\item \textit{Today, \textbf{prioritize audio quality in all cases}}.
 \item Use a sample rate of 48,000 or even 96,000 frames per second with
 \texttt{ksmps = 100} or even \texttt{ksmps = 1}.
 \item Use the double-precision version of Csound (now default).
@@ -574,25 +574,25 @@ Change to the \texttt{exercises/languages} directory of your workshop directory.
 \begin{frame}{A Moderately Sophisticated Piece (design)}
 \begin{itemize}
 \item The piece uses C++ for score generation, HTML for the user interface, and Csound for synthesis.
-\item The Csound orchestra embeds the C++ and HTML5 code.
+\item All C++ and HTML5 code is embedded in the Csound code.
 \item The orchestra uses modular instruments with signal flow graph connections between instruments and effects.
 \item With the HTML user interface I intensively fine-tuned levels and other parameters during trial renderings.
-\item Instruments include the Pianoteq VST3 physically modeled piano, and Csound instruments by other musicians that I have adapted.
+\item Instruments include Pianoteq's VST3 modeled piano, and Csound instruments by other musicians I have adapted.
 \item The piece uses the \texttt{cxx\_os} opcode to load resources from specific locations depending on operating system (macOS/Linux). Thus I can run my piece on both macOS and Linux without editing it.
 \end{itemize}
 \end{frame}
 
 \begin{frame}{A Moderately Sophisticated Piece (composition)}
 \begin{itemize}
-\item The score is generated in C++ using CsoundAC's multiple copy reducing machine algorithm, which produces many types of fractals.
-\item This MCRM shrinks the score down onto each of its four quarters, iterating 7 times. Each "lens" is a bit different to create melodies, canons, and variations.
+\item The score is generated in C++ using CsoundAC's multiple copy reducing machine algorithm, which makes many fractals.
+\item This MCRM shrinks the score down onto each of its four quarters, repeating this 7 times. Each "lens" is a bit different to create melodies, canons, and variations.
 \item The "lenses" in the MCRM algorithm are C++ lambdas, so I can do more than just apply transformation matrices.
 \item E.g. at specific levels of iteration, i.e.  specific time scales, I transform the major/minor 9th chord that controls the harmony. This enables the generation of root progressions, mutations, and quasi-tonal modulations.
-\item The geometric transformations in the "lenses" make it easy to change the structure of the entire piece by changing a few numbers.
+\item The geometric transformations in the "lenses" make it easy to change the structure of the entire piece by editing a few numbers.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Questions?)}
+\begin{frame}{Questions?}
 Please ask some questions! They can be about Csound, about programming, or about computer music in general.
 \end{frame}
 
