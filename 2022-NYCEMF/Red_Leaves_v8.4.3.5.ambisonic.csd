@@ -1,4 +1,4 @@
-<CsoundSyntheizer>
+f<CsoundSyntheizer>
 <CsLicense>
 
 R E D   L E A V E S   V E R S I O N   8 . 4 . 3 . 5
@@ -50,7 +50,7 @@ https://michaelgogins.tumblr.com/csound_extended.
 //////////////////////////////////////////////////////////////////////////////
 sr = 48000
 ksmps = 128
-nchnls = 4
+nchnls = 8
 0dbfs = 100
 //////////////////////////////////////////////////////////////////////////////
 // This random seed ensures that the same random stream  is used for each 
@@ -134,6 +134,41 @@ endop
 
 #ifdef SPATIALIZE_GOGINS
 
+prints "====================================================\n"
+if strcmp(gS_os, "Linux") == 0 then
+gi_iem_allra_decoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/AllRADecoder.so", 1
+endif
+if strcmp(gS_os, "macOS") == 0 then
+gi_iem_allra_decoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/AllRADecoder.vst", 1
+endif
+prints "gi_iem_allra_decoder: %d\n", gi_iem_allra_decoder
+prints "====================================================\n"
+if strcmp(gS_os, "Linux") == 0 then
+gi_iem_binaural_decoder vstinit "/usr/lib/x86\_64-linux-gnu/iem-plugin-suite/vst/BinauralDecoder.so", 1
+endif
+if strcmp(gS_os, "macOS") == 0 then
+gi_iem_binaural_decoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/IEM/BinauralDecoder.vst", 1
+endif
+prints "gi_iem_binaural_decoder: %d\n", gi_iem_binaural_decoder
+prints "====================================================\n"
+if strcmp(gS_os, "Linux") == 0 then
+gi_compass_decoder vstinit "/home/mkg/.vst/libcompass_decoder.so", 1
+endif
+if strcmp(gS_os, "macOS") == 0 then
+gi_compass_decoder vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/compass_decoder.vst", 1
+endif
+prints "gi_compass_decoder: %d\n", gi_compass_decoder
+prints "====================================================\n"
+if strcmp(gS_os, "Linux") == 0 then
+gi_compass_binaural vstinit "/home/mkg/.vst/libcompass_binaural.so", 1
+endif
+if strcmp(gS_os, "macOS") == 0 then
+gi_compass_binaural vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/compass_binaural.vst", 1
+endif
+prints "gi_compass_binaural: %d\n", gi_compass_binaural
+prints "====================================================\n"
+
+
 gi_base init 5
 
 connect "Blower",           "outbformat",   "BformatDecoder2",  "inbformat"
@@ -181,11 +216,10 @@ connect "SpatialReverb",    "outbformat",   "BformatDecoder2",  "inbformat"
 ; 31 3D binaural configuration. This first decodes to a dodecahedron configuration and then applies HRTF filters.
 
 ; Should be 0, 1 for stereo or 1, 31 for binaural periphonic or 2, 2 for quadrophonic.
-gk_BformatDecoder_SpeakerRig init 2
-gk_BformatDecoder2_SpeakerRig init 2
+gi_BformatDecoder_SpeakerRig init 5
 
 gk_BformatDecoder_MasterLevel init 0
-gk_BformatDecoder2_MasterLevel init 12
+gk_BformatDecoder_MasterLevel init 12
 gk_Spatialize_SpeakerRigRadius init 5.0
 gk_SpatialReverb_ReverbDecay init 0.76
 gk_SpatialReverb_CutoffHz init sr
@@ -263,7 +297,6 @@ connect "ReverbSC", "outright", "MasterOutput", "inright"
 // These are all the Csound instruments and effects used in this piece.
 //////////////////////////////////////////////////////////////////////////////
 
-
 if strcmp(gS_os, "Linux") == 0 then
 gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", gi_vstinfo
 endif
@@ -315,7 +348,7 @@ gk_LocalReverbByDistance_ReverbDecay init .6
 gk_LocalReverbByDistance_Wet init 0.2
 gk_SpatialReverb_ReverbDecay init .2
 gi_instrument_position_rate init 0
-gk_BformatDecoder2_MasterLevel init 0
+gk_BformatDecoder_MasterLevel init 0
 gi_FMWaterBell_attack init 0.002936276551436901
 gi_FMWaterBell_release init 0.022698875468554768
 gi_FMWaterBell_exponent init 0
@@ -366,7 +399,7 @@ gk_LocalReverbByDistance_ReverbDecay init 0.6
 gk_LocalReverbByDistance_Wet init 0.2
 gk_SpatialReverb_ReverbDecay init 2.408609163541497
 gi_instrument_position_rate init 0.0888635251915865
-gk_BformatDecoder2_MasterLevel init 0
+gk_BformatDecoder_MasterLevel init 0
 gk_PianoOutPianoteq_level init -10
 gi_FMWaterBell_attack init 0.002936276551436901
 gi_FMWaterBell_release init 0.022698875468554768
@@ -417,7 +450,7 @@ gk_LocalReverbByDistance_ReverbDecay init 0.21829564644342847
 gk_LocalReverbByDistance_Wet init 0.4344495242802422
 gk_SpatialReverb_ReverbDecay init 2.6867663412825897
 gi_instrument_position_rate init 0.005
-gk_BformatDecoder2_MasterLevel init 7.152271510358744
+gk_BformatDecoder_MasterLevel init 7.152271510358744
 gk_PianoOutPianoteq_level init -0.741888146094901
 gi_FMWaterBell_attack init 0.002936276551436901
 gi_FMWaterBell_release init 0.022698875468554768
@@ -468,7 +501,7 @@ gk_LocalReverbByDistance_ReverbDecay init 0.14975905103175585
 gk_LocalReverbByDistance_Wet init 0.4344495242802422
 gk_SpatialReverb_ReverbDecay init 2.7711190740969562
 gi_instrument_position_rate init 0.0035
-gk_BformatDecoder2_MasterLevel init 0.3016468286319949
+gk_BformatDecoder_MasterLevel init 0.3016468286319949
 gk_PianoOutPianoteq_level init -9
 gi_FMWaterBell_attack init 0.002936276551436901
 gi_FMWaterBell_release init 0.022698875468554768
@@ -519,7 +552,7 @@ gk_LocalReverbByDistance_ReverbDecay init 0.14975905103175585
 gk_LocalReverbByDistance_Wet init 0.4344495242802422
 gk_SpatialReverb_ReverbDecay init 2.7711190740969562
 gi_instrument_position_rate init 0.0035
-gk_BformatDecoder2_MasterLevel init 5.570657770089383
+gk_BformatDecoder_MasterLevel init 5.570657770089383
 gk_PianoOutPianoteq_level init -9
 gi_FMWaterBell_attack init 0.002936276551436901
 gi_FMWaterBell_release init 0.022698875468554768
@@ -576,7 +609,7 @@ gk_LocalReverbByDistance_ReverbDecay init 0
 gk_LocalReverbByDistance_Wet init 0
 gk_SpatialReverb_ReverbDecay init 0
 gi_instrument_position_rate init 4
-gk_BformatDecoder2_MasterLevel init 8
+gk_BformatDecoder_MasterLevel init 8
 gk_ReverbSC_feedback init 0.82
 gk_ReverbSC_wet init 0.5
 gi_ReverbSC_delay_modulation init 0.0075
@@ -782,7 +815,7 @@ gS_html init {{<!DOCTYPE html>
             gk_LocalReverbByDistance_Wet: 0.2,
             gk_SpatialReverb_ReverbDecay: .2,
             gi_instrument_position_rate: 0.01,
-            gk_BformatDecoder2_MasterLevel: -12.,
+            gk_BformatDecoder_MasterLevel: -12.,
             
             gk_ReverbSC_feedback: 0.875,
             gk_ReverbSC_wet: 0.5,
@@ -860,7 +893,7 @@ gS_html init {{<!DOCTYPE html>
             add_slider(Ambisonic, 'gk_SpatialReverb_ReverbDecay', 0, 4.);
             add_slider(Ambisonic, 'gk_Spatialize_SpeakerRigRadius', 2, 100.);
             add_slider(Ambisonic, 'gi_instrument_position_rate', 0, .5);
-            add_slider(Ambisonic, 'gk_BformatDecoder2_MasterLevel', -50, 50);
+            add_slider(Ambisonic, 'gk_BformatDecoder_MasterLevel', -50, 50);
             var Stereo = Master.addFolder('Stereo')
             add_slider(Stereo, 'gk_ReverbSC_feedback', 0, 1.);
             add_slider(Stereo, 'gk_ReverbSC_wet', 0, 1.);

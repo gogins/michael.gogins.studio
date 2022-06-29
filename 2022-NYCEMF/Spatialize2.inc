@@ -6,7 +6,8 @@ This software is licensed under the terms of the
 GNU Lesser Public License.
 
 Many thanks to Jan Jacob Hofmann for his advanced Csound
-spatialization system, which I have adapted here.
+spatialization system, which I have adapted here, and adapted to the 
+bformenc1/bformdec2 opcodes.
 
 This software is a system of Ambisonic and/or HRTF-based
 audio spatialization for Csound. I have simplified Hofmann's
@@ -21,27 +22,27 @@ and the sink is an instr inlet.
 
 The available speaker rigs are:
 
-bformdec1
-
- 0 Ambisonic stereo with minimal distance cues
-   (possibly the best choice for efficiency in live performance).
- 1 Ambisonic binaural with HRTF decoding (periphonic, a suitable choice
-   for checking in stereophonic studio work).
- 2 Ambisonic quadraphonic.
- 3 Ambisonic pentaphonic or 5.0 (might work for 5.1, omit .1)
- 4 Ambisonic octaphonic.
- 5 Ambisonic cubic (periphonic, probably the best choice for concerts).
- 
-bformdec2
- 
- 1 Stereo - L(90), R(-90); this is an M+S style stereo decode.
- 2 Quad - FL(45), BL(135), BR(-135), FR(-45). This is a first-order decode.
- 3 5.0 - L(30), R(-30), C(0), BL(110), BR(-110). Note that many people do not actually use the angles above for their speaker arrays and a good decode for DVD etc can be achieved using the Quad configuration to feed L, R, BL and BR (leaving C silent).
- 4 Octagon - FFL(22.5), FLL(67.5), BLL(112.5), BBL(157.5), BBR(-157.5), BRR(-112.5), FRR(-67.5), FFR(-22.5). This is a first-, second- or third-order decode, depending on the number of input channels.
- 5 Cube - FLD(45,-35.26), FLU(45,35.26), BLD(135,-35.26), BLU(135,35.26), BRD(-135,-35.26), BRU(-135,35.26), FRD(-45,-35.26), FRU(-45,35.26). This is a first-order decode.
- 6 Hexagon - FL(30), L(90) BL(150), BR(-150), R(-90), FR(-30). This is a first- or second- order decode.
-21 2D binaural configuration. This first decodes to a octagon configuration and then applies HRTF filters.
-31 3D binaural configuration. This first decodes to a dodecahedron configuration and then applies HRTF filters.
+ 1  Stereo - L(90), R(-90); this is an M+S style stereo decode.
+    0th order, 4 channels.
+ 2  Quad - FL(45), BL(135), BR(-135), FR(-45). 
+    1st order, 4 channels.
+ 3  5.0 - L(30), R(-30), C(0), BL(110), BR(-110). Note that many people do not 
+    actually use the angles above for their speaker arrays and a good decode 
+    for DVD etc can be achieved using the 
+    2nd or 3rd order -- 9 or 16 channels.
+ 4  Octagon - FFL(22.5), FLL(67.5), BLL(112.5), BBL(157.5), BBR(-157.5), 
+    BRR(-112.5), FRR(-67.5), FFR(-22.5). This is a first-, second- or 
+    third-order decode, depending on the number of input channels.
+    1st, 2nd, or 3rd order -- 4, 9, or 16 channels.
+ 5  Cube - FLD(45,-35.26), FLU(45,35.26), BLD(135,-35.26), BLU(135,35.26), 
+    BRD(-135,-35.26), BRU(-135,35.26), FRD(-45,-35.26), FRU(-45,35.26). 
+    1st order -- 4 channels.
+ 6  Hexagon - FL(30), L(90) BL(150), BR(-150), R(-90), FR(-30). 
+    1st or 2nd order -- 4 or 9 channels.
+21  2D binaural configuration. This first decodes to a octagon configuration and 
+    then applies HRTF filters.
+31  3D binaural configuration. This first decodes to a dodecahedron 
+    configuration and then applies HRTF filters.
 
 Please note the coordinate conventions. The listener is always the origin.
 In this system, spatial locations are passed to the spatialize opcode in
@@ -66,7 +67,7 @@ USAGE
 
 In the orchestra header:
 
-gk_BformatDecoder_SpeakerRig init 5
+gi_BformatDecoder_SpeakerRig init 5
 
 alwayson SpatialReverb
 alwayson Bformat3Decoder
@@ -106,10 +107,10 @@ TODO
 
 opcode kprintlevels, 0, Sa[]
 Slabel, absignal[] xin
-krms0 rms absignal[1]
-krms1 rms absignal[2]
-krms2 rms absignal[3]
-krms3 rms absignal[4]
+krms0 rms absignal[0]
+krms1 rms absignal[1]
+krms2 rms absignal[2]
+krms3 rms absignal[3]
 printks "%s %9.4f %9.4f %9.4f %9.4f\n", 1., Slabel, krms0, krms1, krms2, krms3
 endop
 
@@ -118,10 +119,66 @@ endop
 ; Global parameters that can be re-defined in the orchestra header.
 
 gk_Spatialize_Verbose init 0
-gk_BformatDecoder_SpeakerRig chnexport "gk_BformatDecoder_SpeakerRig", 3 ; 0
-gk_BformatDecoder_SpeakerRig init 2
+gi_BformatDecoder_SpeakerRig chnexport "gi_BformatDecoder_SpeakerRig", 3 ; 0
+gi_BformatDecoder_SpeakerRig init 2
 gk_Spatialize_SpeakerRigRadius chnexport "gk_Spatialize_SpeakerRigRadius", 3 ; 0
 gk_Spatialize_SpeakerRigRadius init 5.0
+
+/**
+ * Returns the highest Ambisonic order available using bformenc1 for the 
+ * global speaker rig.
+ */
+opcode channels_for_rig, i, 0
+i_channels init -1
+if     gi_BformatDecoder_SpeakerRig == 1 then
+  i_channels = 4
+elseif gi_BformatDecoder_SpeakerRig == 2 then
+  i_channels = 4
+elseif gi_BformatDecoder_SpeakerRig == 3 then
+  i_channels = 16
+elseif gi_BformatDecoder_SpeakerRig == 4 then
+  i_channels = 16
+elseif gi_BformatDecoder_SpeakerRig == 5 then
+  i_channels = 4
+elseif gi_BformatDecoder_SpeakerRig == 6 then
+  i_channels = 9
+elseif gi_BformatDecoder_SpeakerRig == 21 then
+  i_channels = 16
+elseif gi_BformatDecoder_SpeakerRig == 31 then
+  i_channels = 16
+endif
+xout i_channels
+endop
+
+opcode ambi_zero, 0, a[]
+a_vector[] xin
+k_index init 0
+k_bound lenarray a_vector
+while k_index < k_bound do
+  a_vector[k_index] = 0
+  k_index = k_index + 1
+od
+endop
+
+opcode ambi_assign, 0, a[]a
+a_vector[], a_scalar xin
+k_index init 0
+k_bound lenarray a_vector
+while k_index < k_bound do
+  a_vector[k_index] = a_scalar
+  k_index = k_index + 1
+od
+endop
+
+opcode ambi_plus_add, 0, a[]a[]
+a_vector[], a_addend[] xin
+k_index init 0
+k_bound lenarray a_vector
+while k_index < k_bound do
+  a_vector[k_index] = a_vector[k_index] + a_addend[k_index]
+  k_index = k_index + 1
+od
+endop
 
 opcode CartesianToPolar, kkk, kkk
 kx, ky, kz xin
@@ -330,11 +387,9 @@ alocalReverbLeft, alocalReverbRight reverbsc	alocalReverbSend, alocalReverbSend,
 alocalReverbWet = ((alocalReverbLeft + alocalReverbRight) / 2.0) * gk_LocalReverbByDistance_Wet
 alocalReverbDry = kdry * asignal
 alocalReverberatedSignal = alocalReverbDry + alocalReverbWet
-if gk_Spatialize_Verbose!= 0 goto gk_Spatialize_Verbose_0
-goto gk_Spatialize_Verbose_not_0
-gk_Spatialize_Verbose_0:
+if gk_Spatialize_Verbose == 1 then
 printks "LocalReverbByDistance asignal: %9.4f klocalAttentuaton: %9.4f iglobalReverbSendDelayMilliseconds: %9.4f kglobalAttenuation: %9.4f alocalReverberatedSignal: %9.4f aglobalReverbSend: %9.4f\n", 0.5, asignal, klocalAttenuation, iglobalReverbSendDelayMilliseconds, kglobalAttenuation, alocalReverberatedSignal, aglobalReverbSendDelayed
-gk_Spatialize_Verbose_not_0:
+endif
 xout alocalReverberatedSignal, aglobalReverbSendDelayed
 endop
 
@@ -450,7 +505,8 @@ asigref = asigref * k_gain
 ; Convert radians to degrees.
 kAref = kAref * 57.2958
 kEref = kEref * 57.2958
-absignal[] init 16
+i_channels channels_for_rig
+absignal[] init i_channels
 absignal bformenc1 asigref, kAref, kEref
 xout absignal
 endop
@@ -459,111 +515,22 @@ opcode DiffuseEarlyReflections, a[], akkk
 asignalin, kx, ky, kz xin
 ; Filter high frequencies to represent absorbtion by the wall.
 asignal tone asignalin, gk_EarlyReflection_highdamp
-absignal[] init 16
-abreflectedSignal[] init 16
+i_channels channels_for_rig
+absignal[] init i_channels
+abreflectedSignal[] init i_channels
 ; Bounce the signal off each of the walls.
 abreflectedSignal DiffuseEarlyReflect asignal, kx, ky, kz, 1
-absignal[ 0] = absignal[ 0] + abreflectedSignal[ 0]
-absignal[ 1] = absignal[ 1] + abreflectedSignal[ 1]
-absignal[ 2] = absignal[ 2] + abreflectedSignal[ 2]
-absignal[ 3] = absignal[ 3] + abreflectedSignal[ 3]
-absignal[ 4] = absignal[ 4] + abreflectedSignal[ 4]
-absignal[ 5] = absignal[ 5] + abreflectedSignal[ 5]
-absignal[ 6] = absignal[ 6] + abreflectedSignal[ 6]
-absignal[ 7] = absignal[ 7] + abreflectedSignal[ 7]
-absignal[ 8] = absignal[ 8] + abreflectedSignal[ 8]
-absignal[ 9] = absignal[ 9] + abreflectedSignal[ 9]
-absignal[10] = absignal[10] + abreflectedSignal[10]
-absignal[11] = absignal[11] + abreflectedSignal[11]
-absignal[12] = absignal[12] + abreflectedSignal[12]
-absignal[13] = absignal[13] + abreflectedSignal[13]
-absignal[14] = absignal[14] + abreflectedSignal[14]
-absignal[15] = absignal[15] + abreflectedSignal[15]
+ambi_plus_add absignal, abreflectedSignal
 abreflectedSignal DiffuseEarlyReflect asignal, kx, ky, kz, 2
-absignal[ 0] = absignal[ 0] + abreflectedSignal[ 0]
-absignal[ 1] = absignal[ 1] + abreflectedSignal[ 1]
-absignal[ 2] = absignal[ 2] + abreflectedSignal[ 2]
-absignal[ 3] = absignal[ 3] + abreflectedSignal[ 3]
-absignal[ 4] = absignal[ 4] + abreflectedSignal[ 4]
-absignal[ 5] = absignal[ 5] + abreflectedSignal[ 5]
-absignal[ 6] = absignal[ 6] + abreflectedSignal[ 6]
-absignal[ 7] = absignal[ 7] + abreflectedSignal[ 7]
-absignal[ 8] = absignal[ 8] + abreflectedSignal[ 8]
-absignal[ 9] = absignal[ 9] + abreflectedSignal[ 9]
-absignal[10] = absignal[10] + abreflectedSignal[10]
-absignal[11] = absignal[11] + abreflectedSignal[11]
-absignal[12] = absignal[12] + abreflectedSignal[12]
-absignal[13] = absignal[13] + abreflectedSignal[13]
-absignal[14] = absignal[14] + abreflectedSignal[14]
-absignal[15] = absignal[15] + abreflectedSignal[15]
+ambi_plus_add absignal, abreflectedSignal
 abreflectedSignal DiffuseEarlyReflect asignal, kx, ky, kz, 3
-absignal[ 0] = absignal[ 0] + abreflectedSignal[ 0]
-absignal[ 1] = absignal[ 1] + abreflectedSignal[ 1]
-absignal[ 2] = absignal[ 2] + abreflectedSignal[ 2]
-absignal[ 3] = absignal[ 3] + abreflectedSignal[ 3]
-absignal[ 4] = absignal[ 4] + abreflectedSignal[ 4]
-absignal[ 5] = absignal[ 5] + abreflectedSignal[ 5]
-absignal[ 6] = absignal[ 6] + abreflectedSignal[ 6]
-absignal[ 7] = absignal[ 7] + abreflectedSignal[ 7]
-absignal[ 8] = absignal[ 8] + abreflectedSignal[ 8]
-absignal[ 9] = absignal[ 9] + abreflectedSignal[ 9]
-absignal[10] = absignal[10] + abreflectedSignal[10]
-absignal[11] = absignal[11] + abreflectedSignal[11]
-absignal[12] = absignal[12] + abreflectedSignal[12]
-absignal[13] = absignal[13] + abreflectedSignal[13]
-absignal[14] = absignal[14] + abreflectedSignal[14]
-absignal[15] = absignal[15] + abreflectedSignal[15]
+ambi_plus_add absignal, abreflectedSignal
 abreflectedSignal DiffuseEarlyReflect asignal, kx, ky, kz, 4
-absignal[ 0] = absignal[ 0] + abreflectedSignal[ 0]
-absignal[ 1] = absignal[ 1] + abreflectedSignal[ 1]
-absignal[ 2] = absignal[ 2] + abreflectedSignal[ 2]
-absignal[ 3] = absignal[ 3] + abreflectedSignal[ 3]
-absignal[ 4] = absignal[ 4] + abreflectedSignal[ 4]
-absignal[ 5] = absignal[ 5] + abreflectedSignal[ 5]
-absignal[ 6] = absignal[ 6] + abreflectedSignal[ 6]
-absignal[ 7] = absignal[ 7] + abreflectedSignal[ 7]
-absignal[ 8] = absignal[ 8] + abreflectedSignal[ 8]
-absignal[ 9] = absignal[ 9] + abreflectedSignal[ 9]
-absignal[10] = absignal[10] + abreflectedSignal[10]
-absignal[11] = absignal[11] + abreflectedSignal[11]
-absignal[12] = absignal[12] + abreflectedSignal[12]
-absignal[13] = absignal[13] + abreflectedSignal[13]
-absignal[14] = absignal[14] + abreflectedSignal[14]
-absignal[15] = absignal[15] + abreflectedSignal[15]
+ambi_plus_add absignal, abreflectedSignal
 abreflectedSignal DiffuseEarlyReflect asignal, kx, ky, kz, 5
-absignal[ 0] = absignal[ 0] + abreflectedSignal[ 0]
-absignal[ 1] = absignal[ 1] + abreflectedSignal[ 1]
-absignal[ 2] = absignal[ 2] + abreflectedSignal[ 2]
-absignal[ 3] = absignal[ 3] + abreflectedSignal[ 3]
-absignal[ 4] = absignal[ 4] + abreflectedSignal[ 4]
-absignal[ 5] = absignal[ 5] + abreflectedSignal[ 5]
-absignal[ 6] = absignal[ 6] + abreflectedSignal[ 6]
-absignal[ 7] = absignal[ 7] + abreflectedSignal[ 7]
-absignal[ 8] = absignal[ 8] + abreflectedSignal[ 8]
-absignal[ 9] = absignal[ 9] + abreflectedSignal[ 9]
-absignal[10] = absignal[10] + abreflectedSignal[10]
-absignal[11] = absignal[11] + abreflectedSignal[11]
-absignal[12] = absignal[12] + abreflectedSignal[12]
-absignal[13] = absignal[13] + abreflectedSignal[13]
-absignal[14] = absignal[14] + abreflectedSignal[14]
-absignal[15] = absignal[15] + abreflectedSignal[15]
+ambi_plus_add absignal, abreflectedSignal
 abreflectedSignal DiffuseEarlyReflect asignal, kx, ky, kz, 6
-absignal[ 0] = absignal[ 0] + abreflectedSignal[ 0]
-absignal[ 1] = absignal[ 1] + abreflectedSignal[ 1]
-absignal[ 2] = absignal[ 2] + abreflectedSignal[ 2]
-absignal[ 3] = absignal[ 3] + abreflectedSignal[ 3]
-absignal[ 4] = absignal[ 4] + abreflectedSignal[ 4]
-absignal[ 5] = absignal[ 5] + abreflectedSignal[ 5]
-absignal[ 6] = absignal[ 6] + abreflectedSignal[ 6]
-absignal[ 7] = absignal[ 7] + abreflectedSignal[ 7]
-absignal[ 8] = absignal[ 8] + abreflectedSignal[ 8]
-absignal[ 9] = absignal[ 9] + abreflectedSignal[ 9]
-absignal[10] = absignal[10] + abreflectedSignal[10]
-absignal[11] = absignal[11] + abreflectedSignal[11]
-absignal[12] = absignal[12] + abreflectedSignal[12]
-absignal[13] = absignal[13] + abreflectedSignal[13]
-absignal[14] = absignal[14] + abreflectedSignal[14]
-absignal[15] = absignal[15] + abreflectedSignal[15]
+ambi_plus_add absignal, abreflectedSignal
 xout absignal
 endop
 
@@ -666,7 +633,8 @@ asigref = asigref * k_gain
 ; Convert radians to degrees.
 kAref = kAref * 57.2958
 kEref = kEref * 57.2958
-absignal[] init 16
+i_channels channels_for_rig
+absignal[] init i_channels
 absignal bformenc1 asigref, kAref, kEref
 ;;kprintlevels "SpecularEarlyReflect output", absignal
 xout absignal
@@ -688,110 +656,21 @@ kdiff5 = kiwall5 - kz ; distance of reflection to the Ceiling
 kdiff6 = kiwall6 - kz ; distance of reflection to the floor
 ; Filter high frequencies to represent absorption by the walls.
 afilteredSignal tone asignal, gk_EarlyReflection_highdamp
-absignal[] init 16
-abreflectedSignal[] init 16
+i_channels channels_for_rig
+absignal[] init i_channels
+abreflectedSignal[] init i_channels
 abreflectedSignal SpecularEarlyReflection afilteredSignal, kx, ky, kz, 1, kdiff1
-absignal[ 0] = absignal[ 0] + abreflectedSignal[ 0]
-absignal[ 1] = absignal[ 1] + abreflectedSignal[ 1]
-absignal[ 2] = absignal[ 2] + abreflectedSignal[ 2]
-absignal[ 3] = absignal[ 3] + abreflectedSignal[ 3]
-absignal[ 4] = absignal[ 4] + abreflectedSignal[ 4]
-absignal[ 5] = absignal[ 5] + abreflectedSignal[ 5]
-absignal[ 6] = absignal[ 6] + abreflectedSignal[ 6]
-absignal[ 7] = absignal[ 7] + abreflectedSignal[ 7]
-absignal[ 8] = absignal[ 8] + abreflectedSignal[ 8]
-absignal[ 9] = absignal[ 9] + abreflectedSignal[ 9]
-absignal[10] = absignal[10] + abreflectedSignal[10]
-absignal[11] = absignal[11] + abreflectedSignal[11]
-absignal[12] = absignal[12] + abreflectedSignal[12]
-absignal[13] = absignal[13] + abreflectedSignal[13]
-absignal[14] = absignal[14] + abreflectedSignal[14]
-absignal[15] = absignal[15] + abreflectedSignal[15]
+ambi_plus_add absignal, abreflectedSignal
 abreflectedSignal SpecularEarlyReflection afilteredSignal, kx, ky, kz, 2, kdiff2
-absignal[ 0] = absignal[ 0] + abreflectedSignal[ 0]
-absignal[ 1] = absignal[ 1] + abreflectedSignal[ 1]
-absignal[ 2] = absignal[ 2] + abreflectedSignal[ 2]
-absignal[ 3] = absignal[ 3] + abreflectedSignal[ 3]
-absignal[ 4] = absignal[ 4] + abreflectedSignal[ 4]
-absignal[ 5] = absignal[ 5] + abreflectedSignal[ 5]
-absignal[ 6] = absignal[ 6] + abreflectedSignal[ 6]
-absignal[ 7] = absignal[ 7] + abreflectedSignal[ 7]
-absignal[ 8] = absignal[ 8] + abreflectedSignal[ 8]
-absignal[ 9] = absignal[ 9] + abreflectedSignal[ 9]
-absignal[10] = absignal[10] + abreflectedSignal[10]
-absignal[11] = absignal[11] + abreflectedSignal[11]
-absignal[12] = absignal[12] + abreflectedSignal[12]
-absignal[13] = absignal[13] + abreflectedSignal[13]
-absignal[14] = absignal[14] + abreflectedSignal[14]
-absignal[15] = absignal[15] + abreflectedSignal[15]
+ambi_plus_add absignal, abreflectedSignal
 abreflectedSignal SpecularEarlyReflection afilteredSignal, kx, ky, kz, 3, kdiff3
-absignal[ 0] = absignal[ 0] + abreflectedSignal[ 0]
-absignal[ 1] = absignal[ 1] + abreflectedSignal[ 1]
-absignal[ 2] = absignal[ 2] + abreflectedSignal[ 2]
-absignal[ 3] = absignal[ 3] + abreflectedSignal[ 3]
-absignal[ 4] = absignal[ 4] + abreflectedSignal[ 4]
-absignal[ 5] = absignal[ 5] + abreflectedSignal[ 5]
-absignal[ 6] = absignal[ 6] + abreflectedSignal[ 6]
-absignal[ 7] = absignal[ 7] + abreflectedSignal[ 7]
-absignal[ 8] = absignal[ 8] + abreflectedSignal[ 8]
-absignal[ 9] = absignal[ 9] + abreflectedSignal[ 9]
-absignal[10] = absignal[10] + abreflectedSignal[10]
-absignal[11] = absignal[11] + abreflectedSignal[11]
-absignal[12] = absignal[12] + abreflectedSignal[12]
-absignal[13] = absignal[13] + abreflectedSignal[13]
-absignal[14] = absignal[14] + abreflectedSignal[14]
-absignal[15] = absignal[15] + abreflectedSignal[15]
+ambi_plus_add absignal, abreflectedSignal
 abreflectedSignal SpecularEarlyReflection afilteredSignal, kx, ky, kz, 4, kdiff4
-absignal[ 0] = absignal[ 0] + abreflectedSignal[ 0]
-absignal[ 1] = absignal[ 1] + abreflectedSignal[ 1]
-absignal[ 2] = absignal[ 2] + abreflectedSignal[ 2]
-absignal[ 3] = absignal[ 3] + abreflectedSignal[ 3]
-absignal[ 4] = absignal[ 4] + abreflectedSignal[ 4]
-absignal[ 5] = absignal[ 5] + abreflectedSignal[ 5]
-absignal[ 6] = absignal[ 6] + abreflectedSignal[ 6]
-absignal[ 7] = absignal[ 7] + abreflectedSignal[ 7]
-absignal[ 8] = absignal[ 8] + abreflectedSignal[ 8]
-absignal[ 9] = absignal[ 9] + abreflectedSignal[ 9]
-absignal[10] = absignal[10] + abreflectedSignal[10]
-absignal[11] = absignal[11] + abreflectedSignal[11]
-absignal[12] = absignal[12] + abreflectedSignal[12]
-absignal[13] = absignal[13] + abreflectedSignal[13]
-absignal[14] = absignal[14] + abreflectedSignal[14]
-absignal[15] = absignal[15] + abreflectedSignal[15]
+ambi_plus_add absignal, abreflectedSignal
 abreflectedSignal SpecularEarlyReflection afilteredSignal, kx, ky, kz, 5, kdiff5
-absignal[ 0] = absignal[ 0] + abreflectedSignal[ 0]
-absignal[ 1] = absignal[ 1] + abreflectedSignal[ 1]
-absignal[ 2] = absignal[ 2] + abreflectedSignal[ 2]
-absignal[ 3] = absignal[ 3] + abreflectedSignal[ 3]
-absignal[ 4] = absignal[ 4] + abreflectedSignal[ 4]
-absignal[ 5] = absignal[ 5] + abreflectedSignal[ 5]
-absignal[ 6] = absignal[ 6] + abreflectedSignal[ 6]
-absignal[ 7] = absignal[ 7] + abreflectedSignal[ 7]
-absignal[ 8] = absignal[ 8] + abreflectedSignal[ 8]
-absignal[ 9] = absignal[ 9] + abreflectedSignal[ 9]
-absignal[10] = absignal[10] + abreflectedSignal[10]
-absignal[11] = absignal[11] + abreflectedSignal[11]
-absignal[12] = absignal[12] + abreflectedSignal[12]
-absignal[13] = absignal[13] + abreflectedSignal[13]
-absignal[14] = absignal[14] + abreflectedSignal[14]
-absignal[15] = absignal[15] + abreflectedSignal[15]
+ambi_plus_add absignal, abreflectedSignal
 abreflectedSignal SpecularEarlyReflection afilteredSignal, kx, ky, kz, 6, kdiff6
-absignal[ 0] = absignal[ 0] + abreflectedSignal[ 0]
-absignal[ 1] = absignal[ 1] + abreflectedSignal[ 1]
-absignal[ 2] = absignal[ 2] + abreflectedSignal[ 2]
-absignal[ 3] = absignal[ 3] + abreflectedSignal[ 3]
-absignal[ 4] = absignal[ 4] + abreflectedSignal[ 4]
-absignal[ 5] = absignal[ 5] + abreflectedSignal[ 5]
-absignal[ 6] = absignal[ 6] + abreflectedSignal[ 6]
-absignal[ 7] = absignal[ 7] + abreflectedSignal[ 7]
-absignal[ 8] = absignal[ 8] + abreflectedSignal[ 8]
-absignal[ 9] = absignal[ 9] + abreflectedSignal[ 9]
-absignal[10] = absignal[10] + abreflectedSignal[10]
-absignal[11] = absignal[11] + abreflectedSignal[11]
-absignal[12] = absignal[12] + abreflectedSignal[12]
-absignal[13] = absignal[13] + abreflectedSignal[13]
-absignal[14] = absignal[14] + abreflectedSignal[14]
-absignal[15] = absignal[15] + abreflectedSignal[15]
+ambi_plus_add absignal, abreflectedSignal
 ;;kprintlevels "SpecularEarlyReflections output", absignal
 xout absignal
 endop
@@ -806,53 +685,25 @@ adoppleredSignal DopplerByDistance asignal, kdistance
 afilteredSignal LowpassByDistance adoppleredSignal, kdistance
 
 aglobalReverbSend init 0
-abspatializedSignal[] init 16
-if     gk_BformatDecoder_SpeakerRig == 0 then
+i_channels channels_for_rig
+abspatializedSignal[] init i_channels
+if     gi_BformatDecoder_SpeakerRig == 0 then
 abspatializedSignal bformenc1 afilteredSignal, kazimuth, kelevation
 asend = afilteredSignal
-elseif gk_BformatDecoder_SpeakerRig == 1 then
+elseif gi_BformatDecoder_SpeakerRig == 1 then
 ;; adistanceCuedSignal, aglobalReverbSend LocalReverbByDistance afilteredSignal, kdistance
 abspatializedSignal bformenc1 adistanceCuedSignal, kazimuth, kelevation
 asend = aglobalReverbSend
-elseif gk_BformatDecoder_SpeakerRig >  1 then   
+elseif gi_BformatDecoder_SpeakerRig >  1 then   
 adistanceCuedSignal, aglobalReverbSend LocalReverbByDistance afilteredSignal, kdistance
 abspatializedSignal bformenc1 adistanceCuedSignal, kazimuth, kelevation
-abdiffuseEarlyReflectionsSignal[] init 16
+i_channels channels_for_rig
+abdiffuseEarlyReflectionsSignal[] init i_channels
 abdiffuseEarlyReflectionsSignal DiffuseEarlyReflections adistanceCuedSignal, kx, ky, kz
-abspatializedSignal[ 0] = abspatializedSignal[ 0] + abdiffuseEarlyReflectionsSignal[ 0]
-abspatializedSignal[ 1] = abspatializedSignal[ 1] + abdiffuseEarlyReflectionsSignal[ 1]
-abspatializedSignal[ 2] = abspatializedSignal[ 2] + abdiffuseEarlyReflectionsSignal[ 2]
-abspatializedSignal[ 3] = abspatializedSignal[ 3] + abdiffuseEarlyReflectionsSignal[ 3]
-abspatializedSignal[ 4] = abspatializedSignal[ 4] + abdiffuseEarlyReflectionsSignal[ 4]
-abspatializedSignal[ 5] = abspatializedSignal[ 5] + abdiffuseEarlyReflectionsSignal[ 5]
-abspatializedSignal[ 6] = abspatializedSignal[ 6] + abdiffuseEarlyReflectionsSignal[ 6]
-abspatializedSignal[ 7] = abspatializedSignal[ 7] + abdiffuseEarlyReflectionsSignal[ 7]
-abspatializedSignal[ 8] = abspatializedSignal[ 8] + abdiffuseEarlyReflectionsSignal[ 8]
-abspatializedSignal[ 9] = abspatializedSignal[ 9] + abdiffuseEarlyReflectionsSignal[ 9]
-abspatializedSignal[10] = abspatializedSignal[10] + abdiffuseEarlyReflectionsSignal[10]
-abspatializedSignal[11] = abspatializedSignal[11] + abdiffuseEarlyReflectionsSignal[11]
-abspatializedSignal[12] = abspatializedSignal[12] + abdiffuseEarlyReflectionsSignal[12]
-abspatializedSignal[13] = abspatializedSignal[13] + abdiffuseEarlyReflectionsSignal[13]
-abspatializedSignal[14] = abspatializedSignal[14] + abdiffuseEarlyReflectionsSignal[14]
-abspatializedSignal[15] = abspatializedSignal[15] + abdiffuseEarlyReflectionsSignal[15]
-abspecularEarlyReflectionsSignal[] init 16
+ambi_plus_add abspatializedSignal, abdiffuseEarlyReflectionsSignal
+abspecularEarlyReflectionsSignal[] init i_channels
 abspecularEarlyReflectionsSignal SpecularEarlyReflections afilteredSignal, kx, ky, kz
-abspatializedSignal[ 0] = abspatializedSignal[ 0] + abspecularEarlyReflectionsSignal[ 0]
-abspatializedSignal[ 1] = abspatializedSignal[ 1] + abspecularEarlyReflectionsSignal[ 1]
-abspatializedSignal[ 2] = abspatializedSignal[ 2] + abspecularEarlyReflectionsSignal[ 2]
-abspatializedSignal[ 3] = abspatializedSignal[ 3] + abspecularEarlyReflectionsSignal[ 3]
-abspatializedSignal[ 4] = abspatializedSignal[ 4] + abspecularEarlyReflectionsSignal[ 4]
-abspatializedSignal[ 5] = abspatializedSignal[ 5] + abspecularEarlyReflectionsSignal[ 5]
-abspatializedSignal[ 6] = abspatializedSignal[ 6] + abspecularEarlyReflectionsSignal[ 6]
-abspatializedSignal[ 7] = abspatializedSignal[ 7] + abspecularEarlyReflectionsSignal[ 7]
-abspatializedSignal[ 8] = abspatializedSignal[ 8] + abspecularEarlyReflectionsSignal[ 8]
-abspatializedSignal[ 9] = abspatializedSignal[ 9] + abspecularEarlyReflectionsSignal[ 9]
-abspatializedSignal[10] = abspatializedSignal[10] + abspecularEarlyReflectionsSignal[10]
-abspatializedSignal[11] = abspatializedSignal[11] + abspecularEarlyReflectionsSignal[11]
-abspatializedSignal[12] = abspatializedSignal[12] + abspecularEarlyReflectionsSignal[12]
-abspatializedSignal[13] = abspatializedSignal[13] + abspecularEarlyReflectionsSignal[13]
-abspatializedSignal[14] = abspatializedSignal[14] + abspecularEarlyReflectionsSignal[14]
-abspatializedSignal[15] = abspatializedSignal[15] + abspecularEarlyReflectionsSignal[15]
+ambi_plus_add abspatializedSignal, abspecularEarlyReflectionsSignal
 ;;kprintlevels "Spatialize output", abspatializedSignal
 asend = aglobalReverbSend
 endif
@@ -1034,8 +885,9 @@ iE9 = 0.463646 ; height reverberant point 9 ( 26.565?)
 iE10 = -0.463646 ; height reverberant point 10 ( -26.565?)
 iE11 = 1.570796 ; height reverberant point 11 ( 90?)
 iE12 = -1.570796 ; height reverberant point 12 ( -90?)
-aboutput[] init 16
-abreverberated[] init 16
+i_channels channels_for_rig
+aboutput[] init i_channels
+abreverberated[] init i_channels
 aboutput       bformenc1 afilt1, iA1, iE1
 abreverberated bformenc1 afilt2, iA2, iE2
 aboutput[ 0] = aboutput[ 0] + abreverberated[ 0]
@@ -1250,239 +1102,45 @@ iE9 = 0.463646 ; height reverberant point 9 ( 26.565?)
 iE10 = -0.463646 ; height reverberant point 10 ( -26.565?)
 iE11 = 1.570796 ; height reverberant point 11 ( 90?)
 iE12 = -1.570796 ; height reverberant point 12 ( -90?)
-aboutput[] init 16
-abreverberated1[] init 16
-abreverberated2[] init 16
-abreverberated3[] init 16
-abreverberated4[] init 16
-abreverberated5[] init 16
-abreverberated6[] init 16
-abreverberated7[] init 16
-abreverberated8[] init 16
-abreverberated9[] init 16
-abreverberated10[] init 16
-abreverberated11[] init 16
-abreverberated12[] init 16
-aboutput[ 0] = 0
-aboutput[ 1] = 0
-aboutput[ 2] = 0
-aboutput[ 3] = 0
-aboutput[ 4] = 0
-aboutput[ 5] = 0
-aboutput[ 6] = 0
-aboutput[ 7] = 0
-aboutput[ 8] = 0
-aboutput[ 9] = 0
-aboutput[10] = 0
-aboutput[11] = 0
-aboutput[12] = 0
-aboutput[13] = 0
-aboutput[14] = 0
-aboutput[15] = 0
+i_channels channels_for_rig
+aboutput[] init i_channels
+abreverberated1[] init i_channels
+abreverberated2[] init i_channels
+abreverberated3[] init i_channels
+abreverberated4[] init i_channels
+abreverberated5[] init i_channels
+abreverberated6[] init i_channels
+abreverberated7[] init i_channels
+abreverberated8[] init i_channels
+abreverberated9[] init i_channels
+abreverberated10[] init i_channels
+abreverberated11[] init i_channels
+abreverberated12[] init i_channels
+ambi_zero aboutput
 abreverberated1 bformenc1 afiltc1, iA1, iE1
-aboutput[ 0] = (aboutput[ 0] + abreverberated1[ 0])
-aboutput[ 1] = (aboutput[ 1] + abreverberated1[ 1])
-aboutput[ 2] = (aboutput[ 2] + abreverberated1[ 2])
-aboutput[ 3] = (aboutput[ 3] + abreverberated1[ 3])
-aboutput[ 4] = (aboutput[ 4] + abreverberated1[ 4])
-aboutput[ 5] = (aboutput[ 5] + abreverberated1[ 5])
-aboutput[ 6] = (aboutput[ 6] + abreverberated1[ 6])
-aboutput[ 7] = (aboutput[ 7] + abreverberated1[ 7])
-aboutput[ 8] = (aboutput[ 8] + abreverberated1[ 8])
-aboutput[ 9] = (aboutput[ 9] + abreverberated1[ 9])
-aboutput[10] = (aboutput[10] + abreverberated1[10])
-aboutput[11] = (aboutput[11] + abreverberated1[11])
-aboutput[12] = (aboutput[12] + abreverberated1[12])
-aboutput[13] = (aboutput[13] + abreverberated1[13])
-aboutput[14] = (aboutput[14] + abreverberated1[14])
-aboutput[15] = (aboutput[15] + abreverberated1[15])
+ambi_plus_add aboutput, abreverberated1
 abreverberated2 bformenc1 afiltc2, iA2, iE2
-aboutput[ 0] = (aboutput[ 0] + abreverberated2[ 0])
-aboutput[ 1] = (aboutput[ 1] + abreverberated2[ 1])
-aboutput[ 2] = (aboutput[ 2] + abreverberated2[ 2])
-aboutput[ 3] = (aboutput[ 3] + abreverberated2[ 3])
-aboutput[ 4] = (aboutput[ 4] + abreverberated2[ 4])
-aboutput[ 5] = (aboutput[ 5] + abreverberated2[ 5])
-aboutput[ 6] = (aboutput[ 6] + abreverberated2[ 6])
-aboutput[ 7] = (aboutput[ 7] + abreverberated2[ 7])
-aboutput[ 8] = (aboutput[ 8] + abreverberated2[ 8])
-aboutput[ 9] = (aboutput[ 9] + abreverberated2[ 9])
-aboutput[10] = (aboutput[10] + abreverberated2[10])
-aboutput[11] = (aboutput[11] + abreverberated2[11])
-aboutput[12] = (aboutput[12] + abreverberated2[12])
-aboutput[13] = (aboutput[13] + abreverberated2[13])
-aboutput[14] = (aboutput[14] + abreverberated2[14])
-aboutput[15] = (aboutput[15] + abreverberated2[15])
+ambi_plus_add aboutput, abreverberated2
 abreverberated2 bformenc1 afiltc3, iA3, iE3
-aboutput[ 0] = (aboutput[ 0] + abreverberated3[ 0])
-aboutput[ 1] = (aboutput[ 1] + abreverberated3[ 1])
-aboutput[ 2] = (aboutput[ 2] + abreverberated3[ 2])
-aboutput[ 3] = (aboutput[ 3] + abreverberated3[ 3])
-aboutput[ 4] = (aboutput[ 4] + abreverberated3[ 4])
-aboutput[ 5] = (aboutput[ 5] + abreverberated3[ 5])
-aboutput[ 6] = (aboutput[ 6] + abreverberated3[ 6])
-aboutput[ 7] = (aboutput[ 7] + abreverberated3[ 7])
-aboutput[ 8] = (aboutput[ 8] + abreverberated3[ 8])
-aboutput[ 9] = (aboutput[ 9] + abreverberated3[ 9])
-aboutput[10] = (aboutput[10] + abreverberated3[10])
-aboutput[11] = (aboutput[11] + abreverberated3[11])
-aboutput[12] = (aboutput[12] + abreverberated3[12])
-aboutput[13] = (aboutput[13] + abreverberated3[13])
-aboutput[14] = (aboutput[14] + abreverberated3[14])
-aboutput[15] = (aboutput[15] + abreverberated3[15])
+ambi_plus_add aboutput, abreverberated3
 abreverberated4 bformenc1 afiltc4, iA4, iE4
-aboutput[ 0] = (aboutput[ 0] + abreverberated4[ 0])
-aboutput[ 1] = (aboutput[ 1] + abreverberated4[ 1])
-aboutput[ 2] = (aboutput[ 2] + abreverberated4[ 2])
-aboutput[ 3] = (aboutput[ 3] + abreverberated4[ 3])
-aboutput[ 4] = (aboutput[ 4] + abreverberated4[ 4])
-aboutput[ 5] = (aboutput[ 5] + abreverberated4[ 5])
-aboutput[ 6] = (aboutput[ 6] + abreverberated4[ 6])
-aboutput[ 7] = (aboutput[ 7] + abreverberated4[ 7])
-aboutput[ 8] = (aboutput[ 8] + abreverberated4[ 8])
-aboutput[ 9] = (aboutput[ 9] + abreverberated4[ 9])
-aboutput[10] = (aboutput[10] + abreverberated4[10])
-aboutput[11] = (aboutput[11] + abreverberated4[11])
-aboutput[12] = (aboutput[12] + abreverberated4[12])
-aboutput[13] = (aboutput[13] + abreverberated4[13])
-aboutput[14] = (aboutput[14] + abreverberated4[14])
-aboutput[15] = (aboutput[15] + abreverberated4[15])
+ambi_plus_add aboutput, abreverberated4
 abreverberated5 bformenc1 afiltc5, iA5, iE5
-aboutput[ 0] = (aboutput[ 0] + abreverberated5[ 0])
-aboutput[ 1] = (aboutput[ 1] + abreverberated5[ 1])
-aboutput[ 2] = (aboutput[ 2] + abreverberated5[ 2])
-aboutput[ 3] = (aboutput[ 3] + abreverberated5[ 3])
-aboutput[ 4] = (aboutput[ 4] + abreverberated5[ 4])
-aboutput[ 5] = (aboutput[ 5] + abreverberated5[ 5])
-aboutput[ 6] = (aboutput[ 6] + abreverberated5[ 6])
-aboutput[ 7] = (aboutput[ 7] + abreverberated5[ 7])
-aboutput[ 8] = (aboutput[ 8] + abreverberated5[ 8])
-aboutput[ 9] = (aboutput[ 9] + abreverberated5[ 9])
-aboutput[10] = (aboutput[10] + abreverberated5[10])
-aboutput[11] = (aboutput[11] + abreverberated5[11])
-aboutput[12] = (aboutput[12] + abreverberated5[12])
-aboutput[13] = (aboutput[13] + abreverberated5[13])
-aboutput[14] = (aboutput[14] + abreverberated5[14])
-aboutput[15] = (aboutput[15] + abreverberated5[15])
+ambi_plus_add aboutput, abreverberated5
 abreverberated6 bformenc1 afiltc6, iA6, iE6
-aboutput[ 0] = (aboutput[ 0] + abreverberated6[ 0])
-aboutput[ 1] = (aboutput[ 1] + abreverberated6[ 1])
-aboutput[ 2] = (aboutput[ 2] + abreverberated6[ 2])
-aboutput[ 3] = (aboutput[ 3] + abreverberated6[ 3])
-aboutput[ 4] = (aboutput[ 4] + abreverberated6[ 4])
-aboutput[ 5] = (aboutput[ 5] + abreverberated6[ 5])
-aboutput[ 6] = (aboutput[ 6] + abreverberated6[ 6])
-aboutput[ 7] = (aboutput[ 7] + abreverberated6[ 7])
-aboutput[ 8] = (aboutput[ 8] + abreverberated6[ 8])
-aboutput[ 9] = (aboutput[ 9] + abreverberated6[ 9])
-aboutput[10] = (aboutput[10] + abreverberated6[10])
-aboutput[11] = (aboutput[11] + abreverberated6[11])
-aboutput[12] = (aboutput[12] + abreverberated6[12])
-aboutput[13] = (aboutput[13] + abreverberated6[13])
-aboutput[14] = (aboutput[14] + abreverberated6[14])
-aboutput[15] = (aboutput[15] + abreverberated6[15])
+ambi_plus_add aboutput, abreverberated6
 abreverberated7 bformenc1 afiltc7, iA7, iE7
-aboutput[ 0] = (aboutput[ 0] + abreverberated7[ 0])
-aboutput[ 1] = (aboutput[ 1] + abreverberated7[ 1])
-aboutput[ 2] = (aboutput[ 2] + abreverberated7[ 2])
-aboutput[ 3] = (aboutput[ 3] + abreverberated7[ 3])
-aboutput[ 4] = (aboutput[ 4] + abreverberated7[ 4])
-aboutput[ 5] = (aboutput[ 5] + abreverberated7[ 5])
-aboutput[ 6] = (aboutput[ 6] + abreverberated7[ 6])
-aboutput[ 7] = (aboutput[ 7] + abreverberated7[ 7])
-aboutput[ 8] = (aboutput[ 8] + abreverberated7[ 8])
-aboutput[ 9] = (aboutput[ 9] + abreverberated7[ 9])
-aboutput[10] = (aboutput[10] + abreverberated7[10])
-aboutput[11] = (aboutput[11] + abreverberated7[11])
-aboutput[12] = (aboutput[12] + abreverberated7[12])
-aboutput[13] = (aboutput[13] + abreverberated7[13])
-aboutput[14] = (aboutput[14] + abreverberated7[14])
-aboutput[15] = (aboutput[15] + abreverberated7[15])
+ambi_plus_add aboutput, abreverberated7
 abreverberated8 bformenc1 afiltc8, iA8, iE8
-aboutput[ 0] = (aboutput[ 0] + abreverberated8[ 0])
-aboutput[ 1] = (aboutput[ 1] + abreverberated8[ 1])
-aboutput[ 2] = (aboutput[ 2] + abreverberated8[ 2])
-aboutput[ 3] = (aboutput[ 3] + abreverberated8[ 3])
-aboutput[ 4] = (aboutput[ 4] + abreverberated8[ 4])
-aboutput[ 5] = (aboutput[ 5] + abreverberated8[ 5])
-aboutput[ 6] = (aboutput[ 6] + abreverberated8[ 6])
-aboutput[ 7] = (aboutput[ 7] + abreverberated8[ 7])
-aboutput[ 8] = (aboutput[ 8] + abreverberated8[ 8])
-aboutput[ 9] = (aboutput[ 9] + abreverberated8[ 9])
-aboutput[10] = (aboutput[10] + abreverberated8[10])
-aboutput[11] = (aboutput[11] + abreverberated8[11])
-aboutput[12] = (aboutput[12] + abreverberated8[12])
-aboutput[13] = (aboutput[13] + abreverberated8[13])
-aboutput[14] = (aboutput[14] + abreverberated8[14])
-aboutput[15] = (aboutput[15] + abreverberated8[15])
+ambi_plus_add aboutput, abreverberated8
 abreverberated9 bformenc1 afiltc9, iA9, iE9
-aboutput[ 0] = (aboutput[ 0] + abreverberated9[ 0])
-aboutput[ 1] = (aboutput[ 1] + abreverberated9[ 1])
-aboutput[ 2] = (aboutput[ 2] + abreverberated9[ 2])
-aboutput[ 3] = (aboutput[ 3] + abreverberated9[ 3])
-aboutput[ 4] = (aboutput[ 4] + abreverberated9[ 4])
-aboutput[ 5] = (aboutput[ 5] + abreverberated9[ 5])
-aboutput[ 6] = (aboutput[ 6] + abreverberated9[ 6])
-aboutput[ 7] = (aboutput[ 7] + abreverberated9[ 7])
-aboutput[ 8] = (aboutput[ 8] + abreverberated9[ 8])
-aboutput[ 9] = (aboutput[ 9] + abreverberated9[ 9])
-aboutput[10] = (aboutput[10] + abreverberated9[10])
-aboutput[11] = (aboutput[11] + abreverberated9[11])
-aboutput[12] = (aboutput[12] + abreverberated9[12])
-aboutput[13] = (aboutput[13] + abreverberated9[13])
-aboutput[14] = (aboutput[14] + abreverberated9[14])
-aboutput[15] = (aboutput[15] + abreverberated9[15])
+ambi_plus_add aboutput, abreverberated9
 abreverberated10 bformenc1 afiltc10, iA10, iE10
-aboutput[ 0] = (aboutput[ 0] + abreverberated10[ 0])
-aboutput[ 1] = (aboutput[ 1] + abreverberated10[ 1])
-aboutput[ 2] = (aboutput[ 2] + abreverberated10[ 2])
-aboutput[ 3] = (aboutput[ 3] + abreverberated10[ 3])
-aboutput[ 4] = (aboutput[ 4] + abreverberated10[ 4])
-aboutput[ 5] = (aboutput[ 5] + abreverberated10[ 5])
-aboutput[ 6] = (aboutput[ 6] + abreverberated10[ 6])
-aboutput[ 7] = (aboutput[ 7] + abreverberated10[ 7])
-aboutput[ 8] = (aboutput[ 8] + abreverberated10[ 8])
-aboutput[ 9] = (aboutput[ 9] + abreverberated10[ 9])
-aboutput[10] = (aboutput[10] + abreverberated10[10])
-aboutput[11] = (aboutput[11] + abreverberated10[11])
-aboutput[12] = (aboutput[12] + abreverberated10[12])
-aboutput[13] = (aboutput[13] + abreverberated10[13])
-aboutput[14] = (aboutput[14] + abreverberated10[14])
-aboutput[15] = (aboutput[15] + abreverberated10[15])
+ambi_plus_add aboutput, abreverberated10
 abreverberated11 bformenc1 afiltc11, iA11, iE11
-aboutput[ 0] = (aboutput[ 0] + abreverberated11[ 0])
-aboutput[ 1] = (aboutput[ 1] + abreverberated11[ 1])
-aboutput[ 2] = (aboutput[ 2] + abreverberated11[ 2])
-aboutput[ 3] = (aboutput[ 3] + abreverberated11[ 3])
-aboutput[ 4] = (aboutput[ 4] + abreverberated11[ 4])
-aboutput[ 5] = (aboutput[ 5] + abreverberated11[ 5])
-aboutput[ 6] = (aboutput[ 6] + abreverberated11[ 6])
-aboutput[ 7] = (aboutput[ 7] + abreverberated11[ 7])
-aboutput[ 8] = (aboutput[ 8] + abreverberated11[ 8])
-aboutput[ 9] = (aboutput[ 9] + abreverberated11[ 9])
-aboutput[10] = (aboutput[10] + abreverberated11[10])
-aboutput[11] = (aboutput[11] + abreverberated11[11])
-aboutput[12] = (aboutput[12] + abreverberated11[12])
-aboutput[13] = (aboutput[13] + abreverberated11[13])
-aboutput[14] = (aboutput[14] + abreverberated11[14])
-aboutput[15] = (aboutput[15] + abreverberated11[15])
+ambi_plus_add aboutput, abreverberated11
 abreverberated12 bformenc1 afiltc12, iA12, iE12
-aboutput[ 0] = (aboutput[ 0] + abreverberated12[ 0])
-aboutput[ 1] = (aboutput[ 1] + abreverberated12[ 1])
-aboutput[ 2] = (aboutput[ 2] + abreverberated12[ 2])
-aboutput[ 3] = (aboutput[ 3] + abreverberated12[ 3])
-aboutput[ 4] = (aboutput[ 4] + abreverberated12[ 4])
-aboutput[ 5] = (aboutput[ 5] + abreverberated12[ 5])
-aboutput[ 6] = (aboutput[ 6] + abreverberated12[ 6])
-aboutput[ 7] = (aboutput[ 7] + abreverberated12[ 7])
-aboutput[ 8] = (aboutput[ 8] + abreverberated12[ 8])
-aboutput[ 9] = (aboutput[ 9] + abreverberated12[ 9])
-aboutput[10] = (aboutput[10] + abreverberated12[10])
-aboutput[11] = (aboutput[11] + abreverberated12[11])
-aboutput[12] = (aboutput[12] + abreverberated12[12])
-aboutput[13] = (aboutput[13] + abreverberated12[13])
-aboutput[14] = (aboutput[14] + abreverberated12[14])
-aboutput[15] = (aboutput[15] + abreverberated12[15])
+ambi_plus_add aboutput, abreverberated12
 kprintlevels "SpatialReverb output", aboutput
 outletv "outbformat", aboutput
 if gk_Spatialize_Verbose != 0 goto gk_Spatialize_Verbose_not_0
@@ -1664,10 +1322,11 @@ endop
 
 gk_BformatDecoder_MasterLevel init 0.0
 instr BformatDecoder
-irig init i(gk_BformatDecoder_SpeakerRig)
+irig init i(gi_BformatDecoder_SpeakerRig)
 kmasterlevel = pow(10, gk_BformatDecoder_MasterLevel / 20)
 asignal[] init nchnls
-absignal[] init 16
+i_channels channels_for_rig
+absignal[] init i_channels
 absignal[] inletv "inbformat"
 if irig == 0 goto irig_0
 goto irig_1
@@ -1719,18 +1378,6 @@ prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p
 endin
 
 /*
-1. Stereo - L(90), R(-90); this is an M+S style stereo decode.
-2. Quad - FL(45), BL(135), BR(-135), FR(-45). This is a first-order decode.
-3. 5.0 - L(30), R(-30), C(0), BL(110), BR(-110). Note that many people do not actually use the angles above for their speaker arrays and a good decode for DVD etc can be achieved using the Quad configuration to feed L, R, BL and BR (leaving C silent).
-4. Octagon - FFL(22.5), FLL(67.5), BLL(112.5), BBL(157.5), BBR(-157.5), BRR(-112.5), FRR(-67.5), FFR(-22.5). This is a first-, second- or third-order decode, depending on the number of input channels.
-5. Cube - FLD(45,-35.26), FLU(45,35.26), BLD(135,-35.26), BLU(135,35.26), BRD(-135,-35.26), BRU(-135,35.26), FRD(-45,-35.26), FRU(-45,35.26). This is a first-order decode.
-6. Hexagon - FL(30), L(90) BL(150), BR(-150), R(-90), FR(-30). This is a first- or second- order decode.
-21. 2D binaural configuration. This first decodes to a octagon configuration and then applies HRTF filters.
-31. 3D binaural configuration. This first decodes to a dodecahedron configuration and then applies HRTF filters.
-*/
-gi_BformatDecoder2_SpeakerRig chnexport "gi_BformatDecoder2_SpeakerRig", 3 ; 0
-gi_BformatDecoder2_SpeakerRig init 31
-/*
 0. Dual decoder (velocity and energy decoders using dual-band splitting).
 1. Velocity decoder.
 2. Energy decoder.
@@ -1763,12 +1410,17 @@ kmasterlevel = pow(10, gk_BformatDecoder2_MasterLevel / 20)
 printks2 "gk_BformatDecoder2_MasterLevel", gk_BformatDecoder2_MasterLevel
 asignal[] init nchnls
 aoutsignal[] init nchnls
-absignal[] init 16
+i_channels channels_for_rig
+absignal[] init i_channels
 absignal[] inletv "inbformat"
 // aout[] bformdec2 isetup, abform[], [idecoder, idistance, ifreq, imix, ifilel, ifiler]
-asignal bformdec2 gi_BformatDecoder2_SpeakerRig, absignal, gi_BformatDecoder2_Decoder, gi_BformatDecoder2_Distance, gi_BformatDecoder2_SplitHz, gi_BformatDecoder2_DecoderMix, gS_BformatDecoder2_LeftFile, gS_BformatDecoder2_RightFile
+asignal bformdec2 gi_BformatDecoder_SpeakerRig, absignal, gi_BformatDecoder2_Decoder, gi_BformatDecoder2_Distance, gi_BformatDecoder2_SplitHz, gi_BformatDecoder2_DecoderMix, gS_BformatDecoder2_LeftFile, gS_BformatDecoder2_RightFile
 aoutsignal = asignal * kmasterlevel
 out aoutsignal
+;if gk_Spatialize_Verbose == 0 then
+printks "%-24s in  rig %3d %9.4f %9.4f %9.4f %9.4f #%3d\n", 2., nstrstr(p1), gi_BformatDecoder_SpeakerRig, k(absignal[0]), k(absignal[1]), k(absignal[2]), k(absignal[3]), active(p1)
+printks "%-24s out rig %3d %9.4f %9.4f %9.4f %9.4f #%3d\n", 2., "         ", gi_BformatDecoder_SpeakerRig, k(asignal[0]), k(asignal[1]), k(asignal[2]), k(asignal[3]), active(p1)
+;lllendif
 prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
