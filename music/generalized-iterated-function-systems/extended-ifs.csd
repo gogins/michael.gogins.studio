@@ -1,54 +1,15 @@
-<CsoundSyntheizer>
+f<CsoundSyntheizer>
 <CsLicense>
 
-R E D   L E A V E S   V E R S I O N   8 . 4 . 3 . 5 . stereo . csd
+E X T E N D E D   I F S   D E M O 
 
 Michael Gogins, 2022
-
-This piece is another in my "Leaves" series of pieces of electroacoustic 
-concert music, algorithmically composed, available on electronic distribution. 
-This is the first piece in the series that I have attempted to spatialize. 
-(Although this version of the piece is in ordinary stereo.) The complete 
-source code for this composition is available at 
-https://github.com/gogins/michael.gogins.studio/blob/master/2022-NYCEMF/Red_Leaves_v8.4.3.5.stereo.csd. 
-
-This piece is algorithmically composed using a deterministic iterated 
-function system (IFS), implemented using my CsoundAC library for algorithmic 
-composition. The C++ code for the score generator is embedded in the Csound 
-.csd file and compiled and run using my csound-cxx-opcodes, which allow  
-embedding C++ source code directly into the Csound orchestra. The IFS uses 
-operators upon chord transposition and upon the K and Q operators of the 
-generalized contextual group of Fiore and Satyendra to generate chord 
-progresssions, and uses operators upon instrument channel, time, pitch, and 
-loudness to generate the actual notes. The piece uses a Web page to display a 
-three-dimensional piano roll view of the score, with interactive controls to 
-tweak the sounds and balance of the Csound instruments. The HTML5 source code 
-for this page is embedded in the Csound .csd file and run using my 
-csound-webserver-opcodes, which embed allow embedding HTML and JavaScript code 
-directly into the Csound orchestra. The Csound instruments in this piece 
-borrow and adapt instruments by Perry Cook, Ian McCurdy, Hans Mikelson, Steven 
-Yi, and Lee Zakian, as well as myself. Spatialization is implemented using an 
-Ambisonic spatializer originally written by Jan Jacob Hoffman and re-written 
-by me, with Doppler effects and other distance cues. The plugin Csound opcodes 
-used in this piece are available on GitHub at https://github.com/gogins, 
-except for the vst4cs opcodes, which can be downloaded from 
-https://michaelgogins.tumblr.com/csound_extended. 
-
 </CsLicense>
 <CsOptions>
--j4 --m-amps=1 --m-range=1 --m-dB=1 --m-benchmarks=1 --m-warnings=0 -+msg_color=0 -d -odac 
+--m-amps=1 --m-range=1 --m-dB=1 --m-benchmarks=1 --m-warnings=0 -+msg_color=0 -d -oextended-ifs.wav
 </CsOptions>
 <CsInstruments>
 
-//////////////////////////////////////////////////////////////////////////////
-// Define just one of these to specify the spatialization system.
-//////////////////////////////////////////////////////////////////////////////
-#define SPATIALIZE_STEREO #1#
-;#define SPATIALIZE_GOGINS #4#
-
-//////////////////////////////////////////////////////////////////////////////
-// Change to sr=96000 with ksmps=1 for final rendering to soundfile.
-//////////////////////////////////////////////////////////////////////////////
 sr = 48000
 ksmps = 128
 nchnls = 2
@@ -63,7 +24,7 @@ seed 88818145
 //////////////////////////////////////////////////////////////////////////////
 // Turn printing of VST plugin parameters off and on globally.
 //////////////////////////////////////////////////////////////////////////////
-gi_vstinfo init 0
+gi_vstinfo init 1
 
 //////////////////////////////////////////////////////////////////////////////
 // We will load plugins from different locations on different operating 
@@ -75,128 +36,6 @@ prints "Operating system: %s\n", gS_os
 gi_size init 20
 
 gi_pi init 3.141592653589793
-
-// Converts IEM Cartesian coordinates to IEM spherical coordinates.
-// Azimuth is displayed as degrees in [-180, 180] with 90 at left, -90 at 
-// right, -180 or 180 at back, 0 at front.
-// Elevation is displayed in [-90, 90] with -90 at bottom and 90 at top.
-// Radius is displayed in [0, maximum_radius].
-// Cartesian coordinates are y is left to right [-1, 1], x is front to back [1, -1],
-// z is bottom to top [-1, 1].
-// To normalize to the VST range of [0,1], all calculations must agree on a 
-// maximum radius (half the room size, or range of positions).
-/*
-    static void cartesianToSpherical (const Type x, const Type y, const Type z, Type& azimuthInRadians, Type& elevationInRadians, Type& radius)
-    {
-        const float xSquared = x * x;
-        const float ySquared = y * y;
-        radius = sqrt(xSquared + ySquared + z * z);
-        azimuthInRadians = atan2(y, x);
-        elevationInRadians = atan2(z, sqrt(xSquared + ySquared));
-    };
-
-*/
-opcode iem_cartesian_to_spherical, kkk, kkk
-k_x, k_y, k_z xin
-k_radius = sqrt(k_x^2 + k_y^2 + k_z^2)
-k_azimuth taninv2 k_y, k_x
-k_elevation taninv2 k_z, sqrt(k_x^2 + k_y^2)
-xout k_azimuth, k_elevation, k_radius
-endop
-
-// Converts IEM spherical coordinates to VST parameter ranges.
-opcode iem_normalize_spherical_coordinates, kkk, ikkk
-i_maximum_radius, k_azimuth, k_elevation, k_radius xin
-k_normalized_azimuth = -1 * ((k_azimuth + gi_pi) / (2 * gi_pi))
-k_normalized_elevation = (k_elevation + (gi_pi / 2)) / gi_pi
-k_normalized_radius = k_radius / i_maximum_radius 
-xout k_normalized_azimuth, k_normalized_elevation, k_normalized_radius
-endop
-
-// Converts IEM Cartesian coordinates to IEM 
-// spherical coordinates that are normalized to VST parameter ranges.
-opcode iem_cartesian_to_spherical_vst,kkk,ikkk
-i_maximum_radius, k_x, k_y, k_z xin
-k_x *= (i_maximum_radius / 2)
-k_y *= (i_maximum_radius / 2)
-k_z *= (i_maximum_radius / 2)
-k_azimuth, k_elevation, k_radius iem_cartesian_to_spherical k_x, k_y, k_z
-k_azimuth_vst, k_elevation_vst, k_radius_vst iem_normalize_spherical_coordinates i_maximum_radius, k_azimuth, k_elevation, k_radius
-S_template init {{%-24.24s i: %3d t: %9.4f max radius: %9.4f
-  => Cartesian:  x: %9.4f y: %9.4f z: %9.4f
-  => Spherical:  a: %9.4f e: %9.4f r: %9.4f
-  =>             a: %9.4f e: %9.4f r: %9.4f
-  => Normalized: a: %9.4f e: %9.4f r: %9.4f
-}}
-k_time times
-;printks S_template, .5, nstrstr(p1), int(p1), k_time, i_maximum_radius, k_x, k_y, k_z, k_azimuth, k_elevation, k_radius, k_azimuth * 180 / gi_pi, k_elevation * 180 / gi_pi, k_radius, k_azimuth_vst, k_elevation_vst, k_radius_vst
-xout k_azimuth_vst, k_elevation_vst, k_radius_vst
-endop
-
-#ifdef SPATIALIZE_GOGINS
-
-gi_base init 5
-
-connect "Blower",           "outbformat",   "BformatDecoder2",  "inbformat"
-connect "Blower",           "out",          "SpatialReverb",    "in"
-connect "STKBowed",         "outbformat",   "BformatDecoder2",  "inbformat"
-connect "STKBowed",         "out",          "SpatialReverb",    "in"
-connect "Buzzer",           "outbformat",   "BformatDecoder2",  "inbformat"
-connect "Buzzer",           "out",          "SpatialReverb",    "in"
-connect "Droner",           "outbformat",   "BformatDecoder2",  "inbformat"
-connect "Droner",           "out",          "SpatialReverb",    "in"
-connect "FMWaterBell",      "outbformat",   "BformatDecoder2",  "inbformat"
-connect "FMWaterBell",      "out",          "SpatialReverb",    "in"
-connect "Phaser",           "outbformat",   "BformatDecoder2",  "inbformat"
-connect "Phaser",           "out",          "SpatialReverb",    "in"
-connect "PianoOutPianoteq", "outbformat",   "BformatDecoder2",  "inbformat"
-connect "PianoOutPianoteq", "out",          "SpatialReverb",    "in"
-connect "Sweeper",          "outbformat",   "BformatDecoder2",  "inbformat"
-connect "Sweeper",          "out",          "SpatialReverb",    "in"
-connect "Shiner",           "outbformat",   "BformatDecoder2",  "inbformat"
-connect "Shiner",           "out",          "SpatialReverb",    "in"
-connect "ZakianFlute",      "outbformat",   "BformatDecoder2",  "inbformat"
-connect "ZakianFlute",      "out",          "SpatialReverb",    "in"
-connect "SpatialReverb",    "outbformat",   "BformatDecoder2",  "inbformat"
-
-#include "Spatialize1.inc"
-
-gk_BformatDecoder_MasterLevel init 0
-gk_BformatDecoder2_MasterLevel init 12
-gk_BformatDecoder_SpeakerRig init 1
-gk_BformatDecoder2_SpeakerRig init 31
-gk_Spatialize_SpeakerRigRadius init 5.0
-gk_SpatialReverb_ReverbDecay init 0.76
-gk_SpatialReverb_CutoffHz init sr
-gk_SpatialReverb_RandomDelayModulation init .002
-gk_LocalReverbByDistance_Wet init 0.5
-; This is a fraction of the speaker rig radius.
-gk_LocalReverbByDistance_FrontWall init 0.9
-gk_LocalReverbByDistance_ReverbDecay init 0.6
-gk_LocalReverbByDistance_CutoffHz init 20000
-gk_LocalReverbByDistance_RandomDelayModulation init .002
-gk_Spatialize_Verbose init 0
-
-alwayson "PianoOutPianoteq"
-alwayson "SpatialReverb"
-alwayson "BformatDecoder2"
-
-gi_instrument_position_rate chnexport "gi_instrument_position_rate", 3 ;  0
-gi_instrument_position_rate init 50
-opcode instrument_position, kk, iii
-i_onset, i_radius, i_rate xin
-i_rate = (i_rate * gi_instrument_position_rate)
-k_time times
-// Depth.
-k_x = gk_Spatialize_SpeakerRigRadius * cos(i_onset + ((k_time - i_onset) * i_rate)) - 5
-// Pan.
-k_y = gk_Spatialize_SpeakerRigRadius * sin(i_onset + ((k_time - i_onset) * i_rate))
-xout k_x, k_y
-endop
-
-#end
-
-#ifdef SPATIALIZE_STEREO
 
 gi_base init 0
 
@@ -236,47 +75,45 @@ connect "ZakianFlute", "outright", "ReverbSC", "inright"
 connect "ReverbSC", "outleft", "MasterOutput", "inleft"
 connect "ReverbSC", "outright", "MasterOutput", "inright"
 
-#end
-
 //////////////////////////////////////////////////////////////////////////////
 // These are all the Csound instruments and effects used in this piece.
 //////////////////////////////////////////////////////////////////////////////
-
 
 if strcmp(gS_os, "Linux") == 0 then
 gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", gi_vstinfo
 endif
 if strcmp(gS_os, "macOS") == 0 then
-gi_Pianoteq vstinit "/Library/Audio/Plug-Ins/VST/Pianoteq\ 7.vst", gi_vstinfo
+gi_Pianoteq vst3init "/Library/Audio/Plug-Ins/VST3/Pianoteq 7.vst3", "Pianoteq 7", 1
+;gi_Pianoteq vstinit "/Library/Audio/Plug-Ins/VST3/Pianoteq 7.vst3", 1
+vst3info gi_Pianoteq
 endif
 
-#include "PianoNotePianoteq.inc"
-#include "FMWaterBell1.inc" // Normalized.
-#include "Phaser1.inc"      // Normalized.
-#include "Droner1.inc"      // Normalized.
-#include "Sweeper1.inc"     // Normalized.
-#include "Buzzer1.inc"      // Normalized.
-#include "Shiner1.inc"      // Normalized.
-#include "Blower1.inc"      // Normalized.
-#include "ZakianFlute1.inc" // Normalized.
-#include "STKBowed1.inc"    // Normalized.
+#include "PianoNotePianoteqVst3.inc"
+#include "FMWaterBell.inc" // Normalized.
+#include "Phaser.inc"      // Normalized.
+#include "Droner.inc"      // Normalized.
+#include "Sweeper.inc"     // Normalized.
+#include "Buzzer.inc"      // Normalized.
+#include "Shiner.inc"      // Normalized.
+#include "Blower.inc"      // Normalized.
+#include "ZakianFlute.inc" // Normalized.
+#include "STKBowed.inc"    // Normalized.
 
-#include "PianoOutPianoteq1.inc"
-gk_PianoOutPianoteq_front_to_back init -3
-gk_PianoOutPianoteq_left_to_right init .4
-gk_PianoOutPianoteq_bottom_to_top init 3
-
+#include "PianoOutPianoteqVst3.inc"
+// To print parameters:
+// validator "/Library/Audio/Plug-Ins/VST3/Pianoteq 7.vst3"
+gk_PianoOutPianoteq_level init 0
+gi_PianoOutPianoteq_print init 0
+gk_PianoOutPianoteq_front_to_back init 0
+gk_PianoOutPianoteq_left_to_right init 0.5
+gk_PianoOutPianoteq_bottom_to_top init 0
 alwayson "PianoOutPianoteq"
-
-#ifdef SPATIALIZE_STEREO
 
 #include "ReverbSC.inc"
 alwayson "ReverbSC"
 
 #include "MasterOutput.inc"
 alwayson "MasterOutput"
-
-#end
 
 gk_FMWaterBell_front_to_back init -3
 gk_FMWaterBell_left_to_right init .6
@@ -287,274 +124,13 @@ gk_FMWaterBell_bottom_to_top init -3
 //////////////////////////////////////////////////////////////////////////////
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-gk_ReverbSC_feedback init 0.86
-gk_MasterOutput_level init -12
-gk_Spatialize_SpeakerRigRadius init 15
-gk_LocalReverbByDistance_ReverbDecay init .6
-gk_LocalReverbByDistance_Wet init 0.2
-gk_SpatialReverb_ReverbDecay init .2
-gi_instrument_position_rate init 0
-gk_BformatDecoder2_MasterLevel init 0
-gi_FMWaterBell_attack init 0.002936276551436901
-gi_FMWaterBell_release init 0.022698875468554768
-gi_FMWaterBell_exponent init 0
-gi_FMWaterBell_sustain init 5.385256143273636
-gi_FMWaterBell_sustain_level init 0.08267388588088297
-gk_FMWaterBell_crossfade init 0.1234039047697504
-gk_FMWaterBell_index init 1.1401499375260309
-gk_FMWaterBell_vibrato_depth init 0.28503171595683335
-gk_FMWaterBell_vibrato_rate init 2.4993821566850647
-gk_FMWaterBell_level init 25
-gk_Phaser_ratio1 init 1.028045002445785
-gk_Phaser_ratio2 init 0.010598402087069948
-gk_Phaser_index1 init 0.9709766835154084
-gk_Phaser_index2 init 0.7361813142018588
-gk_Phaser_level init 4
-gk_STKBowed_vibrato_level init 0
-gk_STKBowed_bow_pressure init 110
-gk_STKBowed_bow_position init 21.81769218869982
-gk_STKBowed_vibrato_frequency init 50.2
-gk_STKBowed_level init 17.737876003647344
-gk_Droner_partial1 init 0.4664927441708788
-gk_Droner_partial2 init 0.16386760150008153
-gk_Droner_partial3 init 0.13777922713190935
-gk_Droner_partial4 init 0.4664927441708788
-gk_Droner_partial5 init 0.15343225175281267
-gk_Droner_level init 27.433556171531066
-gk_Sweeper_bright_min init 3.5147562367519973
-gk_Sweeper_bright_max init 0
-gk_Sweeper_rate_min init 0.48850481004402413
-gk_Sweeper_rate_max init 3.452144138268384
-gk_Sweeper_level init -2
-gk_Buzzer_harmonics init 4
-gk_Buzzer_level init 0
-gk_Shiner_level init -16.91668025436165
-gk_Blower_grainDensity init 132.3332789825534
-gk_Blower_grainDuration init 0.2854231208217838
-gk_Blower_grainAmplitudeRange init 174.0746779716289
-gk_Blower_grainFrequencyRange init 62.82406652535464
-gk_Blower_level init 4
-gk_ZakianFlute_level init 12
-gk_PianoOutPianoteq_level init -12
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-gk_MasterOutput_level init 0
-gk_Spatialize_SpeakerRigRadius init 15
-gk_LocalReverbByDistance_ReverbDecay init 0.6
-gk_LocalReverbByDistance_Wet init 0.2
-gk_SpatialReverb_ReverbDecay init 2.408609163541497
-gi_instrument_position_rate init 0.0888635251915865
-gk_BformatDecoder2_MasterLevel init 0
-gk_PianoOutPianoteq_level init -10
-gi_FMWaterBell_attack init 0.002936276551436901
-gi_FMWaterBell_release init 0.022698875468554768
-gi_FMWaterBell_exponent init 0
-gi_FMWaterBell_sustain init 5.385256143273636
-gi_FMWaterBell_sustain_level init 0.08267388588088297
-gk_FMWaterBell_crossfade init 0.1234039047697504
-gk_FMWaterBell_index init 1.1401499375260309
-gk_FMWaterBell_vibrato_depth init 0.28503171595683335
-gk_FMWaterBell_vibrato_rate init 2.4993821566850647
-gk_FMWaterBell_level init 27
-gk_Phaser_ratio1 init 1.028045002445785
-gk_Phaser_ratio2 init 0.010598402087069948
-gk_Phaser_index1 init 0.9709766835154084
-gk_Phaser_index2 init 0.7361813142018588
-gk_Phaser_level init 4
-gk_STKBowed_vibrato_level init 0
-gk_STKBowed_bow_pressure init 110
-gk_STKBowed_bow_position init 21.81769218869982
-gk_STKBowed_vibrato_frequency init 50.2
-gk_STKBowed_level init 17.737876003647344
-gk_Droner_partial1 init 0.4664927441708788
-gk_Droner_partial2 init 0.16386760150008153
-gk_Droner_partial3 init 0.13777922713190935
-gk_Droner_partial4 init 0.4664927441708788
-gk_Droner_partial5 init 0.15343225175281267
-gk_Droner_level init 27.433556171531066
-gk_Sweeper_bright_min init 3.5147562367519973
-gk_Sweeper_bright_max init 0
-gk_Sweeper_rate_min init 0.48850481004402413
-gk_Sweeper_rate_max init 3.452144138268384
-gk_Sweeper_level init -2
-gk_Buzzer_harmonics init 4
-gk_Buzzer_level init 0
-gk_Shiner_level init -16.91668025436165
-gk_Blower_grainDensity init 132.3332789825534
-gk_Blower_grainDuration init 0.2854231208217838
-gk_Blower_grainAmplitudeRange init 174.0746779716289
-gk_Blower_grainFrequencyRange init 62.82406652535464
-gk_Blower_level init 4
-gk_ZakianFlute_level init 12
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-gk_MasterOutput_level init 0
-gk_Spatialize_SpeakerRigRadius init 15
-gk_LocalReverbByDistance_ReverbDecay init 0.21829564644342847
-gk_LocalReverbByDistance_Wet init 0.4344495242802422
-gk_SpatialReverb_ReverbDecay init 2.6867663412825897
-gi_instrument_position_rate init 0.005
-gk_BformatDecoder2_MasterLevel init 7.152271510358744
-gk_PianoOutPianoteq_level init -0.741888146094901
-gi_FMWaterBell_attack init 0.002936276551436901
-gi_FMWaterBell_release init 0.022698875468554768
-gi_FMWaterBell_exponent init 0
-gi_FMWaterBell_sustain init 5.385256143273636
-gi_FMWaterBell_sustain_level init 0.08267388588088297
-gk_FMWaterBell_crossfade init 0.1234039047697504
-gk_FMWaterBell_index init 1.1401499375260309
-gk_FMWaterBell_vibrato_depth init 0.28503171595683335
-gk_FMWaterBell_vibrato_rate init 2.4993821566850647
-gk_FMWaterBell_level init 35.621318835207376
-gk_Phaser_ratio1 init 1.028045002445785
-gk_Phaser_ratio2 init 0.010598402087069948
-gk_Phaser_index1 init 0.9709766835154084
-gk_Phaser_index2 init 0.7361813142018588
-gk_Phaser_level init 4
-gk_STKBowed_vibrato_level init 0
-gk_STKBowed_bow_pressure init 110
-gk_STKBowed_bow_position init 21.81769218869982
-gk_STKBowed_vibrato_frequency init 50.2
-gk_STKBowed_level init 17.737876003647344
-gk_Droner_partial1 init 0.4664927441708788 
-gk_Droner_partial2 init 0.16386760150008153
-gk_Droner_partial3 init 0.13777922713190935
-gk_Droner_partial4 init 0.4664927441708788
-gk_Droner_partial5 init 0.15343225175281267
-gk_Droner_level init 27.433556171531066
-gk_Sweeper_bright_min init 3.5147562367519973
-gk_Sweeper_bright_max init 0
-gk_Sweeper_rate_min init 0.48850481004402413
-gk_Sweeper_rate_max init 3.452144138268384
-gk_Sweeper_level init -2
-gk_Buzzer_harmonics init 4
-gk_Buzzer_level init 0
-gk_Shiner_level init -16.91668025436165
-gk_Blower_grainDensity init 132.3332789825534
-gk_Blower_grainDuration init 0.2854231208217838
-gk_Blower_grainAmplitudeRange init 174.0746779716289
-gk_Blower_grainFrequencyRange init 62.82406652535464
-gk_Blower_level init -5.959563019729337
-gk_ZakianFlute_level init 12
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-gk_MasterOutput_level init 0
-gk_Spatialize_SpeakerRigRadius init 15
-gk_LocalReverbByDistance_ReverbDecay init 0.14975905103175585
-gk_LocalReverbByDistance_Wet init 0.4344495242802422
-gk_SpatialReverb_ReverbDecay init 2.7711190740969562
-gi_instrument_position_rate init 0.0035
-gk_BformatDecoder2_MasterLevel init 0.3016468286319949
-gk_PianoOutPianoteq_level init -15;-9
-gi_FMWaterBell_attack init 0.002936276551436901
-gi_FMWaterBell_release init 0.022698875468554768
-gi_FMWaterBell_exponent init 0
-gi_FMWaterBell_sustain init 5.385256143273636
-gi_FMWaterBell_sustain_level init 0.08267388588088297
-gk_FMWaterBell_crossfade init 0.1234039047697504
-gk_FMWaterBell_index init 1.1401499375260309
-gk_FMWaterBell_vibrato_depth init 0.28503171595683335
-gk_FMWaterBell_vibrato_rate init 2.4993821566850647
-gk_FMWaterBell_level init 14;;26
-gk_Phaser_ratio1 init 1.028045002445785
-gk_Phaser_ratio2 init 0.010598402087069948
-gk_Phaser_index1 init 0.9709766835154084
-gk_Phaser_index2 init 0.7361813142018588
-gk_Phaser_level init 4
-gk_STKBowed_vibrato_level init 0
-gk_STKBowed_bow_pressure init 110
-gk_STKBowed_bow_position init 21.81769218869982
-gk_STKBowed_vibrato_frequency init 50.2
-gk_STKBowed_level init 17.737876003647344
-gk_Droner_partial1 init 0.4664927441708788
-gk_Droner_partial2 init 0.16386760150008153
-gk_Droner_partial3 init 0.13777922713190935
-gk_Droner_partial4 init 0.4664927441708788
-gk_Droner_partial5 init 0.15343225175281267
-gk_Droner_level init 27.433556171531066
-gk_Sweeper_bright_min init 3.5147562367519973
-gk_Sweeper_bright_max init 0
-gk_Sweeper_rate_min init 0.48850481004402413
-gk_Sweeper_rate_max init 3.452144138268384
-gk_Sweeper_level init -2
-gk_Buzzer_harmonics init 4
-gk_Buzzer_level init 0
-gk_Shiner_level init -16.91668025436165
-gk_Blower_grainDensity init 132.3332789825534
-gk_Blower_grainDuration init 0.2854231208217838
-gk_Blower_grainAmplitudeRange init 174.0746779716289
-gk_Blower_grainFrequencyRange init 62.82406652535464
-gk_Blower_level init -5.959563019729337
-gk_ZakianFlute_level init 12
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-gk_MasterOutput_level init 0
-gk_Spatialize_SpeakerRigRadius init 15
-gk_LocalReverbByDistance_ReverbDecay init 0.14975905103175585
-gk_LocalReverbByDistance_Wet init 0.4344495242802422
-gk_SpatialReverb_ReverbDecay init 2.7711190740969562
-gi_instrument_position_rate init 0.0035
-gk_BformatDecoder2_MasterLevel init 5.570657770089383
-gk_PianoOutPianoteq_level init -15;;9
-gi_FMWaterBell_attack init 0.002936276551436901
-gi_FMWaterBell_release init 0.022698875468554768
-gi_FMWaterBell_exponent init 0
-gi_FMWaterBell_sustain init 5.385256143273636
-gi_FMWaterBell_sustain_level init 0.08267388588088297
-gk_FMWaterBell_crossfade init 0.1234039047697504
-gk_FMWaterBell_index init 1.1401499375260309
-gk_FMWaterBell_vibrato_depth init 0.28503171595683335
-gk_FMWaterBell_vibrato_rate init 2.4993821566850647
-gk_FMWaterBell_level init 26
-gk_Phaser_ratio1 init 0.48519296511388443
-gk_Phaser_ratio2 init 1.9877260183697845
-gk_Phaser_index1 init 0.9020140862473743
-gk_Phaser_index2 init 0.9810947732608427
-gk_Phaser_level init 4
-gk_STKBowed_vibrato_level init 0
-gk_STKBowed_bow_pressure init 110
-gk_STKBowed_bow_position init 21.81769218869982
-gk_STKBowed_vibrato_frequency init 50.2
-gk_STKBowed_level init 17.737876003647344
-gk_Droner_partial1 init 0.4664927441708788
-gk_Droner_partial2 init 0.16386760150008153
-gk_Droner_partial3 init 0.13777922713190935
-gk_Droner_partial4 init 0.4664927441708788
-gk_Droner_partial5 init 0.15343225175281267
-gk_Droner_level init 27.433556171531066
-gk_Sweeper_bright_min init 0.13509617364800858
-gk_Sweeper_bright_max init 2.1595617611928004
-gk_Sweeper_rate_min init 0.11400799044441698
-gk_Sweeper_rate_max init 2.792207257300548
-gk_Sweeper_level init -2
-gk_Buzzer_harmonics init 4
-gk_Buzzer_level init 0
-gk_Shiner_level init -16.91668025436165
-gk_Blower_grainDensity init 132.3332789825534
-gk_Blower_grainDuration init 0.2854231208217838
-gk_Blower_grainAmplitudeRange init 174.0746779716289
-gk_Blower_grainFrequencyRange init 62.82406652535464
-gk_Blower_level init -5.959563019729337
-gk_ZakianFlute_level init 12
-gk_ReverbSC_feedback init 0.82
-gk_ReverbSC_wet init 0.5
-gi_ReverbSC_delay_modulation init 0.0075
-gk_ReverbSC_frequency_cutoff init 15000
-gk_MasterOutputLevel init 0.
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 gk_MasterOutput_level init 10
 gk_Spatialize_SpeakerRigRadius init 0
 gk_LocalReverbByDistance_ReverbDecay init 0
 gk_LocalReverbByDistance_Wet init 0
 gk_SpatialReverb_ReverbDecay init 0
-gi_instrument_position_rate init 0
-gk_BformatDecoder2_MasterLevel init 0
+gi_instrument_position_rate init 4
+gk_BformatDecoder_MasterLevel init 8
 gk_ReverbSC_feedback init 0.82
 gk_ReverbSC_wet init 0.5
 gi_ReverbSC_delay_modulation init 0.0075
@@ -759,7 +335,7 @@ gS_html init {{<!DOCTYPE html>
             gk_LocalReverbByDistance_Wet: 0.2,
             gk_SpatialReverb_ReverbDecay: .2,
             gi_instrument_position_rate: 0.01,
-            gk_BformatDecoder2_MasterLevel: -12.,
+            gk_BformatDecoder_MasterLevel: -12.,
             
             gk_ReverbSC_feedback: 0.875,
             gk_ReverbSC_wet: 0.5,
@@ -837,7 +413,7 @@ gS_html init {{<!DOCTYPE html>
             add_slider(Ambisonic, 'gk_SpatialReverb_ReverbDecay', 0, 4.);
             add_slider(Ambisonic, 'gk_Spatialize_SpeakerRigRadius', 2, 100.);
             add_slider(Ambisonic, 'gi_instrument_position_rate', 0, .5);
-            add_slider(Ambisonic, 'gk_BformatDecoder2_MasterLevel', -50, 50);
+            add_slider(Ambisonic, 'gk_BformatDecoder_MasterLevel', -50, 50);
             var Stereo = Master.addFolder('Stereo')
             add_slider(Stereo, 'gk_ReverbSC_feedback', 0, 1.);
             add_slider(Stereo, 'gk_ReverbSC_wet', 0, 1.);
@@ -988,10 +564,10 @@ gS_html init {{<!DOCTYPE html>
 }}
 
 if strcmp(gS_os, "Linux") == 0 then
-gi_webserver webserver_create "/home/mkg/michael.gogins.studio/music/2022-NYCEMF/", 8080, 0
+gi_webserver webserver_create "/home/mkg/michael.gogins.studio/2022-NYCEMF/", 8080, 0
 endif
 if strcmp(gS_os, "macOS") == 0 then
-gi_webserver webserver_create "/Users/michaelgogins/michael.gogins.studio/music/2022-NYCEMF/", 8080, 0
+gi_webserver webserver_create "/Users/michaelgogins/michael.gogins.studio/music/generalized-iterated-function-systems/", 8080, 0
 endif
 // The following event source has to be created before we actually send it a 
 // score to display.
@@ -1242,8 +818,6 @@ extern "C" int score_generator(CSOUND *csound) {
         evtblk.scnt = 0;
         evtblk.opcod = 'i';
         evtblk.pcnt = 9;
-        // Add 4 to p1 only for SPATIALIZE_GOGINS.
-        //evtblk.p[1] = std::floor(note.getInstrument() + 4);
         evtblk.p[1] = std::floor(note.getInstrument());
         evtblk.p[2] = note.getTime();
         evtblk.p[3] = note.getDuration();
