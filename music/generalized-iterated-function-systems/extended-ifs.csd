@@ -129,13 +129,13 @@ gk_Spatialize_SpeakerRigRadius init 0
 gk_LocalReverbByDistance_ReverbDecay init 0
 gk_LocalReverbByDistance_Wet init 0
 gk_SpatialReverb_ReverbDecay init 0
-gi_instrument_position_rate init 4
-gk_BformatDecoder_MasterLevel init 8
+gi_instrument_position_rate init 0
+gk_BformatDecoder_MasterLevel init 0
 gk_ReverbSC_feedback init 0.82
 gk_ReverbSC_wet init 0.5
 gi_ReverbSC_delay_modulation init 0.0075
 gk_ReverbSC_frequency_cutoff init 15000
-gk_PianoOutPianoteq_level init -11;;-9;;-3;;9
+gk_PianoOutPianoteq_level init 30
 gi_FMWaterBell_attack init 0.002936276551436901
 gi_FMWaterBell_release init 0.022698875468554768
 gi_FMWaterBell_exponent init 0
@@ -145,7 +145,7 @@ gk_FMWaterBell_crossfade init 0.1234039047697504
 gk_FMWaterBell_index init 1.1401499375260309
 gk_FMWaterBell_vibrato_depth init 0.28503171595683335
 gk_FMWaterBell_vibrato_rate init 2.4993821566850647
-gk_FMWaterBell_level init 17.75;;18.5;;17;;26
+gk_FMWaterBell_level init 17.75
 gk_Phaser_ratio1 init 0.48519296511388443
 gk_Phaser_ratio2 init 1.9877260183697845
 gk_Phaser_index1 init 0.9020140862473743
@@ -162,10 +162,10 @@ gk_Droner_partial3 init 0.13777922713190935
 gk_Droner_partial4 init 0.4664927441708788
 gk_Droner_partial5 init 0.15343225175281267
 gk_Droner_level init 14
-gk_Sweeper_bright_min init 0.13509617364800858
-gk_Sweeper_bright_max init 2.1595617611928004
-gk_Sweeper_rate_min init 0.11400799044441698
-gk_Sweeper_rate_max init 2.792207257300548
+gk_Sweeper_bright_min init 0
+gk_Sweeper_bright_max init 0
+gk_Sweeper_rate_min init 0
+gk_Sweeper_rate_max init 0
 gk_Sweeper_level init -2
 gk_Buzzer_harmonics init 4
 gk_Buzzer_level init 0
@@ -177,6 +177,7 @@ gk_Blower_grainFrequencyRange init 62.82406652535464
 gk_Blower_level init -5.959563019729337
 gk_ZakianFlute_level init 12
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 gS_html init {{<!DOCTYPE html>
 <html>
