@@ -213,7 +213,7 @@ struct InvokableCosineGrain : public CxxInvokableBase {
         return result;
     }
     int kontrol(CSOUND *csound_, MYFLT **outputs, MYFLT **inputs) override {
-        if (diagnostics_enabled) std::fprintf(stderr, ">>>>>>> InvokableCosineGrain::kontrol...\\n");
+        ///if (diagnostics_enabled) std::fprintf(stderr, ">>>>>>> InvokableCosineGrain::kontrol...\\n");
         int result = OK;
         int frame_index = 0;
         for( ; frame_index < kperiodOffset(); ++frame_index) {
@@ -384,7 +384,7 @@ S_score_generator_code init {{
 #include <random>
 #include <vector>
 
-void* __dso_handle = (void *)&__dso_handle;
+/// void* __dso_handle = (void *)&__dso_handle;
 
 /**
  * Multiple Copy Reducing Machine for dimensions:
