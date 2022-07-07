@@ -27,7 +27,7 @@ S_grain_code init {{
 
 //void* __dso_handle = (void *)&__dso_handle;
 
-static bool diagnostics_enabled = true;
+static bool diagnostics_enabled = false;
 
 #include "cxx_invokable.hpp"
 #include <cmath>
@@ -259,7 +259,6 @@ struct InvokableCosineGrain : public CxxInvokableBase {
     double temporary;
 };
 
-
 extern "C" {
     
     int grain_main(CSOUND *csound) {
@@ -286,13 +285,11 @@ extern "C" {
 
 }}
 
-;i_result cxx_compile "grain_main", S_grain_code, "g++ -g -Ofast -march=native -std=c++14 -I/home/mkg/clang-opcodes -I/usr/local/include/csound  -I. -stdlib=libstdc++", "/usr/lib/gcc/x86_64-linux-gnu/9/libstdc++.so /usr/lib/gcc/x86_64-linux-gnu/9/libgcc_s.so /usr/local/lib/libstk.so /usr/lib/x86_64-linux-gnu/libm.so /usr/lib/x86_64-linux-gnu/libpthread.so"
 if strcmp(gS_os, "Linux") == 0 then
 i_result cxx_compile "grain_main", S_grain_code, "g++ -v -g -O2 -std=c++17 -shared -fPIC -DUSE_DOUBLE -I. -I/usr/local/include/csound -I/home/mkg/csound/interfaces -I/usr/include/eigen3 -I/home/mkg/csound-extended/CsoundAC -lCsoundAC -lpthread -lm", "libcsound_webserver.so libCsoundAC.so"
 endif
 if strcmp(gS_os, "macOS") == 0 then
-;i_result cxx_compile "grain_main", S_grain_code, "clang++ -v -g -O2 -std=c++17 -shared -fPIC -DUSE_DOUBLE -I. -I/home/mkg/csound/interfaces -I/usr/include/eigen3 -I/System/Volumes/Data/opt/homebrew/include/eigen3 -I/opt/homebrew/Cellar/csound/6.17.0_5/Frameworks/CsoundLib64.framework/Versions/6.0/Headers -I/opt/homebrew/Cellar/boost/1.78.0_1/include -I/home/mkg/csound-extended/CsoundAC -lCsoundAC -lpthread -lm", "/Users/michaelgogins/csound-webserver-opcodes/build/libcsound_webserver.dylib libCsoundAC.dylib"
-i_result cxx_compile "grain_main", S_grain_code, "clang++ -v -g -O2 -std=c++17 -shared -fPIC -DUSE_DOUBLE -I. -I/usr/local/include/csound -I/home/mkg/csound/interfaces -I/usr/include/eigen3 -I/System/Volumes/Data/opt/homebrew/include/eigen3 -I/opt/homebrew/Cellar/csound/6.17.0_5/Frameworks/CsoundLib64.framework/Versions/6.0/Headers -I/opt/homebrew/Cellar/boost/1.78.0_1/include -I/home/mkg/csound-extended/CsoundAC -lCsoundAC -lpthread -lm", "/Users/michaelgogins/csound-webserver-opcodes/build/libcsound_webserver.dylib libCsoundAC.dylib"
+i_result cxx_compile "grain_main", S_grain_code, "clang++ -v -g -O2 -std=c++14 -shared -fPIC -DUSE_DOUBLE -I. -I/System/Volumes/Data/opt/homebrew/include/eigen3 -I/opt/homebrew/Cellar/csound/6.17.0_5/Frameworks/CsoundLib64.framework/Versions/6.0/Headers -I/opt/homebrew/Cellar/boost/1.79.0/include -I/Users/michaelgogins/csound-extended/CsoundAC -lpthread -lm", "libCsoundAC.dylib"
 endif
 
 gk_CosineGrain_level chnexport "gk_CosineGrain_level", 3
@@ -322,16 +319,17 @@ k_gain = ampdb(gk_CosineGrain_level)
 i_center_time_seconds init i_time
 i_duration_seconds init i_duration
 i_frequency_hz init i_frequency
-i_amplitude init i_amplitude
+; i_amplitude init i_amplitude
 i_phase_offset_radians init 0
 i_synchronous_phase init 1
+a_signal init 0
 a_signal cxx_invoke "cosine_grain_factory", 3, i_center_time_seconds, i_duration_seconds, i_frequency_hz, i_amplitude, i_phase_offset_radians, i_synchronous_phase 
 a_signal = a_signal * k_gain
 a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
-; printks "a_signal: %9.4f a_out_left: %9.4f a_out_right: %9.4f\\n", 0, k(a_signal), k(a_out_left), k(a_out_right)
+;printks "a_signal: %9.4f a_out_left: %9.4f a_out_right: %9.4f\\n", 0, k(a_signal), k(a_out_left), k(a_out_right)
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
 gk_JonesParksGrain_level chnexport "gk_JonesParksGrain_level", 3
@@ -371,7 +369,7 @@ a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 ; printks "a_signal: %9.4f a_out_left: %9.4f a_out_right: %9.4f\\n", 0, k(a_signal), k(a_out_left), k(a_out_right)
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
 #include "MasterOutput.inc"
@@ -582,7 +580,7 @@ extern "C" int score_generator(CSOUND *csound) {
                        0,  0,  0,  0,  0,  0,  1; /* H */
     Score score;
     Scaling scaling;
-    multiple_copy_reducing_machine(note, hutchinson, score, 8);
+    multiple_copy_reducing_machine(note, hutchinson, score, 10);
     rescale(scaling, score, 0, true, true,  1.,     0.0);
     rescale(scaling, score, 3, true, true, 24.,    96.0);
     rescale(scaling, score, 4, true, true, 60.,    10.0);
@@ -625,12 +623,11 @@ extern "C" int score_generator(CSOUND *csound) {
 
 }}
 
-;i_result cxx_compile "score_generator", S_score_generator_code, "g++ -g -O2 -std=c++14 -I/home/mkg/clang-opcodes -I/usr/local/include/csound -stdlib=libstdc++", "/usr/lib/gcc/x86_64-linux-gnu/9/libstdc++.so /usr/lib/gcc/x86_64-linux-gnu/9/libgcc_s.so /usr/lib/x86_64-linux-gnu/libm.so /usr/lib/x86_64-linux-gnu/libpthread.so"
 if strcmp(gS_os, "Linux") == 0 then
 i_result cxx_compile "score_generator", S_score_generator_code, "g++ -v -g -O2 -std=c++17 -shared -fPIC -DUSE_DOUBLE -I. -I/usr/local/include/csound -I/home/mkg/csound/interfaces -I/usr/include/eigen3 -I/home/mkg/csound-extended/CsoundAC -lCsoundAC -lpthread -lm", "libcsound_webserver.so libCsoundAC.so"
 endif
 if strcmp(gS_os, "macOS") == 0 then
-i_result cxx_compile "score_generator", S_score_generator_code, "g++ -v -g -O2 -std=c++17 -shared -fPIC -DUSE_DOUBLE -I. -I/usr/local/include/csound -I/home/mkg/csound/interfaces -I/usr/include/eigen3 -I/System/Volumes/Data/opt/homebrew/include/eigen3 -I/opt/homebrew/Cellar/csound/6.17.0_5/Frameworks/CsoundLib64.framework/Versions/6.0/Headers -I/opt/homebrew/Cellar/boost/1.78.0_1/include -I/home/mkg/csound-extended/CsoundAC -lCsoundAC -lpthread -lm", "/Users/michaelgogins/csound-webserver-opcodes/build/libcsound_webserver.dylib libCsoundAC.dylib"
+i_result cxx_compile "score_generator", S_score_generator_code, "g++ -v -g -O2 -std=c++17 -shared -fPIC -DUSE_DOUBLE -I. -I/usr/include/eigen3 -I/System/Volumes/Data/opt/homebrew/include/eigen3 -I/opt/homebrew/Cellar/csound/6.17.0_5/Frameworks/CsoundLib64.framework/Versions/6.0/Headers -I/opt/homebrew/Cellar/boost/1.79.0/include -I/home/mkg/csound-extended/CsoundAC -lCsoundAC -lpthread -lm", "libCsoundAC.dylib"
 endif
 
 instr Exit
