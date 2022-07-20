@@ -7,7 +7,7 @@
 sr = 48000
 ksmps = 128
 nchnls = 2
-0dbfs = 20
+0dbfs = 200
 
 gS_os, gS_macros cxx_os
 prints "Operating system: %s\n", gS_os
@@ -213,7 +213,7 @@ struct InvokableCosineGrain : public CxxInvokableBase {
         return result;
     }
     int kontrol(CSOUND *csound_, MYFLT **outputs, MYFLT **inputs) override {
-        ///if (diagnostics_enabled) std::fprintf(stderr, ">>>>>>> InvokableCosineGrain::kontrol...\\n");
+        if (diagnostics_enabled) std::fprintf(stderr, ">>>>>>> InvokableCosineGrain::kontrol...\\n");
         int result = OK;
         int frame_index = 0;
         for( ; frame_index < kperiodOffset(); ++frame_index) {
@@ -376,6 +376,7 @@ endin
 
 S_score_generator_code init {{
 
+#include <Silence.hpp>
 #include <Eigen/Dense>
 #include <csdl.h>
 #include <iostream>
@@ -384,7 +385,7 @@ S_score_generator_code init {{
 #include <random>
 #include <vector>
 
-/// void* __dso_handle = (void *)&__dso_handle;
+void* __dso_handle = (void *)&__dso_handle;
 
 /**
  * Multiple Copy Reducing Machine for dimensions:
@@ -431,6 +432,45 @@ void multiple_copy_reducing_machine(const Note &note, const std::vector<Transfor
         }
         multiple_copy_reducing_machine(new_note, hutchinson, score, depth);
     }
+}
+
+/**
+ * An extended iterated function system consists of a set of 
+ * functions; the action of the set is contractive. Each 
+ * function is implemented with the following signature, and 
+ * can be defined as a free function or as a closure. The 
+ * function returns true if its application should be 
+ * recursively iterated, or false if no further applications 
+ * should be made. The prior_pen is the point of the set 
+ * computed in the previous application. The function may 
+ * compute a new point, pen, by any means. The function may
+ * cease application either on reaching a depth of 0, or it 
+ * may cease application when the distance between the pen
+ * and the prior_pen is less than some minimum. The new pen
+ * may be inserted into score at any time, but usually this 
+ * is done when application has ceased.
+ *
+ * The implementation attempts to abstract from the definition 
+ * of an iterated function system everything except its fixed point 
+ * under recursive application.
+ */
+
+typedef std::function<bool(const csound::Event &prior_pen, const csound::Event &pen, int depth, csound::Score &score)> Contraction;
+
+typedef std::vector<Contraction> Contractions;
+
+void extended_ifs(bool &continuing, Contractions &contractions, const csound::Event &prior_pen, const csound::Event &pen, int depth, csound::Score &score) {
+    if (continuing == false) {
+        return;
+    }
+    continuing = false;
+    for (auto &contraction : contractions) {
+        auto continuing_ = contraction(prior_pen, pen, depth, score);
+        if (continuing_ == true) {
+            continuing = true;
+        }
+    }
+    
 }
 
 void print_note(const Note &note) {
@@ -546,11 +586,12 @@ extern "C" int score_generator(CSOUND *csound) {
     std::cerr << "initial note: " << std::endl << note << std::endl;
     std::vector<Transformation> hutchinson;
     hutchinson.resize(4);
+    if (false) {
     /*                 i   t   d   k   v   p   T       */
     hutchinson[0] <<  .5,  0,  0,  0,  0,  0,  0, /* i */
-                       0, .25,  0,  0,  0,  0,  0, /* t */
+                       0, .5,  0,  0,  0,  0,  0, /* t */
                        0,  0, .5,  0,  0,  0,  0, /* d */
-                       0,  0,  0, .25,  0,  0,  0, /* k */
+                       0,  0,  0, .5,  0,  0,  0, /* k */
                        0,  0,  0,  0, .5,  0,  0, /* v */
                        0,  0,  0,  0,  0, .5,  0, /* p */
                        0,  0,  0,  0,  0,  0,  1; /* H */
@@ -566,21 +607,55 @@ extern "C" int score_generator(CSOUND *csound) {
     hutchinson[2] <<  .5,  0,  0,  0,  0,  0,  0, /* i */
                        0, .5,  0,  0,  0,  0,  0, /* t */
                        0,  0, .5,  0,  0,  0,  0, /* d */
-                       0,  0,  0, .5,  0,  0,  1.1, /* k */
+                       0,  0,  0, .5,  0,  0,  1, /* k */
                        0,  0,  0,  0, .5,  0,  0, /* v */
                        0,  0,  0,  0,  0, .5,  0, /* p */
                        0,  0,  0,  0,  0,  0,  1; /* H */
     /*                 i   t   d   k   v   p   T       */
     hutchinson[3] <<  .5,  0,  0,  0,  0,  0,  0, /* i */
-                       0, .5,  0,  0,  0,  0,  1.1, /* t */
+                       0, .5,  0,  0,  0,  0,  1, /* t */
                        0,  0, .5,  0,  0,  0,  0, /* d */
                        0,  0,  0, .5,  0,  0,  1, /* k */
                        0,  0,  0,  0, .5,  0,  0, /* v */
                        0,  0,  0,  0,  0, .5,  0, /* p */
                        0,  0,  0,  0,  0,  0,  1; /* H */
+    }
+    /*                 i   t   d   k   v   p   T          */
+    hutchinson[0] <<  .5,  0,  0,  0,  0,  0,  0,    /* i */
+                       0, .5,  0,  0,  0,  0,  0,    /* t */
+                       0,  0, .425,0,  0,  0, .05,   /* d */
+                       0,-.013,0, .5,  0,  0,  0,    /* k */
+                       0,  0,  0,  0, .4,  0,  0,    /* v */
+                       0,  0,  0,  0,  0, .5,  0,    /* p */
+                       0,  0,  0,  0,  0,  0,  1;    /* H */
+    /*                 i   t   d   k   v   p   T          */
+    hutchinson[1] <<  .5,  0,  0,  0,  0,  0,  1,    /* i */
+                       0, .5,  0,  0,  0,  0,  1,    /* t */
+                       0,  0, .5,  0,  0,  0,  0,    /* d */
+                       0,  0,  0,-.5, -1,  0,  0,    /* k */
+                       0,  0,  0,  0, .5,  0,  0,    /* v */
+                       0,  0,  0,  0,  0, .5,  0,    /* p */
+                       0,  0,  0,  0,  0,  0,  1;    /* H */
+    /*                 i   t   d   k   v   p   T          */
+    hutchinson[2] <<  .5,  0,  0,  0,  0,  0,  1,    /* i */
+                       0, .5,  0,  0,  0,  0,  0,    /* t */
+                       0,  0, .525,0,  0,  0,  0,    /* d */
+                       0,  0,  0, .5,  0,  0,  1.05, /* k */
+                       0,  0,  0,  0, .45, 0,  0,    /* v */
+                       0,  0,  0,  0,  0, .5,  0,    /* p */
+                       0,  0,  0,  0,  0,  0,  1;    /* H */
+    /*                 i   t   d   k   v   p   T          */
+    hutchinson[3] <<  .5,  0,  0,  0,  0,  0,  0,    /* i */
+                       0, .5,  0,  0,  0,  0,  1.05, /* t */
+                       0,  0, .51, 0,  0,  0,  0,    /* d */
+                       0, -1,  0, .512,0,  0,  1,    /* k */
+                       0,  0,  0,  0, .45, 0,  0,    /* v */
+                       0,  0,  0,  0,  0, .5,  0,    /* p */
+                       0,  0,  0,  0,  0,  0,  1;    /* H */
+                       
     Score score;
     Scaling scaling;
-    multiple_copy_reducing_machine(note, hutchinson, score, 10);
+    multiple_copy_reducing_machine(note, hutchinson, score, 8);
     rescale(scaling, score, 0, true, true,  1.,     0.0);
     rescale(scaling, score, 3, true, true, 24.,    96.0);
     rescale(scaling, score, 4, true, true, 60.,    10.0);
@@ -627,7 +702,7 @@ if strcmp(gS_os, "Linux") == 0 then
 i_result cxx_compile "score_generator", S_score_generator_code, "g++ -v -g -O2 -std=c++17 -shared -fPIC -DUSE_DOUBLE -I. -I/usr/local/include/csound -I/home/mkg/csound/interfaces -I/usr/include/eigen3 -I/home/mkg/csound-extended/CsoundAC -lCsoundAC -lpthread -lm", "libcsound_webserver.so libCsoundAC.so"
 endif
 if strcmp(gS_os, "macOS") == 0 then
-i_result cxx_compile "score_generator", S_score_generator_code, "g++ -v -g -O2 -std=c++17 -shared -fPIC -DUSE_DOUBLE -I. -I/usr/include/eigen3 -I/System/Volumes/Data/opt/homebrew/include/eigen3 -I/opt/homebrew/Cellar/csound/6.17.0_5/Frameworks/CsoundLib64.framework/Versions/6.0/Headers -I/opt/homebrew/Cellar/boost/1.79.0/include -I/home/mkg/csound-extended/CsoundAC -lCsoundAC -lpthread -lm", "libCsoundAC.dylib"
+i_result cxx_compile "score_generator", S_score_generator_code, "g++ -v -g -O2 -std=c++17 -shared -fPIC -DUSE_DOUBLE -I. -I/usr/include/eigen3 -I/System/Volumes/Data/opt/homebrew/include/eigen3 -I/opt/homebrew/Cellar/csound/6.17.0_5/Frameworks/CsoundLib64.framework/Versions/6.0/Headers -I/opt/homebrew/Cellar/boost/1.79.0/include -I/opt/homebrew/Cellar/opencv/4.5.5_2/include/opencv4 -I/opt/local/include -I/Users/michaelgogins/csound-extended/CsoundAC -lCsoundAC -lpthread -lm", "libCsoundAC.dylib"
 endif
 
 instr Exit
