@@ -5,7 +5,7 @@ Copyright (C) 2014 by Michael Gogins.
 All rights reserved.
 </CsLicense>
 <CsOptions>
--RWdfo Drone-VIII-e.wav -m195 -+msg_color=0 --midi-key=4 --midi-velocity=5 -+id_artist=Michael_Gogins -+id_copyright=Copr_2014_Michael_Gogins -+id_title=Drone-VIII-e 
+-RWdfo dac -m195 -+msg_color=0 --midi-key=4 --midi-velocity=5 -+id_artist=Michael_Gogins -+id_copyright=Copr_2014_Michael_Gogins -+id_title=Drone-VIII-e 
 </CsOptions>
 <CsInstruments>
 

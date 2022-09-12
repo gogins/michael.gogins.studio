@@ -22,7 +22,7 @@ import os
 import random
 # Using the same random seed for each performance makes the performance 
 # deterministic, not random.
-random.seed(221)
+random.seed(88990)
 import signal
 import string
 import sys
@@ -41,11 +41,11 @@ title, exte = os.path.splitext(os.path.basename(script_filename))
 model.setTitle(title)
 model.setArtist("Michael Gogins")
 model.setAuthor("Michael Gogins")
-model.setYear("2020")
+model.setYear("2022")
 model.generateAllNames()
 soundfile_name = model.getOutputSoundfileFilepath()
 print('Soundfile name:         %s' % soundfile_name)
-dac_name = 'dac:plughw:1,0'
+dac_name = 'dac'
 print('Audio output name:      %s' % dac_name)
 print
 
@@ -94,7 +94,7 @@ def reverse_enumeration(L):
 rows_to_play = 5
 columns_to_play = 12
 measures_to_play = rows_to_play * columns_to_play
-minimum_repetitions_per_measure = 1
+minimum_repetitions_per_measure = 2
 maximum_repetitions_per_measure = 8 
 repetitions_for_measures = []
 for i in range(measures_to_play):
@@ -113,11 +113,12 @@ def read_measure(number):
     #print("Loaded '%s':\n%s" % (filename, score_for_measure.toString()))
     return score_node
 
-tempo = 5./3.
+tempo = 4./3.
+tempo = 5./2.
 
-scale = CsoundAC.Scale("D major")
+scale = CsoundAC.Scale("C# major")
 chord = scale.chord(1, 4)
-initial_bass = 32
+initial_bass = 37
 forte_measures = random.choices([1,0], [2/6, 4/6], k=measures_to_play)
 
 def build_voice(voiceleading_node, sequence, instrument, bass, time_offset, pan):
@@ -140,7 +141,7 @@ def build_voice(voiceleading_node, sequence, instrument, bass, time_offset, pan)
     cumulative_time = real_time + time_offset
     # Make both pitch range and dynamic range get bigger through time.
     bass = bass
-    bass_at_end = bass - 5
+    bass_at_end = bass - 7
     bass_increment_per_bar = (bass_at_end - bass) / bars_total
     range_ = 48.
     range_at_end = 52.
@@ -221,7 +222,7 @@ instruments_used = 0
 total_instruments = 6
 # Stagger starting times for each voice to create a canon at the very 
 # beginning.
-time_offset = (tempo * total_instruments) / 4.0
+time_offset = (tempo * total_instruments) / 12.
 # Make it possible to experimentally shrink or enlarge the arrangement.
 # 1 PianoNotePianoteq.
 instruments_used = instruments_used + 1
@@ -231,10 +232,10 @@ instruments_used = instruments_used + 1
 build_voice(voiceleading_node, sequence, 2, initial_bass + 0, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)))
 # 3 FMWaterBell.
 instruments_used = instruments_used + 1
-build_voice(voiceleading_node, sequence, 3, initial_bass + 0, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)))
+build_voice(voiceleading_node, sequence, 3, initial_bass + 1, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)))
 # 4 Harpsichord.
 instruments_used = instruments_used + 1
-build_voice(voiceleading_node, sequence, 4, initial_bass + 0, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)))
+build_voice(voiceleading_node, sequence, 4, initial_bass - 1, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)))
 # 5 ChebyshevMelody.
 instruments_used = instruments_used + 1
 build_voice(voiceleading_node, sequence, 5, initial_bass + 0, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)))
@@ -243,7 +244,7 @@ instruments_used = instruments_used + 1
 build_voice(voiceleading_node, sequence, 6, initial_bass + 4, time_offset * (instruments_used - 1), (instruments_used / (total_instruments + 1)))
 
 # No #includes are used here, all Csound instruments are defined in this very file.
-# The only non-standard external dependencies are the vst4cs opcodes, and the 
+# The only non-standard external dependencies are the csound-vst3-opcodes, and the 
 # Pianoteq physically modeled piano VST instrument plugin. These could easily be 
 # replaced with a Fluidsynth sampled piano soundfont.
 
@@ -256,9 +257,10 @@ nchnls = 2
 ; Ensure the same random stream for each rendering.
 ; rand, randh, randi, rnd(x) and birnd(x) are not affected by seed.
 
-seed 38493
+seed 3849388
 
-gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", 0
+gi_Pianoteq vst3init "/Library/Audio/Plug-Ins/VST3/Pianoteq 7.vst3", "Pianoteq 7", 1
+vst3info gi_Pianoteq
 
 alwayson "PianoOutPianoteq"
 alwayson "ReverbSC"
@@ -280,7 +282,9 @@ connect "PianoOutPianoteq", "outright", "ReverbSC", "inright"
 connect "ReverbSC", "outleft", "MasterOutput", "inleft"
 connect "ReverbSC", "outright", "MasterOutput", "inright"
 
-gk_PianoNotePianoteq_midi_dynamic_range init 127
+gk_PianoNotePianoteq_midi_dynamic_range chnexport "gk_PianoNotePianoteq_midi_dynamic_range", 3 ;  20
+gk_PianoNotePianoteq_midi_dynamic_range init 20
+
 instr PianoNotePianoteq
 i_instrument = p1
 i_time = p2
@@ -299,10 +303,8 @@ i_midi_key = p4
 i_midi_velocity = p5
 i_homogeneity = p11
 instances active p1
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
-i_pitch_correction = 44100 / sr
-; prints "Pitch factor:   %9.4f\\n", i_pitch_correction
-vstnote gi_Pianoteq, 0, i_midi_key, i_midi_velocity, i_duration
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+i_result vst3note gi_Pianoteq, 0, i_midi_key, i_midi_velocity, i_duration
 endin
 
 gk_ZakianFlute_midi_dynamic_range init 80
@@ -536,7 +538,7 @@ a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
 //////////////////////////////////////////////
@@ -585,7 +587,7 @@ a_signal = a_signal * i_amplitude * a_envelope * k_gain
 a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 ; printks "FMWaterBell    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d l%9.4f r%9.4f\\n", 1, p1, p2, p3, p4, p5, p7, active(p1), dbamp(rms(a_out_left)), dbamp(rms(a_out_right))
 endin
 
@@ -637,7 +639,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 ;printks "Harpsichord      %9.4f   %9.4f\\n", 0.5, a_out_left, a_out_right
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
 gk_ChebyshevMelody_level init 0
@@ -724,7 +726,7 @@ a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 printks "ChebyshevMelody i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d l%9.4f r%9.4f\\n", .1, p1, p2, p3, p4, p5, p7, active(p1), dbamp(rms(a_out_left)), dbamp(rms(a_out_right))
 endin
 
@@ -779,28 +781,24 @@ a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
+gk_PianoOutPianoteq_level chnexport "gk_PianoOutPianoteq_level", 3 ;  0
+gk_PianoOutPianoteq_front_to_back chnexport "gk_PianoOutPianoteq_front_to_back", 3 ;  0
+gk_PianoOutPianoteq_left_to_right chnexport "gk_PianoOutPianoteq_left_to_right", 3 ;  0.5
+gk_PianoOutPianoteq_bottom_to_top chnexport "gk_PianoOutPianoteq_bottom_to_top", 3 ;  0
+
 gk_PianoOutPianoteq_level init 0
-gi_PianoOutPianoteq_print init 1
 gk_PianoOutPianoteq_front_to_back init 0
-gk_PianoOutPianoteq_left_to_right init 1/7
+gk_PianoOutPianoteq_left_to_right init 0.5
 gk_PianoOutPianoteq_bottom_to_top init 0
+
 instr PianoOutPianoteq
-; Should be "D4 Daily Practice".
-vstprogset gi_Pianoteq, 0
-; Sustain off.
-vstparamset gi_Pianoteq, 0, 0
-; Reverb off.
-vstparamset gi_Pianoteq, 72, 0
 k_gain = ampdb(gk_PianoOutPianoteq_level)
-i_overall_amps = 89
+i_overall_amps = 87
 i_normalization = ampdb(-i_overall_amps) * 2
 i_amplitude = ampdb(80) * i_normalization
-if gi_PianoOutPianoteq_print == 1 then
-  vstinfo gi_Pianoteq
-endif
 i_instrument = p1
 i_time = p2
 i_duration = p3
@@ -808,24 +806,20 @@ i_midi_key = p4
 i_midi_velocity = p5
 ainleft init 0
 ainright init 0
-aoutleft, aoutright vstaudio gi_Pianoteq, ainleft, ainright
+aoutleft, aoutright vst3audio gi_Pianoteq
 a_signal = aoutleft + aoutright
 a_signal *= k_gain
 a_signal *= i_amplitude
 a_out_left, a_out_right pan2 a_signal, gk_PianoOutPianoteq_left_to_right
-#ifdef USE_SPATIALIZATION
-a_signal = a_out_left + a_out_right
-a_spatial_reverb_send init 0
-a_bsignal[] init 16
-a_bsignal, a_spatial_reverb_send Spatialize a_signal, gk_PianoOutPianoteq_front_to_back, gk_PianoOutPianoteq_left_to_right, gk_PianoOutPianoteq_bottom_to_top
-outletv "outbformat", a_bsignal
-outleta "out", a_spatial_reverb_send
-#else
-; printks "PianoOutPt     L %9.4f R %9.4f l %9.4f\\n", 0.5, a_out_left, a_out_right, gk_Piano_level
+
+kx = gk_PianoOutPianoteq_front_to_back
+ky = gk_PianoOutPianoteq_left_to_right
+kz = gk_PianoOutPianoteq_bottom_to_top
+
+a_out_left, a_out_right pan2 a_signal, ky
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
-#endif
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
 gk_Reverb_feedback init 0.875
@@ -845,7 +839,7 @@ aleftoutmix = aleftin * gk_Reverb_dry + aleftout * gk_Reverb_wet
 arightoutmix = arightin * gk_Reverb_dry + arightout * gk_Reverb_wet
 outleta "outleft", aleftoutmix
 outleta "outright", arightoutmix
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
 gk_MasterOutput_level init 0
@@ -868,14 +862,14 @@ filename_exists:
 prints sprintf("Output filename: %s\\n", gS_MasterOutput_filename)
 fout gS_MasterOutput_filename, 18, aleft * i_amplitude_adjustment, aright * i_amplitude_adjustment
 filename_endif:
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
 ; It is important for levels to be evenly balanced _on average_! This 
 ; enables instruments to come forward and recede according to their 
 ; response to MIDI velocity.
 
-gk_PianoOutPianoteq_level init  -1 
+gk_PianoOutPianoteq_level init  26 
 gk_ZakianFlute_level init       19
 gk_FMWaterBell_level init       24;16
 gk_ChebyshevMelody_level init   28;19
