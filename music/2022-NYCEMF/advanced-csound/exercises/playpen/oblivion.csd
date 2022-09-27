@@ -4,7 +4,7 @@
 Arranged for Csound by Michael Gogins
 </CsLicense>
 <CsOptions>
--+msg_color=0 -odac:plughw:2,0 -m195 -d
+-+msg_color=0 -odac -m195 -d
 </CsOptions>
 <CsInstruments>
 
