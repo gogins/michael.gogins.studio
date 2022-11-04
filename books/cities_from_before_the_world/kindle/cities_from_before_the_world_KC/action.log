@@ -1,0 +1,58 @@
+[Fri Nov 04 00:14:15 UTC 2022][INFO] [Action] EE NewBook
+[Fri Nov 04 00:14:21 UTC 2022][INFO] [Action] E AutoChapterGroupAction - 0
+[Fri Nov 04 00:15:11 UTC 2022][INFO] [Action] E ItemChanged - -1,1
+[Fri Nov 04 00:15:23 UTC 2022][INFO] [Action] E ConvertGenericPageAction - 9,0
+[Fri Nov 04 00:15:28 UTC 2022][INFO] [Action] E ItemChanged - -1,30
+[Fri Nov 04 00:15:38 UTC 2022][INFO] [Action] E ItemChanged - -1,30
+[Fri Nov 04 00:15:51 UTC 2022][INFO] [Action] E ItemChanged - -1,1
+[Fri Nov 04 00:16:20 UTC 2022][INFO] [Action] U ConvertGenericPageAction
+[Fri Nov 04 00:16:27 UTC 2022][INFO] [Action] U AutoChapterGroupAction
+[Fri Nov 04 00:17:34 UTC 2022][INFO] [Action] E ApplyThemeBook - cosmos_theme
+[Fri Nov 04 00:17:39 UTC 2022][INFO] [Action] E SaveBook - Save
+[Fri Nov 04 00:18:04 UTC 2022][INFO] [Action] E ItemChanged - -1,1
+[Fri Nov 04 00:18:13 UTC 2022][INFO] [Action] E ItemChanged - -1,1
+[Fri Nov 04 00:18:13 UTC 2022][INFO] [Action] E ItemChanged - -1,1
+[Fri Nov 04 00:19:02 UTC 2022][INFO] [Action] E ItemChanged - -1,1
+[Fri Nov 04 00:19:04 UTC 2022][INFO] [Action] E ItemChanged - -1,1
+[Fri Nov 04 00:19:06 UTC 2022][INFO] [Action] E ItemChanged - -1,1
+[Fri Nov 04 00:19:10 UTC 2022][INFO] [Action] E ItemChanged - -1,1
+[Fri Nov 04 00:19:11 UTC 2022][INFO] [Action] EE MovePage - 2,1,00
+[Fri Nov 04 00:19:16 UTC 2022][INFO] [Action] E ItemChanged - -1,604
+[Fri Nov 04 00:19:17 UTC 2022][INFO] [Action] EE MovePage - 0,1,11
+[Fri Nov 04 00:19:43 UTC 2022][INFO] [Action] E ItemChanged - -1,1
+[Fri Nov 04 00:19:44 UTC 2022][INFO] [Action] E ItemChanged - -1,1
+[Fri Nov 04 00:20:08 UTC 2022][INFO] [Action] E ItemChanged - -1,759
+[Fri Nov 04 00:20:16 UTC 2022][INFO] [Action] E ItemChanged - -1,1475
+[Fri Nov 04 00:20:19 UTC 2022][INFO] [Action] E ItemChanged - -1,1
+[Fri Nov 04 00:20:31 UTC 2022][INFO] [Action] E PreviewBook - 1
+[Fri Nov 04 00:20:59 UTC 2022][INFO] [Action] E ItemChanged - -1,1
+[Fri Nov 04 00:21:15 UTC 2022][INFO] [Action] E ItemChanged - -1,1
+[Fri Nov 04 00:21:15 UTC 2022][INFO] [Action] E ItemChanged - -1,1
+[Fri Nov 04 00:22:43 UTC 2022][INFO] [Action] E FixedFormAction - MCwwLFBST1AtTElTVDp7ImNvbXBvbmVudHMiOlt7Im5hbWUiOiJib29rX3RpdGxlIiwidHlwZSI6InRleHQiLCJ2YWx1ZSI6IkNpdGllcyBmcm9tIEJlZm9yZSB0aGUgV29ybGQifSx7Im5hbWUiOiJib29rX3N1YnRpdGxlIiwidHlwZSI6InRleHQiLCJ2YWx1ZSI6IlBvZW1zLCBTdG9yaWVzLCBFc3NheXMifSx7Im5hbWUiOiJhdXRob3JfbmFtZSIsInR5cGUiOiJ0ZXh0IiwidmFsdWUiOiJNaWNoYWVsIEdvZ2lucyJ9LHsibmFtZSI6InB1Ymxpc2hlciIsInR5cGUiOiJ0ZXh0IiwidmFsdWUiOiJJcnJlZHVjaWJsZSBQcm9kdWN0aW9ucyJ9LHsibmFtZSI6InB1Ymxpc2hlcl9sb2dvIiwidHlwZSI6ImltYWdlIiwidmFsdWUiOiIifV0sInBhZ2VfdHlwZSI6InRpdGxlX3BhZ2UifQo=
+[Fri Nov 04 00:22:58 UTC 2022][INFO] [Action] E ItemChanged - -1,89
+[Fri Nov 04 00:22:59 UTC 2022][INFO] [Action] E ItemChanged - -1,89
+[Fri Nov 04 00:23:01 UTC 2022][INFO] [Action] E DeleteContent - (r,89,152),B
+[Fri Nov 04 00:24:31 UTC 2022][INFO] [Action] E FixedFormAction - MCwxLFBST1AtTElTVDp7ImNvbXBvbmVudHMiOlt7Im5hbWUiOiJjb3B5cmlnaHRfb3duZXIiLCJ0eXBlIjoidGV4dCIsInZhbHVlIjoiTWljaGFlbCBHb2dpbnMifSx7Im5hbWUiOiJjb3B5cmlnaHRfeWVhciIsInR5cGUiOiJ0ZXh0IiwidmFsdWUiOiIyMDIyIn0seyJuYW1lIjoiY29weXJpZ2h0X3RleHQiLCJ0eXBlIjoidGV4dCIsInZhbHVlIjoiQWxsIHJpZ2h0cyByZXNlcnZlZFxuXG5UaGUgY2hhcmFjdGVycyBhbmQgZXZlbnRzIHBvcnRyYXllZCBpbiB0aGlzIGJvb2sgYXJlIGZpY3RpdGlvdXMuIEFueSBzaW1pbGFyaXR5IHRvIHJlYWwgcGVyc29ucywgbGl2aW5nIG9yIGRlYWQsIGlzIGNvaW5jaWRlbnRhbCBhbmQgbm90IGludGVuZGVkIGJ5IHRoZSBhdXRob3IuXG5cblRoaXMgYm9vayBhbmQgYWxsIGNvbnRlbnQgaGVyZWluIGlzIGNvcHlyaWdodCAyMDIyIGJ5IE1pY2hhZWwgR29naW5zLCBhbGwgcmlnaHRzIHJlc2VydmVkLiBUaGUgY29udGVudHMgb2YgdGhpcyBib29rIGFyZSBsaWNlbnNlZCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIENyZWF0aXZlIENvbW1vbnMgQXR0cmlidXRpb24tTm9uQ29tbWVyY2lhbC1Ob0Rlcml2YXRpdmVzIDQuMCBJbnRlcm5hdGlvbmFsIGxpY2Vuc2UuIFxuXG5JbiBzaG9ydCwgeW91IG1heSB1c2UsIHByaW50LCBhbmQgY29weSB0aGlzIGJvb2sgb3IgYW55IG9mIGl0cyBjb250ZW50cyBmb3IgeW91ciBvd24gcGVyc29uYWwgdXNlLCBidXQgeW91IG1heSBub3QgdXNlIHRoaXMgYm9vayBvciBhbnkgb2YgaXRzIGNvbnRlbnRzIGFzIHBhcnQgb2YgeW91ciBvd24gcHJvamVjdHMsIG9yIGZvciBjb21tZXJjaWFsIHB1cnBvc2VzLlxuXG5JZiB5b3Ugd2lzaCB0byB1c2UgdGhpcyBib29rIG9yIGFueSBvZiBpdHMgY29udGVudHMgZm9yIHlvdXIgb3duIHByb2plY3RzLCBvciBmb3IgY29tbWVyY2lhbCBwdXJwb3NlcywgZm9yIGV4YW1wbGUgdG8gcmUtcHVibGlzaCwgcGxlYXNlIGNvbnRhY3QgbWUgZGlyZWN0bHkuIn1dLCJwYWdlX3R5cGUiOiJjb3B5cmlnaHQifQo=
+[Fri Nov 04 00:24:39 UTC 2022][INFO] [Action] E ItemChanged - -1,911
+[Fri Nov 04 00:24:45 UTC 2022][INFO] [Action] E DeleteContent - (r,911,1512),B
+[Fri Nov 04 00:25:46 UTC 2022][INFO] [Action] E FixedFormAction - MCwyLFBST1AtTElTVDp7ImNvbXBvbmVudHMiOlt7Im5hbWUiOiJkZWRpY2F0aW9uX3RleHQiLCJ0eXBlIjoidGV4dCIsInZhbHVlIjoiVGhpcyBib29rIGlzIGRlZGljYXRlZCB0byB0aGUgQmV5b25kIEJhcm9xdWUgRm91bmRhdGlvbiwgVmVuaWNlLCBDYWxpZm9ybmlhLlxuXG5BbmQgdG8gRGViLiJ9XSwicGFnZV90eXBlIjoiZGVkaWNhdGlvbiJ9Cg==
+[Fri Nov 04 00:25:51 UTC 2022][INFO] [Action] E ItemChanged - -1,1001
+[Fri Nov 04 00:25:51 UTC 2022][INFO] [Action] E ItemChanged - -1,1001
+[Fri Nov 04 00:25:53 UTC 2022][INFO] [Action] E DeleteContent - (r,1001,1089),B
+[Fri Nov 04 00:26:42 UTC 2022][INFO] [Action] E ItemChanged - -1,1001
+[Fri Nov 04 00:26:51 UTC 2022][INFO] [Action] E ConvertGenericPageAction - 9,3
+[Fri Nov 04 00:27:04 UTC 2022][INFO] [Action] E SaveBook - Save
+[Fri Nov 04 00:27:10 UTC 2022][INFO] [Action] E PreviewBook - 1001
+[Fri Nov 04 00:28:21 UTC 2022][INFO] [Action] E ItemChanged - -1,16071
+[Fri Nov 04 00:28:33 UTC 2022][INFO] [Action] E PreviewBook - 16071
+[Fri Nov 04 00:29:09 UTC 2022][INFO] [Action] E ItemChanged - -1,1717
+[Fri Nov 04 00:29:35 UTC 2022][INFO] [Action] E SaveBook - Save
+[Fri Nov 04 00:30:03 UTC 2022][INFO] [Action] EE ClearFormatting - (r,1717,1727)
+[Fri Nov 04 00:30:13 UTC 2022][INFO] [Action] U ClearFormatting
+[Fri Nov 04 00:30:51 UTC 2022][INFO] [Action] E ItemChanged - -1,1001
+[Fri Nov 04 00:31:18 UTC 2022][INFO] [Action] E UpdateStyle - (r,1001,1017),11:Bookerly,serif:4,(r,1001,1017),F
+[Fri Nov 04 00:31:34 UTC 2022][INFO] [Action] U UpdateStyle
+[Fri Nov 04 00:31:38 UTC 2022][INFO] [Action] E SaveBook - Save
+[Fri Nov 04 00:31:51 UTC 2022][INFO] [Action] E PreviewBook - 9263
+[Fri Nov 04 00:32:18 UTC 2022][INFO] [Action] E SaveBook - Save
+[Fri Nov 04 00:32:26 UTC 2022][INFO] [Action] E SaveBook - SaveforExport

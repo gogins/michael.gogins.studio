@@ -1,0 +1,26 @@
+{
+   "book_state" : {
+      "book_input_type" : 3,
+      "book_reading_direction" : 0,
+      "book_target_type" : 2
+   },
+   "content_hash" : null,
+   "metadata" : {
+      "book_path" : "resources",
+      "edited_tool_versions" : [ "1.71.0.0" ],
+      "format" : "yj",
+      "global_styling" : true,
+      "id" : "0a96a3f6-17d6-4be1-9ab9-964fac0c56e4",
+      "platform" : "mac",
+      "tool_name" : "KC",
+      "tool_version" : "1.71.0.0"
+   },
+   "tool_data" : {
+      "cache_path" : "resources/.cache",
+      "created_on" : "2022-Nov-03 20:14:00",
+      "last_modified_time" : "2022-Nov-03 20:32:30",
+      "link_extract_choice" : false,
+      "link_notification_preference" : true
+   }
+}
+
