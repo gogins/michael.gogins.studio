@@ -56,3 +56,6 @@
 [Fri Nov 04 00:31:51 UTC 2022][INFO] [Action] E PreviewBook - 9263
 [Fri Nov 04 00:32:18 UTC 2022][INFO] [Action] E SaveBook - Save
 [Fri Nov 04 00:32:26 UTC 2022][INFO] [Action] E SaveBook - SaveforExport
+[Fri Nov 04 14:52:08 UTC 2022][INFO] [Action] EE ExportAction
+[Fri Nov 04 14:52:13 UTC 2022][INFO] [Action] E SaveBook - Save
+[Fri Nov 04 14:52:13 UTC 2022][INFO] Logger Terminated

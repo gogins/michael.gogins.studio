@@ -1,0 +1,83 @@
+\documentclass[11pt,chapterprefix=true,pagesize=letter]{scrbook}
+\usepackage{scrlayer-scrpage}
+%% http://mirror.las.iastate.edu/tex-archive/macros/latex/contrib/subfiles/subfiles.pdf
+%% \usepackage{subfiles}
+%% http://mirror.las.iastate.edu/tex-archive/macros/latex/contrib/childdoc/childdoc.pdf
+\usepackage{caption}
+\usepackage{etoolbox}
+\usepackage[final]{grffile}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{calc}
+\graphicspath{{/home/mkg/Dropbox/images/}}
+\clearscrheadfoot
+\ohead{\pagemark}
+\ihead{\headmark}
+\cfoot[\pagemark]{}
+\pagestyle{scrheadings}
+\usepackage{lipsum}
+\makeatletter
+\newcommand{\shellcommand}[1]{\@@input"|#1"}
+\makeatother
+
+\newcommand{\photopage } { 
+	\catcode`_=12 \dophotopage 
+}
+
+\newcommand{\dophotopage}[3][landscape] {
+	\KOMAoptions{pagesize, paper=#1}
+	\clearpage
+	\recalctypearea
+	\newpage
+	\noindent #3
+	\lstinputlisting{|"exiftool -@ tags '/home/mkg/Dropbox/images/#2'"} 
+	\newpage
+	\begin{figure}
+			\includegraphics[width=\linewidth,height=\textheight,keepaspectratio]{#2}	
+			\captionlistentry[figure]{\protect\detokenize{#2} }
+	\end{figure} 
+}
+
+\begin{document}
+\frontmatter
+\title{Selected Photographs}
+\author{Michael Gogins \\ \texttt{michael.gogins@gmail.com}}
+\subtitle{Volume I}
+\dedication{This book is for Mick.}
+\newpage
+\noindent This book is copyright 2019 by Michael Gogins, all rights reserved. The contents of this book are licensed under the terms of the Creative Commons \href{https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode}{\textbf{Attribution-NonCommercial-NoDerivatives 4.0 International} } license. In short, you may use, print, and copy this book or any of its contents for your own personal use, but you may not use this book or any of its contents as part of your own projects, or for commercial purposes.
+
+If you wish to use this book or any of its contents for your own projects, or for commercial purposes, for example to re-publish or to exhibit in a gallery, please contact me directly.
+\maketitle
+
+\tableofcontents
+\listoffigures
+
+\mainmatter
+\lstset{language=c++,basicstyle=\ttfamily\scriptsize,commentstyle=\ttfamily\tiny,tabsize=2,breaklines,fontadjust=true,keepspaces=false,showstringspaces=false,moredelim=[is][\textbf]{\\emph\{}{\}}}
+
+\chapter{Introduction}
+
+This book contains my selection of 500 pictures from a lifetime of taking photographs. I have never been a professional, but I was and still am committed to the art of photography. These pictures were variously taken with 35mm film cameras, a variety of digital cameras, and smartphones. They were taken in ny native state of Utah, the state of Washington, California, New York, other states, and various countries around the world. 
+
+I am a ``street photographer`` open to abstraction. I shoot what catches my eye and I prize beauty. When I take pictures of people, I often prefer they don't notice. My reason for doing photography is to see more clearly what God has created.
+
+I have tended to use the sharpest possible camera that is small enough to carry with me at all times. For some years now I have been using the Sony RX100 series. Increasingly, however, I am finding that my smartphone is a real camera.
+
+As the file size of this book would become unmanageable thanks to the use of uncompressed images, it has been split into a number of volumes.
+
+If I take more pictures that I think are good enough to be in this book, I will add them, and remove as many that are not quite good enough, to keep the total at 500 pictures.
+
+\chapter{Photographs}
+
+These images are all in natural color. They are all shot as far as possible without image manipulation; in a few cases, I have leveled horizons or removed spots. I shoot in JPEG rather than RAW. Selected metadata from the photographs is printed. If the photograph is a digital scan of a 35 mm slide, the creation date is the date of that scan. After the first bit, images do \emph{not} appear in the order taken. The order is more or less random. Captions are sporadic and cryptic, to say the least.
+
+I invite the reader to copy pictures out of this book for printing and viewing, but not for commercial use or re-publication. Pictures copied out of this book will be in the full resolution with which they were taken.
+
+\include {Gogins-Photographs-Volume-I}
+
+\include {Volume-II}
+
+\end{document}
