@@ -36,6 +36,7 @@ output_filename1 = "Gogins-Photographs-Content-Ia.tex"
 # per pdf.
 
 page_template = '''
+%% photos_processed: {photos_processed}
 \clearpage
 \section{{\protect\detokenize{{{basename}}}}}
 \\noindent {text}
@@ -267,7 +268,7 @@ renamed/[2014-09-19_09-39-20][DSC05542][SONY][DSC-RX100][07635e033555b70daf28671
 renamed/[2014-09-25_12-52-14][DSC05821][SONY][DSC-RX100][153fa880ed2e5310df21060cdd5fa683].1.jpg|Harbor, Naples, from ferry to Sicily.
 renamed/[2014-09-29_14-49-59][DSC05982][SONY][DSC-RX100][17d604fefb0d4dd500632bc01334e7af].1.jpg|Piazza del Duomo, Syracuse, Sicily.
 renamed/[2014-10-04_09-56-41][DSC06265][SONY][DSC-RX100][b8352396242c7ed023425812ef812b94].1.jpg|Merry-go-round, park, Rome.
-renamed/[2014-10-04_16-28-45][DSC06320][SONY][DSC-RX100][fcbbee70429861d27230bd94d0f830a2].1_v1.jpg|The study of our hosts at the Bed & Breakfast Arco del Lauro, Rome, Italy.
+renamed/[2014-10-04_16-28-45][DSC06320][SONY][DSC-RX100][fcbbee70429861d27230bd94d0f830a2].1_v1.jpg|The study of our hosts at the Bed and Breakfast Arco del Lauro, Rome, Italy.
 renamed/[2015-03-08_17-28-50][DSC06763][SONY][DSC-RX100][46fc7496604e86e85ed28d2fe4f9e64a].1.jpg|Merry-go-round, Brooklyn.
 renamed/[2015-04-17_13-40-13][DSC06923][SONY][DSC-RX100][d43eceacdecc22ff832a89b6a324d594].1.jpg|Manhattan.
 renamed/[2015-04-29_19-39-45][DSC07000][SONY][DSC-RX100][1444fbe85ed97c111e7a532ca1439139].1.jpg|Back of townhouse, Promenade, Brooklyn Heights, New York City.
@@ -516,6 +517,7 @@ def bounding_box(pathname):
 def process(manifest, output_filename_):
     output = open(output_filename_, 'w')
     photos = manifest.split("\n")
+    photos_processed = 0
     for photo in photos:
         print("Processing photo: ", photo);
         try:
@@ -539,7 +541,8 @@ def process(manifest, output_filename_):
                 print("command: ", command)
                 os.system(command)
                 print("\tUpdated...")
-                pass
+                # Uncomment the next line to sync all files in manifest that are not yet local.
+                continue
             except:
                 traceback.print_exc()
         with open(pathname, 'rb') as image:
@@ -567,7 +570,8 @@ def process(manifest, output_filename_):
                 except:
                     pass
             metadata_text = "\n".join(metadata)
-            page_text = page_template.format(basename=basename, text=caption, bb=bb, metadata=metadata_text)
+            photos_processed = photos_processed + 1
+            page_text = page_template.format(basename=basename, text=caption, bb=bb, metadata=metadata_text, photos_processed=photos_processed)
             print(page_text)
             output.write(page_text)
     
