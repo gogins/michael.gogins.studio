@@ -1,14 +1,15 @@
 '''
 PHOTOS TO LATEX
-Copyright (C) 2020 by Michael Gogins
+Copyright (C) 2022 by Michael Gogins
 
 Given a manifest of photographs with optional captions, extracts metadata and 
-builds a LaTeX file to publish the photographs. This file is inteded to be 
+builds a LaTeX file to publish the photographs. This file is intended to be 
 included in a complete LaTeX book.
 
 The manifest format is simple:
 relative pathname to image, followed by optional pipe symbol and caption text.
 '''
+import dropbox
 import exif
 from exif import Image
 import io
@@ -18,10 +19,12 @@ import string
 import subprocess
 import sys
 import traceback
+import unicodedata
 
-image_root = "/home/mkg/Dropbox/images/"
+#~ 1
+image_root = "/Users/michaelgogins/Dropbox/images/"
 
-output_filename1 = "/home/mkg/michael.gogins.studio/photographs/Gogins-Photographs-Content-I.tex"
+output_filename1 = "Gogins-Photographs-Content-Ia.tex"
 
 # NOTA BENE: 
 #
@@ -32,8 +35,23 @@ output_filename1 = "/home/mkg/michael.gogins.studio/photographs/Gogins-Photograp
 # The manifest should be broken up into volumes of no more than 500 megabytes 
 # per pdf.
 
+page_template = '''
+\clearpage
+\section{{\protect\detokenize{{{basename}}}}}
+\\noindent {text}
+\\noindent
+\\begin{{lstlisting}}
+{metadata}
+\\end{{lstlisting}}
+\\clearpage
+\\begin{{figure}}
+\\includegraphics[width=\\linewidth,height=\\textheight,keepaspectratio,{bb}]{{{basename}}}
+\\end{{figure}}
+
+'''
+
 manifest1 = """c-2013-03-12_12-07-24.jpg|This is a scan of the first picture I took that I actually liked, a 35 mm slide. It was in 1968 in the back yard of my father's girlfriend Doreen's house in Taylorsville, Utah, just after sunset. I believe this was Christmas Day.
-Mick,_Wendy,_Jane,_Michael_XMas.jpg|Scan of a slide of my grandfather Milton (Mick) Swensen, my sister Wendy, my grandmother Jane, and myself, Murray, Utah, Christmas or New Years 1968 I think.
+Mick_Wendy_Jane_Michael_XMas.jpg|Scan of a slide of my grandfather Milton (Mick) Swensen, my sister Wendy, my grandmother Jane, and myself, Murray, Utah, Christmas or New Years 1968 I think.
 renamed/c_2013-03-11_04-41-39.1.jpg|Scan of a slide of Elaine Constable, to whom I was briefly married, First Avenue stairs, Salt Lake City, Utah, 1971.
 renamed/c_2013-03-11_04-41-41.1.jpg|Scan of a slide, sidewalk leaves, South Temple Street, Salt Lake City, Utah, 1972.
 renamed/c_2013-03-11_04-41-44.1.jpg|Scan of a slide, Capitol Hill, Salt Lake City, Utah, 1972.
@@ -185,7 +203,7 @@ renamed/[2011-06-25_17-51-48][2011-09-18-a_064][Canon][Canon_PowerShot_G7][93b7a
 renamed/[2011-06-25_18-32-46][2011-09-18-a_091][Canon][Canon_PowerShot_G7][2d89b7a332ed302da2fe585871c0805c].1.jpg|Pepacton Reservoir, Delaware County, New York, from the causeway.
 renamed/[2011-09-17_13-06-30][2011-09-18-a_221][Canon][Canon_PowerShot_G7][fd8df3e316e38bd7c1e68d2f18d7182d].1.jpg|David Brossart's drafting table, Swarthmore, Pennsylvania, United States.
 renamed/[2011-11-24_11-39-47][2012-02-04-a_189][Canon][Canon_PowerShot_G7][a621a7fc131faa0f7d1a6121a1e3f3a6].1.jpg|Looking across our field at Robert Bindler's farm, Crescent Valley, Bovina, Delaware County, New York.
-renamed/[2011-12-25_15-53-48][2012-02-04-a_242][Canon][Canon_PowerShot_G7][e9aba7cd07ab337f4dc297c2fbf7dad8].1.jpg|Getting ready to put out a firer, Paul DePinto's house, Chatham, New Jersey, United States.
+renamed/[2011-12-25_15-53-48][2012-02-04-a_242][Canon][Canon_PowerShot_G7][e9aba7cd07ab337f4dc297c2fbf7dad8].1.jpg|Getting ready to put out a fire, Paul DePinto's house, Chatham, New Jersey, United States.
 renamed/[2011-11-26_16-56-01][2012-02-04-a_224][Canon][Canon_PowerShot_G7][027083a682303e7de7035fa76743510f].1.jpg|Model trees, Tom Grove's house, Delaware County, New York.
 renamed/[2012-05-19_13-18-59][2012-08-28-a_102][Canon][Canon_PowerShot_G7][78c06147355e4d72efda4c1c31428540].1.jpg|Fabric store, United States.
 renamed/[2012-06-23_18-49-52][2012-08-28-a_196][Canon][Canon_PowerShot_G7][19aca482b447723ddb8b32aa8fde177c].1.jpg|Cape Horn Road, Bovina, Delaware County, New York, United States.
@@ -330,7 +348,7 @@ SM-950U/20190409_150209.jpg|
 SM-950U/20190411_114936.jpg|
 SM-950U/20191122_141030.jpg|San Simeon, California, United States."""
 
-output_filename2 = "/home/mkg/michael.gogins.studio/photographs/Gogins-Photographs-Content-II.tex"
+output_filename2 = "/Users/michaelgogins/michael.gogins.studio/photographs/Gogins-Photographs-Content-IIa.tex"
 
 manifest2 = """SM-950U/20190411_114936.jpg|
 SM-950U/20190409_150209.jpg|
@@ -383,7 +401,7 @@ renamed/[2009-03-29_13-58-00][IMG_3991][Canon][Canon_PowerShot_G7][0e450e9db9908
 renamed/[2013-03-10_16-46-34][DSC01069][SONY][DSC-RX100][9efc31162858a51f6e3e6332aca8a187].1.jpg|Toy display, Borough Park, Brooklyn, New York.
 renamed/[2013-05-01_19-26-15][DSC01348][SONY][DSC-RX100][56ee9f69d83e82ba490c944db6e32d55].1.jpg|Collectibles shop, Greenwich Village, New York City."""
 
-output_filename3 = "/home/mkg/michael.gogins.studio/photographs/Gogins-Photographs-Content-III.tex"
+output_filename3 = "/Users/michaelgogins/michael.gogins.studio/photographs/Gogins-Photographs-Content-IIIa.tex"
 
 manifest3 = """renamed/[0000-00-00_00-00-00][2004-11-06-a_006][OLYMPUS_CORPORATION][C8080WZ][32bd997e981ec382127ad8d842056cee].1.jpg|
 renamed/[2004-11-14_18-33-35][2004-11-14-a_063][OLYMPUS_CORPORATION][C8080WZ][705f111e8b2d48a3ecc6d8f978a61c4a].1.jpg|Ansonia Hotel, Upper West Side, New York City.
@@ -490,14 +508,16 @@ def bounding_box(pathname):
     os.chdir(dir)
     result = subprocess.run(["extractbb", filename])
     result = subprocess.run(["extractbb", "-O", pathname], encoding='utf-8', stdout=subprocess.PIPE)
+    print("bb result: ", result)
     result = result.stdout.split("\n")
     result = result[2].split()
-    return ',bb= 0 0 {} {}'.format(str(result[3]), str(result[4]))    
+    return 'bb= 0 0 {} {}'.format(str(result[3]), str(result[4]))    
     
-def process(manifest, output_filename):
-    stringio = io.StringIO()
+def process(manifest, output_filename_):
+    output = open(output_filename_, 'w')
     photos = manifest.split("\n")
     for photo in photos:
+        print("Processing photo: ", photo);
         try:
             filename, caption = photo.split("|")
         except:
@@ -506,6 +526,22 @@ def process(manifest, output_filename):
         pathname = os.path.join(image_root, filename)
         basename = os.path.basename(pathname)
         pathname = r"" + pathname
+        dropbox_name = r"/images/{}".format(filename);
+        u_dropbox_filepath = unicodedata.normalize('NFC', dropbox_name).lower()
+        u_local_filepath = unicodedata.normalize('NFC', pathname)
+        #~ # If file is in sync, process it; otherwise, download it from Dropbox 
+        #~ # and then process it.
+        file_size = os.path.getsize(pathname)
+        if file_size == 0:
+            try:
+                print("\nUpdating:\n\t'{}'\nfrom Dropbox:\n\t'{}'".format(u_local_filepath, u_dropbox_filepath))
+                command = r"open {}".format(pathname)
+                print("command: ", command)
+                os.system(command)
+                print("\tUpdated...")
+                pass
+            except:
+                traceback.print_exc()
         with open(pathname, 'rb') as image:
             bb = bounding_box(pathname)
             image_with_metadata = Image(image)
@@ -522,51 +558,18 @@ def process(manifest, output_filename):
                 height = int(str(image_with_metadata.get("pixel_y_dimension")))
             except:
                 pass
-            stringio.write(r'''
-\clearpage
-\onecolumn
-\noindent ''' + caption)
-            stringio.write(r'''
-\noindent
-\begin{lstlisting}
-
-''')
-            stringio.write(r"Filename: " + basename)
-            stringio.write("\n\n")
+            metadata = []
             for tag in tags:
                 try:
                     value = r"" + str(image_with_metadata.get(tag))
                     if value != "None":
-                        stringio.write(r"" + names_for_tags[tag])
-                        stringio.write(r": ")
-                        stringio.write(value)
-                        stringio.write("\n")
+                        metadata.append(r"{}: {}".format(names_for_tags[tag], value));
                 except:
                     pass
-            stringio.write(r'''\end{lstlisting}
-\clearpage
-''')
-            stringio.write(r'''
-\begin{figure}
-\includegraphics[''')
-            stringio.write(r'''width=\linewidth,height=\textheight,keepaspectratio''')
-            stringio.write(bb)
-            stringio.write(r''']{''');
-            stringio.write(r"" + pathname + "}")
-            stringio.write(r'''
-\captionlistentry[figure]{\url{\protect\detokenize{''')
-            stringio.write(r"" + basename)
-            stringio.write(r'''}}}
-\end{figure}
-    ''')
-            try:
-                if caption.lower().find("scan") == -1:
-                    images_for_dates[str(image_with_metadata.get("datetime_original"))] = pathname + " " + caption
-            except:
-                pass
-    print(stringio.getvalue())
-    output = open(output_filename, 'w')
-    output.write(stringio.getvalue())
+            metadata_text = "\n".join(metadata)
+            page_text = page_template.format(basename=basename, text=caption, bb=bb, metadata=metadata_text)
+            print(page_text)
+            output.write(page_text)
     
 process(manifest1, output_filename1)
 #process(manifest2, output_filename2)
