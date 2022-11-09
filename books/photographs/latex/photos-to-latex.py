@@ -349,7 +349,7 @@ SM-950U/20190409_150209.jpg|
 SM-950U/20190411_114936.jpg|
 SM-950U/20191122_141030.jpg|San Simeon, California, United States."""
 
-output_filename2 = "/Users/michaelgogins/michael.gogins.studio/photographs/Gogins-Photographs-Content-IIa.tex"
+output_filename2 = "Gogins-Photographs-Content-IIa.tex"
 
 manifest2 = """SM-950U/20190411_114936.jpg|
 SM-950U/20190409_150209.jpg|
@@ -402,7 +402,7 @@ renamed/[2009-03-29_13-58-00][IMG_3991][Canon][Canon_PowerShot_G7][0e450e9db9908
 renamed/[2013-03-10_16-46-34][DSC01069][SONY][DSC-RX100][9efc31162858a51f6e3e6332aca8a187].1.jpg|Toy display, Borough Park, Brooklyn, New York.
 renamed/[2013-05-01_19-26-15][DSC01348][SONY][DSC-RX100][56ee9f69d83e82ba490c944db6e32d55].1.jpg|Collectibles shop, Greenwich Village, New York City."""
 
-output_filename3 = "/Users/michaelgogins/michael.gogins.studio/photographs/Gogins-Photographs-Content-IIIa.tex"
+output_filename3 = "Gogins-Photographs-Content-IIIa.tex"
 
 manifest3 = """renamed/[0000-00-00_00-00-00][2004-11-06-a_006][OLYMPUS_CORPORATION][C8080WZ][32bd997e981ec382127ad8d842056cee].1.jpg|
 renamed/[2004-11-14_18-33-35][2004-11-14-a_063][OLYMPUS_CORPORATION][C8080WZ][705f111e8b2d48a3ecc6d8f978a61c4a].1.jpg|Ansonia Hotel, Upper West Side, New York City.
@@ -575,9 +575,9 @@ def process(manifest, output_filename_):
             print(page_text)
             output.write(page_text)
     
-process(manifest1, output_filename1)
+#process(manifest1, output_filename1)
 #process(manifest2, output_filename2)
-#process(manifest3, output_filename3)
+process(manifest3, output_filename3)
 
 print("Check chronological order:\n")
 
