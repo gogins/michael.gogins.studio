@@ -6,8 +6,8 @@ Given a manifest of photographs with optional captions, extracts metadata and
 builds a LaTeX file to publish the photographs. This file is intended to be 
 included in a complete LaTeX book.
 
-The manifest format is simple:
-relative pathname to image, followed by optional pipe symbol and caption text.
+The manifest format is simple: pathname relative to image root, followed by 
+optional pipe symbol and caption text.
 '''
 import dropbox
 import exif
@@ -21,25 +21,22 @@ import sys
 import traceback
 import unicodedata
 
-if False:
-    volume = "i"
+volume = "v"
+
+if volume == "i":
     start = 0
     end = 30
-if False:
-    volume = "ii"
+if volume == "ii":
     start = 30
     end = 80
-if False:
-    volume = "iii"
+if volume == "iii":
     start = 80
     end = 200
-if False:
-    volume = "iv"
+if volume == "iv":
     start = 200
-    end = 300
-if True:
-    volume = "v"
-    start = 300
+    end = 280
+if volume == "v":
+    start = 280
     end = 400
 
 image_root = "/Users/michaelgogins/Dropbox/images/"
@@ -56,7 +53,7 @@ output_filename = "a_third_eye_made_of_glass_photos_{}.tex".format(volume)
 # per pdf.
 
 page_template = '''
-%% photos_processed: {photos_processed}
+%% photos_gathered: {photos_gathered}
 \\clearpage
 \\section{{\protect\detokenize{{{basename}}}}}
 \\noindent {text}
@@ -96,7 +93,6 @@ for line in lines:
 # There is one manifest for all volumes. The manifest format is:
 # filepath
 # caption
-# hash
 
 manifest = """c-2013-03-12_12-07-24.jpg|This is a scan of the first picture I took that I actually liked, a 35 mm slide. It was in 1968 in the back yard of my father's girlfriend Doreen's house in Taylorsville, Utah, just after sunset. I believe this was Christmas Day.
 Mick_Wendy_Jane_Michael_XMas.jpg|Scan of a slide of my grandfather Milton (Mick) Swensen, my sister Wendy, my grandmother Jane, and myself, Murray, Utah, Christmas or New Years 1968 I think.
@@ -394,7 +390,7 @@ SM-950U/20190407_154615.jpg|Back country road, South Island, New Zealand.
 SM-950U/20190408_171520.jpg|Trail, Southern Alps, South Island, New Zealand.
 SM-950U/20190409_150209.jpg|
 SM-950U/20190411_114936.jpg|
-SM-950U/20191122_141030.jpg|San Simeon, California, United States.SM-950U/20190411_114936.jpg|
+SM-950U/20191122_141030.jpg|San Simeon, California, United States.
 SM-950U/20190409_150209.jpg|
 SM-950U/20190407_154615.jpg|
 XT_1585/Camera/IMG_20170310_145854935.jpg|
@@ -555,13 +551,13 @@ def process(manifest, output_filename_, start, end):
     digests = set()
     output = open(output_filename_, 'w')
     photos = manifest.split("\n")
-    photos_processed = 0
-    for photo in photos[start:end]:
-        photos_processed = photos_processed + 1
+    photos_gathered = 0
+    for photo_index in range(0, end):
+        photo = photos[photo_index]
         try:
             filename, caption = photo.split("|")
         except:
-            print("I*** File missing: " + pathname + "\n");
+            print("I*** Bad entry in manifest: " + photo + "\n");
             next
         pathname = os.path.join(image_root, filename)
         digest = hash_file(pathname)
@@ -569,7 +565,9 @@ def process(manifest, output_filename_, start, end):
             print("Duplicate photo file: ", pathname)
             continue
         digests.add(digest)
-        print("Processing photo {:4d}: {} {}".format(photos_processed, digest, photo));
+        if photo_index < start:
+            continue
+        print("Processing photo {:4d}: {} {}".format(photo_index, digest, photo));
         basename = os.path.basename(filename)
         pathname = r"" + pathname
         dropbox_name = r"/images/{}".format(filename);
@@ -614,7 +612,8 @@ def process(manifest, output_filename_, start, end):
                 except:
                     pass
             metadata_text = "\n".join(metadata)
-            page_text = page_template.format(basename=basename, text=caption, bb=bb, metadata=metadata_text, photos_processed=photos_processed)
+            photos_gathered = photos_gathered + 1
+            page_text = page_template.format(basename=basename, text=caption, bb=bb, metadata=metadata_text, photos_gathered=photos_gathered)
             print(page_text)
             output.write(page_text)
     
