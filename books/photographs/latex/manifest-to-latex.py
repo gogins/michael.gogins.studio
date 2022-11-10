@@ -1,5 +1,5 @@
 '''
-PHOTOS TO LATEX
+MANIFEST TO LATEX
 Copyright (C) 2022 by Michael Gogins
 
 Given a manifest of photographs with optional captions, extracts metadata and 
@@ -12,7 +12,7 @@ relative pathname to image, followed by optional pipe symbol and caption text.
 import dropbox
 import exif
 from exif import Image
-import io
+import hashlib
 import os
 import os.path
 import string
@@ -21,10 +21,30 @@ import sys
 import traceback
 import unicodedata
 
-#~ 1
+if False:
+    volume = "i"
+    start = 0
+    end = 30
+if False:
+    volume = "ii"
+    start = 30
+    end = 80
+if False:
+    volume = "iii"
+    start = 80
+    end = 200
+if False:
+    volume = "iv"
+    start = 200
+    end = 300
+if True:
+    volume = "v"
+    start = 300
+    end = 400
+
 image_root = "/Users/michaelgogins/Dropbox/images/"
 
-output_filename1 = "Gogins-Photographs-Content-Ia.tex"
+output_filename = "a_third_eye_made_of_glass_photos_{}.tex".format(volume)
 
 # NOTA BENE: 
 #
@@ -37,8 +57,8 @@ output_filename1 = "Gogins-Photographs-Content-Ia.tex"
 
 page_template = '''
 %% photos_processed: {photos_processed}
-\clearpage
-\section{{\protect\detokenize{{{basename}}}}}
+\\clearpage
+\\section{{\protect\detokenize{{{basename}}}}}
 \\noindent {text}
 \\noindent
 \\begin{{lstlisting}}
@@ -51,7 +71,34 @@ page_template = '''
 
 '''
 
-manifest1 = """c-2013-03-12_12-07-24.jpg|This is a scan of the first picture I took that I actually liked, a 35 mm slide. It was in 1968 in the back yard of my father's girlfriend Doreen's house in Taylorsville, Utah, just after sunset. I believe this was Christmas Day.
+names_for_tags = {}
+
+tags_ = '''Date,datetime_original
+GPS longitude,gps_longitude
+GPS latitude,gps_latitude
+Make,make
+Model,model
+Focal length (35mm eq),focal_length_in_35mm_film
+Exposure,exposure_time
+F stop,f_number
+ISO,photographic_sensitivity
+Width,pixel_x_dimension
+Height,pixel_y_dimension'''
+
+tags = []
+images_for_dates = {}
+lines = tags_.split('\n')
+for line in lines:
+    name, tag = line.split(',')
+    names_for_tags[tag] = name
+    tags.append(tag)
+    
+# There is one manifest for all volumes. The manifest format is:
+# filepath
+# caption
+# hash
+
+manifest = """c-2013-03-12_12-07-24.jpg|This is a scan of the first picture I took that I actually liked, a 35 mm slide. It was in 1968 in the back yard of my father's girlfriend Doreen's house in Taylorsville, Utah, just after sunset. I believe this was Christmas Day.
 Mick_Wendy_Jane_Michael_XMas.jpg|Scan of a slide of my grandfather Milton (Mick) Swensen, my sister Wendy, my grandmother Jane, and myself, Murray, Utah, Christmas or New Years 1968 I think.
 renamed/c_2013-03-11_04-41-39.1.jpg|Scan of a slide of Elaine Constable, to whom I was briefly married, First Avenue stairs, Salt Lake City, Utah, 1971.
 renamed/c_2013-03-11_04-41-41.1.jpg|Scan of a slide, sidewalk leaves, South Temple Street, Salt Lake City, Utah, 1972.
@@ -347,11 +394,7 @@ SM-950U/20190407_154615.jpg|Back country road, South Island, New Zealand.
 SM-950U/20190408_171520.jpg|Trail, Southern Alps, South Island, New Zealand.
 SM-950U/20190409_150209.jpg|
 SM-950U/20190411_114936.jpg|
-SM-950U/20191122_141030.jpg|San Simeon, California, United States."""
-
-output_filename2 = "Gogins-Photographs-Content-IIa.tex"
-
-manifest2 = """SM-950U/20190411_114936.jpg|
+SM-950U/20191122_141030.jpg|San Simeon, California, United States.SM-950U/20190411_114936.jpg|
 SM-950U/20190409_150209.jpg|
 SM-950U/20190407_154615.jpg|
 XT_1585/Camera/IMG_20170310_145854935.jpg|
@@ -400,11 +443,7 @@ renamed/[2016-07-22_19-15-20][DSC00365][SONY][DSC-RX100][5fa29079ce1388e440851a6
 renamed/[2009-03-29_16-33-11][IMG_3998_2)][Canon][Canon_PowerShot_G7][d1f87e4ff942e2fee95a04206b38b641].1.jpg|My father's sister's husband Herb, who had been a jet engine mechanic, in his model shop at home in Florida.
 renamed/[2009-03-29_13-58-00][IMG_3991][Canon][Canon_PowerShot_G7][0e450e9db99082f2bd8fecfaf333953f].1.jpg|In my father's sister's home, Florida.
 renamed/[2013-03-10_16-46-34][DSC01069][SONY][DSC-RX100][9efc31162858a51f6e3e6332aca8a187].1.jpg|Toy display, Borough Park, Brooklyn, New York.
-renamed/[2013-05-01_19-26-15][DSC01348][SONY][DSC-RX100][56ee9f69d83e82ba490c944db6e32d55].1.jpg|Collectibles shop, Greenwich Village, New York City."""
-
-output_filename3 = "Gogins-Photographs-Content-IIIa.tex"
-
-manifest3 = """renamed/[0000-00-00_00-00-00][2004-11-06-a_006][OLYMPUS_CORPORATION][C8080WZ][32bd997e981ec382127ad8d842056cee].1.jpg|
+renamed/[2013-05-01_19-26-15][DSC01348][SONY][DSC-RX100][56ee9f69d83e82ba490c944db6e32d55].1.jpg|Collectibles shop, Greenwich Village, New York City.renamed/[0000-00-00_00-00-00][2004-11-06-a_006][OLYMPUS_CORPORATION][C8080WZ][32bd997e981ec382127ad8d842056cee].1.jpg|
 renamed/[2004-11-14_18-33-35][2004-11-14-a_063][OLYMPUS_CORPORATION][C8080WZ][705f111e8b2d48a3ecc6d8f978a61c4a].1.jpg|Ansonia Hotel, Upper West Side, New York City.
 renamed/[2004-11-20_10-13-21][2004-11-20-a_002][OLYMPUS_CORPORATION][C8080WZ][23c3e981749af0ee300f75db2df49108].1.jpg|Child's coin-operated ride, Midtown, New York City.
 renamed/[2004-11-21_17-49-19][2004-11-20-b_032][OLYMPUS_CORPORATION][C8080WZ][dc1eb86703708f0708c64ae019649286].1.jpg|Engagement party, Far Rockaway, New York City.
@@ -481,27 +520,25 @@ renamed/[2011-02-21_17-54-51][2011-05-14-a_001][Canon][Canon_PowerShot_G7][cb9c3
 renamed/[2011-05-09_11-17-01][2011-05-14-a_129][Canon][Canon_PowerShot_G7][f29fae70bf90f2099852d54e352e9321].1.jpg|County Cork, Republic of Ireland.
 renamed/[2011-05-13_06-45-45][2011-05-14-a_271][Canon][Canon_PowerShot_G7][bca07c4456f7f17eeb51157fbd098157].1.jpg|Coast of County Kerry, Republic of Ireland."""
 
-names_for_tags = {}
-
-tags_ = '''Date,datetime_original
-GPS longitude,gps_longitude
-GPS latitude,gps_latitude
-Make,make
-Model,model
-Focal length (35mm eq),focal_length_in_35mm_film
-Exposure,exposure_time
-F stop,f_number
-ISO,photographic_sensitivity
-Width,pixel_x_dimension
-Height,pixel_y_dimension'''
-
-tags = []
-images_for_dates = {}
-lines = tags_.split('\n')
-for line in lines:
-    name, tag = line.split(',')
-    names_for_tags[tag] = name
-    tags.append(tag)
+def get_date(path, image_):
+    date_ = "blank"
+    try:
+        date_ = str(image_.get("datetime_original"))
+        return _date
+    except:
+        pass
+    return date_ 
+    
+def hash_file(filename):
+    h = hashlib.sha1()
+    # open file for reading in binary mode
+    with open(filename,'rb') as file:
+        chunk = 0
+        while chunk != b'':
+            # read only 1024 bytes at a time
+            chunk = file.read(1024)
+            h.update(chunk)
+    return h.hexdigest()
     
 def bounding_box(pathname):
     dir = os.path.dirname(pathname)
@@ -514,19 +551,26 @@ def bounding_box(pathname):
     result = result[2].split()
     return 'bb= 0 0 {} {}'.format(str(result[3]), str(result[4]))    
     
-def process(manifest, output_filename_):
+def process(manifest, output_filename_, start, end):
+    digests = set()
     output = open(output_filename_, 'w')
     photos = manifest.split("\n")
     photos_processed = 0
-    for photo in photos:
-        print("Processing photo: ", photo);
+    for photo in photos[start:end]:
+        photos_processed = photos_processed + 1
         try:
             filename, caption = photo.split("|")
         except:
-            print("I*** Missed: " + pathname + "\n");
+            print("I*** File missing: " + pathname + "\n");
             next
         pathname = os.path.join(image_root, filename)
-        basename = os.path.basename(pathname)
+        digest = hash_file(pathname)
+        if digest in digests:
+            print("Duplicate photo file: ", pathname)
+            continue
+        digests.add(digest)
+        print("Processing photo {:4d}: {} {}".format(photos_processed, digest, photo));
+        basename = os.path.basename(filename)
         pathname = r"" + pathname
         dropbox_name = r"/images/{}".format(filename);
         u_dropbox_filepath = unicodedata.normalize('NFC', dropbox_name).lower()
@@ -542,7 +586,7 @@ def process(manifest, output_filename_):
                 os.system(command)
                 print("\tUpdated...")
                 # Uncomment the next line to sync all files in manifest that are not yet local.
-                continue
+                # continue
             except:
                 traceback.print_exc()
         with open(pathname, 'rb') as image:
@@ -570,20 +614,10 @@ def process(manifest, output_filename_):
                 except:
                     pass
             metadata_text = "\n".join(metadata)
-            photos_processed = photos_processed + 1
             page_text = page_template.format(basename=basename, text=caption, bb=bb, metadata=metadata_text, photos_processed=photos_processed)
             print(page_text)
             output.write(page_text)
     
-#process(manifest1, output_filename1)
-#process(manifest2, output_filename2)
-process(manifest3, output_filename3)
+process(manifest, output_filename, start, end)
 
-print("Check chronological order:\n")
-
-for item in images_for_dates.items():
-    print(item[0], item[1])
-    
-print("\nTotal timestamped images: " + str(len(images_for_dates.items())))
-                    
     

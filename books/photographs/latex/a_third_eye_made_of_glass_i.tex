@@ -1,22 +1,18 @@
 \documentclass[11pt,letter,DIV=14,paper=landscape]{scrbook}
 \usepackage{typearea}
 \pagestyle{plain}
-\usepackage{caption}
 \setcounter{secnumdepth}{1}
 \usepackage{etoolbox}
-\usepackage[final]{grffile}
 \usepackage{graphicx}
 \usepackage{fancyvrb}
 \usepackage[T1]{fontenc}
-\usepackage{listings}
-\usepackage{calc}
-\usepackage{lipsum}
 \usepackage{url}
 \usepackage[hidelinks=true,linktoc=all]{hyperref}
 \urlstyle{same}
 \setlength{\parindent}{0em}
 \setlength{\parskip}{1ex}
 \usepackage{verbatim}
+\usepackage{listings}
 \graphicspath{{/Users/michaelgogins/Dropbox/images/}{/Users/michaelgogins/Dropbox/images/renamed}{/Users/michaelgogins/Dropbox/images/XT_1585/Camera}{/Users/michaelgogins/Dropbox/images/duplicates}{/Users/michaelgogins/Dropbox/images/SM-950U}{/Users/michaelgogins/Dropbox/images/RX100M5/100MSDCF}{/Users/michaelgogins/Dropbox/images/RX100/100MSDCF}}
 \DeclareTOCStyleEntry[numwidth=3em]{tocline}{figure}
 \begin{document}
@@ -26,15 +22,15 @@
 \subtitle{Volume I }
 \author{Michael Gogins \\ \texttt{michael.gogins@gmail.com}}
 \date{2022 }
-\publishers{Irreducible Productions}
+\publishers{Irreducible Productions, New York}
 
 \maketitle
 	
-\include{Gogins-Photographs-Copyright}
+\include{a_third_eye_made_of_glass_copyright}
 
-\begin{dedication}
-This book is for Mick.
-\end{dedication}
+\clearpage
+\emph{This book is for Mick.}
+\clearpage
 
 \tableofcontents
 
@@ -45,7 +41,7 @@ This book is for Mick.
 \setlength{\columnsep}{3em}
 \twocolumn
 
-\input {Gogins-Photographs-Introduction}	
+\input {a_third_eye_made_of_glass_introduction}	
 	
 \onecolumn
 \chapter{Photographs}
@@ -54,6 +50,6 @@ This book is for Mick.
 % Supposed to generate all contents from the manifest, currently must be done separately
 %%immediate\write18{python3 photos-to-latex.py}
 
-\input{Gogins-Photographs-Content-Ia.tex}
+\input{a_third_eye_made_of_glass_photos_i}
 
 \end{document}
