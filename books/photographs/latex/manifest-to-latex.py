@@ -21,7 +21,7 @@ import sys
 import traceback
 import unicodedata
 
-volume = "i"
+volume = "v"
 
 if volume == "i":
     start = 0
@@ -192,7 +192,7 @@ renamed/[2007-04-24_18-28-49][2007-03-31-b_218][Canon][Canon_PowerShot_G7][0023f
 renamed/[2007-05-20_14-09-50][2007-05-20-a_094][Canon][Canon_PowerShot_G7][9b10932b3988089fc4b36cb1cfabfa57].1.jpg|Hike in the Adirondack Mountains, New York.
 renamed/[2007-05-21_18-37-14][2007-05-21-a_024][Canon][Canon_PowerShot_G7][1c1d0a9f40021421167b68ebc3d7cc76].1.jpg|Thousand Islands, St. Lawrence Seaway, New York
 renamed/[2007-05-23_12-22-59][2007-05-25-a_122][Canon][Canon_PowerShot_G7][df1c2c0bc54b7603a9c4f200433ef608].1.jpg|Blossoming tree, Cornell University arboretum, Ithaca, New York.
-renamed/[2007-08-05_10-25-02][2007-08-18-a_148][Canon][Canon_PowerShot_G7][4f1dbab672327455d87f4c8cb46a30b2].1.jpg|Birch bark, Bill Carpenter's yard, Slingerlands, New York.
+renamed/[2007-08-05_10-25-02][2007-08-18-a_148][Canon][Canon_PowerShot_G7][4f1dbab672327455d87f4c8cb46a30b2].2.jpg|Birch bark, Bill Carpenter's yard, Slingerlands, New York.|90
 renamed/[2007-08-27_11-11-38][2007-11-22-a_026][Canon][Canon_PowerShot_G7][32263f004507ab07625955e6d7eddda9].1.jpg|Rocking horse from Poland, bought by Heidi's parents, at our farm.
 renamed/[2007-10-19_18-49-20][2007-10-22-a_066][OLYMPUS_IMAGING_CORP__][u760S760_______][05555ee9b2cefea3a54d3291f767a8e4].1.jpg|Antelope Island from the south end of the Great Salt Lake, Utah.
 renamed/[2007-10-21_11-22-00][2007-10-22-a_124][OLYMPUS_IMAGING_CORP__][u760S760_______][842e50b23b0ef23277443f7cc147622a].1.jpg|My father Laird, a year or so before his death, Salt Lake City, Utah.
@@ -472,7 +472,7 @@ renamed/[2007-04-24_18-28-49][2007-03-31-b_218][Canon][Canon_PowerShot_G7][0023f
 renamed/[2007-05-20_14-09-50][2007-05-20-a_094][Canon][Canon_PowerShot_G7][9b10932b3988089fc4b36cb1cfabfa57].1.jpg|Hike in the Adirondack Mountains, New York.
 renamed/[2007-05-21_18-37-14][2007-05-21-a_024][Canon][Canon_PowerShot_G7][1c1d0a9f40021421167b68ebc3d7cc76].1.jpg|Thousand Islands, St. Lawrence Seaway, New York
 renamed/[2007-05-23_12-22-59][2007-05-25-a_122][Canon][Canon_PowerShot_G7][df1c2c0bc54b7603a9c4f200433ef608].1.jpg|Blossoming tree, Cornell University arboretum, Ithaca, New York.
-renamed/[2007-08-05_10-25-02][2007-08-18-a_148][Canon][Canon_PowerShot_G7][4f1dbab672327455d87f4c8cb46a30b2].1.jpg|Birch bark, Bill Carpenter's yard, Slingerlands, New York.
+renamed/[2007-08-05_10-25-02][2007-08-18-a_148][Canon][Canon_PowerShot_G7][4f1dbab672327455d87f4c8cb46a30b2].2.jpg|Birch bark, Bill Carpenter's yard, Slingerlands, New York.|90
 renamed/[2007-08-27_11-11-38][2007-11-22-a_026][Canon][Canon_PowerShot_G7][32263f004507ab07625955e6d7eddda9].1.jpg|Rocking horse from Poland, bought by Heidi's parents, at our farm.
 renamed/[2007-10-19_18-49-20][2007-10-22-a_066][OLYMPUS_IMAGING_CORP__][u760S760_______][05555ee9b2cefea3a54d3291f767a8e4].1.jpg|Antelope Island from the south end of the Great Salt Lake, Utah.
 renamed/[2007-10-21_11-22-00][2007-10-22-a_124][OLYMPUS_IMAGING_CORP__][u760S760_______][842e50b23b0ef23277443f7cc147622a].1.jpg|My father Laird, a year or so before his death, Salt Lake City, Utah.
@@ -552,10 +552,17 @@ def process(manifest, output_filename_, start, end):
     output = open(output_filename_, 'w')
     photos = manifest.split("\n")
     photos_gathered = 0
+    angle = 0
+    filename = ''
+    caption = ''
     for photo_index in range(0, end):
         photo = photos[photo_index]
         try:
-            filename, caption = photo.split("|")
+            parts = photo.split("|")
+            if len(parts) == 2:
+                filename, caption = photo.split("|")
+            if len(parts) == 3:
+                filename, caption, angle = photo.split("|")
         except:
             print("I*** Bad entry in manifest: " + photo + "\n");
             next
@@ -595,7 +602,7 @@ def process(manifest, output_filename_, start, end):
                 orientation = str(image_with_metadata.get("orientation"))
             except:
                 pass
-            # print(orientation)
+            print(orientation)
             width = 0
             height = 0
             try:
@@ -613,7 +620,7 @@ def process(manifest, output_filename_, start, end):
                     pass
             metadata_text = "\n".join(metadata)
             photos_gathered = photos_gathered + 1
-            page_text = page_template.format(basename=basename, heading=basename, text=caption, bb=bb, metadata=metadata_text, photos_gathered=photos_gathered)
+            page_text = page_template.format(basename=basename, heading=basename, text=caption, angle=angle,bb=bb, metadata=metadata_text, photos_gathered=photos_gathered)
             print(page_text)
             output.write(page_text)
     
