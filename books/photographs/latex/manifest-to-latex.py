@@ -10,18 +10,17 @@ The manifest format is simple: pathname relative to image root, followed by
 optional pipe symbol and caption text.
 '''
 import dropbox
-import exif
-from exif import Image
 import hashlib
 import os
 import os.path
+import PIL
 import string
 import subprocess
 import sys
 import traceback
 import unicodedata
 
-volume = "v"
+volume = "iii"
 
 if volume == "i":
     start = 0
@@ -52,7 +51,7 @@ output_filename = "a_third_eye_made_of_glass_photos_{}.tex".format(volume)
 # The manifest should be broken up into volumes of no more than 500 megabytes 
 # per pdf.
 
-page_template = '''
+page_template_portrait = '''
 %% photos_gathered: {photos_gathered}
 \\clearpage
 \section{{\protect\detokenize{{{heading}}}}}
@@ -63,16 +62,36 @@ page_template = '''
 \\end{{lstlisting}}
 \\clearpage
 \\begin{{figure}}
-\\includegraphics[width=\\linewidth,height=\\textheight,keepaspectratio,{bb}]{{{basename}}}
+\\raggedleft
+\\includegraphics[height=\\textheight,width=\\linewidth,keepaspectratio,{bb}]{{{basename}}}
 \\end{{figure}}
 
 '''
+
+page_template_landscape = '''
+%% photos_gathered: {photos_gathered}
+\\clearpage
+\section{{\protect\detokenize{{{heading}}}}}
+\\noindent {text}
+\\noindent
+\\begin{{lstlisting}}
+{metadata}
+\\end{{lstlisting}}
+\\clearpage
+\\begin{{figure}}
+\\raggedleft
+\\includegraphics[height=\\textheight,{bb}]{{{basename}}}
+\\end{{figure}}
+
+'''
+
 
 names_for_tags = {}
 
 tags_ = '''Date,datetime_original
 GPS longitude,gps_longitude
 GPS latitude,gps_latitude
+GPS altitude,gps_altitude
 Make,make
 Model,model
 Focal length (35mm eq),focal_length_in_35mm_film
@@ -80,7 +99,8 @@ Exposure,exposure_time
 F stop,f_number
 ISO,photographic_sensitivity
 Width,pixel_x_dimension
-Height,pixel_y_dimension'''
+Height,pixel_y_dimension
+Orientation,orientation'''
 
 tags = []
 images_for_dates = {}
@@ -93,8 +113,9 @@ for line in lines:
 # There is one manifest for all volumes. The manifest format is:
 # filepath
 # caption
+# rotation (degrees counterclockwise)
 
-manifest = """c-2013-03-12_12-07-24.jpg|This is a scan of the first picture I took that I actually liked, a 35 mm slide. It was in 1968 in the back yard of my father's girlfriend Doreen's house in Taylorsville, Utah, just after sunset. I believe this was Christmas Day.
+manifest = """c-2013-03-12_12-07-24.jpg|When I was 18 years old, my father Laird gave me a Mamiya Sekor 35mm SLR camera for Christmas. I took this picture in the back yard of Laird's girlfriend Doreen's house in Taylorsville, Utah, just after sunset. I believe this was actually on Christmas Day.
 Mick_Wendy_Jane_Michael_XMas.jpg|Scan of a slide of my grandfather Milton (Mick) Swensen, my sister Wendy, my grandmother Jane, and myself, Murray, Utah, Christmas or New Years 1968 I think.
 renamed/c_2013-03-11_04-41-39.1.jpg|Scan of a slide of Elaine Constable, to whom I was briefly married, First Avenue stairs, Salt Lake City, Utah, 1971.
 renamed/c_2013-03-11_04-41-41.1.jpg|Scan of a slide, sidewalk leaves, South Temple Street, Salt Lake City, Utah, 1972.
@@ -182,7 +203,7 @@ renamed/[2005-11-05_15-53-17][2005-11-14a_001][OLYMPUS_CORPORATION][C8080WZ][1d8
 renamed/[2005-12-26_19-03-55][2005-12-27a_041][OLYMPUS_CORPORATION][C8080WZ][165f51258de62c00f81134ba945bd682].1.jpg|Pacific Ocean, Northern California, United States.
 renamed/[2005-12-24_14-22-27][2005-12-24a_124][OLYMPUS_CORPORATION][C8080WZ][57a546800620505241d6cb1ae06b1880].1.jpg|Sonoma County, California.
 renamed/[2005-12-29_18-56-59][2005-12-30a_191][OLYMPUS_CORPORATION][C8080WZ][071807195a691e0e537540fbef1402df].1.jpg|Unkown woman, Fairfax Farmers Market, Los Angeles, California.
-renamed/[2005-12-29_19-18-23][2005-12-30a_224][OLYMPUS_CORPORATION][C8080WZ][3bf39aa7f66e0de9261fd0930b12b5fc].1.jpg|Billboard, The Grove shopping centerx, Los Angeles, California.
+renamed/[2005-12-29_19-18-23][2005-12-30a_224][OLYMPUS_CORPORATION][C8080WZ][3bf39aa7f66e0de9261fd0930b12b5fc].1.jpg|Billboard, The Grove shopping center, Los Angeles, California.
 renamed/[2006-05-20_18-37-46][Survey_-_2006-01-15_097][OLYMPUS_CORPORATION][C8080WZ][64e6408c5a84eb7a6a1155fb7327a7fa].1.jpg|Michael Williams and a friend, our apartment, New York City.
 renamed/[2006-08-18_13-10-09][2006-07-18-a_051][OLYMPUS_CORPORATION][C8080WZ][64cb3cc699778fc59f76c8b932040f1e].1.jpg|Delaware Coumty Fair, Walton, New York.
 renamed/[2007-03-12_11-41-10][2007-03-12-a_144][Canon][Canon_PowerShot_G7][8da3a099769a0842274d66eb7f8e891c].1.jpg|Stains on wall, New York City.
@@ -254,7 +275,7 @@ renamed/[2012-06-23_18-49-52][2012-08-28-a_196][Canon][Canon_PowerShot_G7][19aca
 renamed/[2012-09-22_14-35-18][IMG_7717][Canon][Canon_PowerShot_G7][54c87ddeaafbb5e65382e70b5965f336].1.jpg|Oak leaf, Manhattan.
 renamed/[2012-12-01_20-35-07][DSC00384][SONY][DSC-RX100][4fa6f0b4f10c858a18f704169c179a65].1.jpg|Manhattan.
 renamed/[2012-12-22_20-12-45][DSC00769][SONY][DSC-RX100][db9a668105910211c6b8acb0fc6bd46a].1.jpg|Pacific ocean, coast of Northern California.
-renamed/[2012-12-23_19-03-09][DSC00815][SONY][DSC-RX100][70a88e537b25517647ea99b868a5d9cb].1.jpg|Stream, I think in Sonoma County, Northern California.
+renamed/[2012-12-23_19-03-09][DSC00815][SONY][DSC-RX100][70a88e537b25517647ea99b868a5d9cb].1.jpg|Stream, I think in Sonoma County, Northern California.|90
 renamed/[2012-12-24_23-21-17][DSC00831][SONY][DSC-RX100][5ea80573303c03ed7c7cdaadf4c0aed9].1.jpg|Little girl with Penbo toy, Christmas, Albany, California.
 renamed/[2012-12-26_20-49-59][DSC00874][SONY][DSC-RX100][0c48cdd6a2b2def3f2c76d0621e9c6d5].1.jpg|Christmas decoration, Albany, California.
 renamed/[2013-02-09_16-21-34][DSC00931][SONY][DSC-RX100][80fcb5529dfea18d2971cf84cd6533e9].1.jpg|Big snowfall attracting sledders, Central Park, New York City.
@@ -597,7 +618,7 @@ def process(manifest, output_filename_, start, end):
         with open(pathname, 'rb') as image:
             bb = bounding_box(pathname)
             image_with_metadata = Image(image)
-            orientation = "None"
+            orientation = "Orientation.TOP_LEFT"
             try:
                 orientation = str(image_with_metadata.get("orientation"))
             except:
@@ -611,6 +632,9 @@ def process(manifest, output_filename_, start, end):
             except:
                 pass
             metadata = []
+            print(image_with_metadata.list_all())
+            ## q
+             print(image_with_metadata.get("gps_dop"))
             for tag in tags:
                 try:
                     value = r"" + str(image_with_metadata.get(tag))
@@ -620,7 +644,10 @@ def process(manifest, output_filename_, start, end):
                     pass
             metadata_text = "\n".join(metadata)
             photos_gathered = photos_gathered + 1
-            page_text = page_template.format(basename=basename, heading=basename, text=caption, angle=angle,bb=bb, metadata=metadata_text, photos_gathered=photos_gathered)
+            if orientation == "Orientation.TOP_LEFT":
+                page_text = page_template_portrait.format(basename=basename, heading=basename, text=caption, bb=bb, metadata=metadata_text, photos_gathered=photos_gathered)
+            else:
+               page_text = page_template_landscape.format(basename=basename, heading=basename, text=caption, angle=angle,bb=bb, metadata=metadata_text, photos_gathered=photos_gathered)
             print(page_text)
             output.write(page_text)
     
