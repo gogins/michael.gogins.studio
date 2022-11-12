@@ -21,7 +21,7 @@ import sys
 import traceback
 import unicodedata
 
-volume = "v"
+volume = "i"
 
 if volume == "i":
     start = 0
@@ -55,7 +55,7 @@ output_filename = "a_third_eye_made_of_glass_photos_{}.tex".format(volume)
 page_template = '''
 %% photos_gathered: {photos_gathered}
 \\clearpage
-\\section{{\protect\detokenize{{{basename}}}}}
+\section{{\protect\detokenize{{{heading}}}}}
 \\noindent {text}
 \\noindent
 \\begin{{lstlisting}}
@@ -613,7 +613,7 @@ def process(manifest, output_filename_, start, end):
                     pass
             metadata_text = "\n".join(metadata)
             photos_gathered = photos_gathered + 1
-            page_text = page_template.format(basename=basename, text=caption, bb=bb, metadata=metadata_text, photos_gathered=photos_gathered)
+            page_text = page_template.format(basename=basename, heading=basename, text=caption, bb=bb, metadata=metadata_text, photos_gathered=photos_gathered)
             print(page_text)
             output.write(page_text)
     
