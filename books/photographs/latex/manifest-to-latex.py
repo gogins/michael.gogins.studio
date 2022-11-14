@@ -13,14 +13,18 @@ import dropbox
 import hashlib
 import os
 import os.path
-import PIL
+import piexif
+from PIL import Image
+from PIL.ExifTags import Base
+from PIL.ExifTags import TAGS
+from PIL.ExifTags import GPSTAGS
 import string
 import subprocess
 import sys
 import traceback
 import unicodedata
 
-volume = "iii"
+volume = "ii"
 
 if volume == "i":
     start = 0
@@ -51,7 +55,7 @@ output_filename = "a_third_eye_made_of_glass_photos_{}.tex".format(volume)
 # The manifest should be broken up into volumes of no more than 500 megabytes 
 # per pdf.
 
-page_template_portrait = '''
+page_template = '''
 %% photos_gathered: {photos_gathered}
 \\clearpage
 \section{{\protect\detokenize{{{heading}}}}}
@@ -63,52 +67,124 @@ page_template_portrait = '''
 \\clearpage
 \\begin{{figure}}
 \\raggedleft
-\\includegraphics[height=\\textheight,width=\\linewidth,keepaspectratio,{bb}]{{{basename}}}
+\\includegraphics[height=\\textheight,width=\\linewidth,keepaspectratio]{{{basename}}}
 \\end{{figure}}
 
 '''
+tags_to_print = '''InteropIndex
+PhotometricInterpretation
+Make
+Model
+Orientation
+SamplesPerPixel
+Software
+DateTime
+SubIFDs
+ImageID
+ExposureTime
+FNumber
+ExposureProgram
+SpectralSensitivity
+GPSInfo
+ISOSpeedRatings
+RecommendedExposureIndex
+ISOSpeed
+ExifVersion
+DateTimeOriginal
+ShutterSpeedValue
+ApertureValue
+BrightnessValue
+ExposureBiasValue
+MaxApertureValue
+SubjectDistance
+MeteringMode
+LightSource
+Flash
+FocalLength
+Noise
+ImageNumber
+AmbientTemperature
+Humidity
+Pressure
+WaterDepth
+Acceleration
+CameraElevationAngle
+ExifImageHeight
+ExifImageWidth
+SubjectLocation
+ExposureIndex
+SensingMethod
+SceneType
+ExposureMode
+WhiteBalance
+DigitalZoomRatio
+FocalLengthIn35mmFilm
+Contrast
+Saturation
+Sharpness
+DeviceSettingDescription
+SubjectDistanceRange
+ImageUniqueID
+CameraOwnerName
+BodySerialNumber
+LensSpecification
+LensMake
+LensModel
+LensSerialNumber
+Gamma
+CameraSerialNumber
+LensInfo
+ChromaBlurRadius
+AntiAliasStrength
+ShadowScale
+BestQualityScale
+RawDataUniqueID
+OriginalRawFileName
+OriginalRawFileData
+ActiveArea
+MaskedAreas
+SpatialFrequencyResponse
+SubjectLocation
+ExposureIndex
+FlashEnergy'''.split()
 
-page_template_landscape = '''
-%% photos_gathered: {photos_gathered}
-\\clearpage
-\section{{\protect\detokenize{{{heading}}}}}
-\\noindent {text}
-\\noindent
-\\begin{{lstlisting}}
-{metadata}
-\\end{{lstlisting}}
-\\clearpage
-\\begin{{figure}}
-\\raggedleft
-\\includegraphics[height=\\textheight,{bb}]{{{basename}}}
-\\end{{figure}}
 
+for tag in TAGS:
+    name = TAGS.get(tag, tag)
+    print(tag, name)
+print("")
+for tag in GPSTAGS:
+    name = GPSTAGS.get(tag, tag)
+    print(tag, name)
+    
 '''
-
-
-names_for_tags = {}
-
-tags_ = '''Date,datetime_original
-GPS longitude,gps_longitude
-GPS latitude,gps_latitude
-GPS altitude,gps_altitude
-Make,make
-Model,model
-Focal length (35mm eq),focal_length_in_35mm_film
-Exposure,exposure_time
-F stop,f_number
-ISO,photographic_sensitivity
-Width,pixel_x_dimension
-Height,pixel_y_dimension
-Orientation,orientation'''
-
-tags = []
-images_for_dates = {}
-lines = tags_.split('\n')
-for line in lines:
-    name, tag = line.split(',')
-    names_for_tags[tag] = name
-    tags.append(tag)
+Returns various data and metadata from the image 
+as a formatted legend to print with the image.
+GPSInfo is tag 0x8825 and _should_ be an embedded dictionary, 
+but it's not working here with Python 3.10 on macOS Monterey.
+'''
+def get_metadata(image):
+    exif = image._getexif()
+    text = ""
+    if exif == None:
+        text = text + "{:30} {}\n".format("Image width:", image.width)
+        text = text + "{:30} {}\n".format("Image height:", image.height)
+        
+    else:
+        subifds = exif.get(330)
+        print("subifds", subifds)
+        for tag in exif:
+            value = exif.get(tag)
+            name = TAGS.get(tag, tag)
+            if not isinstance(value, (bytes, bytearray)):
+                line = "EXIF tag: {:5} {:30} {}\n".format(tag, str(name) + ":", value)
+                if name in tags_to_print:
+                    text = text + line
+            
+        if 0x8825 in exif:
+            gps = exif.get(0x8825)
+            print(gps)
+    return text
     
 # There is one manifest for all volumes. The manifest format is:
 # filepath
@@ -557,17 +633,6 @@ def hash_file(filename):
             h.update(chunk)
     return h.hexdigest()
     
-def bounding_box(pathname):
-    dir = os.path.dirname(pathname)
-    filename = os.path.basename(pathname)
-    os.chdir(dir)
-    result = subprocess.run(["extractbb", filename])
-    result = subprocess.run(["extractbb", "-O", pathname], encoding='utf-8', stdout=subprocess.PIPE)
-    print("bb result: ", result)
-    result = result.stdout.split("\n")
-    result = result[2].split()
-    return 'bb= 0 0 {} {}'.format(str(result[3]), str(result[4]))    
-    
 def process(manifest, output_filename_, start, end):
     digests = set()
     output = open(output_filename_, 'w')
@@ -616,38 +681,16 @@ def process(manifest, output_filename_, start, end):
             except:
                 traceback.print_exc()
         with open(pathname, 'rb') as image:
-            bb = bounding_box(pathname)
-            image_with_metadata = Image(image)
-            orientation = "Orientation.TOP_LEFT"
-            try:
-                orientation = str(image_with_metadata.get("orientation"))
-            except:
-                pass
-            print(orientation)
-            width = 0
-            height = 0
-            try:
-                width = int(str(image_with_metadata.get("pixel_x_dimension")))
-                height = int(str(image_with_metadata.get("pixel_y_dimension")))
-            except:
-                pass
-            metadata = []
-            print(image_with_metadata.list_all())
-            ## q
-             print(image_with_metadata.get("gps_dop"))
-            for tag in tags:
-                try:
-                    value = r"" + str(image_with_metadata.get(tag))
-                    if value != "None":
-                        metadata.append(r"{}: {}".format(names_for_tags[tag], value));
-                except:
-                    pass
-            metadata_text = "\n".join(metadata)
+            image_with_metadata = Image.open(image)
+            metadata = get_metadata(image_with_metadata)
+            ##gps_data = get_gps_metadata(pathname)
+            bbox = image_with_metadata.getbbox()
+            bb = 'bb= {} {} {} {}'.format(bbox[0], bbox[1], bbox[2], bbox[3])    
+            orientation = 1
+            width = image_with_metadata.width
+            height = image_with_metadata.height
             photos_gathered = photos_gathered + 1
-            if orientation == "Orientation.TOP_LEFT":
-                page_text = page_template_portrait.format(basename=basename, heading=basename, text=caption, bb=bb, metadata=metadata_text, photos_gathered=photos_gathered)
-            else:
-               page_text = page_template_landscape.format(basename=basename, heading=basename, text=caption, angle=angle,bb=bb, metadata=metadata_text, photos_gathered=photos_gathered)
+            page_text = page_template.format(basename=basename, heading=basename, text=caption, bb=bb, metadata=metadata, photos_gathered=photos_gathered)
             print(page_text)
             output.write(page_text)
     
