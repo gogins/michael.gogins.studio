@@ -24,27 +24,7 @@ import sys
 import traceback
 import unicodedata
 
-volume = "ii"
-
-if volume == "i":
-    start = 0
-    end = 30
-if volume == "ii":
-    start = 30
-    end = 80
-if volume == "iii":
-    start = 80
-    end = 200
-if volume == "iv":
-    start = 200
-    end = 280
-if volume == "v":
-    start = 280
-    end = 400
-
 image_root = "/Users/michaelgogins/Dropbox/images/"
-
-output_filename = "a_third_eye_made_of_glass_photos_{}.tex".format(volume)
 
 # NOTA BENE: 
 #
@@ -79,18 +59,15 @@ Orientation
 SamplesPerPixel
 Software
 DateTime
-SubIFDs
 ImageID
 ExposureTime
 FNumber
 ExposureProgram
 SpectralSensitivity
-GPSInfo
 ISOSpeedRatings
 RecommendedExposureIndex
 ISOSpeed
 ExifVersion
-DateTimeOriginal
 ShutterSpeedValue
 ApertureValue
 BrightnessValue
@@ -117,14 +94,9 @@ SensingMethod
 SceneType
 ExposureMode
 WhiteBalance
-DigitalZoomRatio
 FocalLengthIn35mmFilm
-Contrast
-Saturation
-Sharpness
 DeviceSettingDescription
 SubjectDistanceRange
-ImageUniqueID
 CameraOwnerName
 BodySerialNumber
 LensSpecification
@@ -146,44 +118,76 @@ MaskedAreas
 SpatialFrequencyResponse
 SubjectLocation
 ExposureIndex
+GPSAltitude
+GPSLatitude
+GPSLatitudeRef
+GPSLongitude
+GPSLongitudeRef
 FlashEnergy'''.split()
 
 
-for tag in TAGS:
-    name = TAGS.get(tag, tag)
-    print(tag, name)
-print("")
-for tag in GPSTAGS:
-    name = GPSTAGS.get(tag, tag)
-    print(tag, name)
-    
+def decimal_coords(coords, ref):
+    decimal_degrees = coords[0] + coords[1] / 60 + coords[2] / 3600
+    if ref == "S" or ref == "W":
+        decimal_degrees = -decimal_degrees
+    return decimal_degrees    
+ 
 '''
 Returns various data and metadata from the image 
 as a formatted legend to print with the image.
-GPSInfo is tag 0x8825 and _should_ be an embedded dictionary, 
-but it's not working here with Python 3.10 on macOS Monterey.
+GPSInfo is tag 0x8825.
 '''
 def get_metadata(image):
-    exif = image._getexif()
-    text = ""
-    if exif == None:
-        text = text + "{:30} {}\n".format("Image width:", image.width)
-        text = text + "{:30} {}\n".format("Image height:", image.height)
-        
-    else:
-        subifds = exif.get(330)
-        print("subifds", subifds)
-        for tag in exif:
-            value = exif.get(tag)
-            name = TAGS.get(tag, tag)
-            if not isinstance(value, (bytes, bytearray)):
-                line = "EXIF tag: {:5} {:30} {}\n".format(tag, str(name) + ":", value)
-                if name in tags_to_print:
-                    text = text + line
-            
-        if 0x8825 in exif:
-            gps = exif.get(0x8825)
-            print(gps)
+    try:
+        exif = image._getexif()
+        text = ""
+        if exif == None:
+            text = text + "{:30} {}\n".format("Image width:", image.width)
+            text = text + "{:30} {}\n".format("Image height:", image.height)
+        else:
+            subifds = exif.get(330)
+            print("subifds", subifds)
+            for tag in exif:
+                value = exif.get(tag)
+                name = TAGS.get(tag, tag)
+                if not isinstance(value, (bytes, bytearray)):
+                    line = "EXIF tag: {:5}   {:30} {}\n".format(tag, str(name) + ":", value)
+                    if name in tags_to_print:
+                        text = text + line
+            if 0x8825 in exif:
+                gps = exif.get(0x8825)
+                for tag_ in gps:
+                    name = GPSTAGS.get(tag_, tag_)
+                    value = gps.get(tag_)
+                    if name == "GPSLatitudeRef":
+                        GPSLatitudeRef = value
+                        line = "GPS  tag: {:5}   {:30} {}\n".format(tag_, str(name) + ":", value)
+                        text = text + line
+                    if name == "GPSLatitude":
+                        GPSLatitude = value
+                        line = "GPS  tag: {:5}   {:30} {} deg {}\' {}\"\n".format(tag_, str(name), int(value[0]), int(value[1]), float(value[2]))
+                        text = text + line
+                    if name == "GPSLongitudeRef":
+                        GPSLongitudeRef = value
+                        line = "GPS  tag: {:5}   {:30} {}\n".format(tag_, str(name) + ":", value)
+                        text = text + line
+                    if name == "GPSLongitude":
+                        GPSLongitude = value
+                        line = "GPS  tag: {:5}   {:30} {} deg {}\' {}\"\n".format(tag_, str(name), int(value[0]), int(value[1]), float(value[2]))
+                        text = text + line
+                    if name == "GPSAltitude":
+                        GPSAltitude = value
+                        line = "GPS  tag: {:5}   {:30} {}\n".format(tag_, str(name) + ":", value)
+                        text = text + line
+                decimal_latitude = decimal_coords(GPSLatitude, GPSLatitudeRef)        
+                decimal_longitude = decimal_coords(GPSLongitude, GPSLongitudeRef)        
+                line = "                  Decimal latitude:              {:.6f}\n".format(float(decimal_latitude))
+                text = text + line
+                line = "                  Decimal longitude:             {:.6f}\n".format(float(decimal_longitude))
+                text = text + line
+                        
+    except:
+        traceback.print_exc()
     return text
     
 # There is one manifest for all volumes. The manifest format is:
@@ -611,7 +615,13 @@ renamed/[2011-02-08_18-21-39][2011-02-08-a_050][Canon][Canon_PowerShot_G7][38e83
 renamed/[2011-02-08_18-38-12][2011-02-08-a_072][Canon][Canon_PowerShot_G7][ce60756d3575aaa0b08a879e15ebb57c].1.jpg|The clock at Frank Music Company, Manhattan.
 renamed/[2011-02-21_17-54-51][2011-05-14-a_001][Canon][Canon_PowerShot_G7][cb9c35d724dd9f0712aa1bab9e66d0fc].1.jpg|The Brooklyn Queens Expressway from the Brooklyn Promenade, New York City.
 renamed/[2011-05-09_11-17-01][2011-05-14-a_129][Canon][Canon_PowerShot_G7][f29fae70bf90f2099852d54e352e9321].1.jpg|County Cork, Republic of Ireland.
-renamed/[2011-05-13_06-45-45][2011-05-14-a_271][Canon][Canon_PowerShot_G7][bca07c4456f7f17eeb51157fbd098157].1.jpg|Coast of County Kerry, Republic of Ireland."""
+renamed/[2011-05-13_06-45-45][2011-05-14-a_271][Canon][Canon_PowerShot_G7][bca07c4456f7f17eeb51157fbd098157].1.jpg|Coast of County Kerry, Republic of Ireland.
+20220620_161225.jpg|
+20220626_190652.jpg|
+20220708_220335.jpg|
+20220911_155642.jpg|
+20220924_200003.jpg|
+"""
 
 def get_date(path, image_):
     date_ = "blank"
@@ -694,6 +704,24 @@ def process(manifest, output_filename_, start, end):
             print(page_text)
             output.write(page_text)
     
-process(manifest, output_filename, start, end)
+for volume in ["i", "ii", "iii", "iv", "v"]:
+    print("\nVOLUME {:4} **************************\n".format(volume))
+    if volume == "i":
+        start = 0
+        end = 30
+    if volume == "ii":
+        start = 30
+        end = 80
+    if volume == "iii":
+        start = 80
+        end = 200
+    if volume == "iv":
+        start = 200
+        end = 280
+    if volume == "v":
+        start = 280
+        end = 400
+    output_filename = "a_third_eye_made_of_glass_photos_{}.tex".format(volume)
+    process(manifest, output_filename, start, end)
 
     
