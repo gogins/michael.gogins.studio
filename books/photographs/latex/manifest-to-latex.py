@@ -51,6 +51,25 @@ page_template = '''
 \\end{{figure}}
 
 '''
+
+page_template_portrait = '''
+%% photos_gathered: {photos_gathered}
+\\clearpage
+\section{{\protect\detokenize{{{heading}}}}}
+\\noindent {text}
+\\noindent
+\\begin{{lstlisting}}
+{metadata}
+\\end{{lstlisting}}
+\\clearpage
+\\begin{{figure}}
+\\raggedleft
+\\includegraphics[height=\\linewidth,width=\\textheight,keepaspectratio,angle=270]{{{basename}}}
+\\end{{figure}}
+
+'''
+
+
 tags_to_print = '''InteropIndex
 PhotometricInterpretation
 Make
@@ -123,6 +142,8 @@ GPSLatitude
 GPSLatitudeRef
 GPSLongitude
 GPSLongitudeRef
+ImageWidth
+ImageLength
 FlashEnergy'''.split()
 
 
@@ -137,6 +158,11 @@ Returns various data and metadata from the image
 as a formatted legend to print with the image.
 GPSInfo is tag 0x8825.
 '''
+'''
+Returns various data and metadata from the image 
+as a formatted legend to print with the image.
+GPSInfo is tag 0x8825.
+'''
 def get_metadata(image):
     try:
         exif = image._getexif()
@@ -145,8 +171,6 @@ def get_metadata(image):
             text = text + "{:30} {}\n".format("Image width:", image.width)
             text = text + "{:30} {}\n".format("Image height:", image.height)
         else:
-            subifds = exif.get(330)
-            print("subifds", subifds)
             for tag in exif:
                 value = exif.get(tag)
                 name = TAGS.get(tag, tag)
@@ -425,7 +449,7 @@ renamed/[2016-02-29_08-14-30][DSC08629][SONY][DSC-RX100][d4d3bedd1554b07e430bb02
 renamed/[2016-02-29_09-18-19][DSC08650][SONY][DSC-RX100][b4e489b25d253bdadc1071f3067922f2].1.jpg|Soccer balls for sale, Tel Aviv, Israel.
 renamed/[2016-03-07_09-41-22][DSC08886][SONY][DSC-RX100][37eb4ec0f23d126845085ec0939a1ed8].1.jpg|This shop used to be a grocery run by my sister and her husband, Safed, Israel.
 renamed/[2016-03-11_18-22-12][DSC08998][SONY][DSC-RX100][75b433239a69d9a48f0a87bbc76622a7].1.jpg|My neice Rivka, my wife Heidi, my sister Wendy, my nephew Emanuel, Tel Aviv, Israel.
-renamed/[2016-03-13_13-07-33][DSC09060][SONY][DSC-RX100][cd66ab077431ed470565be60e90aaf13].1_v1.jpg|House, Haifa, Israel.
+renamed/[2016-03-13_13-07-33][DSC09060][SONY][DSC-RX100][cd66ab077431ed470565be60e90aaf13].1_v2.jpg|House, Haifa, Israel.
 renamed/[2016-03-15_11-15-05][DSC09253][SONY][DSC-RX100][f4e88d78f3a566e5db5a1acf7c67623c].1.jpg|Ships in the ridings, Crusader walls, Akko, Israel.
 renamed/[2016-03-16_10-28-58][DSC09313][SONY][DSC-RX100][784f65227b15304bb58a3e8303b329e8].1.jpg|Sea of Galilee, Israel.
 renamed/[2016-03-29_08-08-23][DSC09661][SONY][DSC-RX100][4f343954bc8d52ead742dcf976abcb10].1.jpg|Mt. Scopus, no-man's land, East Jerusalem, Israel.
@@ -446,7 +470,7 @@ RX100/100MSDCF/DSC01064.JPG|Melbourne, Australia.
 RX100/100MSDCF/DSC01171.JPG|Barber shop, Brunswick East, Melbourne, Australia.
 RX100/100MSDCF/DSC01306.JPG|Harbor, Hobart, Tasmania.
 RX100/100MSDCF/DSC01356.JPG|Toby mugs, village restaurant, Tasmania.
-RX100/100MSDCF/DSC01359.JPG|Landscape on the way to Wineglass Bay, Tasmania.
+RX100/100MSDCF/DSC01359.1.JPG|Landscape on the way to Wineglass Bay, Tasmania.
 XT_1585/Camera/IMG_20170310_145854935.jpg|
 RX100/100MSDCF/DSC01572.JPG|Sunset on Port Philip Bay from Hampton, Melbourne, Australia.
 RX100/100MSDCF/DSC01622.JPG|Bluffs along Great Ocean Road, Australia.
@@ -485,7 +509,7 @@ RX100/100MSDCF/DSC05663.JPG|Chinatown, Manhattan.
 RX100/100MSDCF/DSC05784.JPG|Early gear used for making electronic music, exhibit at the Performing Arts Library, Lincoln Center, Manhattan.
 RX100M5/100MSDCF/DSC06075.JPG|
 RX100M5/100MSDCF/DSC06552.JPG|Chinese Garden, Dunedin, New Zealand.
-RX100/100MSDCF/DSC06643.JPG|Southern Alps from Lake Wakatipu, Glenorchy, South Island, New Zealand.
+RX100/100MSDCF/DSC06643.1.JPG|Southern Alps from Lake Wakatipu, Glenorchy, South Island, New Zealand.
 SM-950U/20190406_154218.jpg|Southern Alps, South Island, New Zealand.
 SM-950U/20190407_154615.jpg|Back country road, South Island, New Zealand.
 SM-950U/20190408_171520.jpg|Trail, Southern Alps, South Island, New Zealand.
@@ -692,15 +716,19 @@ def process(manifest, output_filename_, start, end):
                 traceback.print_exc()
         with open(pathname, 'rb') as image:
             image_with_metadata = Image.open(image)
+            exif = image_with_metadata.getexif()
             metadata = get_metadata(image_with_metadata)
-            ##gps_data = get_gps_metadata(pathname)
-            bbox = image_with_metadata.getbbox()
-            bb = 'bb= {} {} {} {}'.format(bbox[0], bbox[1], bbox[2], bbox[3])    
-            orientation = 1
+            # We assume that there are no mirror orientations.
+            # Then 1 is landscape, 3 is landscape upside down, 
+            # 6 is portait, and 8 is portrait upside down.
+            orientation = exif.get(0x0112)
             width = image_with_metadata.width
             height = image_with_metadata.height
             photos_gathered = photos_gathered + 1
-            page_text = page_template.format(basename=basename, heading=basename, text=caption, bb=bb, metadata=metadata, photos_gathered=photos_gathered)
+            if orientation == 6:
+                page_text = page_template_portrait.format(basename=basename, heading=basename, text=caption, metadata=metadata, photos_gathered=photos_gathered)
+            else:
+                page_text = page_template.format(basename=basename, heading=basename, text=caption, metadata=metadata, photos_gathered=photos_gathered)
             print(page_text)
             output.write(page_text)
     
