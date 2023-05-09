@@ -15,29 +15,38 @@
 \author{Michael Gogins}
 \date{6 May 2023}                                           % Activate to display a given date or no date
 
+\usepackage[
+backend=biber,
+bibencoding=utf8,
+style=numeric,
+sorting=ynt,
+hyperref=true,
+backref=true
+]{biblatex}
+\addbibresource{gogins.bib}
+
 \begin{document}
 \maketitle
 %\section{}
-This essay recounts my personal journey towards a deeper understanding of the mathematical foundations of algorithmic music composition. I also present  implications from this understanding for the limitations and prospects of algorithmic composition.
+This essay recounts my personal journey towards a deeper understanding of the mathematical foundations of algorithmic music composition. I also discuss  implications from these foundations for the limitations and prospects of algorithmic composition.
 
-In 1983, when I was a returning undergraduate majoring in comparative religion at the University of Washington,  I attended a lecture on fractals by Benoit Mandelbrot, discoverer of the set named after him. Briefly, given the quadratic recurrence equation $z_{n+1} = z_n^2 + c$, the Mandelbrot set consists of all points $c$ in the complex plane for which $z$, starting with $z = 0$, does not approach infinity as the equation is iterated. Then, given some particular point $c$ in the Mandelbrot set, there is a Julia set consisting of all points $z$ for which $z_n$ does not approach infinity as the equation is iterated.  Mandelbrot demonstrated how any point in the Mandelbrot set can be used as the generating parameter of a Julia set, and how a plot of the neighborhood near a point in the Mandelbrot set closely resembles the plot of the corresponding Julia set (this has been proved in \href{https://arxiv.org/pdf/1804.00176.pdf}{JULIA SETS APPEAR QUASICONFORMALLY IN THE
-MANDELBROT SET}). In short, the Mandelbrot set serves as a parametric map of all Julia sets. A useful summary of these facts can be found at \url{https://mathworld.wolfram.com/MandelbrotSet.html}. By now there is a quite extensive literature on the Mandelbrot set and Julia sets, and research is still continuing. There are several features of the Mandelbrot set/Julia set duality that are important for a deeper understanding of algorithmic composition:
+In 1983, when I was a returning undergraduate majoring in comparative religion at the University of Washington, I attended a lecture on fractals by Benoit Mandelbrot, discoverer of the set named after him \cite{citeulike:580392, peitgen2004mandelbrot}. Briefly, given the quadratic recurrence equation $z_{n+1} = z_n^2 + c$, the Mandelbrot set consists of all points $c$ in the complex plane for which $z$, starting with $z = 0$, does not approach infinity as the equation is iterated. Then, given some particular point $c$ in the Mandelbrot set, there is a Julia set consisting of all points $z$ for which $z_n$ does not approach infinity as the equation is iterated.  Mandelbrot showed in his lecture how any point in the Mandelbrot set can be used as the generating parameter of a Julia set, and how a plot of the neighborhood near a point in the Mandelbrot set closely resembles the plot of the corresponding Julia set \cite{lei1990similarity} (this has recently been proved \cite{kawahira2018julia}). In short, the Mandelbrot set serves as a parametric map of all Julia sets. By now there is an extensive literature on the Mandelbrot set and Julia sets, and research continues. 
+
+There are several features of the Mandelbrot set/Julia set duality that are important for a deeper understanding of algorithmic composition.
 
 \begin{description}
-\item[Uncomputability] The Mandelbrot set, properly speaking, \emph{is not computable}. The plots that we make of the set are approximations. Note that uncomputability in analysis is related to but not identical with uncomputability in logic and theoretical computer science. \href{https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=7498339680d3e73c206ec75af4c6d0c9b4a10274}{Peter Hertling explicates the subtleties here}; basically, the Mandelbrot set is not Turing computable, but computing whether a point belongs the set is recursively enumerable, that is, one can get as close to the real point as one likes, given enough time.
-\item[Computational Irreducibility] Although any Julia set approximately resembles the neighborhood of the Mandelbrot set near its generating parameter, any Julia set is the chaotic attractor of its generating equation. Therefore, the orbit of the Julia equation is \emph{computationally irreducible} (\href{https://arxiv.org/pdf/1304.5247.pdf}{this has been proved by Zwirn}). The orbit of the equation cannot be determined by examining the equation, and it cannot except in trivial cases be determined even by mathematically analyzing the equation. In order to know the orbit, it is necessary to actually iterate the equation, that is, to run a program. Even then, we can only obtain an approximation.
+\item[Uncomputability] The Mandelbrot set, properly speaking, \emph{is not computable} \cite{blum1993godel}. The plots that we make of the set are approximations. Note that uncomputability in analysis is related to but not identical with uncomputability in logic and theoretical computer science; Hertling showed that although the  Mandelbrot set is not recursively computable, i.e. not Turing computable, the set is nevertheless \emph{recursively enumerable} \cite{Hertling2005-HERITM-3}, that is, one can get as close to the real set as one likes, given enough time.
+\item[Computational irreducibility] Although any Julia set approximately resembles the neighborhood of the Mandelbrot set near its generating parameter, any Julia set is the chaotic attractor of its generating equation. Therefore, the orbit of the Julia equation is \emph{computationally irreducible} in the sense of Wolfram \cite{wolfram1985undecidability}, as proved by Zwirn \cite{zwirn2015computational}. The orbit of the equation cannot be determined by examining the equation, and it cannot except in trivial cases be determined even by mathematically analyzing the equation. In order to know the orbit, it is necessary to actually iterate the equation, that is, to run a program that computes the iterations. Even then, we can only obtain an approximation.
 \end{description}
 
-https://community.ams.org/journals/jams/2006-19-03/S0894-0347-05-00516-3/S0894-0347-05-00516-3.pdf
+Already at the time of Mandelbrot's lecture, I was developing an interest in computer music and algorithmic composition, in particular, algorithmic composition based on fractals. What occurred to me during the lecture is that if one zooms into the plot of the Mandelbrot set, searching for interesting-looking regions, one can then plot the Julia set for a point in that region, and one can then somehow translate that Julia set into a musical score. In general, the 2-dimensional plot is mapped more or less directly onto a 2-dimensional piano-roll type score, with the $x$ axis representing time and the $y$ axis representing pitch.
 
-Check out https://arxiv.org/abs/1909.11066, the Mandelbrot set is the shadow of a Julia set. Possibly implies that my mapping problems can be solved by projection (shadows).
-
-Already at the time of Mandelbrot's lecture, I was developing an interest in computer music and algorithmic composition, in particular, algorithmic composition based on fractals. What occurred to me during the lecture is that if one zooms into the plot of the Mandelbrot set, searching for interesting-looking regions, one can then plot the Julia set for a point in that region, and one can then somehow translate that Julia set into a musical score. This becomes an interactive process in which one may approach more and more closely to some sort of musically interesting pattern. This is a form of what I have termed parametric composition. Since then I have implemented several variations of this idea in software for composing:
+By iterating this process, one may approach more and more closely to some sort of musically interesting pattern. This is a form of what I have termed parametric composition. Since then I have implemented several variations of this idea in software for composing:
 
 \begin{description}
-\item[Map orbits in Julia sets to musical sequences] This was trivial to implement but the generated music is also trivial.
+\item[Map orbits in Julia sets to musical sequences] This was trivial to implement, but the generated music is also trivial.
 \item[Map plots of Julia sets to musical scores] This also was trivial to implement, and the generated music is much less trivial, but there are problems with how the plot of the Julia set can best be mapped to a musical score, due to a \emph{dimensional mismatch}. I discuss this further below.
-\item[Define an analogue of the Mandelbrot set for iterated function systems (IFS)]. I have proved that this method is \emph{universal}, that is, capable of directly generating any finite score, but the method depends on specifying more than just two parameters, and generating a parametric map (an analogue of the plot of the Mandelbrot set in the complex plane) for dozens or hundreds of parameters becomes \emph{computationally intractable}. I discuss this further below.
+\item[Find a Mandelbrot set for iterated function systems (IFS)] I have proved that this method is \emph{universal} \cite{obsessed, gogins2023scoregraphs}, that is, capable of directly generating any finite score, but the method depends on specifying more than just two parameters, and generating a parametric map (an analogue of the plot of the Mandelbrot set in the complex plane) for dozens or hundreds of parameters becomes \emph{computationally intractable}. I discuss this further below.
 \end{description}
 
 I have now added to my list of mathematical things with fundamental implications for algorithmic composition:
@@ -45,15 +54,10 @@ I have now added to my list of mathematical things with fundamental implications
 \begin{description}
 \item[Universality] It is indeed possible to write a computer program that not only can generate any possible score as precisely as one likes, but also to greatly compress the amount of information required to represent the score. This is, of course, the fundamental motivation for pursuing algorithmic composition.
 \item[Dimensional mismatch] The plot of a Julia set is a fractal in the complex plane. Its fractal dimension is 2 and the complex plane also has dimension 2. Mapping either an orbit in the set, or a plot of the set, to a musical score is frustrating. It can be done heuristically, e.g. by filtering the plot, but it would be elegant if either a musical score had dimension 2, or a Julia set had higher dimensionality, e.g. to directly represent not just pitch and time but also, e.g., loudness and choice of instrument.
-\item[Map plots of Julia sets to musical scores] This also was trivial to implement, and the generated music is much less trivial, but there are problems with how the plot of the Julia set can best be mapped to a musical score, due to a \emph{dimensional mismatch}. I discuss this further below.
-\item[Computational intractability] To plot a parametric map of, e.g., IFS that directly represent musical scores is theoretically simple but, in practice, takes much too long to do given the number of explorations a composer needs to do to come up with a good piece.
+\item[Computational intractability] To plot a parametric map of, e.g., IFS that directly represent musical scores is theoretically simple but, in practice, takes much too long to compute given the number of explorations a composer must try in order to find a good piece.
 \end{description}
 
-The limitations of algorithmic composition do not lie in what can or cannot be composed -- every possible piece of music can be composed algorithmically, and there are even \emph{specific algorithms} that can compose every possible piece of music. The limitations of algorithmic composition lie in specific difficulties that arise when using algorithms for \emph{any} purpose, not just musical composition:
-
-There is much irony here. It is only thanks to computational irreducibility that algorithms can be used to compose \emph{original} music, that is, music that would be difficult or impossible to imagine.
-
-The prospects of algorithmic composition lie in finding methods of evading or minimizing these limitations.
+Before further exploring the mathematical foundations of algorithmic composition, I will provide some additional background relating to different software systems for algorithmic composition, and to artificial intelligence, which can also be used to compose music.
 
 \section{Methods of Algorithmic Composition}
 
@@ -65,11 +69,14 @@ Some composers, such as myself, prefer to use an algorithm, such as a Lindenmaye
 
 Recently it has become possible to compose music using generative pre-trained transformers (GPTs) trained with large language models (LLMs). This can be called the \emph{machine learning} approach to computer music.
 
-To date, few pieces of algorithmically composed music have become popular even among aficionados of art music and experimental music. Some of the pieces that have become popular include Iannis Xenakis' \emph{La Légende D'Eer} and \emph{Gendy 3}, and Charles Dodge's \emph{Viola Elegy}. It is also the case that both art music composers and film or popular music composers have incorporated an algorithmic toolkit into their already massive toolkits of music technology.
+To date, few pieces of algorithmically composed music have become popular even among aficionados of art music and experimental music. Some of the pieces that have become popular, or at least influential, include Iannis Xenakis' \emph{La Légende D'Eer} and \emph{Gendy 3}, and Charles Dodge's \emph{Viola Elegy}. It is also the case that some art music composers and film or popular music composers have incorporated an algorithmic toolkit into their already massive toolkits of music technology.
 
-In the following, I hope to shed light on why the toolkit approach has been the most successful, why mathematical methods have not been more widely adopted, and in general what are the future prospects of these different methods of composition. To prepare for this, I will present some fundamental facts about computing in general and algorithmic composition in particular.
+In the following, I hope to shed light on why the toolkit approach has been the most successful, why mathematical methods have not been more widely adopted, and in general what are the future prospects of these different methods of composition. 
 
 
+https://community.ams.org/journals/jams/2006-19-03/S0894-0347-05-00516-3/S0894-0347-05-00516-3.pdf
+
+Check out https://arxiv.org/abs/1909.11066, the Mandelbrot set is the shadow of a Julia set. Possibly implies that my mapping problems can be solved by projection (shadows).
 
 
 
@@ -77,5 +84,5 @@ In the following, I hope to shed light on why the toolkit approach has been the 
 %\subsection{}
 
 
-
+\printbibliography
 \end{document}  
