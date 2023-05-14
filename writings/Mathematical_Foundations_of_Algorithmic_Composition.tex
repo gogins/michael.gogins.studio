@@ -1,4 +1,4 @@
-\documentclass[11pt]{amsart}
+\documentclass[11pt]{scrartcl}
 %\documentclass[letterpaper, 12pt]{article}
 
 %\usepackage{geometry}                % See geometry.pdf to learn the layout options. There are lots.
@@ -10,7 +10,15 @@
 \usepackage{epstopdf}
 \usepackage{url}
 \usepackage{hyperref}
-
+\usepackage{scrlayer-scrpage}
+\lohead{Michael Gogins}
+\rohead{Algorithmic Composition}
+\lofoot[Irreducible Productions]
+{Irreducible Productions}
+\rehead{Michael Gogins}
+\lehead{Algorithmic Composition}
+\refoot[Irreducible Productions]
+{Irreducible Productions}
 %\usepackage{cmjStyle} %use CMJ style
 %\usepackage{natbib} %natbib package, necessary for customized cmj BibTeX style
 %\bibpunct{(}{)}{;}{a}{}{, } %adapt style of references in text
@@ -19,7 +27,8 @@
 
 \title{Mathematical Foundations of Algorithmic Composition}
 \author{Michael Gogins}
-\date{6 May 2023}                                           % Activate to display a given date or no date
+%\url{http://michaelgogins.tumblr.com}
+\date{14 May 2023}                                           % Activate to display a given date or no date
 
 \usepackage[
     backend=biber,
@@ -48,7 +57,7 @@ In 1983, when I was a returning undergraduate majoring in comparative religion a
 There are several features of the Mandelbrot set/Julia set duality that are important for a deeper understanding of algorithmic composition.
 
 \begin{description}
-\item[Uncomputability] The Mandelbrot set, properly speaking, \emph{is not computable} \cite{blum1993godel}. The plots that we make of the set are approximations. Note that uncomputability in analysis is related to but not identical with uncomputability in logic and theoretical computer science. Hertling showed that although the  Mandelbrot set is not \emph{recursively computable}, i.e. not Turing computable, the set is nevertheless \emph{recursively enumerable} \cite{Hertling2005-HERITM-3}; given enough time, one can approximate the real set as closely as one likes. Braverman proved there are some Julia sets that are not even recursively enumerable \cite{braverman2006non, braverman2009computability}.
+\item[Uncomputability] The Mandelbrot set, properly speaking, \emph{is not recursively computable}, i.e.\ not Turing computable \cite{blum1993godel}. The plots that we make of the set are approximations. Note that uncomputability in analysis is related to but not identical with uncomputability in logic and theoretical computer science. Hertling showed that although the  Mandelbrot set is not recursively computable, it is nevertheless \emph{recursively enumerable} \cite{Hertling2005-HERITM-3}; given enough time, one can approximate the real set as closely as one likes. However, Braverman proved there are some Julia sets that are not even recursively enumerable \cite{braverman2006non, braverman2009computability}.
 \item[Computational irreducibility] Although any Julia set approximately resembles the neighborhood of the Mandelbrot set near its generating parameter, any Julia set is the chaotic attractor of its generating equation. Therefore, the orbit of the Julia equation is \emph{computationally irreducible} in the sense of Wolfram \cite{wolfram1985undecidability}, as proved by Zwirn \cite{zwirn2015computational}. The orbit of the equation cannot be determined by examining the equation, and it cannot except in trivial cases be determined even by mathematically analyzing the equation. In order to know the orbit, it is necessary to actually iterate the equation, that is, to run a program that computes the iterations. Even then, we can only obtain an approximation.
 \end{description}
 
@@ -59,15 +68,15 @@ By iterating this process, one may approach more and more closely to some sort o
 \begin{description}
 \item[Map orbits in Julia sets to musical sequences] This was trivial to implement, but the generated music is also trivial.
 \item[Map plots of Julia sets to musical scores] This also was trivial to implement, and the generated music is much less trivial, but there are problems with how the plot of the Julia set can best be mapped to a musical score, due to a \emph{dimensional mismatch}. I discuss this further below.
-\item[``Mandelbrot set'' for iterated function systems (IFS)] I have proved that this method is \emph{universal} \cite{obsessed, gogins2023scoregraphs}, that is, capable of directly generating any finite score, but the method depends on specifying more than just two parameters, and generating a parametric map (an analogue of the plot of the Mandelbrot set in the complex plane) for dozens or hundreds of parameters becomes \emph{computationally intractable}. I discuss this further below.
+\item[``Mandelbrot set'' for iterated function systems (IFS)] I proved that this method is \emph{universal} \cite{obsessed, gogins2023scoregraphs}, that is, capable of directly generating any finite score, but the method depends on specifying more than just two parameters, and generating a parametric map (an analogue of the plot of the Mandelbrot set in the complex plane) for dozens or hundreds of parameters requires the use of a Hilbert index  \cite{hamilton2007compact} and, in my experience to date, quickly becomes \emph{computationally intractable}. I discuss this further below.
 \end{description}
 
 I have now added to my list of mathematical things with fundamental implications for algorithmic composition:
 
 \begin{description}
 \item[Universality] Not only is it indeed possible to write a computer program that can generate any possible score as precisely as one likes, it is also possible greatly compress the amount of information required to represent the score. This is, of course, one of the fundamental motivations for pursuing algorithmic composition.
-\item[Mappability] Compositional algorithms that are controlled by numerical parameters are mappable in the sense that a Hilbert index on the plane for those parameters, even multi-dimensional parameters, can be colored by some feature of interest in the corresponding scores \cite{hamilton2007compact}. This is an analog of the Mandelbrot set. Features in such maps reveal geometric features of the parameters, because the Hilbert index guarantees that points close together in the Hilbert curve are close in the ordering of the multidimensional data.
-\item[Dimensional mismatch] The plot of a Julia set is a fractal in the complex plane. Its Hausdorff dimension is 2 and the complex plane has topological dimension 2. Mapping either an orbit in the set, or a plot of the set, to a musical score is frustrating. It can be done heuristically, e.g. by filtering the plot, but it would be elegant if either a musical score had dimension 2, or a Julia set had higher dimensionality, i.e. to directly represent not just pitch and time but also, e.g., loudness and choice of instrument. However, such  dimensional mismatches can be overcome in a mathematically elegant way using Hilbert indices. 
+\item[Mappability] Compositional algorithms that are controlled by numerical parameters are mappable in the sense that a Hilbert index on the plane for those parameters, even multi-dimensional parameters, can be colored by some feature of interest in the corresponding scores. This is an analog of the Mandelbrot set. Features in such maps reveal geometric features of the parameters, because the Hilbert index guarantees that points close together in the Hilbert curve are close in the ordering of the multidimensional data.
+\item[Dimensional mismatch] The plot of a Julia set is a fractal in the complex plane. Its Hausdorff dimension is 2 and the complex plane has topological dimension 2. Mapping either an orbit in the set, or a plot of the set, to a musical score is frustrating. It can be done heuristically, e.g.\ by filtering the plot, but it would be better if either a musical score had dimension 2, or a Julia set had higher dimensionality, i.e.\ to directly represent not just pitch and time but also, e.g., loudness and choice of instrument. However, such  dimensional mismatches can be overcome in a mathematically elegant way using Hilbert indices. 
 \item[Computational intractability] To plot a parametric map of, e.g., IFS that directly represent musical scores is conceptually simple but, in practice, takes much too long to compute given the number of explorations a composer must try in order to find a good piece.
 \end{description}
 
@@ -88,8 +97,8 @@ Recently it has become possible to compose music using generative pre-trained tr
 Although it is early days for machine learning, contemporary experience has led to a number of reviews and critical studies of the capabilities and limitations of machine learning. From the skeptical side, see \cite{dale2021gpt}. For an amusing and instructive series of dialogues between all sides, see Scott Aaronson's blog \cite{shtetl}. This experience makes it possible to identify a few more important things about the mathematical foundations of algorithmic composition:
 
 \begin{description}
-\item[Computational opacity] All agree that ChatGPT can generate amazing, even spooky, results without anyone understanding much about what is going on in the neural network. We have a perfect understanding of each component in the GPT, because these components are actually quite simple, but we have no idea at all how something like ChatGPT can conduct a fact-filled conversation with one in perfect English. The details are scattered through billions of neural network weights in the LLM. Computational opacity is a form of computational irreducibility, but goes well beyond irreducibility because, with computational opacity, we cannot obtain even a partial understanding of the actual computations performed by the software. We have built one irreducible program (the GPT with pre-trained LLM) on top of another irreducible program (the untrained GPT). Even though it is computationally irreducible, we still have a perfect understanding of how the untrained GPT actually works; but it seems very likely that we will not, at least in practice, ever obtain even a partial understanding of how the  \emph{trained} GPT actually works.
-\item [Hallucination] Refers to the tendency of LLMs to produce factually incorrect responses to prompts. It is a reminder that the software has no sense of reality and no means of comparing what it generates with the real world. This may change in the future.
+\item[Computational opacity] All agree that ChatGPT can generate amazing, even spooky, results without anyone understanding much about what is going on in the neural network. We have a perfect understanding of each component in the GPT, because these components are actually quite simple, but we have no idea at all how something like ChatGPT can conduct a fact-filled conversation with one in perfect English. The details are scattered through billions of neural network weights in the LLM. Computational opacity is a form of computational irreducibility, but goes well beyond irreducibility because, with computational opacity, we cannot obtain even a partial understanding of the actual computations performed by the software. We have built one irreducible program (the LLM) on top of another irreducible program (the GPT). Even though it is computationally irreducible, we still have a perfect understanding of how the untrained GPT actually works; but it seems very likely that we will not, at least in practice, ever obtain even a partial understanding of how the  \emph{trained} GPT actually works.
+\item [Hallucination] Refers to the tendency of LLMs to generate factually incorrect responses to prompts. It is a reminder that the software has no sense of reality and no means of comparing what it generates with the real world. This may change in the future.
 \item [Derivative] LLMs generate responses to prompts based on high-dimensional correlations that the LLMs have automatically discovered in the training data. This is a self-referential process. When we converse with ChatGPT we are looking at ourselves in a mirror, and in fact, in a fun-house mirror.
 \end{description}
 
@@ -105,7 +114,7 @@ Such generative algorithms generally reflect processes in Nature that produce fr
 
 Generally speaking, how to set the parameters in order to obtain a desired result is more or less opaque. This is well-known as the \emph{inverse problem}. Another name for this phenomenon is, once again, \emph{computational irreducibility}, meaning that it is not possible to grasp the results of an algorithm without actually computing it.
 
-This is very far from being a fault of the method, it is a virtue. In this way, and only in this way, we can generate scores that we would not actually be able to imagine. This is, of course, another fundamental motivation for pursuing algorithmic composition. And it's the most important motivation. It actually amplifies our imagination.
+This is very far from being a fault of the method, it is a virtue. In this way, and only in this way, can we generate scores that we would not actually be able to imagine. This is, of course, another fundamental motivation for pursuing algorithmic composition. And it's the most important motivation. \emph{This kind of algorithmic composition actually amplifies our musical imagination}.
 
 Now the question arises, \emph{how can such opaque methods be used to compose good music}? It is difficult but by no means impossible, and here is the usual way I do it.
 
@@ -119,7 +128,7 @@ This can be repeated for any number of parameters, but it is a tedious process a
 
 This procedure amounts to a sort of binary search through a set of possible parameter values so vast – indeed infinite – that a linear search is simply out of the question. But a binary search is far more efficient than a linear search. Furthermore, finding two or three ``sweet spots'' in a small set of controlling parameters – each of which has global effects on the entire score – can produce a surprisingly large improvement in the musicality of the result.
 
-I see here an analogy with the way in which GPTs work. There are repeated searches in a parameter space (as with the attention mechanism) at increasing levels of refinement (gradient descent).
+I see here an analogy with the way in which LLMs work. There are repeated searches in a parameter space (as with the attention mechanism) at increasing levels of refinement (gradient descent).
 
 I have known a number of composers, some quite well. Few algorithmic composers simply ``hear music in their heads'' and write software to render it, although that is certainly done sometimes. Most fool around producing various experimental chunks of music, refine them more or less as I have described, and probably assemble some of them into a finished composition.
 
@@ -129,11 +138,11 @@ Before I proceed to look at this kind of production from a mathematical point of
 \item[Incomputability] The set of possible musical compositions (assuming that some pieces either last an infinitely long time, or that between any two pieces is a continuous path consisting of variations between the pieces) is recursively incomputable.
 \item[Universality] In spite of the incomputability of compositions, they are recursively enumerable, so it is possible to approximate any possible composition as closely as one likes.
 \item[Irreducibility] Compositional algorithms that have a strong analogy to Julia sets are computationally irreducible; indeed, perhaps most interesting compositional algorithms, e.g. differential canons in process music, are computationally irreducible.
-\item[Opacity] Compositional algorithms based on machine learning are not only computationally irreducible, they are computationally opaque in that we have essentially no insight into the meaning of the steps followed by the transformer.
+\item[Opacity] Compositional algorithms based on machine learning are not only computationally irreducible, they are computationally opaque in that we have essentially no insight into the meaning of the steps followed by the LLM.
 \item[Mappability] Compositional algorithms are mappable. This ultimately is because the compositions can be ordered in some way, either as sets of scores, or as sets of generating parameters.
 \item[Intractability] Producing a useful map of some subset of compositions is very compute-intensive. 
-\item[Hallucination] Transformers trained on large sets of data and that are supposed to provide true or useful outputs do not always provide true or useful outputs. Sometimes they just make stuff up. But this means that material generated by a transformer in response to a prompt cannot be trusted to be true or useful. It is necessary for a person, indeed an expert, to evaluate the material. It is by no means clear at this time whether an expert equipped with a LLM is more productive for creative work than the same expert without the LLM.
-\item[Unoriginality] Transformers work by discovering high-dimensional correlations in large bodies of training data. This means that transformers can select, summarize, and vary but they cannot generate an output that is not correlated with the training data. In other words there is a limit to their originality. However, it is by no means clear at this time whether this limit is well below, or well above, the creativity of experts in the field from which the training data was drawn.
+\item[Hallucination] LLMs that are supposed to provide true or useful outputs sometimes just make stuff up. But this means that material generated by an LLM in response to a prompt cannot be trusted to be true or useful. It is necessary for a person, indeed an expert, to evaluate the material. It is by no means clear at this time whether an expert equipped with a LLM is more productive for creative work than the same expert without the LLM.
+\item[Unoriginality] LLMs work by discovering high-dimensional correlations in large bodies of training data. This means that LLMs can select, summarize, and vary but they cannot generate an output that is not correlated with the training data. In other words there is a limit to their originality. However, it is by no means clear at this time whether this limit is well below, or well above, the creativity of experts in the field from which the training data was drawn.
 \end{description}
 
 I will now venture some conjectures based on these foundations.
