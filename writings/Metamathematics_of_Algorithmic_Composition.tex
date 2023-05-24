@@ -1,14 +1,7 @@
 \documentclass[11pt]{scrartcl}
-%\documentclass[letterpaper, 12pt]{article}
-
-%\usepackage{geometry}                % See geometry.pdf to learn the layout options. There are lots.
-%\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
-%\geometry{landscape}                % Activate for for rotated page geometry
-%\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
 \usepackage{graphicx}
 \usepackage{amssymb}
 \usepackage{epstopdf}
-\usepackage{url}
 \usepackage{hyperref}
 \usepackage{scrlayer-scrpage}
 \lohead{Michael Gogins}
@@ -21,24 +14,18 @@
 {Irreducible Productions}
 \usepackage[authordate-trad,backend=biber]{biblatex-chicago}
 \addbibresource{gogins.bib}
-
 %\usepackage{cmjStyle} %use CMJ style
 %\usepackage{natbib} %natbib package, necessary for customized cmj BibTeX style
 %\bibpunct{(}{)}{;}{a}{}{, } %adapt style of references in text
-
 \DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
 
-%\title{Mathematical Foundations of Algorithmic Composition}
-\title{Metamathematics of Algorithmic Composition}
-\author{Michael Gogins}
-%\url{http://michaelgogins.tumblr.com}
-\date{22 May 2023}                                           % Activate to display a given date or no date
-
-
-
-%\usepackage[authordate,backend=biber]{biblatex-chicago}
-
 \begin{document}
+
+\title{Metamathematics of Algorithmic Composition}
+\urlstyle{tt}
+\author{Michael Gogins \\ \\ \texttt{\href{mailto:michael.gogins@gmail.com}{michael.gogins@gmail.com}}  \\ \url{https://michaelgogins.tumblr.com}}
+\date{ May 2023}                                           % Activate to display a given date or no date
+
 \maketitle
 \begin{abstract}
 This essay recounts my personal journey towards a deeper understanding of the mathematical foundations of algorithmic music composition. I do not spend much time on specific mathematical algorithms used by composers; rather, I focus on general issues such as fundamental limits and possibilities, by analogy with metalogic, metamathematics, and computability theory. I discuss  implications from these foundations for the future of algorithmic composition. 
@@ -99,13 +86,13 @@ The more recent method of algorithmic composition known as \emph{live coding} ca
 
 Some composers, such as myself, prefer to use an algorithm, such as a Lindenmayer system \parencite{algorithmicbeautyofplants, prusinkiewicz1986sgs,  fractalmusicwithstringrewritinggrammars} or iterated function system (IFS) \parencite{fractalseverywhere, ifsmusic} that will generate an entire piece based on fractals or other mathematical methods, without further editing or assembling. This can be called the \emph{fractal approach} to algorithmic composition.
 
-Recently it has become possible to compose music using generative pre-trained transformers (GPTs) trained with large language models (LLMs). This can be called the \emph{machine learning} approach to computer music. (I prefer the term \emph{machine learning} to \emph{artificial intelligence} because the software is not intelligent, but it is trainable and so in some sense it is learning.) I discuss only LLMs as they are currently the most influential method of machine learning. Briefly, the approach is based on emulating biology, specifically, on simulating at a high level of abstraction the behavior of nerve cells. A neural network is built up consisting of layers of simulated neurons that connect with each other; the connections have tunable weights or parameters that control the output behavior of neurons in one layer given inputs from connected neurons in other layers. The weights are adjusted during training to maximize the value of the result according to some objective fitness function. This value corresponds to the color assigned to the parameter point of a Julia set in a musical Mandelbrot set. In a GPT, an attention mechanism \parencite{vaswani2017attention} (as each token in the input prompt is processed, a new \emph{context} or summary of model weights is used in place of the entire model) and other heuristic mechanisms have been found to increase the power of the network. In particular, the attention mechanism makes it possible to train the network on a very large body of data without much human intervention. For more detail, see \parencite{zhang2023complete} and OpenAI's paper on their current LLM architecture \parencite{openai2023gpt4}. For working examples of how ChatGPT can be used to compose music, see Jukebox \parencite{openai2023jukebox}, Gonsalves \parencite{aitunes}, and Ocampo et al. \parencite{ocampo2023using}.
+Recently it has become possible to compose music using generative pre-trained transformers (GPTs) trained with large language models (LLMs). This can be called the \emph{machine learning} approach to computer music. (I prefer the term \emph{machine learning} to \emph{artificial intelligence} because the software is not intelligent, but it is trainable and so in some sense it is learning.) I discuss only LLMs as they are currently the most influential method of machine learning. Briefly, the approach is based on emulating biology, specifically, on simulating at a high level of abstraction the behavior of nerve cells. A neural network is built up consisting of layers of simulated neurons that connect with each other; the connections have tunable weights or parameters that control the output behavior of neurons in one layer given inputs from connected neurons in other layers. The weights are adjusted during training to maximize the value of the result according to some objective fitness function. This value corresponds to the color assigned to the parameter point of a Julia set in a Mandelbrot set. In a GPT, an attention mechanism \parencite{vaswani2017attention} (as each token in the input prompt is processed, a new \emph{context} or summary of model weights is used in place of the entire model) and other heuristic mechanisms have been found to increase the power of the network. In particular, the attention mechanism makes it possible to train the network on a very large body of data without much human intervention. For more detail, see \parencite{zhang2023complete} and OpenAI's paper on their current LLM architecture \parencite{openai2023gpt4}. For working examples of how ChatGPT can be used to compose music, see Jukebox \parencite{openai2023jukebox}, Gonsalves \parencite{aitunes}, and Ocampo et al. \parencite{ocampo2023using}.
 
 Although it is early days for machine learning, contemporary experience has led to a number of reviews and critical studies of the capabilities and limitations of machine learning. From the skeptical side, see \parencite{dale2021gpt}. For an amusing and instructive series of dialogues between all sides, see \parencite{shtetl}. This experience makes it possible to identify a few more important things about the mathematical foundations of algorithmic composition:
 
 \begin{description}
 \item[Computational opacity] All agree that ChatGPT can generate amazing, even spooky, results without anyone understanding much about what is going on in the neural network. We have a perfect understanding of each component in the GPT, because these components are actually quite simple, but we have no idea at all how something like ChatGPT can conduct a fact-filled conversation with one in perfect English. The details are scattered through billions of neural network weights in the LLM. Computational opacity is a form of computational irreducibility, but it goes far beyond irreducibility because, with computational opacity, we cannot obtain even a partial understanding of the actual computations performed by the software. We have taken one irreducible program (the GPT) and used it to build another irreducible program (the LLM)! Even though an untrained GPT is computationally irreducible, we still have a perfect understanding of how it actually works; but it seems very likely that we will not, at least in practice, ever obtain even a partial understanding of how the  \textbf{trained} GPT, i.e.\ the LLM, actually works.
-\item [Hallucination] Refers to the tendency of LLMs to generate factually incorrect responses to prompts. It is a reminder that the software has no sense of reality and no means of comparing what it generates with the real world. I suspect that hallucinations arise from the human mistakes, conflicting goals, and outright lies represented in the training data. Ways of dealing with hallucinations are being investigated,; for one approach, see \parencite{christiano2017deep}.
+\item [Hallucination] Refers to the tendency of LLMs to generate factually incorrect responses to prompts. It is a reminder that the software has no sense of reality and no means of comparing what it generates with the real world. I suspect that hallucinations arise from the human mistakes, conflicting goals, and outright lies represented in the training data. Ways of dealing with hallucinations are being investigated; for one approach, see \parencite{christiano2017deep}.
 \item [Unoriginality] LLMs generate responses to prompts based on high-dimensional correlations that the LLMs have automatically discovered in the training data -- data that \textbf{we} have provided. This is a self-referential situation. When we converse with ChatGPT we are looking at ourselves in a mirror; and in fact, in a fun-house mirror.
 \end{description}
 
@@ -133,9 +120,9 @@ This can be repeated for any number of parameters, but it is a tedious process a
 
 This procedure amounts to a sort of binary search through a set of possible parameter values so vast – indeed infinite – that a linear search is simply out of the question. But a binary search is far more efficient than a linear search. Furthermore, finding two or three ``sweet spots'' in a small set of controlling parameters – each of which has global effects on the entire score – can produce a surprisingly large improvement in the musicality of the result.
 
-I see here an analogy with the way in which LLMs work. There are repeated searches in a parameter space with a fitness function (as with the attention mechanism) at increasing levels of refinement (as with gradient descent).
+I see here an analogy with the way in which LLMs work. There are repeated searches in a parameter space equipped with with a fitness function (as with the attention mechanism) at increasing levels of refinement (as with gradient descent).
 
-I have known a number of composers, some quite well. Few algorithmic composers simply ``hear music in their heads'' and write software to render it, although that certainly is done sometimes. Most fool around producing various experimental chunks of music, refine them more or less as I have described, and assemble some of them into a finished composition.
+I have known a number of composers, some quite well. Few algorithmic composers simply ``hear music in their heads'' and write software to render it, although that certainly happens. Most fool around producing various experimental chunks of music, refine them more or less as I have described, and assemble some of them into a finished composition.
 
 Before I proceed to look at this kind of production from a mathematical point of view, I will summarize what I have learned about the mathematical foundations:
 
@@ -162,37 +149,29 @@ Sophisticated forms of algorithmic composition are compute-intensive, and can be
 
 \subsection*{Prospects}
 
-Computer power will continue to increase. This will certainly make algorithmic composition more productive and more important.
+Computer power will continue to increase. This will most likely make algorithmic composition both more productive and more important.
 
-There is a relationship between a composer's experience with a toolkit of algorithms, the transformation of prompts into responses by an LLM, and exploring the parametric map of a more mathematical compositional algorithm. In all three cases, a final composition is approached by a descending, zigzag search through a space representing musical possibilities of differing value, until the search comes to rest in some local optimum.
+There is a similarity between a composer's experience with a toolkit of algorithms, the transformation of prompts into responses by an LLM, and exploring the parametric map of a fractal compositional algorithm. In all cases, starting with an initial sketch, a final composition is approached by a descending, zigzag search through a space representing musical possibilities of differing value, until the search comes to rest in some local optimum.
 
 Every method that establishes a more musically compact and/or intelligible ordering of a space of musical possibilities will make algorithmic composition more productive. As an example, excluding non-musical elements from the space of possibilities can be very helpful, because sounds that human beings consider to be musical occupy a vanishingly small part of the parameter space of universal compositional algorithms. However, it is possible to literally change the mathematical basis of the parameter space to represent only musically pertinent features. For example, rather than representing scores as notes on piano rolls, e.g.\ planes or cubes, one can represent scores as more or less fleeting chord progressions in chord spaces \parencite{gogins2006score, gogins2023scoregraphs}.
 
-Every method that speeds up the search process will make algorithmic composition more productive. In particular, the growth of live coding demonstrates that the toolkit approach to algorithmic composition has a future. The underlying reason is that live coding is a faster search process with immediately audible feedback. Spending time doing live coding also increases the composer's insight into the tools.
+Every method that speeds up the search process will make algorithmic composition more productive. In particular, the growth of live coding demonstrates that the toolkit approach to algorithmic composition has a future. The underlying reason is that live coding supports faster searching, due to concise commands and immediately audible feedback. Spending time doing live coding also increases the composer's insight into the tools.
 
 \subsection*{In Sum}
 
-The main result here is that the major approaches to algorithmic composition --- trial and error with a toolkit of algorithms, live coding, exploration of fractals, and machine learning --- share this fundamental business of zigzagging down a slope in a musical space to rest in a local optimum. This result is proved  by the simple fact that the generated music and/or the parameters used to generate it can be ordered. The dimensionality of the musical space is secondary, as it can be reduced to one or two dimensions by using a Hilbert index. Note that searching for solutions or optimizations in many domains is known to be computationally expensive.
+The main result here is that the major approaches to algorithmic composition --- trial and error with a toolkit of algorithms, live coding, exploration of fractals, and machine learning --- share this fundamental business of zigzagging down a slope on a landscape of evaluations to rest in a local optimum. This result is proved  by the simple fact that the generated music and/or the parameters used to generate it can be ordered. The dimensionality of the musical space is secondary, as it can be reduced to one or two dimensions by means of a Hilbert index. Note that searching for solutions or optimizations in many domains is known to be computationally expensive.
 
-Future developments in artificial intelligence may have a significant impact on algorithmic composition. For example, machine learning can be applied to solving the inverse problem for discovering the parameters of fractal algorithms \parencite{tu2023learning}. It might then be possible to represent an existing score, or scores, as fractal parameters and then work with these parameters to vary or interpolate between such pieces. This does not overcome computational irreducibility, as it substitutes the opacity of machine learning for the irreducibility of the inverse problem, yet it still might be very useful.
+Future developments in artificial intelligence may have a significant impact on algorithmic composition. For example, machine learning has been applied to solving the inverse problem for discovering the parameters of fractal algorithms \parencite{tu2023learning}. It might then be possible to represent an existing score, or scores, as fractal parameters and then work with these parameters to vary or interpolate between such pieces. This does not overcome computational irreducibility, as it substitutes the opacity of machine learning for the irreducibility of the inverse problem, yet it still might be very useful.
 
  Algorithmic compositions based on current LLMs are easier to produce, but will not usually be musically original; while algorithmic compositions based on toolkits, live coding, or fractals can be musically original, but are inherently more difficult to produce.
 
-As for algorithmic compositions based on fractals, sometimes an analytical understanding of the mathematics can be used as a guide to composition, but this tends in my experience to be of limited use. More often, the only way to penetrate the fog of incomputability, irreducibility, opacity, and intractability is to explore the geometrical order in a subset of compositions. This can be done either by trial and error, or by literally plotting a map of the subset of compositions. One might say that by trial and error one plots a sparse map of fully defined features in a territory, and with a parametric map one explores a densely mapped territory with partially defined features.
+As for algorithmic compositions based on fractals, sometimes an analytical understanding of the mathematics can be used as a guide to composition, but this tends in my experience to be of limited use. More often, the only way to penetrate the fog of incomputability, irreducibility, opacity, and intractability is to explore the geometrical order in a subset of compositions. This can be done either by trial and error, or by literally plotting a map of the subset of compositions. One might say that with trial and error one plots a sparse map of fully defined features in a territory, and with a parametric map one explores a densely mapped territory with partially defined features.
 
-Progress in algorithmic composition seems likely to depend on speeding up the composer's workflow, whether in parametric composition, in live coding, in algorithmic composition toolkits, or  in machine learning; and on defining more musically compact and intelligible spaces of musical possibility.
+Progress in algorithmic composition seems likely to depend on speeding up the composer's workflow, whether in parametric composition, in live coding, in algorithmic composition toolkits, or in machine learning; and, even more so in the long run, on defining more musically compact and intelligible spaces of musical possibility.
 
 %It is also the case that some art music composers and film, game, or popular music composers have incorporated an algorithmic toolkit into their already massive toolkits of music technology.
 
 % Check out https://arxiv.org/abs/1909.11066, the Mandelbrot set is the shadow of a Julia set. Possibly implies that my mapping problems can be solved by projection (shadows).
-
-
-
-
-%\subsection{}
-
-
-
 %\bibliographystyle{cmj}
 \printbibliography
 \end{document}  
