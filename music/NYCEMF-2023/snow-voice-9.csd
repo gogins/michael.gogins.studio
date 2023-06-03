@@ -1174,7 +1174,7 @@ extern "C" int score_generator(CSOUND *csound) {
             pen.chord = pen.chord.T(5);
             chordsForTimes[pen.note.getTime()] = pen.chord;
         }
-        pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (0 - 5);
+        pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (0 - 50);
         pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .75);
         return pen;
     };
@@ -1188,7 +1188,7 @@ extern "C" int score_generator(CSOUND *csound) {
         if ((depth + base_level) == 1) {
             pen.chord = pen.chord.Q(3, modality);
         }
-        pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (1000 + 1);
+        pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .475) + (1000 + 1);
         pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .76) - .25;
         pen.note[csound::Event::VELOCITY] =  std::cos(pen.note[csound::Event::TIME]);                    
         return pen;
@@ -1197,7 +1197,7 @@ extern "C" int score_generator(CSOUND *csound) {
     auto g3 = [&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
         Cursor pen = pen_;
         pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (0 + .3);
-        pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .715) + 1.25;
+        pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .775) + 1.25;
         pen.note[csound::Event::INSTRUMENT] = std::cos(pen.note[csound::Event::TIME]);
         pen.note[csound::Event::VELOCITY] =  std::cos(pen.note[csound::Event::TIME]);
         return pen;
@@ -1210,7 +1210,7 @@ extern "C" int score_generator(CSOUND *csound) {
         if ((depth + base_level) == 3) {
             pen.chord = pen.chord.T(3);
         }
-       pen.note[csound::Event::INSTRUMENT] = std::sin(pen.note[csound::Event::TIME]);
+        pen.note[csound::Event::INSTRUMENT] = std::sin(pen.note[csound::Event::TIME]);
         pen.note[csound::Event::VELOCITY] =  std::cos(pen.note[csound::Event::TIME]);
         return pen;
     };
@@ -1324,7 +1324,6 @@ extern "C" int score_generator(CSOUND *csound) {
 
 //////////////////////////////////////////////////////////////////////////////
 // This compiles the above C++ module and then calls its entry point function.
-// Note that dynamic link libraries must be passed as complete filepaths.
 //////////////////////////////////////////////////////////////////////////////
 
 if strcmp(gS_os, "Linux") == 0 then

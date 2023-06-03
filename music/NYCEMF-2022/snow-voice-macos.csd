@@ -1,13 +1,14 @@
 <CsoundSyntheizer>
 <CsLicense>
 
-snow-crash v7
+snow-voice v9
 
-Michael Gogins, 2023
+Michael Gogins, 2022
+
 
 </CsLicense>
 <CsOptions>
---m-amps=1 --m-range=1 --m-dB=1 --m-benchmarks=1 --m-warnings=0 -+msg_color=0 -d -odac 
+-j4 --m-amps=1 --m-range=1 --m-dB=1 --m-benchmarks=1 --m-warnings=0 -+msg_color=0 -d -odac 
 </CsOptions>
 <CsInstruments>
 
@@ -196,12 +197,8 @@ connect "FMWaterBell", "outleft", "ReverbSC", "inleft"
 connect "FMWaterBell", "outright", "ReverbSC", "inright"
 connect "Phaser", "outleft", "ReverbSC", "inleft"
 connect "Phaser", "outright", "ReverbSC", "inright"
-connect "PianoOutPianoteqVst2", "outleft", "ReverbSC", "inleft"
-connect "PianoOutPianoteqVst2", "outright", "ReverbSC", "inright"
-connect "Plucked", "outleft", "ReverbSC", "inleft"
-connect "Plucked", "outright", "ReverbSC", "inright"
-connect "SeidelHarmOsc", "outleft", "ReverbSC", "inleft"
-connect "SeidelHarmOsc", "outright", "ReverbSC", "inright"
+connect "PianoOutPianoteq", "outleft", "ReverbSC", "inleft"
+connect "PianoOutPianoteq", "outright", "ReverbSC", "inright"
 connect "Sweeper", "outleft", "ReverbSC", "inleft"
 connect "Sweeper", "outright", "ReverbSC", "inright"
 connect "Shiner", "outleft", "ReverbSC", "inleft"
@@ -217,27 +214,26 @@ connect "ReverbSC", "outright", "MasterOutput", "inright"
 // These are all the Csound instruments and effects used in this piece.
 //////////////////////////////////////////////////////////////////////////////
 
+
 if strcmp(gS_os, "Linux") == 0 then
 gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", gi_vstinfo
 endif
 if strcmp(gS_os, "macOS") == 0 then
-gi_Pianoteq vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/Pianoteq\ 7.vst", gi_vstinfo
+gi_Pianoteq vstinit "/Library/Audio/Plug-Ins/VST/Pianoteq\ 7.vst", gi_vstinfo
 endif
 
-#include "PianoNotePianoteqVst2.inc"
-#include "Plucked.inc"
-#include "SeidelHarmOsc.inc"
-#include "FMWaterBell.inc" // Normalized.
-#include "Phaser.inc"      // Normalized.
-#include "Droner.inc"      // Normalized.
-#include "Sweeper.inc"     // Normalized.
-#include "Buzzer.inc"      // Normalized.
-#include "Shiner.inc"      // Normalized.
-#include "Blower.inc"      // Normalized.
-#include "ZakianFlute.inc" // Normalized.
-#include "STKBowed.inc"    // Normalized.
+#include "PianoNotePianoteq.inc"
+#include "FMWaterBell1.inc" // Normalized.
+#include "Phaser1.inc"      // Normalized.
+#include "Droner1.inc"      // Normalized.
+#include "Sweeper1.inc"     // Normalized.
+#include "Buzzer1.inc"      // Normalized.
+#include "Shiner1.inc"      // Normalized.
+#include "Blower1.inc"      // Normalized.
+#include "ZakianFlute1.inc" // Normalized.
+#include "STKBowed1.inc"    // Normalized.
 
-#include "PianoOutPianoteqVst2.inc"
+#include "PianoOutPianoteq1.inc"
 gk_PianoOutPianoteq_front_to_back init -3
 gk_PianoOutPianoteq_left_to_right init .4
 gk_PianoOutPianoteq_bottom_to_top init 3
@@ -286,7 +282,6 @@ gk_Phaser_ratio2 init 0.010598402087069948
 gk_Phaser_index1 init 0.9709766835154084
 gk_Phaser_index2 init 0.7361813142018588
 gk_Phaser_level init 4
-gk_Plucked_level init 22
 gk_STKBowed_vibrato_level init 0
 gk_STKBowed_bow_pressure init 110
 gk_STKBowed_bow_position init 21.81769218869982
@@ -552,7 +547,6 @@ gk_Phaser_ratio2 init 1.9877260183697845
 gk_Phaser_index1 init 0.9020140862473743
 gk_Phaser_index2 init 0.9810947732608427
 gk_Phaser_level init 4
-gk_SeidelHarmOsc_level init -1
 gk_STKBowed_vibrato_level init 0
 gk_STKBowed_bow_pressure init 110
 gk_STKBowed_bow_position init 21.81769218869982
@@ -580,68 +574,10 @@ gk_Blower_level init -5.959563019729337
 gk_ZakianFlute_level init 12
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-gk_MasterOutput_level init 10
-gk_Spatialize_SpeakerRigRadius init 0
-gk_LocalReverbByDistance_ReverbDecay init 0
-gk_LocalReverbByDistance_Wet init 0
-gk_SpatialReverb_ReverbDecay init 0
-gi_instrument_position_rate init 0
-gk_BformatDecoder2_MasterLevel init 0
-gk_ReverbSC_feedback init 0.82
-gk_ReverbSC_wet init 0.5
-gi_ReverbSC_delay_modulation init 0.0075
-gk_ReverbSC_frequency_cutoff init 15000
-gk_PianoOutPianoteq_level init -11
-gi_FMWaterBell_attack init 0.002936276551436901
-gi_FMWaterBell_release init 0.022698875468554768
-gi_FMWaterBell_exponent init 0
-gi_FMWaterBell_sustain init 5.385256143273636
-gi_FMWaterBell_sustain_level init 0.08267388588088297
-gk_FMWaterBell_crossfade init 0.1234039047697504
-gk_FMWaterBell_index init 1.1401499375260309
-gk_FMWaterBell_vibrato_depth init 0.28503171595683335
-gk_FMWaterBell_vibrato_rate init 2.4993821566850647
-gk_FMWaterBell_level init 17.75
-gk_Phaser_ratio1 init 0.48519296511388443
-gk_Phaser_ratio2 init 1.9877260183697845
-gk_Phaser_index1 init 0.9020140862473743
-gk_Phaser_index2 init 0.9810947732608427
-gk_Phaser_level init 4
-gk_Plucked_level init 22
-gk_SeidelHarmOsc_level init -1
-gk_STKBowed_vibrato_level init 0.21523592500829042
-gk_STKBowed_bow_pressure init 106.85582357509631
-gk_STKBowed_bow_position init 21.81769218869982
-gk_STKBowed_vibrato_frequency init 42.6065254256644
-gk_STKBowed_level init 17.737876003647344
-gk_Droner_partial1 init 0.4664927441708788
-gk_Droner_partial2 init 0.16386760150008153
-gk_Droner_partial3 init 0.13777922713190935
-gk_Droner_partial4 init 0.4664927441708788
-gk_Droner_partial5 init 0.15343225175281267
-gk_Droner_level init 14
-gk_Sweeper_bright_min init 0.7995295768826096
-gk_Sweeper_bright_max init 2.3641687070741493
-gk_Sweeper_rate_min init 1.1959048231977996
-gk_Sweeper_rate_max init 2.948300649012324
-gk_Sweeper_level init 7.018032169931679
-gk_Buzzer_harmonics init 4
-gk_Buzzer_level init 0
-gk_Shiner_level init -16.91668025436165
-gk_Blower_grainDensity init 132.3332789825534
-gk_Blower_grainDuration init 0.2854231208217838
-gk_Blower_grainAmplitudeRange init 174.0746779716289
-gk_Blower_grainFrequencyRange init 62.82406652535464
-gk_Blower_level init -5.959563019729337
-gk_ZakianFlute_level init 12
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
 gS_html init {{<!DOCTYPE html>
 <html>
 <head>
-    <title>snow-voice v8</title>
+    <title>Red Leaves version 8.4.3.5</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!--
 //////////////////////////////////////////////////////////////////////////////
@@ -700,7 +636,7 @@ gS_html init {{<!DOCTYPE html>
     // loaded as local files.
     //////////////////////////////////////////////////////////////////////////  
     -->
-    <script src="silencio/js/TrackballControls.js"></script>
+    <script src="TrackballControls.js"></script>
     <script src="PianoRoll3D.js"></script>    
     <script src="csound_jsonrpc_stub.js"></script>
 </head>
@@ -818,8 +754,6 @@ gS_html init {{<!DOCTYPE html>
             gk_Phaser_index1: 0.5066315182469726,
             gk_Phaser_index2: 0.5066315182469726,
             gk_Phaser_level: 8.25438668753604,
-            gk_Plucked_level: 0.,
-            gk_SeidelHarmOsc_level: 0.,
             gk_STKBowed_vibrato_level: 2.8,
             gk_STKBowed_bow_pressure: 110,
             gk_STKBowed_bow_position: 20,
@@ -885,10 +819,6 @@ gS_html init {{<!DOCTYPE html>
           
             var Pianoteq = gui.addFolder('Pianoteq');
             add_slider(Pianoteq, 'gk_PianoOutPianoteq_level', -50, 50);
-            var SeidelHarmOsc = gui.addFolder('SeidelHarmOsc');
-            add_slider(SeidelHarmOsc, 'gk_SeidelHarmOsc_level', -50, 50);
-            var Plucked = gui.addFolder('Plucked');
-            add_slider(Plucked, 'gk_Plucked_level', -50, 50);
             var FMWaterBell = gui.addFolder('FMWaterBell');
             add_slider(FMWaterBell, 'gi_FMWaterBell_attack', 0, .1);
             add_slider(FMWaterBell, 'gi_FMWaterBell_release', 0, .1);
@@ -1030,10 +960,10 @@ gS_html init {{<!DOCTYPE html>
 }}
 
 if strcmp(gS_os, "Linux") == 0 then
-gi_webserver webserver_create "/home/mkg/michael.gogins.studio/music/NYCEMF-2023/", 8080, 0
+gi_webserver webserver_create "/home/mkg/michael.gogins.studio/music/2022-NYCEMF/", 8080, 0
 endif
 if strcmp(gS_os, "macOS") == 0 then
-gi_webserver webserver_create "/Users/michaelgogins/michael.gogins.studio/music/NYCEMF-2023/", 8080, 0
+gi_webserver webserver_create "/Users/michaelgogins/michael.gogins.studio/music/2022-NYCEMF/", 8080, 0
 endif
 // The following event source has to be created before we actually send it a 
 // score to display.
@@ -1077,7 +1007,7 @@ S_score_generator_code init {{
 // startup code. Therefore, we mey need to define it here.
 //////////////////////////////////////////////////////////////////////////////
 
-/// void* __dso_handle = (void *)&__dso_handle;
+void* __dso_handle = (void *)&__dso_handle;
 
 static bool diagnostics_enabled = false;
 
@@ -1196,8 +1126,8 @@ extern "C" int score_generator(CSOUND *csound) {
     generators.push_back(g2);
     auto g3 = [&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
         Cursor pen = pen_;
-        pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (0 + .3);
-        pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .715) + 1.25;
+        pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (0 + 3);
+        pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .715) + 1.05;
         pen.note[csound::Event::INSTRUMENT] = std::cos(pen.note[csound::Event::TIME]);
         pen.note[csound::Event::VELOCITY] =  std::cos(pen.note[csound::Event::TIME]);
         return pen;
@@ -1205,7 +1135,7 @@ extern "C" int score_generator(CSOUND *csound) {
     generators.push_back(g3);
     auto g4 = [&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
         Cursor pen = pen_;
-        pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (1000 - 50);
+        pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (1000 - 5);
         pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .77) + 1.;
         if ((depth + base_level) == 3) {
             pen.chord = pen.chord.T(3);
@@ -1220,16 +1150,14 @@ extern "C" int score_generator(CSOUND *csound) {
     transitions <<  1, 1, 1, 1,
                     1, 1, 1, 1,
                     1, 0, 1, 1,
-                    1, 1, 1, 1;
+                    1, 1, 0, 1;
     csound::Score score;
     //////////////////////////////////////////////////////////////////////////////
     // Before iterating, ensure that the score does start with a chord.
     //////////////////////////////////////////////////////////////////////////////
     chordsForTimes[-100.] = pen.chord;
-    /// recurrent(generators, transitions, 7, 0, pen, score);
-    recurrent(generators, transitions, 6, 1, pen, score);
+    recurrent(generators, transitions, 7, 0, pen, score);
     ///recurrent(generators, transitions, 8, 0, pen, score);
-    score.setDuration(600);
     std::cout << "Generated duration:     " << score.getDuration() << std::endl;
     //////////////////////////////////////////////////////////////////////////////
     // We apply the chords that were generated along WITH the notes, TO the notes.
@@ -1256,12 +1184,11 @@ extern "C" int score_generator(CSOUND *csound) {
     }
     std::cout << "Conformed notes:        " << size << std::endl;
     score.rescale(csound::Event::TIME,          true,  0.0, false,  0.0);
-    //score.rescale(csound::Event::INSTRUMENT,    true,  1.0, true,   9.999);
-    score.rescale(csound::Event::INSTRUMENT,    true,  1.0, true,   11.99);
+    score.rescale(csound::Event::INSTRUMENT,    true,  1.0, true,   9.999);
     score.rescale(csound::Event::VELOCITY,      true, 40.0, true,  20.0);
     score.rescale(csound::Event::PAN,           true,  0.0, true,   0.0);
     std::cout << "Move to origin duration:" << score.getDuration() << std::endl;
-    score.setDuration(600.);
+    score.setDuration(380.0 * 2.);
     std::cout << "set duration:           " << score.getDuration() << std::endl;
     score.tieOverlappingNotes(true);
     score.findScale();
@@ -1328,12 +1255,11 @@ extern "C" int score_generator(CSOUND *csound) {
 //////////////////////////////////////////////////////////////////////////////
 
 if strcmp(gS_os, "Linux") == 0 then
-i_result cxx_compile "score_generator", S_score_generator_code, "g++ -v -g -O2 -std=c++17 -shared -fPIC -DUSE_DOUBLE -I. -I/usr/local/include/csound -I/home/mkg/csound/interfaces -I/usr/include/eigen3 -I/home/mkg/csound-ac/CsoundAC -lCsoundAC -lpthread -lm", "libcsound_webserver.so libCsoundAC.so"
+i_result cxx_compile "score_generator", S_score_generator_code, "g++ -v -g -O2 -std=c++17 -shared -fPIC -DUSE_DOUBLE -I. -I/usr/local/include/csound -I/home/mkg/csound/interfaces -I/usr/include/eigen3 -I/home/mkg/csound-extended/CsoundAC -lCsoundAC -lpthread -lm", "libcsound_webserver.so libCsoundAC.so"
 endif
 if strcmp(gS_os, "macOS") == 0 then
-i_result cxx_compile "score_generator", S_score_generator_code, "g++ -v -g -O2 -std=c++17 -shared -fPIC -DUSE_DOUBLE -I. -I/usr/local/include/csound -I/Users/michaelgogins/csound/interfaces -I/usr/include/eigen3 -I/System/Volumes/Data/opt/homebrew/include/eigen3 -I/Library/Frameworks/CsoundLib64.framework/Versions/6.0/Headers -I/opt/homebrew/Cellar/boost/1.81.0_1/include -I/home/mkg/csound-ac/CsoundAC -lCsoundAC -lpthread -lm", "/Users/michaelgogins/csound-webserver-opcodes/build/libcsound_webserver.dylib libCsoundAC.dylib"
+i_result cxx_compile "score_generator", S_score_generator_code, "g++ -v -g -O2 -std=c++17 -shared -fPIC -DUSE_DOUBLE -I. -I/usr/local/include/csound -I/home/mkg/csound/interfaces -I/usr/include/eigen3 -I/System/Volumes/Data/opt/homebrew/include/eigen3 -I/Library/Frameworks/CsoundLib64.framework/Headers/  -I/opt/homebrew/Cellar/boost/1.78.0_1/include -I/home/mkg/csound-ac/CsoundAC -lCsoundAC -lpthread -lm", "/Users/michaelgogins/csound-webserver-opcodes/build/libcsound_webserver.dylib libCsoundAC.dylib"
 endif
-
 
 instr Exit
 prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)

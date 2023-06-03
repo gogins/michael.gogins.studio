@@ -1,7 +1,7 @@
 <CsoundSyntheizer>
 <CsLicense>
 
-snow-crash v7
+snow-crash v10
 
 Michael Gogins, 2023
 
@@ -196,8 +196,8 @@ connect "FMWaterBell", "outleft", "ReverbSC", "inleft"
 connect "FMWaterBell", "outright", "ReverbSC", "inright"
 connect "Phaser", "outleft", "ReverbSC", "inleft"
 connect "Phaser", "outright", "ReverbSC", "inright"
-connect "PianoOutPianoteqVst2", "outleft", "ReverbSC", "inleft"
-connect "PianoOutPianoteqVst2", "outright", "ReverbSC", "inright"
+connect "PianoOutPianoteq", "outleft", "ReverbSC", "inleft"
+connect "PianoOutPianoteq", "outright", "ReverbSC", "inright"
 connect "Plucked", "outleft", "ReverbSC", "inleft"
 connect "Plucked", "outright", "ReverbSC", "inright"
 connect "SeidelHarmOsc", "outleft", "ReverbSC", "inleft"
@@ -221,10 +221,10 @@ if strcmp(gS_os, "Linux") == 0 then
 gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", gi_vstinfo
 endif
 if strcmp(gS_os, "macOS") == 0 then
-gi_Pianoteq vstinit "/System/Volumes/Data/Library/Audio/Plug-Ins/VST/Pianoteq\ 7.vst", gi_vstinfo
+gi_Pianoteq vst3init "/Library/Audio/Plug-Ins/VST3/Pianoteq\ 7.vst3", "Pianoteq 7", 1
 endif
 
-#include "PianoNotePianoteqVst2.inc"
+#include "PianoNotePianoteqVst3.inc"
 #include "Plucked.inc"
 #include "SeidelHarmOsc.inc"
 #include "FMWaterBell.inc" // Normalized.
@@ -237,7 +237,7 @@ endif
 #include "ZakianFlute.inc" // Normalized.
 #include "STKBowed.inc"    // Normalized.
 
-#include "PianoOutPianoteqVst2.inc"
+#include "PianoOutPianoteqVst3.inc"
 gk_PianoOutPianoteq_front_to_back init -3
 gk_PianoOutPianoteq_left_to_right init .4
 gk_PianoOutPianoteq_bottom_to_top init 3
@@ -1174,8 +1174,8 @@ extern "C" int score_generator(CSOUND *csound) {
             pen.chord = pen.chord.T(5);
             chordsForTimes[pen.note.getTime()] = pen.chord;
         }
-        pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (0 - 5);
-        pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .75);
+        pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (0 - 50);
+        pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .75 - 20);
         return pen;
     };
     generators.push_back(g1);
@@ -1188,7 +1188,7 @@ extern "C" int score_generator(CSOUND *csound) {
         if ((depth + base_level) == 1) {
             pen.chord = pen.chord.Q(3, modality);
         }
-        pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (1000 + 1);
+        pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .475) + (1000 + 1);
         pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .76) - .25;
         pen.note[csound::Event::VELOCITY] =  std::cos(pen.note[csound::Event::TIME]);                    
         return pen;
@@ -1197,7 +1197,7 @@ extern "C" int score_generator(CSOUND *csound) {
     auto g3 = [&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
         Cursor pen = pen_;
         pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (0 + .3);
-        pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .715) + 1.25;
+        pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .775) + 1.25;
         pen.note[csound::Event::INSTRUMENT] = std::cos(pen.note[csound::Event::TIME]);
         pen.note[csound::Event::VELOCITY] =  std::cos(pen.note[csound::Event::TIME]);
         return pen;
@@ -1205,12 +1205,12 @@ extern "C" int score_generator(CSOUND *csound) {
     generators.push_back(g3);
     auto g4 = [&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
         Cursor pen = pen_;
-        pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (1000 - 50);
-        pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .77) + 1.;
+        pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (1000 - 150);
+        pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .77) + 100.;
         if ((depth + base_level) == 3) {
             pen.chord = pen.chord.T(3);
         }
-       pen.note[csound::Event::INSTRUMENT] = std::sin(pen.note[csound::Event::TIME]);
+        pen.note[csound::Event::INSTRUMENT] = std::sin(pen.note[csound::Event::TIME]);
         pen.note[csound::Event::VELOCITY] =  std::cos(pen.note[csound::Event::TIME]);
         return pen;
     };
@@ -1227,7 +1227,7 @@ extern "C" int score_generator(CSOUND *csound) {
     //////////////////////////////////////////////////////////////////////////////
     chordsForTimes[-100.] = pen.chord;
     /// recurrent(generators, transitions, 7, 0, pen, score);
-    recurrent(generators, transitions, 6, 1, pen, score);
+    recurrent(generators, transitions, 8, 3, pen, score);
     ///recurrent(generators, transitions, 8, 0, pen, score);
     score.setDuration(600);
     std::cout << "Generated duration:     " << score.getDuration() << std::endl;
@@ -1256,8 +1256,8 @@ extern "C" int score_generator(CSOUND *csound) {
     }
     std::cout << "Conformed notes:        " << size << std::endl;
     score.rescale(csound::Event::TIME,          true,  0.0, false,  0.0);
-    //score.rescale(csound::Event::INSTRUMENT,    true,  1.0, true,   9.999);
-    score.rescale(csound::Event::INSTRUMENT,    true,  1.0, true,   11.99);
+    score.rescale(csound::Event::INSTRUMENT,    true,  1.0, true,   0);//9.999);
+    //score.rescale(csound::Event::INSTRUMENT,    true,  1.0, true,   11.99);
     score.rescale(csound::Event::VELOCITY,      true, 40.0, true,  20.0);
     score.rescale(csound::Event::PAN,           true,  0.0, true,   0.0);
     std::cout << "Move to origin duration:" << score.getDuration() << std::endl;
@@ -1272,6 +1272,8 @@ extern "C" int score_generator(CSOUND *csound) {
         score[i].setPan(randomvariable(mersenneTwister));
         score[i].setDepth(randomvariable(mersenneTwister));
         score[i].setPhase(randomvariable(mersenneTwister));
+        auto duration = score[i].getDuration() / 8.;
+        score[i].setDuration(duration);
     }
     score.rescale(csound::Event::TIME,          true,  2.0, false,  0.0);
     std::cout << "score:" << std::endl << score.getCsoundScore() << std::endl;
@@ -1324,7 +1326,6 @@ extern "C" int score_generator(CSOUND *csound) {
 
 //////////////////////////////////////////////////////////////////////////////
 // This compiles the above C++ module and then calls its entry point function.
-// Note that dynamic link libraries must be passed as complete filepaths.
 //////////////////////////////////////////////////////////////////////////////
 
 if strcmp(gS_os, "Linux") == 0 then
