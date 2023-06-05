@@ -1,7 +1,9 @@
 <CsoundSyntheizer>
 <CsLicense>
 
-snow-crash v10
+snow-crash instrument level normalizer
+
+Fix up level sliders for one instrument at a time for -6 dBFS.
 
 Michael Gogins, 2023
 
@@ -184,6 +186,8 @@ endif
 xout 0, k_pan
 endop
 
+connect "BandedWG", "outleft", "ReverbSC", "inleft"
+connect "BandedWG", "outright", "ReverbSC", "inright"
 connect "Blower", "outleft", "ReverbSC", "inleft"
 connect "Blower", "outright", "ReverbSC", "inright"
 connect "STKBowed", "outleft", "ReverbSC", "inleft"
@@ -192,8 +196,12 @@ connect "Buzzer", "outleft", "ReverbSC", "inleft"
 connect "Buzzer", "outright", "ReverbSC", "inright"
 connect "Droner", "outleft", "ReverbSC", "inleft"
 connect "Droner", "outright", "ReverbSC", "inright"
+connect "FilteredSines", "outleft", "ReverbSC", "inleft"
+connect "FilteredSines", "outright", "ReverbSC", "inright"
 connect "FMWaterBell", "outleft", "ReverbSC", "inleft"
 connect "FMWaterBell", "outright", "ReverbSC", "inright"
+connect "Harpsichord", "outleft", "ReverbSC", "inleft"
+connect "Harpsichord", "outright", "ReverbSC", "inright"
 connect "Phaser", "outleft", "ReverbSC", "inleft"
 connect "Phaser", "outright", "ReverbSC", "inright"
 connect "PianoOutPianoteq", "outleft", "ReverbSC", "inleft"
@@ -206,10 +214,14 @@ connect "Sweeper", "outleft", "ReverbSC", "inleft"
 connect "Sweeper", "outright", "ReverbSC", "inright"
 connect "Shiner", "outleft", "ReverbSC", "inleft"
 connect "Shiner", "outright", "ReverbSC", "inright"
+connect "Xing", "outleft", "ReverbSC", "inleft"
+connect "Xing", "outright", "ReverbSC", "inright"
 connect "ZakianFlute", "outleft", "ReverbSC", "inleft"
 connect "ZakianFlute", "outright", "ReverbSC", "inright"
+
 connect "ReverbSC", "outleft", "MasterOutput", "inleft"
 connect "ReverbSC", "outright", "MasterOutput", "inright"
+
 
 #end
 
@@ -224,18 +236,24 @@ if strcmp(gS_os, "macOS") == 0 then
 gi_Pianoteq vst3init "/Library/Audio/Plug-Ins/VST3/Pianoteq\ 7.vst3", "Pianoteq 7", 1
 endif
 
-#include "PianoNotePianoteqVst3.inc"
-#include "Plucked.inc"
-#include "SeidelHarmOsc.inc"
-#include "FMWaterBell.inc" // Normalized.
-#include "Phaser.inc"      // Normalized.
-#include "Droner.inc"      // Normalized.
-#include "Sweeper.inc"     // Normalized.
-#include "Buzzer.inc"      // Normalized.
-#include "Shiner.inc"      // Normalized.
-#include "Blower.inc"      // Normalized.
-#include "ZakianFlute.inc" // Normalized.
-#include "STKBowed.inc"    // Normalized.
+// The order of #includes defines the instrument numbers.
+
+#include "PianoNotePianoteqVst3.inc"  // Normalized.
+#include "Xing.inc"                   // Normalized.
+#include "FilteredSines.inc"          // Normalized.
+#include "BandedWG.inc"               // Normalized.
+#include "Harpsichord.inc"            // Normalized.
+#include "Plucked.inc"                // Normalized.
+#include "SeidelHarmOsc.inc"          // Normalized.
+#include "FMWaterBell.inc"            // Normalized.
+#include "Phaser.inc"                 // Normalized.
+#include "Droner.inc"                 // Normalized.
+#include "Sweeper.inc"                // Normalized.
+#include "Buzzer.inc"                 // Normalized.
+#include "Shiner.inc"                 // Normalized.
+#include "Blower.inc"                 // Normalized.
+#include "ZakianFlute.inc"            // Normalized.
+#include "STKBowed.inc"               // Normalized.
 
 #include "PianoOutPianoteqVst3.inc"
 gk_PianoOutPianoteq_front_to_back init -3
@@ -263,382 +281,7 @@ gk_FMWaterBell_bottom_to_top init -3
 //////////////////////////////////////////////////////////////////////////////
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-gk_ReverbSC_feedback init 0.86
-gk_MasterOutput_level init -12
-gk_Spatialize_SpeakerRigRadius init 15
-gk_LocalReverbByDistance_ReverbDecay init .6
-gk_LocalReverbByDistance_Wet init 0.2
-gk_SpatialReverb_ReverbDecay init .2
-gi_instrument_position_rate init 0
-gk_BformatDecoder2_MasterLevel init 0
-gi_FMWaterBell_attack init 0.002936276551436901
-gi_FMWaterBell_release init 0.022698875468554768
-gi_FMWaterBell_exponent init 0
-gi_FMWaterBell_sustain init 5.385256143273636
-gi_FMWaterBell_sustain_level init 0.08267388588088297
-gk_FMWaterBell_crossfade init 0.1234039047697504
-gk_FMWaterBell_index init 1.1401499375260309
-gk_FMWaterBell_vibrato_depth init 0.28503171595683335
-gk_FMWaterBell_vibrato_rate init 2.4993821566850647
-gk_FMWaterBell_level init 25
-gk_Phaser_ratio1 init 1.028045002445785
-gk_Phaser_ratio2 init 0.010598402087069948
-gk_Phaser_index1 init 0.9709766835154084
-gk_Phaser_index2 init 0.7361813142018588
-gk_Phaser_level init 4
-gk_Plucked_level init 22
-gk_STKBowed_vibrato_level init 0
-gk_STKBowed_bow_pressure init 110
-gk_STKBowed_bow_position init 21.81769218869982
-gk_STKBowed_vibrato_frequency init 50.2
-gk_STKBowed_level init 17.737876003647344
-gk_Droner_partial1 init 0.4664927441708788
-gk_Droner_partial2 init 0.16386760150008153
-gk_Droner_partial3 init 0.13777922713190935
-gk_Droner_partial4 init 0.4664927441708788
-gk_Droner_partial5 init 0.15343225175281267
-gk_Droner_level init 27.433556171531066
-gk_Sweeper_bright_min init 3.5147562367519973
-gk_Sweeper_bright_max init 0
-gk_Sweeper_rate_min init 0.48850481004402413
-gk_Sweeper_rate_max init 3.452144138268384
-gk_Sweeper_level init -2
-gk_Buzzer_harmonics init 4
-gk_Buzzer_level init 0
-gk_Shiner_level init -16.91668025436165
-gk_Blower_grainDensity init 132.3332789825534
-gk_Blower_grainDuration init 0.2854231208217838
-gk_Blower_grainAmplitudeRange init 174.0746779716289
-gk_Blower_grainFrequencyRange init 62.82406652535464
-gk_Blower_level init 4
-gk_ZakianFlute_level init 12
-gk_PianoOutPianoteq_level init -12
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-gk_MasterOutput_level init 0
-gk_Spatialize_SpeakerRigRadius init 15
-gk_LocalReverbByDistance_ReverbDecay init 0.6
-gk_LocalReverbByDistance_Wet init 0.2
-gk_SpatialReverb_ReverbDecay init 2.408609163541497
-gi_instrument_position_rate init 0.0888635251915865
-gk_BformatDecoder2_MasterLevel init 0
-gk_PianoOutPianoteq_level init -10
-gi_FMWaterBell_attack init 0.002936276551436901
-gi_FMWaterBell_release init 0.022698875468554768
-gi_FMWaterBell_exponent init 0
-gi_FMWaterBell_sustain init 5.385256143273636
-gi_FMWaterBell_sustain_level init 0.08267388588088297
-gk_FMWaterBell_crossfade init 0.1234039047697504
-gk_FMWaterBell_index init 1.1401499375260309
-gk_FMWaterBell_vibrato_depth init 0.28503171595683335
-gk_FMWaterBell_vibrato_rate init 2.4993821566850647
-gk_FMWaterBell_level init 27
-gk_Phaser_ratio1 init 1.028045002445785
-gk_Phaser_ratio2 init 0.010598402087069948
-gk_Phaser_index1 init 0.9709766835154084
-gk_Phaser_index2 init 0.7361813142018588
-gk_Phaser_level init 4
-gk_STKBowed_vibrato_level init 0
-gk_STKBowed_bow_pressure init 110
-gk_STKBowed_bow_position init 21.81769218869982
-gk_STKBowed_vibrato_frequency init 50.2
-gk_STKBowed_level init 17.737876003647344
-gk_Droner_partial1 init 0.4664927441708788
-gk_Droner_partial2 init 0.16386760150008153
-gk_Droner_partial3 init 0.13777922713190935
-gk_Droner_partial4 init 0.4664927441708788
-gk_Droner_partial5 init 0.15343225175281267
-gk_Droner_level init 27.433556171531066
-gk_Sweeper_bright_min init 3.5147562367519973
-gk_Sweeper_bright_max init 0
-gk_Sweeper_rate_min init 0.48850481004402413
-gk_Sweeper_rate_max init 3.452144138268384
-gk_Sweeper_level init -2
-gk_Buzzer_harmonics init 4
-gk_Buzzer_level init 0
-gk_Shiner_level init -16.91668025436165
-gk_Blower_grainDensity init 132.3332789825534
-gk_Blower_grainDuration init 0.2854231208217838
-gk_Blower_grainAmplitudeRange init 174.0746779716289
-gk_Blower_grainFrequencyRange init 62.82406652535464
-gk_Blower_level init 4
-gk_ZakianFlute_level init 12
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-gk_MasterOutput_level init 0
-gk_Spatialize_SpeakerRigRadius init 15
-gk_LocalReverbByDistance_ReverbDecay init 0.21829564644342847
-gk_LocalReverbByDistance_Wet init 0.4344495242802422
-gk_SpatialReverb_ReverbDecay init 2.6867663412825897
-gi_instrument_position_rate init 0.005
-gk_BformatDecoder2_MasterLevel init 7.152271510358744
-gk_PianoOutPianoteq_level init -0.741888146094901
-gi_FMWaterBell_attack init 0.002936276551436901
-gi_FMWaterBell_release init 0.022698875468554768
-gi_FMWaterBell_exponent init 0
-gi_FMWaterBell_sustain init 5.385256143273636
-gi_FMWaterBell_sustain_level init 0.08267388588088297
-gk_FMWaterBell_crossfade init 0.1234039047697504
-gk_FMWaterBell_index init 1.1401499375260309
-gk_FMWaterBell_vibrato_depth init 0.28503171595683335
-gk_FMWaterBell_vibrato_rate init 2.4993821566850647
-gk_FMWaterBell_level init 35.621318835207376
-gk_Phaser_ratio1 init 1.028045002445785
-gk_Phaser_ratio2 init 0.010598402087069948
-gk_Phaser_index1 init 0.9709766835154084
-gk_Phaser_index2 init 0.7361813142018588
-gk_Phaser_level init 4
-gk_STKBowed_vibrato_level init 0
-gk_STKBowed_bow_pressure init 110
-gk_STKBowed_bow_position init 21.81769218869982
-gk_STKBowed_vibrato_frequency init 50.2
-gk_STKBowed_level init 17.737876003647344
-gk_Droner_partial1 init 0.4664927441708788 
-gk_Droner_partial2 init 0.16386760150008153
-gk_Droner_partial3 init 0.13777922713190935
-gk_Droner_partial4 init 0.4664927441708788
-gk_Droner_partial5 init 0.15343225175281267
-gk_Droner_level init 27.433556171531066
-gk_Sweeper_bright_min init 3.5147562367519973
-gk_Sweeper_bright_max init 0
-gk_Sweeper_rate_min init 0.48850481004402413
-gk_Sweeper_rate_max init 3.452144138268384
-gk_Sweeper_level init -2
-gk_Buzzer_harmonics init 4
-gk_Buzzer_level init 0
-gk_Shiner_level init -16.91668025436165
-gk_Blower_grainDensity init 132.3332789825534
-gk_Blower_grainDuration init 0.2854231208217838
-gk_Blower_grainAmplitudeRange init 174.0746779716289
-gk_Blower_grainFrequencyRange init 62.82406652535464
-gk_Blower_level init -5.959563019729337
-gk_ZakianFlute_level init 12
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-gk_MasterOutput_level init 0
-gk_Spatialize_SpeakerRigRadius init 15
-gk_LocalReverbByDistance_ReverbDecay init 0.14975905103175585
-gk_LocalReverbByDistance_Wet init 0.4344495242802422
-gk_SpatialReverb_ReverbDecay init 2.7711190740969562
-gi_instrument_position_rate init 0.0035
-gk_BformatDecoder2_MasterLevel init 0.3016468286319949
-gk_PianoOutPianoteq_level init -15;-9
-gi_FMWaterBell_attack init 0.002936276551436901
-gi_FMWaterBell_release init 0.022698875468554768
-gi_FMWaterBell_exponent init 0
-gi_FMWaterBell_sustain init 5.385256143273636
-gi_FMWaterBell_sustain_level init 0.08267388588088297
-gk_FMWaterBell_crossfade init 0.1234039047697504
-gk_FMWaterBell_index init 1.1401499375260309
-gk_FMWaterBell_vibrato_depth init 0.28503171595683335
-gk_FMWaterBell_vibrato_rate init 2.4993821566850647
-gk_FMWaterBell_level init 14;;26
-gk_Phaser_ratio1 init 1.028045002445785
-gk_Phaser_ratio2 init 0.010598402087069948
-gk_Phaser_index1 init 0.9709766835154084
-gk_Phaser_index2 init 0.7361813142018588
-gk_Phaser_level init 4
-gk_STKBowed_vibrato_level init 0
-gk_STKBowed_bow_pressure init 110
-gk_STKBowed_bow_position init 21.81769218869982
-gk_STKBowed_vibrato_frequency init 50.2
-gk_STKBowed_level init 17.737876003647344
-gk_Droner_partial1 init 0.4664927441708788
-gk_Droner_partial2 init 0.16386760150008153
-gk_Droner_partial3 init 0.13777922713190935
-gk_Droner_partial4 init 0.4664927441708788
-gk_Droner_partial5 init 0.15343225175281267
-gk_Droner_level init 27.433556171531066
-gk_Sweeper_bright_min init 3.5147562367519973
-gk_Sweeper_bright_max init 0
-gk_Sweeper_rate_min init 0.48850481004402413
-gk_Sweeper_rate_max init 3.452144138268384
-gk_Sweeper_level init -2
-gk_Buzzer_harmonics init 4
-gk_Buzzer_level init 0
-gk_Shiner_level init -16.91668025436165
-gk_Blower_grainDensity init 132.3332789825534
-gk_Blower_grainDuration init 0.2854231208217838
-gk_Blower_grainAmplitudeRange init 174.0746779716289
-gk_Blower_grainFrequencyRange init 62.82406652535464
-gk_Blower_level init -5.959563019729337
-gk_ZakianFlute_level init 12
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-gk_MasterOutput_level init 0
-gk_Spatialize_SpeakerRigRadius init 15
-gk_LocalReverbByDistance_ReverbDecay init 0.14975905103175585
-gk_LocalReverbByDistance_Wet init 0.4344495242802422
-gk_SpatialReverb_ReverbDecay init 2.7711190740969562
-gi_instrument_position_rate init 0.0035
-gk_BformatDecoder2_MasterLevel init 5.570657770089383
-gk_PianoOutPianoteq_level init -15;;9
-gi_FMWaterBell_attack init 0.002936276551436901
-gi_FMWaterBell_release init 0.022698875468554768
-gi_FMWaterBell_exponent init 0
-gi_FMWaterBell_sustain init 5.385256143273636
-gi_FMWaterBell_sustain_level init 0.08267388588088297
-gk_FMWaterBell_crossfade init 0.1234039047697504
-gk_FMWaterBell_index init 1.1401499375260309
-gk_FMWaterBell_vibrato_depth init 0.28503171595683335
-gk_FMWaterBell_vibrato_rate init 2.4993821566850647
-gk_FMWaterBell_level init 26
-gk_Phaser_ratio1 init 0.48519296511388443
-gk_Phaser_ratio2 init 1.9877260183697845
-gk_Phaser_index1 init 0.9020140862473743
-gk_Phaser_index2 init 0.9810947732608427
-gk_Phaser_level init 4
-gk_STKBowed_vibrato_level init 0
-gk_STKBowed_bow_pressure init 110
-gk_STKBowed_bow_position init 21.81769218869982
-gk_STKBowed_vibrato_frequency init 50.2
-gk_STKBowed_level init 17.737876003647344
-gk_Droner_partial1 init 0.4664927441708788
-gk_Droner_partial2 init 0.16386760150008153
-gk_Droner_partial3 init 0.13777922713190935
-gk_Droner_partial4 init 0.4664927441708788
-gk_Droner_partial5 init 0.15343225175281267
-gk_Droner_level init 27.433556171531066
-gk_Sweeper_bright_min init 0.13509617364800858
-gk_Sweeper_bright_max init 2.1595617611928004
-gk_Sweeper_rate_min init 0.11400799044441698
-gk_Sweeper_rate_max init 2.792207257300548
-gk_Sweeper_level init -2
-gk_Buzzer_harmonics init 4
-gk_Buzzer_level init 0
-gk_Shiner_level init -16.91668025436165
-gk_Blower_grainDensity init 132.3332789825534
-gk_Blower_grainDuration init 0.2854231208217838
-gk_Blower_grainAmplitudeRange init 174.0746779716289
-gk_Blower_grainFrequencyRange init 62.82406652535464
-gk_Blower_level init -5.959563019729337
-gk_ZakianFlute_level init 12
-gk_ReverbSC_feedback init 0.82
-gk_ReverbSC_wet init 0.5
-gi_ReverbSC_delay_modulation init 0.0075
-gk_ReverbSC_frequency_cutoff init 15000
-gk_MasterOutputLevel init 0.
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-gk_MasterOutput_level init 10
-gk_Spatialize_SpeakerRigRadius init 0
-gk_LocalReverbByDistance_ReverbDecay init 0
-gk_LocalReverbByDistance_Wet init 0
-gk_SpatialReverb_ReverbDecay init 0
-gi_instrument_position_rate init 0
-gk_BformatDecoder2_MasterLevel init 0
-gk_ReverbSC_feedback init 0.82
-gk_ReverbSC_wet init 0.5
-gi_ReverbSC_delay_modulation init 0.0075
-gk_ReverbSC_frequency_cutoff init 15000
-gk_PianoOutPianoteq_level init -11;;-9;;-3;;9
-gi_FMWaterBell_attack init 0.002936276551436901
-gi_FMWaterBell_release init 0.022698875468554768
-gi_FMWaterBell_exponent init 0
-gi_FMWaterBell_sustain init 5.385256143273636
-gi_FMWaterBell_sustain_level init 0.08267388588088297
-gk_FMWaterBell_crossfade init 0.1234039047697504
-gk_FMWaterBell_index init 1.1401499375260309
-gk_FMWaterBell_vibrato_depth init 0.28503171595683335
-gk_FMWaterBell_vibrato_rate init 2.4993821566850647
-gk_FMWaterBell_level init 17.75;;18.5;;17;;26
-gk_Phaser_ratio1 init 0.48519296511388443
-gk_Phaser_ratio2 init 1.9877260183697845
-gk_Phaser_index1 init 0.9020140862473743
-gk_Phaser_index2 init 0.9810947732608427
-gk_Phaser_level init 4
-gk_SeidelHarmOsc_level init -1
-gk_PianoOutPianoteq_level init 30
-gk_STKBowed_vibrato_level init 0
-gk_STKBowed_bow_pressure init 110
-gk_STKBowed_bow_position init 21.81769218869982
-gk_STKBowed_vibrato_frequency init 50.2
-gk_STKBowed_level init 17.737876003647344
-gk_Droner_partial1 init 0.4664927441708788
-gk_Droner_partial2 init 0.16386760150008153
-gk_Droner_partial3 init 0.13777922713190935
-gk_Droner_partial4 init 0.4664927441708788
-gk_Droner_partial5 init 0.15343225175281267
-gk_Droner_level init 14
-gk_Sweeper_bright_min init 0.13509617364800858
-gk_Sweeper_bright_max init 2.1595617611928004
-gk_Sweeper_rate_min init 0.11400799044441698
-gk_Sweeper_rate_max init 2.792207257300548
-gk_Sweeper_level init -2
-gk_Buzzer_harmonics init 4
-gk_Buzzer_level init 0
-gk_Shiner_level init -16.91668025436165
-gk_Blower_grainDensity init 132.3332789825534
-gk_Blower_grainDuration init 0.2854231208217838
-gk_Blower_grainAmplitudeRange init 174.0746779716289
-gk_Blower_grainFrequencyRange init 62.82406652535464
-gk_Blower_level init -5.959563019729337
-gk_ZakianFlute_level init 12
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-gk_MasterOutput_level init 10
-gk_Spatialize_SpeakerRigRadius init 0
-gk_LocalReverbByDistance_ReverbDecay init 0
-gk_LocalReverbByDistance_Wet init 0
-gk_SpatialReverb_ReverbDecay init 0
-gi_instrument_position_rate init 0
-gk_BformatDecoder2_MasterLevel init 0
-gk_ReverbSC_feedback init 0.82
-gk_ReverbSC_wet init 0.5
-gi_ReverbSC_delay_modulation init 0.0075
-gk_ReverbSC_frequency_cutoff init 15000
-gk_PianoOutPianoteq_level init -11
-gi_FMWaterBell_attack init 0.002936276551436901
-gi_FMWaterBell_release init 0.022698875468554768
-gi_FMWaterBell_exponent init 0
-gi_FMWaterBell_sustain init 5.385256143273636
-gi_FMWaterBell_sustain_level init 0.08267388588088297
-gk_FMWaterBell_crossfade init 0.1234039047697504
-gk_FMWaterBell_index init 1.1401499375260309
-gk_FMWaterBell_vibrato_depth init 0.28503171595683335
-gk_FMWaterBell_vibrato_rate init 2.4993821566850647
-gk_FMWaterBell_level init 17.75
-gk_Phaser_ratio1 init 0.48519296511388443
-gk_Phaser_ratio2 init 1.9877260183697845
-gk_Phaser_index1 init 0.9020140862473743
-gk_Phaser_index2 init 0.9810947732608427
-gk_Phaser_level init 4
-gk_Plucked_level init 22
-gk_SeidelHarmOsc_level init -1
-gk_STKBowed_vibrato_level init 0.21523592500829042
-gk_STKBowed_bow_pressure init 106.85582357509631
-gk_STKBowed_bow_position init 21.81769218869982
-gk_STKBowed_vibrato_frequency init 42.6065254256644
-gk_STKBowed_level init 17.737876003647344
-gk_Droner_partial1 init 0.4664927441708788
-gk_Droner_partial2 init 0.16386760150008153
-gk_Droner_partial3 init 0.13777922713190935
-gk_Droner_partial4 init 0.4664927441708788
-gk_Droner_partial5 init 0.15343225175281267
-gk_Droner_level init 14
-gk_Sweeper_bright_min init 0.7995295768826096
-gk_Sweeper_bright_max init 2.3641687070741493
-gk_Sweeper_rate_min init 1.1959048231977996
-gk_Sweeper_rate_max init 2.948300649012324
-gk_Sweeper_level init 7.018032169931679
-gk_Buzzer_harmonics init 4
-gk_Buzzer_level init 0
-gk_Shiner_level init -16.91668025436165
-gk_Blower_grainDensity init 132.3332789825534
-gk_Blower_grainDuration init 0.2854231208217838
-gk_Blower_grainAmplitudeRange init 174.0746779716289
-gk_Blower_grainFrequencyRange init 62.82406652535464
-gk_Blower_level init -5.959563019729337
-gk_ZakianFlute_level init 12
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-gk_MasterOutput_level init 10
+gk_MasterOutput_level init 29.157687255510723
 gk_Spatialize_SpeakerRigRadius init 0
 gk_LocalReverbByDistance_ReverbDecay init 0
 gk_LocalReverbByDistance_Wet init 0
@@ -660,13 +303,13 @@ gk_FMWaterBell_index init 1.1401499375260309
 gk_FMWaterBell_vibrato_depth init 0.28503171595683335
 gk_FMWaterBell_vibrato_rate init 2.4993821566850647
 gk_FMWaterBell_level init 17.75
-gk_Phaser_ratio1 init 0.48519296511388443
-gk_Phaser_ratio2 init 1.9877260183697845
-gk_Phaser_index1 init 0.9020140862473743
-gk_Phaser_index2 init 0.9810947732608427
-gk_Phaser_level init 4
-gk_Plucked_level init 38.083601028305125
-gk_SeidelHarmOsc_level init 17.227261415198882
+gk_Phaser_ratio1 init 0.5
+gk_Phaser_ratio2 init 2.
+gk_Phaser_index1 init 0.46410256573457687
+gk_Phaser_index2 init 0.8551589334803189
+gk_Phaser_level init 11
+gk_Plucked_level init 50
+gk_SeidelHarmOsc_level init 15
 gk_STKBowed_vibrato_level init 0
 gk_STKBowed_bow_pressure init 106.85582357509631
 gk_STKBowed_bow_position init 21.81769218869982
@@ -677,24 +320,26 @@ gk_Droner_partial2 init 0.16386760150008153
 gk_Droner_partial3 init 0.13777922713190935
 gk_Droner_partial4 init 0.4664927441708788
 gk_Droner_partial5 init 0.15343225175281267
-gk_Droner_level init 14
-gk_Sweeper_bright_min init 1.1874340044643057
-gk_Sweeper_bright_max init 3.460775022292886
-gk_Sweeper_rate_min init 0.9371579291070307
-gk_Sweeper_rate_max init 2.793372154673486
-gk_Sweeper_level init 22.962754808803098
+gk_Droner_level init 36
+gk_Sweeper_bright_min init 0
+gk_Sweeper_bright_max init 0
+gk_Sweeper_rate_min init 0
+gk_Sweeper_rate_max init 0
+gk_Sweeper_level init 16
 gk_Buzzer_harmonics init 4
-gk_Buzzer_level init 0
-gk_Shiner_level init 24.245134243105284
+gk_Buzzer_level init 12
+gk_Shiner_level init 15
 gk_Blower_grainDensity init 132.3332789825534
 gk_Blower_grainDuration init 0.2854231208217838
 gk_Blower_grainAmplitudeRange init 174.0746779716289
 gk_Blower_grainFrequencyRange init 62.82406652535464
-gk_Blower_level init 6.79909160864576
-gk_ZakianFlute_level init 12
+gk_Blower_level init 4
+gk_ZakianFlute_level init 16
+gk_Xing_level init 42
+gk_BandedWG_level init 14
+gk_FilteredSines_level init 40
+gk_Harpsichord_level init 9
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
 
 gS_html init {{<!DOCTYPE html>
 <html>
@@ -882,7 +527,7 @@ gS_html init {{<!DOCTYPE html>
             gk_STKBowed_bow_pressure: 110,
             gk_STKBowed_bow_position: 20,
             gk_STKBowed_vibrato_frequency: 50.2,
-            gk_STKBowed_level: 0,
+            gk_STKBowed_level: 0.,
             gk_Droner_partial1: 0.11032374600527997,
             gk_Droner_partial2: 0.4927052938724468,
             gk_Droner_partial3: 0.11921634014172572,
@@ -903,6 +548,10 @@ gS_html init {{<!DOCTYPE html>
             gk_Blower_grainFrequencyRange: 30.596081700708627,
             gk_Blower_level: 7.754769280939186,
             gk_ZakianFlute_level: 25.125628140703512,
+            gk_BandedWG_level: 15.,
+            gk_FilteredSines_level: 0.,
+            gk_Harpsichord_level: 0.,
+            gk_Xing_level: 0.,
             save_controls: save_controls,
             toggle_messages: toggle_messages,
             recenter: recenter
@@ -927,26 +576,27 @@ gS_html init {{<!DOCTYPE html>
             gui.add(parameters, 'toggle_messages').name('Toggle Csound diagnostics');
             gui.add(parameters, 'recenter').name('Re-center piano roll [Ctrl-C]');
             var Master = gui.addFolder('Master');
-            var Ambisonic = Master.addFolder('Ambisonic')
-            add_slider(Ambisonic, 'gk_LocalReverbByDistance_ReverbDecay', 0, 1.);
-            add_slider(Ambisonic, 'gk_LocalReverbByDistance_Wet', 0, 1.);
-            add_slider(Ambisonic, 'gk_SpatialReverb_ReverbDecay', 0, 4.);
-            add_slider(Ambisonic, 'gk_Spatialize_SpeakerRigRadius', 2, 100.);
-            add_slider(Ambisonic, 'gi_instrument_position_rate', 0, .5);
-            add_slider(Ambisonic, 'gk_BformatDecoder2_MasterLevel', -50, 50);
-            var Stereo = Master.addFolder('Stereo')
-            add_slider(Stereo, 'gk_ReverbSC_feedback', 0, 1.);
-            add_slider(Stereo, 'gk_ReverbSC_wet', 0, 1.);
-            add_slider(Stereo, 'gi_ReverbSC_delay_modulation', 0, 4.);
-            add_slider(Stereo, 'gk_ReverbSC_frequency_cutoff', 0., 20000.);
-            add_slider(Stereo, 'gk_MasterOutput_level', -50., 50.);
+            add_slider(Master, 'gk_ReverbSC_feedback', 0, 1.);
+            add_slider(Master, 'gk_ReverbSC_wet', 0, 1.);
+            add_slider(Master, 'gi_ReverbSC_delay_modulation', 0, 4.);
+            add_slider(Master, 'gk_ReverbSC_frequency_cutoff', 0., 20000.);
+            add_slider(Master, 'gk_MasterOutput_level', -60, 60.);
+            
+            var BandedWG = gui.addFolder('BandedWG');
+            add_slider(BandedWG, 'gk_BandedWG_level', -60, 60.);
+            var Harpsichord = gui.addFolder('Harpsichord');
+            add_slider(Harpsichord, 'gk_Harpsichord_level', -60, 60.);
+            var Xing = gui.addFolder('Xing');
+            add_slider(Xing, 'gk_Xing_level', -60, 60.);
+            var FilteredSines = gui.addFolder('FilteredSines');
+            add_slider(FilteredSines, 'gk_FilteredSines_level', -60, 60.);
           
             var Pianoteq = gui.addFolder('Pianoteq');
-            add_slider(Pianoteq, 'gk_PianoOutPianoteq_level', -50, 50);
+            add_slider(Pianoteq, 'gk_PianoOutPianoteq_level', -60, 60.);
             var SeidelHarmOsc = gui.addFolder('SeidelHarmOsc');
-            add_slider(SeidelHarmOsc, 'gk_SeidelHarmOsc_level', -50, 50);
+            add_slider(SeidelHarmOsc, 'gk_SeidelHarmOsc_level', -60, 60.);
             var Plucked = gui.addFolder('Plucked');
-            add_slider(Plucked, 'gk_Plucked_level', -50, 50);
+            add_slider(Plucked, 'gk_Plucked_level', -60, 60.);
             var FMWaterBell = gui.addFolder('FMWaterBell');
             add_slider(FMWaterBell, 'gi_FMWaterBell_attack', 0, .1);
             add_slider(FMWaterBell, 'gi_FMWaterBell_release', 0, .1);
@@ -957,45 +607,45 @@ gS_html init {{<!DOCTYPE html>
             add_slider(FMWaterBell, 'gk_FMWaterBell_index', 0, 15.);
             add_slider(FMWaterBell, 'gk_FMWaterBell_vibrato_depth', 0, 10.);
             add_slider(FMWaterBell, 'gk_FMWaterBell_vibrato_rate', 0, 10.);
-            add_slider(FMWaterBell, 'gk_FMWaterBell_level',-50, 50);
+            add_slider(FMWaterBell, 'gk_FMWaterBell_level',-60, 60);
             var Phaser = gui.addFolder('Phaser');
             add_slider(Phaser, 'gk_Phaser_ratio1', 0, 5);
             add_slider(Phaser, 'gk_Phaser_ratio2', 0, 5);
             add_slider(Phaser, 'gk_Phaser_index1', 0, 15);
             add_slider(Phaser, 'gk_Phaser_index2', 0, 15);
-            add_slider(Phaser, 'gk_Phaser_level', -50, 50);
+            add_slider(Phaser, 'gk_Phaser_level', -60, 60.);
             var Droner = gui.addFolder('Droner');
             add_slider(Droner, 'gk_Droner_partial1', 0, 1);
             add_slider(Droner, 'gk_Droner_partial2', 0, 1);
             add_slider(Droner, 'gk_Droner_partial3', 0, 1);
             add_slider(Droner, 'gk_Droner_partial4', 0, 1);
             add_slider(Droner, 'gk_Droner_partial5', 0, 1);
-            add_slider(Droner, 'gk_Droner_level', -50, 50);
+            add_slider(Droner, 'gk_Droner_level', -60, 60.);
             var Sweeper = gui.addFolder('Sweeper');
             add_slider(Sweeper, 'gk_Sweeper_bright_min', 0, 4);
             add_slider(Sweeper, 'gk_Sweeper_bright_max', 0, 4);
             add_slider(Sweeper, 'gk_Sweeper_rate_min', 0, 4);
             add_slider(Sweeper, 'gk_Sweeper_rate_max', 0, 4);
-            add_slider(Sweeper, 'gk_Sweeper_level', -50, 50);
+            add_slider(Sweeper, 'gk_Sweeper_level', -60, 60.);
             var Buzzer = gui.addFolder('Buzzer');
             add_slider(Buzzer, 'gk_Buzzer_harmonics', 0, 20);
-            add_slider(Buzzer, 'gk_Buzzer_level', -50, 50);
+            add_slider(Buzzer, 'gk_Buzzer_level', -60, 60.);
             var Shiner = gui.addFolder('Shiner');
-            add_slider(Shiner, 'gk_Shiner_level', -50, 50);
+            add_slider(Shiner, 'gk_Shiner_level', -60, 60.);
             var Blower = gui.addFolder('Blower');
             add_slider(Blower, 'gk_Blower_grainDensity', 0, 400);
             add_slider(Blower, 'gk_Blower_grainDuration', 0, .5);
             add_slider(Blower, 'gk_Blower_grainAmplitudeRange', 0, 400);
             add_slider(Blower, 'gk_Blower_grainFrequencyRange', 0, 100);
-            add_slider(Blower, 'gk_Blower_level', -50, 50);
+            add_slider(Blower, 'gk_Blower_level', -60, 60.);
             var STKBowed = gui.addFolder('STKBowed');
             add_slider(STKBowed, 'gk_STKBowed_vibrato_level', 0, 127);
             add_slider(STKBowed, 'gk_STKBowed_bow_pressure', 0, 127);
             add_slider(STKBowed, 'gk_STKBowed_bow_position', 0, 127);
             add_slider(STKBowed, 'gk_STKBowed_vibrato_frequency', 0, 127);
-            add_slider(STKBowed, 'gk_STKBowed_level', -50, 50);
+            add_slider(STKBowed, 'gk_STKBowed_level', -60, 60.);
             var Flute = gui.addFolder('Zakian Flute');
-            add_slider(Flute, 'gk_ZakianFlute_level', -50, 50);
+            add_slider(Flute, 'gk_ZakianFlute_level', -60, 60.);
              $('input').on('input', function(event) {
                 var slider_value = parseFloat(event.target.value);
                 csound.SetControlChannel(event.target.id, slider_value, function(id, result){}, function(id,message){});
@@ -1058,6 +708,7 @@ gS_html init {{<!DOCTYPE html>
                         }
                         gui.closed = true;
                         gui.closed = false;
+                        toggle_messages();
                     } else if (e_char === 'S') {
                         parameters.save_controls();
                     }
@@ -1191,6 +842,10 @@ extern "C" {
 // immediately once the module has been compiled and linked.
 //////////////////////////////////////////////////////////////////////////////
 
+// Try scales/chords not chord transformations.
+// Try FM of time and pitch scales.
+// The last quarter of the piece gets just one chord change, this will not do.
+
 extern "C" int score_generator(CSOUND *csound) {
     // Turn off Csound-installed signal handlers.
     std::signal(SIGTERM, SIG_DFL);
@@ -1224,7 +879,7 @@ extern "C" int score_generator(CSOUND *csound) {
     pen.chord = modality;
     ///pen.note = csound::Event{1,35/1.25,144,1,1,1,0,0,0,0,1};
     pen.note = csound::Event{1,40,144,1,1,1,0,0,0,0,1};
-    int base_level = 0;
+    int base_level = 1;
     std::vector<std::function<Cursor(const Cursor &, int, csound::Score &)>> generators;
     auto g1 = [&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
         Cursor pen = pen_;
@@ -1232,8 +887,8 @@ extern "C" int score_generator(CSOUND *csound) {
             pen.chord = pen.chord.T(5);
             chordsForTimes[pen.note.getTime()] = pen.chord;
         }
-        pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (0 - 50);
-        pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .875 - 20);
+        pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (  0);
+        pen.note[csound::Event::KEY] =  (pen.note[csound::Event::KEY]  * .5) + (  0);
         return pen;
     };
     generators.push_back(g1);
@@ -1246,31 +901,29 @@ extern "C" int score_generator(CSOUND *csound) {
         if ((depth + base_level) == 1) {
             pen.chord = pen.chord.Q(3, modality);
             chordsForTimes[pen.note.getTime()] = pen.chord;
-       }
-        pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .475) + (1000 + 1);
-        pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .56) - .25;
-        pen.note[csound::Event::VELOCITY] =  std::cos(pen.note[csound::Event::TIME]);                    
+        }
+        pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (  0);
+        pen.note[csound::Event::KEY] =  (pen.note[csound::Event::KEY]  * .5) + ( 90);
+        pen.note[csound::Event::INSTRUMENT] =  (pen.note[csound::Event::INSTRUMENT]  * .5) + ( 90);
         return pen;
     };
     generators.push_back(g2);
     auto g3 = [&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
         Cursor pen = pen_;
-        pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (0 + .3);
-        pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .975) + 1.25;
-        pen.note[csound::Event::INSTRUMENT] = std::cos(pen.note[csound::Event::TIME]);
-        pen.note[csound::Event::VELOCITY] =  std::cos(pen.note[csound::Event::TIME]);
+        pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5 ) + (103);
+        pen.note[csound::Event::KEY] =  (pen.note[csound::Event::KEY]  * .55) + (  5);
         return pen;
     };
     generators.push_back(g3);
     auto g4 = [&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
         Cursor pen = pen_;
-        pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (1000 - 150);
-        pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .77) + 100.;
         if ((depth + base_level) == 3) {
             pen.chord = pen.chord.T(3);
         }
-        pen.note[csound::Event::INSTRUMENT] = std::sin(pen.note[csound::Event::TIME]);
-        pen.note[csound::Event::VELOCITY] =  std::cos(pen.note[csound::Event::TIME]);
+        pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + ( 95);
+        pen.note[csound::Event::KEY] =  (pen.note[csound::Event::KEY]  * .5) + (100);
+        pen.note[csound::Event::INSTRUMENT] =  (pen.note[csound::Event::INSTRUMENT]  * .75) + ( -3);
+        return pen;
         return pen;
     };
     generators.push_back(g4);
@@ -1285,9 +938,8 @@ extern "C" int score_generator(CSOUND *csound) {
     // Before iterating, ensure that the score does start with a chord.
     //////////////////////////////////////////////////////////////////////////////
     chordsForTimes[-100.] = pen.chord;
-    /// recurrent(generators, transitions, 7, 0, pen, score);
-    recurrent(generators, transitions, 7, 3, pen, score);
-    ///recurrent(generators, transitions, 8, 0, pen, score);
+    recurrent(generators, transitions, 5, 0, pen, score);
+    ///recurrent(generators, transitions, 9, 3, pen, score);
     score.setDuration(600);
     std::cout << "Generated duration:     " << score.getDuration() << std::endl;
     //////////////////////////////////////////////////////////////////////////////
@@ -1323,18 +975,18 @@ extern "C" int score_generator(CSOUND *csound) {
     score.setDuration(600.);
     std::cout << "set duration:           " << score.getDuration() << std::endl;
     score.findScale();
-    score.setDuration(360.0 * 2.);
     std::mt19937 mersenneTwister;
     std::uniform_real_distribution<> randomvariable(.05,.95);
     for (int i = 0, n = score.size(); i < n; ++i) {
         score[i].setPan(randomvariable(mersenneTwister));
         score[i].setDepth(randomvariable(mersenneTwister));
         score[i].setPhase(randomvariable(mersenneTwister));
-        auto duration = score[i].getDuration() / 8.;
+        auto duration = score[i].getDuration() / 4.;
         score[i].setDuration(duration);
     }
     score.tieOverlappingNotes(true);
     score.rescale(csound::Event::TIME,          true,  2.0, false,  0.0);
+    score.setDuration(30);
     std::cout << "score:" << std::endl << score.getCsoundScore() << std::endl;
     std::cout << "Final duration:         " << score.getDuration() << std::endl;
     //////////////////////////////////////////////////////////////////////////
@@ -1351,7 +1003,7 @@ extern "C" int score_generator(CSOUND *csound) {
         evtblk.pcnt = 9;
         // Add 4 to p1 only for SPATIALIZE_GOGINS.
         //evtblk.p[1] = std::floor(note.getInstrument() + 4);
-        evtblk.p[1] = std::floor(note.getInstrument());
+        evtblk.p[1] = 6; std::floor(note.getInstrument());
         evtblk.p[2] = note.getTime();
         evtblk.p[3] = note.getDuration();
         evtblk.p[4] = note.getKey();
@@ -1398,7 +1050,7 @@ endif
 
 instr Exit
 prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
-cxx_raise "SIGTERM"
+exitnow
 endin
 
 </CsInstruments>
@@ -1406,7 +1058,7 @@ endin
 ; f 0 does not work here, we actually need to schedule an instrument that 
 ; turns off Csound.
 ; a 0 1 270
-i "Exit" [730]
+i "Exit" [35]
 ;f 0 [6 * 60 + 5]
 </CsScore>
 </CsoundSynthesizer>
