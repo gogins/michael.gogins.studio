@@ -184,6 +184,8 @@ endif
 xout 0, k_pan
 endop
 
+connect "BandedWG", "outleft", "ReverbSC", "inleft"
+connect "BandedWG", "outright", "ReverbSC", "inright"
 connect "Blower", "outleft", "ReverbSC", "inleft"
 connect "Blower", "outright", "ReverbSC", "inright"
 connect "STKBowed", "outleft", "ReverbSC", "inleft"
@@ -192,8 +194,12 @@ connect "Buzzer", "outleft", "ReverbSC", "inleft"
 connect "Buzzer", "outright", "ReverbSC", "inright"
 connect "Droner", "outleft", "ReverbSC", "inleft"
 connect "Droner", "outright", "ReverbSC", "inright"
+connect "FilteredSines", "outleft", "ReverbSC", "inleft"
+connect "FilteredSines", "outright", "ReverbSC", "inright"
 connect "FMWaterBell", "outleft", "ReverbSC", "inleft"
 connect "FMWaterBell", "outright", "ReverbSC", "inright"
+connect "Harpsichord", "outleft", "ReverbSC", "inleft"
+connect "Harpsichord", "outright", "ReverbSC", "inright"
 connect "Phaser", "outleft", "ReverbSC", "inleft"
 connect "Phaser", "outright", "ReverbSC", "inright"
 connect "PianoOutPianoteq", "outleft", "ReverbSC", "inleft"
@@ -202,12 +208,15 @@ connect "Plucked", "outleft", "ReverbSC", "inleft"
 connect "Plucked", "outright", "ReverbSC", "inright"
 connect "SeidelHarmOsc", "outleft", "ReverbSC", "inleft"
 connect "SeidelHarmOsc", "outright", "ReverbSC", "inright"
-connect "Sweeper", "outleft", "ReverbSC", "inleft"
-connect "Sweeper", "outright", "ReverbSC", "inright"
 connect "Shiner", "outleft", "ReverbSC", "inleft"
 connect "Shiner", "outright", "ReverbSC", "inright"
+connect "Sweeper", "outleft", "ReverbSC", "inleft"
+connect "Sweeper", "outright", "ReverbSC", "inright"
+connect "Xing", "outleft", "ReverbSC", "inleft"
+connect "Xing", "outright", "ReverbSC", "inright"
 connect "ZakianFlute", "outleft", "ReverbSC", "inleft"
 connect "ZakianFlute", "outright", "ReverbSC", "inright"
+
 connect "ReverbSC", "outleft", "MasterOutput", "inleft"
 connect "ReverbSC", "outright", "MasterOutput", "inright"
 
@@ -224,18 +233,24 @@ if strcmp(gS_os, "macOS") == 0 then
 gi_Pianoteq vst3init "/Library/Audio/Plug-Ins/VST3/Pianoteq\ 7.vst3", "Pianoteq 7", 1
 endif
 
-#include "PianoNotePianoteqVst3.inc"
-#include "Plucked.inc"
-#include "SeidelHarmOsc.inc"
-#include "FMWaterBell.inc" // Normalized.
-#include "Phaser.inc"      // Normalized.
-#include "Droner.inc"      // Normalized.
-#include "Sweeper.inc"     // Normalized.
-#include "Buzzer.inc"      // Normalized.
-#include "Shiner.inc"      // Normalized.
-#include "Blower.inc"      // Normalized.
-#include "ZakianFlute.inc" // Normalized.
-#include "STKBowed.inc"    // Normalized.
+// The order of #includes defines the instrument numbers.
+
+#include "PianoNotePianoteqVst3.inc"  // Normalized.
+#include "Xing.inc"                   // Normalized.
+#include "FilteredSines.inc"          // Normalized.
+#include "BandedWG.inc"               // Normalized.
+#include "Harpsichord.inc"            // Normalized.
+#include "Plucked.inc"                // Normalized.
+#include "SeidelHarmOsc.inc"          // Normalized.
+#include "FMWaterBell.inc"            // Normalized.
+#include "Phaser.inc"                 // Normalized.
+#include "Droner.inc"                 // Normalized.
+#include "Sweeper.inc"                // Normalized.
+#include "Buzzer.inc"                 // Normalized.
+#include "Shiner.inc"                 // Normalized.
+#include "Blower.inc"                 // Normalized.
+#include "ZakianFlute.inc"            // Normalized.
+#include "STKBowed.inc"               // Normalized.
 
 #include "PianoOutPianoteqVst3.inc"
 gk_PianoOutPianoteq_front_to_back init -3
@@ -317,6 +332,10 @@ gk_Blower_grainAmplitudeRange init 174.0746779716289
 gk_Blower_grainFrequencyRange init 62.82406652535464
 gk_Blower_level init 4
 gk_ZakianFlute_level init 16
+gk_Xing_level init 42
+gk_BandedWG_level init 14
+gk_FilteredSines_level init 40
+gk_Harpsichord_level init 9
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 gS_html init {{<!DOCTYPE html>
@@ -526,6 +545,10 @@ gS_html init {{<!DOCTYPE html>
             gk_Blower_grainFrequencyRange: 30.596081700708627,
             gk_Blower_level: 7.754769280939186,
             gk_ZakianFlute_level: 25.125628140703512,
+            gk_BandedWG_level: 15.,
+            gk_FilteredSines_level: 0.,
+            gk_Harpsichord_level: 0.,
+            gk_Xing_level: 0.,
             save_controls: save_controls,
             toggle_messages: toggle_messages,
             recenter: recenter
@@ -550,26 +573,27 @@ gS_html init {{<!DOCTYPE html>
             gui.add(parameters, 'toggle_messages').name('Toggle Csound diagnostics');
             gui.add(parameters, 'recenter').name('Re-center piano roll [Ctrl-C]');
             var Master = gui.addFolder('Master');
-            var Ambisonic = Master.addFolder('Ambisonic')
-            add_slider(Ambisonic, 'gk_LocalReverbByDistance_ReverbDecay', 0, 1.);
-            add_slider(Ambisonic, 'gk_LocalReverbByDistance_Wet', 0, 1.);
-            add_slider(Ambisonic, 'gk_SpatialReverb_ReverbDecay', 0, 4.);
-            add_slider(Ambisonic, 'gk_Spatialize_SpeakerRigRadius', 2, 100.);
-            add_slider(Ambisonic, 'gi_instrument_position_rate', 0, .5);
-            add_slider(Ambisonic, 'gk_BformatDecoder2_MasterLevel', -50, 50);
-            var Stereo = Master.addFolder('Stereo')
-            add_slider(Stereo, 'gk_ReverbSC_feedback', 0, 1.);
-            add_slider(Stereo, 'gk_ReverbSC_wet', 0, 1.);
-            add_slider(Stereo, 'gi_ReverbSC_delay_modulation', 0, 4.);
-            add_slider(Stereo, 'gk_ReverbSC_frequency_cutoff', 0., 20000.);
-            add_slider(Stereo, 'gk_MasterOutput_level', -50., 50.);
+            add_slider(Master, 'gk_ReverbSC_feedback', 0, 1.);
+            add_slider(Master, 'gk_ReverbSC_wet', 0, 1.);
+            add_slider(Master, 'gi_ReverbSC_delay_modulation', 0, 4.);
+            add_slider(Master, 'gk_ReverbSC_frequency_cutoff', 0., 20000.);
+            add_slider(Master, 'gk_MasterOutput_level', -60, 60.);
+            
+            var BandedWG = gui.addFolder('BandedWG');
+            add_slider(BandedWG, 'gk_BandedWG_level', -60, 60.);
+            var Harpsichord = gui.addFolder('Harpsichord');
+            add_slider(Harpsichord, 'gk_Harpsichord_level', -60, 60.);
+            var Xing = gui.addFolder('Xing');
+            add_slider(Xing, 'gk_Xing_level', -60, 60.);
+            var FilteredSines = gui.addFolder('FilteredSines');
+            add_slider(FilteredSines, 'gk_FilteredSines_level', -60, 60.);
           
             var Pianoteq = gui.addFolder('Pianoteq');
-            add_slider(Pianoteq, 'gk_PianoOutPianoteq_level', -50, 50);
+            add_slider(Pianoteq, 'gk_PianoOutPianoteq_level', -60, 60.);
             var SeidelHarmOsc = gui.addFolder('SeidelHarmOsc');
-            add_slider(SeidelHarmOsc, 'gk_SeidelHarmOsc_level', -50, 50);
+            add_slider(SeidelHarmOsc, 'gk_SeidelHarmOsc_level', -60, 60.);
             var Plucked = gui.addFolder('Plucked');
-            add_slider(Plucked, 'gk_Plucked_level', -50, 50);
+            add_slider(Plucked, 'gk_Plucked_level', -60, 60.);
             var FMWaterBell = gui.addFolder('FMWaterBell');
             add_slider(FMWaterBell, 'gi_FMWaterBell_attack', 0, .1);
             add_slider(FMWaterBell, 'gi_FMWaterBell_release', 0, .1);
@@ -580,45 +604,45 @@ gS_html init {{<!DOCTYPE html>
             add_slider(FMWaterBell, 'gk_FMWaterBell_index', 0, 15.);
             add_slider(FMWaterBell, 'gk_FMWaterBell_vibrato_depth', 0, 10.);
             add_slider(FMWaterBell, 'gk_FMWaterBell_vibrato_rate', 0, 10.);
-            add_slider(FMWaterBell, 'gk_FMWaterBell_level',-50, 50);
+            add_slider(FMWaterBell, 'gk_FMWaterBell_level',-60, 60);
             var Phaser = gui.addFolder('Phaser');
             add_slider(Phaser, 'gk_Phaser_ratio1', 0, 5);
             add_slider(Phaser, 'gk_Phaser_ratio2', 0, 5);
             add_slider(Phaser, 'gk_Phaser_index1', 0, 15);
             add_slider(Phaser, 'gk_Phaser_index2', 0, 15);
-            add_slider(Phaser, 'gk_Phaser_level', -50, 50);
+            add_slider(Phaser, 'gk_Phaser_level', -60, 60.);
             var Droner = gui.addFolder('Droner');
             add_slider(Droner, 'gk_Droner_partial1', 0, 1);
             add_slider(Droner, 'gk_Droner_partial2', 0, 1);
             add_slider(Droner, 'gk_Droner_partial3', 0, 1);
             add_slider(Droner, 'gk_Droner_partial4', 0, 1);
             add_slider(Droner, 'gk_Droner_partial5', 0, 1);
-            add_slider(Droner, 'gk_Droner_level', -50, 50);
+            add_slider(Droner, 'gk_Droner_level', -60, 60.);
             var Sweeper = gui.addFolder('Sweeper');
             add_slider(Sweeper, 'gk_Sweeper_bright_min', 0, 4);
             add_slider(Sweeper, 'gk_Sweeper_bright_max', 0, 4);
             add_slider(Sweeper, 'gk_Sweeper_rate_min', 0, 4);
             add_slider(Sweeper, 'gk_Sweeper_rate_max', 0, 4);
-            add_slider(Sweeper, 'gk_Sweeper_level', -50, 50);
+            add_slider(Sweeper, 'gk_Sweeper_level', -60, 60.);
             var Buzzer = gui.addFolder('Buzzer');
             add_slider(Buzzer, 'gk_Buzzer_harmonics', 0, 20);
-            add_slider(Buzzer, 'gk_Buzzer_level', -50, 50);
+            add_slider(Buzzer, 'gk_Buzzer_level', -60, 60.);
             var Shiner = gui.addFolder('Shiner');
-            add_slider(Shiner, 'gk_Shiner_level', -50, 50);
+            add_slider(Shiner, 'gk_Shiner_level', -60, 60.);
             var Blower = gui.addFolder('Blower');
             add_slider(Blower, 'gk_Blower_grainDensity', 0, 400);
             add_slider(Blower, 'gk_Blower_grainDuration', 0, .5);
             add_slider(Blower, 'gk_Blower_grainAmplitudeRange', 0, 400);
             add_slider(Blower, 'gk_Blower_grainFrequencyRange', 0, 100);
-            add_slider(Blower, 'gk_Blower_level', -50, 50);
+            add_slider(Blower, 'gk_Blower_level', -60, 60.);
             var STKBowed = gui.addFolder('STKBowed');
             add_slider(STKBowed, 'gk_STKBowed_vibrato_level', 0, 127);
             add_slider(STKBowed, 'gk_STKBowed_bow_pressure', 0, 127);
             add_slider(STKBowed, 'gk_STKBowed_bow_position', 0, 127);
             add_slider(STKBowed, 'gk_STKBowed_vibrato_frequency', 0, 127);
-            add_slider(STKBowed, 'gk_STKBowed_level', -50, 50);
+            add_slider(STKBowed, 'gk_STKBowed_level', -60, 60.);
             var Flute = gui.addFolder('Zakian Flute');
-            add_slider(Flute, 'gk_ZakianFlute_level', -50, 50);
+            add_slider(Flute, 'gk_ZakianFlute_level', -60, 60.);
              $('input').on('input', function(event) {
                 var slider_value = parseFloat(event.target.value);
                 csound.SetControlChannel(event.target.id, slider_value, function(id, result){}, function(id,message){});
@@ -690,7 +714,7 @@ gS_html init {{<!DOCTYPE html>
             requestAnimationFrame(animate)
         };
         
-         var gk_update = function(name, value) {
+        var gk_update = function(name, value) {
             var numberValue = parseFloat(value);
             csound.SetControlChannel(name, numberValue, function(id, value) {}, function(id, value) {});
         }
@@ -724,11 +748,11 @@ webserver_open_html gi_webserver, gS_html
 
 //////////////////////////////////////////////////////////////////////////////
 // The following C++ code defines and executes a score generator that 
-// implements the "multiple copy reducing machine" algorithm for computing an 
-// iterated function system (IFS).
+// implements the "multiple copy reducing machine" algorithm for computing a 
+// recurrent iterated function system (RIFS).
 //
 // Only a limited number of iterations are computed. On the final iteration, 
-// each point in the attractor of the IFS is translated to a single note of 
+// each point in the attractor of the RIFS is translated to a single note of 
 // music.
 //
 // This code uses my CsoundAC library, the Eigen 3 header file-only library, 
@@ -756,7 +780,7 @@ S_score_generator_code init {{
 
 //////////////////////////////////////////////////////////////////////////////
 // This symbol is used by a number of C++ libraries, but is not defined in the
-// startup code. Therefore, we mey need to define it here.
+// startup code. Therefore, we may need to define it here.
 //////////////////////////////////////////////////////////////////////////////
 
 /// void* __dso_handle = (void *)&__dso_handle;
@@ -780,12 +804,10 @@ auto generator = [] (const Cursor &cursor, int depth, csound::Score &score)
 //////////////////////////////////////////////////////////////////////////////
 // Computes a deterministic, finite recurrent iterated function system by
 // recursively applying a set of generators (transformations) to a pen
-// that represent the position of a "pen" on a "score." The entries in
+// that represents the position of a "pen" on a "score." The entries in
 // the transitions matrix represent open or closed paths of recurrence through
 // the tree of calls. Because the pen is passed by value, it is in effect
-// copied at each call of a generator and at each layer of recursion. The
-// generators may or may not append a local copy of the pen to the score,
-// thus "writing" a "note" or other event on the "score."
+// copied at each call of a generator and at each layer of recursion.
 //////////////////////////////////////////////////////////////////////////////
 void recurrent(std::vector< std::function<Cursor(const Cursor &,int, csound::Score &)> > &generators,
         Eigen::MatrixXd &transitions,
@@ -817,6 +839,7 @@ extern "C" {
 
 // Try scales/chords not chord transformations.
 // Try FM of time and pitch scales.
+// The last quarter of the piece gets just one chord change, this will not do.
 
 extern "C" int score_generator(CSOUND *csound) {
     // Turn off Csound-installed signal handlers.
@@ -849,11 +872,10 @@ extern "C" int score_generator(CSOUND *csound) {
     Cursor pen;
     modality.fromString("0 4 7 11 14");
     pen.chord = modality;
-    ///pen.note = csound::Event{1,35/1.25,144,1,1,1,0,0,0,0,1};
     pen.note = csound::Event{1,40,144,1,1,1,0,0,0,0,1};
     int base_level = 1;
     std::vector<std::function<Cursor(const Cursor &, int, csound::Score &)>> generators;
-    auto g1 = [&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
+    generators.push_back([&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
         Cursor pen = pen_;
         if ((depth + base_level) == 2) {
             pen.chord = pen.chord.T(5);
@@ -862,9 +884,8 @@ extern "C" int score_generator(CSOUND *csound) {
         pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (  0);
         pen.note[csound::Event::KEY] =  (pen.note[csound::Event::KEY]  * .5) + (  0);
         return pen;
-    };
-    generators.push_back(g1);
-    auto g2 = [&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
+    });
+    generators.push_back([&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
         Cursor pen = pen_;
         if ((depth + base_level) == 2) {
             pen.chord = pen.chord.K();
@@ -878,16 +899,14 @@ extern "C" int score_generator(CSOUND *csound) {
         pen.note[csound::Event::KEY] =  (pen.note[csound::Event::KEY]  * .5) + ( 90);
         pen.note[csound::Event::INSTRUMENT] =  (pen.note[csound::Event::INSTRUMENT]  * .5) + ( 90);
         return pen;
-    };
-    generators.push_back(g2);
-    auto g3 = [&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
+    });
+    generators.push_back([&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
         Cursor pen = pen_;
         pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5 ) + (103);
         pen.note[csound::Event::KEY] =  (pen.note[csound::Event::KEY]  * .55) + (  5);
         return pen;
-    };
-    generators.push_back(g3);
-    auto g4 = [&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
+    });
+    generators.push_back([&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
         Cursor pen = pen_;
         if ((depth + base_level) == 3) {
             pen.chord = pen.chord.T(3);
@@ -897,8 +916,7 @@ extern "C" int score_generator(CSOUND *csound) {
         pen.note[csound::Event::INSTRUMENT] =  (pen.note[csound::Event::INSTRUMENT]  * .75) + ( -3);
         return pen;
         return pen;
-    };
-    generators.push_back(g4);
+    });
     // Generate the score.
     Eigen::MatrixXd transitions(4,4);
     transitions <<  1, 1, 1, 1,
@@ -939,8 +957,8 @@ extern "C" int score_generator(CSOUND *csound) {
     }
     std::cout << "Conformed notes:        " << size << std::endl;
     score.rescale(csound::Event::TIME,          true,  0.0, false,  0.0);
-    //score.rescale(csound::Event::INSTRUMENT,    true,  1.0, true,   0);//9.999);
-    score.rescale(csound::Event::INSTRUMENT,    true,  1.0, true,   11.99);
+    //score.rescale(csound::Event::INSTRUMENT,    true,  1.0, true,   6);//9.999);
+    score.rescale(csound::Event::INSTRUMENT,    true,  1.0, true,   5.999);
     score.rescale(csound::Event::VELOCITY,      true, 40.0, true,  20.0);
     score.rescale(csound::Event::PAN,           true,  0.0, true,   0.0);
     std::cout << "Move to origin duration:" << score.getDuration() << std::endl;
@@ -973,8 +991,6 @@ extern "C" int score_generator(CSOUND *csound) {
         evtblk.scnt = 0;
         evtblk.opcod = 'i';
         evtblk.pcnt = 9;
-        // Add 4 to p1 only for SPATIALIZE_GOGINS.
-        //evtblk.p[1] = std::floor(note.getInstrument() + 4);
         evtblk.p[1] = std::floor(note.getInstrument());
         evtblk.p[2] = note.getTime();
         evtblk.p[3] = note.getDuration();
@@ -1022,7 +1038,7 @@ endif
 
 instr Exit
 prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
-cxx_raise "SIGTERM"
+exitnow
 endin
 
 </CsInstruments>
@@ -1030,7 +1046,7 @@ endin
 ; f 0 does not work here, we actually need to schedule an instrument that 
 ; turns off Csound.
 ; a 0 1 270
-i "Exit" [730]
+i "Exit" [610]
 ;f 0 [6 * 60 + 5]
 </CsScore>
 </CsoundSynthesizer>
