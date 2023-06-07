@@ -867,26 +867,32 @@ extern "C" int score_generator(CSOUND *csound) {
     }
 #endif
     int result = OK;
+    std::mt19937 mersenneTwister;
+    std::uniform_real_distribution<> randomvariable(.05,.95);
+
     csound::ScoreModel model;
     std::map<double, csound::Chord> chordsForTimes;
     csound::Chord modality;
     Cursor pen;
-    pen.scale = csound::Scale("F# minor");
-    pen.chord = pen.scale.chord(5, 5, 3);
+    pen.scale = csound::Scale("F major");
+    std::cout << "pen.scale: " << pen.scale.name() << std::endl;
+    pen.chord = pen.scale.chord(1, 4);
+    std::cout << "pen.chord: " << pen.chord.eOP().name() << std::endl;
     modality = pen.chord;
     pen.note = csound::Event{1,40,144,1,1,1,0,0,0,0,1};
-    int base_level = 1;
+    int base_level = 0; // 1747 chord segments.
+    base_level = 1; // 1485 chord segments.
+    base_level = 2; // 2 chord segments!
+    // OK, try fewer nodes of harmony change.
+    // Unfortunately this just remains in F. Making more nodes of harmony change, that works.
+    base_level = 0;
     std::vector<std::function<Cursor(const Cursor &, int, csound::Score &)>> generators;
     generators.push_back([&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
         Cursor pen = pen_;
-        if ((depth + base_level) == 2) {
-            pen.chord = pen.chord.K();
-            chordsForTimes[pen.note.getTime()] = pen.chord;
-        }
-        if ((depth + base_level) == 1) {
-            pen.chord = pen.chord.Q(2, modality);
-            chordsForTimes[pen.note.getTime()] = pen.chord;
-        }
+        //~ if ((depth + base_level) == 1) {
+            //~ pen.chord = pen.scale.transpose_degrees(pen.chord, 2);
+            //~ chordsForTimes[pen.note.getTime()] = pen.chord;
+        //~ }
         pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME]                * 1./4.)    + (0.)      * 100.;
         pen.note[csound::Event::KEY] =  (pen.note[csound::Event::KEY]                 * 1./2.)    + (1.)      * 100.;
         return pen;
@@ -900,7 +906,7 @@ extern "C" int score_generator(CSOUND *csound) {
     generators.push_back([&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
         Cursor pen = pen_;
         if ((depth + base_level) == 2) {
-            pen.chord = pen.chord.T(5);
+            pen.chord = pen.scale.transpose_degrees(pen.chord, 5);
             chordsForTimes[pen.note.getTime()] = pen.chord;
         }
         pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME]                * 1./4.)    + (2./4.)   * 100.;
@@ -909,10 +915,10 @@ extern "C" int score_generator(CSOUND *csound) {
     });
     generators.push_back([&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
         Cursor pen = pen_;
-        if ((depth + base_level) == 2) {
-            pen.chord = pen.chord.K();
-            chordsForTimes[pen.note.getTime()] = pen.chord;
-        }
+        //~ if ((depth + base_level) == 2) {
+            //~ pen.chord = pen.scale.transpose_degrees(pen.chord, -2);
+            //~ chordsForTimes[pen.note.getTime()] = pen.chord;
+        //~ }
         pen.note[csound::Event::TIME] =         (pen.note[csound::Event::TIME]        * 1./5.)    + ( 3./4.) * 100.;
         pen.note[csound::Event::KEY] =          (pen.note[csound::Event::KEY]         * 1./2.)    + ( 1.)    * 150.;
         pen.note[csound::Event::INSTRUMENT] =   (pen.note[csound::Event::INSTRUMENT]  * 0.5)      + (90.);
@@ -921,11 +927,11 @@ extern "C" int score_generator(CSOUND *csound) {
     generators.push_back([&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
         Cursor pen = pen_;
         if ((depth + base_level) == 2) {
-            pen.chord = pen.chord.K();
+            pen.chord = pen.scale.transpose_degrees(pen.chord, -1);
             chordsForTimes[pen.note.getTime()] = pen.chord;
         }
         if ((depth + base_level) == 1) {
-            pen.chord = pen.chord.Q(3, modality);
+            pen.chord = pen.scale.transpose_degrees(pen.chord, -2);
             chordsForTimes[pen.note.getTime()] = pen.chord;
         }
         pen.note[csound::Event::TIME] =         (pen.note[csound::Event::TIME]        * 1./3)     + (0.)    * 100.;
@@ -935,26 +941,30 @@ extern "C" int score_generator(CSOUND *csound) {
     generators.push_back([&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
         Cursor pen = pen_;
         if ((depth + base_level) == 2) {
-            pen.chord = pen.chord.K();
-            chordsForTimes[pen.note.getTime()] = pen.chord;
-        }
-        if ((depth + base_level) == 1) {
-            pen.chord = pen.chord.Q(3, modality);
-            chordsForTimes[pen.note.getTime()] = pen.chord;
-        }
-        if ((depth + base_level) == 3) {
-            pen.chord = pen.chord.T(3);
+          auto modulations = pen.scale.modulations(pen.chord);
+          auto modulations_count = modulations.size();
+          auto random_index = std::floor(std::rand() % modulations_count);
+          pen.scale = modulations[random_index];
+          std::cout << "new scale: " << pen.scale.name() << std::endl;
+          //  pen.chord = pen.scale.transpose_degrees(pen.chord, -2);
+          chordsForTimes[pen.note.getTime()] = pen.chord;
         }
         pen.note[csound::Event::TIME] =         (pen.note[csound::Event::TIME]        * 1./3.)    + (1./3.) * 100.;
         pen.note[csound::Event::KEY] =          (pen.note[csound::Event::KEY]         * 1./2.)    + 20;//(0.)    * 100.;
-        pen.note[csound::Event::DURATION] =     (pen.note[csound::Event::DURATION]         * 1.15);
+        pen.note[csound::Event::DURATION] =     (pen.note[csound::Event::DURATION]    * 1.15);
         pen.note[csound::Event::INSTRUMENT] =   (pen.note[csound::Event::INSTRUMENT]  * 0.75)     + (-3.);
         return pen;
     });
     generators.push_back([&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
         Cursor pen = pen_;
-        if ((depth + base_level) == 3) {
-            pen.chord = pen.chord.T(3);
+        if ((depth + base_level) == 2) {
+          auto modulations = pen.scale.modulations(pen.chord);
+          auto modulations_count = modulations.size();
+          auto random_index = std::floor(std::rand() % modulations_count);
+          pen.scale = modulations[random_index];
+          std::cout << "new scale: " << pen.scale.name() << std::endl;
+          pen.chord = pen.scale.transpose_degrees(pen.chord, -2);
+          chordsForTimes[pen.note.getTime()] = pen.chord;
         }
         pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME]                * 1./3.)    + (2./3.) * 100.;
         pen.note[csound::Event::KEY] =  (pen.note[csound::Event::KEY]                 * 1./2.)    + (0.)    * 100;
@@ -1000,8 +1010,8 @@ extern "C" int score_generator(CSOUND *csound) {
     }
     std::cout << "Conformed notes:        " << size << std::endl;
     score.rescale(csound::Event::TIME,          true,  0.0, false,  0.0);
-    //score.rescale(csound::Event::INSTRUMENT,  true,  1.0, true,   7);//9.999);
-    score.rescale(csound::Event::INSTRUMENT,    true,  1.0, true,   6.);
+    score.rescale(csound::Event::INSTRUMENT,  true,  1.0, true,   7.999);//9.999);
+    //score.rescale(csound::Event::INSTRUMENT,    true,  1.0, true,   0.);
     score.rescale(csound::Event::VELOCITY,      true, 40.0, true,  20.0);
     score.rescale(csound::Event::PAN,           true,  0.0, true,   0.0);
     std::cout << "Move to origin duration:" << score.getDuration() << std::endl;
@@ -1009,8 +1019,6 @@ extern "C" int score_generator(CSOUND *csound) {
     std::cout << "set duration:           " << score.getDuration() << std::endl;
     score.findScale();
     score.setDuration(360.0 * 2.);
-    std::mt19937 mersenneTwister;
-    std::uniform_real_distribution<> randomvariable(.05,.95);
     for (int i = 0, n = score.size(); i < n; ++i) {
         score[i].setPan(randomvariable(mersenneTwister));
         score[i].setDepth(randomvariable(mersenneTwister));
