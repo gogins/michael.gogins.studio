@@ -12,162 +12,35 @@ Michael Gogins, 2023
 <CsInstruments>
 
 //////////////////////////////////////////////////////////////////////////////
-// Define just one of these to specify the spatialization system.
-//////////////////////////////////////////////////////////////////////////////
-#define SPATIALIZE_STEREO #1#
-;#define SPATIALIZE_GOGINS #4#
-
-//////////////////////////////////////////////////////////////////////////////
 // Change to sr=96000 with ksmps=1 for final rendering to soundfile.
 //////////////////////////////////////////////////////////////////////////////
+
 sr = 48000
 ksmps = 128
 nchnls = 2
 0dbfs = 100
+
 //////////////////////////////////////////////////////////////////////////////
 // This random seed ensures that the same random stream  is used for each 
 // rendering. Note that rand, randh, randi, rnd(x) and birnd(x) are not 
 // affected by seed.
 //////////////////////////////////////////////////////////////////////////////
+
 seed 88818145
 
 //////////////////////////////////////////////////////////////////////////////
 // Turn printing of VST plugin parameters off and on globally.
 //////////////////////////////////////////////////////////////////////////////
+
 gi_vstinfo init 0
 
 //////////////////////////////////////////////////////////////////////////////
 // We will load plugins from different locations on different operating 
 // systems.
 //////////////////////////////////////////////////////////////////////////////
+
 gS_os, gS_macros cxx_os
 prints "Operating system: %s\n", gS_os
-
-gi_size init 20
-
-gi_pi init 3.141592653589793
-
-// Converts IEM Cartesian coordinates to IEM spherical coordinates.
-// Azimuth is displayed as degrees in [-180, 180] with 90 at left, -90 at 
-// right, -180 or 180 at back, 0 at front.
-// Elevation is displayed in [-90, 90] with -90 at bottom and 90 at top.
-// Radius is displayed in [0, maximum_radius].
-// Cartesian coordinates are y is left to right [-1, 1], x is front to back [1, -1],
-// z is bottom to top [-1, 1].
-// To normalize to the VST range of [0,1], all calculations must agree on a 
-// maximum radius (half the room size, or range of positions).
-/*
-    static void cartesianToSpherical (const Type x, const Type y, const Type z, Type& azimuthInRadians, Type& elevationInRadians, Type& radius)
-    {
-        const float xSquared = x * x;
-        const float ySquared = y * y;
-        radius = sqrt(xSquared + ySquared + z * z);
-        azimuthInRadians = atan2(y, x);
-        elevationInRadians = atan2(z, sqrt(xSquared + ySquared));
-    };
-
-*/
-opcode iem_cartesian_to_spherical, kkk, kkk
-k_x, k_y, k_z xin
-k_radius = sqrt(k_x^2 + k_y^2 + k_z^2)
-k_azimuth taninv2 k_y, k_x
-k_elevation taninv2 k_z, sqrt(k_x^2 + k_y^2)
-xout k_azimuth, k_elevation, k_radius
-endop
-
-// Converts IEM spherical coordinates to VST parameter ranges.
-opcode iem_normalize_spherical_coordinates, kkk, ikkk
-i_maximum_radius, k_azimuth, k_elevation, k_radius xin
-k_normalized_azimuth = -1 * ((k_azimuth + gi_pi) / (2 * gi_pi))
-k_normalized_elevation = (k_elevation + (gi_pi / 2)) / gi_pi
-k_normalized_radius = k_radius / i_maximum_radius 
-xout k_normalized_azimuth, k_normalized_elevation, k_normalized_radius
-endop
-
-// Converts IEM Cartesian coordinates to IEM 
-// spherical coordinates that are normalized to VST parameter ranges.
-opcode iem_cartesian_to_spherical_vst,kkk,ikkk
-i_maximum_radius, k_x, k_y, k_z xin
-k_x *= (i_maximum_radius / 2)
-k_y *= (i_maximum_radius / 2)
-k_z *= (i_maximum_radius / 2)
-k_azimuth, k_elevation, k_radius iem_cartesian_to_spherical k_x, k_y, k_z
-k_azimuth_vst, k_elevation_vst, k_radius_vst iem_normalize_spherical_coordinates i_maximum_radius, k_azimuth, k_elevation, k_radius
-S_template init {{%-24.24s i: %3d t: %9.4f max radius: %9.4f
-  => Cartesian:  x: %9.4f y: %9.4f z: %9.4f
-  => Spherical:  a: %9.4f e: %9.4f r: %9.4f
-  =>             a: %9.4f e: %9.4f r: %9.4f
-  => Normalized: a: %9.4f e: %9.4f r: %9.4f
-}}
-k_time times
-;printks S_template, .5, nstrstr(p1), int(p1), k_time, i_maximum_radius, k_x, k_y, k_z, k_azimuth, k_elevation, k_radius, k_azimuth * 180 / gi_pi, k_elevation * 180 / gi_pi, k_radius, k_azimuth_vst, k_elevation_vst, k_radius_vst
-xout k_azimuth_vst, k_elevation_vst, k_radius_vst
-endop
-
-#ifdef SPATIALIZE_GOGINS
-
-gi_base init 5
-
-connect "Blower",           "outbformat",   "BformatDecoder2",  "inbformat"
-connect "Blower",           "out",          "SpatialReverb",    "in"
-connect "STKBowed",         "outbformat",   "BformatDecoder2",  "inbformat"
-connect "STKBowed",         "out",          "SpatialReverb",    "in"
-connect "Buzzer",           "outbformat",   "BformatDecoder2",  "inbformat"
-connect "Buzzer",           "out",          "SpatialReverb",    "in"
-connect "Droner",           "outbformat",   "BformatDecoder2",  "inbformat"
-connect "Droner",           "out",          "SpatialReverb",    "in"
-connect "FMWaterBell",      "outbformat",   "BformatDecoder2",  "inbformat"
-connect "FMWaterBell",      "out",          "SpatialReverb",    "in"
-connect "Phaser",           "outbformat",   "BformatDecoder2",  "inbformat"
-connect "Phaser",           "out",          "SpatialReverb",    "in"
-connect "PianoOutPianoteq", "outbformat",   "BformatDecoder2",  "inbformat"
-connect "PianoOutPianoteq", "out",          "SpatialReverb",    "in"
-connect "Sweeper",          "outbformat",   "BformatDecoder2",  "inbformat"
-connect "Sweeper",          "out",          "SpatialReverb",    "in"
-connect "Shiner",           "outbformat",   "BformatDecoder2",  "inbformat"
-connect "Shiner",           "out",          "SpatialReverb",    "in"
-connect "ZakianFlute",      "outbformat",   "BformatDecoder2",  "inbformat"
-connect "ZakianFlute",      "out",          "SpatialReverb",    "in"
-connect "SpatialReverb",    "outbformat",   "BformatDecoder2",  "inbformat"
-
-#include "Spatialize1.inc"
-
-gk_BformatDecoder_MasterLevel init 0
-gk_BformatDecoder2_MasterLevel init 12
-gk_BformatDecoder_SpeakerRig init 1
-gk_BformatDecoder2_SpeakerRig init 31
-gk_Spatialize_SpeakerRigRadius init 5.0
-gk_SpatialReverb_ReverbDecay init 0.76
-gk_SpatialReverb_CutoffHz init sr
-gk_SpatialReverb_RandomDelayModulation init .002
-gk_LocalReverbByDistance_Wet init 0.5
-; This is a fraction of the speaker rig radius.
-gk_LocalReverbByDistance_FrontWall init 0.9
-gk_LocalReverbByDistance_ReverbDecay init 0.6
-gk_LocalReverbByDistance_CutoffHz init 20000
-gk_LocalReverbByDistance_RandomDelayModulation init .002
-gk_Spatialize_Verbose init 0
-
-alwayson "PianoOutPianoteq"
-alwayson "SpatialReverb"
-alwayson "BformatDecoder2"
-
-gi_instrument_position_rate chnexport "gi_instrument_position_rate", 3 ;  0
-gi_instrument_position_rate init 50
-opcode instrument_position, kk, iii
-i_onset, i_radius, i_rate xin
-i_rate = (i_rate * gi_instrument_position_rate)
-k_time times
-// Depth.
-k_x = gk_Spatialize_SpeakerRigRadius * cos(i_onset + ((k_time - i_onset) * i_rate)) - 5
-// Pan.
-k_y = gk_Spatialize_SpeakerRigRadius * sin(i_onset + ((k_time - i_onset) * i_rate))
-xout k_x, k_y
-endop
-
-#end
-
-#ifdef SPATIALIZE_STEREO
 
 gi_base init 0
 
@@ -220,8 +93,6 @@ connect "ZakianFlute", "outright", "ReverbSC", "inright"
 connect "ReverbSC", "outleft", "MasterOutput", "inleft"
 connect "ReverbSC", "outright", "MasterOutput", "inright"
 
-#end
-
 //////////////////////////////////////////////////////////////////////////////
 // These are all the Csound instruments and effects used in this piece.
 //////////////////////////////////////////////////////////////////////////////
@@ -259,15 +130,12 @@ gk_PianoOutPianoteq_bottom_to_top init 3
 
 alwayson "PianoOutPianoteq"
 
-#ifdef SPATIALIZE_STEREO
-
 #include "ReverbSC.inc"
 alwayson "ReverbSC"
 
 #include "MasterOutput.inc"
 alwayson "MasterOutput"
 
-#end
 
 gk_FMWaterBell_front_to_back init -3
 gk_FMWaterBell_left_to_right init .6
@@ -643,7 +511,7 @@ gS_html init {{<!DOCTYPE html>
             add_slider(STKBowed, 'gk_STKBowed_level', -60, 60.);
             var Flute = gui.addFolder('Zakian Flute');
             add_slider(Flute, 'gk_ZakianFlute_level', -60, 60.);
-             $('input').on('input', function(event) {
+            $('input').on('input', function(event) {
                 var slider_value = parseFloat(event.target.value);
                 csound.SetControlChannel(event.target.id, slider_value, function(id, result){}, function(id,message){});
                 var output_selector = '#' + event.target.id + '_output';
@@ -694,15 +562,10 @@ gS_html init {{<!DOCTYPE html>
             // except for the piano roll score display.
             //////////////////////////////////////////////////////////////////    
             document.addEventListener("keydown", function (e) {
-                var e_char = String.fromCharCode(e.keyCode || e.charCode);
+                console.log(e);
+                let e_char = String.fromCharCode(e.keyCode || e.charCode);
                 if (e.ctrlKey === true) {
                     if (e_char === 'H') {
-                        var console = document.getElementById("console");
-                        if (console.style.display === "none") {
-                            console.style.display = "block";
-                        } else {
-                            console.style.display = "none";
-                        }
                         gui.closed = true;
                         gui.closed = false;
                         toggle_messages();
