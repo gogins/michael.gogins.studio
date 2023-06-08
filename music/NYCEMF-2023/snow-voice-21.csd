@@ -895,6 +895,8 @@ extern "C" int score_generator(CSOUND *csound) {
         }
         pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME]                * 1./4.)    + (0.)      * 100.;
         pen.note[csound::Event::KEY] =  (pen.note[csound::Event::KEY]                 * 1./2.)    + (1.)      * 100.;
+        pen.note[csound::Event::VELOCITY] =  (pen.note[csound::Event::VELOCITY]       * (1.0/1.02));
+        pen.note[csound::Event::DURATION] =  (pen.note[csound::Event::DURATION]       * .97);
         return pen;
     });
     generators.push_back([&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
@@ -910,15 +912,15 @@ extern "C" int score_generator(CSOUND *csound) {
             chordsForTimes[pen.note.getTime()] = pen.chord;
         }
         pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME]                * 1./4.)    + (2./4.)   * 100.;
-        pen.note[csound::Event::KEY] =  (pen.note[csound::Event::KEY]                 * 1./2.)    + (1.)      * 175.;
+        pen.note[csound::Event::KEY] =  (pen.note[csound::Event::KEY]                 * 1./2.)    + (1.)      * 155.;
         return pen;
     });
     generators.push_back([&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
         Cursor pen = pen_;
-        //~ if ((depth + base_level) == 2) {
-            //~ pen.chord = pen.scale.transpose_degrees(pen.chord, -2);
-            //~ chordsForTimes[pen.note.getTime()] = pen.chord;
-        //~ }
+        if ((depth + base_level) == 2) {
+            pen.chord = pen.scale.transpose_degrees(pen.chord, -2);
+            chordsForTimes[pen.note.getTime()] = pen.chord;
+        }
         pen.note[csound::Event::TIME] =         (pen.note[csound::Event::TIME]        * 1./5.)    + ( 3./4.) * 100.;
         pen.note[csound::Event::KEY] =          (pen.note[csound::Event::KEY]         * 1./2.)    + ( 1.)    * 150.;
         pen.note[csound::Event::INSTRUMENT] =   (pen.note[csound::Event::INSTRUMENT]  * 0.5)      + (90.);
@@ -953,6 +955,7 @@ extern "C" int score_generator(CSOUND *csound) {
         pen.note[csound::Event::KEY] =          (pen.note[csound::Event::KEY]         * 1./2.)    + 20;//(0.)    * 100.;
         pen.note[csound::Event::DURATION] =     (pen.note[csound::Event::DURATION]    * 1.15);
         pen.note[csound::Event::INSTRUMENT] =   (pen.note[csound::Event::INSTRUMENT]  * 0.75)     + (-3.);
+        pen.note[csound::Event::VELOCITY] =     (pen.note[csound::Event::VELOCITY]    * (1.01));
         return pen;
     });
     generators.push_back([&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
@@ -1011,9 +1014,9 @@ extern "C" int score_generator(CSOUND *csound) {
     }
     std::cout << "Conformed notes:        " << size << std::endl;
     score.rescale(csound::Event::TIME,          true,  0.0, false,  0.0);
-    score.rescale(csound::Event::INSTRUMENT,  true,  1.0, true,   7.999);//9.999);
+    score.rescale(csound::Event::INSTRUMENT,  true,  1.0, true,   8.999);//9.999);
     //score.rescale(csound::Event::INSTRUMENT,    true,  1.0, true,   0.);
-    score.rescale(csound::Event::VELOCITY,      true, 40.0, true,  20.0);
+    score.rescale(csound::Event::VELOCITY,      true, 40.0, true,  15.0);
     score.rescale(csound::Event::PAN,           true,  0.0, true,   0.0);
     std::cout << "Move to origin duration:" << score.getDuration() << std::endl;
     score.setDuration(600.);
@@ -1024,7 +1027,7 @@ extern "C" int score_generator(CSOUND *csound) {
         score[i].setPan(randomvariable(mersenneTwister));
         score[i].setDepth(randomvariable(mersenneTwister));
         score[i].setPhase(randomvariable(mersenneTwister));
-        auto duration = score[i].getDuration() / 200.;
+        auto duration = score[i].getDuration() / 70.;
         score[i].setDuration(duration);
     }
     score.tieOverlappingNotes(true);
