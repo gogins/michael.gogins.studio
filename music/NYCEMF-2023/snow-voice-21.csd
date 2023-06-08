@@ -942,7 +942,7 @@ extern "C" int score_generator(CSOUND *csound) {
     });
     generators.push_back([&chordsForTimes, &modality, &base_level](const Cursor &pen_, int depth, csound::Score &score) {
         Cursor pen = pen_;
-        if ((depth + base_level) == 2) {
+        if ((depth + base_level) == 1) {
           auto modulations = pen.scale.modulations(pen.chord);
           auto modulations_count = modulations.size();
           auto random_index = std::floor(std::rand() % modulations_count);
