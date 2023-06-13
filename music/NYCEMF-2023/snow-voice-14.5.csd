@@ -104,15 +104,17 @@ gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", gi_vstinfo
 endif
 if strcmp(gS_os, "macOS") == 0 then
 gi_Pianoteq vst3init "/Library/Audio/Plug-Ins/VST3/Pianoteq\ 7.vst3", "Pianoteq 7", 1
+gi_Mverb2020 vst3init "/Library/Audio/Plug-Ins/VST3/Mverb2020.vst3", "Mverb2020", 1
+vst3info gi_Mverb2020
 endif
 
-#include "BandedWG.inc"               // Normalized.
+// The order of #includes defines the instrument numbers.
+
 #include "PianoNotePianoteqVst3.inc"  // Normalized.
 #include "Plucked.inc"                // Normalized.
 #include "SeidelHarmOsc.inc"          // Normalized.
 #include "ZakianFlute.inc"            // Normalized.
 #include "STKBowed.inc"               // Normalized.
-#include "FMWaterBell.inc"            // Normalized.
 #include "Phaser.inc"                 // Normalized.
 #include "Droner.inc"                 // Normalized.
 #include "Sweeper.inc"                // Normalized.
@@ -132,6 +134,8 @@ alwayson "PianoOutPianoteq"
 
 #include "ReverbSC.inc"
 alwayson "ReverbSC"
+
+#include "Mverb2020Vst3.inc"
 
 #include "MasterOutput.inc"
 alwayson "MasterOutput"
@@ -214,7 +218,7 @@ gk_LocalReverbByDistance_Wet init 0
 gk_SpatialReverb_ReverbDecay init 0
 gi_instrument_position_rate init 0
 gk_BformatDecoder2_MasterLevel init 0
-gk_ReverbSC_feedback init 0.90
+gk_ReverbSC_feedback init 0.80
 gk_ReverbSC_wet init 0.666666
 gi_ReverbSC_delay_modulation init 0.0075
 gk_ReverbSC_frequency_cutoff init 15000
@@ -271,7 +275,7 @@ gk_Harpsichord_level init 9
 gS_html init {{<!DOCTYPE html>
 <html>
 <head>
-    <title>snow-voice-14.2</title>
+    <title>snow-voice-14.5</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!--
 //////////////////////////////////////////////////////////////////////////////
@@ -825,6 +829,7 @@ extern "C" int score_generator(CSOUND *csound) {
         pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (  0);
         pen.note[csound::Event::KEY] =  (pen.note[csound::Event::KEY]  * .5) + ( 90);
         pen.note[csound::Event::VELOCITY] =   (pen.note[csound::Event::VELOCITY]  * 0.5)      + (90.);
+        pen.note[csound::Event::INSTRUMENT] =   1.;
         return pen;
     };
     generators.push_back(g2);

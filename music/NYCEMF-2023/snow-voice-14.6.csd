@@ -42,7 +42,6 @@ gi_vstinfo init 0
 gS_os, gS_macros cxx_os
 prints "Operating system: %s\n", gS_os
 
-
 gi_base init 0
 
 opcode instrument_position, kk, iii
@@ -58,42 +57,42 @@ endif
 xout 0, k_pan
 endop
 
-connect "BandedWG", "outleft", "ReverbSC", "inleft"
-connect "BandedWG", "outright", "ReverbSC", "inright"
-connect "Blower", "outleft", "ReverbSC", "inleft"
-connect "Blower", "outright", "ReverbSC", "inright"
-connect "STKBowed", "outleft", "ReverbSC", "inleft"
-connect "STKBowed", "outright", "ReverbSC", "inright"
-connect "Buzzer", "outleft", "ReverbSC", "inleft"
-connect "Buzzer", "outright", "ReverbSC", "inright"
-connect "Droner", "outleft", "ReverbSC", "inleft"
-connect "Droner", "outright", "ReverbSC", "inright"
-connect "FilteredSines", "outleft", "ReverbSC", "inleft"
-connect "FilteredSines", "outright", "ReverbSC", "inright"
-connect "FMWaterBell", "outleft", "ReverbSC", "inleft"
-connect "FMWaterBell", "outright", "ReverbSC", "inright"
-connect "Harpsichord", "outleft", "ReverbSC", "inleft"
-connect "Harpsichord", "outright", "ReverbSC", "inright"
-connect "Phaser", "outleft", "ReverbSC", "inleft"
-connect "Phaser", "outright", "ReverbSC", "inright"
-connect "PianoOutPianoteq", "outleft", "ReverbSC", "inleft"
-connect "PianoOutPianoteq", "outright", "ReverbSC", "inright"
-connect "Plucked", "outleft", "ReverbSC", "inleft"
-connect "Plucked", "outright", "ReverbSC", "inright"
-connect "SeidelHarmOsc", "outleft", "ReverbSC", "inleft"
-connect "SeidelHarmOsc", "outright", "ReverbSC", "inright"
-connect "Shiner", "outleft", "ReverbSC", "inleft"
-connect "Shiner", "outright", "ReverbSC", "inright"
-connect "Sweeper", "outleft", "ReverbSC", "inleft"
-connect "Sweeper", "outright", "ReverbSC", "inright"
-connect "Xing", "outleft", "ReverbSC", "inleft"
-connect "Xing", "outright", "ReverbSC", "inright"
-connect "ZakianFlute", "outleft", "ReverbSC", "inleft"
-connect "ZakianFlute", "outright", "ReverbSC", "inright"
+connect "BandedWG", "outleft", "Mverb2020", "inleft"
+connect "BandedWG", "outright", "Mverb2020", "inright"
+connect "Blower", "outleft", "Mverb2020", "inleft"
+connect "Blower", "outright", "Mverb2020", "inright"
+connect "STKBowed", "outleft", "Mverb2020", "inleft"
+connect "STKBowed", "outright", "Mverb2020", "inright"
+connect "Buzzer", "outleft", "Mverb2020", "inleft"
+connect "Buzzer", "outright", "Mverb2020", "inright"
+connect "Droner", "outleft", "Mverb2020", "inleft"
+connect "Droner", "outright", "Mverb2020", "inright"
+connect "FilteredSines", "outleft", "Mverb2020", "inleft"
+connect "FilteredSines", "outright", "Mverb2020", "inright"
+connect "FMWaterBell", "outleft", "Mverb2020", "inleft"
+connect "FMWaterBell", "outright", "Mverb2020", "inright"
+connect "Harpsichord", "outleft", "Mverb2020", "inleft"
+connect "Harpsichord", "outright", "Mverb2020", "inright"
+connect "Phaser", "outleft", "Mverb2020", "inleft"
+connect "Phaser", "outright", "Mverb2020", "inright"
+connect "PianoOutPianoteq", "outleft", "Mverb2020", "inleft"
+connect "PianoOutPianoteq", "outright", "Mverb2020", "inright"
+connect "Plucked", "outleft", "Mverb2020", "inleft"
+connect "Plucked", "outright", "Mverb2020", "inright"
+connect "SeidelHarmOsc", "outleft", "Mverb2020", "inleft"
+connect "SeidelHarmOsc", "outright", "Mverb2020", "inright"
+connect "Shiner", "outleft", "Mverb2020", "inleft"
+connect "Shiner", "outright", "Mverb2020", "inright"
+connect "Sweeper", "outleft", "Mverb2020", "inleft"
+connect "Sweeper", "outright", "Mverb2020", "inright"
+connect "Xing", "outleft", "Mverb2020", "inleft"
+connect "Xing", "outright", "Mverb2020", "inright"
+connect "ZakianFlute", "outleft", "Mverb2020", "inleft"
+connect "ZakianFlute", "outright", "Mverb2020", "inright"
 
 
-connect "ReverbSC", "outleft", "MasterOutput", "inleft"
-connect "ReverbSC", "outright", "MasterOutput", "inright"
+connect "Mverb2020", "outleft", "MasterOutput", "inleft"
+connect "Mverb2020", "outright", "MasterOutput", "inright"
 
 //////////////////////////////////////////////////////////////////////////////
 // These are all the Csound instruments and effects used in this piece.
@@ -104,15 +103,17 @@ gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", gi_vstinfo
 endif
 if strcmp(gS_os, "macOS") == 0 then
 gi_Pianoteq vst3init "/Library/Audio/Plug-Ins/VST3/Pianoteq\ 7.vst3", "Pianoteq 7", 1
+gi_Mverb2020 vst3init "/Library/Audio/Plug-Ins/VST3/Mverb2020.vst3", "Mverb2020", 1
+vst3info gi_Mverb2020
 endif
 
-#include "BandedWG.inc"               // Normalized.
+#include "FMWaterBell.inc"            // Normalized.
+//#include "BandedWG.inc"               // Normalized.
 #include "PianoNotePianoteqVst3.inc"  // Normalized.
 #include "Plucked.inc"                // Normalized.
 #include "SeidelHarmOsc.inc"          // Normalized.
 #include "ZakianFlute.inc"            // Normalized.
 #include "STKBowed.inc"               // Normalized.
-#include "FMWaterBell.inc"            // Normalized.
 #include "Phaser.inc"                 // Normalized.
 #include "Droner.inc"                 // Normalized.
 #include "Sweeper.inc"                // Normalized.
@@ -130,12 +131,11 @@ gk_PianoOutPianoteq_bottom_to_top init 3
 
 alwayson "PianoOutPianoteq"
 
-#include "ReverbSC.inc"
-alwayson "ReverbSC"
+#include "Mverb2020Vst3.inc"
+alwayson "Mverb2020"
 
 #include "MasterOutput.inc"
 alwayson "MasterOutput"
-
 
 gk_FMWaterBell_front_to_back init -3
 gk_FMWaterBell_left_to_right init .6
@@ -214,7 +214,7 @@ gk_LocalReverbByDistance_Wet init 0
 gk_SpatialReverb_ReverbDecay init 0
 gi_instrument_position_rate init 0
 gk_BformatDecoder2_MasterLevel init 0
-gk_ReverbSC_feedback init 0.90
+gk_ReverbSC_feedback init 0.80
 gk_ReverbSC_wet init 0.666666
 gi_ReverbSC_delay_modulation init 0.0075
 gk_ReverbSC_frequency_cutoff init 15000
@@ -265,13 +265,24 @@ gk_Xing_level init 42
 gk_BandedWG_level init 17
 gk_FilteredSines_level init 40
 gk_Harpsichord_level init 9
+gk_Mverb2020_level init 0
+gk_Mverb2020_Mix init .5
+gk_Mverb2020_Pre_delay init 0.5
+gk_Mverb2020_Early_late_mix init 0.5
+gk_Mverb2020_Size init 0.5
+gk_Mverb2020_Density init 0.5
+gk_Mverb2020_Bandwith_Frequency init 0.5
+gk_Mverb2020_Decay init 0.85
+gk_Mverb2020_Damping_Frequency init 0.5
+gk_Mverb2020_Gain init 1
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 gS_html init {{<!DOCTYPE html>
 <html>
 <head>
-    <title>snow-voice-14.2</title>
+    <title>snow-voice-14.6</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!--
 //////////////////////////////////////////////////////////////////////////////
@@ -825,6 +836,7 @@ extern "C" int score_generator(CSOUND *csound) {
         pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (  0);
         pen.note[csound::Event::KEY] =  (pen.note[csound::Event::KEY]  * .5) + ( 90);
         pen.note[csound::Event::VELOCITY] =   (pen.note[csound::Event::VELOCITY]  * 0.5)      + (90.);
+        pen.note[csound::Event::INSTRUMENT] =   1.;
         return pen;
     };
     generators.push_back(g2);
