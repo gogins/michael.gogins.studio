@@ -301,7 +301,7 @@ gk_Phaser_index1 init 0.46410256573457687
 gk_Phaser_index2 init 0.8551589334803189
 gk_Phaser_level init -30
 gk_Plucked_level init 2
-gk_SeidelHarmOsc_level init 0.6506276696566573
+gk_SeidelHarmOsc_level init -5
 gi_SeidelHarmOsc_attack init 0.003
 gi_SeidelHarmOsc_petals init 4.333333
 gi_SeidelHarmOsc_release init 0.21521517008645225
@@ -333,7 +333,7 @@ gk_Blower_level init 4
 gk_ZakianFlute_level init -19.997148547318524
 gk_BandedWG_level init 9.05200375059259
 gk_FilteredSines_level init 40
-gk_Harpsichord_level init -4
+gk_Harpsichord_level init -9
 gk_Xing_level init 42
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -343,7 +343,7 @@ gk_Xing_level init 42
 gS_html init {{<!DOCTYPE html>
 <html>
 <head>
-    <title>snow-voice-31</title>
+    <title>snow-voice-34</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!--
 //////////////////////////////////////////////////////////////////////////////
@@ -623,7 +623,6 @@ gS_html init {{<!DOCTYPE html>
             add_slider(FMWaterBell, 'gk_FMWaterBell_level',-60, 60);
 
             var Sweeper = gui.addFolder('Sweeper');
-            
             add_slider(Sweeper, 'gk_Sweeper_britel', 0, 4);
             add_slider(Sweeper, 'gk_Sweeper_briteh', 0, 4);
             add_slider(Sweeper, 'gk_Sweeper_britels', 0, 4);
@@ -911,7 +910,7 @@ extern "C" int score_generator(CSOUND *csound) {
             chordsForTimes[pen.note.getTime()] = pen.chord;
         }
         pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME]                * 1./4.)    + (0.)      * 100.;
-        pen.note[csound::Event::KEY] =  (pen.note[csound::Event::KEY]                 * 1./2.)    + (1.)      * 100.;
+        pen.note[csound::Event::KEY] =  (pen.note[csound::Event::KEY]                 * 1./2.09)    + (1.)      * 100.;
         
         pen.note[csound::Event::VELOCITY] =  (pen.note[csound::Event::VELOCITY]       * (1.2));
         pen.note[csound::Event::DURATION] =  (pen.note[csound::Event::DURATION]       * .97);
@@ -920,7 +919,7 @@ extern "C" int score_generator(CSOUND *csound) {
     generators.push_back([&chordsForTimes, &modality](const Cursor &pen_, int depth, int target_depth, csound::Score &score) {
         Cursor pen = pen_;
         pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME]                * 1./4.)    + (1./4.)   * 100.;
-        pen.note[csound::Event::KEY] =  (pen.note[csound::Event::KEY]                 * 1./2.)    + (1.)      * 100.;
+        pen.note[csound::Event::KEY] =  (pen.note[csound::Event::KEY]                 * 1./2.06)    + (1.)      * 100.;
         return pen;
     });
     generators.push_back([&chordsForTimes, &modality](const Cursor &pen_, int depth, int target_depth, csound::Score &score) {
@@ -931,7 +930,7 @@ extern "C" int score_generator(CSOUND *csound) {
             chordsForTimes[pen.note.getTime()] = pen.chord;
         }
         pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME]                * 1./5.)    + (2./4.)   * 100.;
-        pen.note[csound::Event::KEY] =  (pen.note[csound::Event::KEY]                 * 1./2.)    + (1.)      * 110.;
+        pen.note[csound::Event::KEY] =  (pen.note[csound::Event::KEY]                 * 1./2.03)    + (1.)      * 110.;
         return pen;
     });
     generators.push_back([&chordsForTimes, &modality](const Cursor &pen_, int depth, int target_depth, csound::Score &score) {
@@ -960,7 +959,7 @@ extern "C" int score_generator(CSOUND *csound) {
             chordsForTimes[pen.note.getTime()] = pen.chord;
         }
         pen.note[csound::Event::TIME] =         (pen.note[csound::Event::TIME]        * 1./3)     + (0.)    * 100.;
-        pen.note[csound::Event::KEY] =          (pen.note[csound::Event::KEY]         * 1./2.)    + (0.)    * 100.;
+        pen.note[csound::Event::KEY] =          (pen.note[csound::Event::KEY]         * 1./2.09)    + (0.)    * 100.;
         return pen;
     });
     generators.push_back([&chordsForTimes, &modality](const Cursor &pen_, int depth, int target_depth, csound::Score &score) {
@@ -996,7 +995,7 @@ extern "C" int score_generator(CSOUND *csound) {
           chordsForTimes[pen.note.getTime()] = pen.chord;
         }
         pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME]                * 1./3.)    + (2./3.) * 100.;
-        pen.note[csound::Event::KEY] =  (pen.note[csound::Event::KEY]                 * 1./2.)    + (0.)    * 201;
+        pen.note[csound::Event::KEY] =  (pen.note[csound::Event::KEY]                 * 1./2.01)    + (0.)    * 201;
         
         pen.note[csound::Event::INSTRUMENT] =  (pen.note[csound::Event::INSTRUMENT]   * 0.75)     + (-3.);
         return pen;
@@ -1008,6 +1007,10 @@ extern "C" int score_generator(CSOUND *csound) {
     transitions(4, 0) = 0;
     transitions(3, 6) = 0;
     transitions(5, 6) = 0;
+     
+    //transitions(3, 3) = 0;
+    transitions(3, 4) = 0;
+     
     std::cout << "transitions:" << std::endl << transitions << std::endl;
     csound::Score score;
     //////////////////////////////////////////////////////////////////////////////
@@ -1022,7 +1025,7 @@ extern "C" int score_generator(CSOUND *csound) {
     // This creates an algorithmically generated chord progression.
     //////////////////////////////////////////////////////////////////////////////
     score.sort();
-    score.rescale(csound::Event::KEY, true, 25.0, true,  74.0);
+    score.rescale(csound::Event::KEY, true, 24.0, true,  78.0);
     score.temper(12.);
     std::cout << "Generated notes:        " << score.size() << std::endl;
     double endTime = score.back().getTime();

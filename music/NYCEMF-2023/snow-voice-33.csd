@@ -301,7 +301,7 @@ gk_Phaser_index1 init 0.46410256573457687
 gk_Phaser_index2 init 0.8551589334803189
 gk_Phaser_level init -30
 gk_Plucked_level init 2
-gk_SeidelHarmOsc_level init 0.6506276696566573
+gk_SeidelHarmOsc_level init -5
 gi_SeidelHarmOsc_attack init 0.003
 gi_SeidelHarmOsc_petals init 4.333333
 gi_SeidelHarmOsc_release init 0.21521517008645225
@@ -333,7 +333,7 @@ gk_Blower_level init 4
 gk_ZakianFlute_level init -19.997148547318524
 gk_BandedWG_level init 9.05200375059259
 gk_FilteredSines_level init 40
-gk_Harpsichord_level init -4
+gk_Harpsichord_level init -9
 gk_Xing_level init 42
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -343,7 +343,7 @@ gk_Xing_level init 42
 gS_html init {{<!DOCTYPE html>
 <html>
 <head>
-    <title>snow-voice-31</title>
+    <title>snow-voice-33</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!--
 //////////////////////////////////////////////////////////////////////////////
@@ -1008,6 +1008,10 @@ extern "C" int score_generator(CSOUND *csound) {
     transitions(4, 0) = 0;
     transitions(3, 6) = 0;
     transitions(5, 6) = 0;
+     
+    //transitions(3, 3) = 0;
+    transitions(3, 4) = 0;
+     
     std::cout << "transitions:" << std::endl << transitions << std::endl;
     csound::Score score;
     //////////////////////////////////////////////////////////////////////////////
@@ -1022,7 +1026,7 @@ extern "C" int score_generator(CSOUND *csound) {
     // This creates an algorithmically generated chord progression.
     //////////////////////////////////////////////////////////////////////////////
     score.sort();
-    score.rescale(csound::Event::KEY, true, 25.0, true,  74.0);
+    score.rescale(csound::Event::KEY, true, 24.0, true,  78.0);
     score.temper(12.);
     std::cout << "Generated notes:        " << score.size() << std::endl;
     double endTime = score.back().getTime();
