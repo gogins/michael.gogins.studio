@@ -1049,7 +1049,7 @@ gk_Xing_level init 52
 gS_html init {{<!DOCTYPE html>
 <html>
 <head>
-    <title>snow-voice-43</title>
+    <title>snow-voice-44</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!--
 //////////////////////////////////////////////////////////////////////////////
@@ -1197,14 +1197,6 @@ gS_html init {{<!DOCTYPE html>
         //////////////////////////////////////////////////////////////////////
         var parameters = {
             gk_MasterOutput_level: 23.199086906897115,
-            gk_Spatialize_SpeakerRigRadius: 15.,
-            gk_MasterOutput_level:  34.43789784288879,
-            gk_Spatialize_SpeakerRigRadius:  0,
-            gk_LocalReverbByDistance_ReverbDecay:  0,
-            gk_LocalReverbByDistance_Wet:  0,
-            gk_SpatialReverb_ReverbDecay:  0,
-            gi_instrument_position_rate:  0,
-            gk_BformatDecoder2_MasterLevel:  0,
             gk_ReverbSC_feedback:  0.72,
             gk_ReverbSC_wet:  0.5,
             gi_ReverbSC_delay_modulation:  0.0075,
@@ -1220,46 +1212,18 @@ gS_html init {{<!DOCTYPE html>
             gk_FMWaterBell_vibrato_depth:  0.28503171595683335,
             gk_FMWaterBell_vibrato_rate:  2.4993821566850647,
             gk_FMWaterBell_level:  -14.991627040173022,
-            gk_Phaser_ratio1:  0.5,
-            gk_Phaser_ratio2:  2,
-            gk_Phaser_index1:  0.46410256573457687,
-            gk_Phaser_index2:  0.8551589334803189,
-            gk_Phaser_level:  -30,
             gk_Plucked_level:  2,
             gk_SeidelHarmOsc_level:  0.6506276696566573,
             gi_SeidelHarmOsc_attack: .003,
             gi_SeidelHarmOsc_petals: 2.99,
             gi_SeidelHarmOsc_release: .01,
-            gk_STKBowed_vibrato_level:  0,
-            gk_STKBowed_bow_pressure:  106.85582357509631,
-            gk_STKBowed_bow_position:  21.81769218869982,
-            gk_STKBowed_vibrato_frequency:  42.6065254256644,
-            gk_STKBowed_level:  12,
-            gk_Droner_partial1:  0.4664927441708788,
-            gk_Droner_partial2:  0.16386760150008153,
-            gk_Droner_partial3:  0.13777922713190935,
-            gk_Droner_partial4:  0.4664927441708788,
-            gk_Droner_partial5:  0.15343225175281267,
-            gk_Droner_level:  36,
-            gk_3_britel: .01,
             gk_Sweeper_briteh: 5,
             gk_Sweeper_britel: .5,
             gk_Sweeper_britels: .5,
             gk_Sweeper_britehs: .5,
             gk_Sweeper_level: 0,
-            gk_Buzzer_harmonics:  4,
-            gk_Buzzer_level:  12,
-            gk_Shiner_level:  15,
-            gk_Blower_grainDensity:  132.3332789825534,
-            gk_Blower_grainDuration:  0.2854231208217838,
-            gk_Blower_grainAmplitudeRange:  174.0746779716289,
-            gk_Blower_grainFrequencyRange:  62.82406652535464,
-            gk_Blower_level:  4,
             gk_ZakianFlute_level:  -19.997148547318524,
-            gk_BandedWG_level:  14,
-            gk_FilteredSines_level:  40,
             gk_Harpsichord_level:  9,
-            gk_Xing_level:  42,
             save_controls: save_controls,
             toggle_messages: toggle_messages,
             recenter: recenter
@@ -1617,12 +1581,10 @@ extern "C" int score_generator(CSOUND *csound) {
     
     generators.push_back([&chordsForTimes, &modality](const Cursor &pen_, int depth, int target_depth, csound::Score &score) {
         Cursor pen = pen_;
-        ///if (depth == 4) {
         if (depth == 4) {
             pen.chord = pen.scale.transpose_degrees(pen.chord, 3);
             chordsForTimes[pen.note.getTime()] = pen.chord;
         }
-        ///if (depth == 1) {
         if (depth == 1) {
             pen.chord = pen.scale.transpose_degrees(pen.chord, -2);
             chordsForTimes[pen.note.getTime()] = pen.chord;
@@ -1643,7 +1605,6 @@ extern "C" int score_generator(CSOUND *csound) {
           chordsForTimes[pen.note.getTime()] = pen.chord;
         }
         pen.note[csound::Event::TIME] =         (pen.note[csound::Event::TIME]        * 1./3.)      + (1./3.) * 101.;
-        ///pen.note[csound::Event::KEY] =          (pen.note[csound::Event::KEY]         * 1./4.)    + (0.)    * 100.;
         pen.note[csound::Event::KEY] =          (pen.note[csound::Event::KEY]         * 1./2.06)    + (-.5 * 100.);
         
         pen.note[csound::Event::DURATION] =     (pen.note[csound::Event::DURATION]    * 1.02);
@@ -1663,7 +1624,6 @@ extern "C" int score_generator(CSOUND *csound) {
           chordsForTimes[pen.note.getTime()] = pen.chord;
         }
         pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME]                * 1./3.)    + (2./3.) * 102.;
-        ///.pen.note[csound::Event::KEY] =  (pen.note[csound::Event::KEY]                 * 1./2.01)    + (0.)    * 201;
         pen.note[csound::Event::KEY] =  (pen.note[csound::Event::KEY]                 * 1./2.01)    + ((-.7) * 100);
         
         pen.note[csound::Event::INSTRUMENT] =  (pen.note[csound::Event::INSTRUMENT]   * 0.75)     + (-3.);
@@ -1676,12 +1636,6 @@ extern "C" int score_generator(CSOUND *csound) {
     transitions(4, 0) = 0;
     transitions(3, 6) = 0;
     transitions(5, 6) = 0;
-     
-    ///transitions(3, 3) = 0;
-    //transitions(3, 3) = 0;
-     
-    //transitions(3, 4) = 0;
-     
     std::cout << "transitions:" << std::endl << transitions << std::endl;
     csound::Score score;
     //////////////////////////////////////////////////////////////////////////////
@@ -1693,7 +1647,7 @@ extern "C" int score_generator(CSOUND *csound) {
     std::cout << "Generated duration:     " << score.getDuration() << std::endl;
     //////////////////////////////////////////////////////////////////////////////
     // We apply the chords that were generated along WITH the notes, TO the notes.
-    // This creates an algorithmically generated chord progression.
+    // This creates algorithmically generated chord progressions and modulations.
     //////////////////////////////////////////////////////////////////////////////
     score.sort();
     score.rescale(csound::Event::KEY, true, 27.0, true,  72.0);
@@ -1761,7 +1715,6 @@ extern "C" int score_generator(CSOUND *csound) {
         evtblk.p[6] = note.getDepth();
         evtblk.p[7] = note.getPan();
         evtblk.p[8] = note.getHeight();
-        //std::fprintf(stderr, "%c %9.4f %9.4f %9.4f %9.4f %9.4f %9.4f %9.4f %9.4f\\n", evtblk.opcod, evtblk.p[1], evtblk.p[2], evtblk.p[3], evtblk.p[4], evtblk.p[5], evtblk.p[6], evtblk.p[7], evtblk.p[8]);
         int result = csound->insert_score_event(csound, &evtblk, 0.);
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1794,7 +1747,6 @@ if strcmp(gS_os, "macOS") == 0 then
 i_result cxx_compile "score_generator", S_score_generator_code, "g++ -v -g -O2 -std=c++17 -shared -fPIC -DUSE_DOUBLE -I. -I/usr/local/include/csound -I/Users/michaelgogins/csound/interfaces -I/usr/include/eigen3 -I/System/Volumes/Data/opt/homebrew/include/eigen3 -I/Library/Frameworks/CsoundLib64.framework/Versions/6.0/Headers -I/opt/homebrew/Cellar/boost/1.81.0_1/include -I/home/mkg/csound-ac/CsoundAC -lCsoundAC -lpthread -lm", "/Users/michaelgogins/csound-webserver-opcodes/build/libcsound_webserver.dylib libCsoundAC.dylib"
 endif
 
-
 instr Exit
 prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 exitnow
@@ -1802,7 +1754,7 @@ endin
 
 </CsInstruments>
 <CsScore>
-; f 0 does not work here, we actually need to schedule an instrument that 
+; f 0 does not work here; we actually need to schedule an instrument that 
 ; turns off Csound.
 i "Exit" [465]
 </CsScore>
