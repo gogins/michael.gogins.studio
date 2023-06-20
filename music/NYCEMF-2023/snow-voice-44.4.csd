@@ -1731,13 +1731,14 @@ extern "C" int score_generator(CSOUND *csound) {
     score.rescale(csound::Event::TIME,          true,  2.0, false,  0.0);
     
     // Move the last piano note to sound like an ending.
+    // 29 is F.
     auto score_size = score.size();
-    auto index = score_size - 1;
+    auto index = score_size - 4;
     auto key = score[index].getKey() + 1;
     score[index].setKey(key);
-    index = score_size - 6;
-    key = score[index].getKey() + 1;
-    score[index].setKey(key);
+    //~ index = score_size - 6;
+    //~ key = score[index].getKey() + 1;
+    //~ score[index].setKey(key);
     
     std::cout << "score:" << std::endl << score.getCsoundScore() << std::endl;
     std::cout << "Final duration:         " << score.getDuration() << std::endl;
