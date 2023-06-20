@@ -1010,7 +1010,7 @@ gk_Phaser_ratio2 init 2
 gk_Phaser_index1 init 0.46410256573457687
 gk_Phaser_index2 init 0.8551589334803189
 gk_Phaser_level init -30
-gk_Plucked_level init 12
+gk_Plucked_level init 16
 gk_SeidelHarmOsc_level init -10
 gi_SeidelHarmOsc_attack init 0.003
 gi_SeidelHarmOsc_petals init 2.333333
@@ -1527,7 +1527,7 @@ extern "C" int score_generator(CSOUND *csound) {
     std::map<double, csound::Chord> chordsForTimes;
     csound::Chord modality;
     Cursor pen;
-    pen.scale = csound::Scale("F# major");
+    pen.scale = csound::Scale("F major");
     std::cout << "pen.scale: " << pen.scale.name() << std::endl;
     pen.chord = pen.scale.chord(1, 4);
     std::cout << "pen.chord: " << pen.chord.eOP().name() << std::endl;
@@ -1703,11 +1703,11 @@ extern "C" int score_generator(CSOUND *csound) {
     score.tieOverlappingNotes(true);
     score.rescale(csound::Event::TIME,          true,  2.0, false,  0.0);
     
-    // Move the last piano note to sound like an ending.
-    auto score_size = score.size();
-    auto index = score_size - 5;
-    auto key = score[index].getKey() - 2;
-    score[index].setKey(key);
+    //~ // Move the last piano note to sound like an ending.
+    //~ auto score_size = score.size();
+    //~ auto index = score_size - 5;
+    //~ auto key = score[index].getKey() - 2;
+    //~ score[index].setKey(key);
     
     std::cout << "score:" << std::endl << score.getCsoundScore() << std::endl;
     std::cout << "Final duration:         " << score.getDuration() << std::endl;

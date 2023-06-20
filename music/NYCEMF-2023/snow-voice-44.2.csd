@@ -1004,13 +1004,13 @@ gk_FMWaterBell_crossfade init 0.1234039047697504
 gk_FMWaterBell_index init 1.1401499375260309
 gk_FMWaterBell_vibrato_depth init 0.28503171595683335
 gk_FMWaterBell_vibrato_rate init 2.4993821566850647
-gk_FMWaterBell_level init -3
+gk_FMWaterBell_level init -9
 gk_Phaser_ratio1 init 0.5
 gk_Phaser_ratio2 init 2
 gk_Phaser_index1 init 0.46410256573457687
 gk_Phaser_index2 init 0.8551589334803189
 gk_Phaser_level init -30
-gk_Plucked_level init 12
+gk_Plucked_level init 16
 gk_SeidelHarmOsc_level init -10
 gi_SeidelHarmOsc_attack init 0.003
 gi_SeidelHarmOsc_petals init 2.333333
@@ -1039,7 +1039,7 @@ gk_Blower_grainDuration init 0.2854231208217838
 gk_Blower_grainAmplitudeRange init 174.0746779716289
 gk_Blower_grainFrequencyRange init 62.82406652535464
 gk_Blower_level init 4
-gk_ZakianFlute_level init -18
+gk_ZakianFlute_level init -24
 gk_BandedWG_level init 9.05200375059259
 gk_FilteredSines_level init 40
 gk_Harpsichord_level init -12
@@ -1522,12 +1522,39 @@ extern "C" int score_generator(CSOUND *csound) {
     int result = OK;
     std::mt19937 mersenneTwister;
     std::uniform_real_distribution<> randomvariable(.05,.95);
-
+    
+    // Search for best velocity scaling:
+    
+    auto velocity_scaling = 1;
+    // Better than 1.02: velocity_scaling = 1.06;
+    // Not as good as 1.02: velocity_scaling = 1.08;
+    /// original: velocity_scaling = 1.02;
+    velocity_scaling = 1.04;
+    // Not good: velocity_scaling = 0.96;
+    
+    // Search for best dynamic range:
+    
+    auto dynamic_range = 20; // Original.
+    dynamic_range = 10; // Not much different from 20?? but not as good I think.
+    dynamic_range = 30; // Better than 20.
+    dynamic_range = 60; // Better thab 30.
+    
+    // Search for best duration fraction:
+    
+    auto duration_fraction = 150.; // Original.
+    duration_fraction = 75.; // Slower, sparser than 150; harmony not as good.
+    duration_fraction = 37.; // Not as good as 75.
+    duration_fraction = 112.; // Not as good as 150.
+    duration_fraction = 300.; // More interesting than original, but also too busy.
+    duration_fraction = 200.; // ?
+    duration_fraction = 175.; // Reveals more of the other voices; harmony muddier.
+    duration_fraction = 137.;
+    
     csound::ScoreModel model;
     std::map<double, csound::Chord> chordsForTimes;
     csound::Chord modality;
     Cursor pen;
-    pen.scale = csound::Scale("F# major");
+    pen.scale = csound::Scale("F major");
     std::cout << "pen.scale: " << pen.scale.name() << std::endl;
     pen.chord = pen.scale.chord(1, 4);
     std::cout << "pen.chord: " << pen.chord.eOP().name() << std::endl;
@@ -1593,7 +1620,7 @@ extern "C" int score_generator(CSOUND *csound) {
         pen.note[csound::Event::KEY] =          (pen.note[csound::Event::KEY]         * 1./2.09)    + (-.5)    * 100.;
         return pen;
     });
-    generators.push_back([&chordsForTimes, &modality](const Cursor &pen_, int depth, int target_depth, csound::Score &score) {
+    generators.push_back([&chordsForTimes, &modality, &velocity_scaling](const Cursor &pen_, int depth, int target_depth, csound::Score &score) {
         Cursor pen = pen_;
         if (depth == 2) {
           auto modulations = pen.scale.modulations(pen.chord);
@@ -1609,7 +1636,7 @@ extern "C" int score_generator(CSOUND *csound) {
         
         pen.note[csound::Event::DURATION] =     (pen.note[csound::Event::DURATION]    * 1.02);
         pen.note[csound::Event::INSTRUMENT] =   (pen.note[csound::Event::INSTRUMENT]  * 0.75)     + (-3.);
-    pen.note[csound::Event::VELOCITY] =     (pen.note[csound::Event::VELOCITY]        * 1.02);
+        pen.note[csound::Event::VELOCITY] =     (pen.note[csound::Event::VELOCITY]    * velocity_scaling);
         return pen;
     });
     generators.push_back([&chordsForTimes, &modality](const Cursor &pen_, int depth, int target_depth, csound::Score &score) {
@@ -1670,7 +1697,7 @@ extern "C" int score_generator(CSOUND *csound) {
     }
     std::cout << "Conformed notes:        " << size << std::endl;
     score.rescale(csound::Event::INSTRUMENT,    true,  1.0, true,   6.99);
-    score.rescale(csound::Event::VELOCITY,      true, 40.0, true,  20.0);
+    score.rescale(csound::Event::VELOCITY,      true, 40.0, true,   dynamic_range);
     score.rescale(csound::Event::PAN,           true,  0.0, true,   0.0);
     std::cout << "Move to origin duration:" << score.getDuration() << std::endl;
     score.findScale();
@@ -1697,7 +1724,7 @@ extern "C" int score_generator(CSOUND *csound) {
         score[i].setPan((randomvariable(mersenneTwister) * .01) + pan);
         score[i].setDepth(randomvariable(mersenneTwister));
         score[i].setPhase(randomvariable(mersenneTwister));
-        auto duration = score[i].getDuration() / 150.;
+        auto duration = score[i].getDuration() / duration_fraction;
         score[i].setDuration(duration);
     }
     score.tieOverlappingNotes(true);
@@ -1705,8 +1732,8 @@ extern "C" int score_generator(CSOUND *csound) {
     
     // Move the last piano note to sound like an ending.
     auto score_size = score.size();
-    auto index = score_size - 5;
-    auto key = score[index].getKey() - 2;
+    auto index = score_size - 1;
+    auto key = score[index].getKey() + 1;
     score[index].setKey(key);
     
     std::cout << "score:" << std::endl << score.getCsoundScore() << std::endl;
