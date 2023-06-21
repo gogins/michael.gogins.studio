@@ -15,7 +15,7 @@ csound-cxx-opcodes, which compile C++ source code embedded in the file to a
 dynamic link library, and invoke the code in that library to generate the 
 Csound score as Csound runs. This is a "pseudo-tonal" piece. My CsoundAC 
 library for algorithmic composition is used not only to generate the notes 
-using a recurrent iterated functon system, but also to generate root 
+using a recurrent iterated function system, but also to generate root 
 progressions and modulations _for_ the notes.
 
 All sound is synthesized using Csound instruments in this file, except for 
