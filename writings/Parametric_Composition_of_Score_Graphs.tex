@@ -314,7 +314,7 @@ genetic algorithm on sets of actual parameters.
 The remainder of this paper develops the mathematical background in somewhat
 more detail; discusses the implementation of IFS, indexes for parameters, and
 the genetic algorithm for IFS parameters in the CsoundAC library 
-\cite{csoundextended} for algorithmic composition in C++; and finishes with 
+\cite{csoundac} for algorithmic composition in C++; and finishes with 
 examples of each of the three methods of algorithmic composition, implemented 
 in CsoundAC and Csound \cite{csoundmain}.
 
@@ -368,8 +368,8 @@ assist the understanding, pitches are rounded by semitone). This is $OPTC$, whic
 what musicians normally mean by ``chord type.''
 
 \begin{figure}
-\centerline{\includegraphics[width = 0.75\textwidth]{OPTC}}
-\caption{\label{fig:opttc}
+\centerline{\includegraphics[width = 0.75\textwidth]{OPTTC}}
+\caption{\label{fig:optc}
   $OPTC$ for trichords in 12TET.}
 \end{figure}
 
@@ -382,7 +382,7 @@ $OPTIC$, which is what theorists mean by ``set class,'' and is the most abstract
 commonly used meaning of what is a ``chord.''
 
 \begin{figure}
-\centerline{\includegraphics[width = 0.75\textwidth]{OPTIC}}
+\centerline{\includegraphics[width = 0.75\textwidth]{OPTTIC}}
 \caption{\label{fig:optic}
 $OPTIC$ for trichords in 12TET.}
 \end{figure}
@@ -732,10 +732,12 @@ floating-point number format can contain.
 
 \subsection{Interpolating Between Pieces}
 
+\section{Future Directions}
+
 \subsection{Using the Genetic Algorithm with Fractal Interpolation
 Functions}
 
-\section{Future Directions}
+\subsection{Composing Sound Directly}
 
 It is interesting that, as Massopust notes \cite{massopust2017}, \begin{quote}D.
 Hardin proved in 2012 that every compactly supported refinable function is a
@@ -746,6 +748,8 @@ of parametric composition based on FAs and described here, would also work for
 composing sound directly using refinable sets of sound grains, \textit{e.g.}
 wavelets.
 
+\subsection{Analysis and Re-Composition}
+
 It also is interesting that Barnsley, Hegland, and Massopust
 \cite{2013arXiv1309.0972B} discuss how to derive fractal approximations of
 existing data sets. This implies that it is possible to automatically derive FA
@@ -754,4 +758,5 @@ parameter map or parametric interpolation to analyze the relationship between
 the works, or to compose new works intermediate in form between them.
 
 \printbibliography
+
 \end{document}
