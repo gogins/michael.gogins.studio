@@ -246,7 +246,7 @@ var developer_tools = function() {
 }
 
 var parameters = {
-    gk_FMWaterBell_level: 25,
+    gk_FMWaterBell_level: 15,
     gi_FMWaterBell_attack: 0.002,
     gi_FMWaterBell_release: 0.01,
     gi_FMWaterBell_exponent: 15,
@@ -276,7 +276,7 @@ var parameters = {
     gk_Phaser_index1: 1,
     gk_Phaser_index2: .0125,
     gk_Phaser_level: 0.5,
-    gk_PianoteqOut_level: 8,
+    gk_PianoteqOut_level: 0.5,
     gk_Shiner_level: 0.5,
     gk_Sweeper_britel: 0,
     gk_Sweeper_briteh: 2.9,
@@ -550,35 +550,36 @@ nchnls = 2
 ;seed  818145
 seed  88818145
 
-connect "Blower", "outleft", "ValhallaShimmer", "inleft"
-connect "Blower", "outright", "ValhallaShimmer", "inright"
-connect "Bower", "outleft", "ValhallaShimmer", "inleft"
-connect "Bower", "outright", "ValhallaShimmer", "inright"
-connect "Buzzer", "outleft", "ValhallaShimmer", "inleft"
-connect "Buzzer", "outright", "ValhallaShimmer", "inright"
-connect "Droner", "outleft", "ValhallaShimmer", "inleft"
-connect "Droner", "outright", "ValhallaShimmer", "inright"
-connect "FMWaterBell", "outleft", "ValhallaShimmer", "inleft"
-connect "FMWaterBell", "outright", "ValhallaShimmer", "inright"
+connect "Blower", "outleft", "Reverb", "inleft"
+connect "Blower", "outright", "Reverb", "inright"
+connect "Bower", "outleft", "Reverb", "inleft"
+connect "Bower", "outright", "Reverb", "inright"
+connect "Buzzer", "outleft", "Reverb", "inleft"
+connect "Buzzer", "outright", "Reverb", "inright"
+connect "Droner", "outleft", "Reverb", "inleft"
+connect "Droner", "outright", "Reverb", "inright"
+connect "FMWaterBell", "outleft", "Reverb", "inleft"
+connect "FMWaterBell", "outright", "Reverb", "inright"
 ; Phaser is the one that actually "buzzes" in this piece.
-connect "Phaser", "outleft", "ValhallaShimmer", "inleft"
-connect "Phaser", "outright", "ValhallaShimmer", "inright"
+connect "Phaser", "outleft", "Reverb", "inleft"
+connect "Phaser", "outright", "Reverb", "inright"
 connect "PianoteqOut", "outleft", "MasterOutput", "inleft"
 connect "PianoteqOut", "outright", "MasterOutput", "inright"
-connect "Sweeper", "outleft", "ValhallaShimmer", "inleft"
-connect "Sweeper", "outright", "ValhallaShimmer", "inright"
-connect "Shiner", "outleft", "ValhallaShimmer", "inleft"
-connect "Shiner", "outright", "ValhallaShimmer", "inright"
-connect "ZakianFlute", "outleft", "ValhallaShimmer", "inleft"
-connect "ZakianFlute", "outright", "ValhallaShimmer", "inright"
-connect "ValhallaShimmer", "outleft", "MasterOutput", "inleft"
-connect "ValhallaShimmer", "outright", "MasterOutput", "inright"
+connect "Sweeper", "outleft", "Reverb", "inleft"
+connect "Sweeper", "outright", "Reverb", "inright"
+connect "Shiner", "outleft", "Reverb", "inleft"
+connect "Shiner", "outright", "Reverb", "inright"
+connect "ZakianFlute", "outleft", "Reverb", "inleft"
+connect "ZakianFlute", "outright", "Reverb", "inright"
+connect "Reverb", "outleft", "MasterOutput", "inleft"
+connect "Reverb", "outright", "MasterOutput", "inright"
+connect "Reverb2", "outleft", "MasterOutput", "inleft"
+connect "Reverb2", "outright", "MasterOutput", "inright"
 
 alwayson "Controls"
 alwayson "PianoteqOut"
 alwayson "Reverb"
 alwayson "Reverb2"
-alwayson "ValhallaShimmer"
 alwayson "MasterOutput"
 
 gk_overlap init 4.5
@@ -1340,23 +1341,6 @@ aright pareq aright, gk_CenterHz, ampdb(gk_Gain), gk_Q, 0
 outleta "outleft", aleft
 outleta "outright", aright
 prints "ParametricEQ   i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
-endin
-
-giValhallaShimmer vst3init "/Library/Audio/Plug-Ins/VST3/ValhallaShimmer.vst3", "ValhallaShimmer", 1
-vst3info giValhallaShimmer
-vst3presetload giValhallaShimmer, "valhalla.vstpreset"
-
-instr ValhallaShimmer
-ainleft init 0
-ainright init 0
-aoutleft init 0
-aoutright init 0
-ainleft inleta "inleft"
-ainright inleta "inright"
-aoutleft, aoutright vst3audio giValhallaShimmer, ainleft, ainright
-outleta "outleft", aoutleft
-outleta "outright", aoutright
-prints "ValhallaShimme i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
 gk_MasterOutput_level init .5
