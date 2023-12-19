@@ -32,7 +32,7 @@
 <body style="background:black;">
 <canvas id="canvas" style="block;height:100vh;width:100vw">
 </canvas>
-<textarea id="console" style="position:absolute;left:1vw;top:1vw;width:50vw;height:98vh;color:SkyBlue;background-color:transparent;border:none;text-align:left;font-size:8.25px;overflow:auto;cursor:none;"></textarea>
+<textarea id="console" style="position:absolute;left:1vw;top:1vw;width:50vw;height:98vh;color:rgb(135 206 235 / 43%);background-color:transparent;border:none;text-align:left;font-size:8.25px;overflow:auto;cursor:none;"></textarea>
 <script>
 var title = 'Poustinia v5c'
 try {
@@ -80,7 +80,7 @@ var generate = function() {
     csound.message("Rescaling score...\n");
     lsys.score.setScale(3, 1, 9.125);
     //lsys.score.setScale(3, 8, 0);
-    lsys.score.setScale(4, 28, 72);
+    lsys.score.setScale(4, 30, 72);
     lsys.score.setScale(5, 60, 8);
     lsys.score.setScale(7, 0, 1);
     lsys.score.temper(12);
@@ -143,10 +143,10 @@ var generate = function() {
     // Reassign Pianoteq to FMWaterBell.
     for (var i = 0; i < lsys.score.data.length; i++) {
         var event = lsys.score.data[i];
-        //if (event.channel >= 9 && event.channel < 10) {
-            //event.channel = 10;
+        if (event.channel >= 9 && event.channel < 10) {
+            event.channel = 1;
             //csound.message('Reassigned...\n');
-        //}
+        }
     }    
     csound.message("Plotting score...\n");
     lsys.score.draw3D(document.getElementById("canvas"));
@@ -246,7 +246,7 @@ var developer_tools = function() {
 }
 
 var parameters = {
-    gk_FMWaterBell_level: 25,
+    gk_FMWaterBell_level: 30,
     gi_FMWaterBell_attack: 0.002,
     gi_FMWaterBell_release: 0.01,
     gi_FMWaterBell_exponent: 15,
@@ -270,14 +270,14 @@ var parameters = {
     gk_Droner_partial3: 0.1,
     gk_Droner_partial4: 0.1,
     gk_Droner_partial5: 0.1,
-    gk_Droner_level: 0.5,
+    gk_Droner_level: -15,
     gk_Phaser_ratio1: 1,
     gk_Phaser_ratio2: .3333334,
     gk_Phaser_index1: 1,
     gk_Phaser_index2: .0125,
     gk_Phaser_level: 0.5,
     gk_PianoteqOut_level: 8,
-    gk_Shiner_level: 0.5,
+    gk_Shiner_level: -3,
     gk_Sweeper_britel: 0,
     gk_Sweeper_briteh: 2.9,
     gk_Sweeper_britels: .2 / 3,
@@ -335,7 +335,7 @@ var default_json = {
         "gk_Droner_partial3": 0.11921634014172572,
         "gk_Droner_partial4": 0.06586077532305128,
         "gk_Droner_partial5": 0.6616645824649159,
-        "gk_Droner_level": 0,
+        "gk_Droner_level": -15,
         "gk_Sweeper_britel": 0.2773844231570179,
         "gk_Sweeper_briteh": 3.382178217821782,
         "gk_Sweeper_britels": 0.19575671852899576,
@@ -411,14 +411,11 @@ var default_json = {
 
 window.onload = function() {
     get_csound(handleMessage);
-    try {
+    gui = new dat.GUI({load: default_json, width: 400});
+   try {
         var temporary_json = Silencio.restoreDatGuiJson(default_json);
         //default_json = temporary_json;
-        gui = new dat.GUI({load: default_json, width: 300});
-        if (csound) {
-          csound.message("Restored Csound instrument parameters.\n");
-        }
-    } catch(e) {
+       } catch(e) {
         if (typeof csound !== 'undefined') {
           if (csound != null) {
             csound.message("Failed to restore Csound instrument parameters.\n");
@@ -512,9 +509,11 @@ window.onload = function() {
 
 var gk_update = function(name, value) {
   var numberValue = parseFloat(value);
-  if (csound) {
-    console.log("gk_update: name: " + name + " value: " + numberValue);
-    csound.setControlChannel(name, numberValue);
+  if (typeof csound !== 'undefined') {
+    if (csound !== null) {
+      console.log("gk_update: name: " + name + " value: " + numberValue);
+      csound.SetControlChannel(name, numberValue);
+    }
   }
 }
 
@@ -538,8 +537,8 @@ window.addEventListener("unload", function(event) {
 </CsOptions>
 <CsInstruments>
 ; Change to 96000 with 100 ksmps for final rendering.
-sr = 48000
-ksmps = 128
+sr = 96000
+ksmps = 100
 nchnls = 2
 0dbfs = 5
 
@@ -659,8 +658,8 @@ a_signal = a_signal * i_amplitude * a_envelope * a_declicking * k_gain
 a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
-prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
-printks "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d l%9.4f r%9.4f\n", 1, nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1), dbamp(rms(a_out_left)), dbamp(rms(a_out_right))
+prints "FMWaterBell    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+;printks "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d l%9.4f r%9.4f\n", 1, nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1), dbamp(rms(a_out_left)), dbamp(rms(a_out_right))
 endin
 
 gk_Phaser_ratio1 init 1
