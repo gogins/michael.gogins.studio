@@ -1,5 +1,19 @@
+<!DOCTYPE html>
 <html>
 <head>
+<title>{Poustinia-v5e}</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src='silencio/js/csound_loader.js'></script>
+<!-- <script src='silencio/js/canvas_wrapper.js'></script> -->
+<script src='silencio/js/sprintf.js'></script>
+<!-- <script src='silencio/js/numeric.js'></script> -->
+<script src="silencio/js/three.js"></script>
+<script src='silencio/js/tinycolor.js'></script>
+<script src='silencio/js/Silencio.js'></script>
+<script src="silencio/js/TrackballControls.js"></script>
+<script src='silencio/js/ChordSpace.js'></script>
+<script src='silencio/js/dat.gui.js'></script>
 <style>
     ::-webkit-scrollbar
     {
@@ -15,29 +29,20 @@
     }
 .dg {
         font-family: Monaco, sans-serif;
-        font-size:8pt;
+        font-size: 8pt;
+        opacity: 75%;
     }
 </style>
-<script src='silencio/js/csound_loader.js'></script>
-<!-- <script src='silencio/js/canvas_wrapper.js'></script> -->
-<script src='silencio/js/sprintf.js'></script>
-<!-- <script src='silencio/js/numeric.js'></script> -->
-<script src="silencio/js/three.js"></script>
-<script src='silencio/js/tinycolor.js'></script>
-<script src='silencio/js/Silencio.js'></script>
-<script src="silencio/js/TrackballControls.js"></script>
-<script src='silencio/js/ChordSpace.js'></script>
-<script src='silencio/js/dat.gui.js'></script>
 </head>
 <body style="background:black;">
 <canvas id="canvas" style="block;height:100vh;width:100vw">
 </canvas>
 <textarea id="console" style="position:absolute;left:1vw;top:1vw;width:50vw;height:98vh;color:rgb(135 206 235 / 43%);background-color:transparent;border:none;text-align:left;font-size:8.25px;overflow:auto;cursor:none;"></textarea>
 <script>
-var title = 'Poustinia v5c'
+var title = 'Poustinia v5d'
 try {
     var fs = require("fs");
-    var soundfile_name = sprintf("Poustinia-v5c.wav");
+    var soundfile_name = sprintf("Poustinia-v5d.wav");
     var win = nw.Window.get();
 } catch(e) {
     console.log(e);
@@ -277,7 +282,7 @@ var parameters = {
     gk_Phaser_index2: .0125,
     gk_Phaser_level: 0.5,
     gk_PianoteqOut_level: 8,
-    gk_Shiner_level: -3,
+    gk_Shiner_level: -20,
     gk_Sweeper_britel: 0,
     gk_Sweeper_briteh: 2.9,
     gk_Sweeper_britels: .2 / 3,
@@ -343,7 +348,7 @@ var default_json = {
         "gk_Sweeper_level": 0,
         "gk_Buzzer_harmonics": 2.608203677510608,
         "gk_Buzzer_level": 0, // 24.74681753889675,
-        "gk_Shiner_level": 0,
+        "gk_Shiner_level": -20,
         "gk_Blower_grainDensity": 79.99177885109444,
         "gk_Blower_grainDuration": 0.2,
         "gk_Blower_grainAmplitudeRange": 87.88408180043162,
