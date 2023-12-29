@@ -163,9 +163,9 @@
         lsys.addRule('xa2', 'I F b F b a3 i i b2 f F F f c2 a3 c F c2 F b2 a3 i i c');
         lsys.addRule('a3', 'F b2 b F a I v F F c F F F F F c2 aa V f c2 F F b2 a');
         lsys.addRule('xa3', 'F b2 b F a I v F F c F F F F F c2 aa i i V f c2 F F b2 a');
-        lsys.addRule('Ja', 'J,2,0');
+        //lsys.addRule('Ja', 'J,2,0');
         //lsys.addRule('Jb', 'J,2,4');  
-        lsys.addRule('Jb', 'J,2,2');
+        //lsys.addRule('Jb', 'J,2,2');
         lsys.addRule('b', '+ f f f f f - -');
         lsys.addRule('c', '- f f f f f +');
         lsys.addRule('b2', '+ f f f f -');
@@ -173,7 +173,7 @@
         lsys.addRule('b3', '- - f f f + +');
         var chord = ChordSpace.chordForName('EM9');
         var t = new ChordSpace.Turtle(4.5, Math.PI / 2, chord, chord);
-        lsys.generate(4);
+        lsys.generate(5);
         lsys.write_score(t);
         csound.message("Finding size of score...\n");
         lsys.score.findScales();
@@ -1948,8 +1948,19 @@
   aoutright init 0
   ainleft inleta "inleft"
   ainright inleta "inright"
-  vst3paramset giValhallaShimmer, 1886548852, 2
-  vst3paramset giValhallaShimmer, 57, .09
+  // All parameters of my version of BrightHall.
+  vst3paramset giValhallaShimmer, 48, .5
+  vst3paramset giValhallaShimmer, 49, 1
+  vst3paramset giValhallaShimmer, 50, .5
+  vst3paramset giValhallaShimmer, 51, .885
+  vst3paramset giValhallaShimmer, 52, .8
+  vst3paramset giValhallaShimmer, 53, .01
+  vst3paramset giValhallaShimmer, 54, .09
+  vst3paramset giValhallaShimmer, 55, .6
+  vst3paramset giValhallaShimmer, 56, .104082
+  vst3paramset giValhallaShimmer, 57, .5
+  vst3paramset giValhallaShimmer, 1567, 1
+  vst3paramset giValhallaShimmer, 1568, 1
   aoutleft, aoutright vst3audio giValhallaShimmer, ainleft, ainright
   outleta "outleft", aoutleft
   outleta "outright", aoutright
@@ -2175,7 +2186,7 @@
         csound.setMetadata("artist", "Michael Gogins");
         csound.setMetadata("copyright", "Copyright 2023 by Michael Gogins");
         csound.setMetadata("performer", "Michael Gogins");
-        csound.setMetadata("title", "Poustinia Variation 5e");
+        csound.setMetadata("title", "Poustinia Variation 5f");
         csound.setMetadata("album", "Silence");
         csound.setMetadata("track", "1");
         csound.setMetadata("tracknumber", "1");
