@@ -151,7 +151,7 @@
   <script>
 
     var generate = async function () {
-if(non_csound(csound)) {
+      if (non_csound(csound)) {
         return;
       }
       csound.message("generate()...\n");
@@ -232,7 +232,7 @@ if(non_csound(csound)) {
             }
           }
         }
-        arrange(lsys.score, {18:1, 6:19, 4:5, 12:13});
+        arrange(lsys.score, { 18: 1, 6: 19, 4: 5, 12: 13 });
         csound.message("Plotting score...\n");
         csound.message('Generated ' + lsys.score.data.length + ' notes.\n');
         lsys.score.draw3D(document.getElementById("score_view"));
@@ -942,6 +942,7 @@ if(non_csound(csound)) {
       gk_Plucked_level: 0,
       gk_SeidelHarmonicOsc_level: 0,
       gk_TubularBell_level: 0,
+      gk_VcvOut_level: 0,
       gk_YiString_level: 0,
       gi_Xing_level: 0,
       gk_overlap: 0.05,
@@ -967,42 +968,43 @@ if(non_csound(csound)) {
             "gk_FMWaterBell_index": 0.5,
             "gk_FMWaterBell_vibrato_depth": 0.05,
             "gk_FMWaterBell_vibrato_rate": 6,
-            "gk_Phaser_level": 0.5,
+            "gk_Phaser_level": -3.0366868769910553,
             "gk_Phaser_ratio1": 1,
             "gk_Phaser_ratio2": 0.3333334,
             "gk_Phaser_index1": 1,
             "gk_Phaser_index2": 0.0125,
-            "gk_Droner_level": -15,
-            "gk_Droner_partial1": 0.24599260172626386,
+            "gk_Droner_level": -22.109752337889223,
+            "gk_Droner_partial1": 0.18024868975439318,
             "gk_Droner_partial2": 0.1539251952322236,
-            "gk_Droner_partial3": 0.35121249486230993,
-            "gk_Droner_partial4": 0.6471434443074394,
-            "gk_Droner_partial5": 0.3183312782572955,
+            "gk_Droner_partial3": 0.29863323399445074,
+            "gk_Droner_partial4": 0.09474874113657383,
+            "gk_Droner_partial5": 0.2789024766211078,
             "gk_Sweeper_level": 0.5,
             "gk_Sweeper_britel": 0,
             "gk_Sweeper_briteh": 2.9,
             "gk_Sweeper_britels": 0.06666666666666667,
             "gk_Sweeper_britehs": 1.25,
             "gk_Buzzer_level": 0.5,
-            "gk_Buzzer_harmonics": 15,
+            "gk_Buzzer_harmonics": 9.261124242112835,
             "gk_Shiner_level": -20,
-            "gk_Blower_level": 0.5,
-            "gk_Blower_grainDensity": 0.15,
-            "gk_Blower_grainDuration": 0.2,
-            "gk_Blower_grainAmplitudeRange": 0.1,
-            "gk_Blower_grainFrequencyRange": 0.033,
-            "gk_ZakianFlute_level": 0,
+            "gk_Blower_level": -17.505908950775876,
+            "gk_Blower_grainDensity": 27.376425855513308,
+            "gk_Blower_grainDuration": 0.15918199568389682,
+            "gk_Blower_grainAmplitudeRange": 48.422567053745766,
+            "gk_Blower_grainFrequencyRange": 8.81718220121262,
+            "gk_ZakianFlute_level": 8.801767547014691,
             "gk_Bower_level": 0.5,
             "gk_Bower_pressure": 0.25,
-            "gk_FilteredSines_level": 0,
+            "gk_FilteredSines_level": -3.6943787894358238,
             "gk_Guitar_level": 0,
             "gk_Kung2_level": 3.534730785039045,
-            "gk_Kung4_level": -8.302507192766136,
-            "gk_Plucked_level": 21.94821208384711,
+            "gk_Kung4_level": -16.19052512588634,
+            "gk_Plucked_level": 35.10944404480526,
             "gk_SeidelHarmonicOsc_level": 0,
-            "gk_TubularBell_level": 0,
+            "gk_TubularBell_level": -6.982838351659645,
+            "gk_VcvOut_level": 0,
             "gk_YiString_level": 0,
-            "gk_Xing_level": 0,
+            "gk_Xing_level": 0
           }
         }
       },
@@ -1010,22 +1012,22 @@ if(non_csound(csound)) {
       "folders": {
         "Master": {
           "preset": "Default",
-          "closed": false,
+          "closed": true,
           "folders": {}
         },
         "FMWaterBell": {
           "preset": "Default",
-          "closed": false,
+          "closed": true,
           "folders": {}
         },
         "Phaser": {
           "preset": "Default",
-          "closed": true,
+          "closed": false,
           "folders": {}
         },
         "Droner": {
           "preset": "Default",
-          "closed": true,
+          "closed": false,
           "folders": {}
         },
         "Sweeper": {
@@ -1035,7 +1037,7 @@ if(non_csound(csound)) {
         },
         "Buzzer": {
           "preset": "Default",
-          "closed": true,
+          "closed": false,
           "folders": {}
         },
         "Shiner": {
@@ -1045,12 +1047,12 @@ if(non_csound(csound)) {
         },
         "Blower": {
           "preset": "Default",
-          "closed": true,
+          "closed": false,
           "folders": {}
         },
         "Zakian Flute": {
           "preset": "Default",
-          "closed": true,
+          "closed": false,
           "folders": {}
         },
         "Bower": {
@@ -1060,7 +1062,7 @@ if(non_csound(csound)) {
         },
         "Filtered Sines": {
           "preset": "Default",
-          "closed": true,
+          "closed": false,
           "folders": {}
         },
         "Guitar": {
@@ -1070,7 +1072,7 @@ if(non_csound(csound)) {
         },
         "Kung2": {
           "preset": "Default",
-          "closed": false,
+          "closed": true,
           "folders": {}
         },
         "Kung4": {
@@ -1085,12 +1087,12 @@ if(non_csound(csound)) {
         },
         "SeidelHarmonicOsc": {
           "preset": "Default",
-          "closed": false,
+          "closed": true,
           "folders": {}
         },
         "TubularBell": {
           "preset": "Default",
-          "closed": true,
+          "closed": false,
           "folders": {}
         },
         "YiString": {
@@ -1147,6 +1149,8 @@ if(non_csound(csound)) {
       instr TubularBell uses instrument number 17
       instr YiString uses instrument number 18
       instr Xing uses instrument number 19
+
+      Folders should be in lexical order.
       */
 
       var Master = gui.addFolder('Master');
@@ -1155,6 +1159,29 @@ if(non_csound(csound)) {
       add_slider(Master, 'gk_Shimmer_program', 0, 8);
       add_slider(Master, 'gk_Shimmer_wetDry', 0, 1);
       add_slider(Master, 'gk_Shimmer_modDepth', 0, 1);
+      var Blower = gui.addFolder('Blower');
+      add_slider(Blower, 'gk_Blower_level', -50, 50);
+      add_slider(Blower, 'gk_Blower_grainDensity', 0, 400);
+      add_slider(Blower, 'gk_Blower_grainDuration', 0, .5);
+      add_slider(Blower, 'gk_Blower_grainAmplitudeRange', 0, 400);
+      add_slider(Blower, 'gk_Blower_grainFrequencyRange', 0, 100);
+      var Bower = gui.addFolder('Bower');
+      add_slider(Bower, 'gk_Bower_level', -50, 50);
+      add_slider(Bower, 'gk_Bower_pressure', 0, 5);
+      var Buzzer = gui.addFolder('Buzzer');
+      add_slider(Buzzer, 'gk_Buzzer_level', -50, 50);
+      add_slider(Buzzer, 'gk_Buzzer_harmonics', 0, 20);
+      var Droner = gui.addFolder('Droner');
+      add_slider(Droner, 'gk_Droner_level', -50, 50);
+      add_slider(Droner, 'gk_Droner_partial1', 0, 1);
+      add_slider(Droner, 'gk_Droner_partial2', 0, 1);
+      add_slider(Droner, 'gk_Droner_partial3', 0, 1);
+      add_slider(Droner, 'gk_Droner_partial4', 0, 1);
+      add_slider(Droner, 'gk_Droner_partial5', 0, 1);
+      var FilteredSines = gui.addFolder('Filtered Sines');
+      add_slider(FilteredSines, 'gk_FilteredSines_level', -50, 50);
+      var Flute = gui.addFolder('Zakian Flute');
+      add_slider(Flute, 'gk_ZakianFlute_level', -50, 50);
       var FMWaterBell = gui.addFolder('FMWaterBell');
       add_slider(FMWaterBell, 'gk_FMWaterBell_level', -50, 50);
       add_slider(FMWaterBell, 'gi_FMWaterBell_attack', 0, .1);
@@ -1166,55 +1193,34 @@ if(non_csound(csound)) {
       add_slider(FMWaterBell, 'gk_FMWaterBell_index', 0, 15);
       add_slider(FMWaterBell, 'gk_FMWaterBell_vibrato_depth', 0, 10);
       add_slider(FMWaterBell, 'gk_FMWaterBell_vibrato_rate', 0, 10);
-      var Phaser = gui.addFolder('Phaser');
-      add_slider(Phaser, 'gk_Phaser_level', -50, 50);
-      add_slider(Phaser, 'gk_Phaser_ratio1', 0, 5);
-      add_slider(Phaser, 'gk_Phaser_ratio2', 0, 5);
-      add_slider(Phaser, 'gk_Phaser_index1', 0, 15);
-      add_slider(Phaser, 'gk_Phaser_index2', 0, 15);
-      var Droner = gui.addFolder('Droner');
-      add_slider(Droner, 'gk_Droner_level', -50, 50);
-      add_slider(Droner, 'gk_Droner_partial1', 0, 1);
-      add_slider(Droner, 'gk_Droner_partial2', 0, 1);
-      add_slider(Droner, 'gk_Droner_partial3', 0, 1);
-      add_slider(Droner, 'gk_Droner_partial4', 0, 1);
-      add_slider(Droner, 'gk_Droner_partial5', 0, 1);
-      var Sweeper = gui.addFolder('Sweeper');
-      add_slider(Sweeper, 'gk_Sweeper_level', -50, 50);
-      add_slider(Sweeper, 'gk_Sweeper_britel', 0, 4);
-      add_slider(Sweeper, 'gk_Sweeper_briteh', 0, 4);
-      add_slider(Sweeper, 'gk_Sweeper_britels', 0, 4);
-      add_slider(Sweeper, 'gk_Sweeper_britehs', 0, 4);
-      var Buzzer = gui.addFolder('Buzzer');
-      add_slider(Buzzer, 'gk_Buzzer_level', -50, 50);
-      add_slider(Buzzer, 'gk_Buzzer_harmonics', 0, 20);
-      var Shiner = gui.addFolder('Shiner');
-      add_slider(Shiner, 'gk_Shiner_level', -50, 50);
-      var Blower = gui.addFolder('Blower');
-      add_slider(Blower, 'gk_Blower_level', -50, 50);
-      add_slider(Blower, 'gk_Blower_grainDensity', 0, 400);
-      add_slider(Blower, 'gk_Blower_grainDuration', 0, .5);
-      add_slider(Blower, 'gk_Blower_grainAmplitudeRange', 0, 400);
-      add_slider(Blower, 'gk_Blower_grainFrequencyRange', 0, 100);
-      var Flute = gui.addFolder('Zakian Flute');
-      add_slider(Flute, 'gk_ZakianFlute_level', -50, 50);
-      var Bower = gui.addFolder('Bower');
-      add_slider(Bower, 'gk_Bower_level', -50, 50);
-      add_slider(Bower, 'gk_Bower_pressure', 0, 5);
-      var FilteredSines = gui.addFolder('Filtered Sines');
-      add_slider(FilteredSines, 'gk_FilteredSines_level', -50, 50);
       var Guitar = gui.addFolder('Guitar');
       add_slider(Guitar, 'gk_Guitar_level', -50, 50);
       var Kung2 = gui.addFolder('Kung2');
       add_slider(Kung2, 'gk_Kung2_level', -50, 50);
       var Kung4 = gui.addFolder('Kung4');
       add_slider(Kung4, 'gk_Kung4_level', -50, 50);
+      var Phaser = gui.addFolder('Phaser');
+      add_slider(Phaser, 'gk_Phaser_level', -50, 50);
+      add_slider(Phaser, 'gk_Phaser_ratio1', 0, 5);
+      add_slider(Phaser, 'gk_Phaser_ratio2', 0, 5);
+      add_slider(Phaser, 'gk_Phaser_index1', 0, 15);
+      add_slider(Phaser, 'gk_Phaser_index2', 0, 15);
       var Plucked = gui.addFolder('Plucked');
       add_slider(Plucked, 'gk_Plucked_level', -50, 50);
+      var Shiner = gui.addFolder('Shiner');
+      add_slider(Shiner, 'gk_Shiner_level', -50, 50);
       var SeidelHarmonicOsc = gui.addFolder('SeidelHarmonicOsc');
       add_slider(SeidelHarmonicOsc, 'gk_SeidelHarmonicOsc_level', -50, 50);
+      var Sweeper = gui.addFolder('Sweeper');
+      add_slider(Sweeper, 'gk_Sweeper_level', -50, 50);
+      add_slider(Sweeper, 'gk_Sweeper_britel', 0, 4);
+      add_slider(Sweeper, 'gk_Sweeper_briteh', 0, 4);
+      add_slider(Sweeper, 'gk_Sweeper_britels', 0, 4);
+      add_slider(Sweeper, 'gk_Sweeper_britehs', 0, 4);
       var TubularBell = gui.addFolder('TubularBell');
       add_slider(TubularBell, 'gk_TubularBell_level', -50, 50);
+      var VcvRack = gui.addFolder('VcvRack');
+      add_slider(VcvRack, 'gk_VcvOut_level', -50, 50);
       var YiString = gui.addFolder('YiString');
       add_slider(YiString, 'gk_YiString_level', -50, 50);
       var Xing = gui.addFolder('Xing');
@@ -1246,7 +1252,7 @@ if(non_csound(csound)) {
       var numberValue = parseFloat(value);
       console.log("gk_update: name: " + name + " value: " + numberValue);
       if (non_csound(csound) == false) {
-          csound.SetControlChannel(name, numberValue);
+        csound.SetControlChannel(name, numberValue);
       }
     }
 
@@ -3090,25 +3096,25 @@ vst3info giShimmer
 
   <script>
     if ('caches' in window) {
-        caches.keys().then(function (names) {
-            for (let name of names)
-                caches.delete(name);
-            console.log(`deleted ${name} from caches.`);
-        });
+      caches.keys().then(function (names) {
+        for (let name of names)
+          caches.delete(name);
+        console.log(`deleted ${name} from caches.`);
+      });
     }
 
     function non_csound(csound_) {
-        if (typeof csound_ === 'undefined') {
-            console.warn("csound is undefined.");
-            console.trace();
-            return true;
-        }
-        if (csound_ === null) {
-            console.warn("csound is null.");
-            console.trace();
-            return true;
-        }
-        return false;
+      if (typeof csound_ === 'undefined') {
+        console.warn("csound is undefined.");
+        console.trace();
+        return true;
+      }
+      if (csound_ === null) {
+        console.warn("csound is null.");
+        console.trace();
+        return true;
+      }
+      return false;
     }
 
     /**
@@ -3148,10 +3154,10 @@ vst3info giShimmer
       try {
         // Sync, so a bad .csd file doesn't blow up Csound 
         // before the .csd file is written so it can be tested!
-        fs.writeFileSync(filepath, data, function(err) {
+        fs.writeFileSync(filepath, data, function (err) {
           console.error(err);
         });
-      } catch(err) {
+      } catch (err) {
         console.warn(err);
       }
     }
@@ -3249,65 +3255,65 @@ vst3info giShimmer
     var interval_id = null;
 
     var trackScoreTime = function () {
-if (non_csound(csound)) {
+      if (non_csound(csound)) {
         return;
       }
       var score_time = csound.getScoreTime();
       interval_id = setTimeout(trackScoreTime, 200);
       lsys.score.progress3D(score_time);
-      };
+    };
 
-    var render = async function(is_realtime) {
-        $("#score_view").show();
-        await generate();
-        csound = await get_csound(csound_message_callback);
-        if (non_csound(csound)) {
-          return;
-        }
-        csound.setMetadata("artist", "Michael Gogins");
-        csound.setMetadata("copyright", "Copyright 2023 by Michael Gogins");
-        csound.setMetadata("performer", "Michael Gogins");
-        csound.setMetadata("title", "Poustinia Variation 5j");
-        csound.setMetadata("album", "Silence");
-        csound.setMetadata("track", "1");
-        csound.setMetadata("tracknumber", "1");
-        csound.setMetadata("date", "2023");
-        csound.setMetadata("publisher", "Irreducible Productions ASCAP");
-        csound.setMetadata("comment", "Lindenmayer system in chord space.");
-        csound.setMetadata("license", "CC BY-NC-SA");
-        csound.setMetadata("genre", "Electroacoustic");
-        let csd = await document.getElementById('csd').value;
-        var csound_score = lsys.score.toCsoundScore();
-        csound_score = csound_score.concat("\n</CsScore>");
-        csd = csd.replace("</CsScore>", csound_score);
-        console_editor.setValue("");
-        if (is_realtime == false) {
-          csd = csd.replace("-odac", "-o" + document.title + ".wav");          
-        }
-        // Save the .csd file so we can debug a failing orchestra,
-        // instead of it just nullifying Csound.        
-        const csd_filename = document.title + '-generated.csd';
-        write_file(csd_filename, csd);
-        let result = await csound.CompileCsdText(csd);
-        csound_message_callback("CompileCsdText returned: " + result + "\n");
-        await csound.Start();
-        // Send _current_ dat.gui control channel values to Csound 
-        // before actually performing. Default parameters pasted in from a 
-        // decent rendering are used.
-        let parameters_ = default_json.remembered.Default[0];
-        for (let channel_name in parameters_) {
-          let channel_value = parseFloat(parameters_[channel_name]);
-          await csound.SetControlChannel(channel_name, channel_value);
-        }
-        csound_message_callback("Csound has started...\n");
-        if (is_realtime == true) {
-            await csound.Perform();
-          } else {
-          await csound.performAndPostProcess();
-        }
-          trackScoreTime();
-          csound_message_callback("Csound is playing...\n");
-        }
+    var render = async function (is_realtime) {
+      $("#score_view").show();
+      await generate();
+      csound = await get_csound(csound_message_callback);
+      if (non_csound(csound)) {
+        return;
+      }
+      csound.setMetadata("artist", "Michael Gogins");
+      csound.setMetadata("copyright", "Copyright 2023 by Michael Gogins");
+      csound.setMetadata("performer", "Michael Gogins");
+      csound.setMetadata("title", "Poustinia Variation 5j");
+      csound.setMetadata("album", "Silence");
+      csound.setMetadata("track", "1");
+      csound.setMetadata("tracknumber", "1");
+      csound.setMetadata("date", "2023");
+      csound.setMetadata("publisher", "Irreducible Productions ASCAP");
+      csound.setMetadata("comment", "Lindenmayer system in chord space.");
+      csound.setMetadata("license", "CC BY-NC-SA");
+      csound.setMetadata("genre", "Electroacoustic");
+      let csd = await document.getElementById('csd').value;
+      var csound_score = lsys.score.toCsoundScore();
+      csound_score = csound_score.concat("\n</CsScore>");
+      csd = csd.replace("</CsScore>", csound_score);
+      console_editor.setValue("");
+      if (is_realtime == false) {
+        csd = csd.replace("-odac", "-o" + document.title + ".wav");
+      }
+      // Save the .csd file so we can debug a failing orchestra,
+      // instead of it just nullifying Csound.        
+      const csd_filename = document.title + '-generated.csd';
+      write_file(csd_filename, csd);
+      let result = await csound.CompileCsdText(csd);
+      csound_message_callback("CompileCsdText returned: " + result + "\n");
+      await csound.Start();
+      // Send _current_ dat.gui control channel values to Csound 
+      // before actually performing. Default parameters pasted in from a 
+      // decent rendering are used.
+      let parameters_ = default_json.remembered.Default[0];
+      for (let channel_name in parameters_) {
+        let channel_value = parseFloat(parameters_[channel_name]);
+        await csound.SetControlChannel(channel_name, channel_value);
+      }
+      csound_message_callback("Csound has started...\n");
+      if (is_realtime == true) {
+        await csound.Perform();
+      } else {
+        await csound.performAndPostProcess();
+      }
+      trackScoreTime();
+      csound_message_callback("Csound is playing...\n");
+    }
 
     $(window).on("load", async function () {
       let csound = await get_csound(csound_message_callback);
