@@ -36,7 +36,7 @@
 \mainmatter  % start of an individual contribution
 
 % first the title is needed
-\title{\LaTeX{} Template for ICSC 2024}
+\title{cloud-5:\\An Environment for Generating and Publishing Cloud Music}
 
 % a short form should be given in case it is too long for the running head
 \titlerunning{Running Title}
@@ -45,7 +45,7 @@
 % TO GARANTEE THE DOUBLE BLIND REVIEW PROCESS, PLEASE
 % KEEP THESE GENERIC AUTHOR NAMES AND INSTITUTIONS
 
-\author{AuthorA\inst{1}\and AuthorB\inst{2} \thanks{Please place acknowledgement here.}}
+\author{AuthorA\inst{1}\and AuthorB\inst{2} \thanks{Dan Derks for introducing me to Tidal Cycles and Felix Roos for answering Strudel questions}}
 %
 % if the names of the authors are too long for the running head, please use the format: AuthorA et al.
 \authorrunning{AuthorA and AuthorB (or AuthorA et al. if too long)}
@@ -64,13 +64,14 @@
 
 \maketitle
 
-
+% Should be 150 to 350 words.
 \begin{abstract}
-The abstract should summarize the contents of the paper and should
-contain at least 150 and at most 350 words. It should be written using the
-\emph{abstract} environment.
-\keywords{We would like to encourage you to list your keywords in this
-section}
+The advent of the World Wide Web, the standardization of HTML with adequate support for computer graphics and audio, and the introduction 
+of WebAssembly have combined to create an environment suited to the \emph{online} production, publication, and presentation of art music, visual music, and 
+related media at a professional standard of technical quality. Indeed, the presentation of a piece of music on the World Wide Web no longer need be merely 
+a link to a downloadable soundfile or video, or even to an audio or visual stream. A piece can, indeed, be its own "app" that runs in the listener's Web browser. I call this kind of music \emph{cloud music} because it exists only in the "cloud," the omnipresent computing infrastructure of the Internet. I argue that this offers an entirely new environment for music that will, in the future, develop its own social context and function as an alternative means of disseminating art music in addition to live performances, discs, streams, and downloads. Here, I present and demonstrate \emph{cloud-5}, a collection of 
+libraries and templates for producing cloud music including, among other things, fixed medium music, music that plays indefinitely, visuals that generate music, music that generates visuals, interactive music, and live coding. cloud-5 includes a WebAssembly build of the sound programming language and software synthesis system Csound, a WebAssembly build of the CsoundAC library for algorithmic composition including chords, scales, and voice-leading, the live coding application Strudel, and supporting code for menus, event handlers, GLSL shaders, and more. A cloud-5 piece thus exists as an HTML file that embeds Csound code and/or GLSL code and/or score generation code and/or Strudel code, in the context of a static Web site that can be served either locally (for composing) or remotely (for publication).
+\keywords{html5, webassembly, csound, algorithmic composition, visual music, live coding}
 \end{abstract}
 
 
@@ -145,9 +146,9 @@ simply achieved as matter of sequence in your source.
 
 \begin{figure}
 \centering
-\includegraphics[width=0.90\linewidth]{test_image-2.jpg}
+\includegraphics[width=0.90\linewidth]{test_image-2.pdf}
 \caption{Spectrogram of the same sound file in raster image (JPG,
-1119 $\times$ 663 pixels).}
+1119 x  663 pixels).}
 \label{fig:example_2}
 \end{figure}
 
