@@ -31,56 +31,19 @@
             font-size:8pt;
             }
         </style>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/numeric/1.2.6/numeric.js" integrity="sha512-pyzpFygIdLxZ4col/s6IsdGPHBXwGxQUUal3JlIJyrH0PAG6zx+NeP2yJVWV1fPl9sdSIVR3OwQw58hZRJo+gg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/tinycolor/1.4.2/tinycolor.min.js" referrerpolicy="no-referrer"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.1/dat.gui.js"></script>
-        <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/sprintf/1.1.1/sprintf.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r123/three.js"></script>
+        <script src='silencio/js/csound_loader.js'></script>
+        <!-- <script src='silencio/js/canvas_wrapper.js'></script> -->
+        <script src='silencio/js/sprintf.js'></script>
+        <!-- <script src='silencio/js/numeric.js'></script> -->
+        <script src="silencio/js/three.js"></script>
+        <script src='silencio/js/tinycolor.js'></script>
         <script src='silencio/js/Silencio.js'></script>
+<script src="silencio/js/TrackballControls.js"></script>
         <script src='silencio/js/ChordSpace.js'></script>
-        <script src="silencio/js/TrackballControls.js"></script>
-        <script src="silencio/js/piano-roll.js"></script>
+        <script type="text/javascript" src="silencio/js/dat.gui.js"></script>
     </head>
     <body style="background:black;">
-        <script>
-            var handleMessage = function(message) {
-                console.log(message);
-                var messages_textarea = document.getElementById("console");
-                var existing = messages_textarea.value;
-                messages_textarea.value = existing + message;
-                messages_textarea.scrollTop = messages_textarea.scrollHeight;
-            }
-            // These are the ways Csound can be instantiated in a JavaScript context.
-            if (typeof csound !== 'undefined') {
-                // (1) Injected (e.g. by Csound for Android or CsoundQt).
-                csound.message("\nCsound already exists in the JavaScript context: version " + csound.getVersion() + '\n');
-            } else {
-                // (2) By 'require' as in csound.node.
-                try {
-                    var csound = require('csound.node');
-                    csound.setMessageCallback(handleMessage);
-                    csound.message('\ncsound.node has been loaded: version ' + csound.GetVersion() + '\n');
-                // (3) By csound.js in WebAssembly.
-                } catch (err) {
-                    try {
-                        console.warn(err.message);
-                        console.info("Trying to load Csound for WebAssembly...");
-                        var head = document.getElementsByTagName('head')[0];
-                        var script = document.createElement('script');
-                        script.src = "/csound.js";
-                        script.type = 'text/javascript';
-                        head.appendChild(script);
-                        var moduleDidLoad = function() {
-                            csound.message("\nCsound for WebAssembly has been loaded; Csound functions may now be called.");
-                        }
-                    } catch (err1) {
-                        console.warn(err1.message);
-                    }
-                }
-            }
-        </script>
-        <canvas id="canvas" style="block;height:100vh;width:100vw">
+                <canvas id="canvas" style="block;height:100vh;width:100vw">
         </canvas>
         <textarea id="console" style="position:absolute;left:1vw;top:1vw;width:50vw;height:98vh;color:SkyBlue;background-color:transparent;border:none;text-align:left;font-size:8.25px;overflow:auto;cursor:none;"></textarea>
         <script>
@@ -407,6 +370,14 @@
             render_soundfile_and_postprocess: window.render_soundfile_and_postprocess,
             stop: window.stop,
             };
+
+var handleMessage = function(message) {
+    console.log(message);
+    var messages_textarea = document.getElementById("console");
+    var existing = messages_textarea.value;
+    messages_textarea.value = existing + message;
+    messages_textarea.scrollTop = messages_textarea.scrollHeight;
+}
             
             var default_json = {
             "preset": "Default",
@@ -513,7 +484,8 @@
             }
             };
             
-            window.onload = function() {
+        window.onload = async function () {
+            await get_csound(handleMessage);
             try {
             var temporary_json = Silencio.restoreDatGuiJson(default_json);
             //default_json = temporary_json;
@@ -624,6 +596,7 @@
                 parameters.stop();
                 nw_window.close();
             });
+
         </script>
         <textarea class="code" id="csd" hidden rows=24 cols=80>
 <CsoundSynthesizer>
@@ -654,7 +627,7 @@ gS_source_code = {{
 
 }}
 
-gi_result clang_compile "entry_point", gS_source_code, "-I/usr/local/include/csound", "/usr/lib/gcc/x86_64-linux-gnu/9/libstdc++.so"
+;;gi_result clang_compile "entry_point", gS_source_code, "-I/usr/local/include/csound", "/usr/lib/gcc/x86_64-linux-gnu/9/libstdc++.so"
 
 connect "Blower", "outleft", "ReverbSC", "inleft"
 connect "Blower", "outright", "ReverbSC", "inright"
@@ -676,13 +649,16 @@ connect "Shiner", "outleft", "ReverbSC", "inleft"
 connect "Shiner", "outright", "ReverbSC", "inright"
 connect "ZakianFlute", "outleft", "ReverbSC", "inleft"
 connect "ZakianFlute", "outright", "ReverbSC", "inright"
-connect "ReverbSC", "outleft", "MVerb", "inleft"
-connect "ReverbSC", "outright", "MVerb", "inright"
-connect "MVerb", "outleft", "MasterOutput", "inleft"
-connect "MVerb", "outright", "MasterOutput", "inright"
+;;connect "ReverbSC", "outleft", "MVerb", "inleft"
+;;connect "ReverbSC", "outright", "MVerb", "inright"
+;;connect "MVerb", "outleft", "MasterOutput", "inleft"
+;;connect "MVerb", "outright", "MasterOutput", "inright"
+connect "ReverbSC", "outleft", "MasterOutput", "inleft"
+connect "ReverbSC", "outright", "MasterOutput", "inright"
 
-alwayson "PianoOutPianoteq"
-alwayson "MVerb"
+alwayson "Controls"
+alwayson "PianoteqOut"
+//alwayson "MVerb"
 alwayson "ReverbSC"
 alwayson "MasterOutput"
 
@@ -764,7 +740,7 @@ a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
 gk_Phaser_attack chnexport "gk_Phaser_attack", 3 ;  .125
@@ -823,7 +799,7 @@ a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 ;printks "Phaser         i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d l%9.4f r%9.4f\n", 1, p1, p2, p3, p4, p5, p7, active(p1), dbamp(rms(aleft)), dbamp(rms(aright))
 endin
 
@@ -916,7 +892,7 @@ a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
 gk_Sweeper_midi_dynamic_range chnexport "gk_Sweeper_midi_dynamic_range", 3 ;  127
@@ -1003,7 +979,7 @@ a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
 gk_Buzzer_attack chnexport "gk_Buzzer_attack", 3
@@ -1057,7 +1033,7 @@ outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
 ;printks "Buzzer         i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d l%9.4f r%9.4f\n", 1, p1, p2, p3, p4, p5, p7, active(p1), dbamp(rms(a_out_left)), dbamp(rms(a_out_right))
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
 gk_Shiner_midi_dynamic_range chnexport "gk_Shiner_midi_dynamic_range", 3 ;  127
@@ -1111,7 +1087,7 @@ a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
 gk_Blower_grainDensity chnexport "gk_Blower_grainDensity", 3
@@ -1201,7 +1177,7 @@ a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 ;printks "Blower         i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d l%9.4f r%9.4f\n", 1, p1, p2, p3, p4, p5, p7, active(p1), dbamp(rms(a_out_left)), dbamp(rms(a_out_right))
 endin
 
@@ -1443,21 +1419,14 @@ a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
-// This must be initialized in the orc header before any reference.
-gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", 0
-vstinfo gi_Pianoteq 
+;;; giPianoteq vstinit "/home/mkg/pianoteq_linux_v630/Pianoteq\ 6/amd64/Pianoteq\ 6.so", 1
+giPianoteq vst3init "/Library/Audio/Plug-Ins/VST3/Pianoteq 8.vst3", "Pianoteq 8", 1
+vst3info giPianoteq
 
-gk_PianoNotePianoteq_midi_dynamic_range chnexport "gk_PianoNotePianoteq_midi_dynamic_range", 3 ;  20
-
-gk_PianoNotePianoteq_midi_dynamic_range init 20
-
-instr PianoNotePianoteq
-if p3 == -1 then
-  p3 = 1000000
-endif
+instr PianoteqNote
 i_instrument = p1
 i_time = p2
 i_duration = p3
@@ -1474,11 +1443,13 @@ i_duration = p3
 i_midi_key = p4
 i_midi_velocity = p5
 i_homogeneity = p11
-instances active p1
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
-i_pitch_correction = 44100 / sr
-; prints "Pitch factor:   %9.4f\n", i_pitch_correction
-vstnote gi_Pianoteq, 0, i_midi_key, i_midi_velocity, i_duration
+i_pitchclass = i_midikey % 12
+i_hertz cpsmidinn i_midikey
+i_amplitude = ampdb(i_midivelocity)
+ichannel = 0
+i_result vst3note giPianoteq, ichannel, i_midikey, i_midivelocity, i_duration
+prints "PianoteqNote   i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
+
 endin
 
 gk_Bower_midi_dynamic_range chnexport "gk_Bower_midi_dynamic_range", 3
@@ -1540,155 +1511,108 @@ a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
 #endif
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 ;printks "Blower         i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d l%9.4f r%9.4f\n", 1, p1, p2, p3, p4, p5, p7, active(p1), dbamp(rms(a_out_left)), dbamp(rms(a_out_right))
 endin
 
-// This must be initialized in the orc header before any #includes.
+;;gk_MVerb_feedback init .975
+;;instr  MVerb
+;;//////////////////////////////////////////////
+;;// By Michael Gogins.
+;;//////////////////////////////////////////////
+;;ainleft  inleta  "inleft"
+;;ainright  inleta  "inright"
+;;aoutleft, aoutright MVerb  ainleft, ainright, "Huge Hall", "wet", .5, "FB", gk_MVerb_feedback, "random", 1, "rslow", 1.1, "rfast", 3.8, "rmax", .0005, "print", 1., "DFact", .75
+;;; printks "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d l%9.4f r%9.4f\n", 1, nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1), dbamp(rms(aoutleft)), dbamp(rms(aoutright))
+;;outleta  "outleft", aoutleft
+;;outleta  "outright", aoutright
+;;prints "R%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+;;endin
 
-gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", 0
-vstinfo gi_Pianoteq 
-
-gk_PianoOutPianoteq_level chnexport "gk_PianoOutPianoteq_level", 3 ;  0
-gi_PianoOutPianoteq_print chnexport "gi_PianoOutPianoteq_print", 3 ;  1
-gk_PianoOutPianoteq_front_to_back chnexport "gk_PianoOutPianoteq_front_to_back", 3 ;  0
-gk_PianoOutPianoteq_left_to_right chnexport "gk_PianoOutPianoteq_left_to_right", 3 ;  0.5
-gk_PianoOutPianoteq_bottom_to_top chnexport "gk_PianoOutPianoteq_bottom_to_top", 3 ;  0
-
-gk_PianoOutPianoteq_level init 0
-gi_PianoOutPianoteq_print init 1
-gk_PianoOutPianoteq_front_to_back init 0
-gk_PianoOutPianoteq_left_to_right init 0.5
-gk_PianoOutPianoteq_bottom_to_top init 0
-
-instr PianoOutPianoteq
-; Should be "D4 Daily Practice".
-vstprogset gi_Pianoteq, 0
-; Sustain off.
-vstparamset gi_Pianoteq, 0, 0
-; Reverb off.
-vstparamset gi_Pianoteq, 72, 0
-k_gain = ampdb(gk_PianoOutPianoteq_level)
-i_overall_amps = 87
-i_normalization = ampdb(-i_overall_amps) * 2
-i_amplitude = ampdb(80) * i_normalization
-if gi_PianoOutPianoteq_print == 1 then
-  vstinfo gi_PianoOutPianoteq_print
-endif
-i_instrument = p1
-i_time = p2
-i_duration = p3
-i_midi_key = p4
-i_midi_velocity = p5
-ainleft init 0
-ainright init 0
-aoutleft, aoutright vstaudio gi_Pianoteq, ainleft, ainright
-a_signal = aoutleft + aoutright
-a_signal *= k_gain
-a_signal *= i_amplitude
-a_out_left, a_out_right pan2 a_signal, gk_PianoOutPianoteq_left_to_right
-; printks "vstaudio:       %9.4f   %9.4f\n", 0.5, aoutleft, aoutright
-
-#ifdef USE_SPATIALIZATION
-a_signal = a_out_left + a_out_right
-a_spatial_reverb_send init 0
-a_bsignal[] init 16
-a_bsignal, a_spatial_reverb_send Spatialize a_signal, gk_PianoOutPianoteq_front_to_back, gk_PianoOutPianoteq_left_to_right, gk_PianoOutPianoteq_bottom_to_top
-outletv "outbformat", a_bsignal
-outleta "out", a_spatial_reverb_send
-#else
-; printks "PianoOutPt     L %9.4f R %9.4f l %9.4f\\n", 0.5, a_out_left, a_out_right, gk_Piano_level
-outleta "outleft", a_out_left
-outleta "outright", a_out_right
-#endif
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
-endin
-
-gS_MVerb_preset chnexport "gS_MVerb_preset", 3 ; "Huge Hall"
-gk_MVerb_FB chnexport "gk_MVerb_feedback", 3 ; .975
-gk_MVerb_wet chnexport "gk_MVerb_wet", 3 ; .5
-gk_MVerb_random chnexport "gk_MVerb_random", 3 ; 1
-gk_MVerb_rslow chnexport "gk_MVerb_rslow", 3 ; 1.1
-gk_MVerb_rfast chnexport "gk_MVerb_rfast", 3 ; 3.8
-gk_MVerb_rmax chnexport "gk_MVerb_rmax", 3 ; .0005
-gk_MVerb_print chnexport "gk_MVerb_print", 3 ; 1
-gk_MVerb_DFact chnexport "gk_MVerb_DFact", 3 ; .75
-
-gS_MVerb_preset init "Huge Hall"
-gk_MVerb_feedback init .975
-gk_MVerb_wet init .5
-gk_MVerb_random init 1
-gk_MVerb_rslow init 1.1
-gk_MVerb_rfast init 3.8
-gk_MVerb_rmax init .0005
-gk_MVerb_print init 1
-gk_MVerb_DFact init .75
-
-instr MVerb
-//////////////////////////////////////////////
-// Original csd by Jon Christopher Nelson.
-// Adapted to C++ plugin by Michael Gogins.
-// Compute-intensive!
-//////////////////////////////////////////////
-ainleft  inleta  "inleft"
-ainright  inleta  "inright"
-aoutleft, aoutright MVerb ainleft, ainright, gS_MVerb_preset, "wet", gk_MVerb_wet, "FB", gk_MVerb_feedback, "random", 1, "rslow", gk_MVerb_rslow, "rfast", gk_MVerb_rfast, "rmax", gk_MVerb_rmax, "print", gk_MVerb_print, "DFact", gk_MVerb_DFact
-outleta  "outleft", aoutleft
-outleta  "outright", aoutright
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
-endin
-
-gk_Reverb_feedback chnexport "gk_Reverb_feedback", 3
-gk_Reverb_wet chnexport "gk_Reverb_wet", 3
-gi_Reverb_delay_modulation chnexport "gi_Reverb_delay_modulation", 3
-gk_Reverb_frequency_cutoff chnexport "gk_Reverb_frequency_cutoff", 3
-
-gk_Reverb_feedback init 0.875
-gk_Reverb_wet init 0.5
-gi_Reverb_delay_modulation init 0.0075
-gk_Reverb_frequency_cutoff init 15000
-
+gk_ReverbSC_feedback init 0.85
+gi_ReverbSC_delay_modulation init 0.35
+gk_ReverbSC_frequency_cutoff init 15000
 instr ReverbSC
-gk_Reverb_dry = 1.0 - gk_Reverb_wet
-aleftin init 0
-arightin init 0
-aleftout init 0
-arightout init 0
-aleftin inleta "inleft"
-arightin inleta "inright"
-aleftout, arightout reverbsc aleftin, arightin, gk_Reverb_feedback, gk_Reverb_frequency_cutoff, sr, gi_Reverb_delay_modulation
-aleftoutmix = aleftin * gk_Reverb_dry + aleftout * gk_Reverb_wet
-arightoutmix = arightin * gk_Reverb_dry + arightout * gk_Reverb_wet
-outleta "outleft", aleftoutmix
-outleta "outright", arightoutmix
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+ainleft inleta "inleft"
+ainright inleta "inright"
+; aoutL, aoutR reverbsc ainL, ainR, kfblvl, kfco[, israte[, ipitchm[, iskip]]]
+aoutleft, aoutright reverbsc ainleft, ainright, gk_ReverbSC_feedback, gk_ReverbSC_frequency_cutoff, sr, gi_ReverbSC_delay_modulation
+; printks "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d l%9.4f r%9.4f\n", 1, nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1), dbamp(rms(aoutleft)), dbamp(rms(aoutright))
+outleta "outleft", aoutleft
+outleta "outright", aoutright
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
-gk_MasterOutput_level chnexport "gk_MasterOutput_level", 3 ; 0
-gS_MasterOutput_filename chnexport "gS_MasterOutput_filename", 3 ; ""
-
-gk_MasterOutput_level init 0
-gS_MasterOutput_filename init ""
-
+gk_MasterOutput_level init .5
 instr MasterOutput
 aleft inleta "inleft"
 aright inleta "inright"
-k_gain = ampdb(gk_MasterOutput_level)
-printks2 "Master gain: %f\n", k_gain
-iamp init 1
-aleft butterlp aleft, 18000
-aright butterlp aright, 18000
-outs aleft * k_gain, aright * k_gain
-; We want something that will play on my phone.
-i_amplitude_adjustment = ampdbfs(-3) / 32767
-i_filename_length strlen gS_MasterOutput_filename
-if i_filename_length > 0 goto filename_exists
-goto filename_endif
-filename_exists:
-prints sprintf("Output filename: %s\n", gS_MasterOutput_filename)
-fout gS_MasterOutput_filename, 18, aleft * i_amplitude_adjustment, aright * i_amplitude_adjustment
-filename_endif:
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+kgain = ampdb(gk_MasterOutput_level)
+outs aleft * kgain, aright * kgain
+; fout "Poustinia-v6-7-1.wav", 16, aleft, aright
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+endin
+
+instr Controls
+k_active chnget "gk_Bower_pressure"
+if k_active == 0 goto off_label
+prints "Controls on i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+ gk_FMWaterBell_level chnget "gk_FMWaterBell_level"
+ gi_FMWaterBell_attack chnget "gi_FMWaterBell_attack"
+ gi_FMWaterBell_exponent chnget "gi_FMWaterBell_exponent"
+ gi_FMWaterBell_release chnget "gi_FMWaterBell_release"
+ gi_FMWaterBell_sustain chnget "gi_FMWaterBell_sustain"
+ gi_FMWaterBell_sustain_level chnget "gi_FMWaterBell_sustain_level"
+ gk_FMWaterBell_index chnget "gk_FMWaterBell_index"
+ gk_FMWaterBell_crossfade chnget "gk_FMWaterBell_crossfade"
+ gk_FMWaterBell_vibrato_depth chnget "gk_FMWaterBell_vibrato_depth"
+ gk_FMWaterBell_vibrato_rate chnget "gk_FMWaterBell_vibrato_rate"
+
+ gk_Bower_level chnget "gk_Bower_level"
+ gk_Bower_pressure chnget "gk_Bower_pressure"
+ 
+ gk_Blower_grainDensity chnget "gk_Blower_grainDensity" 
+ gk_Blower_grainDuration chnget "gk_Blower_grainDuration" 
+ gk_Blower_grainAmplitudeRange chnget "gk_Blower_grainAmplitudeRange"
+ gk_Blower_grainFrequencyRange chnget "gk_Blower_grainFrequencyRange"
+ gk_Blower_level chnget "gk_Blower_level" 
+ 
+ gk_Buzzer_harmonics chnget "gk_Buzzer_harmonics" 
+ gk_Buzzer_level chnget "gk_Buzzer_level" 
+ 
+ gk_Droner_partial1 chnget "gk_Droner_partial1" 
+ gk_Droner_partial2 chnget "gk_Droner_partial2" 
+ gk_Droner_partial3 chnget "gk_Droner_partial3" 
+ gk_Droner_partial4 chnget "gk_Droner_partial4" 
+ gk_Droner_partial5 chnget "gk_Droner_partial5" 
+ gk_Droner_level chnget "gk_Droner_level" 
+ 
+ gk_Phaser_ratio1 chnget "gk_Phaser_ratio1" 
+ gk_Phaser_ratio2 chnget "gk_Phaser_ratio2" 
+ gk_Phaser_index1 chnget "gk_Phaser_index1" 
+ gk_Phaser_index2 chnget "gk_Phaser_index2" 
+ gk_Phaser_level chnget "gk_Phaser_level" 
+ 
+ gk_PianoteqOut_level chnget "gk_PianoteqOut_level" 
+ 
+gk_Shiner_level chnget "gk_Shiner_level" 
+ 
+ gk_Sweeper_britel chnget "gk_Sweeper_britel"
+ gk_Sweeper_briteh chnget "gk_Sweeper_briteh" 
+ gk_Sweeper_britels chnget "gk_Sweeper_britels" 
+ gk_Sweeper_britehs chnget "gk_Sweeper_britehs" 
+ gk_Sweeper_level chnget "gk_Sweeper_level" 
+ 
+ gk_ZakianFlute_level chnget "gk_ZakianFlute_level"
+
+ gk_Reverb_feedback chnget "gk_MVerb_feedback" 
+ gk_Reverb2_feedback chnget "gk_ReverbSC_feedback" 
+ gk_MasterOutput_level chnget "gk_MasterOutput_level" 
+ gk_overlap chnget "gk_overlap" 
+ goto return_label
+off_label:
+prints "Controls off i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+return_label:
 endin
 
 instr exitnow
@@ -1703,4 +1627,5 @@ i "exitnow" [9 * 60 + 5 ] .1
 </CsoundSynthesizer>
 </textarea>
     </body>
+
 </html>

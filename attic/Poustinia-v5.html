@@ -19,9 +19,9 @@
     }
 </style>
 <script src='silencio/js/csound_loader.js'></script>
-<script src='silencio/js/canvas_wrapper.js'></script>
+<!-- <script src='silencio/js/canvas_wrapper.js'></script> -->
 <script src='silencio/js/sprintf.js'></script>
-<script src='silencio/js/numeric.js'></script>
+<!-- <script src='silencio/js/numeric.js'></script> -->
 <script src="silencio/js/three.js"></script>
 <script src='silencio/js/tinycolor.js'></script>
 <script src='silencio/js/Silencio.js'></script>
@@ -38,7 +38,7 @@ var title = 'Poustinia v4'
 try {
     var fs = require("fs");
     var git = require('git-rev-sync');
-    var soundfile_name = sprintf("Poustinia-v5b-%s.wav",  git.short());
+    var soundfile_name = sprintf("Poustinia-v5-%s.wav",  git.short());
 } catch(e) {
     console.log(e);
 }
@@ -67,7 +67,7 @@ var generate = function() {
     lsys.addRule('b2', '+ f f f f -');    
     lsys.addRule('c2', '- - f f f f + +');
     lsys.addRule('b3', '- - f f f + +');    
-    var chord = ChordSpace.chordForName('EbM9');      
+    var chord = ChordSpace.chordForName('CM9');      
     var t = new ChordSpace.Turtle(4.5, Math.PI/2, chord, chord);
     lsys.generate(4);
     lsys.write_score(t);
@@ -76,13 +76,13 @@ var generate = function() {
     csound.message("Rescaling score...\n");
     lsys.score.setScale(3, 1, 8.125);
     //lsys.score.setScale(3, 8, 0);
-    lsys.score.setScale(4, 27, 72);
-    lsys.score.setScale(5, 60, 8);
+    lsys.score.setScale(4, 24, 72);
+    lsys.score.setScale(5, 60, 9);
     lsys.score.setScale(7, 0, 1);
     lsys.score.temper(12);
     csound.message("Conforming to chords...\n");
     lsys.conformToChords();
-    lsys.score.setDuration(10.5*60);
+    lsys.score.setDuration(12*60);
     csound.message("Tieing overlapping notes...\n");
     lsys.score.tieOverlaps(true);
     lsys.score.sort();
@@ -136,14 +136,6 @@ var generate = function() {
             }
         }
     }
-    // Reassign Pianoteq to FMWaterBell.
-    for (var i = 0; i < lsys.score.data.length; i++) {
-        var event = lsys.score.data[i];
-        if (event.channel >= 9 && event.channel < 10) {
-            event.channel = 1;
-            csound.message('Reassigned...\n');
-        }
-    }    
     csound.message("Plotting score...\n");
     lsys.score.draw3D(document.getElementById("canvas"));
     csound.message('Generated ' + lsys.score.data.length + ' notes.\n');
@@ -177,11 +169,10 @@ var render = function(soundfile, post_process) {
     csound.setOption('-W');
     csound.setOption('-f');
     csound.setOption('-o' + soundfile_name);
-    //csound.setOption('-odac');
     csound.setMetadata("artist", "Michael Gogins");
     csound.setMetadata("copyright", "Copyright 2019 by Michael Gogins");
-    csound.setMetadata("performer", "Michael Gogins");
-    csound.setMetadata("title", "Poustinia Variation 5b");
+    csound.setMetadata("performer", "Mike Gogins");
+    csound.setMetadata("title", "Poustinia Variation 5");
     csound.setMetadata("album", "Silence");
     csound.setMetadata("track", "1");
     csound.setMetadata("tracknumber", "1");
@@ -191,12 +182,12 @@ var render = function(soundfile, post_process) {
     csound.setMetadata("license", "CC BY-NC-SA");
     csound.setMetadata("genre", "Electroacoustic");
      if (soundfile === true) {
-        csound.setOutput("Poustinia-v5b.wav", "wav", "float");
+        csound.setOutput("Poustinia-v5.wav", "wav", "float");
     } else {
         csound.setOutput("dac", "wav", "float");
     }
     if (typeof fs != 'undefined') {
-        fs.writeFileSync("Poustinia-v5b-generated.csd", csd);
+        fs.writeFileSync("Poustinia-v5-generated.csd", csd);
     }
     csound.compileCsdText(csd);
     csound.message("Rendering...");
@@ -308,12 +299,12 @@ var default_json = {
         "gk_FMWaterBell_index": 1.1401499375260309,
         "gk_FMWaterBell_vibrato_depth": 0.2897954989209742,
         "gk_FMWaterBell_vibrato_rate": 4.762100503545371,
-        "gk_FMWaterBell_level": 37.0,
+        "gk_FMWaterBell_level": 36.5,
         "gk_Phaser_ratio1": 1,
         "gk_Phaser_ratio2": 0.3333334,
         "gk_Phaser_index1": 1,
         "gk_Phaser_index2": 2,
-        "gk_Phaser_level": 12, //14.608203677510609,
+        "gk_Phaser_level": 14.608203677510609,
         "gk_Bower_pressure": 3.050919377652051,
         "gk_Bower_level": -12.677504515770458,
         "gk_Droner_partial1": 0.11032374600527997,
@@ -325,11 +316,11 @@ var default_json = {
         "gk_Sweeper_britel": 0.2773844231570179,
         "gk_Sweeper_briteh": 3.382178217821782,
         "gk_Sweeper_britels": 0.19575671852899576,
-        "gk_Sweeper_britehs": 0.8837340876944837,
+        "gk_Sweeper_britehs": 0.6837340876944837,
         "gk_Sweeper_level": 7.366336633663366,
         "gk_Buzzer_harmonics": 2.608203677510608,
-        "gk_Buzzer_level": 24.74681753889675,
-        "gk_Shiner_level": 16.056577086280058,
+        "gk_Buzzer_level": 11.,
+        "gk_Shiner_level": 8.,
         "gk_Blower_grainDensity": 79.99177885109444,
         "gk_Blower_grainDuration": 0.2,
         "gk_Blower_grainAmplitudeRange": 87.88408180043162,
@@ -395,11 +386,11 @@ var default_json = {
   }
 };
 
-window.onload = function() {
-    get_csound(handleMessage);
+window.onload = async function () {
+    await get_csound(handleMessage);
     try {
         var temporary_json = Silencio.restoreDatGuiJson(default_json);
-        //default_json = temporary_json;
+        default_json = temporary_json;
         gui = new dat.GUI({load: default_json, width: 300});
         csound.message("Restored Csound instrument parameters.\n");
     } catch(e) {
@@ -601,12 +592,7 @@ k_space_bottom_to_top = p8
 i_phase = p9
 i_frequency = cpsmidinn(i_midi_key)
 ; Adjust the following value until "overall amps" at the end of performance is about -6 dB.
-if i_midi_key > 42 goto high_level
-i_level_correction = -23.5
-goto end_level
-high_level:
 i_level_correction = -20
-end_level:
 i_normalization = ampdb(-i_level_correction) / 2
 i_amplitude = ampdb(i_midi_velocity) * i_normalization * 1.6
 k_gain = ampdb(gk_FMWaterBell_level)
@@ -1155,7 +1141,9 @@ outleta "outright", a_out_right
 prints "ZakianFlute    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
-giPianoteq vstinit "/home/mkg/pianoteq_linux_v630/Pianoteq\ 6/amd64/Pianoteq\ 6.so", 1
+;;; giPianoteq vstinit "/home/mkg/pianoteq_linux_v630/Pianoteq\ 6/amd64/Pianoteq\ 6.so", 1
+giPianoteq vst3init "/Library/Audio/Plug-Ins/VST3/Pianoteq 8.vst3", "Pianoteq 8", 1
+vst3info giPianoteq
 
 instr PianoteqNote
 i_instrument = p1
@@ -1174,8 +1162,9 @@ i_pitchclass = i_midikey % 12
 i_hertz cpsmidinn i_midikey
 i_amplitude = ampdb(i_midivelocity)
 ichannel = 0
-vstnote giPianoteq, ichannel, i_midikey, i_midivelocity, i_duration
-prints "PIanoteqNote   i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
+i_result vst3note giPianoteq, ichannel, i_midikey, i_midivelocity, i_duration
+prints "PianoteqNote   i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
+
 endin
 
 gk_Bower_midi_dynamic_range init 127
@@ -1236,18 +1225,18 @@ endin
 
 gk_PianoteqOut_level init .5
 instr PianoteqOut
-vstprogset  giPianoteq, 1
-vstparamset giPianoteq, 0, .01
-; vstparamset giPianoteq, 7, 1
-vstparamset giPianoteq, 72, .01
-vstparamset giPianoteq, 73, .01
-vstparamset giPianoteq, 74, .01
-vstparamset giPianoteq,  80, 0.0
-vstparamset giPianoteq, 126, 0.0
-vstinfo     giPianoteq
+;;vstprogset  giPianoteq, 1
+;;vstparamset giPianoteq, 0, .01
+;;; vstparamset giPianoteq, 7, 1
+;;vstparamset giPianoteq, 72, .01
+;;vstparamset giPianoteq, 73, .01
+;;vstparamset giPianoteq, 74, .01
+;;vstparamset giPianoteq,  80, 0.0
+;;vstparamset giPianoteq, 126, 0.0
+;;vstinfo     giPianoteq
 ainleft init 0.0
 ainright init 0.0
-aoutleft, aoutright vstaudio giPianoteq, ainleft, ainright
+aoutleft, aoutright vst3audio giPianoteq, ainleft, ainright
 kgain = ampdb(gk_PianoteqOut_level)
 outleta "outleft", aoutleft * kgain * 1.33334
 outleta "outright", aoutright * kgain * 1.33334

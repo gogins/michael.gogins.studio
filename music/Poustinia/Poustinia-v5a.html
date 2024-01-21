@@ -19,9 +19,9 @@
     }
 </style>
 <script src='silencio/js/csound_loader.js'></script>
-<script src='silencio/js/canvas_wrapper.js'></script>
+<!-- <script src='silencio/js/canvas_wrapper.js'></script> -->
 <script src='silencio/js/sprintf.js'></script>
-<script src='silencio/js/numeric.js'></script>
+<!-- <script src='silencio/js/numeric.js'></script> -->
 <script src="silencio/js/three.js"></script>
 <script src='silencio/js/tinycolor.js'></script>
 <script src='silencio/js/Silencio.js'></script>
@@ -395,8 +395,8 @@ var default_json = {
   }
 };
 
-window.onload = function() {
-    get_csound(handleMessage);
+window.onload = async function () {
+    await get_csound(handleMessage);
     try {
         var temporary_json = Silencio.restoreDatGuiJson(default_json);
         //default_json = temporary_json;
@@ -1155,7 +1155,9 @@ outleta "outright", a_out_right
 prints "ZakianFlute    i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
-giPianoteq vstinit "/home/mkg/pianoteq_linux_v630/Pianoteq\ 6/amd64/Pianoteq\ 6.so", 1
+;;; giPianoteq vstinit "/home/mkg/pianoteq_linux_v630/Pianoteq\ 6/amd64/Pianoteq\ 6.so", 1
+giPianoteq vst3init "/Library/Audio/Plug-Ins/VST3/Pianoteq 8.vst3", "Pianoteq 8", 1
+vst3info giPianoteq
 
 instr PianoteqNote
 i_instrument = p1
@@ -1174,8 +1176,9 @@ i_pitchclass = i_midikey % 12
 i_hertz cpsmidinn i_midikey
 i_amplitude = ampdb(i_midivelocity)
 ichannel = 0
-vstnote giPianoteq, ichannel, i_midikey, i_midivelocity, i_duration
-prints "PIanoteqNote   i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
+i_result vst3note giPianoteq, ichannel, i_midikey, i_midivelocity, i_duration
+prints "PianoteqNote   i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", p1, p2, p3, p4, p5, p7, active(p1)
+
 endin
 
 gk_Bower_midi_dynamic_range init 127
@@ -1236,18 +1239,18 @@ endin
 
 gk_PianoteqOut_level init .5
 instr PianoteqOut
-vstprogset  giPianoteq, 1
-vstparamset giPianoteq, 0, .01
-; vstparamset giPianoteq, 7, 1
-vstparamset giPianoteq, 72, .01
-vstparamset giPianoteq, 73, .01
-vstparamset giPianoteq, 74, .01
-vstparamset giPianoteq,  80, 0.0
-vstparamset giPianoteq, 126, 0.0
-vstinfo     giPianoteq
+;;vstprogset  giPianoteq, 1
+;;vstparamset giPianoteq, 0, .01
+;;; vstparamset giPianoteq, 7, 1
+;;vstparamset giPianoteq, 72, .01
+;;vstparamset giPianoteq, 73, .01
+;;vstparamset giPianoteq, 74, .01
+;;vstparamset giPianoteq,  80, 0.0
+;;vstparamset giPianoteq, 126, 0.0
+;;vstinfo     giPianoteq
 ainleft init 0.0
 ainright init 0.0
-aoutleft, aoutright vstaudio giPianoteq, ainleft, ainright
+aoutleft, aoutright vst3audio giPianoteq, ainleft, ainright
 kgain = ampdb(gk_PianoteqOut_level)
 outleta "outleft", aoutleft * kgain * 1.33334
 outleta "outright", aoutright * kgain * 1.33334
