@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8" /> -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -988,250 +989,73 @@
             gk_overlap: 0.05,
         };
 
-        var default_dat_gui_state = {
-            "preset": "Default",
-            "closed": false,
-            "remembered": {
-                "Default": {
-                    "0": {
-                        "gk_overlap": 0.05,
-                        "gk_MasterOutput_level": 6.170999897235639,
-                        "gk_Shimmer_wetDry": 1,
-                        "gk_Shimmer_feedback": 0.31836399136779364,
-                        "gk_Shimmer_diffusion": 0.05551330798479087,
-                        "gk_Shimmer_size": 0.8313636830747096,
-                        "gk_Shimmer_modRate": 0.38,
-                        "gk_Shimmer_modDepth": 0.04,
-                        "gk_Shimmer_reverbMode": 0.275,
-                        "gk_Shimmer_program": 2.073160706946157,
-                        "gk_Blower_level": -25,
-                        "gk_Blower_attack": 1.5,
-                        "gk_Blower_release": 2,
-                        "gk_Blower_grainDensity": 245.730140787175,
-                        "gk_Blower_grainDuration": 0.03750899188161545,
-                        "gk_Blower_grainAmplitudeRange": 119.4532935977803,
-                        "gk_Blower_grainFrequencyRange": 50.251772685232766,
-                        "gk_Bower_level": 3.170999897235639,
-                        "gk_Bower_pressure": 4.288356797862502,
-                        "gk_Bower_rat": 0.5,
-                        "gk_Buzzer_level": -8.955914088993936,
-                        "gk_Buzzer_harmonics": 1.3688212927756656,
-                        "gk_Droner_level": -12.902065563662525,
-                        "gk_Droner_partial1": 0.5814407563456994,
-                        "gk_Droner_partial2": 0.4367485356078512,
-                        "gk_Droner_partial3": 0.18024868975439318,
-                        "gk_Droner_partial4": 0.048710307265440345,
-                        "gk_Droner_partial5": 0,
-                        "gk_FilteredSines_level": -3.6943787894358238,
-                        "gk_ZakianFlute_level": -5.667454526770115,
-                        "gk_FMWaterBell_level": 16.69407049635187,
-                        "gi_FMWaterBell_attack": 0.002,
-                        "gi_FMWaterBell_release": 0.01,
-                        "gi_FMWaterBell_exponent": 15,
-                        "gi_FMWaterBell_sustain": 20,
-                        "gi_FMWaterBell_sustain_level": 0.1,
-                        "gk_FMWaterBell_crossfade": 0.5,
-                        "gk_FMWaterBell_index": 0.5,
-                        "gk_FMWaterBell_vibrato_depth": 0.05,
-                        "gk_FMWaterBell_vibrato_rate": 6,
-                        "gk_Guitar_level": 0,
-                        "gk_Kung2_level": 3.534730785039045,
-                        "gk_Kung4_level": -16.19052512588634,
-                        "gk_Phaser_level": -12.244373651217764,
-                        "gk_Phaser_ratio1": 2,
-                        "gk_Phaser_ratio2": 3,
-                        "gk_Phaser_index1": 1.0266159695817492,
-                        "gk_Phaser_index2": 0.533347035248176,
-                        "gk_Plucked_level": 35.10944404480526,
-                        "gk_Shiner_level": -16.848217038331107,
-                        "gk_Shiner_attack": 0.125,
-                        "gk_Shiner_release": 0.5,
-                        "gk_SeidelHarmonicOsc_level": 0,
-                        "gk_Sweeper_level": -10.271297913883465,
-                        "gk_Sweeper_britel": 0.19484122906176138,
-                        "gk_Sweeper_briteh": 2.273147672387216,
-                        "gk_Sweeper_britels": 0.14222587606618026,
-                        "gk_Sweeper_britehs": 2.404686054876169,
-                        "gk_TubularBell_level": -6.982838351659645,
-                        "gk_VcvOut_level": 0,
-                        "gk_YiString_level": 0,
-                        "gk_Xing_level": 0
-                    }
-                },
-                "New": {
-                    "0": {
-                        "gk_overlap": 0.05,
-                        "gk_MasterOutput_level": 6.170999897235639,
-                        "gk_Shimmer_wetDry": 0.42359469735895594,
-                        "gk_Shimmer_feedback": 0.5156715651012229,
-                        "gk_Shimmer_diffusion": 0.05551330798479087,
-                        "gk_Shimmer_size": 0.8313636830747096,
-                        "gk_Shimmer_modRate": 0.38,
-                        "gk_Shimmer_modDepth": 0.04,
-                        "gk_Shimmer_reverbMode": 0.275,
-                        "gk_Shimmer_program": 2.073160706946157,
-                        "gk_Blower_level": -25,
-                        "gk_Blower_attack": 1.5,
-                        "gk_Blower_release": 2,
-                        "gk_Blower_grainDensity": 245.730140787175,
-                        "gk_Blower_grainDuration": 0.03750899188161545,
-                        "gk_Blower_grainAmplitudeRange": 119.4532935977803,
-                        "gk_Blower_grainFrequencyRange": 50.251772685232766,
-                        "gk_Bower_level": 6.170999897235639,
-                        "gk_Bower_pressure": 4.288356797862502,
-                        "gk_Bower_rat": 0.5,
-                        "gk_Buzzer_level": -8.955914088993936,
-                        "gk_Buzzer_harmonics": 1.3688212927756656,
-                        "gk_Droner_level": -12.902065563662525,
-                        "gk_Droner_partial1": 0.5814407563456994,
-                        "gk_Droner_partial2": 0.4367485356078512,
-                        "gk_Droner_partial3": 0.18024868975439318,
-                        "gk_Droner_partial4": 0.048710307265440345,
-                        "gk_Droner_partial5": 0,
-                        "gk_FilteredSines_level": -3.6943787894358238,
-                        "gk_ZakianFlute_level": -12.244373651217764,
-                        "gk_FMWaterBell_level": 19.324838146130915,
-                        "gi_FMWaterBell_attack": 0.002,
-                        "gi_FMWaterBell_release": 0.01,
-                        "gi_FMWaterBell_exponent": 15,
-                        "gi_FMWaterBell_sustain": 20,
-                        "gi_FMWaterBell_sustain_level": 0.1,
-                        "gk_FMWaterBell_crossfade": 0.5,
-                        "gk_FMWaterBell_index": 0.5,
-                        "gk_FMWaterBell_vibrato_depth": 0.05,
-                        "gk_FMWaterBell_vibrato_rate": 6,
-                        "gk_Guitar_level": 0,
-                        "gk_Kung2_level": 3.534730785039045,
-                        "gk_Kung4_level": -16.19052512588634,
-                        "gk_Phaser_level": -12.244373651217764,
-                        "gk_Phaser_ratio1": 2,
-                        "gk_Phaser_ratio2": 3,
-                        "gk_Phaser_index1": 1.0266159695817492,
-                        "gk_Phaser_index2": 0.533347035248176,
-                        "gk_Plucked_level": 35.10944404480526,
-                        "gk_Shiner_level": -16.848217038331107,
-                        "gk_Shiner_attack": 0.125,
-                        "gk_Shiner_release": 0.5,
-                        "gk_SeidelHarmonicOsc_level": 0,
-                        "gk_Sweeper_level": -10.271297913883465,
-                        "gk_Sweeper_britel": 0.19484122906176138,
-                        "gk_Sweeper_briteh": 2.273147672387216,
-                        "gk_Sweeper_britels": 0.14222587606618026,
-                        "gk_Sweeper_britehs": 2.404686054876169,
-                        "gk_TubularBell_level": -6.982838351659645,
-                        "gk_VcvOut_level": 0,
-                        "gk_YiString_level": 0,
-                        "gk_Xing_level": 0
-                    }
-                }
-            },
-            "folders": {
-                "Master": {
-                    "preset": "Default",
-                    "closed": false,
-                    "folders": {}
-                },
-                "Blower": {
-                    "preset": "Default",
-                    "closed": false,
-                    "folders": {}
-                },
-                "Bower": {
-                    "preset": "Default",
-                    "closed": false,
-                    "folders": {}
-                },
-                "Buzzer": {
-                    "preset": "Default",
-                    "closed": true,
-                    "folders": {}
-                },
-                "Droner": {
-                    "preset": "Default",
-                    "closed": true,
-                    "folders": {}
-                },
-                "Filtered Sines": {
-                    "preset": "Default",
-                    "closed": true,
-                    "folders": {}
-                },
-                "Zakian Flute": {
-                    "preset": "Default",
-                    "closed": false,
-                    "folders": {}
-                },
-                "FMWaterBell": {
-                    "preset": "Default",
-                    "closed": false,
-                    "folders": {}
-                },
-                "Guitar": {
-                    "preset": "Default",
-                    "closed": true,
-                    "folders": {}
-                },
-                "Kung2": {
-                    "preset": "Default",
-                    "closed": true,
-                    "folders": {}
-                },
-                "Kung4": {
-                    "preset": "Default",
-                    "closed": true,
-                    "folders": {}
-                },
-                "Phaser": {
-                    "preset": "Default",
-                    "closed": true,
-                    "folders": {}
-                },
-                "Plucked": {
-                    "preset": "Default",
-                    "closed": true,
-                    "folders": {}
-                },
-                "Shiner": {
-                    "preset": "Default",
-                    "closed": true,
-                    "folders": {}
-                },
-                "SeidelHarmonicOsc": {
-                    "preset": "Default",
-                    "closed": true,
-                    "folders": {}
-                },
-                "Sweeper": {
-                    "preset": "Default",
-                    "closed": true,
-                    "folders": {}
-                },
-                "TubularBell": {
-                    "preset": "Default",
-                    "closed": true,
-                    "folders": {}
-                },
-                "VcvRack": {
-                    "preset": "Default",
-                    "closed": true,
-                    "folders": {}
-                },
-                "YiString": {
-                    "preset": "Default",
-                    "closed": true,
-                    "folders": {}
-                },
-                "Xing": {
-                    "preset": "Default",
-                    "closed": true,
-                    "folders": {}
-                }
-            }
-        };
 
         function create_dat_gui() {
             csound_message_callback("create_dat_gui...\n");
-            parameters = default_dat_gui_state.remembered.Default[0];
+            parameters = {
+                "gk_overlap": 0.05,
+                "gk_MasterOutput_level": 6.170999897235639,
+                "gk_Shimmer_wetDry": 0.46963313123008943,
+                "gk_Shimmer_feedback": 0.3,
+                "gk_Shimmer_diffusion": 0.14736409413215498,
+                "gk_Shimmer_size": 0.8510944404480526,
+                "gk_Shimmer_modRate": 0.38,
+                "gk_Shimmer_modDepth": 0.009248792518754496,
+                "gk_Shimmer_reverbMode": 0.275,
+                "gk_Shimmer_program": 2.073160706946157,
+                "gk_Blower_level": -29.344363374781626,
+                "gk_Blower_attack": 1.5,
+                "gk_Blower_release": 2,
+                "gk_Blower_grainDensity": 245.730140787175,
+                "gk_Blower_grainDuration": 0.03750899188161545,
+                "gk_Blower_grainAmplitudeRange": 119.4532935977803,
+                "gk_Blower_grainFrequencyRange": 50.251772685232766,
+                "gk_Bower_level": -10.271297913883465,
+                "gk_Bower_pressure": 4.715856540951598,
+                "gk_Bower_rat": 0.4518548967218169,
+                "gk_Buzzer_level": -26.71359572500257,
+                "gk_Buzzer_harmonics": 1.3688212927756656,
+                "gk_Droner_level": -14.217449388552048,
+                "gk_Droner_partial1": 0.12105641763436441,
+                "gk_Droner_partial2": 0.22628712362552666,
+                "gk_Droner_partial3": 0.6406330284657281,
+                "gk_Droner_partial4": 0.11447949850991676,
+                "gk_Droner_partial5": 0,
+                "gk_FilteredSines_level": -3.6943787894358238,
+                "gk_ZakianFlute_level": -22.767444250333984,
+                "gk_FMWaterBell_level": 0.9094645976775197,
+                "gi_FMWaterBell_attack": 0.002,
+                "gi_FMWaterBell_release": 0.01,
+                "gi_FMWaterBell_exponent": 15,
+                "gi_FMWaterBell_sustain": 20,
+                "gi_FMWaterBell_sustain_level": 0.1,
+                "gk_FMWaterBell_crossfade": 0.5,
+                "gk_FMWaterBell_index": 0.5,
+                "gk_FMWaterBell_vibrato_depth": 0.05,
+                "gk_FMWaterBell_vibrato_rate": 6,
+                "gk_Guitar_level": 0,
+                "gk_Kung2_level": 3.534730785039045,
+                "gk_Kung4_level": -16.19052512588634,
+                "gk_Phaser_level": -21.452060425444458,
+                "gk_Phaser_ratio1": 2,
+                "gk_Phaser_ratio2": 3,
+                "gk_Phaser_index1": 1.0266159695817492,
+                "gk_Phaser_index2": 0.533347035248176,
+                "gk_Plucked_level": 35.10944404480526,
+                "gk_Shiner_level": -16.848217038331107,
+                "gk_Shiner_attack": 0.125,
+                "gk_Shiner_release": 0.5,
+                "gk_SeidelHarmonicOsc_level": 0,
+                "gk_Sweeper_level": -15.532833213441577,
+                "gk_Sweeper_britel": 0.22114890555955194,
+                "gk_Sweeper_briteh": 2.4309937313739596,
+                "gk_Sweeper_britels": 0.3526872880485048,
+                "gk_Sweeper_britehs": 0.7473024355153632,
+                "gk_TubularBell_level": -6.982838351659645,
+                "gk_VcvOut_level": 0,
+                "gk_YiString_level": 0,
+                "gk_Xing_level": 0
+            };
             // Ensure that the dat.gui controls are children of the _Controls_ button.
             let dat_gui_parameters = { autoPlace: false, closeOnTop: true, closed: true, width: 400, useLocalStorage: false };
             gui = new dat.GUI(dat_gui_parameters);
@@ -3468,6 +3292,15 @@ vst3info giShimmer
             }
         }
 
+        /**
+         * Copies all _current_ dat.gui parameters to the system clipboard in 
+         * JSON format.
+         */
+        function copy_parameters() {
+            const json_text = JSON.stringify(parameters, null, 4);
+            navigator.clipboard.writeText(json_text);
+            csound_message_callback("Copied all control parameters to system clipboard.\n")
+        }
     </script>
 
     <!-- The menu bar has to stack on top of all layers in order for the 
@@ -3475,18 +3308,25 @@ vst3info giShimmer
 
     <div class="w3-bar " id="main_menu" style="position:fixed;background:transparent;z-index:100;">
         <ul class="menu">
-            <li id="menu_item_play" class="w3-btn w3-hover-text-light-green">Play</li>
-            <li id="menu_item_render" class="w3-btn w3-hover-text-light-green">Render</li>
-            <li id="menu_item_stop" class="w3-btn w3-hover-text-light-green">Stop</li>
+            <li id="menu_item_play" title="Play piece on system audio output" class="w3-btn w3-hover-text-light-green">
+                Play</li>
+            <li id="menu_item_render" title="Render piece to soundfile" class="w3-btn w3-hover-text-light-green">Render
+            </li>
+            <li id="menu_item_stop" title="Stop performance" class="w3-btn w3-hover-text-light-green">Stop</li>
             <li id="menu_item_fullscreen" class="w3-btn w3-hover-text-light-green">Fullscreen</li>
             <!-- <li id="menu_item_strudel" class="w3-btn w3-hover-text-light-green">Strudel</li> -->
-            <li id="menu_item_score" class="w3-btn w3-hover-text-light-green">Score</li>
-            <li id="menu_item_console" class="w3-btn w3-hover-text-light-green">Log</li>
-            <li id="menu_item_about" class="w3-btn w3-hover-text-light-green">About</li>
+            <li id="menu_item_score" title="Show/hide piano roll score" class="w3-btn w3-hover-text-light-green">Score
+            </li>
+            <li id="menu_item_console" title="Show/hide message console" class="w3-btn w3-hover-text-light-green">Log
+            </li>
+            <li id="menu_item_about" title="Show/hide information about this piece"
+                class="w3-btn w3-hover-text-light-green">About</li>
             <li id="mini_console" class="w3-btn w3-text-green w3-hover-text-light-green"></li>
             <li id="vu_meter_left" class="w3-btn w3-hover-text-light-green"></li>
             <li id="vu_meter_right" class="w3-btn w3-hover-text-light-green"></li>
-            <li id="menu_item_dat_gui" class="w3-btn w3-left-align w3-hover-text-light-green w3-right">
+            <li id="menu_item_dat_gui"
+                title="Show/hide performance controls; 'Save' copies all control parameters to system clipboard"
+                class="w3-btn w3-left-align w3-hover-text-light-green w3-right"></li>
         </ul>
     </div>
 
@@ -3719,6 +3559,13 @@ vst3info giShimmer
                 } else {
                     $("#about_view").show();
                 }
+            });
+            // Binds the dat.gui 'Save' button to also copy all 
+            // current dat.gui control parameters to system clipboard.
+            $(".button.save").on("click", function (event) {
+                // event.stopPropagation();
+                // event.stopImmediatePropagation();
+                copy_parameters();
             });
             $(document).keydown(function (event) {
                 console.log("document keydown...");
