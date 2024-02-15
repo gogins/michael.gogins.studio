@@ -126,21 +126,16 @@
         <h2 style="font-size:13px">Credits</h2>
 
         <p>
-            The original inspiration for this piece comes from "richter chords", an
-            unattributed and unlicensed example in the
+            This piece was inspired and is to some extent an adaptation of
+            by "richter chords", an unattributed and unlicensed example in the
             <a href="https://strudel.cc/">Strudel REPL</a>, from which I
             learned many things about arranging compositions in Strudel.
 
         <p>Code for compiling and controlling shaders is adapted from <a
                 href="https://www.shadertoy.com">ShaderToy.com</a>.
 
-        <p>The algorithm for downsampling the video canvas is from <a
-                href="https://skemman.is/bitstream/1946/15343/3/SS_MSthesis.pdf">Sveinn
-                Steinarsson's MS thesis</a> with code from <a href="https://github.com/pingec/downsample-lttb">
-                https://github.com/pingec/downsample-lttb</a>.
-
-        <p>The music visualization code is adapted from <a href="https://www.shadertoy.com/view/DtsyWl"><b><i>Colourful
-                        smoke</i></b></a>
+        <p>The music visualization code is adapted from 
+            <a href="https://www.shadertoy.com/view/DtsyWl"><b><i>Colourful smoke</i></b></a>
             by <a href="https://www.shadertoy.com/user/motus_art">motus_art</a>.
 
         <p>Some of the Csound instruments are by me, others are adapted by me from
@@ -1090,21 +1085,21 @@ instr MasterOutput uses instrument number 16
             add_slider(Blower, 'gk_Blower_grainAmplitudeRange', 0, 400);
             add_slider(Blower, 'gk_Blower_grainFrequencyRange', 0, 100);
             var Phaser = gui.addFolder('03 Phaser');
+            add_slider(Phaser, 'gk_Phaser_level', -50, 50);
             add_slider(Phaser, 'gk_Phaser_ratio1', 0, 5);
             add_slider(Phaser, 'gk_Phaser_ratio2', 0, 5);
             add_slider(Phaser, 'gk_Phaser_index1', 0, 15);
             add_slider(Phaser, 'gk_Phaser_index2', 0, 15);
-            add_slider(Phaser, 'gk_Phaser_level', -50, 50);
             var Guitar = gui.addFolder("04 Guitar");
             add_slider(Guitar, 'gk_Guitar_level', -50, 50);
             var FilteredSines = gui.addFolder("05 FilteredSines");
             add_slider(FilteredSines, 'gk_FilteredSines_level', -50, 50);
             var Sweeper = gui.addFolder('06 Sweeper');
+            add_slider(Sweeper, 'gk_Sweeper_level', -50, 50);
             add_slider(Sweeper, 'gk_Sweeper_britel', 0, 4);
             add_slider(Sweeper, 'gk_Sweeper_briteh', 0, 4);
             add_slider(Sweeper, 'gk_Sweeper_britels', 0, 4);
             add_slider(Sweeper, 'gk_Sweeper_britehs', 0, 4);
-            add_slider(Sweeper, 'gk_Sweeper_level', -50, 50);
             var Plucked = gui.addFolder("07 Plucked");
             add_slider(Plucked, 'gk_Plucked_level', -50, 50);
             var FMWaterBell = gui.addFolder('08 FMWaterBell');
