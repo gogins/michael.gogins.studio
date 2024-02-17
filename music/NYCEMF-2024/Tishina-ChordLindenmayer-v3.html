@@ -164,11 +164,11 @@
                 lsys.addRule('b', '+ f f f f f - -');
                 lsys.addRule('c', '- f f f f f +');
                 lsys.addRule('b2', '+ f f f f -');
-                lsys.addRule('c2', '- - f f f f + +'); 
+                lsys.addRule('c2', '- - f f f f + +');
                 lsys.addRule('b3', '- - f f f + +');
-                var chord = ChordSpace.chordForName('EM9');
+                var chord = ChordSpace.chordForName('Fm9');
                 var t = new ChordSpace.Turtle(4, Math.PI / 1.75, chord, chord);
-                lsys.generate(4);
+                lsys.generate(parameters.gk_Iterations);
                 lsys.write_score(t);
                 csound.message("Finding size of score...\n");
                 lsys.score.findScales();
@@ -176,8 +176,8 @@
                 lsys.score.setScale(3, 1, 19.125);
                 //lsys.score.setScale(3, 8, 0);
                 //lsys.score.setScale(2, .05, 0);
-                lsys.score.setScale(4, 30, 72);
-                lsys.score.setScale(5, 60, 8);
+                lsys.score.setScale(4, 24, 72);
+                lsys.score.setScale(5, 60, 14);
                 lsys.score.setScale(7, 0, 1);
                 lsys.score.temper(12);
                 csound.message("Conforming to chords...\n");
@@ -890,13 +890,14 @@
         function create_dat_gui_hook() {
             csound_message_callback("create_dat_gui_hook...\n");
             parameters = {
-                "gk_Duration_factor": 1,
-                "gk_MasterOutput_level": 6.170999897235639,
-                "gk_Shimmer_wetDry": 0.46963313123008943,
-                "gk_Shimmer_feedback": 0.3,
+                "gk_Duration_factor": 0.8682696259761612,
+                "gk_Iterations": 4,
+                "gk_MasterOutput_level": -2.383888203863542,
+                "gk_Shimmer_wetDry": 0.06843403205918619,
+                "gk_Shimmer_feedback": 0.10131524866420058,
                 "gk_Shimmer_diffusion": 0.14736409413215498,
-                "gk_Shimmer_size": 0.8510944404480526,
-                "gk_Shimmer_modRate": 0.38,
+                "gk_Shimmer_size": 0.4432799013563502,
+                "gk_Shimmer_modRate": 0.9167694204685574,
                 "gk_Shimmer_modDepth": 0.009248792518754496,
                 "gk_Shimmer_reverbMode": 0.275,
                 "gk_Shimmer_program": 2.073160706946157,
@@ -959,8 +960,9 @@
             var dat_gui = document.getElementById('menu_item_dat_gui');
             dat_gui.appendChild(gui.domElement);
             var Master = gui.addFolder('Master');
-            add_slider(Master, 'gk_Duration_factor', 0., 5.);
             add_slider(Master, 'gk_MasterOutput_level', -50, 50);
+            add_slider(Master, 'gk_Iterations', 2., 9., 1.);
+            add_slider(Master, 'gk_Duration_factor', 0., 5.);
             add_slider(Master, 'gk_Shimmer_wetDry', 0., 1.);
             //add_slider(Master, 'gk_Shimmer_shift', 0., 1.);
             add_slider(Master, 'gk_Shimmer_feedback', 0., 1.);
@@ -1080,11 +1082,11 @@
             }
         }
 
-        var add_slider = function (gui_folder, token, minimum, maximum, name) {
+        var add_slider = function (gui_folder, token, minimum, maximum, step) {
             var on_parameter_change = function (value) {
                 gk_update(token, value);
             };
-            gui_folder.add(parameters, token, minimum, maximum).listen().onChange(on_parameter_change);
+            gui_folder.add(parameters, token, minimum, maximum, step).listen().onChange(on_parameter_change);
         };
 
         window.addEventListener("unload", function (event) {
@@ -3352,7 +3354,7 @@ vst3info gi_Valhalla
             csound_message_callback("Csound is playing...\n");
         }
 
-        window.onload = async function() {
+        window.onload = async function () {
             let csound = await get_csound(csound_message_callback);
             if (non_csound(csound)) {
                 return;
