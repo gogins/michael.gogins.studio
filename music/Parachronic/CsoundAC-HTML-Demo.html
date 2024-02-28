@@ -47,7 +47,8 @@ let csound_score;
 let piano_roll = new PianoRoll();
 let canvas = document.getElementById("canvas");
 let soundfile_name = "CsoundAC-HTML-Demo.wav";
-(async function() { CsoundAC =  await createCsoundAC(); CsoundAC.hello(); }());
+(async function() { 
+CsoundAC =  await createCsoundAC(); CsoundAC.hello(); }());
 window.onerror = function (message, url, line) {
   csound.message(message + '\n' + url + '\n' + line + '\n');
   console.trace();
@@ -55,6 +56,7 @@ window.onerror = function (message, url, line) {
 var generate = function() {
   csound.message("generate()...\n");
   try {
+    CsoundAC
     score_model = new CsoundAC.ScoreModel();
     score_model.setAuthor("Michael Gogins");
     score_model.setYear("2020");

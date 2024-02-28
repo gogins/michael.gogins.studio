@@ -67,14 +67,68 @@
 % Should be 150 to 350 words.
 \begin{abstract}
 The advent of the World Wide Web, the standardization of HTML with adequate support for computer graphics and audio, and the introduction 
-of WebAssembly have combined to create an environment suited to the \emph{online} production, publication, and presentation of art music, visual music, and 
-related media at a professional standard of technical quality. A piece of music on the World Wide Web no longer need be merely 
-a link to a downloadable soundfile or video, or even to an audio or visual stream. A piece can, indeed, be its own ``app" that is live code running in the listener's Web browser. I call this kind of music \emph{cloud music} because it exists only in the ``cloud,'' the omnipresent computing infrastructure of the Internet. I argue that this offers an entirely new environment for music that may, in the future, develop its own social context and function as an alternative means of disseminating art music in addition to live performances, discs, streams, and downloads. Here, I present and demonstrate \emph{cloud-5}, a collection of 
-libraries and templates for producing cloud music including, among other things, fixed medium music, music that plays indefinitely, visuals that generate music, music that generates visuals, interactive music, and live coding. cloud-5 includes a WebAssembly build of the sound programming language and software synthesis system Csound, a WebAssembly build of the CsoundAC library for algorithmic composition including chords, scales, and voice-leading, the live coding application Strudel, and supporting code for menus, event handlers, GLSL shaders, and more. A cloud-5 piece thus exists as an HTML file that embeds Csound code and/or GLSL code and/or score generation code and/or Strudel code, in the context of a static Web site that can be served either locally (for composing and performing) or remotely on the World Wide Web (for publication).
+of WebAssembly as a low-level language and browser-hosted runtime for any number of computer language compilers, have combined to create an environment well suited to the \emph{online} production, publication, and presentation of art music, visual music, and 
+related media at a \emph{professional} standard of technical quality. A piece of music on the World Wide Web no longer need be merely 
+a link to a downloadable soundfile or video, or even to an audio or visual stream. A piece can, indeed, be its own ``app" that is live code running at near native speed  in the listener's Web browser. I call this kind of music \emph{cloud music} because it exists only in the ``cloud,'' the omnipresent computing infrastructure of the Web. I argue that this creates an entirely new environment for music that may, in the future, develop its own social context and function as an alternative means of disseminating art music in addition to live performances, discs, streams, and downloads. Here, I present and demonstrate \emph{cloud-5}, a collection of Web components for producing cloud music including, among other things, fixed medium music, music that plays indefinitely, visuals that generate music, music that generates visuals, interactive music, and live coding. cloud-5 includes a WebAssembly build of the sound programming language and software synthesis system Csound, a WebAssembly build of the CsoundAC library for algorithmic composition including chords, scales, and voice-leading, the live coding system Strudel, and supporting code for menus, event handlers, GLSL shaders, and more. A cloud-5 piece thus exists as an HTML page that embeds Csound code and/or score generation code and/or Strudel code and/or GLSL code, in the context of a static Web site that can be served either locally (for composing and performing) or remotely on the World Wide Web (for publication).
 \keywords{html5, webassembly, csound, algorithmic composition, visual music, live coding}
 \end{abstract}
 
 \section{Introduction}
+
+The World Wide Web was invented for the purpose of publishing scientific information by any scientist, to any scientist. It was then co-opted by American business interests for the purpose of selling to consumers. Along the way, it became a conduit for the wholesale theft of intellectual property in the form of illegal downloads of recorded music, films, and computer games. Then it became the major platform for social media, another (disguised) form of selling to consumers while taking their personal data. Indeed, most people's use of the Web has been increasingly funneled through Google search and various social media platforms, which are highly proprietary and far from open. Yet, at every step along this tortuous path, the original inventions that created the World Wide Web, including packet-switched networking (especially TCP/IP) and the Web browser itself, based on  Web standards (including HTTP, URLs, HTML, MIME types, JavaScript, and now WebAssembly), have remained non-proprietary, decentralized, backwards compatible, and more or less open. In fact, driven by both entrepreneurship and competitive pressures to show more appealing ads, the power of Web browsers has increased to the point of providing the equivalent of a game engine and an operating system, running only about 1.5 to 2.5  times as slowly as native C code.
+
+I would go so far as to say that the establishment of Web standards is one of the most fortunate things that has ever happened, because it preserves essential freedoms in face of a rather remarkable level of skilled greed (I remain wary, however, that private interests will end up hijacking these standards and manipulating them to be less open).
+
+Now to music. Music now has, in spite of everything, thanks to Web standards and the growing capabilities of browsers, a new platform that provides both novel power to composers and novel availability to audiences. This is what I call \emph{cloud music}: computer music that runs in Web browsers. Not downloads, not streams, but autonomous programs that synthesize music and visuals in real time with the option of interacting with the audience, performing endlessly, producing endless variations, and communicating across the world. Such music can be free, or secured for paid subscriptions, or supported by advertising.
+
+For examples of cloud music, one may look to online computer games with procedural audio, the Strudel live coding system, or my own compositions produced using the subject of this paper, cloud-5.
+
+\section{Use Cases and Examples}
+
+\begin{description}
+\item[Composition] The cloud-5 system is useful for the composition of electroacoustic music because it contains very powerful facilities. These include all the astonishing capabilities already built into every standard Web browser, a complete WebAssembly build of Csound, a complete WebAssembly build of my CsoundAC algorithmic composition library, the complete Strudel live coding system which can render audio using either Csound or its own built-in sampler and synthesizer, and any other module that will run in a Web browser. All of these facilities are completely cross-platform. That makes cloud-5 far and away the easiest computer music system of comparable power to install and configure: unzip it somewhere and run a local Web server in that directory.
+\item[Fixed Pieces] These are similar to fixed medium pieces of electroacoustic music. When the user starts the piece, it plays audio until the score ends. \item[Always-On Pieces] Similar to fixed pieces; but once started, always-on pieces play indefinitely. By using randomization or fractals, always-on pieces can play indefinitely without any repetition.
+\item[Interactive Pieces] Similar to fixed pieces or always-on pieces; but once the piece is started, the user interface provides controls with which the user may steer some aspects of the composition or rendering.
+\item[Live Coding] Similar to interactive pieces; but the user has \emph{complete} control over the composition in the Strudel REPL, and can create entirely new compositions or engage in lengthy improvisations.
+\item[Music Visualization] Similar to the other pieces above, but a GLSL shader displays a visualization controlled by the audio on the background of the piece, and this visualization can be made full screen.
+\item[Visual Music] Similar to music visualization, but the video buffer is periodically downsampled or otherwise processed to produce a fragment of a Csound score, which is rendered by Csound in real time.
+\item[Network Pieces] Any of these types of pieces can request additional resources from the Internet, or be controlled remotely.
+\end{description}
+
+\section{Basic Design}
+
+The cloud-5 user interface consists of main menu runs across the top of the page. Clicking on a button start or stop performance, or show an overlay that fills the rest of the page. 
+
+The cloud5-system is constructed as a library of Web components in the form of HTML custom elements, which encapsulate code and even styling within each HTML element. This makes it much easier for users not familiar with the details of HTML or JavaScript to write cloud-5 pieces. The user includes these custom elements in the HTML code like any other elements, adds user-defined code such as a Csound orchestra or Strudel patch, and hooks the elements up together using a little JavaScript.
+
+\subsection{Components}
+
+Currently, cloud-5 consists of the following custom elements and user-defined code:
+
+\begin{description}
+\item[\texttt{<cloud5-piece>}] This custom element defines the main menu of the piece and its event handlers, instantiates Csound and/or Strudel as required, starts and stops performances, hosts the controls submenu, and contains some helper code.
+\item[Csound Orchestra] This is user-defined code as a multi-line JavaScript string, defined in a \texttt{<script>} element of the piece, that contains the complete text of a Csound .csd file (which can be quite large). This variable must be assigned to the \texttt{csound\_patch} property of the \texttt{<cloud5-piece>} element.
+\item[Score Generator] This is user-defined code as a JavaScript function, defined in a \texttt{<script>} element of the piece, that will be called at the start of performance to generate a CsoudAC score that will be performed by Csound. This function must be assigned to the \texttt{score\_generator\_hook} property of the \texttt{<cloud5-piece>} element.
+\item[\texttt{<cloud5-piano-roll>}] This custom element is an overlay that draws a three-dimensional piano roll display of a generated CsoundAC Score. During performance, the piano roll shows the current position in the Score with a moving ball. It is possible to zoom in and out of the piano roll, drag it around, rotate it, and so on.
+\item[\texttt{<cloud5-strudel>}] This custom element is an overlay that shows the Strudel REPL, in which the user can do live coding of the Strudel patch during performance. The Strudel REPL has its own real-time piano roll score, and outlines the currently active functions in the patch.
+\item[Strudel Patch] This is user-defined code as a multi-line JavaScript string, defined in a \texttt{<script>} element of the piece, that contains a complete Strudel patch to be performed by the piece. This variable must be assigned to the \texttt{strudel\_patch} property of the \texttt{<cloud5-strudel>} element.
+\item[\texttt{<cloud5-shader>}] This  custom element is an overlay that shows a canvas displaying a GLSL shader. This shader can be used either to visualize audio, or to produce notes for Csound to perform.
+\item[Fragment Shader] This is user-defined code as a multi-line JavaScript string, defined in a \texttt{<script>} element of the piece, that contains the complete code of a GLSL fragment shader (which can be quite large). This variable must be assigned to the \texttt{fragment\_patch} property of the \texttt{<cloud5-shader>} element.
+\item[Shader Sampler] This is user-defined code as a JavaScript function, defined in a \texttt{<script>} element of the piece, that will be called on a timer interval to downsample the video buffer and translate it to a fragment of a Csound score to be played in real time. This function must be assigned to the \texttt{shader\_sampler\_hook} property of the \texttt{<cloud5-shader>} element.
+\item[Audio Visualizer] This user-defined code as a JavaScript function, defined in a \texttt{<script>} element of the piece, that will be called on a timer interval to make an FFT analysis of the current audio buffer, and to translate this analysis to uniform variables that will be sent to the shader and that should control the appearance of the visuals. This function must be assigned to the \texttt{audio\_visualizer\_hook} property of the \texttt{<cloud5-shader>} element.
+\item[\texttt{<cloud5-log>}] This custom element is an overlay that presents a scrolling list of runtime messages from Csound and/or other sources.
+\item[\texttt{<cloud5-about>}] This custom element is an overlay that presents license information, authorship, credits, program notes, and so on.
+\end{description}
+
+\section{Best Practices}
+
+The cloud-5 system is designed for making permanent works of music -- pieces that will always play, even in the far future (assuming that the Web standards continue to be versionless and backwards-compatible, as they have been for 35 years). In other words, cloud-5 is not at all a general purpose Web development system, and therefore pieces should not be developed in the standard way.
+
+\begin{itemize}
+\item Use only local, static resources (e.g., do not use content distribution networks, but rather download all required scripts, etc., to the Web directory). This ensures pieces will continue to function indefinitely, and will not break due to library API changes or missing links.
+\item Use no tooling (e.g. no rollups); edit pieces directly in the Web directory. This ensures that pieces will not break due to tooling changes, and will be easy to debug.
+\item As far as possible, keep all components and resources of a piece in one HTML file, e.g. embed Csound orchestras and Strudel patches in the HTML code.
+\end{itemize}
 
 This is a \LaTeX{} template to be used, together with the included Springer
 class file \texttt{llncs.cls}, for the preparation of manuscripts for the
