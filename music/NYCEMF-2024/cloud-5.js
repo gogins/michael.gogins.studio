@@ -3,9 +3,9 @@
  * is defined in the body of the HTML, its DOM object can be obtained, and 
  * then not only DOM methods but also custom methods can be called.
  * 
- * In general, rather than require users to subclass these custom elements, 
- * although that is possible, users will define and set hook functions, code 
- * text, and object properties.
+ * In general, rather than subclassing these custom elements  (although that 
+ * is possible), users should define and set hook functions, code text, and 
+ * other properties of the custom elements.
  * 
  * To simplify both usage and maintenance, internal styles are usually not 
  * used.
@@ -13,7 +13,8 @@
  * Usage:
  * 1. Include the csound-5.js script in the Web page.
  * 2. Lay out and style the required custom elements as with any other HTNL 
- *    elements.
+ *    elements. The w3.css is used internally and should also be used 
+ *    externally.
  * 3. In a script element of the Web page:
  *    a. Define hook functions and code text as JavaScript variables.
  *    b. Obtain DOM objects from custom elements.
@@ -30,11 +31,28 @@ class Cloud5Piece extends HTMLElement {
     super();
     this.csound = null;
     /**
-     * May be assigned the text of a Csound .csd patch. If so, Csound will be 
-     * instantiated, and the Csound patch will be compiled and run for every 
-     * performance. If the patch is null, then Csound will not be used.
+     * May be assigned the text of a Csound .csd patch. If so, the Csound 
+     * patch will be compiled and run for every performance. If the patch is 
+     * null, then Csound will not be used.
      */
     this.csound_patch = null;
+    /**
+     * May be assigned a JavaScript object consisting of Csound control 
+     * parameters, with default values. The naming convention must be global 
+     * Csound variable type, underscore{ , Csound instrument name}, 
+     * underscore, Csound control channel name. For example:
+     * 
+     * control_parameters = {
+     *  "gk_Duration_factor": 0.8682696259761612,
+     *  "gk_Iterations": 4,
+     *  "gk_MasterOutput_level": -2.383888203863542,
+     *  "gk_Shimmer_wetDry": 0.06843403205918619
+     * };
+     *
+     * The Csound orchestra should define matching control channels. Such 
+     * parameters may also be used to control other processes.
+     */
+    this.control_parameters = null;
     /**
      * May be assigned a score generating function. If so, the score generator 
      * will be called for each performance, and must generate and return a 
@@ -71,6 +89,23 @@ class Cloud5Piece extends HTMLElement {
      * piece.
      */
     this.about_overlay = null;
+    /**
+     * Metadata to be written to output files.
+     */
+    this.metadata = {
+      "artist": null,
+      "copyright": null,
+      "performer": null,
+      "title": null,
+      "album": null,
+      "track": null,
+      "tracknumber": null,
+      "date": null,
+      "publisher": null,
+      "comment": null,
+      "license": null,
+      "genre": null,
+    };
   }
   /**
     * Called by the browser whenever this element is added to the 
@@ -91,7 +126,7 @@ class Cloud5Piece extends HTMLElement {
         <li id="menu_item_strudel" class="w3-btn w3-hover-text-light-green">Strudel</li>
         <li id="menu_item_score" title="Show/hide piano roll score" class="w3-btn w3-hover-text-light-green">Score
         </li>
-        <li id="menu_item_console" title="Show/hide message console" class="w3-btn w3-hover-text-light-green">Log
+        <li id="menu_item_log" title="Show/hide message console" class="w3-btn w3-hover-text-light-green">Log
         </li>
         <li id="menu_item_about" title="Show/hide information about this piece"
             class="w3-btn w3-hover-text-light-green">About</li>
@@ -103,237 +138,21 @@ class Cloud5Piece extends HTMLElement {
             class="w3-btn w3-left-align w3-hover-text-light-green w3-right"></li>
     </ul>
 </div>`;
-    let menu_item_about = shadowRoot.querySelector('#menu_item_about');
+    // Save `this` for use in async "member functions."
     let host = this;
-    menu_item_about.onclick = function (event) {
-      console.log("menu_item_about click...");
-      if (host.about_overlay.checkVisibility() == true) {
-        host.about_overlay.style.display = 'none';
-      } else {
-        host.about_overlay.style.display = '';
-      }
-    };
-    menu_item_score.onclick = function (event) {
-      console.log("menu_item_score click...");
-      if (host.piano_roll_overlay.checkVisibility() == true) {
-        host.piano_roll_overlay.style.display = 'none';
-      } else {
-        host.piano_roll_overlay.style.display = '';
-      }
-    };
-  }
-  /**
-   * Called by the browser whenever this element is removed from the document.
-   */
-  disconnectedCallback() {
-  }
-  /**
-   * Returns an array of attribute names to monitor for changes. As the other 
-   * custom elements are not plain old data, they are properties but not 
-   * attributes and so are not observed.
-   */
-  static get observedAttributes() {
-    return [];
-  }
-  /**
-   * Called by the browser when one of the observed attributes has changed.
-   */
-  attributeChangedCallback(name, oldValue, newValue) {
-  }
-}
-customElements.define("cloud5-piece", Cloud5Piece);
-
-/**
- * Displays a CsoundAC Score as a 3-dimensional piano roll.
- */
-class Cloud5PianoRoll extends HTMLElement {
-  constructor() {
-    super();
-    this.silencio_score = new Silencio.Score();
-    this.csoundac_score = null;
-    this.canvas = null;
-  }
-  /**
-    * Called by the browser whenever this element is added to the document.
-    */
-  connectedCallback() {
-    let shadowRoot = this.attachShadow({ mode: "open" });
-    this.canvas = new HTMLCanvasElement();
-    shadowRoot.addChild(this.canvas);
-    if (this.csoundac_score !== null) {
-      this.draw(this.csoundac_score);
-    }
-  }
-  /**
-   * Called by the browser whenever this element is removed from the document.
-   */
-  disconnectedCallback() {
-  }
-  /**
-   * Returns an array of attribute names to monitor for changes. As the other 
-   * custom elements are not plain old data, they are properties but not 
-   * attributes and so are not observed.
-   */
-  static get observedAttributes() {
-    return [];
-  }
-  /**
-   * Called by the browser when one of the observed attributes has changed.
-   */
-  attributeChangedCallback(name, oldValue, newValue) {
-  }
-  draw(csoundac_score_) {
-    this.csoundac_score = csoundac_score_;
-    this.silencio_score.copyCsoundAcScore(this.csoundac_score);
-    this.silencio_score.draw3D(this.canvas);
-  }
-}
-customElements.define("cloud5-piano-roll", Cloud5PianoRoll);
-
-/**
- * Contains an instance of the Strudel that can use Csound as an output,
- * and starts and stops along wth Csound.
- */
-class Cloud5Strudel extends HTMLElement {
-  constructor() {
-    super();
-    /**
-     * May be assigned the text of a Strudel patch. If so, the Strudel REPL 
-     * will be instantiated, the Strudel button will be 
-     * created for showing and hiding the Strudel REPL, and Strudel will be 
-     * stopped and started at the same time as Csound.
-     */
-    this.strudel_patch = null;
-  }
-  /**
-    * Called by the browser whenever this element is added to the document.
-    */
-  connectedCallback() {
-    this.class = "w3-container cloud5-overlay";
-  }
-  /**
-   * Called by the browser whenever this element is removed from the document.
-   */
-  disconnectedCallback() {
-  }
-  /**
-   * Returns an array of attribute names to monitor for changes. As the other 
-   * custom elements are not plain old data, they are properties but not 
-   * attributes and so are not observed.
-   */
-  static get observedAttributes() {
-    return [];
-  }
-  /**
-   * Called by the browser when one of the observed attributes has changed.
-   */
-  attributeChangedCallback(name, oldValue, newValue) {
-  }
-}
-customElements.define("cloud5-strudel", Cloud5Strudel);
-
-/**
- * Presents visuals generated by a GLSL shader. These visuals can 
- * show a visualization of the music, or be sampled to generate notes for 
- * Csound to perform.
- */
-class Cloud5Shader extends HTMLElement {
-  constructor() {
-    super();
-    /**
-     * The user may define a vertex shader in GLSL code for generating 
-     * visuals, and assign a string containing the code to this property.
-     */
-    this.fragment_shader = null;
-    /**
-     * This is GLSL code for a default vertex shader; the user may define a 
-     * different vertex shader and assign it to this property.
-     */
-    this.vertex_shader = `>#version 300 es
-    in vec2 inPos;
-    void main() {
-        gl_Position = vec4(inPos.xy, 0.0, 1.0);
-    }`;
-    /**
-     * The user may define a function that will be called at intervals to 
-     * receive a real-time FFT analysis of the audio; the function should 
-     * downsample and/or otherwise process the analysis to generate CsoundAC 
-     * Notes, which must be returned in a CsoundAC Score. The user-defined 
-     * function must be assigned to this property.
-     */
-    this.shader_sampler_hook = null;
-    /**
-     * The user may define a function that will be called at intervals to 
-     * receive pending Notes of the performance; the function should use these 
-     * to compute GLSL uniforms that will in some way control the appearance 
-     * and behavior of the shader visuals. The user-defined function must be 
-     */
-    this.audio_visualizer_hook = null;
-  }
-  /**
-    * Called by the browser whenever this element is added to the document.
-    */
-  connectedCallback() {
-    this.class = "w3-container cloud5-overlay";
-  }
-  /**
-   * Called by the browser whenever this element is removed from the document.
-   */
-  disconnectedCallback() {
-  }
-  /**
-   * Returns an array of attribute names to monitor for changes. As the other 
-   * custom elements are not plain old data, they are properties but not 
-   * attributes and so are not observed.
-   */
-  static get observedAttributes() {
-    return [];
-  }
-  /**
-   * Called by the browser when one of the observed attributes has changed.
-   */
-  attributeChangedCallback(name, oldValue, newValue) {
-  }
-}
-customElements.define("cloud5-shader", Cloud5Shader);
-
-/**
- * Displays a scrolling list of runtime messages from Csound and/or other 
- * sources.
- */
-class Cloud5Log extends HTMLElement {
-  constructor() {
-    super();
-    this.csound5_piece = null;
-  }
-  /**
-    * Called by the browser whenever this element is added to the document.
-    */
-  connectedCallback() {
-    let shadowRoot = this.attachShadow({ mode: "open" });
-    this.csound = this.csound5_piece3.csound;
-    this.div = new HTMLDivElement();
-    this.div.id = "console_view";
-    shadowRoot.addChild(this.div);
-    this.message_callback_buffer = "";
-    this.console_editor = ace.edit("console_view");
-    //console_editor.setTheme("ace/theme/gob");
-    this.console_editor.setReadOnly(true);
-    this.console_editor.setShowPrintMargin(false);
-    this.console_editor.setDisplayIndentGuides(false);
-    this.console_editor.renderer.setOption("showGutter", false);
-    this.console_editor.renderer.setOption("showLineNumbers", true);
-
-    var csound_message_callback = async function (message) {
+    this.vu_meter_left = document.querySelector("#vu_mter_left");
+    this.vu_meter_right = document.querySelector("#vu_mter_right");
+    this.mini_console = document.querySelector("#mini_console");
+    this.csound_message_callback = async function (message) {
       if (message === null) {
         return;
       }
       let level_left = -100;
       let level_right = -100;
-      if (non_csound(csound) == false) {
-        score_time = await csound.GetScoreTime();
-        level_left = await csound.GetControlChannel("gk_MasterOutput_output_level_left");
-        level_right = await csound.GetControlChannel("gk_MasterOutput_output_level_right");
+      if (non_csound(host.csound) == false) {
+        score_time = await host.csound.GetScoreTime();
+        level_left = await host.csound.GetControlChannel("gk_MasterOutput_output_level_left");
+        level_right = await host.csound.GetControlChannel("gk_MasterOutput_output_level_right");
         let delta = score_time;
         // calculate (and subtract) whole days
         let days = Math.floor(delta / 86400);
@@ -364,57 +183,316 @@ class Cloud5Log extends HTMLElement {
         $("#vu_meter_left").html(sprintf("L%+7.1f dBA", level_right));
         $("#vu_meter_right").html(sprintf("R%+7.1f dBA", level_right));
       };
-      // Split in case the newline is in the middle of the message but 
-      // not at the end?
-      message_callback_buffer = message_callback_buffer + message;
-      if (message_callback_buffer.endsWith("\n")) {
-        console.log(message_callback_buffer);
-        let lines = console_editor.getSession().getLength();
-        // Prevent the console editor from hogging memory.
-        if (lines > 5000) {
-          console_editor.getSession().removeFullLines(0, 2500);
-          lines = console_editor.getSession().getLength();
-        }
-        console_editor.moveCursorTo(lines, 0);
-        console_editor.scrollToLine(lines);
-        console_editor.insert(message_callback_buffer);
-        message_callback_buffer = "";
-      };
+      host.log_overlay.log(message);
+    }
+    const csound_message_callback_closure = function(message) {
+      host.csound_message_callback(message);
+    }
+    get_csound(csound_message_callback_closure);
+    let menu_item_play = shadowRoot.querySelector('#menu_item_play');
+    menu_item_play.onclick = function (event) {
+      console.log("menu_item_play click...");
+      host.show(host.piano_roll_overlay)
+      host.hide(host.strudel_overlay);
+      host.hide(host.shader_overlay);
+      // host.hide(host.log_overlay);
+      host.hide(host.about_overlay);
+      host.render(false);
     };
-
-    var interval_id = null;
-
-    var trackScoreTime = function () {
+    let menu_item_render = shadowRoot.querySelector('#menu_item_render');
+    menu_item_render.onclick = function (event) {
+      console.log("menu_item_render click...");
+      host.show(host.piano_roll_overlay)
+      host.hide(host.strudel_overlay);
+      host.hide(host.shader_overlay);
+      // host.hide(host.log_overlay);
+      host.hide(host.about_overlay);
+      host.render(true);
+    };
+    let menu_item_stop = shadowRoot.querySelector('#menu_item_stop');
+    menu_item_stop.onclick = function (event) {
+      console.log("menu_item_stop click...");
+      host.stop();
+    };
+    let menu_item_fullscreen = shadowRoot.querySelector('#menu_item_fullscreen');
+    menu_item_fullscreen.onclick = function (event) {
+      console.log("menu_item_fullscreen click...");
+    };
+    let menu_item_strudel = shadowRoot.querySelector('#menu_item_strudel');
+    menu_item_strudel.onclick = function (event) {
+      console.log("menu_item_strudel click...");
+      host.hide(host.piano_roll_overlay)
+      host.show(host.strudel_overlay);
+      // host.hide(host.shader_overlay);
+      // host.hide(host.log_overlay);
+      host.hide(host.about_overlay);
+    };
+    let menu_item_score = shadowRoot.querySelector('#menu_item_score');
+    menu_item_score.onclick = function (event) {
+      console.log("menu_item_score click...");
+      host.show(host.piano_roll_overlay)
+      host.hide(host.strudel_overlay);
+      host.hide(host.shader_overlay);
+      // host.hide(host.log_overlay);
+      host.hide(host.about_overlay);
+    };
+    let menu_item_log = shadowRoot.querySelector('#menu_item_log');
+    menu_item_log.onclick = function (event) {
+      console.log("menu_item_log click...");
+      //host.show(host.piano_roll_overlay)
+      host.hide(host.strudel_overlay);
+      //host.hide(host.shader_overlay);
+      host.show(host.log_overlay);
+      host.hide(host.about_overlay);
+    };
+    let menu_item_about = shadowRoot.querySelector('#menu_item_about');
+    menu_item_about.onclick = function (event) {
+      console.log("menu_item_about click...");
+      //host.hide(host.piano_roll_overlay)
+      //host.hide(host.strudel_overlay);
+      //host.hide(host.shader_overlay);
+      //host.hide(host.log_overlay);
+      host.toggle(host.about_overlay);
+    };
+    // Polyfill to make 'render' behave like an async member function.
+    this.render = async function (is_offline) {
+      host.csound = await get_csound(host.csound_message_callback);
       if (non_csound(csound)) {
         return;
       }
-      var score_time = csound.getScoreTime();
-      interval_id = setTimeout(trackScoreTime, 200);
-      silencio_score.progress3D(score_time);
-    };
+      for (const key in host.metadata) {
+        const value = host.metadata[key];
+        if (value !== null) {
+          host.csound.setMetadata(key, value);
+        }
+      }
+      let csound_score = score.getCsoundScore(12., false);
+      csound_score = csound_score.concat("\n</CsScore>");
+      csd = host.csound_patch.replace("</CsScore>", csound_score);
+      host.log_overlay.clear();
+      if (is_realtime == false) {
+        csd = csd.replace("-odac", "-o" + document.title + ".wav");
+      }
+      // Save the .csd file so we can debug a failing orchestra,
+      // instead of it just nullifying Csound.        
+      const csd_filename = document.title + '-generated.csd';
+      write_file(csd_filename, csd);
+      let result = await host.csound.CompileCsdText(csd);
+      host.csound_message_callback("CompileCsdText returned: " + result + "\n");
+      await host.csound.Start();
+      // Send _current_ dat.gui parameter values to Csound 
+      // before actually performing.
+      host.send_parameters(host.parameters);
+      host.csound_message_callback("Csound has started...\n");
+      if (is_realtime == true) {
+        await host.csound.Perform();
+      } else {
+        // Returns before finishing because Csound will perform in a separate 
+        // thread.
+        await host.csound.performAndPostProcess();
+      }
+      host.piano_roll_overlay.trackScoreTime();
+      host.csound_message_callback("Csound is playing...\n");
+    }
+    this.stop = async function () {
+      await host.clearInterval(host.interval_id);
+      await host.csound.Stop();
+      await host.csound.Cleanup();
+      host.csound.Reset();
+      host.csound_message_callback("Csound has stopped.\n");
+    }
+  }
+  show(overlay) {
+    if (overlay) {
+      overlay.style.display = '';
+    }
+  }
+  hide(overlay) {
+    if (overlay) {
+      overlay.style.display = 'none';
+    }
+  }
+  toggle(overlay) {
+    if (overlay) {
+      if (overlay.checkVisibility() == true) {
+        this.hide(overlay);
+      } else {
+        this.show(overlay);
+      }
+    }
+  }
+}
+customElements.define("cloud5-piece", Cloud5Piece);
+
+/**
+ * Displays a CsoundAC Score as a 3-dimensional piano roll.
+ */
+class Cloud5PianoRoll extends HTMLElement {
+  constructor() {
+    super();
+    this.csound5_piece = null;
+    this.silencio_score = new Silencio.Score();
+    this.csoundac_score = null;
+    this.canvas = null;
+    this.interval_id = null;
   }
   /**
-   * Called by the browser whenever this element is removed from the document.
-   */
-  disconnectedCallback() {
+    * Called by the browser whenever this element is added to the document.
+    */
+  connectedCallback() {
+    let shadowRoot = this.attachShadow({ mode: "open" });
+    this.canvas = document.createElement('canvas');
+    shadowRoot.appendChild(this.canvas);
+    if (this.csoundac_score !== null) {
+      this.draw(this.csoundac_score);
+    }
+  }
+  draw(csoundac_score_) {
+    this.csoundac_score = csoundac_score_;
+    this.silencio_score.copyCsoundAcScore(this.csoundac_score);
+    this.silencio_score.draw3D(this.canvas);
+  }
+  trackScoreTime() {
+    if (non_csound(this.csound5_piece.csound)) {
+      return;
+    }
+    let score_time = this.csound5_piece.csound.getScoreTime();
+    interval_id = setTimeout(trackScoreTime, 200);
+    this.silencio_score.progress3D(score_time);
+  };
+}
+customElements.define("cloud5-piano-roll", Cloud5PianoRoll);
+
+/**
+ * Contains an instance of the Strudel that can use Csound as an output,
+ * and starts and stops along wth Csound.
+ */
+class Cloud5Strudel extends HTMLElement {
+  constructor() {
+    super();
+    /**
+     * May be assigned the text of a Strudel patch. If so, the Strudel REPL 
+     * will be instantiated, the Strudel button will be 
+     * created for showing and hiding the Strudel REPL, and Strudel will be 
+     * stopped and started at the same time as Csound.
+     */
+    this.strudel_patch = null;
   }
   /**
-   * Returns an array of attribute names to monitor for changes. As the other 
-   * custom elements are not plain old data, they are properties but not 
-   * attributes and so are not observed.
-   */
-  static get observedAttributes() {
-    return [];
+    * Called by the browser whenever this element is added to the document.
+    */
+  connectedCallback() {
+    let shadowRoot = this.attachShadow({ mode: "open" });
   }
-  /**
-   * Called by the browser when one of the observed attributes has changed.
-   */
-  attributeChangedCallback(name, oldValue, newValue) {
+  start() {
+
   }
-  log(text) {
+  stop() {
 
   }
 }
+customElements.define("cloud5-strudel", Cloud5Strudel);
+
+/**
+ * Presents visuals generated by a GLSL shader. These visuals can 
+ * show a visualization of the music, or be sampled to generate notes for 
+ * Csound to perform.
+ */
+class Cloud5Shader extends HTMLElement {
+  constructor() {
+    super();
+    /**
+     * The user may define a vertex shader in GLSL code for generating 
+     * visuals, and assign a string containing the code to this property.
+     */
+    this.fragment_shader = null;
+    /**
+     * This is GLSL code for a default vertex shader; the user may define a 
+     * different vertex shader and assign it to this property.
+     */
+    this.vertex_shader = `#version 300 es
+    in vec2 inPos;
+    void main() {
+        gl_Position = vec4(inPos.xy, 0.0, 1.0);
+    }`;
+    /**
+     * The user may define a function that will be called at intervals to 
+     * receive a real-time FFT analysis of the audio; the function should 
+     * downsample and/or otherwise process the analysis to generate CsoundAC 
+     * Notes, which must be returned in a CsoundAC Score. The user-defined 
+     * function must be assigned to this property.
+     */
+    this.shader_sampler_hook = null;
+    /**
+     * The user may define a function that will be called at intervals to 
+     * receive an FFT analysis of the performance; the function should use 
+     * these to compute GLSL uniforms that will in some way control the 
+     * appearance and behavior of the shader visuals. The user-defined 
+     * function must be assigned to this property.
+     */
+    this.audio_visualizer_hook = null;
+  }
+  /**
+    * Called by the browser whenever this element is added to the document.
+    */
+  connectedCallback() {
+    let shadowRoot = this.attachShadow({ mode: "open" });
+    this.canvas = document.createElement('canvas');
+    shadowRoot.appendChild(this.canvas);
+  }
+}
+customElements.define("cloud5-shader", Cloud5Shader);
+
+/**
+ * Displays a scrolling list of runtime messages from Csound and/or other 
+ * sources.
+ */
+class Cloud5Log extends HTMLElement {
+  constructor() {
+    super();
+    this.csound5_piece = null;
+  }
+  /**
+    * Called by the browser whenever this element is added to the document.
+    */
+  connectedCallback() {
+    let shadowRoot = this.attachShadow({ mode: "open" });
+    shadowRoot.innerHTML = `<link rel="stylesheet" href="w3.css">`;
+    this.div = document.createElement('div');
+    this.div.id = "console_view";
+    shadowRoot.appendChild(this.div);
+    this.message_callback_buffer = "";
+    this.console_editor = ace.edit(this.div);
+    //console_editor.setTheme("ace/theme/gob");
+    //this.console_editor.setReadOnly(true);
+    this.console_editor.setShowPrintMargin(false);
+    this.console_editor.setDisplayIndentGuides(false);
+    this.console_editor.renderer.setOption("showGutter", false);
+    this.console_editor.renderer.setOption("showLineNumbers", true);
+    this.console_editor.renderer.attachToShadowRoot();
+  };
+  log(message) {
+    // Split in case the newline is in the middle of the message but 
+    // not at the end?
+    this.message_callback_buffer = this.message_callback_buffer + message;
+    if (this.message_callback_buffer.endsWith("\n")) {
+      console.log(this.message_callback_buffer);
+      let lines = this.console_editor.getSession().getLength();
+      // Prevent the console editor from hogging memory.
+      if (lines > 5000) {
+        this.console_editor.getSession().removeFullLines(0, 2500);
+        lines = this.console_editor.getSession().getLength();
+      }
+      this.console_editor.moveCursorTo(lines, 0);
+      this.console_editor.scrollToLine(lines);
+      this.console_editor.insert(this.message_callback_buffer);
+      this.message_callback_buffer = "";
+    };
+  }
+  clear() {
+    this.console_editor.setValue('');
+  }
+};
 customElements.define("cloud5-log", Cloud5Log);
 
 /**
@@ -425,30 +503,133 @@ class Cloud5About extends HTMLElement {
   constructor() {
     super();
   }
-  /**
-    * Called by the browser whenever this element is added to the document.
-    */
-  connectedCallback() {
-  }
-  /**
-   * Called by the browser whenever this element is removed from the document.
-   */
-  disconnectedCallback() {
-  }
-  /**
-   * Returns an array of attribute names to monitor for changes. As the other 
-   * custom elements are not plain old data, they are properties but not 
-   * attributes and so are not observed.
-   */
-  static get observedAttributes() {
-    return [];
-  }
-  /**
-   * Called by the browser when one of the observed attributes has changed.
-   */
-  attributeChangedCallback(name, oldValue, newValue) {
-  }
 }
 customElements.define("cloud5-about", Cloud5About);
 
+/**
+ * The title of the piece is always the basename of the document.
+ */
+document.title = document.location.pathname.replace("/", "").replace(".html", "");
+
+/**
+ * Tries to clear all browser caches upon loading.
+ */
+if ('caches' in window) {
+  caches.keys().then(function (names) {
+    for (let name of names)
+      caches.delete(name);
+    console.log(`deleted ${name} from caches.`);
+  });
+}
+
+/**
+ * Tests if Csound is null or undefined.
+ */
+function non_csound(csound_) {
+  if (typeof csound_ === 'undefined') {
+    console.warn("csound is undefined.");
+    console.trace();
+    return true;
+  }
+  if (csound_ === null) {
+    console.warn("csound is null.");
+    console.trace();
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Replaces the order of instruments in a CsoundAC Score with a new order.
+ * Instrument numbers are re-ordered as if they are integers. The 
+ * new_order parameter is a map, e.g. `{1:5, 3:1, 4:17}`. The map need not 
+ * be complete.
+ */
+function arrange_silencio(score, new_order_) {
+  console.log("arrange: reassigning instrument numbers...")
+  let new_order = new Map(Object.entries(new_order_));
+  // Renumber the insnos in the Score. Fractional parts of old insnos are 
+  // preserved.
+  for (i = 0, n = score.data.length; i < n; ++i) {
+    let event_ = score.data[i];
+    let current_insno = event_.channel;
+    let current_insno_integer = Math.floor(current_insno);
+    let string_key = current_insno_integer.toString();
+    if (new_order.has(string_key)) {
+      let new_insno_integer = new_order.get(string_key);
+      let new_insno_fraction = current_insno - current_insno_integer;
+      let new_insno = new_insno_integer + new_insno_fraction;
+      console.log("renumbered: " + event_.toIStatement());
+      event_.channel = new_insno;
+      score.data[i] = event_;
+      console.log("        to: " + score.data[i].toIStatement());
+    }
+  }
+  console.log("arrange: finished reassigning instrument numbers.\n")
+}
+
+/**
+ * Replaces the order of instruments in a CsoundAC Score with a new order.
+ * Instrument numbers are re-ordered as if they are integers. The 
+ * new_order parameter is a map, e.g. `{1:5, 3:1, 4:17}`. The map need not 
+ * be complete.
+ */
+function arrange(score, new_order_) {
+  console.log("arrange: reassigning instrument numbers...\n")
+  let new_order = new Map(Object.entries(new_order_));
+  // Renumber the insnos in the Score. Fractional parts of old insnos are 
+  // preserved.
+  for (i = 0, n = score.size(); i < n; ++i) {
+    let event_ = score.get(i);
+    let current_insno = event_.getInstrument();
+    let current_insno_integer = Math.floor(current_insno);
+    let string_key = current_insno_integer.toString();
+    if (new_order.has(string_key)) {
+      let new_insno_integer = new_order.get(string_key);
+      let new_insno_fraction = current_insno - current_insno_integer;
+      let new_insno = new_insno_integer + new_insno_fraction;
+      console.log("renumbered: " + event_.toIStatement());
+      event_.setInstrument(new_insno);
+      score.set(i, event_);
+      console.log("        to: " + event_.toIStatement());
+    }
+  }
+  console.log("arrange: finished reassigning instrument numbers.\n")
+}
+
+function write_file(filepath, data) {
+  var fs = require('fs');
+  try {
+    // Sync, so a bad .csd file doesn't blow up Csound 
+    // before the .csd file is written so it can be tested!
+    fs.writeFileSync(filepath, data, function (err) {
+      console.error(err);
+    });
+  } catch (err) {
+    console.warn(err);
+  }
+}
+
+/**
+ * Sends the values of the parameters to the Csound control channels 
+ * with the same names.
+ */
+function send_parameters(parameters_, csound_) {
+  if (non_csound(csound_) == false) {
+    for (const [name, value] of Object.entries(parameters_)) {
+      csound_.Message(name + ": " + value + "\n");
+      csound_.SetControlChannel(name, parseFloat(value));
+    }
+  }
+}
+
+/**
+ * Copies all _current_ dat.gui parameters to the system clipboard in 
+ * JSON format.
+ */
+function copy_parameters(parameters) {
+  const json_text = JSON.stringify(parameters, null, 4);
+  navigator.clipboard.writeText(json_text);
+  console.log("Copied all control parameters to system clipboard.\n")
+}
 

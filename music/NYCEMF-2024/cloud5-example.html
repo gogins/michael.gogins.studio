@@ -146,7 +146,6 @@
                 </a>
         </div>
     </cloud5-about>
-    <!-- <cloud5-controls></cloud5-controls> -->
     <script>
         let cloud5_piece = document.querySelector('cloud5-piece');
         let cloud5_piano_roll = document.querySelector('cloud5-piano-roll');
@@ -154,6 +153,8 @@
         let cloud5_log = document.querySelector('cloud5-log');
         let cloud5_about = document.querySelector('cloud5-about');
         cloud5_piece.about_overlay = cloud5_about;
+        cloud5_about.cloud5_piece = cloud5_piece;
+        cloud5_piece.log_overlay = cloud5_log;
     </script>
 </body>
 
