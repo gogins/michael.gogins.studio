@@ -61,7 +61,7 @@ class Cloud5Piece extends HTMLElement {
      */
     this.score_generator_hook = null;
     /**
-     * May be assigned an instance of a cloud5-pianoroll overlay. If so, then 
+     * May be assigned an instance of a cloud5-piano-roll overlay. If so, then 
      * the Score button will be created for showing and hiding a piano roll 
      * display of the generated CsoundAC Score.
      */
@@ -69,7 +69,7 @@ class Cloud5Piece extends HTMLElement {
     /**
      * May be assigned an instance of a cloud5-shader overlay. If so, 
      * the GLSL shader will run at all times, and will normally create the 
-     * background for all other overlays. The shader overlay may call 
+     * background for other overlays. The shader overlay may call 
      * a hook function either to visualize the audio of the performance, 
      * or to sample the video canvas to generate notes for performance by 
      * Csound.
@@ -126,7 +126,7 @@ class Cloud5Piece extends HTMLElement {
         <li id="menu_item_strudel" class="w3-btn w3-hover-text-light-green">Strudel</li>
         <li id="menu_item_score" title="Show/hide piano roll score" class="w3-btn w3-hover-text-light-green">Score
         </li>
-        <li id="menu_item_log" title="Show/hide message console" class="w3-btn w3-hover-text-light-green">Log
+        <li id="menu_item_log" title="Show/hide message log" class="w3-btn w3-hover-text-light-green">Log
         </li>
         <li id="menu_item_about" title="Show/hide information about this piece"
             class="w3-btn w3-hover-text-light-green">About</li>
@@ -150,7 +150,7 @@ class Cloud5Piece extends HTMLElement {
       let level_left = -100;
       let level_right = -100;
       if (non_csound(host.csound) == false) {
-        score_time = await host.csound.GetScoreTime();
+        let score_time = await host.csound.GetScoreTime();
         level_left = await host.csound.GetControlChannel("gk_MasterOutput_output_level_left");
         level_right = await host.csound.GetControlChannel("gk_MasterOutput_output_level_right");
         let delta = score_time;
@@ -183,9 +183,10 @@ class Cloud5Piece extends HTMLElement {
         $("#vu_meter_left").html(sprintf("L%+7.1f dBA", level_right));
         $("#vu_meter_right").html(sprintf("R%+7.1f dBA", level_right));
       };
-      host.log_overlay.log(message);
+      console.log(message);
+      host.log_overlay?.log(message);
     }
-    const csound_message_callback_closure = function(message) {
+    const csound_message_callback_closure = function (message) {
       host.csound_message_callback(message);
     }
     get_csound(csound_message_callback_closure);
@@ -230,7 +231,7 @@ class Cloud5Piece extends HTMLElement {
     let menu_item_score = shadowRoot.querySelector('#menu_item_score');
     menu_item_score.onclick = function (event) {
       console.log("menu_item_score click...");
-      host.show(host.piano_roll_overlay)
+      host.toggle(host.piano_roll_overlay)
       host.hide(host.strudel_overlay);
       host.hide(host.shader_overlay);
       // host.hide(host.log_overlay);
@@ -242,22 +243,22 @@ class Cloud5Piece extends HTMLElement {
       //host.show(host.piano_roll_overlay)
       host.hide(host.strudel_overlay);
       //host.hide(host.shader_overlay);
-      host.show(host.log_overlay);
+      host.toggle(host.log_overlay);
       host.hide(host.about_overlay);
     };
     let menu_item_about = shadowRoot.querySelector('#menu_item_about');
     menu_item_about.onclick = function (event) {
       console.log("menu_item_about click...");
-      //host.hide(host.piano_roll_overlay)
-      //host.hide(host.strudel_overlay);
-      //host.hide(host.shader_overlay);
-      //host.hide(host.log_overlay);
+      host.hide(host.piano_roll_overlay)
+      host.hide(host.strudel_overlay);
+      host.hide(host.shader_overlay);
+      host.hide(host.log_overlay);
       host.toggle(host.about_overlay);
     };
     // Polyfill to make 'render' behave like an async member function.
     this.render = async function (is_offline) {
       host.csound = await get_csound(host.csound_message_callback);
-      if (non_csound(csound)) {
+      if (non_csound(host.csound)) {
         return;
       }
       for (const key in host.metadata) {
@@ -266,11 +267,12 @@ class Cloud5Piece extends HTMLElement {
           host.csound.setMetadata(key, value);
         }
       }
-      let csound_score = score.getCsoundScore(12., false);
+      let score = await host.score_generator_hook();
+      let csound_score = await score.getCsoundScore(12., false);
       csound_score = csound_score.concat("\n</CsScore>");
-      csd = host.csound_patch.replace("</CsScore>", csound_score);
-      host.log_overlay.clear();
-      if (is_realtime == false) {
+      let csd = host.csound_patch.replace("</CsScore>", csound_score);
+      host?.log_overlay.clear();
+      if (is_offline == true) {
         csd = csd.replace("-odac", "-o" + document.title + ".wav");
       }
       // Save the .csd file so we can debug a failing orchestra,
@@ -282,20 +284,20 @@ class Cloud5Piece extends HTMLElement {
       await host.csound.Start();
       // Send _current_ dat.gui parameter values to Csound 
       // before actually performing.
-      host.send_parameters(host.parameters);
+      host.send_parameters(host.control_parameters);
       host.csound_message_callback("Csound has started...\n");
-      if (is_realtime == true) {
+      if (is_offline == false) {
         await host.csound.Perform();
       } else {
         // Returns before finishing because Csound will perform in a separate 
         // thread.
         await host.csound.performAndPostProcess();
       }
-      host.piano_roll_overlay.trackScoreTime();
-      host.csound_message_callback("Csound is playing...\n");
+      host?.piano_roll_overlay.trackScoreTime();
+      host?.csound_message_callback("Csound is playing...\n");
     }
     this.stop = async function () {
-      await host.clearInterval(host.interval_id);
+      this.piano_roll_overlay?.stop();
       await host.csound.Stop();
       await host.csound.Cleanup();
       host.csound.Reset();
@@ -321,6 +323,18 @@ class Cloud5Piece extends HTMLElement {
       }
     }
   }
+  /**
+   * Sends the values of the parameters to the Csound control channels 
+   * with the same names.
+   */
+  send_parameters(parameters_) {
+    if (non_csound(this.csound) == false) {
+      for (const [name, value] of Object.entries(parameters_)) {
+        this.csound.Message(name + ": " + value + "\n");
+        this.csound.SetControlChannel(name, parseFloat(value));
+      }
+    }
+  }
 }
 customElements.define("cloud5-piece", Cloud5Piece);
 
@@ -341,8 +355,12 @@ class Cloud5PianoRoll extends HTMLElement {
     */
   connectedCallback() {
     let shadowRoot = this.attachShadow({ mode: "open" });
-    this.canvas = document.createElement('canvas');
-    shadowRoot.appendChild(this.canvas);
+    shadowRoot.innerHTML = `<link rel="stylesheet" href="w3.css">
+    <canvas id="display" 
+    class="w3-container" 
+    style="background-color:black;height:100%;margin:0;padding:0;z-index:0;">
+    `;
+    this.canvas = shadowRoot.querySelector('#display');
     if (this.csoundac_score !== null) {
       this.draw(this.csoundac_score);
     }
@@ -353,13 +371,19 @@ class Cloud5PianoRoll extends HTMLElement {
     this.silencio_score.draw3D(this.canvas);
   }
   trackScoreTime() {
-    if (non_csound(this.csound5_piece.csound)) {
-      return;
+    const host = this;
+    const trackScoreTime_ = function () {
+      if (non_csound(this.csound5_piece.csound)) {
+        return;
+      }
+      let score_time = this.csound5_piece.csound.getScoreTime();
+      this.silencio_score.progress3D(score_time);
     }
-    let score_time = this.csound5_piece.csound.getScoreTime();
-    interval_id = setTimeout(trackScoreTime, 200);
-    this.silencio_score.progress3D(score_time);
-  };
+    this.interval_id = setInterval(trackScoreTime_.bind(this), 200);
+  }
+  stop() {
+    clearInterval(this.interval_id);
+  }
 }
 customElements.define("cloud5-piano-roll", Cloud5PianoRoll);
 
@@ -456,20 +480,23 @@ class Cloud5Log extends HTMLElement {
     * Called by the browser whenever this element is added to the document.
     */
   connectedCallback() {
-    let shadowRoot = this.attachShadow({ mode: "open" });
-    shadowRoot.innerHTML = `<link rel="stylesheet" href="w3.css">`;
-    this.div = document.createElement('div');
-    this.div.id = "console_view";
-    shadowRoot.appendChild(this.div);
+    ///let shadowRoot = this.attachShadow({ mode: "open" });
+    ///shadowRoot.innerHTML = `<link rel="stylesheet" href="w3.css">`;
+    this.innerHTML = `<div 
+      id='console_view' 
+      class="w3-text-sand"
+      style="position:absolute;
+      top:60px;
+      z-index:4;width:100vw;height:90vh;background:transparent;margin-left:53px;opacity:60%">`;
     this.message_callback_buffer = "";
-    this.console_editor = ace.edit(this.div);
+    this.console_editor = ace.edit("console_view");
     //console_editor.setTheme("ace/theme/gob");
     //this.console_editor.setReadOnly(true);
     this.console_editor.setShowPrintMargin(false);
     this.console_editor.setDisplayIndentGuides(false);
     this.console_editor.renderer.setOption("showGutter", false);
     this.console_editor.renderer.setOption("showLineNumbers", true);
-    this.console_editor.renderer.attachToShadowRoot();
+    ///this.console_editor.renderer.attachToShadowRoot();
   };
   log(message) {
     // Split in case the newline is in the middle of the message but 
@@ -505,6 +532,14 @@ class Cloud5About extends HTMLElement {
   }
 }
 customElements.define("cloud5-about", Cloud5About);
+
+// A sad workaround....
+try {
+  var fs = require("fs");
+  var __dirname = fs.realpathSync.native(".");
+} catch (e) {
+  console.log(e);
+}
 
 /**
  * The title of the piece is always the basename of the document.
@@ -607,19 +642,6 @@ function write_file(filepath, data) {
     });
   } catch (err) {
     console.warn(err);
-  }
-}
-
-/**
- * Sends the values of the parameters to the Csound control channels 
- * with the same names.
- */
-function send_parameters(parameters_, csound_) {
-  if (non_csound(csound_) == false) {
-    for (const [name, value] of Object.entries(parameters_)) {
-      csound_.Message(name + ": " + value + "\n");
-      csound_.SetControlChannel(name, parseFloat(value));
-    }
   }
 }
 
