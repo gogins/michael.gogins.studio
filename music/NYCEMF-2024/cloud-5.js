@@ -113,8 +113,7 @@ class Cloud5Piece extends HTMLElement {
     * place here.
     */
   connectedCallback() {
-    let shadowRoot = this.attachShadow({ mode: "open" });
-    shadowRoot.innerHTML = `<link rel="stylesheet" href="w3.css">
+    this.innerHTML = `
     <div class="w3-bar" id="main_menu" style="position:fixed;background:transparent;z-index:100;">
     <ul class="menu">
         <li id="menu_item_play" title="Play piece on system audio output" class="w3-btn w3-hover-text-light-green">
@@ -190,7 +189,7 @@ class Cloud5Piece extends HTMLElement {
       host.csound_message_callback(message);
     }
     get_csound(csound_message_callback_closure);
-    let menu_item_play = shadowRoot.querySelector('#menu_item_play');
+    let menu_item_play = document.querySelector('#menu_item_play');
     menu_item_play.onclick = function (event) {
       console.log("menu_item_play click...");
       host.show(host.piano_roll_overlay)
@@ -200,7 +199,7 @@ class Cloud5Piece extends HTMLElement {
       host.hide(host.about_overlay);
       host.render(false);
     };
-    let menu_item_render = shadowRoot.querySelector('#menu_item_render');
+    let menu_item_render = document.querySelector('#menu_item_render');
     menu_item_render.onclick = function (event) {
       console.log("menu_item_render click...");
       host.show(host.piano_roll_overlay)
@@ -210,16 +209,16 @@ class Cloud5Piece extends HTMLElement {
       host.hide(host.about_overlay);
       host.render(true);
     };
-    let menu_item_stop = shadowRoot.querySelector('#menu_item_stop');
+    let menu_item_stop = document.querySelector('#menu_item_stop');
     menu_item_stop.onclick = function (event) {
       console.log("menu_item_stop click...");
       host.stop();
     };
-    let menu_item_fullscreen = shadowRoot.querySelector('#menu_item_fullscreen');
+    let menu_item_fullscreen = document.querySelector('#menu_item_fullscreen');
     menu_item_fullscreen.onclick = function (event) {
       console.log("menu_item_fullscreen click...");
     };
-    let menu_item_strudel = shadowRoot.querySelector('#menu_item_strudel');
+    let menu_item_strudel = document.querySelector('#menu_item_strudel');
     menu_item_strudel.onclick = function (event) {
       console.log("menu_item_strudel click...");
       host.hide(host.piano_roll_overlay)
@@ -228,7 +227,7 @@ class Cloud5Piece extends HTMLElement {
       // host.hide(host.log_overlay);
       host.hide(host.about_overlay);
     };
-    let menu_item_score = shadowRoot.querySelector('#menu_item_score');
+    let menu_item_score = document.querySelector('#menu_item_score');
     menu_item_score.onclick = function (event) {
       console.log("menu_item_score click...");
       host.toggle(host.piano_roll_overlay)
@@ -237,7 +236,7 @@ class Cloud5Piece extends HTMLElement {
       // host.hide(host.log_overlay);
       host.hide(host.about_overlay);
     };
-    let menu_item_log = shadowRoot.querySelector('#menu_item_log');
+    let menu_item_log = document.querySelector('#menu_item_log');
     menu_item_log.onclick = function (event) {
       console.log("menu_item_log click...");
       //host.show(host.piano_roll_overlay)
@@ -246,7 +245,7 @@ class Cloud5Piece extends HTMLElement {
       host.toggle(host.log_overlay);
       host.hide(host.about_overlay);
     };
-    let menu_item_about = shadowRoot.querySelector('#menu_item_about');
+    let menu_item_about = document.querySelector('#menu_item_about');
     menu_item_about.onclick = function (event) {
       console.log("menu_item_about click...");
       host.hide(host.piano_roll_overlay)
@@ -255,6 +254,45 @@ class Cloud5Piece extends HTMLElement {
       host.hide(host.log_overlay);
       host.toggle(host.about_overlay);
     };
+    // Ensure that the dat.gui controls are children of the _Controls_ button.
+    let dat_gui_parameters = { autoPlace: false, closeOnTop: true, closed: true, width: 400, useLocalStorage: false };
+    this.gui = new dat.GUI(dat_gui_parameters);
+    let dat_gui = document.getElementById('menu_item_dat_gui');
+    dat_gui.appendChild(this.gui.domElement);
+    document.addEventListener("keydown", function (e) {
+      let e_char = String.fromCharCode(e.keyCode || e.charCode);
+      if (e.ctrlKey === true) {
+        if (e_char === 'H') {
+          var console = document.getElementById("console");
+          if (console.style.display === "none") {
+            console.style.display = "block";
+          } else {
+            console.style.display = "none";
+          }
+          this.gui.closed = true;
+          gui.closed = false;
+        } else if (e_char === 'G') {
+          generate_score_hook();
+        } else if (e_char === 'P') {
+          parameters.play();
+        } else if (e_char === 'S') {
+          parameters.stop();
+        }
+      }
+    });
+
+    this.hide(this.piano_roll_overlay);
+    this.hide(this.strudel_overlay);
+    this.hide(this.log_overlay);
+    this.show(this.about_overlay);
+
+    window.addEventListener("unload", function (event) {
+      nw_window?.close();
+    });
+
+    /**
+     * Send the value of the named control to Csound.
+     */
     // Polyfill to make 'render' behave like an async member function.
     this.render = async function (is_offline) {
       host.csound = await get_csound(host.csound_message_callback);
@@ -335,6 +373,29 @@ class Cloud5Piece extends HTMLElement {
       }
     }
   }
+  controls_add_folder(name) {
+    let folder = this.gui.addFolder(name);
+    return folder;
+  }
+  controls_add_slider(gui_folder, token, minimum, maximum, step) {
+    const on_parameter_change = function (value) {
+      host.gk_update(token, value);
+    };
+    gui_folder.add(this.control_parameters, token, minimum, maximum, step).listen().onChange(on_parameter_change);
+    // Remembers parameter values. Required for the 'Revert' button to 
+    // work, and to be able to save/restore new presets.
+    this.gui.remember(this.control_parameters);
+  }
+  gk_update(name, value) {
+    const numberValue = parseFloat(value);
+    console.log("gk_update: name: " + name + " value: " + numberValue);
+    if (non_csound(this.csound) == false) {
+      this.csound.SetControlChannel(name, numberValue);
+    }
+  }
+  menu_add_command(name, onclick) {
+
+  }
 }
 customElements.define("cloud5-piece", Cloud5Piece);
 
@@ -388,7 +449,7 @@ class Cloud5PianoRoll extends HTMLElement {
 customElements.define("cloud5-piano-roll", Cloud5PianoRoll);
 
 /**
- * Contains an instance of the Strudel that can use Csound as an output,
+ * Contains an instance of the Strudel REPL that can use Csound as an output,
  * and starts and stops along wth Csound.
  */
 class Cloud5Strudel extends HTMLElement {

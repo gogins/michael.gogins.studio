@@ -13,68 +13,16 @@
     <script src="CsoundAudioNode.js"></script>
     <script src="csound_loader.js"></script>
     <script src="CsoundAC.js"></script>
-    <!-- <script src='piano-roll.js'></script> -->
     <script src="PianoRoll3D.js"></script>
     <script src='Silencio.js'></script>
     <script src='ChordSpace.js'></script>
     <script src="TrackballControls.js"></script>
     <link rel="stylesheet" href="w3.css">
-    <style>
-        .w3-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-        }
-
-        .w3-bar {
-            z-index: 1;
-        }
-
-        .dg {
-            font: 12px 'Verdana', sans-serif;
-        }
-
-        .dg .c {
-            background: transparent;
-        }
-
-        .dg.main .close-button {
-            background: transparent;
-            font: 15px 'Verdana', sans-serif;
-        }
-
-        .dg.main .close-button:hover {
-            background: transparent;
-        }
-
-        input {
-            font: 1em/1.25em Verdana, sans-serif;
-            background: transparent;
-        }
-
-        .cloud5-overlay {
-            display: block-inline;
-            width: 100vw;
-            height: 100vh;
-            font-size: 11px;
-            position: absolute;
-            visibility: none;
-            top: 40px;
-            margin-bottom: 40px;
-            /* z-index: 5; */
-            background: transparent;
-            color: rgb(255, 255, 200, 67%);
-            max-height: calc(100vh - 80px);
-            overflow-y: auto;
-            overflow-wrap: break-word;
-        }
-    </style>
+    <link rel="stylesheet" href="cloud-5.css">
+    <script src='cloud-5.js'></script>
 </head>
 
-<body id="body" class="w3-medium w3-text-sand" style="background:black;height:100vh;width:100vw;">
-    <script src='cloud-5.js'></script>
+<body class="w3-medium w3-text-sand cloud5-body">
     <cloud5-piece></cloud5-piece>
     <textarea id="csd" style="display:none;">
         <CsoundSynthesizer>
@@ -2072,10 +2020,8 @@
     <cloud5-strudel class="w3-container cloud5-overlay"></cloud5-strudel>
     <cloud5-shader class="w3-container cloud5-overlay"></cloud5-shader>
     <cloud5-log class="w3-container cloud5-overlay"></cloud5-log>
-    <cloud5-about>
-        <div
-            style="font-size:11px;position:absolute;top:40px;margin:20px;z-index:5;background:transparent;color:rgb(255, 255, 200, 67%);max-height: calc(100vh - 70px);overflow-y:auto;">
-
+    <cloud5-about class="w3-container cloud5-overlay">
+        <div class="cloud5-about">
             <h1 style="font-size: 15px;">cloud-5 example</h1>
             <h2 style="font-size: 13px">Michael Gogins<br>
                 February 2024</h2>
@@ -2242,6 +2188,95 @@
             "gk_YiString_level": 0,
             "gk_Xing_level": 0
         };
+        let Master = cloud5_piece.controls_add_folder('Master');
+        cloud5_piece.controls_add_slider(Master, 'gk_MasterOutput_level', -50, 50);
+        cloud5_piece.controls_add_slider(Master, 'gk_Iterations', 2., 9., 1.);
+        cloud5_piece.controls_add_slider(Master, 'gk_Duration_factor', 0., 5.);
+        cloud5_piece.controls_add_slider(Master, 'gk_Shimmer_wetDry', 0., 1.);
+        //cloud5_piece.controls_add_slider(Master, 'gk_Shimmer_shift', 0., 1.);
+        cloud5_piece.controls_add_slider(Master, 'gk_Shimmer_feedback', 0., 1.);
+        cloud5_piece.controls_add_slider(Master, 'gk_Shimmer_diffusion', 0., 1.);
+        cloud5_piece.controls_add_slider(Master, 'gk_Shimmer_size', 0., 1.);
+        //cloud5_piece.controls_add_slider(Master, 'gk_Shimmer_lowcut', 0., 1.);
+        //cloud5_piece.controls_add_slider(Master, 'gk_Shimmer_highcut', 0., 1.);
+        cloud5_piece.controls_add_slider(Master, 'gk_Shimmer_modRate', 0., 1.);
+        cloud5_piece.controls_add_slider(Master, 'gk_Shimmer_modDepth', 0., 1.);
+        cloud5_piece.controls_add_slider(Master, 'gk_Shimmer_reverbMode', 0., 1., .25);
+        //cloud5_piece.controls_add_slider(Master, 'gk_Shimmer_shiftMode', 0., 1);
+        //cloud5_piece.controls_add_slider(Master, 'gk_Shimmer_colorMode', 0., 1);
+        //cloud5_piece.controls_add_slider(Master, 'gk_Shimmer_bypass', 0., 1);
+        cloud5_piece.controls_add_slider(Master, 'gk_Shimmer_program', 0., 8, 1);
+        var Blower = cloud5_piece.controls_add_folder('Blower');
+        cloud5_piece.controls_add_slider(Blower, 'gk_Blower_level', -50, 50);
+        cloud5_piece.controls_add_slider(Blower, 'gk_Blower_attack', 0, 2);
+        cloud5_piece.controls_add_slider(Blower, 'gk_Blower_release', 0, 4);
+        cloud5_piece.controls_add_slider(Blower, 'gk_Blower_grainDensity', 0, 400);
+        cloud5_piece.controls_add_slider(Blower, 'gk_Blower_grainDuration', 0, .5);
+        cloud5_piece.controls_add_slider(Blower, 'gk_Blower_grainAmplitudeRange', 0, 400);
+        cloud5_piece.controls_add_slider(Blower, 'gk_Blower_grainFrequencyRange', 0, 100);
+        var Bower = cloud5_piece.controls_add_folder('Bower');
+        cloud5_piece.controls_add_slider(Bower, 'gk_Bower_level', -50, 50);
+        cloud5_piece.controls_add_slider(Bower, 'gk_Bower_pressure', 0, 5);
+        cloud5_piece.controls_add_slider(Bower, 'gk_Bower_rat', 0, .5);
+        var Buzzer = cloud5_piece.controls_add_folder('Buzzer');
+        cloud5_piece.controls_add_slider(Buzzer, 'gk_Buzzer_level', -50, 50);
+        cloud5_piece.controls_add_slider(Buzzer, 'gk_Buzzer_harmonics', 0, 20);
+        var Droner = cloud5_piece.controls_add_folder('Droner');
+        cloud5_piece.controls_add_slider(Droner, 'gk_Droner_level', -50, 50);
+        cloud5_piece.controls_add_slider(Droner, 'gk_Droner_partial1', 0, 1);
+        cloud5_piece.controls_add_slider(Droner, 'gk_Droner_partial2', 0, 1);
+        cloud5_piece.controls_add_slider(Droner, 'gk_Droner_partial3', 0, 1);
+        cloud5_piece.controls_add_slider(Droner, 'gk_Droner_partial4', 0, 1);
+        cloud5_piece.controls_add_slider(Droner, 'gk_Droner_partial5', 0, 1);
+        var FilteredSines = cloud5_piece.controls_add_folder('Filtered Sines');
+        cloud5_piece.controls_add_slider(FilteredSines, 'gk_FilteredSines_level', -50, 50);
+        var Flute = cloud5_piece.controls_add_folder('Zakian Flute');
+        cloud5_piece.controls_add_slider(Flute, 'gk_ZakianFlute_level', -50, 50);
+        var FMWaterBell = cloud5_piece.controls_add_folder('FMWaterBell');
+        cloud5_piece.controls_add_slider(FMWaterBell, 'gk_FMWaterBell_level', -50, 50);
+        cloud5_piece.controls_add_slider(FMWaterBell, 'gi_FMWaterBell_attack', 0, .1);
+        cloud5_piece.controls_add_slider(FMWaterBell, 'gi_FMWaterBell_release', 0, .1);
+        cloud5_piece.controls_add_slider(FMWaterBell, 'gi_FMWaterBell_exponent', -30, 30);
+        cloud5_piece.controls_add_slider(FMWaterBell, 'gi_FMWaterBell_sustain', 0, 20);
+        cloud5_piece.controls_add_slider(FMWaterBell, 'gi_FMWaterBell_sustain_level', 0, 1);
+        cloud5_piece.controls_add_slider(FMWaterBell, 'gk_FMWaterBell_crossfade', 0, 1);
+        cloud5_piece.controls_add_slider(FMWaterBell, 'gk_FMWaterBell_index', 0, 15);
+        cloud5_piece.controls_add_slider(FMWaterBell, 'gk_FMWaterBell_vibrato_depth', 0, 10);
+        cloud5_piece.controls_add_slider(FMWaterBell, 'gk_FMWaterBell_vibrato_rate', 0, 10);
+        var Guitar = cloud5_piece.controls_add_folder('Guitar');
+        cloud5_piece.controls_add_slider(Guitar, 'gk_Guitar_level', -50, 50);
+        var Kung2 = cloud5_piece.controls_add_folder('Kung2');
+        cloud5_piece.controls_add_slider(Kung2, 'gk_Kung2_level', -50, 50);
+        var Kung4 = cloud5_piece.controls_add_folder('Kung4');
+        cloud5_piece.controls_add_slider(Kung4, 'gk_Kung4_level', -50, 50);
+        var Phaser = cloud5_piece.controls_add_folder('Phaser');
+        cloud5_piece.controls_add_slider(Phaser, 'gk_Phaser_level', -50, 50);
+        cloud5_piece.controls_add_slider(Phaser, 'gk_Phaser_ratio1', 0, 5);
+        cloud5_piece.controls_add_slider(Phaser, 'gk_Phaser_ratio2', 0, 5);
+        cloud5_piece.controls_add_slider(Phaser, 'gk_Phaser_index1', 0, 15);
+        cloud5_piece.controls_add_slider(Phaser, 'gk_Phaser_index2', 0, 15);
+        var Plucked = cloud5_piece.controls_add_folder('Plucked');
+        cloud5_piece.controls_add_slider(Plucked, 'gk_Plucked_level', -50, 50);
+        var Shiner = cloud5_piece.controls_add_folder('Shiner');
+        cloud5_piece.controls_add_slider(Shiner, 'gk_Shiner_level', -50, 50);
+        cloud5_piece.controls_add_slider(Shiner, 'gk_Shiner_attack', 0, 1);
+        cloud5_piece.controls_add_slider(Shiner, 'gk_Shiner_release', 0, 4);
+        var SeidelHarmonicOsc = cloud5_piece.controls_add_folder('SeidelHarmonicOsc');
+        cloud5_piece.controls_add_slider(SeidelHarmonicOsc, 'gk_SeidelHarmonicOsc_level', -50, 50);
+        var Sweeper = cloud5_piece.controls_add_folder('Sweeper');
+        cloud5_piece.controls_add_slider(Sweeper, 'gk_Sweeper_level', -50, 50);
+        cloud5_piece.controls_add_slider(Sweeper, 'gk_Sweeper_britel', 0, 4);
+        cloud5_piece.controls_add_slider(Sweeper, 'gk_Sweeper_briteh', 0, 4);
+        cloud5_piece.controls_add_slider(Sweeper, 'gk_Sweeper_britels', 0, 4);
+        cloud5_piece.controls_add_slider(Sweeper, 'gk_Sweeper_britehs', 0, 4);
+        var TubularBell = cloud5_piece.controls_add_folder('TubularBell');
+        cloud5_piece.controls_add_slider(TubularBell, 'gk_TubularBell_level', -50, 50);
+        var VcvRack = cloud5_piece.controls_add_folder('VcvRack');
+        cloud5_piece.controls_add_slider(VcvRack, 'gk_VcvOut_level', -50, 50);
+        var YiString = cloud5_piece.controls_add_folder('YiString');
+        cloud5_piece.controls_add_slider(YiString, 'gk_YiString_level', -50, 50);
+        var Xing = cloud5_piece.controls_add_folder('Xing');
+        cloud5_piece.controls_add_slider(Xing, 'gk_Xing_level', -50, 50);
         let cloud5_piano_roll = document.querySelector('cloud5-piano-roll');
         cloud5_piece.piano_roll_overlay = cloud5_piano_roll;
         cloud5_piano_roll.csound5_piece = cloud5_piece;
