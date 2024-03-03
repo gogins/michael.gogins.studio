@@ -188,14 +188,14 @@ class Cloud5Piece extends HTMLElement {
     const csound_message_callback_closure = function (message) {
       host.csound_message_callback(message);
     }
-    get_csound(csound_message_callback_closure);
+    //get_csound(csound_message_callback_closure);
     let menu_item_play = document.querySelector('#menu_item_play');
     menu_item_play.onclick = function (event) {
       console.log("menu_item_play click...");
       host.show(host.piano_roll_overlay)
       host.hide(host.strudel_overlay);
       host.hide(host.shader_overlay);
-      // host.hide(host.log_overlay);
+      host.hide(host.log_overlay);
       host.hide(host.about_overlay);
       host.render(false);
     };
@@ -205,7 +205,7 @@ class Cloud5Piece extends HTMLElement {
       host.show(host.piano_roll_overlay)
       host.hide(host.strudel_overlay);
       host.hide(host.shader_overlay);
-      // host.hide(host.log_overlay);
+      host.hide(host.log_overlay);
       host.hide(host.about_overlay);
       host.render(true);
     };
@@ -217,6 +217,13 @@ class Cloud5Piece extends HTMLElement {
     let menu_item_fullscreen = document.querySelector('#menu_item_fullscreen');
     menu_item_fullscreen.onclick = function (event) {
       console.log("menu_item_fullscreen click...");
+      if (host.piano_roll_overlay.requestFullscreen) {
+        host.piano_roll_overlay.requestFullscreen();
+      } else if (host.piano_roll_overlay.webkitRequestFullscreen) {
+        host.piano_roll_overlay.webkitRequestFullscreen();
+      } else if (elem.msRequestFullscreen) {
+        host.piano_roll_overlay.msRequestFullscreen();
+      }
     };
     let menu_item_strudel = document.querySelector('#menu_item_strudel');
     menu_item_strudel.onclick = function (event) {
@@ -281,18 +288,10 @@ class Cloud5Piece extends HTMLElement {
       }
     });
 
-    this.hide(this.piano_roll_overlay);
-    this.hide(this.strudel_overlay);
-    this.hide(this.log_overlay);
-    this.show(this.about_overlay);
-
     window.addEventListener("unload", function (event) {
       nw_window?.close();
     });
 
-    /**
-     * Send the value of the named control to Csound.
-     */
     // Polyfill to make 'render' behave like an async member function.
     this.render = async function (is_offline) {
       host.csound = await get_csound(host.csound_message_callback);
@@ -344,7 +343,7 @@ class Cloud5Piece extends HTMLElement {
   }
   show(overlay) {
     if (overlay) {
-      overlay.style.display = '';
+      overlay.style.display = 'block';
     }
   }
   hide(overlay) {
