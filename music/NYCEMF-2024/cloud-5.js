@@ -114,7 +114,7 @@ class Cloud5Piece extends HTMLElement {
     */
   connectedCallback() {
     this.innerHTML = `
-    <div class="w3-bar" id="main_menu" style="position:fixed;background:transparent;z-index:100;">
+    <div class="w3-bar" id="main_menu" style="position:fixed;background:transparent;z-index:10000;">
     <ul class="menu">
         <li id="menu_item_play" title="Play piece on system audio output" class="w3-btn w3-hover-text-light-green">
             Play</li>
@@ -229,7 +229,7 @@ class Cloud5Piece extends HTMLElement {
     menu_item_strudel.onclick = function (event) {
       console.log("menu_item_strudel click...");
       host.hide(host.piano_roll_overlay)
-      host.show(host.strudel_overlay);
+      host.toggle(host.strudel_overlay);
       // host.hide(host.shader_overlay);
       // host.hide(host.log_overlay);
       host.hide(host.about_overlay);
@@ -304,10 +304,13 @@ class Cloud5Piece extends HTMLElement {
           host.csound.setMetadata(key, value);
         }
       }
-      let score = await host.score_generator_hook();
-      let csound_score = await score.getCsoundScore(12., false);
-      csound_score = csound_score.concat("\n</CsScore>");
-      let csd = host.csound_patch.replace("</CsScore>", csound_score);
+      let csd = host.csound_patch.slice();
+      let score = await host?.score_generator_hook();
+      if (score) {
+        let csound_score = await score.getCsoundScore(12., false);
+        csound_score = csound_score.concat("\n</CsScore>");
+        csd = host.csound_patch.replace("</CsScore>", csound_score);
+      }
       host?.log_overlay.clear();
       if (is_offline == true) {
         csd = csd.replace("-odac", "-o" + document.title + ".wav");
@@ -325,12 +328,16 @@ class Cloud5Piece extends HTMLElement {
       host.csound_message_callback("Csound has started...\n");
       if (is_offline == false) {
         await host.csound.Perform();
+        console.log("strudel_view:", host.strudel_view);
+        strudel_view?.setCsound(host.csound);
+        strudel_view?.startPlaying();
+
       } else {
         // Returns before finishing because Csound will perform in a separate 
         // thread.
         await host.csound.performAndPostProcess();
       }
-      host?.piano_roll_overlay.trackScoreTime();
+      host.piano_roll_overlay?.trackScoreTime();
       host?.csound_message_callback("Csound is playing...\n");
     }
     this.stop = async function () {
@@ -338,6 +345,8 @@ class Cloud5Piece extends HTMLElement {
       await host.csound.Stop();
       await host.csound.Cleanup();
       host.csound.Reset();
+      strudel_view?.stopPlaying();
+
       host.csound_message_callback("Csound has stopped.\n");
     }
   }
@@ -392,8 +401,9 @@ class Cloud5Piece extends HTMLElement {
       this.csound.SetControlChannel(name, numberValue);
     }
   }
-  menu_add_command(name, onclick) {
-
+  menu_add_command(control_parameters, gui_folder, name, onclick) {
+    control_parameters['name'] = onclick;
+    gui_folder.add(this.control_parameters, name)
   }
 }
 customElements.define("cloud5-piece", Cloud5Piece);
@@ -414,13 +424,10 @@ class Cloud5PianoRoll extends HTMLElement {
     * Called by the browser whenever this element is added to the document.
     */
   connectedCallback() {
-    let shadowRoot = this.attachShadow({ mode: "open" });
-    shadowRoot.innerHTML = `<link rel="stylesheet" href="w3.css">
-    <canvas id="display" 
-    class="w3-container" 
-    style="background-color:black;height:100%;margin:0;padding:0;z-index:0;">
+    this.innerHTML = `
+    <canvas id="display" class='cloud5-panel'>
     `;
-    this.canvas = shadowRoot.querySelector('#display');
+    this.canvas = this.querySelector('#display');
     if (this.csoundac_score !== null) {
       this.draw(this.csoundac_score);
     }
@@ -466,7 +473,46 @@ class Cloud5Strudel extends HTMLElement {
     * Called by the browser whenever this element is added to the document.
     */
   connectedCallback() {
-    let shadowRoot = this.attachShadow({ mode: "open" });
+    this.innerHTML = `
+    <strudel-repl-component id="strudel_view" 
+        style="position:absolute;left:70px;top:80px;z-index:1;">
+
+        <!--
+        
+    const csac = await import('../csoundac.mjs');
+    csac.diagnostic_level(csac.INFORMATION);
+    
+    stack("0,3,[11 6]"
+      .add("<0 1 2 [3 4] 5 7 8>")
+      .transpose("<0 1 2 1>/8")
+      .slow(2)
+      .degradeBy(.125)
+      .transpose("48 36")
+      .legato(.95)
+      .iter(2)
+      .tune("ji_12c")
+      .add(24)
+      .note()
+      .csoundn("<1 2 8 10>"),
+    "0,4,[7 6]"
+      .sub("<0 1 2 3 4 5 [7 8] 9>")
+      .transpose("<0 1 -1 1>/3")
+      .iter(4)
+      .slow(7)
+      .transpose("<48 36>/7")
+      .legato(.95)
+      .tune("ji_12c")
+      .add(24)
+      .slow(4)
+      .note()
+      .csoundn("<2 3 6>"))
+      .pianoroll({labels:1,fillActive:1,cycles:32,playhead:.9})
+         
+        -->
+
+    </strudel-repl-component>
+    `;
+
   }
   start() {
 
@@ -520,9 +566,10 @@ class Cloud5Shader extends HTMLElement {
     * Called by the browser whenever this element is added to the document.
     */
   connectedCallback() {
-    let shadowRoot = this.attachShadow({ mode: "open" });
-    this.canvas = document.createElement('canvas');
-    shadowRoot.appendChild(this.canvas);
+    this.innerHtml = `
+    <canvas id='display' class='cloud5-panel'></canvas>
+    `;
+    this.canvas = this.querySelector('#display');
   }
 }
 customElements.define("cloud5-shader", Cloud5Shader);
@@ -540,23 +587,16 @@ class Cloud5Log extends HTMLElement {
     * Called by the browser whenever this element is added to the document.
     */
   connectedCallback() {
-    ///let shadowRoot = this.attachShadow({ mode: "open" });
-    ///shadowRoot.innerHTML = `<link rel="stylesheet" href="w3.css">`;
     this.innerHTML = `<div 
       id='console_view' 
-      class="w3-text-sand"
-      style="position:absolute;
-      top:60px;
-      z-index:4;width:100vw;height:90vh;background:transparent;margin-left:53px;opacity:60%">`;
+      class="w3-text-sand cloud5-panel"
+      style="background-color:transparent;z-index:4;opacity:60%">`;
     this.message_callback_buffer = "";
     this.console_editor = ace.edit("console_view");
-    //console_editor.setTheme("ace/theme/gob");
-    //this.console_editor.setReadOnly(true);
     this.console_editor.setShowPrintMargin(false);
     this.console_editor.setDisplayIndentGuides(false);
     this.console_editor.renderer.setOption("showGutter", false);
     this.console_editor.renderer.setOption("showLineNumbers", true);
-    ///this.console_editor.renderer.attachToShadowRoot();
   };
   log(message) {
     // Split in case the newline is in the middle of the message but 

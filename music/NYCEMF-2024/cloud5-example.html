@@ -17,6 +17,7 @@
     <script src='Silencio.js'></script>
     <script src='ChordSpace.js'></script>
     <script src="TrackballControls.js"></script>
+    <script src="strudel_embed.js"></script>
     <link rel="stylesheet" href="w3.css">
     <link rel="stylesheet" href="cloud-5.css">
     <script src='cloud-5.js'></script>
@@ -2021,8 +2022,7 @@
     <cloud5-shader class="w3-container cloud5-overlay"></cloud5-shader>
     <cloud5-log class="w3-container cloud5-overlay"></cloud5-log>
     <cloud5-about class="w3-container cloud5-overlay">
-        <divs>
-        <!-- <div class="cloud5-about"> -->
+        <div>
             <h1 style="font-size: 15px;">cloud-5 example</h1>
             <h2 style="font-size: 13px">Michael Gogins<br>
                 February 2024</h2>
@@ -2124,6 +2124,7 @@
             }
         };
         cloud5_piece.csound_patch = document.querySelector('#csd').textContent;
+        cloud5_piece.strudel_overlay = document.querySelector('cloud5-strudel');
         cloud5_piece.control_parameters = {
             "gk_Duration_factor": 0.8682696259761612,
             "gk_Iterations": 4,
