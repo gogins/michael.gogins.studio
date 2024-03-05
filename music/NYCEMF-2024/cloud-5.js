@@ -67,15 +67,6 @@ class Cloud5Piece extends HTMLElement {
      */
     this.piano_roll_overlay = null;
     /**
-     * May be assigned an instance of a cloud5-shader overlay. If so, 
-     * the GLSL shader will run at all times, and will normally create the 
-     * background for other overlays. The shader overlay may call 
-     * a hook function either to visualize the audio of the performance, 
-     * or to sample the video canvas to generate notes for performance by 
-     * Csound.
-     */
-    this.shader_overlay = null;
-    /**
      * May be assigned an instance of the cloud5-log overlay. If so, 
      * the Log button will be created for showing and hiding a scrolling 
      * view of messages from Csound or other sources.
@@ -106,6 +97,18 @@ class Cloud5Piece extends HTMLElement {
       "license": null,
       "genre": null,
     };
+  }
+  /**
+   * May be assigned an instance of a cloud5-shader overlay. If so, 
+   * the GLSL shader will run at all times, and will normally create the 
+   * background for other overlays. The shader overlay may call 
+   * a hook function either to visualize the audio of the performance, 
+   * or to sample the video canvas to generate notes for performance by 
+   * Csound.
+   */
+  set shader_overlay(shader) {
+    this.shader_overlay_ = shader;
+    this.show(this.shader_overlay_);
   }
   /**
     * Called by the browser whenever this element is added to the 
@@ -194,7 +197,7 @@ class Cloud5Piece extends HTMLElement {
       console.log("menu_item_play click...");
       host.show(host.piano_roll_overlay)
       host.hide(host.strudel_overlay);
-      host.hide(host.shader_overlay);
+      ///host.hide(host.shader_overlay);
       host.hide(host.log_overlay);
       host.hide(host.about_overlay);
       host.render(false);
@@ -204,7 +207,7 @@ class Cloud5Piece extends HTMLElement {
       console.log("menu_item_render click...");
       host.show(host.piano_roll_overlay)
       host.hide(host.strudel_overlay);
-      host.hide(host.shader_overlay);
+      ///host.hide(host.shader_overlay);
       host.hide(host.log_overlay);
       host.hide(host.about_overlay);
       host.render(true);
@@ -239,7 +242,7 @@ class Cloud5Piece extends HTMLElement {
       console.log("menu_item_score click...");
       host.toggle(host.piano_roll_overlay)
       host.hide(host.strudel_overlay);
-      host.hide(host.shader_overlay);
+      ///host.hide(host.shader_overlay);
       // host.hide(host.log_overlay);
       host.hide(host.about_overlay);
     };
@@ -257,7 +260,7 @@ class Cloud5Piece extends HTMLElement {
       console.log("menu_item_about click...");
       host.hide(host.piano_roll_overlay)
       host.hide(host.strudel_overlay);
-      host.hide(host.shader_overlay);
+      ///host.hide(host.shader_overlay);
       host.hide(host.log_overlay);
       host.toggle(host.about_overlay);
     };
@@ -458,16 +461,106 @@ customElements.define("cloud5-piano-roll", Cloud5PianoRoll);
  * Contains an instance of the Strudel REPL that can use Csound as an output,
  * and starts and stops along wth Csound.
  */
+class Cloud5Strudelx extends HTMLElement {
+  constructor() {
+    super();
+    this.play_button = null;
+    this.update_button = null;
+    this.i_frame = null;
+    this.content_window = null;
+    this.content_document = null;
+    this.strudel_patch = null;
+  }
+  connectedCallback() {
+    setTimeout(() => {
+      const code = (this.innerHTML + '').replace('<!--', '').replace('-->', '').trim();
+      this.iframe = document.createElement('iframe');
+      console.log("location.origin: ", location.origin);
+      // Fix up the "home" part of the URI to work with my version of Strudel's REPL.
+      // We need to find the part of the pathname in between the origin 
+      // and the file name, and insert that into the request URI.
+      let src;
+      let last_slash = location.href.lastIndexOf("/");
+      if (last_slash > origin.length) {
+        let to_insert = location.href.substring(origin.length, last_slash);
+        src = `${location.origin}${to_insert}/strudel_repl.html#${encodeURIComponent(btoa(code))}`;
+      } else {
+        src = `${location.origin}/strudel_repl.html#${encodeURIComponent(btoa(code))}`;
+      }
+      console.log("src:", src);
+      this.iframe.setAttribute('src', src);
+      this.iframe.setAttribute('allow-same-origin', '');
+      this.iframe.setAttribute('allowfullscreen', 'true');
+      this.appendChild(this.iframe);
+      this.iframe.setAttribute('width', '800px');
+      this.iframe.setAttribute('height', '600px');
+      this.iframe.style.display = "visible";
+      this.iframe.style.background = "transparent";
+      this.content_window = this.i_frame.contentWindow;
+      this.content_document = this.i_frame.contentDocument;
+    });
+  }
+  startPlaying() {
+    console.log("StrudelReplComponent.startPlaying:");
+    this.buttons = this.i_frame.contentDocument.getElementsByTagName("button");
+    let play_button = this.buttons[0];
+    // Fragile, depends on the Repl implementation.
+    if (play_button.title === "play") {
+      play_button.click();
+    }
+  }
+  stopPlaying() {
+    console.log("StrudelReplComponent.stopPlaying:");
+    this.buttons = this.i_frame.contentDocument.getElementsByTagName("button");
+    let play_button = this.buttons[0];
+    // Fragile, depends on the Repl implementation.
+    if (play_button.title === "stop") {
+      play_button.click();
+    }
+  }
+  updateRepl() {
+    console.log("StrudelReplComponent.updateRepl:");
+    this.buttons = this.i_frame.contentDocument.getElementsByTagName("BUTTON");
+    $(this.buttons[1]).click();
+  }
+  set strudel_patch(code) {
+    code = '<!-- ' + this.contentEditable + ' -->';
+    this.innerHTML = this.contentEditable;
+    // Fix up the "home" part of the URI to work with Strudel's REPL.
+    // We need to find the part of the pathname in between the origin 
+    // and the file name, and insert that into the request URI.
+    let src;
+    let last_slash = location.href.lastIndexOf("/");
+    if (last_slash > origin.length) {
+      let to_insert = location.href.substring(origin.length, last_slash);
+      src = `${location.origin}/${to_insert}#${encodeURIComponent(btoa(code))}`;
+    } else {
+      src = `${location.origin}#${encodeURIComponent(btoa(code))}`;
+    }
+    console.log("src:", src);
+    this.iframe?.setAttribute('src', src);
+  }
+  get strudel_patch() {
+    const code = (this.innerHTML + '').replace('<!--', '').replace('-->', '').trim();
+    return code;
+  }
+  set csound(csound_) {
+    this.i_frame.contentWindow.__csound__ = csound_;
+  }
+  set csound_ac(csoundac_) {
+    this.i_frame.contentWindow.__csoundac__ = csoundac_;
+  }
+}
+customElements.define("cloud5-strudelx", Cloud5Strudelx);
+
+/**
+ * Contains an instance of the Strudel REPL that can use Csound as an output,
+ * and starts and stops along wth Csound.
+ */
 class Cloud5Strudel extends HTMLElement {
   constructor() {
     super();
-    /**
-     * May be assigned the text of a Strudel patch. If so, the Strudel REPL 
-     * will be instantiated, the Strudel button will be 
-     * created for showing and hiding the Strudel REPL, and Strudel will be 
-     * stopped and started at the same time as Csound.
-     */
-    this.strudel_patch = null;
+    this.strudel_patch_ = null;
   }
   /**
     * Called by the browser whenever this element is added to the document.
@@ -478,47 +571,25 @@ class Cloud5Strudel extends HTMLElement {
         style="position:absolute;left:70px;top:80px;z-index:1;">
 
         <!--
-        
-    const csac = await import('../csoundac.mjs');
-    csac.diagnostic_level(csac.INFORMATION);
-    
-    stack("0,3,[11 6]"
-      .add("<0 1 2 [3 4] 5 7 8>")
-      .transpose("<0 1 2 1>/8")
-      .slow(2)
-      .degradeBy(.125)
-      .transpose("48 36")
-      .legato(.95)
-      .iter(2)
-      .tune("ji_12c")
-      .add(24)
-      .note()
-      .csoundn("<1 2 8 10>"),
-    "0,4,[7 6]"
-      .sub("<0 1 2 3 4 5 [7 8] 9>")
-      .transpose("<0 1 -1 1>/3")
-      .iter(4)
-      .slow(7)
-      .transpose("<48 36>/7")
-      .legato(.95)
-      .tune("ji_12c")
-      .add(24)
-      .slow(4)
-      .note()
-      .csoundn("<2 3 6>"))
-      .pianoroll({labels:1,fillActive:1,cycles:32,playhead:.9})
-         
+        ${this.strudel_patch_}
         -->
-
     </strudel-repl-component>
     `;
+    this.strudel_component = this.querySelector('#strudel_view');
 
   }
   start() {
+    this.strudel_component.startPlaying();
 
   }
   stop() {
+    this.strudel_component.stopPlaying();
 
+  }
+  set strudel_patch(code) {
+    this.strudel_patch_ = code;
+    // Reconstruct the element.
+    this.connectedCallback();
   }
 }
 customElements.define("cloud5-strudel", Cloud5Strudel);
@@ -566,10 +637,29 @@ class Cloud5Shader extends HTMLElement {
     * Called by the browser whenever this element is added to the document.
     */
   connectedCallback() {
-    this.innerHtml = `
-    <canvas id='display' class='cloud5-panel'></canvas>
-    `;
-    this.canvas = this.querySelector('#display');
+    this.canvas = document.createElement('canvas');
+    this.canvas.className = 'cloud5-overlay';
+    this.appendChild(this.canvas);
+    this.canvas.style.display='block';
+    this.canvas.style.width='100%';
+    this.canvas.style.height='100%';
+    this.glsl = SwissGL(this.canvas);
+    let host = this;
+    let render = function (t) {
+      t /= 1000; // ms to sec
+      host.glsl({
+        t, // pass uniform 't' to GLSL
+        Mesh: [10, 10],  // draw a 10x10 tessellated plane mesh
+        // Vertex shader expression returns vec4 vertex position in
+        // WebGL clip space. 'XY' and 'UV' are vec2 input vertex 
+        // coordinates in [-1,1] and [0,1] ranges.
+        VP: `XY*0.8+sin(t+XY.yx*2.0)*0.2,0,1`,
+        // Fragment shader returns 'RGBA'
+        FP: `UV,0.5,1`
+      });
+      requestAnimationFrame(render);
+    }
+    requestAnimationFrame(render);
   }
 }
 customElements.define("cloud5-shader", Cloud5Shader);
