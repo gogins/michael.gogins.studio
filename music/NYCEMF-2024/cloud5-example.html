@@ -2316,6 +2316,15 @@ stack(
         cloud5_piece.piano_roll_overlay = cloud5_piano_roll;
         cloud5_piano_roll.csound5_piece = cloud5_piece;
         let cloud5_shader = document.querySelector('cloud5-shader');
+        let t;
+        cloud5_shader.shader_parameters_addon = {
+            Mesh:[10, 10],  // draw a 10x10 tessellated plane mesh
+            // Vertex shader expression returns vec4 vertex position in
+            // WebGL clip space. 'XY' and 'UV' are vec2 input vertex 
+            // coordinates in [-1,1] and [0,1] ranges.
+            VP:`XY*0.8+sin(t+XY.yx*2.0)*0.2,0,1`,
+            // Fragment shader returns 'RGBA'
+            FP:`UV,0.5,1`};
         cloud5_piece.shader_overlay = cloud5_shader;
         let cloud5_log = document.querySelector('cloud5-log');
         cloud5_piece.log_overlay = cloud5_log;

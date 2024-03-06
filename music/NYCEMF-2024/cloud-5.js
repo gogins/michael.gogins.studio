@@ -516,15 +516,6 @@ class Cloud5Shader extends HTMLElement {
      */
     this.glsl_parameters = {};
     /**
-     * This is GLSL code for a default vertex shader; the user may define a 
-     * different vertex shader and assign it to this property.
-     */
-    this.vertex_shader_code_addon = `#version 300 es
-    in vec2 inPos;
-    void main() {
-        gl_Position = vec4(inPos.xy, 0.0, 1.0);
-    }`;
-    /**
      * The user may define a function that will be called at intervals to 
      * receive a real-time FFT analysis of the audio; the function should 
      * downsample and/or otherwise process the analysis to generate CsoundAC 
@@ -541,18 +532,6 @@ class Cloud5Shader extends HTMLElement {
      */
     this.audio_visualizer_hook = null;
   }
-  set fragment_shader_code_addon(code) {
-    this.glsl_parameters['FP'] = code;
-  }
-  set vertex_shader_code_addon(code) {
-    this.glsl_parameters['VP'] = code;
-  }
-  set normal_addon(variable){
-    this.glsl_parameters[variable] = variable;
-  }
-  set included_shader_code_addon(code) {
-    this.glsl_parameters['Inc'] = code;
-  }
   /**
     * Called by the browser whenever this element is added to the document.
     */
@@ -568,19 +547,15 @@ class Cloud5Shader extends HTMLElement {
     this.canvas.style.height='100%';
     //this.canvas.style.zIndex = '0';
     this.glsl = SwissGL(this.canvas);
+    this.slowdown = 1000;
+  }
+  set shader_parameters_addon(options) {
+    this.glsl_parameters = options;
+    this.glsl = SwissGL(this.canvas);
     let host = this;
     let render = function (t) {
-      t /= 1000; // ms to sec
-      host.glsl({
-        t, // pass uniform 't' to GLSL
-        Mesh: [100, 100],  // draw a 10x10 tessellated plane mesh
-        // Vertex shader expression returns vec4 vertex position in
-        // WebGL clip space. 'XY' and 'UV' are vec2 input vertex 
-        // coordinates in [-1,1] and [0,1] ranges.
-        VP: `XY*0.8+sin(t+XY.yx*2.0)*0.2,0,1`,
-        // Fragment shader returns 'RGBA'
-        FP: `UV,0.5,1`
-      });
+      t /= 1000;
+      host.glsl({...host.glsl_parameters, t});
       requestAnimationFrame(render);
     }
     requestAnimationFrame(render);
