@@ -2091,7 +2091,7 @@
     <script>
         let cloud5_piece = document.querySelector('cloud5-piece');
         let host = cloud5_piece;
-        cloud5_piece.score_generator_hook = async function () {
+        cloud5_piece.score_generator_function_addon = async function () {
             cloud5_piece.csound.message("score_generator_hook()...\n");
             try {
                 let CsoundAC = await createCsoundAC();
@@ -2106,7 +2106,7 @@
                 lindenmayer.addRule("(A)", "(B)(F N .125 R)(uni V 1 111)(W C R)(+ N[k] -1 R)(+ N[v] 2)(+ Sd -1 R)(W Cl R)([)(* S[t] .75)(- N[k] .5 R)(F N 1)(A)(])(M Sc 3 1)(uni N[x] 0 1)(+ N[t] 1)(R O t k .041)(F N 1.5 R)(R O t i -.325)(- N[v] 2)(B)(+ Sd 4)(C Sd 4)(W Cl R)(+ Sd 3)(uni N[i] 1 5)(M Sc 3 0)(Sc P)(W N R)(A)(+ N[k] 2 R)(+ N[t] 5)(W N R)(A)");
                 lindenmayer.addRule("(B)", "(Sc P)(B)([)(/ S[t] 2)(/ 2 S[d])(+ N[k] 3)(uni V 1 101)(W C R)(A)(])");
                 //lindenmayer.addRule("(B)", "(Sc P)(B)([)(* S[t] 3.5)(B)(* 7 S[d])(B)(+ N[k] 2)(A)(])");
-                lindenmayer.setIterationCount(host.control_parameters.gk_Iterations);
+                lindenmayer.setIterationCount(host.control_parameters_addon.gk_Iterations);
                 let rescale = new CsoundAC.Rescale();
                 rescale.setRescale(0, true, false, 1., 0.);
                 rescale.setRescale(3, true, true, 1., 8.);
@@ -2124,7 +2124,7 @@
                 alert(err.message);
             }
         };
-        cloud5_piece.csound_code = document.querySelector('#csd').textContent;
+        cloud5_piece.csound_code_addon = document.querySelector('#csd').textContent;
         cloud5_piece.strudel_overlay = document.querySelector('cloud5-strudel');
         cloud5_piece.strudel_overlay.strudel_code = `
 const csac = await import('../csoundac.mjs');
@@ -2156,7 +2156,7 @@ stack(
     .csoundn("<2 3 6>"))
     .pianoroll({labels:1,fillActive:1,cycles:32,playhead:.9})
 `;
-        cloud5_piece.control_parameters = {
+        cloud5_piece.control_parameters_addon = {
             "gk_Duration_factor": 0.8682696259761612,
             "gk_Iterations": 4,
             "gk_MasterOutput_level": -2.383888203863542,

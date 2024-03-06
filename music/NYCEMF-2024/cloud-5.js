@@ -35,14 +35,14 @@ class Cloud5Piece extends HTMLElement {
      * patch will be compiled and run for every performance. If the patch is 
      * null, then Csound will not be used.
      */
-    this.csound_code = null;
+    this.csound_code_addon = null;
     /**
      * May be assigned a JavaScript object consisting of Csound control 
      * parameters, with default values. The naming convention must be global 
      * Csound variable type, underscore{ , Csound instrument name}, 
      * underscore, Csound control channel name. For example:
      * 
-     * control_parameters = {
+     * control_parameters_addon = {
      *  "gk_Duration_factor": 0.8682696259761612,
      *  "gk_Iterations": 4,
      *  "gk_MasterOutput_level": -2.383888203863542,
@@ -52,14 +52,14 @@ class Cloud5Piece extends HTMLElement {
      * The Csound orchestra should define matching control channels. Such 
      * parameters may also be used to control other processes.
      */
-    this.control_parameters = null;
+    this.control_parameters_addon = null;
     /**
      * May be assigned a score generating function. If so, the score generator 
      * will be called for each performance, and must generate and return a 
      * CsoundAC Score, which will be translated to a Csound score in text 
      * format, appended to the Csound patch, and played or rendered by Csound.
      */
-    this.score_generator_hook = null;
+    this.score_generator_function_addon = null;
     /**
      * May be assigned an instance of a cloud5-piano-roll overlay. If so, then 
      * the Score button will be created for showing and hiding a piano roll 
@@ -307,12 +307,12 @@ class Cloud5Piece extends HTMLElement {
           host.csound.setMetadata(key, value);
         }
       }
-      let csd = host.csound_code.slice();
-      let score = await host?.score_generator_hook();
+      let csd = host.csound_code_addon.slice();
+      let score = await host?.score_generator_function_addon();
       if (score) {
         let csound_score = await score.getCsoundScore(12., false);
         csound_score = csound_score.concat("\n</CsScore>");
-        csd = host.csound_code.replace("</CsScore>", csound_score);
+        csd = host.csound_code_addon.replace("</CsScore>", csound_score);
       }
       host?.log_overlay.clear();
       if (is_offline == true) {
@@ -327,7 +327,7 @@ class Cloud5Piece extends HTMLElement {
       await host.csound.Start();
       // Send _current_ dat.gui parameter values to Csound 
       // before actually performing.
-      host.send_parameters(host.control_parameters);
+      host.send_parameters(host.control_parameters_addon);
       host.csound_message_callback("Csound has started...\n");
       if (is_offline == false) {
         await host.csound.Perform();
@@ -391,10 +391,10 @@ class Cloud5Piece extends HTMLElement {
     const on_parameter_change = function (value) {
       host.gk_update(token, value);
     };
-    gui_folder.add(this.control_parameters, token, minimum, maximum, step).listen().onChange(on_parameter_change);
+    gui_folder.add(this.control_parameters_addon, token, minimum, maximum, step).listen().onChange(on_parameter_change);
     // Remembers parameter values. Required for the 'Revert' button to 
     // work, and to be able to save/restore new presets.
-    this.gui.remember(this.control_parameters);
+    this.gui.remember(this.control_parameters_addon);
   }
   gk_update(name, value) {
     const numberValue = parseFloat(value);
@@ -403,9 +403,9 @@ class Cloud5Piece extends HTMLElement {
       this.csound.SetControlChannel(name, numberValue);
     }
   }
-  menu_add_command(control_parameters, gui_folder, name, onclick) {
-    control_parameters['name'] = onclick;
-    gui_folder.add(this.control_parameters, name)
+  menu_add_command(control_parameters_addon, gui_folder, name, onclick) {
+    control_parameters_addon['name'] = onclick;
+    gui_folder.add(this.control_parameters_addon, name)
   }
 }
 customElements.define("cloud5-piece", Cloud5Piece);
@@ -426,9 +426,9 @@ class Cloud5PianoRoll extends HTMLElement {
     * Called by the browser whenever this element is added to the document.
     */
   connectedCallback() {
-    this.style='background:black;'
+    this.style.background='black';
     this.innerHTML = `
-    <canvas id="display" class='cloud5-panel' style='background:black;z-index:100;'>
+     <canvas id="display" class='cloud5-panel' style='background:black;z-index:100;'>
     `;
     this.canvas = this.querySelector('#display');
     if (this.csoundac_score !== null) {
@@ -490,7 +490,7 @@ class Cloud5Strudel extends HTMLElement {
     this.strudel_component.stopPlaying();
 
   }
-  set strudel_code(code) {
+  set strudel_code_addon(code) {
     this.strudel_code_ = code;
     // Reconstruct the element.
     this.connectedCallback();
@@ -519,7 +519,7 @@ class Cloud5Shader extends HTMLElement {
      * This is GLSL code for a default vertex shader; the user may define a 
      * different vertex shader and assign it to this property.
      */
-    this.vertex_shader = `#version 300 es
+    this.vertex_shader_code_addon = `#version 300 es
     in vec2 inPos;
     void main() {
         gl_Position = vec4(inPos.xy, 0.0, 1.0);
@@ -541,16 +541,16 @@ class Cloud5Shader extends HTMLElement {
      */
     this.audio_visualizer_hook = null;
   }
-  set fragment_shader(code) {
+  set fragment_shader_code_addon(code) {
     this.glsl_parameters['FP'] = code;
   }
-  set vertex_shader(code) {
+  set vertex_shader_code_addon(code) {
     this.glsl_parameters['VP'] = code;
   }
-  set normal(variable){
+  set normal_addon(variable){
     this.glsl_parameters[variable] = variable;
   }
-  set includes(code) {
+  set included_shader_code_addon(code) {
     this.glsl_parameters['Inc'] = code;
   }
   /**
