@@ -35,7 +35,7 @@ class Cloud5Piece extends HTMLElement {
      * patch will be compiled and run for every performance. If the patch is 
      * null, then Csound will not be used.
      */
-    this.csound_patch = null;
+    this.csound_code = null;
     /**
      * May be assigned a JavaScript object consisting of Csound control 
      * parameters, with default values. The naming convention must be global 
@@ -126,7 +126,7 @@ class Cloud5Piece extends HTMLElement {
         <li id="menu_item_stop" title="Stop performance" class="w3-btn w3-hover-text-light-green">Stop</li>
         <li id="menu_item_fullscreen" class="w3-btn w3-hover-text-light-green">Fullscreen</li>
         <li id="menu_item_strudel" class="w3-btn w3-hover-text-light-green">Strudel</li>
-        <li id="menu_item_score" title="Show/hide piano roll score" class="w3-btn w3-hover-text-light-green">Score
+        <li id="menu_item_piano_roll" title="Show/hide piano roll score" class="w3-btn w3-hover-text-light-green">Score
         </li>
         <li id="menu_item_log" title="Show/hide message log" class="w3-btn w3-hover-text-light-green">Log
         </li>
@@ -197,7 +197,7 @@ class Cloud5Piece extends HTMLElement {
       console.log("menu_item_play click...");
       host.show(host.piano_roll_overlay)
       host.hide(host.strudel_overlay);
-      ///host.hide(host.shader_overlay);
+      // host.hide(host.shader_overlay);
       host.hide(host.log_overlay);
       host.hide(host.about_overlay);
       host.render(false);
@@ -207,7 +207,7 @@ class Cloud5Piece extends HTMLElement {
       console.log("menu_item_render click...");
       host.show(host.piano_roll_overlay)
       host.hide(host.strudel_overlay);
-      ///host.hide(host.shader_overlay);
+      // host.hide(host.shader_overlay);
       host.hide(host.log_overlay);
       host.hide(host.about_overlay);
       host.render(true);
@@ -237,12 +237,12 @@ class Cloud5Piece extends HTMLElement {
       // host.hide(host.log_overlay);
       host.hide(host.about_overlay);
     };
-    let menu_item_score = document.querySelector('#menu_item_score');
-    menu_item_score.onclick = function (event) {
-      console.log("menu_item_score click...");
+    let menu_item_piano_roll = document.querySelector('#menu_item_piano_roll');
+    menu_item_piano_roll.onclick = function (event) {
+      console.log("menu_item_piano_roll click...");
       host.toggle(host.piano_roll_overlay)
       host.hide(host.strudel_overlay);
-      ///host.hide(host.shader_overlay);
+      // host.hide(host.shader_overlay);
       // host.hide(host.log_overlay);
       host.hide(host.about_overlay);
     };
@@ -307,12 +307,12 @@ class Cloud5Piece extends HTMLElement {
           host.csound.setMetadata(key, value);
         }
       }
-      let csd = host.csound_patch.slice();
+      let csd = host.csound_code.slice();
       let score = await host?.score_generator_hook();
       if (score) {
         let csound_score = await score.getCsoundScore(12., false);
         csound_score = csound_score.concat("\n</CsScore>");
-        csd = host.csound_patch.replace("</CsScore>", csound_score);
+        csd = host.csound_code.replace("</CsScore>", csound_score);
       }
       host?.log_overlay.clear();
       if (is_offline == true) {
@@ -349,7 +349,6 @@ class Cloud5Piece extends HTMLElement {
       await host.csound.Cleanup();
       host.csound.Reset();
       strudel_view?.stopPlaying();
-
       host.csound_message_callback("Csound has stopped.\n");
     }
   }
@@ -427,8 +426,9 @@ class Cloud5PianoRoll extends HTMLElement {
     * Called by the browser whenever this element is added to the document.
     */
   connectedCallback() {
+    this.style='background:black;'
     this.innerHTML = `
-    <canvas id="display" class='cloud5-panel'>
+    <canvas id="display" class='cloud5-panel' style='background:black;z-index:100;'>
     `;
     this.canvas = this.querySelector('#display');
     if (this.csoundac_score !== null) {
@@ -461,106 +461,10 @@ customElements.define("cloud5-piano-roll", Cloud5PianoRoll);
  * Contains an instance of the Strudel REPL that can use Csound as an output,
  * and starts and stops along wth Csound.
  */
-class Cloud5Strudelx extends HTMLElement {
-  constructor() {
-    super();
-    this.play_button = null;
-    this.update_button = null;
-    this.i_frame = null;
-    this.content_window = null;
-    this.content_document = null;
-    this.strudel_patch = null;
-  }
-  connectedCallback() {
-    setTimeout(() => {
-      const code = (this.innerHTML + '').replace('<!--', '').replace('-->', '').trim();
-      this.iframe = document.createElement('iframe');
-      console.log("location.origin: ", location.origin);
-      // Fix up the "home" part of the URI to work with my version of Strudel's REPL.
-      // We need to find the part of the pathname in between the origin 
-      // and the file name, and insert that into the request URI.
-      let src;
-      let last_slash = location.href.lastIndexOf("/");
-      if (last_slash > origin.length) {
-        let to_insert = location.href.substring(origin.length, last_slash);
-        src = `${location.origin}${to_insert}/strudel_repl.html#${encodeURIComponent(btoa(code))}`;
-      } else {
-        src = `${location.origin}/strudel_repl.html#${encodeURIComponent(btoa(code))}`;
-      }
-      console.log("src:", src);
-      this.iframe.setAttribute('src', src);
-      this.iframe.setAttribute('allow-same-origin', '');
-      this.iframe.setAttribute('allowfullscreen', 'true');
-      this.appendChild(this.iframe);
-      this.iframe.setAttribute('width', '800px');
-      this.iframe.setAttribute('height', '600px');
-      this.iframe.style.display = "visible";
-      this.iframe.style.background = "transparent";
-      this.content_window = this.i_frame.contentWindow;
-      this.content_document = this.i_frame.contentDocument;
-    });
-  }
-  startPlaying() {
-    console.log("StrudelReplComponent.startPlaying:");
-    this.buttons = this.i_frame.contentDocument.getElementsByTagName("button");
-    let play_button = this.buttons[0];
-    // Fragile, depends on the Repl implementation.
-    if (play_button.title === "play") {
-      play_button.click();
-    }
-  }
-  stopPlaying() {
-    console.log("StrudelReplComponent.stopPlaying:");
-    this.buttons = this.i_frame.contentDocument.getElementsByTagName("button");
-    let play_button = this.buttons[0];
-    // Fragile, depends on the Repl implementation.
-    if (play_button.title === "stop") {
-      play_button.click();
-    }
-  }
-  updateRepl() {
-    console.log("StrudelReplComponent.updateRepl:");
-    this.buttons = this.i_frame.contentDocument.getElementsByTagName("BUTTON");
-    $(this.buttons[1]).click();
-  }
-  set strudel_patch(code) {
-    code = '<!-- ' + this.contentEditable + ' -->';
-    this.innerHTML = this.contentEditable;
-    // Fix up the "home" part of the URI to work with Strudel's REPL.
-    // We need to find the part of the pathname in between the origin 
-    // and the file name, and insert that into the request URI.
-    let src;
-    let last_slash = location.href.lastIndexOf("/");
-    if (last_slash > origin.length) {
-      let to_insert = location.href.substring(origin.length, last_slash);
-      src = `${location.origin}/${to_insert}#${encodeURIComponent(btoa(code))}`;
-    } else {
-      src = `${location.origin}#${encodeURIComponent(btoa(code))}`;
-    }
-    console.log("src:", src);
-    this.iframe?.setAttribute('src', src);
-  }
-  get strudel_patch() {
-    const code = (this.innerHTML + '').replace('<!--', '').replace('-->', '').trim();
-    return code;
-  }
-  set csound(csound_) {
-    this.i_frame.contentWindow.__csound__ = csound_;
-  }
-  set csound_ac(csoundac_) {
-    this.i_frame.contentWindow.__csoundac__ = csoundac_;
-  }
-}
-customElements.define("cloud5-strudelx", Cloud5Strudelx);
-
-/**
- * Contains an instance of the Strudel REPL that can use Csound as an output,
- * and starts and stops along wth Csound.
- */
 class Cloud5Strudel extends HTMLElement {
   constructor() {
     super();
-    this.strudel_patch_ = null;
+    this.strudel_code_ = null;
   }
   /**
     * Called by the browser whenever this element is added to the document.
@@ -571,7 +475,7 @@ class Cloud5Strudel extends HTMLElement {
         style="position:absolute;left:70px;top:80px;z-index:1;">
 
         <!--
-        ${this.strudel_patch_}
+        ${this.strudel_code_}
         -->
     </strudel-repl-component>
     `;
@@ -586,8 +490,8 @@ class Cloud5Strudel extends HTMLElement {
     this.strudel_component.stopPlaying();
 
   }
-  set strudel_patch(code) {
-    this.strudel_patch_ = code;
+  set strudel_code(code) {
+    this.strudel_code_ = code;
     // Reconstruct the element.
     this.connectedCallback();
   }
@@ -638,27 +542,31 @@ class Cloud5Shader extends HTMLElement {
     this.audio_visualizer_hook = null;
   }
   set fragment_shader(code) {
-    this.parameters['FP'] = code;
+    this.glsl_parameters['FP'] = code;
   }
   set vertex_shader(code) {
-    this.parameters['VP'] = code;
+    this.glsl_parameters['VP'] = code;
   }
   set normal(variable){
-    this.parameters[variable] = variable;
+    this.glsl_parameters[variable] = variable;
   }
   set includes(code) {
-    this.parameters['Inc'] = code;
+    this.glsl_parameters['Inc'] = code;
   }
   /**
     * Called by the browser whenever this element is added to the document.
     */
   connectedCallback() {
     this.canvas = document.createElement('canvas');
-    this.canvas.className = 'cloud5-overlay';
     this.appendChild(this.canvas);
+    this.canvas.style.position = 'absolute';
+    this.canvas.style.top = '0';
+    this.canvas.style.left = '0';
+    this.canvas.style.margin_top = '40px';
     this.canvas.style.display='block';
     this.canvas.style.width='100%';
     this.canvas.style.height='100%';
+    //this.canvas.style.zIndex = '0';
     this.glsl = SwissGL(this.canvas);
     let host = this;
     let render = function (t) {

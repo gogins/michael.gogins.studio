@@ -2018,9 +2018,9 @@
         </CsoundSynthesizer>
         
     </textarea>
-    <cloud5-piano-roll class="w3-container cloud5-overlay"></cloud5-piano-roll>
     <cloud5-strudel class="w3-container cloud5-overlay"></cloud5-strudel>
     <cloud5-shader class="w3-container cloud5-overlay"></cloud5-shader>
+    <cloud5-piano-roll class="w3-container cloud5-overlay"></cloud5-piano-roll>
     <cloud5-log class="w3-container cloud5-overlay"></cloud5-log>
     <cloud5-about class="w3-container cloud5-overlay">
         <div>
@@ -2087,7 +2087,7 @@
                     </svg>
                 </a>
         </div>
-    </cloud5-about>
+    </cloud5-about class="w3-container">
     <script>
         let cloud5_piece = document.querySelector('cloud5-piece');
         let host = cloud5_piece;
@@ -2124,9 +2124,9 @@
                 alert(err.message);
             }
         };
-        cloud5_piece.csound_patch = document.querySelector('#csd').textContent;
+        cloud5_piece.csound_code = document.querySelector('#csd').textContent;
         cloud5_piece.strudel_overlay = document.querySelector('cloud5-strudel');
-        cloud5_piece.strudel_overlay.strudel_patch = `
+        cloud5_piece.strudel_overlay.strudel_code = `
 const csac = await import('../csoundac.mjs');
 csac.diagnostic_level(csac.INFORMATION);
 stack(
@@ -2222,6 +2222,7 @@ stack(
             "gk_Xing_level": 0
         };
         let Master = cloud5_piece.controls_add_folder('Master');
+        //#region Controls 
         cloud5_piece.controls_add_slider(Master, 'gk_MasterOutput_level', -50, 50);
         cloud5_piece.controls_add_slider(Master, 'gk_Iterations', 2., 9., 1.);
         cloud5_piece.controls_add_slider(Master, 'gk_Duration_factor', 0., 5.);
@@ -2310,6 +2311,7 @@ stack(
         cloud5_piece.controls_add_slider(YiString, 'gk_YiString_level', -50, 50);
         var Xing = cloud5_piece.controls_add_folder('Xing');
         cloud5_piece.controls_add_slider(Xing, 'gk_Xing_level', -50, 50);
+        //#endregion
         let cloud5_piano_roll = document.querySelector('cloud5-piano-roll');
         cloud5_piece.piano_roll_overlay = cloud5_piano_roll;
         cloud5_piano_roll.csound5_piece = cloud5_piece;
