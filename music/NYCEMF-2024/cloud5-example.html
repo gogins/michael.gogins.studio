@@ -2126,7 +2126,7 @@
         };
         cloud5_piece.csound_code_addon = document.querySelector('#csd').textContent;
         cloud5_piece.strudel_overlay = document.querySelector('cloud5-strudel');
-        cloud5_piece.strudel_overlay.strudel_code = `
+        cloud5_piece.strudel_overlay.strudel_code_addon = `
 const csac = await import('../csoundac.mjs');
 csac.diagnostic_level(csac.INFORMATION);
 stack(
@@ -2314,7 +2314,6 @@ stack(
         //#endregion
         let cloud5_piano_roll = document.querySelector('cloud5-piano-roll');
         cloud5_piece.piano_roll_overlay = cloud5_piano_roll;
-        cloud5_piano_roll.csound5_piece = cloud5_piece;
         let cloud5_shader = document.querySelector('cloud5-shader');
         let t;
         cloud5_shader.shader_parameters_addon = {

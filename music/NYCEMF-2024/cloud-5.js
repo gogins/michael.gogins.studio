@@ -30,86 +30,115 @@ class Cloud5Piece extends HTMLElement {
   constructor() {
     super();
     this.csound = null;
-    /**
-     * May be assigned the text of a Csound .csd patch. If so, the Csound 
-     * patch will be compiled and run for every performance. If the patch is 
-     * null, then Csound will not be used.
-     */
-    this.csound_code_addon = null;
-    /**
-     * May be assigned a JavaScript object consisting of Csound control 
-     * parameters, with default values. The naming convention must be global 
-     * Csound variable type, underscore{ , Csound instrument name}, 
-     * underscore, Csound control channel name. For example:
-     * 
-     * control_parameters_addon = {
-     *  "gk_Duration_factor": 0.8682696259761612,
-     *  "gk_Iterations": 4,
-     *  "gk_MasterOutput_level": -2.383888203863542,
-     *  "gk_Shimmer_wetDry": 0.06843403205918619
-     * };
-     *
-     * The Csound orchestra should define matching control channels. Such 
-     * parameters may also be used to control other processes.
-     */
-    this.control_parameters_addon = null;
-    /**
-     * May be assigned a score generating function. If so, the score generator 
-     * will be called for each performance, and must generate and return a 
-     * CsoundAC Score, which will be translated to a Csound score in text 
-     * format, appended to the Csound patch, and played or rendered by Csound.
-     */
-    this.score_generator_function_addon = null;
-    /**
-     * May be assigned an instance of a cloud5-piano-roll overlay. If so, then 
-     * the Score button will be created for showing and hiding a piano roll 
-     * display of the generated CsoundAC Score.
-     */
-    this.piano_roll_overlay = null;
-    /**
-     * May be assigned an instance of the cloud5-log overlay. If so, 
-     * the Log button will be created for showing and hiding a scrolling 
-     * view of messages from Csound or other sources.
-     */
-    this.log_overlay = null;
-    /**
-     * May be assigned an instance of the cloud5-about overlay. If so,
-     * the About button wll be created for showing and hiding the text 
-     * of the overlay. The inner HTML of this element should contain 
-     * license information, authorship, credits, and program notes for the 
-     * piece.
-     */
-    this.about_overlay = null;
-    /**
-     * Metadata to be written to output files.
-     */
-    this.metadata = {
-      "artist": null,
-      "copyright": null,
-      "performer": null,
-      "title": null,
-      "album": null,
-      "track": null,
-      "tracknumber": null,
-      "date": null,
-      "publisher": null,
-      "comment": null,
-      "license": null,
-      "genre": null,
-    };
   }
   /**
-   * May be assigned an instance of a cloud5-shader overlay. If so, 
-   * the GLSL shader will run at all times, and will normally create the 
-   * background for other overlays. The shader overlay may call 
-   * a hook function either to visualize the audio of the performance, 
-   * or to sample the video canvas to generate notes for performance by 
-   * Csound.
-   */
-  set shader_overlay(shader) {
-    this.shader_overlay_ = shader;
-    this.show(this.shader_overlay_);
+    * May be assigned the text of a Csound .csd patch. If so, the Csound 
+    * patch will be compiled and run for every performance.
+    */
+  #csound_code_addon = null;
+  set csound_code_addon(code) {
+    this.#csound_code_addon = code;
   }
+  get csound_code_addon() {
+    return this.#csound_code_addon;
+  }
+  /**
+  * May be assigned an instance of a cloud5-shader overlay. If so, 
+  * the GLSL shader will run at all times, and will normally create the 
+  * background for other overlays. The shader overlay may call 
+  * a hook function either to visualize the audio of the performance, 
+  * or to sample the video canvas to generate notes for performance by 
+  * Csound.
+  */
+  #shader_overlay = null;
+  set shader_overlay(shader) {
+    this.#shader_overlay = shader;
+    this.show(this.#shader_overlay);
+  }
+  get shader_overlay() {
+    return this.#shader_overlay;
+  }
+  /**
+    * May be assigned a JavaScript object consisting of Csound control 
+    * parameters, with default values. The naming convention must be global 
+    * Csound variable type, underscore{ , Csound instrument name}, 
+    * underscore, Csound control channel name. For example:
+    * 
+    * control_parameters_addon = {
+    *  "gk_Duration_factor": 0.8682696259761612,
+    *  "gk_Iterations": 4,
+    *  "gk_MasterOutput_level": -2.383888203863542,
+    *  "gk_Shimmer_wetDry": 0.06843403205918619
+    * };
+    *
+    * The Csound orchestra should define matching control channels. Such 
+    * parameters may also be used to control other processes.
+    */
+  #control_parameters_addon = null;
+  set control_parameters_addon(parameters) {
+    this.#control_parameters_addon = parameters;
+  }
+  get control_parameters_addon() {
+    return this.#control_parameters_addon;
+  }
+  /**
+   * May be assigned a score generating function. If so, the score generator 
+   * will be called for each performance, and must generate and return a 
+   * CsoundAC Score, which will be translated to a Csound score in text 
+   * format, appended to the Csound patch, and played or rendered by Csound.
+   */
+  #score_generator_function_addon = null;
+  set score_generator_function_addon(score_generator_function) {
+    this.#score_generator_function_addon = score_generator_function;
+  }
+  get score_generator_function_addon() {
+    return this.#score_generator_function_addon;
+  }
+  /**
+   * May be assigned an instance of a cloud5-piano-roll overlay. If so, then 
+   * the Score button will be created for showing and hiding a piano roll 
+   * display of the generated CsoundAC Score.
+   */
+  #piano_roll_overlay = null;
+  set piano_roll_overlay(piano_roll) {
+    this.#piano_roll_overlay = piano_roll;
+    this.#piano_roll_overlay.csound5_piece = this;
+  }
+  get piano_roll_overlay() {
+    return this.#piano_roll_overlay;
+  }
+  /**
+   * May be assigned an instance of the cloud5-log overlay. If so, 
+   * the Log button will be created for showing and hiding a scrolling 
+   * view of messages from Csound or other sources.
+   */
+  #log_overlay = null;
+  /**
+   * May be assigned an instance of the cloud5-about overlay. If so,
+   * the About button wll be created for showing and hiding the text 
+   * of the overlay. The inner HTML of this element should contain 
+   * license information, authorship, credits, and program notes for the 
+   * piece.
+   */
+  #about_overlay = null;
+  /**
+   * Metadata to be written to output files.
+   */
+  metadata = {
+    "artist": null,
+    "copyright": null,
+    "performer": null,
+    "title": null,
+    "album": null,
+    "track": null,
+    "tracknumber": null,
+    "date": null,
+    "publisher": null,
+    "comment": null,
+    "license": null,
+    "genre": null,
+  };
+
   /**
     * Called by the browser whenever this element is added to the 
     * document. Construction and initialization of the element should take 
@@ -191,7 +220,6 @@ class Cloud5Piece extends HTMLElement {
     const csound_message_callback_closure = function (message) {
       host.csound_message_callback(message);
     }
-    //get_csound(csound_message_callback_closure);
     let menu_item_play = document.querySelector('#menu_item_play');
     menu_item_play.onclick = function (event) {
       console.log("menu_item_play click...");
@@ -426,7 +454,7 @@ class Cloud5PianoRoll extends HTMLElement {
     * Called by the browser whenever this element is added to the document.
     */
   connectedCallback() {
-    this.style.background='black';
+    this.style.background = 'black';
     this.innerHTML = `
      <canvas id="display" class='cloud5-panel' style='background:black;z-index:100;'>
     `;
@@ -464,7 +492,6 @@ customElements.define("cloud5-piano-roll", Cloud5PianoRoll);
 class Cloud5Strudel extends HTMLElement {
   constructor() {
     super();
-    this.strudel_code_ = null;
   }
   /**
     * Called by the browser whenever this element is added to the document.
@@ -475,7 +502,7 @@ class Cloud5Strudel extends HTMLElement {
         style="position:absolute;left:70px;top:80px;z-index:1;">
 
         <!--
-        ${this.strudel_code_}
+        ${this.#strudel_code_addon}
         -->
     </strudel-repl-component>
     `;
@@ -490,10 +517,14 @@ class Cloud5Strudel extends HTMLElement {
     this.strudel_component.stopPlaying();
 
   }
+  #strudel_code_addon = null;
   set strudel_code_addon(code) {
-    this.strudel_code_ = code;
+    this.#strudel_code_addon = code;
     // Reconstruct the element.
     this.connectedCallback();
+  }
+  get strudel_code_addon() {
+    return this.#strudel_code_addon;
   }
 }
 customElements.define("cloud5-strudel", Cloud5Strudel);
@@ -542,26 +573,79 @@ class Cloud5Shader extends HTMLElement {
     this.canvas.style.top = '0';
     this.canvas.style.left = '0';
     this.canvas.style.margin_top = '40px';
-    this.canvas.style.display='block';
-    this.canvas.style.width='100%';
-    this.canvas.style.height='100%';
+    this.canvas.style.display = 'block';
+    this.canvas.style.width = '100%';
+    this.canvas.style.height = '100%';
     //this.canvas.style.zIndex = '0';
     this.glsl = SwissGL(this.canvas);
     this.slowdown = 1000;
   }
+  #shader_parameters_addon = null;
   set shader_parameters_addon(options) {
-    this.glsl_parameters = options;
+    this.#shader_parameters_addon = options;
     this.glsl = SwissGL(this.canvas);
     let host = this;
     let render = function (t) {
       t /= 1000;
-      host.glsl({...host.glsl_parameters, t});
+      host.glsl({ ...host.#shader_parameters_addon, t });
       requestAnimationFrame(render);
     }
     requestAnimationFrame(render);
   }
+  get shader_parameters_addon() {
+    return this.#shader_parameters_addon;
+  }
 }
 customElements.define("cloud5-shader", Cloud5Shader);
+
+/**
+ * Presents visuals generated by a GLSL shader. These visuals can 
+ * show a visualization of the music, or be sampled to generate notes for 
+ * Csound to perform.
+ * 
+ * This class behaves like Cloud5Shader, but is designed to simplify the use 
+ * of shaders developed or adapted from ShaderToy.
+ */
+class Cloud5ShaderToy extends HTMLElement {
+  constructor() {
+    super();
+    /**
+     * The user may define a function that will be called at intervals to 
+     * receive a real-time FFT analysis of the audio; the function should 
+     * downsample and/or otherwise process the analysis to generate CsoundAC 
+     * Notes, which must be returned in a CsoundAC Score. The user-defined 
+     * function must be assigned to this property.
+     */
+    this.shader_sampler_hook = null;
+    /**
+     * The user may define a function that will be called at intervals to 
+     * receive an FFT analysis of the performance; the function should use 
+     * these to compute GLSL uniforms that will in some way control the 
+     * appearance and behavior of the shader visuals. The user-defined 
+     * function must be assigned to this property.
+     */
+    this.audio_visualizer_hook = null;
+  }
+  /**
+    * Called by the browser whenever this element is added to the document.
+    */
+  connectedCallback() {
+    this.canvas = document.createElement('canvas');
+    this.appendChild(this.canvas);
+    this.canvas.style.position = 'absolute';
+    this.canvas.style.top = '0';
+    this.canvas.style.left = '0';
+    this.canvas.style.margin_top = '40px';
+    this.canvas.style.display = 'block';
+    this.canvas.style.width = '100%';
+    this.canvas.style.height = '100%';
+    //this.canvas.style.zIndex = '0';
+    this.glsl = SwissGL(this.canvas);
+    this.slowdown = 1000;
+  }
+}
+customElements.define("cloud5-shadertoy", Cloud5ShaderToy);
+
 
 /**
  * Displays a scrolling list of runtime messages from Csound and/or other 
