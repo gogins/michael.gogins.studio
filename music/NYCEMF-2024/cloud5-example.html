@@ -2091,6 +2091,7 @@
     <script>
         let cloud5_piece = document.querySelector('cloud5-piece');
         let host = cloud5_piece;
+        // #region Score Generator
         cloud5_piece.score_generator_function_addon = async function () {
             cloud5_piece.csound.message("score_generator_hook()...\n");
             try {
@@ -2124,7 +2125,11 @@
                 alert(err.message);
             }
         };
+        // #endregion
+        // #region Csound Code
         cloud5_piece.csound_code_addon = document.querySelector('#csd').textContent;
+        // #endregion
+        // #region Strudel
         cloud5_piece.strudel_overlay = document.querySelector('cloud5-strudel');
         cloud5_piece.strudel_overlay.strudel_code_addon = `
 const csac = await import('../csoundac.mjs');
@@ -2156,6 +2161,8 @@ stack(
     .csoundn("<2 3 6>"))
     .pianoroll({labels:1,fillActive:1,cycles:32,playhead:.9})
 `;
+        // #endregion
+        // #region Controls 
         cloud5_piece.control_parameters_addon = {
             "gk_Duration_factor": 0.8682696259761612,
             "gk_Iterations": 4,
@@ -2222,7 +2229,6 @@ stack(
             "gk_Xing_level": 0
         };
         let Master = cloud5_piece.controls_add_folder('Master');
-        //#region Controls 
         cloud5_piece.controls_add_slider(Master, 'gk_MasterOutput_level', -50, 50);
         cloud5_piece.controls_add_slider(Master, 'gk_Iterations', 2., 9., 1.);
         cloud5_piece.controls_add_slider(Master, 'gk_Duration_factor', 0., 5.);
@@ -2312,8 +2318,11 @@ stack(
         var Xing = cloud5_piece.controls_add_folder('Xing');
         cloud5_piece.controls_add_slider(Xing, 'gk_Xing_level', -50, 50);
         //#endregion
+        // #region Piano Roll
         let cloud5_piano_roll = document.querySelector('cloud5-piano-roll');
         cloud5_piece.piano_roll_overlay = cloud5_piano_roll;
+        // #endregion
+        // #region Shader
         let cloud5_shader = document.querySelector('cloud5-shader');
         let t;
         cloud5_shader.shader_parameters_addon = {
@@ -2325,11 +2334,15 @@ stack(
             // Fragment shader returns 'RGBA'
             FP:`UV,0.5,1`};
         cloud5_piece.shader_overlay = cloud5_shader;
+        // #endregion
+        // #region Log
         let cloud5_log = document.querySelector('cloud5-log');
         cloud5_piece.log_overlay = cloud5_log;
+        // #endregion
+        // #region About
         let cloud5_about = document.querySelector('cloud5-about');
         cloud5_piece.about_overlay = cloud5_about;
-        cloud5_about.cloud5_piece = cloud5_piece;
+        // #endregion
     </script>
 </body>
 
