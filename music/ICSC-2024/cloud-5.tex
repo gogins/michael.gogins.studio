@@ -97,13 +97,13 @@ For examples of cloud music, one may look to online computer games with procedur
 
 \section{Basic Design}
 
-The cloud-5 user interface consists of main menu runs across the top of the page. Clicking on a button can start or stop performance, or show an overlay that fills the rest of the page. 
+The cloud-5 user interface consists of a main menu running across the top of the page. Clicking on a button can start or stop performance, or show/hide various overlays that fill the rest of the page. 
 
-The cloud5-system is constructed as a library of Web components in the form of HTML custom elements, which encapsulate code and even styling within each HTML element. This makes it much easier for users not familiar with the details of HTML or JavaScript to write cloud-5 pieces. The user includes these custom elements in the HTML code like any other elements, adds user-defined code such as a Csound orchestra or Strudel patch, and hooks the elements up together using a little JavaScript.
+The cloud5-system is constructed as a library of Web components in the form of HTML custom elements, which encapsulate code and even some styling within each HTML element. This makes it much easier for users not familiar with the details of HTML or JavaScript to write cloud-5 pieces. The user includes these custom elements in the HTML code like any other elements, adds user-defined code such as a Csound orchestra or Strudel patch, and hooks the parts up together using a little JavaScript. Code folding regions make it easier to organize the code and to see only the part that is being edited. To make it easier for users to construct pieces, a naming convention is used. Names ending in \texttt{\_overlay} denote Web. components, and names ending in \texttt{\_addon} denote things that the user needs to provide, including code (JavaScript, Csound, Strudel, GLSL), parameters, and others.
 
 \subsection{Components}
 
-Currently, cloud-5 consists of the following custom elements and user-defined code:
+Currently, cloud-5 consists of the following custom elements and user addons:
 
 \begin{description}
 \item[\texttt{<cloud5-piece>}] This custom element defines the main menu of the piece and its event handlers, instantiates Csound and/or Strudel as required, starts and stops performances, hosts the controls submenu, and contains some helper code.

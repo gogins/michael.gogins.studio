@@ -214,7 +214,6 @@ class Cloud5Piece extends HTMLElement {
         $("#vu_meter_left").html(sprintf("L%+7.1f dBA", level_right));
         $("#vu_meter_right").html(sprintf("R%+7.1f dBA", level_right));
       };
-      console.log(message);
       host.log_overlay?.log(message);
     }
     const csound_message_callback_closure = function (message) {
@@ -301,7 +300,7 @@ class Cloud5Piece extends HTMLElement {
       let e_char = String.fromCharCode(e.keyCode || e.charCode);
       if (e.ctrlKey === true) {
         if (e_char === 'H') {
-          var console = document.getElementById("console");
+          let console = document.getElementById("console");
           if (console.style.display === "none") {
             console.style.display = "block";
           } else {
@@ -332,10 +331,12 @@ class Cloud5Piece extends HTMLElement {
       for (const key in host.metadata) {
         const value = host.metadata[key];
         if (value !== null) {
-          host.csound.setMetadata(key, value);
+          // CsoundAudioNode does not have the metadata facility.
+          host.csound?.setMetadata(key, value);
         }
       }
-      let csd = host.csound_code_addon.slice();
+      let csd;
+      // csd = host.csound_code_addon.slice();
       let score = await host?.score_generator_function_addon();
       if (score) {
         let csound_score = await score.getCsoundScore(12., false);
@@ -350,8 +351,12 @@ class Cloud5Piece extends HTMLElement {
       // instead of it just nullifying Csound.        
       const csd_filename = document.title + '-generated.csd';
       write_file(csd_filename, csd);
-      let result = await host.csound.CompileCsdText(csd);
-      host.csound_message_callback("CompileCsdText returned: " + result + "\n");
+      try {
+        let result = await host.csound.CompileCsdText(csd);
+        host.csound_message_callback("CompileCsdText returned: " + result + "\n");
+      } catch (e) {
+        alert(e);
+      }
       await host.csound.Start();
       // Send _current_ dat.gui parameter values to Csound 
       // before actually performing.
@@ -595,6 +600,17 @@ class Cloud5Shader extends HTMLElement {
   get shader_parameters_addon() {
     return this.#shader_parameters_addon;
   }
+  /**
+    * Back reference to the piece, which can be used e.g. to get a reference to 
+    * Csound.
+    */
+  #csound5_piece = null;
+  set csound5_piece(piece) {
+    this.#csound5_piece = piece;
+  }
+  get csound5_piece() {
+    return this.#csound5_piece;
+  }
 }
 customElements.define("cloud5-shader", Cloud5Shader);
 
@@ -603,28 +619,13 @@ customElements.define("cloud5-shader", Cloud5Shader);
  * show a visualization of the music, or be sampled to generate notes for 
  * Csound to perform.
  * 
- * This class behaves like Cloud5Shader, but is designed to simplify the use 
- * of shaders developed or adapted from ShaderToy.
+ * This class behaves like Cloud5Shader, but is specifically designed to 
+ * simplify the use of shaders developed in or adapted from ShaderToy. Other 
+ * types of shader also can be used.
  */
 class Cloud5ShaderToy extends HTMLElement {
   constructor() {
     super();
-    /**
-     * The user may define a function that will be called at intervals to 
-     * receive a real-time FFT analysis of the audio; the function should 
-     * downsample and/or otherwise process the analysis to generate CsoundAC 
-     * Notes, which must be returned in a CsoundAC Score. The user-defined 
-     * function must be assigned to this property.
-     */
-    this.shader_sampler_hook = null;
-    /**
-     * The user may define a function that will be called at intervals to 
-     * receive an FFT analysis of the performance; the function should use 
-     * these to compute GLSL uniforms that will in some way control the 
-     * appearance and behavior of the shader visuals. The user-defined 
-     * function must be assigned to this property.
-     */
-    this.audio_visualizer_hook = null;
   }
   /**
     * Called by the browser whenever this element is added to the document.
@@ -639,13 +640,87 @@ class Cloud5ShaderToy extends HTMLElement {
     this.canvas.style.display = 'block';
     this.canvas.style.width = '100%';
     this.canvas.style.height = '100%';
-    //this.canvas.style.zIndex = '0';
-    this.glsl = SwissGL(this.canvas);
-    this.slowdown = 1000;
+    this.analyzer = null;
+    this.uniforms = {};
+  }
+  /**
+   * Back reference to the piece, which can be used e.g. to get a reference to 
+   * Csound.
+   */
+  #csound5_piece = null;
+  set csound5_piece(piece) {
+    this.#csound5_piece = piece;
+  }
+  get csound5_piece() {
+    return this.#csound5_piece;
+  }
+  /**
+   * A number of parameters must be up to date before the shader program can 
+   * be compiled. These are passed in this property, upon which the shader is 
+   * compiled and begins to run. The paramameters are:
+   * `{
+   *  fragment_shader_code, \\ Required GLSL code.
+   *  vertex_shader_code,   \\ Has a default value, but may be overridden with 
+   *                        \\ custom GLSL code.
+   *  audio_visualizer,     \\ Optional JavaScript code, may use uniforms.
+   *  note_sampler,         \\ Optional JavaScript code, may use uniforms.
+   * }`
+   * The visualizer and/or sampler functions, if they have been set, will be 
+   * called from the animation rendering loop. If either needs to run at a 
+   * different rate than the rendering loop, they should poll the time 
+   * and either immediately return, or perform work and advance an internal 
+   * interval.
+   */
+  #shader_parameters_addon = null;
+  set shader_parameters_addon(shader_parameters) {
+    this.#shader_parameters_addon = shader_parameters;
+    this.create_shader();
+  }
+  get shader_parameters_addon() {
+    return this.#shader_parameters_addon;
+  }
+  uniforms = {};
+  uniform_locations = {};
+  /**
+   * Compiles the shader program, obtains references to uniforms and 
+   * attributes, and starts rendering the shader.
+   */
+  create_shader() {
+    // Compile the shader program.
+    // Obtain the active uniforms and their locations, with which audio 
+    // can be controlled.
+    this.uniforms = {};
+    this.uniform_locations = {};
+    let uniform_count = gl.getProgramParameter(this.shader_program, gl.ACTIVE_UNIFORMS);
+    for (let uniform_index = 0; uniform_index < uniform_count; ++uniform_index) {
+      let uniform_info = gl.getActiveUniform(this.shader_program, uniform_index);
+      this.uniforms[uniform_info.name] = uniform_info;
+      let uniform_location = gel.getUniformLocation(this.shader_program, uniform_info.name);
+      this.uniform_locations[uniform_info.name] = uniform_location;
+    }
+    // Obtain the program attributes, which note samplers can use to obtain 
+    // for generating notes.
+    // Start the animation loop.
+    requestAnimationFrame(this.render_frame);
+  }
+  /**
+   * Runs the shader in an endless loop.
+   */
+  render_frame(time_milliseconds) {
+    gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    let tyme = milliseconds / 1000;
+    gl.uniform1f(this.shader_program.iTime, tyme);
+    gl.uniform3f(this.shader_program.iResolution, this.canvas.width, this.canvas.height, 0);
+    gl.uniform4f(shader_program.iMouse, mouse_position[0], mouse_position[1], 0, 0);
+    gl.drawElements(gl.TRIANGLES, webgl_buffers.inx.len, gl.UNSIGNED_SHORT, 0);
+    this?.audio_visualizer();
+    this?.note_sampler();
+    rendering_frame++;
+    requestAnimationFrame(this.render_frame);
   }
 }
 customElements.define("cloud5-shadertoy", Cloud5ShaderToy);
-
 
 /**
  * Displays a scrolling list of runtime messages from Csound and/or other 
@@ -806,7 +881,6 @@ function arrange(score, new_order_) {
 }
 
 function write_file(filepath, data) {
-  var fs = require('fs');
   try {
     // Sync, so a bad .csd file doesn't blow up Csound 
     // before the .csd file is written so it can be tested!
@@ -814,6 +888,8 @@ function write_file(filepath, data) {
       console.error(err);
     });
   } catch (err) {
+    navigator.clipboard.writeText(data);
+    console.log("Copied generated csd to system clipboard.\n")
     console.warn(err);
   }
 }
@@ -827,4 +903,146 @@ function copy_parameters(parameters) {
   navigator.clipboard.writeText(json_text);
   console.log("Copied all control parameters to system clipboard.\n")
 }
+
+function resize() {
+  webgl_viewport_size = [window.innerWidth, window.innerHeight];
+  canvas.width = webgl_viewport_size[0] * window.devicePixelRatio;
+  canvas.height = webgl_viewport_size[1] * window.devicePixelRatio;
+  image_sample_buffer = new Uint8ClampedArray(canvas.width * 4);
+  prior_image_sample_buffer = new Uint8ClampedArray(canvas.width * 4);
+  console.info("resize: image_sample_buffer.length: " + image_sample_buffer.length);
+}
+
+function clientWaitAsync(sync, flags, interval_ms) {
+  return new Promise((resolve, reject) => {
+    function test() {
+      const result = gl.clientWaitSync(sync, flags, 0);
+      if (result === gl.WAIT_FAILED) {
+        reject();
+        return;
+      }
+      // This is the workaround for platforms where maximum 
+      // timeout is always 0.
+      if (result === gl.TIMEOUT_EXPIRED) {
+        setTimeout(test, interval_ms);
+        return;
+      }
+      resolve();
+    }
+    test();
+  });
+}
+
+async function getBufferSubDataAsync(target, buffer, srcByteOffset, dstBuffer,
+  /* optional */ dstOffset, /* optional */ length) {
+  const sync = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0);
+  gl.flush();
+  await clientWaitAsync(sync, 0, 10);
+  gl.deleteSync(sync);
+  gl.bindBuffer(target, buffer);
+  gl.getBufferSubData(target, srcByteOffset, dstBuffer, dstOffset, length);
+  gl.bindBuffer(target, null);
+}
+
+/**
+* Converts an RGB color value to HSV. The formula is 
+* adapted from http://en.wikipedia.org/wiki/HSV_color_space.
+* Assumes r, g, and b are in [0, 255] and
+* returns h, s, and v are in [0, 1].
+*/
+var rgb_to_hsv = function (rgb) {
+  r = rgb[0] / 255;
+  g = rgb[1] / 255;
+  b = rgb[2] / 255;
+  let max = Math.max(r, g, b);
+  let min = Math.min(r, g, b);
+  let h, s, v = max;
+  let d = max - min;
+  s = max === 0 ? 0 : d / max;
+  if (max == min) {
+    h = 0;
+  } else {
+    // More efficient than switch?
+    if (max == r) {
+      h = (g - b) / d + (g < b ? 6 : 0);
+    } else if (max == g) {
+      h = (b - r) / d + 2;
+    } else if (max == b) {
+      h = (r - g) / d + 4;
+    }
+    h /= 6;
+  }
+  return [h, s, v];
+}
+
+async function readPixelsAsync(x, y, w, h, format, type, sample) {
+  const buffer = gl.createBuffer();
+  gl.bindBuffer(gl.PIXEL_PACK_BUFFER, buffer);
+  gl.bufferData(gl.PIXEL_PACK_BUFFER, sample.byteLength, gl.STREAM_READ);
+  gl.readPixels(x, y, w, h, format, type, 0);
+  gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
+  await getBufferSubDataAsync(gl.PIXEL_PACK_BUFFER, buffer, 0, sample);
+  gl.deleteBuffer(buffer);
+}
+
+/**
+* Adapts https://github.com/pingec/downsample-lttb from time 
+* series data to vectors of float HSV pixels. Our data is not 
+* [[time, value], [time, value],...], but rather 
+* [[pixel index0, hsv0[2]], [pixel index1, hsv1[2]], ...].
+*/
+function downsample_lttb(data, buckets) {
+  if (buckets >= data.length || buckets === 0) {
+    return data; // Nothing to do
+  }
+  let sampled_data = [],
+    sampled_data_index = 0;
+  // Bucket size. Leave room for start and end data points
+  let bucket_size = (data.length - 2) / (buckets - 2);
+  // Triangles are points {a, b, c}.
+  let a = 0,  // Initially a is the first point in the triangle
+    max_area_point,
+    max_area,
+    area,
+    next_a;
+  sampled_data[sampled_data_index++] = data[a]; // Always add the first point
+  for (let i = 0; i < buckets - 2; i++) {
+    // Calculate point average for next bucket (containing c)
+    let avg_x = 0,
+      avg_y = 0,
+      avg_range_start = Math.floor((i + 1) * bucket_size) + 1,
+      avg_range_end = Math.floor((i + 2) * bucket_size) + 1;
+    avg_range_end = avg_range_end < data.length ? avg_range_end : data.length;
+    let avg_range_length = avg_range_end - avg_range_start;
+    for (; avg_range_start < avg_range_end; avg_range_start++) {
+      avg_x += data[avg_range_start][0] * 1; // * 1 enforces Number (value may be Date)
+      avg_y += data[avg_range_start][1] * 1;
+    }
+    avg_x /= avg_range_length;
+    avg_y /= avg_range_length;
+    // Get the range for this bucket
+    let range_offs = Math.floor((i + 0) * bucket_size) + 1,
+      range_to = Math.floor((i + 1) * bucket_size) + 1;
+    // Point a
+    let point_a_x = data[a][0] * 1, // enforce Number (value may be Date)
+      point_a_y = data[a][1] * 1;
+    max_area = area = -1;
+    for (; range_offs < range_to; range_offs++) {
+      // Calculate triangle area over three buckets
+      area = Math.abs((point_a_x - avg_x) * (data[range_offs][1] - point_a_y) -
+        (point_a_x - data[range_offs][0]) * (avg_y - point_a_y)
+      ) * 0.5;
+      if (area > max_area) {
+        max_area = area;
+        max_area_point = data[range_offs];
+        next_a = range_offs; // Next a is this b
+      }
+    }
+    sampled_data[sampled_data_index++] = max_area_point; // Pick this point from the bucket
+    a = next_a; // This a is the next a (chosen b)
+  }
+  sampled_data[sampled_data_index++] = data[data.length - 1]; // Always add last
+  return sampled_data; ///sampled_data;
+}
+
 
