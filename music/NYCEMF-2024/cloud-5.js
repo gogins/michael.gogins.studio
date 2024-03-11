@@ -468,9 +468,28 @@ class Cloud5PianoRoll extends HTMLElement {
       this.draw(this.csoundac_score);
     }
   }
-  draw(csoundac_score_) {
-    this.csoundac_score = csoundac_score_;
-    this.silencio_score.copyCsoundAcScore(this.csoundac_score);
+  draw_csoundac_score(score) {
+    this.silencio_score = new Silencio.Score();
+    let i;
+    let n = score.size();
+    for (i = 0; i < n; ++i) {
+      let event = score.get(i);
+      let p0_time = event.getTime();
+      let p1_duration = event.getDuration();
+      let p2_status = event.getStatus();
+      let p3_channel = event.getChannel();
+      let p4_key = event.getKey();
+      let p5_velocity = event.getVelocity();
+      let p6_x = event.getHeight();
+      let p7_y = event.getPan();
+      let p8_z = event.getDepth();
+      let p9_phase = event.getPhase();
+      this.silencio_score.add(p0_time, p1_duration, p2_status, p3_channel, p4_key, p5_velocity, p6_x, p7_y, p8_z, p9_phase);
+    }
+    this.draw_silencio_score(this.silencio_score);
+  }
+  draw_silencio_score(score) {
+    this.silencio_score = score;
     this.silencio_score.draw3D(this.canvas);
   }
   trackScoreTime() {
@@ -640,8 +659,6 @@ class Cloud5ShaderToy extends HTMLElement {
     this.canvas.style.display = 'block';
     this.canvas.style.width = '100%';
     this.canvas.style.height = '100%';
-    this.analyzer = null;
-    this.uniforms = {};
   }
   /**
    * Back reference to the piece, which can be used e.g. to get a reference to 
@@ -655,21 +672,24 @@ class Cloud5ShaderToy extends HTMLElement {
     return this.#csound5_piece;
   }
   /**
-   * A number of parameters must be up to date before the shader program can 
-   * be compiled. These are passed in this property, upon which the shader is 
-   * compiled and begins to run. The paramameters are:
+   * A number of parameters must be up to date at the same time before the 
+   * shader program can be compiled. These are passed in this property, upon 
+   * which the shader is compiled and begins to run. The paramameters are:
    * `{
-   *  fragment_shader_code, \\ Required GLSL code.
-   *  vertex_shader_code,   \\ Has a default value, but may be overridden with 
-   *                        \\ custom GLSL code.
-   *  audio_visualizer,     \\ Optional JavaScript code, may use uniforms.
-   *  note_sampler,         \\ Optional JavaScript code, may use uniforms.
+   *  fragment_shader_addon: code,    \\ Required GLSL code.
+   *  vertex_shader_addon: code,      \\ Has a default value, but may be 
+   *                                  \\ overridden with custom GLSL code.
+   *  set_uniforms_addon: function,   \\ Optional JavaScript function to set 
+   *                                  \\ uniforms, e.g. in a music visualizer,
+   *                                  \\ called in the animation loop before 
+   *                                  \\ drawing a frame.
+   *  get_attributes_addon: function, \\ Optional JavaScript function to get 
+   *                                  \\ attributes such as buffers or 
+   *                                  \\ samplers, e.g. for sampling the 
+   *                                  \\ shader to generate musical notes,
+   *                                  \\ called in the animation loop after 
+   *                                  \\ drawing a frame.                  
    * }`
-   * The visualizer and/or sampler functions, if they have been set, will be 
-   * called from the animation rendering loop. If either needs to run at a 
-   * different rate than the rendering loop, they should poll the time 
-   * and either immediately return, or perform work and advance an internal 
-   * interval.
    */
   #shader_parameters_addon = null;
   set shader_parameters_addon(shader_parameters) {
@@ -679,43 +699,80 @@ class Cloud5ShaderToy extends HTMLElement {
   get shader_parameters_addon() {
     return this.#shader_parameters_addon;
   }
-  uniforms = {};
-  uniform_locations = {};
+  gl = null;
+  analyzer = null;
+  uniforms = [];
+  uniform_locations = [];
+  attributes = null;
+  set_uniforms = null;
+  get_attributes = null;
   /**
-   * Compiles the shader program, obtains references to uniforms and 
-   * attributes, and starts rendering the shader.
+   * Compiles the shader program, and starts rendering the shader.
    */
   create_shader() {
-    // Compile the shader program.
-    // Obtain the active uniforms and their locations, with which audio 
+    this.prepare_canvas();
+    this.compile_shader();
+    this.get_uniforms();
+    this?.set_attributes();
+    requestAnimationFrame(this.render_frame);
+  }
+  resize() {
+    webgl_viewport_size = [window.innerWidth, window.innerHeight];
+    this.canvas.width = webgl_viewport_size[0] * window.devicePixelRatio;
+    this.canvas.height = webgl_viewport_size[1] * window.devicePixelRatio;
+    this.image_sample_buffer = new Uint8ClampedArray(canvas.width * 4);
+    this.prior_image_sample_buffer = new Uint8ClampedArray(canvas.width * 4);
+    console.info("resize: image_sample_buffer.length: " + this.image_sample_buffer.length);
+  }
+  prepare_canvas() {
+
+  }
+  compile_shader() {
+
+  }
+  set_attributes() {
+
+  }
+  /**
+   * Obtains all active uniforms from the compiled program.
+   * Addons can use these to control the shader.
+   */
+  get_uniforms() {
+    // Obtains all active uniforms and their locations, with which visuals 
     // can be controlled.
     this.uniforms = {};
     this.uniform_locations = {};
-    let uniform_count = gl.getProgramParameter(this.shader_program, gl.ACTIVE_UNIFORMS);
+    let uniform_count = this.gl.getProgramParameter(this.shader_program, this.gl.ACTIVE_UNIFORMS);
     for (let uniform_index = 0; uniform_index < uniform_count; ++uniform_index) {
-      let uniform_info = gl.getActiveUniform(this.shader_program, uniform_index);
+      let uniform_info = this.gl.getActiveUniform(this.shader_program, uniform_index);
       this.uniforms[uniform_info.name] = uniform_info;
-      let uniform_location = gel.getUniformLocation(this.shader_program, uniform_info.name);
+      let uniform_location = this.gl.getUniformLocation(this.shader_program, uniform_info.name);
       this.uniform_locations[uniform_info.name] = uniform_location;
     }
-    // Obtain the program attributes, which note samplers can use to obtain 
-    // for generating notes.
-    // Start the animation loop.
-    requestAnimationFrame(this.render_frame);
+  }
+  // Obtains all program attributes, which can be used to sample the visuals in 
+  // order to generate notes.
+  get_attributes() {
+
   }
   /**
-   * Runs the shader in an endless loop.
+   * Runs the shader in an endless loop of animation frames.
    */
   render_frame(time_milliseconds) {
-    gl.viewport(0, 0, this.canvas.width, this.canvas.height);
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    let tyme = milliseconds / 1000;
-    gl.uniform1f(this.shader_program.iTime, tyme);
-    gl.uniform3f(this.shader_program.iResolution, this.canvas.width, this.canvas.height, 0);
-    gl.uniform4f(shader_program.iMouse, mouse_position[0], mouse_position[1], 0, 0);
-    gl.drawElements(gl.TRIANGLES, webgl_buffers.inx.len, gl.UNSIGNED_SHORT, 0);
-    this?.audio_visualizer();
-    this?.note_sampler();
+    this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+    this.gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    // Custom uniforms are set in this addon. Such uniforms can be used e.g. to 
+    // control audio visualizations.
+    this?.set_uniforms_addon();
+    // There are some default uniforms, modeled on ShaderToy.
+    let seconds = milliseconds / 1000;
+    this.gl.uniform1f(this.shader_program.iTime, seconds);
+    this.gl.uniform3f(this.shader_program.iResolution, this.canvas.width, this.canvas.height, 0);
+    this.gl.uniform4f(shader_program.iMouse, mouse_position[0], mouse_position[1], 0, 0);
+    // Actually render the frame.
+    this.gl.drawElements(this.gl.TRIANGLES, webgl_buffers.inx.len, this.gl.UNSIGNED_SHORT, 0);
+    // Read any addon buffers.
+    this?.get_attributes_addon();
     rendering_frame++;
     requestAnimationFrame(this.render_frame);
   }
