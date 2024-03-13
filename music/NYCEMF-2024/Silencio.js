@@ -803,18 +803,17 @@ if (typeof console === 'undefined') {
         this.scene.add(light);
         var light2 = new THREE.AmbientLight(0x404040, 0.5);
         this.scene.add(light2);
-        var onResize = function() {
-            canvas.width = canvas.clientWidth;
-            canvas.height = canvas.clientHeight;
-            this.renderer.setViewport(0, 0, canvas.clientWidth, canvas.clientHeight);
-            this.camera.aspect = canvas.clientWidth / canvas.clientHeight;
-            this.controls.handleResize();
-            this.camera.updateProjectionMatrix();
-            this.renderer.render(this.scene, this.camera);
-        };
-        window.addEventListener('resize', onResize, false);
+        window.addEventListener('resize', ((event) => this.onResize(event)), false);
     };
-
+    onResize = function(event) {
+        this.canvas.width = this.canvas.clientWidth;
+        this.canvas.height = this.canvas.clientHeight;
+        this.renderer.setViewport(0, 0, this.canvas.clientWidth, this.canvas.clientHeight);
+        this.camera.aspect = this.canvas.clientWidth / this.canvas.clientHeight;
+        this.controls.handleResize();
+        this.camera.updateProjectionMatrix();
+        this.renderer.render(this.scene, this.camera);
+    };
     /**
      * Adds the note to the 3D scene. Can be used with a fixed or a real-time score.
      */

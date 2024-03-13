@@ -220,77 +220,77 @@ class Cloud5Piece extends HTMLElement {
       host.csound_message_callback(message);
     }
     let menu_item_play = document.querySelector('#menu_item_play');
-    menu_item_play.onclick = function (event) {
+    menu_item_play.onclick = ((event) => {
       console.log("menu_item_play click...");
-      host.show(host.piano_roll_overlay)
-      host.hide(host.strudel_overlay);
-      // host.hide(host.shader_overlay);
-      host.hide(host.log_overlay);
-      host.hide(host.about_overlay);
-      host.render(false);
-    };
+      this.show(host.piano_roll_overlay)
+      this.hide(this.strudel_overlay);
+      // this.hide(this.shader_overlay);
+      this.hide(this.log_overlay);
+      this.hide(this.about_overlay);
+      this.render(false);
+    });
     let menu_item_render = document.querySelector('#menu_item_render');
-    menu_item_render.onclick = function (event) {
+    menu_item_render.onclick = ((event) => {
       console.log("menu_item_render click...");
-      host.show(host.piano_roll_overlay)
-      host.hide(host.strudel_overlay);
-      // host.hide(host.shader_overlay);
-      host.hide(host.log_overlay);
-      host.hide(host.about_overlay);
-      host.render(true);
-    };
+      this.show(this.piano_roll_overlay)
+      this.hide(this.strudel_overlay);
+      // this.hide(this.shader_overlay);
+      this.hide(this.log_overlay);
+      this.hide(this.about_overlay);
+      this.render(true);
+    });
     let menu_item_stop = document.querySelector('#menu_item_stop');
-    menu_item_stop.onclick = function (event) {
+    menu_item_stop.onclick = ((event) => {
       console.log("menu_item_stop click...");
-      host.stop();
-    };
+      this.stop();
+    });
     let menu_item_fullscreen = document.querySelector('#menu_item_fullscreen');
-    menu_item_fullscreen.onclick = function (event) {
+    menu_item_fullscreen.onclick = ((event) => {
       console.log("menu_item_fullscreen click...");
-      if (host.piano_roll_overlay.requestFullscreen) {
-        host.piano_roll_overlay.requestFullscreen();
-      } else if (host.piano_roll_overlay.webkitRequestFullscreen) {
-        host.piano_roll_overlay.webkitRequestFullscreen();
+      if (this.piano_roll_overlay.requestFullscreen) {
+        this.piano_roll_overlay.requestFullscreen();
+      } else if (this.piano_roll_overlay.webkitRequestFullscreen) {
+        this.piano_roll_overlay.webkitRequestFullscreen();
       } else if (elem.msRequestFullscreen) {
-        host.piano_roll_overlay.msRequestFullscreen();
-      }
-    };
+        this.piano_roll_overlay.msRequestFullscreen();
+      };
+    });
     let menu_item_strudel = document.querySelector('#menu_item_strudel');
-    menu_item_strudel.onclick = function (event) {
+    menu_item_strudel.onclick = ((event) => {
       console.log("menu_item_strudel click...");
-      host.hide(host.piano_roll_overlay)
-      host.toggle(host.strudel_overlay);
-      // host.hide(host.shader_overlay);
-      // host.hide(host.log_overlay);
-      host.hide(host.about_overlay);
-    };
+      this.hide(this.piano_roll_overlay)
+      this.toggle(this.strudel_overlay);
+      // this.hide(this.shader_overlay);
+      // this.hide(this.log_overlay);
+      this.hide(this.about_overlay);
+    });
     let menu_item_piano_roll = document.querySelector('#menu_item_piano_roll');
-    menu_item_piano_roll.onclick = function (event) {
+    menu_item_piano_roll.onclick = ((evemt) => {
       console.log("menu_item_piano_roll click...");
-      host.toggle(host.piano_roll_overlay)
-      host.hide(host.strudel_overlay);
-      // host.hide(host.shader_overlay);
-      // host.hide(host.log_overlay);
-      host.hide(host.about_overlay);
-    };
+      this.toggle(this.piano_roll_overlay)
+      this.hide(this.strudel_overlay);
+      // this.hide(this.shader_overlay);
+      // this.hide(this.log_overlay);
+      this.hide(this.about_overlay);
+    });
     let menu_item_log = document.querySelector('#menu_item_log');
-    menu_item_log.onclick = function (event) {
+    menu_item_log.onclick = ((event) => {
       console.log("menu_item_log click...");
-      //host.show(host.piano_roll_overlay)
-      host.hide(host.strudel_overlay);
-      //host.hide(host.shader_overlay);
-      host.toggle(host.log_overlay);
-      host.hide(host.about_overlay);
-    };
+      //this.show(this.piano_roll_overlay)
+      this.hide(this.strudel_overlay);
+      //this.hide(this.shader_overlay);
+      this.toggle(this.log_overlay);
+      this.hide(this.about_overlay);
+    });
     let menu_item_about = document.querySelector('#menu_item_about');
-    menu_item_about.onclick = function (event) {
+    menu_item_about.onclick = ((event) => {
       console.log("menu_item_about click...");
-      host.hide(host.piano_roll_overlay)
-      host.hide(host.strudel_overlay);
-      ///host.hide(host.shader_overlay);
-      host.hide(host.log_overlay);
-      host.toggle(host.about_overlay);
-    };
+      this.hide(this.piano_roll_overlay)
+      this.hide(this.strudel_overlay);
+      ///this.hide(this.shader_overlay);
+      this.hide(this.log_overlay);
+      this.toggle(this.about_overlay);
+    });
     // Ensure that the dat.gui controls are children of the _Controls_ button.
     let dat_gui_parameters = { autoPlace: false, closeOnTop: true, closed: true, width: 400, useLocalStorage: false };
     this.gui = new dat.GUI(dat_gui_parameters);
@@ -857,7 +857,7 @@ class Cloud5ShaderToy extends HTMLElement {
     this.gl.enable(this.gl.DEPTH_TEST);
     this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
     ///write_audio_texture(analyser, channel0_texture_unit, channel0_texture, channel0_sampler);
-    window.onresize = this.resize;
+    window.onresize = ((event) => this.resize(event));
     this.resize();
     requestAnimationFrame((milliseconds) => this.render_frame(milliseconds));
   }
