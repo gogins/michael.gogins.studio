@@ -416,11 +416,11 @@ class Cloud5Piece extends HTMLElement {
       }
     }
   }
-  controls_add_folder(name) {
+  menu_folder_addon(name) {
     let folder = this.gui.addFolder(name);
     return folder;
   }
-  controls_add_slider(gui_folder, token, minimum, maximum, step) {
+  menu_slider_addon(gui_folder, token, minimum, maximum, step) {
     const on_parameter_change = function (value) {
       host.gk_update(token, value);
     };
@@ -460,6 +460,7 @@ class Cloud5PianoRoll extends HTMLElement {
     */
   connectedCallback() {
     this.style.background = 'black';
+    this.style.margin = '0';
     this.innerHTML = `
      <canvas id="display" class='cloud5-panel' style='background:black;z-index:100;'>
     `;
@@ -638,11 +639,41 @@ customElements.define("cloud5-shader", Cloud5Shader);
  * show a visualization of the music, or be sampled to generate notes for 
  * Csound to perform.
  * 
- * This class behaves like Cloud5Shader, but is specifically designed to 
- * simplify the use of shaders developed in or adapted from ShaderToy. Other 
- * types of shader also can be used.
+ * This class is specifically designed to simplify the use of shaders 
+ * developed in or adapted from ShaderToy. Other types of shader also can be 
+ * used.
  */
 class Cloud5ShaderToy extends HTMLElement {
+  gl = null;
+  shader_program = null;
+  vertex_shader = `#version 300 es
+  in vec2 inPos;
+  void main() {
+      gl_Position = vec4(inPos.xy, 0.0, 1.0);
+  }`;
+  analyzer = null;
+  uniforms = {};
+  uniform_locations = {};
+  attributes = null;
+  set_uniforms = null;
+  get_attributes = null;
+  frequency_domain_data = null;
+  time_domain_data = null;
+  image_sample_buffer = null;
+  channel0_texture_unit = null;
+  channel0_texture = null;
+  channel0_sampler = null;
+  current_events = {};
+  prior_events = {};
+  rendering_frame = 0;
+  image_sample_buffer = null;
+  prior_image_sample_buffer = null;
+  vertex_shader_code_addon = `#version 300 es
+  in vec2 inPos;
+  void main() {
+      gl_Position = vec4(inPos.xy, 0.0, 1.0);
+  }
+  `;
   constructor() {
     super();
   }
@@ -650,12 +681,13 @@ class Cloud5ShaderToy extends HTMLElement {
     * Called by the browser whenever this element is added to the document.
     */
   connectedCallback() {
+    this.style.margin = '0';
     this.canvas = document.createElement('canvas');
     this.appendChild(this.canvas);
     this.canvas.style.position = 'absolute';
     this.canvas.style.top = '0';
     this.canvas.style.left = '0';
-    this.canvas.style.margin_top = '40px';
+    this.canvas.style.margin = '0;'
     this.canvas.style.display = 'block';
     this.canvas.style.width = '100%';
     this.canvas.style.height = '100%';
@@ -699,37 +731,140 @@ class Cloud5ShaderToy extends HTMLElement {
   get shader_parameters_addon() {
     return this.#shader_parameters_addon;
   }
-  gl = null;
-  analyzer = null;
-  uniforms = [];
-  uniform_locations = [];
-  attributes = null;
-  set_uniforms = null;
-  get_attributes = null;
   /**
    * Compiles the shader program, and starts rendering the shader.
    */
   create_shader() {
+    // Assign parameters fields to this.
+    if (this.#shader_parameters_addon.vertex_shader_code_addon) {
+      this.vertex_shader_code_addon = this.#shader_parameters_addon.vertex_shader_code_addon;
+    }
+    this.fragment_shader_code_addon = this.#shader_parameters_addon.fragment_shader_code_addon;
+    this.set_normals_function_addon = this.#shader_parameters_addon.set_normals_function_addon;
+    this.get_attributes_function_addon = this.#shader_parameters_addon.get_attributes_function_addon;
     this.prepare_canvas();
     this.compile_shader();
     this.get_uniforms();
     this?.set_attributes();
-    requestAnimationFrame(this.render_frame);
+    requestAnimationFrame((milliseconds) => this.render_frame(milliseconds));
   }
   resize() {
-    webgl_viewport_size = [window.innerWidth, window.innerHeight];
-    this.canvas.width = webgl_viewport_size[0] * window.devicePixelRatio;
-    this.canvas.height = webgl_viewport_size[1] * window.devicePixelRatio;
-    this.image_sample_buffer = new Uint8ClampedArray(canvas.width * 4);
-    this.prior_image_sample_buffer = new Uint8ClampedArray(canvas.width * 4);
+    this.webgl_viewport_size = [window.innerWidth, window.innerHeight];
+    this.canvas.width = this.webgl_viewport_size[0] * window.devicePixelRatio;
+    this.canvas.height = this.webgl_viewport_size[1] * window.devicePixelRatio;
+    this.image_sample_buffer = new Uint8ClampedArray(this.canvas.width * 4);
+    this.prior_image_sample_buffer = new Uint8ClampedArray(this.canvas.width * 4);
     console.info("resize: image_sample_buffer.length: " + this.image_sample_buffer.length);
   }
   prepare_canvas() {
-
+    // Set up for high-resolution displays.
+    let devicePixelRatio_ = window.devicePixelRatio || 1
+    this.canvas.width = this.canvas.clientWidth * devicePixelRatio_;
+    this.canvas.height = this.canvas.clientHeight * devicePixelRatio_;
+    console.log("canvas.height: " + this.canvas.height);
+    console.log("canvas.width:  " + this.canvas.width);
+    this.gl = this.canvas.getContext("webgl2", { antialias: true });
+    if (!this.gl) {
+      alert("Could not create webgl2 context.");
+    }
+    let extensions = this.gl.getSupportedExtensions();
+    console.log("Supported extensions:\n" + extensions);
+    if ("gpu" in navigator) {
+      var gpu_adapter = navigator.gpu.requestAdapter();
+      console.log("WebGPU adapter: " + gpu_adapter);
+    } else {
+      console.warn("WebGPU is not available on this platform.");
+    }
+    var EXT_color_buffer_float = this.gl.getExtension("EXT_color_buffer_float");
+    if (!EXT_color_buffer_float) {
+      alert("EXT_color_buffer_float is not available on this platform.");
+    }
+    this.mouse_position = [0, 0, 0, 0];
+    let host = this;
+    this.canvas.addEventListener('mousemove', (e) => {
+      host.mouse_position = [e.clientX, e.clientY];
+    });
+    const audio_texture_level = 0;
+    const audio_texture_internalFormat = this.gl.R32F;
+    const audio_texture_width = 512;
+    const audio_texture_height = 2;
+    const audio_texture_border = 0;
+    const audio_texture_srcFormat = this.gl.RED;
+    const audio_texture_srcType = this.gl.FLOAT;
+    this.frequency_domain_data = new Uint8Array(audio_texture_width * 2);
+    this.time_domain_data = new Uint8Array(audio_texture_width * 2);
+    this.audio_data = new Float32Array(audio_texture_width * 2);
+    this.image_sample_buffer = new Uint8ClampedArray();
+    this.channel0_texture_unit = 0;
+    this.channel0_texture = this.gl.createTexture();
+    this.channel0_texture.name = "channel0_texture";
+    this.channel0_sampler = this.gl.createSampler();
+    this.channel0_sampler.name - "channel0_sampler";
+    this.current_events = {};
+    this.prior_events = {};
+    this.rendering_frame = 0;
+    this.midpoint = audio_texture_width / 2;
   }
   compile_shader() {
+    let WEBGL_debug_shaders = this.gl.getExtension("WEBGL_debug_shaders");
+    this.webgl_viewport_size = null;
+    this.webgl_buffers = {};
+    this.shader_program = this.gl.createProgram();
+    for (let i = 0; i < 2; ++i) {
+      let shader_code = (i == 0 ? this.vertex_shader_code_addon : this.fragment_shader_code_addon);
+      let shader_object = this.gl.createShader(i == 0 ? this.gl.VERTEX_SHADER : this.gl.FRAGMENT_SHADER);
+      this.gl.shaderSource(shader_object, shader_code);
+      this.gl.compileShader(shader_object);
+      let status = this.gl.getShaderParameter(shader_object, this.gl.COMPILE_STATUS);
+      if (!status) {
+        console.warn(this.gl.getShaderInfoLog(shader_object));
+      }
+      this.gl.attachShader(this.shader_program, shader_object);
+      this.gl.linkProgram(this.shader_program);
+      console.log("translated shader:" + WEBGL_debug_shaders.getTranslatedShaderSource(shader_object));
+    }
+    status = this.gl.getProgramParameter(this.shader_program, this.gl.LINK_STATUS);
+    if (!status) {
+      console.warn(this.gl.getProgramInfoLog(this.shader_program));
+    }
+    this.shader_program.inPos = this.gl.getAttribLocation(this.shader_program, "inPos");
+    this.shader_program.iMouse = this.gl.getUniformLocation(this.shader_program, "iMouse");
+    this.shader_program.iResolution = this.gl.getUniformLocation(this.shader_program, "iResolution");
+    this.shader_program.iTime = this.gl.getUniformLocation(this.shader_program, "iTime");
+    this.shader_program.iTimeDelta = this.gl.getUniformLocation(this.shader_program, "iTimeDelta");
+    this.shader_program.iFrame = this.gl.getUniformLocation(this.shader_program, "iFrame");
+    this.shader_program.iChannel0 = this.gl.getUniformLocation(this.shader_program, "iChannel0");
+    this.shader_program.iChannel1 = this.gl.getUniformLocation(this.shader_program, "iChannel1");
+    this.shader_program.iChannel2 = this.gl.getUniformLocation(this.shader_program, "iChannel2");
+    this.shader_program.iChannel3 = this.gl.getUniformLocation(this.shader_program, "iChannel3");
+    this.shader_program.iSampleRate = this.gl.getUniformLocation(this.shader_program, "iSampleRate");
+    this.shader_program.spectralTilt = this.gl.getUniformLocation(this.shader_program, "spectralTilt");
+    this.shader_program.totalLoudness = this.gl.getUniformLocation(this.shader_program, "totalLoudness");
+    this.gl.useProgram(this.shader_program);
 
+    this.gl.uniform1f(this.shader_program.iSampleRate, 48000.);
+    var pos = [-1, -1,
+      1, -1,
+      1, 1,
+    -1, 1];
+    var inx = [0, 1, 2, 0, 2, 3];
+    this.webgl_buffers.pos = this.gl.createBuffer();
+    this. gl.bindBuffer(this.gl.ARRAY_BUFFER, this.webgl_buffers.pos);
+    this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(pos), this.gl.STATIC_DRAW);
+    this.webgl_buffers.inx = this.gl.createBuffer();
+    this.webgl_buffers.inx.len = inx.length;
+    this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.webgl_buffers.inx);
+    this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(inx), this.gl.STATIC_DRAW);
+    this.gl.enableVertexAttribArray(this.shader_program.inPos);
+    this.gl.vertexAttribPointer(this.shader_program.inPos, 2, this.gl.FLOAT, false, 0, 0);
+    this.gl.enable(this.gl.DEPTH_TEST);
+    this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    ///write_audio_texture(analyser, channel0_texture_unit, channel0_texture, channel0_sampler);
+    window.onresize = this.resize;
+    this.resize();
+    requestAnimationFrame((milliseconds) => this.render_frame(milliseconds));
   }
+
   set_attributes() {
 
   }
@@ -758,23 +893,28 @@ class Cloud5ShaderToy extends HTMLElement {
   /**
    * Runs the shader in an endless loop of animation frames.
    */
-  render_frame(time_milliseconds) {
+  render_frame(milliseconds) {
     this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
-    this.gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    // Custom uniforms are set in this addon. Such uniforms can be used e.g. to 
-    // control audio visualizations.
-    this?.set_uniforms_addon();
+    this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+    // Custom uniforms may be set in this addon. Such uniforms can be used 
+    // e.g. to control audio visualizations.
+    if (this.set_uniforms_function_addon) {
+      this.set_uniforms_function_addon();
+    }
     // There are some default uniforms, modeled on ShaderToy.
     let seconds = milliseconds / 1000;
     this.gl.uniform1f(this.shader_program.iTime, seconds);
     this.gl.uniform3f(this.shader_program.iResolution, this.canvas.width, this.canvas.height, 0);
-    this.gl.uniform4f(shader_program.iMouse, mouse_position[0], mouse_position[1], 0, 0);
+    this.gl.uniform4f(this.shader_program.iMouse, this.mouse_position[0], this.mouse_position[1], 0, 0);
     // Actually render the frame.
-    this.gl.drawElements(this.gl.TRIANGLES, webgl_buffers.inx.len, this.gl.UNSIGNED_SHORT, 0);
-    // Read any addon buffers.
-    this?.get_attributes_addon();
-    rendering_frame++;
-    requestAnimationFrame(this.render_frame);
+    this.gl.drawElements(this.gl.TRIANGLES, this.webgl_buffers.inx.len, this.gl.UNSIGNED_SHORT, 0);
+    // Custom attributes may be accessed in this addon. Such attributes can be 
+    // used e.g. to sample visuals and translate them to musical notes.
+    if (this.get_attributes_function_addon) {
+      this.get_attributes_function_addon();
+    }
+    this.rendering_frame++;
+   requestAnimationFrame((milliseconds) => this.render_frame(milliseconds));
   }
 }
 customElements.define("cloud5-shadertoy", Cloud5ShaderToy);
@@ -973,14 +1113,14 @@ function resize() {
 function clientWaitAsync(sync, flags, interval_ms) {
   return new Promise((resolve, reject) => {
     function test() {
-      const result = gl.clientWaitSync(sync, flags, 0);
-      if (result === gl.WAIT_FAILED) {
+      const result = this.gl.clientWaitSync(sync, flags, 0);
+      if (result === this.gl.WAIT_FAILED) {
         reject();
         return;
       }
       // This is the workaround for platforms where maximum 
       // timeout is always 0.
-      if (result === gl.TIMEOUT_EXPIRED) {
+      if (result === this.gl.TIMEOUT_EXPIRED) {
         setTimeout(test, interval_ms);
         return;
       }
@@ -992,7 +1132,7 @@ function clientWaitAsync(sync, flags, interval_ms) {
 
 async function getBufferSubDataAsync(target, buffer, srcByteOffset, dstBuffer,
   /* optional */ dstOffset, /* optional */ length) {
-  const sync = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0);
+  const sync = this.gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0);
   gl.flush();
   await clientWaitAsync(sync, 0, 10);
   gl.deleteSync(sync);
@@ -1033,7 +1173,7 @@ var rgb_to_hsv = function (rgb) {
 }
 
 async function readPixelsAsync(x, y, w, h, format, type, sample) {
-  const buffer = gl.createBuffer();
+  const buffer = this.gl.createBuffer();
   gl.bindBuffer(gl.PIXEL_PACK_BUFFER, buffer);
   gl.bufferData(gl.PIXEL_PACK_BUFFER, sample.byteLength, gl.STREAM_READ);
   gl.readPixels(x, y, w, h, format, type, 0);
