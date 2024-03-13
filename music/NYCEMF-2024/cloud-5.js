@@ -494,15 +494,12 @@ class Cloud5PianoRoll extends HTMLElement {
     this.silencio_score.draw3D(this.canvas);
   }
   trackScoreTime() {
-    const host = this;
-    const trackScoreTime_ = function () {
-      if (non_csound(this.csound5_piece.csound)) {
-        return;
-      }
-      let score_time = this.csound5_piece.csound.getScoreTime();
-      this.silencio_score.progress3D(score_time);
+    if (non_csound(this.csound5_piece.csound)) {
+      return;
     }
-    this.interval_id = setInterval(trackScoreTime_.bind(this), 200);
+    let score_time = this.csound5_piece.csound.getScoreTime();
+    this.silencio_score.progress3D(score_time);
+    this.interval_id = setTimeout(() => this.trackScoreTime(), 200);
   }
   stop() {
     clearInterval(this.interval_id);
@@ -849,7 +846,7 @@ class Cloud5ShaderToy extends HTMLElement {
     -1, 1];
     var inx = [0, 1, 2, 0, 2, 3];
     this.webgl_buffers.pos = this.gl.createBuffer();
-    this. gl.bindBuffer(this.gl.ARRAY_BUFFER, this.webgl_buffers.pos);
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.webgl_buffers.pos);
     this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(pos), this.gl.STATIC_DRAW);
     this.webgl_buffers.inx = this.gl.createBuffer();
     this.webgl_buffers.inx.len = inx.length;
@@ -914,7 +911,7 @@ class Cloud5ShaderToy extends HTMLElement {
       this.get_attributes_function_addon();
     }
     this.rendering_frame++;
-   requestAnimationFrame((milliseconds) => this.render_frame(milliseconds));
+    requestAnimationFrame((milliseconds) => this.render_frame(milliseconds));
   }
 }
 customElements.define("cloud5-shadertoy", Cloud5ShaderToy);
