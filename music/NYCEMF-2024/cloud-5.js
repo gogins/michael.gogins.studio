@@ -121,9 +121,51 @@ class Cloud5Piece extends HTMLElement {
    * piece.
    */
   #about_overlay = null;
+  csound_message_callback = async function(message) {
+    if (message === null) {
+      return;
+    }
+    let level_left = -100;
+    let level_right = -100;
+    if (non_csound(this.csound) == false) {
+      let score_time = await this.csound.GetScoreTime();
+      level_left = await this.csound.GetControlChannel("gk_MasterOutput_output_level_left");
+      level_right = await this.csound.GetControlChannel("gk_MasterOutput_output_level_right");
+      let delta = score_time;
+      // calculate (and subtract) whole days
+      let days = Math.floor(delta / 86400);
+      delta -= days * 86400;
+      // calculate (and subtract) whole hours
+      let hours = Math.floor(delta / 3600) % 24;
+      delta -= hours * 3600;
+      // calculate (and subtract) whole minutes
+      let minutes = Math.floor(delta / 60) % 60;
+      delta -= minutes * 60;
+      // what's left is seconds
+      let seconds = delta % 60;  // in theory the modulus is not required
+      if (level_left > 0) {
+        $("#vu_meter_left").css("color", "red");
+      } else if (level_left > -12) {
+        $("#vu_meter_left").css("color", "orange")
+      } else {
+        $("#vu_meter_left").css("color", "lightgreen");
+      }
+      if (level_right > 0) {
+        $("#vu_meter_right").css("color", "red");
+      } else if (level_right > -12) {
+        $("#vu_meter_right").css("color", "orange")
+      } else {
+        $("#vu_meter_right").css("color", "lightgreen");
+      }
+      $("#mini_console").html(sprintf("d:%4d h:%02d m:%02d s:%06.3f", days, hours, minutes, seconds));
+      $("#vu_meter_left").html(sprintf("L%+7.1f dBA", level_right));
+      $("#vu_meter_right").html(sprintf("R%+7.1f dBA", level_right));
+    };
+    this.log_overlay?.log(message);
+  }
   /**
-   * Metadata to be written to output files.
-   */
+    * Metadata to be written to output files.
+    */
   metadata = {
     "artist": null,
     "copyright": null,
@@ -169,65 +211,18 @@ class Cloud5Piece extends HTMLElement {
             class="w3-btn w3-left-align w3-hover-text-light-green w3-right"></li>
     </ul>
 </div>`;
-    // Save `this` for use in async "member functions."
-    let host = this;
     this.vu_meter_left = document.querySelector("#vu_mter_left");
     this.vu_meter_right = document.querySelector("#vu_mter_right");
     this.mini_console = document.querySelector("#mini_console");
-    this.csound_message_callback = async function (message) {
-      if (message === null) {
-        return;
-      }
-      let level_left = -100;
-      let level_right = -100;
-      if (non_csound(host.csound) == false) {
-        let score_time = await host.csound.GetScoreTime();
-        level_left = await host.csound.GetControlChannel("gk_MasterOutput_output_level_left");
-        level_right = await host.csound.GetControlChannel("gk_MasterOutput_output_level_right");
-        let delta = score_time;
-        // calculate (and subtract) whole days
-        let days = Math.floor(delta / 86400);
-        delta -= days * 86400;
-        // calculate (and subtract) whole hours
-        let hours = Math.floor(delta / 3600) % 24;
-        delta -= hours * 3600;
-        // calculate (and subtract) whole minutes
-        let minutes = Math.floor(delta / 60) % 60;
-        delta -= minutes * 60;
-        // what's left is seconds
-        let seconds = delta % 60;  // in theory the modulus is not required
-        if (level_left > 0) {
-          $("#vu_meter_left").css("color", "red");
-        } else if (level_left > -12) {
-          $("#vu_meter_left").css("color", "orange")
-        } else {
-          $("#vu_meter_left").css("color", "lightgreen");
-        }
-        if (level_right > 0) {
-          $("#vu_meter_right").css("color", "red");
-        } else if (level_right > -12) {
-          $("#vu_meter_right").css("color", "orange")
-        } else {
-          $("#vu_meter_right").css("color", "lightgreen");
-        }
-        $("#mini_console").html(sprintf("d:%4d h:%02d m:%02d s:%06.3f", days, hours, minutes, seconds));
-        $("#vu_meter_left").html(sprintf("L%+7.1f dBA", level_right));
-        $("#vu_meter_right").html(sprintf("R%+7.1f dBA", level_right));
-      };
-      host.log_overlay?.log(message);
-    }
-    const csound_message_callback_closure = function (message) {
-      host.csound_message_callback(message);
-    }
     let menu_item_play = document.querySelector('#menu_item_play');
     menu_item_play.onclick = ((event) => {
       console.log("menu_item_play click...");
-      this.show(host.piano_roll_overlay)
+      this.show(this.piano_roll_overlay)
       this.hide(this.strudel_overlay);
       // this.hide(this.shader_overlay);
       this.hide(this.log_overlay);
       this.hide(this.about_overlay);
-      this.render(false);
+      (() => this.render(false))();
     });
     let menu_item_render = document.querySelector('#menu_item_render');
     menu_item_render.onclick = ((event) => {
@@ -237,7 +232,7 @@ class Cloud5Piece extends HTMLElement {
       // this.hide(this.shader_overlay);
       this.hide(this.log_overlay);
       this.hide(this.about_overlay);
-      this.render(true);
+      (() => this.render(true))();
     });
     let menu_item_stop = document.querySelector('#menu_item_stop');
     menu_item_stop.onclick = ((event) => {
@@ -317,74 +312,70 @@ class Cloud5Piece extends HTMLElement {
         }
       }
     });
-
     window.addEventListener("unload", function (event) {
       nw_window?.close();
     });
-
-    // Polyfill to make 'render' behave like an async member function.
-    this.render = async function (is_offline) {
-      host.csound = await get_csound(host.csound_message_callback);
-      if (non_csound(host.csound)) {
-        return;
-      }
-      for (const key in host.metadata) {
-        const value = host.metadata[key];
-        if (value !== null) {
-          // CsoundAudioNode does not have the metadata facility.
-          host.csound?.setMetadata(key, value);
-        }
-      }
-      let csd;
-      // csd = host.csound_code_addon.slice();
-      let score = await host?.score_generator_function_addon();
-      if (score) {
-        let csound_score = await score.getCsoundScore(12., false);
-        csound_score = csound_score.concat("\n</CsScore>");
-        csd = host.csound_code_addon.replace("</CsScore>", csound_score);
-      }
-      host?.log_overlay.clear();
-      if (is_offline == true) {
-        csd = csd.replace("-odac", "-o" + document.title + ".wav");
-      }
-      // Save the .csd file so we can debug a failing orchestra,
-      // instead of it just nullifying Csound.        
-      const csd_filename = document.title + '-generated.csd';
-      write_file(csd_filename, csd);
-      try {
-        let result = await host.csound.CompileCsdText(csd);
-        host.csound_message_callback("CompileCsdText returned: " + result + "\n");
-      } catch (e) {
-        alert(e);
-      }
-      await host.csound.Start();
-      // Send _current_ dat.gui parameter values to Csound 
-      // before actually performing.
-      host.send_parameters(host.control_parameters_addon);
-      host.csound_message_callback("Csound has started...\n");
-      if (is_offline == false) {
-        await host.csound.Perform();
-        console.log("strudel_view:", host.strudel_view);
-        strudel_view?.setCsound(host.csound);
-        strudel_view?.startPlaying();
-
-      } else {
-        // Returns before finishing because Csound will perform in a separate 
-        // thread.
-        await host.csound.performAndPostProcess();
-      }
-      host.piano_roll_overlay?.trackScoreTime();
-      host?.csound_message_callback("Csound is playing...\n");
-    }
-    this.stop = async function () {
-      this.piano_roll_overlay?.stop();
-      await host.csound.Stop();
-      await host.csound.Cleanup();
-      host.csound.Reset();
-      strudel_view?.stopPlaying();
-      host.csound_message_callback("Csound has stopped.\n");
-    }
   }
+  render = async function (is_offline) {
+    this.csound = await get_csound((message) => this.csound_message_callback(message));
+    if (non_csound(this.csound)) {
+      return;
+    }
+    for (const key in this.metadata) {
+      const value = this.metadata[key];
+      if (value !== null) {
+        // CsoundAudioNode does not have the metadata facility.
+        this.csound?.setMetadata(key, value);
+      }
+    }
+    let csd;
+    // csd = this.csound_code_addon.slice();
+    let score = await this?.score_generator_function_addon();
+    if (score) {
+      let csound_score = await score.getCsoundScore(12., false);
+      csound_score = csound_score.concat("\n</CsScore>");
+      csd = this.csound_code_addon.replace("</CsScore>", csound_score);
+    }
+    this?.log_overlay.clear();
+    if (is_offline == true) {
+      csd = csd.replace("-odac", "-o" + document.title + ".wav");
+    }
+    // Save the .csd file so we can debug a failing orchestra,
+    // instead of it just nullifying Csound.        
+    const csd_filename = document.title + '-generated.csd';
+    write_file(csd_filename, csd);
+    try {
+      let result = await this.csound.CompileCsdText(csd);
+      this.csound_message_callback("CompileCsdText returned: " + result + "\n");
+    } catch (e) {
+      alert(e);
+    }
+    await this.csound.Start();
+    // Send _current_ dat.gui parameter values to Csound 
+    // before actually performing.
+    this.send_parameters(this.control_parameters_addon);
+    this.csound_message_callback("Csound has started...\n");
+    if (is_offline == false) {
+      await this.csound.Perform();
+      console.log("strudel_view:", this.strudel_view);
+      strudel_view?.setCsound(this.csound);
+      strudel_view?.startPlaying();
+    } else {
+      // Returns before finishing because Csound will perform in a separate 
+      // thread.
+      await this.csound.performAndPostProcess();
+    }
+    this.piano_roll_overlay?.trackScoreTime();
+    this?.csound_message_callback("Csound is playing...\n");
+  }
+  stop = async function () {
+    this.piano_roll_overlay?.stop();
+    await this.csound.Stop();
+    await this.csound.Cleanup();
+    this.csound.Reset();
+    strudel_view?.stopPlaying();
+    this.csound_message_callback("Csound has stopped.\n");
+  };
   show(overlay) {
     if (overlay) {
       overlay.style.display = 'block';
@@ -421,9 +412,9 @@ class Cloud5Piece extends HTMLElement {
     return folder;
   }
   menu_slider_addon(gui_folder, token, minimum, maximum, step) {
-    const on_parameter_change = function (value) {
-      host.gk_update(token, value);
-    };
+    const on_parameter_change = ((value) => {
+      this.gk_update(token, value);
+    });
     gui_folder.add(this.control_parameters_addon, token, minimum, maximum, step).listen().onChange(on_parameter_change);
     // Remembers parameter values. Required for the 'Revert' button to 
     // work, and to be able to save/restore new presets.
@@ -606,12 +597,11 @@ class Cloud5Shader extends HTMLElement {
   set shader_parameters_addon(options) {
     this.#shader_parameters_addon = options;
     this.glsl = SwissGL(this.canvas);
-    let host = this;
-    let render = function (t) {
+    let render = ((t) => {
       t /= 1000;
-      host.glsl({ ...host.#shader_parameters_addon, t });
+      this.glsl({ ...this.#shader_parameters_addon, t });
       requestAnimationFrame(render);
-    }
+    });
     requestAnimationFrame(render);
   }
   get shader_parameters_addon() {
@@ -777,10 +767,9 @@ class Cloud5ShaderToy extends HTMLElement {
       alert("EXT_color_buffer_float is not available on this platform.");
     }
     this.mouse_position = [0, 0, 0, 0];
-    let host = this;
-    this.canvas.addEventListener('mousemove', (e) => {
-      host.mouse_position = [e.clientX, e.clientY];
-    });
+    this.canvas.addEventListener('mousemove', ((e) => {
+      this.mouse_position = [e.clientX, e.clientY];
+    }));
     const audio_texture_level = 0;
     const audio_texture_internalFormat = this.gl.R32F;
     const audio_texture_width = 512;
