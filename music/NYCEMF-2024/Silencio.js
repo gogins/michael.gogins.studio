@@ -805,7 +805,7 @@ if (typeof console === 'undefined') {
         this.scene.add(light2);
         window.addEventListener('resize', ((event) => this.onResize(event)), false);
     };
-    onResize = function(event) {
+    Score.prototype.onResize = function(event) {
         this.canvas.width = this.canvas.clientWidth;
         this.canvas.height = this.canvas.clientHeight;
         this.renderer.setViewport(0, 0, this.canvas.clientWidth, this.canvas.clientHeight);

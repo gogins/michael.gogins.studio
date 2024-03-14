@@ -3,7 +3,7 @@
  * is defined in the body of the HTML, its DOM object can be obtained, and 
  * then not only DOM methods but also custom methods can be called.
  * 
- * In general, rather than subclassing these custom elements  (although that 
+ * In general, rather than subclassing these custom elements (although that 
  * is possible), users should define and set hook functions, code text, and 
  * other properties of the custom elements.
  * 
@@ -312,6 +312,7 @@ class Cloud5Piece extends HTMLElement {
         }
       }
     });
+    this.show(this.shader_overlay);
     window.addEventListener("unload", function (event) {
       nw_window?.close();
     });
@@ -450,10 +451,8 @@ class Cloud5PianoRoll extends HTMLElement {
     * Called by the browser whenever this element is added to the document.
     */
   connectedCallback() {
-    this.style.background = 'black';
-    this.style.margin = '0';
     this.innerHTML = `
-     <canvas id="display" class='cloud5-panel' style='background:black;z-index:100;'>
+     <canvas id="display" class="cloud5-score-canvas">
     `;
     this.canvas = this.querySelector('#display');
     if (this.csoundac_score !== null) {
@@ -511,8 +510,7 @@ class Cloud5Strudel extends HTMLElement {
     */
   connectedCallback() {
     this.innerHTML = `
-    <strudel-repl-component id="strudel_view" 
-        style="position:absolute;left:70px;top:80px;z-index:1;">
+    <strudel-repl-component id="strudel_view" class='cloud5-strudel-repl'>
 
         <!--
         ${this.#strudel_code_addon}
@@ -668,16 +666,10 @@ class Cloud5ShaderToy extends HTMLElement {
     * Called by the browser whenever this element is added to the document.
     */
   connectedCallback() {
-    this.style.margin = '0';
-    this.canvas = document.createElement('canvas');
-    this.appendChild(this.canvas);
-    this.canvas.style.position = 'absolute';
-    this.canvas.style.top = '0';
-    this.canvas.style.left = '0';
-    this.canvas.style.margin = '0;'
-    this.canvas.style.display = 'block';
-    this.canvas.style.width = '100%';
-    this.canvas.style.height = '100%';
+    this.innerHTML = `
+     <canvas id="display" class="cloud5-shader-canvas">
+    `;
+    this.canvas = this.querySelector('#display');
   }
   /**
    * Back reference to the piece, which can be used e.g. to get a reference to 
@@ -920,8 +912,7 @@ class Cloud5Log extends HTMLElement {
   connectedCallback() {
     this.innerHTML = `<div 
       id='console_view' 
-      class="w3-text-sand cloud5-panel"
-      style="background-color:transparent;z-index:4;opacity:60%">`;
+      class="w3-text-sand cloud5-log-editor">`;
     this.message_callback_buffer = "";
     this.console_editor = ace.edit("console_view");
     this.console_editor.setShowPrintMargin(false);

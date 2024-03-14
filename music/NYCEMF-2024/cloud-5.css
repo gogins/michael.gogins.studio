@@ -1,0 +1,125 @@
+.w3-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.w3-bar {
+  z-index: 1;
+}
+
+html {
+  height: 100vh;
+  width: 100vw;
+}
+
+/* The cloud-5 custom elements share a common style, which can be overridden by lower level styles. */
+
+.cloud5-body {
+  width: 100vw;
+  min-height: 100vh;
+  background-color:black;
+}
+
+.cloud5-score-canvas,
+.cloud5-shader-canvas {
+  background:black;
+  margin: 0px;
+  width:100vw;
+  height:100vh;
+}
+
+.cloud5-strudel-repl {
+  position: absolute;
+  top: 40px;
+  left: 40px;
+  width: 600px;
+  height: 600px;
+}
+
+.cloud5-log-editor {
+  background: transparent;
+  z-index: 2000;
+  opacity: 60%;
+  height: calc(100vh-80px);
+  width: calc(100vw-80px);
+  margin: 40px;
+}
+
+cloud5-strudel, 
+cloud5-log, 
+cloud5-about {
+  position: absolute;
+  top: 0;
+  left: 0;
+  visibility: none;
+  display: none;
+  margin: 40px;
+  width: calc(100vw-80px);
+  height: calc(100vh-80px);
+  font-size: 11px;
+  z-index: 5;
+  background: transparent;
+  color: rgb(255, 255, 200, 67%);
+  /* overflow-y: auto; */
+  overflow-wrap: break-word;
+}
+
+cloud5-shader, 
+cloud5-shadertoy {
+  position: absolute;
+  top: 0;
+  left: 0;
+  visibility: none;
+  display: none;
+  margin: 0;
+  width: 100vw;
+  height: 100vh;
+  font-size: 11px;
+  /* z-index: 5; */
+  background: transparent;
+  color: rgb(255, 255, 200, 67%);
+  /* overflow-y: auto; */
+  overflow-wrap: break-word;
+}
+
+cloud5-piano-roll {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  visibility: none;
+  display: none;
+  margin: 0px;
+  width: 100vw;
+  height: 100vh;
+  font-size: 11px;
+  /* z-index: 5; */
+  background:  black;
+   /* overflow-y: auto; */
+  overflow-wrap: break-word;
+}
+
+  
+.dg {
+    font: 12px 'Verdana', sans-serif;
+}
+
+.dg .c {
+    background: transparent;
+}
+
+.dg.main .close-button {
+    background: transparent;
+    font: 15px 'Verdana', sans-serif;
+}
+
+.dg.main .close-button:hover {
+    background: transparent;
+}
+
+input {
+    font: 1em/1.25em Verdana, sans-serif;
+    background: transparent;
+}
