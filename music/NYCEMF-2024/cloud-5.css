@@ -1,14 +1,4 @@
-.w3-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-
-.w3-bar {
-  z-index: 1;
-}
+/* A cloud-5 piece always fills the viewport and only the viewport. */
 
 html {
   height: 100vh;
@@ -27,38 +17,52 @@ html {
 .cloud5-shader-canvas {
   background:black;
   margin: 0px;
-  width:100vw;
-  height:100vh;
+  width: 100vw;
+  height: 100vh;
 }
 
 .cloud5-strudel-repl {
   position: absolute;
-  top: 40px;
-  left: 40px;
-  width: 600px;
-  height: 600px;
+  top: 80px;
+  left: 80px;
+  /* Bring Strudel's self-determined font size back into line with ours. */
+  transform: scale(.75);
 }
 
 .cloud5-log-editor {
   background: transparent;
-  z-index: 2000;
-  opacity: 60%;
-  height: calc(100vh-80px);
-  width: calc(100vw-80px);
-  margin: 40px;
+  display: block;
+  margin: 0px;
+  width: 100%;
+  height: 100%;
+  font-size: 11px;
+  color: rgb(255, 255, 200, 67%);
+  overflow-wrap: break-word;
 }
 
-cloud5-strudel, 
-cloud5-log, 
+cloud5-log {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  visibility: none;
+  display: block;
+  padding: 80px;
+  width: 100vw;
+  height: 100vh;
+  z-index: 500;
+  background: transparent;
+}
+
+cloud5-strudel,
 cloud5-about {
   position: absolute;
   top: 0;
   left: 0;
   visibility: none;
   display: none;
-  margin: 40px;
-  width: calc(100vw-80px);
-  height: calc(100vh-80px);
+  padding: 80px;
+  width: 100vw;
+  height:100vh;
   font-size: 11px;
   z-index: 5;
   background: transparent;
@@ -101,6 +105,9 @@ cloud5-piano-roll {
   overflow-wrap: break-word;
 }
 
+/**
+ * Override styles of dat.gui menu to suit our styles.
+ */
   
 .dg {
     font: 12px 'Verdana', sans-serif;
