@@ -289,7 +289,7 @@ class Cloud5Piece extends HTMLElement {
     this.gui = new dat.GUI(dat_gui_parameters);
     let dat_gui = document.getElementById('menu_item_dat_gui');
     dat_gui.appendChild(this.gui.domElement);
-    document.addEventListener("keydown", function (e) {
+    document.onkeydown = ((e) => {
       let e_char = String.fromCharCode(e.keyCode || e.charCode);
       if (e.ctrlKey === true) {
         if (e_char === 'H') {
@@ -302,11 +302,13 @@ class Cloud5Piece extends HTMLElement {
           this.gui.closed = true;
           gui.closed = false;
         } else if (e_char === 'G') {
-          generate_score_hook();
+          this.score_generator_function_addon();
         } else if (e_char === 'P') {
-          parameters.play();
+          this.play();
         } else if (e_char === 'S') {
-          parameters.stop();
+          this.stop();
+        } else if (e_char === 'C') {
+          this?.piano_roll_overlay.recenter();
         }
       }
     });
@@ -491,6 +493,9 @@ class Cloud5PianoRoll extends HTMLElement {
   }
   stop() {
     clearInterval(this.interval_id);
+  }
+  recenter() {
+    this.silencio_score.lookAtFullScore3D();
   }
 }
 customElements.define("cloud5-piano-roll", Cloud5PianoRoll);
