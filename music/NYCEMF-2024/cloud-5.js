@@ -124,7 +124,7 @@ class Cloud5Piece extends HTMLElement {
    * notes for the piece, and so on.
    */
   #about_overlay = null;
-  csound_message_callback = async function(message) {
+  csound_message_callback = async function (message) {
     if (message === null) {
       return;
     }
@@ -364,7 +364,7 @@ class Cloud5Piece extends HTMLElement {
       // thread.
       await this.csound.performAndPostProcess();
     }
-    this.piano_roll_overlay?.trackScoreTime();
+    this?.piano_roll_overlay.trackScoreTime();
     this?.csound_message_callback("Csound is playing...\n");
   }
   stop = async function () {
@@ -479,12 +479,15 @@ class Cloud5PianoRoll extends HTMLElement {
     this.silencio_score.draw3D(this.canvas);
   }
   trackScoreTime() {
-    if (non_csound(this.csound5_piece.csound)) {
+    if (non_csound(this?.csound5_piece?.csound)) {
       return;
     }
-    let score_time = this.csound5_piece.csound.getScoreTime();
-    this.silencio_score.progress3D(score_time);
-    this.interval_id = setTimeout(() => this.trackScoreTime(), 200);
+    let interval_callback = async function () {
+      let score_time = await this?.csound5_piece?.csound?.GetScoreTime();
+      this?.silencio_score.progress3D(score_time);
+    };
+    let bound_interval_callback = interval_callback.bind(this);
+    this.interval_id = setInterval(bound_interval_callback, 200);
   }
   stop() {
     clearInterval(this.interval_id);
