@@ -253,7 +253,7 @@ class Cloud5Piece extends HTMLElement {
     let menu_item_strudel = document.querySelector('#menu_item_strudel');
     menu_item_strudel.onclick = ((event) => {
       console.log("menu_item_strudel click...");
-      this.hide(this.piano_roll_overlay)
+      //this.hide(this.piano_roll_overlay)
       this.toggle(this.strudel_overlay);
       // this.hide(this.shader_overlay);
       // this.hide(this.log_overlay);
@@ -263,7 +263,7 @@ class Cloud5Piece extends HTMLElement {
     menu_item_piano_roll.onclick = ((evemt) => {
       console.log("menu_item_piano_roll click...");
       this.toggle(this.piano_roll_overlay)
-      this.hide(this.strudel_overlay);
+      //this.hide(this.strudel_overlay);
       // this.hide(this.shader_overlay);
       // this.hide(this.log_overlay);
       this.hide(this.about_overlay);
@@ -272,7 +272,7 @@ class Cloud5Piece extends HTMLElement {
     menu_item_log.onclick = ((event) => {
       console.log("menu_item_log click...");
       //this.show(this.piano_roll_overlay)
-      this.hide(this.strudel_overlay);
+      //this.hide(this.strudel_overlay);
       //this.hide(this.shader_overlay);
       this.toggle(this.log_overlay);
       this.hide(this.about_overlay);
@@ -912,7 +912,7 @@ class Cloud5Log extends HTMLElement {
   connectedCallback() {
     this.innerHTML = `<div 
       id='console_view' 
-      class="w3-text-sand cloud5-log-editor">`;
+      class="cloud5-log-editor">`;
     this.message_callback_buffer = "";
     this.console_editor = ace.edit("console_view");
     this.console_editor.setShowPrintMargin(false);
