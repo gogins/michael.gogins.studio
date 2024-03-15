@@ -1,30 +1,33 @@
 /**
- * Defines custom HTML elements for the cloud-5 system. Once a custom element 
- * is defined in the body of the HTML, its DOM object can be obtained, and 
- * then not only DOM methods but also custom methods can be called.
+ * This script defines custom HTML elements and supporting code for the 
+ * cloud-5 system. Once a custom element is used in the body of a Web page, 
+ * its DOM object can be obtained, and then not only DOM methods but also 
+ * custom methods can be called.
  * 
  * In general, rather than subclassing these custom elements (although that 
  * is possible), users should define and set hook functions, code text, and 
- * other properties of the custom elements.
+ * other properties of the custom elements. All such user-defined properties 
+ * have names ending in `_addon`.
  * 
  * To simplify both usage and maintenance, internal styles are usually not 
- * used.
+ * used. Default styles are defined in the csound-5.css cascading style sheet. 
+ * These styles can be overridden by the user.
  * 
  * Usage:
- * 1. Include the csound-5.js script in the Web page.
+ * 
+ * 1. Include the csound-5.js and csound-5.css scripts in the Web page.
  * 2. Lay out and style the required custom elements as with any other HTNL 
- *    elements. The w3.css is used internally and should also be used 
- *    externally.
+ *    elements. The w3.css style sheet is used internally and should also be 
+ *    included.
  * 3. In a script element of the Web page:
- *    a. Define hook functions and code text as JavaScript variables.
+ *    a. Define adds as JavaScript variables.
  *    b. Obtain DOM objects from custom elements.
- *    c. Assign hook functions, code text, and DOM objects to their 
- *       relevant targets.
+ *    c. Assign custom elements and addons to their respective properties.
  */
 
 /**
- * Sets up the piece, and defines menu items as required. The overlays are 
- * other custom elements.
+ * Sets up the piece, and defines menu buttons. The user may assign the DOM 
+ * objects of other cloud-5 elements to the `_overlay` properties. 
  */
 class Cloud5Piece extends HTMLElement {
   constructor() {
@@ -46,7 +49,7 @@ class Cloud5Piece extends HTMLElement {
   * May be assigned an instance of a cloud5-shader overlay. If so, 
   * the GLSL shader will run at all times, and will normally create the 
   * background for other overlays. The shader overlay may call 
-  * a hook function either to visualize the audio of the performance, 
+  * an addon function either to visualize the audio of the performance, 
   * or to sample the video canvas to generate notes for performance by 
   * Csound.
   */
@@ -85,7 +88,8 @@ class Cloud5Piece extends HTMLElement {
    * May be assigned a score generating function. If so, the score generator 
    * will be called for each performance, and must generate and return a 
    * CsoundAC Score, which will be translated to a Csound score in text 
-   * format, appended to the Csound patch, and played or rendered by Csound.
+   * format, appended to the Csound patch, displayed in the piano roll 
+   * overlay, and played or rendered by Csound.
    */
   #score_generator_function_addon = null;
   set score_generator_function_addon(score_generator_function) {
@@ -95,9 +99,9 @@ class Cloud5Piece extends HTMLElement {
     return this.#score_generator_function_addon;
   }
   /**
-   * May be assigned an instance of a cloud5-piano-roll overlay. If so, then 
-   * the Score button will be created for showing and hiding a piano roll 
-   * display of the generated CsoundAC Score.
+   * May be assigned an instance of a cloud5-piano-roll overlay. If so, the 
+   * Score button will show or hide an animated, zoomable piano roll display 
+   * of the generated CsoundAC Score.
    */
   #piano_roll_overlay = null;
   set piano_roll_overlay(piano_roll) {
@@ -108,17 +112,16 @@ class Cloud5Piece extends HTMLElement {
     return this.#piano_roll_overlay;
   }
   /**
-   * May be assigned an instance of the cloud5-log overlay. If so, 
-   * the Log button will be created for showing and hiding a scrolling 
-   * view of messages from Csound or other sources.
+   * May be assigned an instance of the cloud5-log overlay. If so, the Log 
+   * button will show or hide a scrolling  view of messages from Csound or 
+   * other sources.
    */
   #log_overlay = null;
   /**
    * May be assigned an instance of the cloud5-about overlay. If so,
-   * the About button wll be created for showing and hiding the text 
-   * of the overlay. The inner HTML of this element should contain 
-   * license information, authorship, credits, and program notes for the 
-   * piece.
+   * the About button will show or hide the overlay. The inner HTML of this 
+   * element may contain license information, authorship, credits, program 
+   * notes for the piece, and so on.
    */
   #about_overlay = null;
   csound_message_callback = async function(message) {
@@ -164,7 +167,8 @@ class Cloud5Piece extends HTMLElement {
     this.log_overlay?.log(message);
   }
   /**
-    * Metadata to be written to output files.
+    * Metadata to be written to output files. The user may assign 
+    * values to any of these fields.
     */
   metadata = {
     "artist": null,
@@ -180,12 +184,6 @@ class Cloud5Piece extends HTMLElement {
     "license": null,
     "genre": null,
   };
-
-  /**
-    * Called by the browser whenever this element is added to the 
-    * document. Construction and initialization of the element should take 
-    * place here.
-    */
   connectedCallback() {
     this.innerHTML = `
     <div class="w3-bar" id="main_menu" style="position:fixed;background:transparent;z-index:10000;">
@@ -447,9 +445,6 @@ class Cloud5PianoRoll extends HTMLElement {
     this.canvas = null;
     this.interval_id = null;
   }
-  /**
-    * Called by the browser whenever this element is added to the document.
-    */
   connectedCallback() {
     this.innerHTML = `
      <canvas id="display" class="cloud5-score-canvas">
@@ -499,15 +494,12 @@ customElements.define("cloud5-piano-roll", Cloud5PianoRoll);
 
 /**
  * Contains an instance of the Strudel REPL that can use Csound as an output,
- * and starts and stops along wth Csound.
+ * and that starts and stops along wth Csound.
  */
 class Cloud5Strudel extends HTMLElement {
   constructor() {
     super();
   }
-  /**
-    * Called by the browser whenever this element is added to the document.
-    */
   connectedCallback() {
     this.innerHTML = `
     <strudel-repl-component id="strudel_view" class='cloud5-strudel-repl'>
@@ -541,9 +533,9 @@ class Cloud5Strudel extends HTMLElement {
 customElements.define("cloud5-strudel", Cloud5Strudel);
 
 /**
- * Presents visuals generated by a GLSL shader. These visuals can 
- * show a visualization of the music, or be sampled to generate notes for 
- * Csound to perform.
+ * Presents visuals generated by a GLSL shader. These visuals can show a 
+ * visualization of the music, or be sampled to generate notes for Csound to 
+ * perform.
  * 
  * The SWSS glsl function accepts a dictionary of parameters, documented 
  * here: https://github.com/google/swissgl/blob/main/docs/API.md. The most 
@@ -620,9 +612,9 @@ class Cloud5Shader extends HTMLElement {
 customElements.define("cloud5-shader", Cloud5Shader);
 
 /**
- * Presents visuals generated by a GLSL shader. These visuals can 
- * show a visualization of the music, or be sampled to generate notes for 
- * Csound to perform.
+ * Presents visuals generated by a GLSL shader. These visuals can show a 
+ * visualization of the music, or be sampled to generate notes for Csound to 
+ * perform.
  * 
  * This class is specifically designed to simplify the use of shaders 
  * developed in or adapted from ShaderToy. Other types of shader also can be 
@@ -662,9 +654,6 @@ class Cloud5ShaderToy extends HTMLElement {
   constructor() {
     super();
   }
-  /**
-    * Called by the browser whenever this element is added to the document.
-    */
   connectedCallback() {
     this.innerHTML = `
      <canvas id="display" class="cloud5-shader-canvas">
@@ -684,21 +673,22 @@ class Cloud5ShaderToy extends HTMLElement {
   }
   /**
    * A number of parameters must be up to date at the same time before the 
-   * shader program can be compiled. These are passed in this property, upon 
-   * which the shader is compiled and begins to run. The paramameters are:
+   * shader program can be compiled. These are passed to this property in an 
+   * object, upon which the shader is compiled and begins to run. The 
+   * paramameters are:
    * `{
    *  fragment_shader_addon: code,    \\ Required GLSL code.
    *  vertex_shader_addon: code,      \\ Has a default value, but may be 
    *                                  \\ overridden with custom GLSL code.
    *  set_uniforms_addon: function,   \\ Optional JavaScript function to set 
-   *                                  \\ uniforms, e.g. in a music visualizer,
-   *                                  \\ called in the animation loop before 
+   *                                  \\ uniforms, e.g. in a music visualizer. 
+   *                                  \\ Called in the animation loop before 
    *                                  \\ drawing a frame.
    *  get_attributes_addon: function, \\ Optional JavaScript function to get 
    *                                  \\ attributes such as buffers or 
    *                                  \\ samplers, e.g. for sampling the 
-   *                                  \\ shader to generate musical notes,
-   *                                  \\ called in the animation loop after 
+   *                                  \\ shader to generate musical notes.
+   *                                  \\ Called in the animation loop after 
    *                                  \\ drawing a frame.                  
    * }`
    */
@@ -816,8 +806,6 @@ class Cloud5ShaderToy extends HTMLElement {
     this.shader_program.iChannel2 = this.gl.getUniformLocation(this.shader_program, "iChannel2");
     this.shader_program.iChannel3 = this.gl.getUniformLocation(this.shader_program, "iChannel3");
     this.shader_program.iSampleRate = this.gl.getUniformLocation(this.shader_program, "iSampleRate");
-    this.shader_program.spectralTilt = this.gl.getUniformLocation(this.shader_program, "spectralTilt");
-    this.shader_program.totalLoudness = this.gl.getUniformLocation(this.shader_program, "totalLoudness");
     this.gl.useProgram(this.shader_program);
 
     this.gl.uniform1f(this.shader_program.iSampleRate, 48000.);
@@ -906,9 +894,6 @@ class Cloud5Log extends HTMLElement {
     super();
     this.csound5_piece = null;
   }
-  /**
-    * Called by the browser whenever this element is added to the document.
-    */
   connectedCallback() {
     this.innerHTML = `<div 
       id='console_view' 
@@ -945,8 +930,7 @@ class Cloud5Log extends HTMLElement {
 customElements.define("cloud5-log", Cloud5Log);
 
 /**
- * Contains license, authorship, credits, and program notes as the inner HTML 
- * of this.
+ * May contain license, authorship, credits, and program notes as inner HTML.
  */
 class Cloud5About extends HTMLElement {
   constructor() {
