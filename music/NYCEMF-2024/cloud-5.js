@@ -56,6 +56,8 @@ class Cloud5Piece extends HTMLElement {
   #shader_overlay = null;
   set shader_overlay(shader) {
     this.#shader_overlay = shader;
+    // Back reference for shader to access Csound, etc.
+    shader.csound5_piece = this;
     this.show(this.#shader_overlay);
   }
   get shader_overlay() {
@@ -636,7 +638,7 @@ class Cloud5ShaderToy extends HTMLElement {
   void main() {
       gl_Position = vec4(inPos.xy, 0.0, 1.0);
   }`;
-  analyzer = null;
+  analyser = null;
   uniforms = {};
   uniform_locations = {};
   attributes = null;
@@ -868,6 +870,17 @@ class Cloud5ShaderToy extends HTMLElement {
    * Runs the shader in an endless loop of animation frames.
    */
   render_frame(milliseconds) {
+    // Here we create an AnalyserNode as soon as Csound is available.
+    if (this.analyser) {
+    } else {
+      let csound = this?.csound5_piece?.csound;
+      if (csound) {
+        this.analyser = new AnalyserNode(csound.context);
+        this.analyser.fftSize = 2048;
+        console.log("Analyzer buffer size: " + this.analyser.frequencyBinCount);
+        csound.connect(this.analyser);
+      }  
+    }
     this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
     // Custom uniforms may be set in this addon. Such uniforms can be used 

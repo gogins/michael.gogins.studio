@@ -36,7 +36,7 @@
 \mainmatter  % start of an individual contribution
 
 % first the title is needed
-\title{cloud-5:\\An Environment for Generating and Publishing Cloud Music}
+\title{cloud-5:\\An System for Generating and Publishing Cloud Music}
 
 % a short form should be given in case it is too long for the running head
 \titlerunning{Running Title}
@@ -81,15 +81,16 @@ I would go so far as to say that the establishment of Web standards is one of th
 
 Now to music. Music now has, in spite of everything, thanks to Web standards and the growing capabilities of browsers, a new platform that provides both novel power to composers and novel availability to audiences. This is what I call \emph{cloud music}: computer music that runs in Web browsers. Not downloads, not streams, but autonomous programs that synthesize music and visuals in real time with the option of interacting with the audience, performing endlessly, producing endless variations, and communicating across the world. Such music can be free, or secured for paid subscriptions, or supported by advertising. 
 
-The audio resolution in cloud-5 is the same as that of WebAudio: 48,000 frames per second of floating-point samples in 128 frame buffers. Although studio software often offers even higher resolution, WebAudio does operate within the recognized range of professional audio production quality. Furthermore, Csound can interpolate samples within the 128 frame buffers,
+The audio resolution in cloud-5 is the same as that of WebAudio: 48,000 frames per second of floating-point samples in 128 frame buffers. Although studio software can offer even higher resolution, WebAudio does operate within the recognized range of professional audio production quality. Furthermore, Csound can interpolate samples within the 128 frame buffers.
 
 For examples of cloud music, one may look to online computer games with procedural audio, the Strudel live coding system, or my own compositions produced using the subject of this paper, cloud-5.
 
 \section{Use Cases and Examples}
 
 \begin{description}
-\item[Composition] The cloud-5 system is useful for the composition of electroacoustic music because it contains very powerful facilities. These include all the astonishing capabilities already built into every standard Web browser, a complete WebAssembly build of Csound, a complete WebAssembly build of my CsoundAC algorithmic composition library, the complete Strudel live coding system which can render audio using either Csound or its own built-in sampler and synthesizer, and any other module that will run in a Web browser. All of these facilities are completely cross-platform. That makes cloud-5 far and away the easiest computer music system of comparable power to install and configure: unzip it somewhere and run a local Web server in that directory. 
-\item[Fixed Pieces] These are similar to fixed medium pieces of electroacoustic music. When the user starts the piece, it plays audio until the score ends. \item[Always-On Pieces] Similar to fixed pieces; but once started, always-on pieces play indefinitely. By using randomization or fractals, always-on pieces can play indefinitely without any repetition.
+\item[Composition] The cloud-5 system is useful for the composition of electroacoustic music because it contains very powerful facilities. These include all the astonishing capabilities already built into every standard Web browser, a complete WebAssembly build of Csound, a complete WebAssembly build of the CsoundAC algorithmic composition library, the complete Strudel live coding system which can render audio using either Csound or its own built-in sampler and synthesizer, and any other module that will run in a Web browser. All of these facilities are completely cross-platform. That makes cloud-5 far and away the easiest computer music system of comparable power to install and configure: unzip it somewhere and run a local Web server in that directory. 
+\item[Fixed Pieces] These are similar to fixed medium pieces of electroacoustic music. When the user starts the piece, it plays audio until the score ends. 
+\item[Always-On Pieces] Similar to fixed pieces; but once started, always-on pieces play indefinitely. By using randomization or fractals, always-on pieces can play indefinitely without any repetition.
 \item[Interactive Pieces] Similar to fixed pieces or always-on pieces; but once the piece is started, the user interface provides controls with which the user may steer some aspects of the composition or rendering.
 \item[Live Coding] Similar to interactive pieces; but the user has \emph{complete} control over the composition in the Strudel REPL, and can create entirely new compositions or engage in lengthy improvisations.
 \item[Music Visualization] Similar to the other pieces above, but a GLSL shader displays a visualization controlled by the audio on the background of the piece, and this visualization can be made full screen.
@@ -101,7 +102,7 @@ For examples of cloud music, one may look to online computer games with procedur
 
 The cloud-5 user interface consists of a main menu running across the top of the page. Clicking on a button can start or stop performance, or show/hide various overlays that fill the rest of the page. 
 
-The cloud5-system is constructed as a library of Web components in the form of HTML custom elements, which encapsulate code and even some styling within each HTML element. This makes it much easier for users not familiar with the details of HTML or JavaScript to write cloud-5 pieces. The user includes these custom elements in the HTML code like any other elements, adds user-defined code such as a Csound orchestra or Strudel patch, and hooks the parts up together using a little JavaScript. Code folding regions make it easier to organize the code and to see only the part that is being edited. To make it easier for users to construct pieces, a naming convention is used. Names ending in \texttt{\_overlay} denote Web. components, and names ending in \texttt{\_addon} denote things that the user needs to provide, including code (JavaScript, Csound, Strudel, GLSL), parameters, and others.
+The cloud5-system is constructed as a library of Web components in the form of HTML custom elements, which encapsulate code and even some styling within each HTML element. This makes it much easier for users not familiar with the details of HTML or JavaScript to write cloud-5 pieces. The user includes these custom elements in the HTML code like any other elements, adds user-defined code such as a Csound orchestra or Strudel patch, and hooks the parts up together using a little JavaScript. Code folding regions make it easier to organize the code and to see only the part that is being edited. To make it easier for users to construct pieces, a naming convention is used. Names ending in \texttt{\_overlay} denote Web. components, and names ending in \texttt{\_addon} denote things that the user must or map provide, including code (JavaScript, Csound, Strudel, GLSL), parameters, and others.
 
 \subsection{Components}
 
