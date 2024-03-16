@@ -719,7 +719,7 @@ class Cloud5ShaderToy extends HTMLElement {
       this.vertex_shader_code_addon = this.#shader_parameters_addon.vertex_shader_code_addon;
     }
     this.fragment_shader_code_addon = this.#shader_parameters_addon.fragment_shader_code_addon;
-    this.set_normals_function_addon = this.#shader_parameters_addon.set_normals_function_addon;
+    this.set_uniforms_function_addon = this.#shader_parameters_addon.set_normals_function_addon;
     this.get_attributes_function_addon = this.#shader_parameters_addon.get_attributes_function_addon;
     this.prepare_canvas();
     this.compile_shader();
