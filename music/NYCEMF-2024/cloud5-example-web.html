@@ -2001,44 +2001,44 @@
         // #region Strudel
         cloud5_piece.strudel_overlay = document.querySelector('cloud5-strudel');
         cloud5_piece.strudel_overlay.strudel_code_addon = `
-const csac = await import('../csoundac.mjs');
-csac.diagnostic_level(csac.INFORMATION);
-stack(
-    "0,3,[11 6]"
-    .add("<0 1 2 [3 4] 5 7 8>")
-    .transpose("<0 1 2 1>/8")
-    .slow(2)
-    .degradeBy(.125)
-    .transpose("48 36")
-    .legato(.95)
-    .iter(2)
-    //.tune("ji_12c")
-    .add(24)
-    .note()
-    .csoundn("<1 2 8 10>")
-    .gain(.25),
-"0,4,[7 6]"
-    .sub("<0 1 2 3 4 5 [7 8] 9>")
-    .transpose("<0 1 -1 1>/3")
-    .iter(4)
-    .slow(7)
-    .transpose("<48 36>/7")
-    .legato(.95)
-    //.tune("ji_12c")
-    .add(24)
-    .slow(4)
-    .note()
-    .csoundn("<2 3 6>")
-    .gain(.25)
-    )
-    .pianoroll({labels:1,fillActive:1,cycles:32,playhead:.9})
-`;
+        const csac = await import('../csoundac.mjs');
+    csac.diagnostic_level(csac.INFORMATION);
+    
+    stack("0,3,[11 6]"
+      .add("<0 1 2 [3 4] 5 7 8>")
+      .transpose("<0 1 2 1>/8")
+      .slow(2)
+      .degradeBy(.125)
+      .transpose("48 36")
+      //.legato(.95)
+      .iter(2)
+      //.tune("ji_12c")
+      .add(24)
+      .note()
+      .csoundn("<1 2 8 10>")
+      .gain(.25),
+    "0,4,[7 6]"
+      .sub("<0 1 2 3 4 5 [7 8] 9>")
+      .transpose("<0 1 -1 1>/3")
+      .iter(4)
+      .slow(7)
+      .transpose("<48 36>/7")
+      //.legato(.95)
+      //tune("ji_12c")
+      .add(24)
+      .slow(.4)
+      .note()
+      .csoundn("<2 3 6>")
+      .gain(.3) 
+      )
+      .pianoroll({labels:1,fillActive:1,cycles:32,minMidi:18,maxMidi:127,playhead:.9})
+      `;
         // #endregion
         // #region Controls 
         cloud5_piece.control_parameters_addon = {
             "gk_Duration_factor": 0.8682696259761612,
             "gk_Iterations": 4,
-            "gk_MasterOutput_level": -2.383888203863542,
+            "gk_MasterOutput_level": 20.,
             "gk_ReverbSC_wet": 0.5,
             "gk_ReverbSC_feedback": 0.85,
             "gk_ReverbSC_delay_modulation": 0.0075,
@@ -2214,8 +2214,8 @@ stack(
         // (year, month, day, time in seconds)
         uniform float iSampleRate;
         // sound sample rate (i.e., 44100)
-        uniform float spectralTilt;
-        uniform float totalLoudness;
+        uniform float spectral_tilt;
+        uniform float total_loudness;
       
         /**
          * Theoretically, any fragment shader copied from the ShaderToy 
@@ -2299,13 +2299,14 @@ stack(
             c /= float(MAX_ITER);
             c = 1.17 - pow(c, 1.4);
             vec3 colour = vec3(pow(abs(c), 10.0));
-            colour.r = colour.r - spectralTilt;
-            colour.b = colour.b + spectralTilt;
-            colour *= (1.1 + totalLoudness);
             colour = clamp(colour + vec3(0.095), 0.0, 1.0);
             float palettePhase = abs(sin(uv.x * uv.y + iTime * 0.05)) + iTime * 0.1;
             vec3 col = palette(palettePhase, vec3(0.5, 0.5, 0.5), vec3(0.5, 0.5, 0.5), vec3(2.0, 1.0, 0.0), vec3(0.50, 0.20, 0.25));
             col *=  colour;
+            col = rgb2hsv(col);
+            col.x *= (spectral_tilt * 5.);
+            col.z *= (total_loudness * 3.);
+            col = hsv2rgb(col);
             fragColor = vec4(col, 1.0);
         }
         `,
@@ -2318,7 +2319,7 @@ stack(
                         let sample = this.frequency_domain_data[i];
                         // Map frequency domain magnitudes from [0, 255] to [0, 1].
                         sample = sample / 255.;
-                        // Reddest is 0, bluest is 1.
+                        // Reddest is 0, violet is 1.
                         let blueness = i / this.frequency_domain_data.length;
                         spectral_tilt += (sample * blueness);
                         total_loudness += sample;
@@ -2326,11 +2327,11 @@ stack(
                     // Spectral tilt is normalized by loudness.
                     spectral_tilt /= total_loudness;
                     total_loudness /= 100.;
-                    console.info(`tilt: ${spectral_tilt} loudness: ${total_loudness}`);
+                    /// console.info(`tilt: ${spectral_tilt} loudness: ${total_loudness}`);
                     // Set the uniforms.
-                    let spectral_tilt_location = this.uniform_locations['spectralTilt'];
+                    let spectral_tilt_location = this.uniform_locations['spectral_tilt'];
                     this.gl.uniform1f(spectral_tilt_location, spectral_tilt);
-                    let total_loudness_location = this.uniform_locations['totalLoudness'];
+                    let total_loudness_location = this.uniform_locations['total_loudness'];
                     this.gl.uniform1f(total_loudness_location, total_loudness);
                 }
             }).bind(cloud5_shader),
