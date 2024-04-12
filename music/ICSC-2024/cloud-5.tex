@@ -36,10 +36,10 @@
 \mainmatter  % start of an individual contribution
 
 % first the title is needed
-\title{cloud-5:\\An System for Generating and Publishing Cloud Music}
+\title{cloud-5:\\A System for Generating and Publishing Cloud Music}
 
 % a short form should be given in case it is too long for the running head
-\titlerunning{Running Title}
+\titlerunning{Cloud Music}
 
 
 % TO GARANTEE THE DOUBLE BLIND REVIEW PROCESS, PLEASE
@@ -61,70 +61,80 @@
 % "llncs.dem" accompanies the document class "llncs.cls".
 %
 
-
 \maketitle
-
 % Should be 150 to 350 words.
 \begin{abstract}
+    
 The advent of the World Wide Web, the standardization of HTML with adequate support for computer graphics and audio, and the introduction 
-of WebAssembly as a low-level language and browser-hosted runtime for any number of computer language compilers, have combined to create an environment well suited to the \emph{online} production, publication, and presentation of art music, visual music, and 
+of WebAssembly as a low-level language and browser-hosted runtime for any number of computer language compilers, have combined to create an environment well suited to the \emph{online} production, publication, and presentation of music, visual music, and 
 related media at a \emph{professional} standard of technical quality. A piece of music on the World Wide Web no longer need be merely 
-a link to a downloadable soundfile or video, or even to an audio or visual stream. A piece can, indeed, be its own ``app" that is live code running at near native speed  in the listener's Web browser. I call this kind of music \emph{cloud music} because it exists only in the ``cloud,'' the omnipresent computing infrastructure of the Web. I argue that this creates an entirely new environment for music that may, in the future, develop its own social context and function as an alternative means of disseminating art music in addition to live performances, discs, streams, and downloads. Here, I present and demonstrate \emph{cloud-5}, a collection of Web components for producing cloud music including, among other things, fixed medium music, music that plays indefinitely, visuals that generate music, music that generates visuals, interactive music, and live coding. cloud-5 includes a WebAssembly build of the sound programming language and software synthesis system Csound, a WebAssembly build of the CsoundAC library for algorithmic composition including chords, scales, and voice-leading, the live coding system Strudel, and supporting code for menus, event handlers, GLSL shaders, and more. A cloud-5 piece thus exists as an HTML page that embeds Csound code and/or score generation code and/or Strudel code and/or GLSL code, in the context of a static Web site that can be served either locally (for composing and performing) or remotely on the World Wide Web (for publication).
+a link to a downloadable soundfile or video, or even to a stream. A piece can, indeed, be its own ``app" that is live code running at near native speed  in the listener's Web browser. I call this kind of music \emph{cloud music} because it exists only in the ``cloud,'' the omnipresent computing infrastructure of the Web. I argue that this creates an entirely new environment for music that, in the future, should be developed with its own social context and to function as an alternative means of disseminating music in addition to live performances, discs, streams, and downloads. Here, I present and demonstrate \emph{cloud-5}, a system of Web components for producing cloud music including, among other things, fixed medium music, music that plays indefinitely, visuals that generate music, music that generates visuals, interactive music, and live coding. cloud-5 includes a WebAssembly build of the sound programming language and software synthesis system Csound, a WebAssembly build of the CsoundAC library for algorithmic composition including chords, scales, and voice-leading, the live coding system Strudel, and supporting code for menus, event handlers, GLSL shaders, and more. A cloud-5 piece thus exists as an HTML page that embeds Csound code and/or score generation code and/or Strudel code and/or GLSL code, in the context of a static Web site that can be served either locally (for composing and performing) or remotely on the World Wide Web (for publication). cloud-5 differs from related online music systems  not only by incorporating Csound and CsoundAC, but even more by designing the system primarily as a new medium of presentation and publication.
+
 \keywords{html5, webassembly, csound, algorithmic composition, visual music, live coding}
 \end{abstract}
 
 \section{Introduction}
 
-The World Wide Web was invented for the purpose of publishing scientific information by any scientist, to any scientist. It was then co-opted by American business interests for the purpose of selling to consumers. Along the way, it became a conduit for the wholesale theft of intellectual property in the form of illegal downloads of recorded music, films, and computer games. Then it became the major platform for social media, another (disguised) form of selling to consumers while taking their personal data. Indeed, most people's use of the Web has been increasingly funneled through Google search and various social media platforms, which are highly proprietary and far from open. Yet, at every step along this tortuous path, the original inventions that created the World Wide Web, including packet-switched networking (especially TCP/IP) and the Web browser itself, based on  Web standards (including HTTP, URLs, HTML, MIME types, JavaScript, and now WebAssembly), have remained non-proprietary, decentralized, backwards compatible, and more or less open. In fact, driven by both entrepreneurship and the competitive pressure to show ever more appealing ads, the power of Web browsers has increased to the point of providing the equivalent of a game engine and an operating system, running only about 1.5 to 2.5  times as slowly as native C code.
+The World Wide Web was invented to enable the instant sharing of scientific information between scientists \cite{www}. It was then co-opted by American business interests for the purpose of selling to consumers \cite{gore}. Along the way, it became a conduit for the wholesale theft of intellectual property in the form of illegal downloads of recorded music, films, and computer games --- bad enough, but the commercial and legal reactions may well have been worse \cite{freeculture}. Then it became the platform for social media, which provide free services and entertainment to consumers in return for selling their personal data to advertisers \cite{socialmedia}. Indeed, most people's use of the Web has been increasingly funneled through Google search and various social media platforms, which are highly proprietary, far from open, and legally and politically contested \cite{surveillance}. 
 
-I would go so far as to say that the establishment of Web standards is one of the most fortunate things that has ever happened, because it preserves essential freedoms in face of a rather remarkable level of skilled greed (I remain wary, however, that private interests will end up hijacking these standards and manipulating them to be less open).
+\emph{And yet}, at every step along this tortuous path, the original inventions that created the World Wide Web, including packet-switched networking (especially TCP/IP) and the Web browser itself, loosely termed ``Web standards" but in fact consisting of numerous standards from the Internet Engineering Task Force \cite{ietf}, the World Wide Web Consortium \cite{w3c}, Ecma \cite{ecma}, and other bodies, have remained non-proprietary, decentralized, backwards compatible, and more or less open. These are all of the standards that are implemented by up to date Web browsers such as Firefox, Google Chrome, and so on \cite{html5test}. In fact, driven by the competitive pressure to show ever more appealing ads, the power of Web browsers has increased to the point of providing the equivalent of a game engine and an operating system, running only about 1.5 to 2.5  times as slowly as native C code \cite{wasmspeed}. 
+
+I would go so far as to say that the establishment of Web standards is one of the most fortunate things that has ever happened, because it preserves essential freedoms in the face of a rather remarkable level of skilled greed (I remain wary, however, that private interests will end up hijacking these standards and manipulating them to be less open).
+
+Fortunately, users of cloud-5 usually need consult only a few reference manuals: Csound \cite{csoundreference} \cite{csoundapireference}, CsoundAC \cite{csoundacreference}, Strudel \cite{strudel}, JavaScript \cite{javascriptreference}, and WebGL \cite{webglreference}, 
 
 Now to music. Music now has, in spite of everything, thanks to Web standards and the growing capabilities of browsers, a new platform that provides both novel power to composers and novel availability to audiences. This is what I call \emph{cloud music}: computer music that runs in Web browsers. Not downloads, not streams, but autonomous programs that synthesize music and visuals in real time with the option of interacting with the audience, performing endlessly, producing endless variations, and communicating across the world. Such music can be free, or secured for paid subscriptions, or supported by advertising. 
 
-The audio resolution in cloud-5 is the same as that of WebAudio: 48,000 frames per second of floating-point samples in 128 frame buffers. Although studio software can offer even higher resolution, WebAudio does operate within the recognized range of professional audio production quality. Furthermore, Csound can interpolate samples within the 128 frame buffers.
-
-For examples of cloud music, one may look to online computer games with procedural audio, the Strudel live coding system, or my own compositions produced using the subject of this paper, cloud-5.
+For just a few examples of cloud music, one may look to Generative.fm \cite{alexbainter}, WebSynth \cite{websynth}, Gibber \cite{gibber}, the Strudel live coding system \cite{strudel}, or my own compositions produced using the subject of this paper, cloud-5 \cite{cloud5}.
 
 \section{Use Cases and Examples}
 
+Audio resolution in cloud-5 is the same as that of WebAudio: 48,000 frames per second of float samples in 128 frame chunks \cite{webaudiostandard}. Although studio software can offer even higher resolution, WebAudio operates within the recognized range of professional audio production quality \cite{katz} \cite{bassal}. Furthermore, Csound can interpolate samples within the 128 frame chunks. Use cases include:
+
 \begin{description}
-\item[Composition] The cloud-5 system is useful for the composition of electroacoustic music because it contains very powerful facilities. These include all the astonishing capabilities already built into every standard Web browser, a complete WebAssembly build of Csound, a complete WebAssembly build of the CsoundAC algorithmic composition library, the complete Strudel live coding system which can render audio using either Csound or its own built-in sampler and synthesizer, and any other module that will run in a Web browser. All of these facilities are completely cross-platform. That makes cloud-5 far and away the easiest computer music system of comparable power to install and configure: unzip it somewhere and run a local Web server in that directory. 
+\item[Composition] The cloud-5 system contains all the astonishing capabilities already built into every standard Web browser, a complete WebAssembly build of Csound, a complete WebAssembly build of the CsoundAC algorithmic composition library, the complete Strudel live coding system which can render audio using either Csound or its own built-in sampler and synthesizer, and any other module that will run in a Web browser. All of these facilities are completely cross-platform. That makes cloud-5 far and away the easiest computer music system of comparable power to install and configure: unzip it somewhere and run a local Web server in that directory. 
 \item[Fixed Pieces] These are similar to fixed medium pieces of electroacoustic music. When the user starts the piece, it plays audio until the score ends. 
 \item[Always-On Pieces] Similar to fixed pieces; but once started, always-on pieces play indefinitely. By using randomization or fractals, always-on pieces can play indefinitely without any repetition.
 \item[Interactive Pieces] Similar to fixed pieces or always-on pieces; but once the piece is started, the user interface provides controls with which the user may steer some aspects of the composition or rendering.
 \item[Live Coding] Similar to interactive pieces; but the user has \emph{complete} control over the composition in the Strudel REPL, and can create entirely new compositions or engage in lengthy improvisations.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.90\linewidth]{cloud5.png}
+\caption{cloud-5 Piece with Strudel and Audio Visualization}
+\label{fig:cloud5}
+\end{figure}
+
 \item[Music Visualization] Similar to the other pieces above, but a GLSL shader displays a visualization controlled by the audio on the background of the piece, and this visualization can be made full screen.
 \item[Visual Music] Similar to music visualization, but the video buffer is periodically downsampled or otherwise processed to produce fragments of Csound score, which are rendered by Csound in real time.
 \item[Network Pieces] Any of these types of pieces can request additional resources from the Internet, or be controlled remotely.
 \end{description}
 
-\section{Basic Design}
+\section{Design}
 
 The cloud-5 user interface consists of a main menu running across the top of the page. Clicking on a button can start or stop performance, or show/hide various overlays that fill the rest of the page. 
 
-The cloud5-system is constructed as a library of Web components in the form of HTML custom elements, which encapsulate code and even some styling within each HTML element. This makes it much easier for users not familiar with the details of HTML or JavaScript to write cloud-5 pieces. The user includes these custom elements in the HTML code like any other elements, adds user-defined code such as a Csound orchestra or Strudel patch, and hooks the parts up together using a little JavaScript. Code folding regions make it easier to organize the code and to see only the part that is being edited. To make it easier for users to construct pieces, a naming convention is used. Names ending in \texttt{\_overlay} denote Web. components, and names ending in \texttt{\_addon} denote things that the user must or map provide, including code (JavaScript, Csound, Strudel, GLSL), parameters, and others.
+The cloud5-system is constructed as a library of HTML custom elements, which encapsulate code and even some styling within each custom element. This makes it much easier for users not familiar with the details of HTML or JavaScript to compose cloud-5 pieces. The user includes these custom elements in their HTML code like any other elements, adds user-defined code such as a Csound orchestra or Strudel patch, and hooks the parts up together using a little JavaScript. Code folding regions make it easier to organize the code and to see only the part that is being edited. 
 
-\subsection{Components}
-
-Currently, cloud-5 consists of the following custom elements and user addons:
+Currently, cloud-5 consists of a number of custom elements and user addons. To make it easier for users to construct pieces, a naming convention is used. Names ending in \texttt{\_overlay} denote Web. components, and names ending in \texttt{\_addon} denote things that the user must or map provide, including code (JavaScript, Csound, Strudel, GLSL), parameters, and others.
 
 \begin{description}
 \item[\texttt{<cloud5-piece>}] This custom element defines the main menu of the piece and its event handlers, instantiates Csound and/or Strudel as required, starts and stops performances, hosts a controls submenu, and defines some helper JavaScript code.
 \item[\texttt{<cloud5-piece>.csound\_code\_addon}]  This is user-defined code as a multi-line JavaScript string containing the complete text of a Csound .csd file (which can be quite large).
 \item[\texttt{<cloud5-piece>.control\_parameters\_addon}]  This a user-defined JavaScript object whose fields have the names and initial values of Csound control channels.
 \item[\texttt{<cloud5-piece>.menu\_folder\_addon}]  The user calls this with the name of a new folder to be added to the controls menu of the piece.
-\item[\texttt{<cloud5-piece>.menu\_slider\_addon}]  The user calls this with the name of a new slider control to be added to the controls menu, along with its Csound channel name, lowest value, highest value, and the folder to which the slider will be added.
+\item[\texttt{<cloud5-piece>.menu\_slider\_addon}]  The user calls this with the name of a new slider control to be added to a folder, along with its Csound channel name, lowest value, and highest value.
 \item[\texttt{<cloud5-piece>.score\_generator\_function\_addon}]  This is user-defined code in the form of a JavaScript function that will be called at the start of performance to generate a CsoudAC score to be performed by Csound. 
 \item[\texttt{<cloud5-piano-roll>}] This custom element is an overlay that draws a three-dimensional piano roll display of a generated CsoundAC Score. During performance, the piano roll shows the current position in the Score with a moving ball. It is possible to zoom in and out of the piano roll, drag it around, rotate it, and so on.
 \item[\texttt{<cloud5-strudel>}] This custom element is a popup IFrame that shows the Strudel REPL, in which the user can do live coding of the Strudel patch during performance. The Strudel REPL has its own real-time piano roll display, and highlights the currently active functions in the Strudel code.
 \item[\texttt{<cloud5-strudel>.strudel\_code\_addon}] This is user-defined code as a multi-line JavaScript string containing a complete Strudel patch to be performed by the piece.
-\item[\texttt{<cloud5-shadertoy>}] This  custom element is an overlay that shows a canvas displaying a GLSL shader. This shader can be used to visualize audio, to produce notes for Csound to perform, and so on. The element is designed to support the easy adaptation of shaders developed in the ShaderToy Web site.
+\item[\texttt{<cloud5-shadertoy>}] This  custom element is an overlay that shows a canvas displaying a GLSL shader. This shader can be used to visualize audio, to produce notes for Csound to perform, and so on. The element is designed to support the easy adaptation of shaders developed in the ShaderToy Web site \cite{shadertoy}.
 \item[\texttt{<cloud5-shadertoy>.shader\_parameters\_addon}] This is a user-defined Javascript object with the following fields:
 \begin{description}
 \item[\texttt{fragment\_shader\_code\_addon}] Contains user-defined GLSL code to be compiled for display on the canvas of the shader overlay.
 \item[\texttt{vertex\_shader\_code\_addon}] May contain user-defined GLSL code to be compiled for display on the canvas of the shader overlay; there is a default value that includes the entire canvas.
-\item[\texttt{set\_uniforms\_function\_addon}] This may be set to user-defined code in the form of a JavaScript function that will be called before every shader animation frame to set uniforms that can be used to control the shader; commonly used to implement an audio visualizer.
-\item[\texttt{get\_attributes\_function\_addon}] This may be set to user-defined code in the form of a JavaScript function that will be called after every shader animation frame to read attributes that can be used by the piece; for example, to sample the visuals and translate them to Csound notes to be played.
+\item[\texttt{pre\_draw\_frame\_function\_addon}] This may be set to user-defined code in the form of a JavaScript function that will be called just before drawing each shader animation frame, e.g., to set uniforms that can be used to control the shader; commonly used to implement an audio visualizer.
+\item[\texttt{post\_draw\_frame\_function\_addon}] This may be set to user-defined code in the form of a JavaScript function that will be called just after drawing each shader animation frame, e.g., to sample the visuals and translate them to Csound notes to be played.
 \end{description}
 \item[\texttt{<cloud5-log>}] This custom element is an overlay that presents a scrolling list of runtime messages from Csound and/or other sources.
 \item[\texttt{<cloud5-about>}] This custom element is an overlay that presents license information, authorship, credits, program notes, and so on.
@@ -132,18 +142,14 @@ Currently, cloud-5 consists of the following custom elements and user addons:
 
 \section{An Example Piece}
 
-The following example is a simple piece that nevertheless uses many of the custom elements presented above. The code is folded to show only the high-level elements and how they are connected together.
+The following outlines a simple piece that nevertheless uses many of the custom elements presented above. The code is folded to show only the high-level elements and addons, and how they are connected.
 
-\subsection{Score Generator}
-\subsection{Csound Orchestra}
-\subsection{Strudel Patch}
-\subsection{Controls}
-\subsection{Audio Visualizer}
-\subsection{About}
+\begin{verbatim}
+\end{verbatim}
 
 \section{Best Practices}
 
-The cloud-5 system is designed for making permanent works of music -- pieces that will always play, even in the far future (assuming that the Web standards continue to be versionless and backwards-compatible, as they have been for 35 years). In other words, cloud-5 is not at all a general purpose Web development system, and therefore pieces should not be developed in the standard way.
+The cloud-5 system is designed for making permanent works of music -- pieces that will always play, even in the far future (assuming that Web standards continue to be versionless and backwards-compatible, as they have been for 35 years). In other words, cloud-5 is not at all a general purpose Web development system, and therefore pieces should not be developed in the standard way.
 
 \begin{itemize}
 \item Use only local, static resources (e.g., do not use content distribution networks, but rather download all required scripts, etc., to the Web directory). This ensures pieces will continue to function indefinitely, and will not break due to library API changes or missing links.
@@ -151,188 +157,68 @@ The cloud-5 system is designed for making permanent works of music -- pieces tha
 \item As far as possible, keep all components and resources of a piece in one HTML file, e.g. embed Csound orchestras and Strudel patches in the HTML code.
 \end{itemize}
 
-This is a \LaTeX{} template to be used, together with the included Springer
-class file \texttt{llncs.cls}, for the preparation of manuscripts for the
-\textit{7\textsuperscript{th} International Csound Conference
-\textemdash{} ICSC2024}.
-
-The maximum paper length is four pages including abstract, figures, tables
-and eventual references. An additional fifth page is accepted provided it
-\textit{only} includes references.
-
-To guarantee the double blind review process, manuscripts should not include
-the author names nor affiliations. Please keep the generic names included in the
-template.
-
-\section{Paper Preparation}
-
-When using \LaTeX\ together with the provided document class file, the text
-is typeset automatically in Computer Modern Roman (CM) fonts. Please do
-\emph{not} change the preset fonts or their size, or modify the class file
-in any way.
-
-Italic type may be used to emphasize words in running text. Bold type and
-underlining should be avoided.
-
-We recommend using the commands \verb+\label+ and \verb+\ref+ for
-cross-references, the commands \verb+\bibitem+ and \verb+\cite+ for
-references to the bibliography, and the command \verb+\url+ for URL
-hyperlinks.
-
-
-\subsection{Headings}
-
-Only two levels of structure should be used throughout the document,
-corresponding to the \verb+\section+ and \verb+\subsection+ sectioning
-commands.
-
-Headings should be capitalized, i.e., nouns, verbs, and all other words
-except articles, prepositions, and conjunctions should be set with an
-initial capital. Words joined by a hyphen are subject to a special rule: if
-the first word can stand alone, the second word should be capitalized.
-
-Here are some examples of headings: ``Developing a User-Friendly
-Interface'', ``Processing Multi-track Audio Files with Granular Techniques''.
-
-\subsection{Figures}
-
-For integrating figures into the source file we recommend using the
-standard \LaTeX{} \verb+graphics+ or \verb+graphicx+ package. These provide
-the \verb+\includegraphics+ command. Please center the figures by using the
-\verb+\centering+ declaration. Fig.~\ref{fig:example_1} shows an example.
-
-\begin{figure}
-\centering
-\includegraphics[width=0.90\linewidth]{test_image-1.pdf}
-\caption{Spectrogram of a piano note A3 in vector graphics (PDF).}
-\label{fig:example_1}
-\end{figure}
-
-For line drawings, vector graphics file formats like EPS or PDF are preferred
-when available. When including figures in raster graphics file formats like
-JPG or PNG, please try to generate an image of the appropriate size and
-quality. (See Fig.~\ref{fig:example_2})
-
-Figures should be numbered and should have a caption which should always be
-positioned \emph{under} the figures, in contrast to the caption belonging
-to a table, which should always appear \emph{above} the table; this is
-simply achieved as matter of sequence in your source.
-
-\begin{figure}
-\centering
-\includegraphics[width=0.90\linewidth]{test_image-2.pdf}
-\caption{Spectrogram of the same sound file in raster image (JPG,
-1119 x  663 pixels).}
-\label{fig:example_2}
-\end{figure}
-
-Please define figures (and tables) as floating objects, and avoid using
-optional location parameters like ``\verb+[h]+" for ``here".
-
-\paragraph{Remark.}
-
-The proceedings will be distributed only in electronic format, and colored
-images are welcome. It would be convenient, however, to make sure that all
-the images remain clear and legible when printed in black and white.
-
-\subsection{Footnotes}
-
-The superscript numeral used to refer to a footnote appears in the text
-either directly after the word to be discussed or -- in relation to a
-phrase or a sentence -- following the punctuation sign (comma, semicolon,
-or period).\footnote{Example of a footnote.}
-
-\subsection{Program Code}
-
-Program listings or program commands in the text should use the \verb+verbatim+
-environment: \\ \verb+csound -o dac foo.csd+.
-
-\medskip
-
-\noindent
-{\it Example of Program Code}
-	\begin{verbatim}
-<CsoundSynthesizer>
-<CsInstruments>
-
-sr     =   48000
-ksmps  =   8
-0dbfs  =   1
-
-instr  1
-
-idur   =   p3
-iamp   =   ampdbfs(p4)
-ifreq  =   cpspch(p5)
-kamp   linen  iamp, 0.1, idur, 0.3
-a1     poscil kamp, ifreq
-       out    a1
-
-endin
-
-</CsInstruments>
-<CsScore>
-
-i1 0   1   -3   8.00
-i1 +   .   -6   8.01
-i1 +   .   -4.5 8.07
-
-</CsScore>
-</CsoundSynthesizer>
-	\end{verbatim}
-%
-\noindent
-{\small Example Csound CSD file.}
-
-\subsection{Citations}
-
-For citations in the text please use square brackets and consecutive
-numbers: \cite{jour}, \cite{proceeding} -- provided automatically
-by \LaTeX 's \verb|\cite| \dots\verb|\bibitem| mechanism.
-
-\subsection{Page Numbering and Running Heads}
-
-Pages are numbered automatically. If the paper title is too long to serve
-as a running head, it will be shortened. A shorter version of the title can
-be provided with the \verb+\titlerunning+ command at the beginning of the
-\verb+\document+ section.
-
-
-\section{The References Section}\label{references}
-
-Only references written using the Latin alphabet are accepted. If the title of
-the reference uses a different alphabet, please use the transcript or
-translation of the title, followed by the original language in parenthesis, e.
-g. (in Russian) or (in Chinese).
-
-The following section shows a sample reference list with entries for
-journal articles \cite{jour}, books \cite{book1}, \cite{book2}, book chapter
-\cite{chapter}, proceedings without editors \cite{proceeding}, as well as a
-URL \cite{url}.
-
 \begin{thebibliography}{4}
 
-\bibitem{jour} Lorrain, D.: A panoply of stochastic `cannons'. Computer Music Journal 4(1), 53--81 (1980)
+\bibitem{socialmedia} Mandiber, Michael: The Social Media Reader. New York: NYU Press (2012).
 
-\bibitem{book1} Dodge, C., Jerse, C.: Computer Music: Synthesis, Composition and 
-Performance, 2nd edn. Schirmer, New York (1997)
+\bibitem{wasmspeed} Jangda, Abhinav, Bobby Powers, Emery D. Berger, and Arjun Guha. Not So Fast: Analyzing the Performance of WebAssembly vs. Native Code. \url{https://arxiv.org/abs/1901.09056} (2019).
 
-\bibitem{book2} Lazzarini, V. et al.: Csound: A Sound and Music Computing System.
+\bibitem{www} Isacson, Walter: The Innovators: How a Group of Hackers, Geniuses, and Geeks Created the Digital Revolution. New York: Simon and Schuster (2015).
+
+\bibitem{gore} Hafner, Katie and Matthew Lyon: Where Wizards Stay Up Late: The Origins of the Internet. New York: Simon and Schuster (1998).
+
+\bibitem{surveillance} Zuboff, Shoshona: The Age of Surveillance Capitalism. New York: Public Affairs (2019).
+
+\bibitem{freeculture} Lessig, Lawrence: Free Culture: How Big Media Uses Technology and the Law to Lock Down Culture and Control. City of Westminser: Penguin Books (2004).
+
+\bibitem{webglreference} Mozillla Developer Network: WebGL Reference. \url{https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API} Accessed 24 March 2024).
+
+\bibitem{playcanvas} \url{https://playcanvas.com/} (Accessed 23 March 2024).
+
+\bibitem{ecma} Ecma: Emca International. url{https://ecma-international.org} (Accessed 23 March 2024).
+
+\bibitem{w3c} W3C: Making the Web work. \url{https://www.w3.org} (Accessed 23 March 2024).
+
+\bibitem{ietf} Internet Engineering Task Force: I E T F \url{https://www.ietf.org} Accessed 23 March 2024).
+
+\bibitem{html5test} HTML 5 Test: \url{https://html5test.co} (Accessed 23 March 2024).
+
+\bibitem{httpstandard} IETF: HTTP Semantics \url{https://www.rfc-editor.org/info/rfc9110} (June 2022).
+
+\bibitem{w3cstandards} W3C: Web Standards. \url{https://www.w3.org/standards} (Accessed 23 March 2024).
+
+\bibitem{webaudiostandard} W3C: Web Audio API. \url{https://webaudio.github.io/web-audio-api} (11 March 2024).
+
+\bibitem{csoundapireference} Csound Developers: Csound API 6.18. \url{https://csound.com/docs/api/index.html} (Accessed 23 March 2024).
+
+\bibitem{csoundacreference} Gogins, Michael: Csound AC 1.0.0 \url{https://github.com/gogins/csound-ac/blob/master/csound-ac.pdf} (Accessed 23 March 2024).
+
+\bibitem{csoundreference} Csound Community: The Canonical Csound Reference Manual, Version 6.18.0 \url{https://csound.com/docs/manual/index.html} (Accessed 23 March 2024).
+
+\bibitem{javascriptreference} Mozilla Developer Network: JavaScript Reference. \url{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference} (Accessed 24 March 2024).
+
+\bibitem{katz} Katz, Robert A.. Mastering Audio: The Art and the Science, Third Edition. Netherlands: Focal Press (2015).
+
+\bibitem{bassal} Bassal, Dominique: The Practice of Mastering in Electroacoustics. \url{https://cec.sonus.ca/pdf/The\_Practice\_of\_Mastering.pdf} (December 2002).
+
+\bibitem{book2} lazzarini, V. et al.: Csound: A Sound and Music Computing System.
 Springer (2016)
 
-\bibitem{chapter} ffitch, J.: Introduction to program design. In: R. Boulanger,
-V. Lazzarini (eds.) The Audio Programming Book, pp. 383--430.
-MIT Press, Cambridge (2010)
+\bibitem{url} Csound Github site, \url{http://csound.github.io}.
 
-\bibitem{proceeding} Vercoe, B.: Real-Time Csound, Software Synthesis with
-Sensing and Control. In: Proceedings of the International Computer Music
-Conference, pp. 209--211. Glasgow (1990)
+\bibitem{alexbainter} Bainter, Alex: web. music.
+generative art. \url{https://alexbainter.com} (Accessed 23 March 2024).
 
-\bibitem{url} Csound Github site, \url{http://csound.github.io}
+\bibitem{strudel} Roos, Felix, Alex McLean, et al.: Strudel REPL. \url{https://strudel.cc/} (Accessed 23 March 2024).
 
+\bibitem{cloud5} cloud-music: Computer Music on the Web \url{https://gogins.github.io} (Accessed 23 March 2024).
+
+\bibitem{websynth} Primozic, Casey: Web Synth. \url{https://synth.ameo.dev} (Accessed 24 March 2024).
+ 
+\bibitem{gibber} Roberts, Charlie: Gibber \url{https://gibber.cc} Accessed 24 March 2024).
+
+\bibitem{shadertoy} Quilez, Inigo, Pol Jeremias, et al.: ShaderToy BETA \url{https://www.shadertoy.com} (Accessed 24 March 2024).
 
 \end{thebibliography}
-
-
 
 \end{document}
