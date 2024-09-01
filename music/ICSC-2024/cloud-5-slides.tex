@@ -1,3 +1,8 @@
+% This tallk should last between 10 and 15 minutes,
+% and consist of 10 to 15 slides.
+% I should cut back and forth between slides and actual pieces.
+% I should leave  a little more than 5 minutes for questions.
+
 \documentclass{beamer}
 
 \mode<presentation>
@@ -62,217 +67,109 @@ A System for Composing and Publishing Cloud Music}
   \titlepage
 \end{frame}
 
-\begin{frame}{Outline}
-	I talk about my way of doing algorithmic composition. Many references and examples herein are by hyperlink to the World Wide Web. Most of my pieces are made using \href{http://csound.github.io/}{Csound}. Note: Some track titles got reversed with CDBaby.
-  \tableofcontents
+\begin{frame}{Introduction}
+\begin{itemize}
+\item cloud-5 is a new system for composing, performing, and publishing computer music. 
+\item In this talk, I focus on my motivations for creating cloud-5.
+\item And I show how cloud-5 accommodates composing, performing, and publishing in one environment. 
+\item Details on the implementation may be found in the paper presented in this conference, and especially in the \href{https://github.com/gogins/cloud-5}{cloud-5 GitHub repository}.
+\end{itemize}
+\end{frame}
+
+ % \tableofcontents
   % You might wish to add the option [pausesections]
-\end{frame}
 
-\section{My Goals}
+\section{Motivations}
 
-\begin{frame}{Motivation}
-	\begin{itemize}
-		\item
-			I've loved classical music since childhood.
-		\item
-			I made up music in my head, and sometimes I wanted to compose, but I was afraid I had no talent --- and music theory seemed \emph{very} daunting! 
-		\item
-			A \href{http://labs.la.utexas.edu/gilden/files/2016/04/Gardner-WhiteBrownFractalMusic.pdf}{1978 Martin Gardner column} showed me the Peano snowflake curve, and it occurred to me the horizontal lines could be punched as an interesting piano roll. 
-		\item
-			When personal computers appeared in the 1980s, I started experimenting with algorithmic composition.
-		\item
-			But using fractals created problems that dragged me right back into music theory\dots
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Peano Snowflake}
-	\begin{center}
-        \ifthenelse{\boolean{localPieces}}
-            {\href{file:///D:/Dropbox/Michael Gogins/Garden of Algorithms/04-Bending Arches.wav}{\includegraphics[scale=1.375]{peano_snowflake}}}
-            {\href{https://www.youtube.com/watch?v=eJ_d_3wV6i0}{\includegraphics[scale=1.375]{peano_snowflake}}}
-	\end{center}
-\end{frame}
-
-\begin{frame}{What Is Computer Music?}
-	There are many definitions of computer music.
-	The most obvious is, ``Computer music is music that is made with a computer, just like piano music is music that is played on the piano.'' But that is not really a good definition, because computers today are used to record, mix, master, publish, and listen to classical music, rock music, jazz, and every other kind of music. Perhaps a better definition is, ``Computer music is music that can \emph{only} be made with a computer.'' In other words, it is music that is \emph{idiomatic} to the computer. But what does that mean?
-\end{frame}
-
-\begin{frame}{What Is a Computer Anyway?}
-	\begin{itemize}
-		\item
-			An algorithm is just a procedure that can be carried out step by step to produce a result, without needing to know what the steps \emph{mean}. This is the technical definition. A cookie recipe is an algorithm, so is long division.
-		\item
-			For any single algorithm, a machine can be built to execute it. Such a machine is called a Turing machine, or \textit{computer}. The idea is basic in logic, mathematics, even physics.
-		\item
-			A single Turing machine can be built to execute an algorithm that can simulate any and all other Turing machines. Such a machine is called a universal Turing machine, or \textit{programmable computer}.
-		\item
-			You yourself, a laptop computer, or a smartphone are all physical realizations of universal Turing machines.
-		\item
-			But a computer can execute algorithms literally \emph{billions of times faster} than you can.
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{The Musical Idioms of the Computer}
-    Since human beings can also compute, the idioms of the computer build upon its blinding speed:
-    \begin{itemize}
-    	\item 
-	    	\textbf{Analysis/Resynthesis} Computers can analyze digital audio, morph it or cross-synthesize it, resynthesize it, and combine it into collages --- in ways that would simply be impossible by hand. Although this is actually the most common kind of computer music, I don't usually do this.
-	    \item
-	     	\textbf{Algorithmic Composition} Computers can generate musical materials or scores in ways that would just take too long to do by hand. 
-	     	\begin{itemize}
-	     		\item
-		     		\textit{Corpus-based} The computer uses a database of existing materials to generate music by variation and recombination, even using machine learning.
-		     	\item
-			     	\textit{Mathematics-based} The computer uses fractals or other mathematical procedures to generate scores. This is what I usually do.
-	     	\end{itemize}
-    \end{itemize}
-\end{frame}
-
-\begin{frame}{Why Do Algorithmic Composition?}
-	\begin{itemize}
-		\item
-			Algorithmic composition is the use of algorithms to compose music.
-		\item
-			But why bother? We already know how to compose.
-		\item
-			Because it's usually impossible to predict in detail what algorithms will do until you watch them run.
-		\item
-			Mathematicians call this \emph{computational irreducibility}.
-		\item
-			Here's a simple example: Tell me what the 1st iteration of $y \Leftarrow \frac{1}{4} \: 0.9384932 \: y \: (1 -y)$ is. The 1,000th iteration.
-		\item 
-			Therefore, you can use algorithms to create and control things you can't imagine. 
-		\item
-			Therefore, \emph{algorithms can amplify the imagination.}
-	\end{itemize}
-\end{frame}
-
-
-\begin{frame}{Computational Irreducibility}
-	\begin{itemize}
-		\item
-		    Computational irreducibility is what generates the stunning beauty of Nature: branchings, flows, clouds.
-		  \item
-			Computational irreducibility arises from the iteration of nonlinear operations; in my little example, the nonlinearity comes from squaring $y$.
-		  \item
-		    Using irreducibility to generate art, whether representational or abstract, deeply illuminates Aristotle's thesis that art is the imitation of Nature.
-		 \item 
-			Another excellent example of irreducibility is \href{https://www.shadertoy.com/view/MtyGWV}{Conway's Game of Life}, a 2 dimensional cellular automaton: each iteration, each cell lives if exactly 3 of its nearest neighbors is alive, and otherwise dies.
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Universal Computer/Constructor in Life}
-	\begin{center}
-		\includegraphics[scale=.3334]{calcyman}
-	\end{center}
-\end{frame}
-
-\section{My Approach}
-
-\begin{frame}[allowframebreaks]
-    \frametitle<presentation>{Algorithms I've Used}
-  	\begin{itemize}
-  		\item
-			I started with chaotic dynamical systems, e.g. \ifthenelse{\boolean{localPieces}}{\href{file:///D:/Dropbox/Michael Gogins/Garden of Algorithms/11-Piano Fall.wav}{\textit{\textbf{Triptych}}}}{\href{https://www.youtube.com/watch?v=eKbqJXb5ZKc}{\textit{\textbf{Triptych}}}}, 2004, chaos mapped onto predetermined chords.     
-  		\item
-    		1-dimensional cellular automata (rule 110 is also proved capable of universal computation).
-  		\item
-			Then I played with Mandelbrot sets and Julia sets, and discovered a Mandelbrot-like set for music \cite{G1991}.
- 		\item
-			Iterated function systems, e.g. \ifthenelse{\boolean{localPieces}}{\href{file:///D:/Dropbox/Michael Gogins/Garden of Algorithms/06-970104e.wav}{\textit{\textbf{Chaotic Squares}}}}{\href{https://www.youtube.com/watch?v=ZTO_8l0FGbU}{\textit{\textbf{Chaotic Squares}}}}, 1991, IFS mapped onto pitch $\times$ time. 
-  		\item
-			Lindenmayer systems, e.g. \ifthenelse{\boolean{localPieces}}{\href{file:///D:/Dropbox/Michael Gogins/Garden of Algorithms/12-Three Trees.wav}{\textit{\textbf{Cloud Strata}}}}{\href{https://www.youtube.com/watch?v=gjl99B-6el8&list=PLYQnJFl5fDAKoyqwk911PahBnSTar3fb5&index=12}{\textit{\textbf{Cloud Strata}}}}, 1991, 0-L system mapped onto pitch $\times$ time.
-  		\item
-			I worked with image generating software, and translated images to scores, e.g.  \ifthenelse{\boolean{localPieces}}{\href{file:///D:/IHP100/_ea_/Gogins, Michael/Gogins, Michael -- Semblance/f--2002-01-28--17-37-42.042.mml.9632.1.mp3}{\textit{\textbf{06-f--2002-01-28--17-37-42.042.mml.9632.1}}}}{\href{https://www.youtube.com/watch?v=2nsFJfvEYus}{\textit{\textbf{06-f--2002-01-28--17-37-42.042.mml.9632.1}}}}
- 		\item
-			I used software like \href{http://kandid.sourceforge.net/gal_favorites_1.html}{Kandid} and \href{http://www.apophysis.org/}{Apophysis} to \textit{evolve} pieces, e.g. \ifthenelse{\boolean{localPieces}}{\href{file:///D:/msys64/home/restore/michael.gogins.studio/music/published/Michael Gogins -- Sound Fractals -- Track 1 -- Sound Fractals.master.wav}{\textit{\textbf{Sound  Fractals}}}}{\href{https://www.youtube.com/watch?v=WuntpYyubfc}{\textit{\textbf{Sound Fractals}}}}, 2009, five evolved IFS mapped to time $\times$ frequency rendered via granular synthesis.
-		\item
-			I also used cell-based, accretive minimalist techniques, e.g. \ifthenelse{\boolean{localPieces}}{\href{file:///D:/msys64/home/restore/michael.gogins.studio/music/published/Michael Gogins -- Semblance -- Track 5 -- csound-2005-03-06-03-38.19.py.master.wav}{\textit{\textbf{csound-2005-03-06-03-38.19.py}}}}{\href{https://www.youtube.com/watch?v=wJ0FVvlTgEU}{\textit{\textbf{csound-2005-03-06--03.38.19.py}}}}
-		\item
-			There are many, many other useful algorithms that I \textit{don't} use, many based on varying patterns from existing bodies of music, e.g. David Cope.
-  	\end{itemize}
-\end{frame}
-
-\begin{frame}{Tonality/Atonality}
-	\begin{itemize}
-		\item
-			I should point out that my pieces are not acousmatic, not abstractions of decontextualized sound.
-		\item
-			My music is made from notes and chords, and pays attention to pitch and time.
-		\item
-			Many of my earlier pieces were harmonically boring or hard to control, so recently I have added voice-leading transformations to my generative procedures.
-		\item
-			Such music \emph{is not tonal} in that it is not necessarily constructed around key-establishing cadences.
-		\item
-			Such music \emph{is tonal} in that it does use more or less consonant chords and common voice-leading moves.
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Mathematical Music Theory}
-  \begin{itemize}
-  \item
-    Sometimes just mapping an irreducible algorithm onto pitch $\times$ time makes a good piece, usually \textit{not}.
-  \item
-    So I decided that spaces score generators operate in should \textit{already} have musical structure.
-  \item
-    In the mid 20th century composers and theorists gave ``atonal theory" a basis in group theory.
-   \item
-    Now in the the late 20th and early 21st century, theorists have mathematized not only atonal theory, but also voice-leading (``neo-Riemannian theory'').
-  \item
-	There's a lot of stuff out there, but I am using mostly the work of Dmitri Tymoczko on chord spaces \cite{T2006} \cite{CQT2008}, and the work of Fiore and Satyendra on contextual transformations \cite{FS2005}.
-  \end{itemize}
-\end{frame}
-
-\begin{frame}[allowframebreaks]
-    \frametitle<presentation>{Algorithms I've Used -- With Music Theory}
-    \begin{itemize}
-        \item
-        \ifthenelse{\boolean{localPieces}}{\href{file:///D:/msys64/home/restore/michael.gogins.studio/music/published/Michael Gogins -- Blue and Yellow Leaves -- Track 9 -- mkg-2007-01-20-b.py.master.wav}{\textit{\textbf{mkg-2007-01-20-c.py}}}}{\href{https://www.youtube.com/watch?v=Bmvt_sdKF0Q&t=15s}{\textit{\textbf{mkg-2007-01-20-c.py}}}}, 2009. 0-L system mapped onto the Generalized Contextual Group \cite{G2006}.
-        \item
-        \ifthenelse{\boolean{localPieces}}{\href{file:///D:/msys64/home/restore/michael.gogins.studio/music/published/Michael Gogins -- Blue and Yellow Leaves -- Track 1 -- Two Dualities.master.wav}{\textit{\textbf{Two Dualities}}}}{\href{https://www.youtube.com/watch?v=3_ahbL44p-E}{\textit{\textbf{Two Dualities}}}}, 2010. 0-L system mapped onto the Generalized Contextual Group \cite{G2006}.
-        \item
-        \href{http://soundcloud.com/michael-gogins/blue-leaves-4e}{\textit{\textbf{Blue Leaves 4e}}}, 2012. Recurrent IFS mapped onto pitch $\times$ time, filtered by generated chords.
-        \item
-        \href{https://gogins.github.io/csound/Scrims_pnacl.html}{\textit{\textbf{Scrims}}}, 2016. Visual music for live performance: hopalong fractal variations in WebGL, sampled and subjected to chord transformations.
-    \end{itemize}
-\end{frame}
-
-\section{My Results}
-
-\begin{frame}{Production}
-	\begin{itemize}
-		\item
-    		Each piece I write is a custom computer program. I have in the past used Basic, Fortran, Visual Basic, Pascal, C++, Java, Python, and Lua.
-		\item 
-    		I now mostly use HTML5, i.e. JavaScript with HTML, with Csound embedded. I use \href{https://play.google.com/store/apps/details?id=com.csounds.Csound6&hl=en}{Csound for Android} and \href{https://github.com/csound/csound/tree/develop/frontends/nwjs}{csound.node}.
-		\item
-    		Each piece embeds Csound and a complete Csound orchestra. 
-    		I aim for a finished level of sound design and mastering.
-		\item
-    		In my text editor, I tinker with a few lines of code, press a key, and get a rendered piece.
-		\item
-    		This approach would work just as well with SuperCollider, RTcmix, PD, or Max.
-	\end{itemize}
+\begin{frame}{Motivations}
+\begin{itemize}
+\item My primary motivation is to make the kind of music that I would like to hear, but nobody else seems to be making, by means of algorithmic composition and synthesis.
+\item As I wander down this thorny path, I find myself wanting to perform some pieces live.
+\item I also find myself wanting to make some pieces that play indefinitely, that are "always on."
+\item And to generate visuals \emph{from} my pieces, or to transform visuals \emph{into} pieces.
+\item And to drastically simplify the publication of my pieces.
+\item And to drastically simplify the infrastructure for doing all of this.
+\end{itemize}
 \end{frame}
 
 \begin{frame}{Publication}
-  \begin{itemize}
-  \item
-    My music is not popular music. I don't have anything against such music; indeed, I listen to it, and learn from it.
-  \item
-    My music is art music for undistracted listening in the tradition of Bach, Xenakis, etc.
-  \item
-	I also do some visual music, where I generate animated video along with the music.
-  \item
-    I play my pieces in festivals and conferences of computer music and electroacoustic music, such as the \href{http://nycemf.org}{NYCEMF}.
-  \item
-    I publish some pieces on \href{https://www.cdbaby.com/cd/gogins1}{CDBaby}.
-  \item
-    I publish other pieces on \href{https://soundcloud.com/michael-gogins}{SoundCloud} or \href{https://www.youtube.com/user/michaelgogins}{YouTube}.
-  \item
-    All my pieces are registered with the U.S. Copyright Office, ASCAP, and AdRev so if somebody listens to my music online, I \emph{will} get paid. Of course the pay is laughable!
-  \end{itemize}
+\begin{itemize}
+\item The record business is dying...
+\item ...but at the same time, it has become easier and easier to publish music on the World Wide Web.
+\item Such music can be streamed from files -- or it can be Web pages that actually generate music in real time.
+\item Doing pieces as Web pages makes it possible to use all the resources of contemporary Web browsers.
+\item Within its security sandbox, a browser is basically an operating system plus a game engine plus a high-resolution media player.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{New possibilities}
+\begin{itemize}
+\item I call music that is played by Web pages on the World Wide Web \emph{cloud music} because it exists only in the cloud, the omnipresent computing infrastructure of the World Wide Web.
+\item I feel it is very important to grasp that cloud music is essentially \emph{a new medium for music} and as such,\emph{ it offers new possibilities of musical expression}.
+\begin{itemize}
+\item A piece can play forever.
+\item A piece can generate visuals, or be generated by visuals.
+\item A piece can interact with its listeners.
+\item Listeners can use a piece to create new pieces.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{New possibilities}
+\begin{itemize}
+\item cloud-5 is certainly not the first system that publishes music as Web pages on the World Wide Web:
+\begin{itemize}
+\item Gibber
+\item Strudel
+\item Csound-IDE
+\item ...and others.
+\end{itemize}
+\item But I think cloud-5 offers a combination of features that support algorithmic composition and synthesis at a high level of power, yet a low overhead of development and maintenance.
+\end{itemize}
+\end{frame}
+
+\section{Design}
+
+\begin{frame}{Design}
+\begin{itemize}
+\item A musical composition is a single Web page.
+\item The score, the orchestra for performing the score, and all required libraries are embedded in that single Web page.
+\item The libraries, any musical assets, and all other pre-requisites are \emph{static resources} on the server filesystem.
+\item Writing a piece is done using a text editor.
+\item A build system is not used.
+\item All this means, thanks to the versionless nature of Internet protocols and Web browsers, that cloud-5 pieces will last forever.
+\end{itemize}
+\end{frame}
+
+\section{Implementation}
+\begin{frame}{Implementation}
+\begin{itemize}
+\item cloud-5 is a combination of existing systems:
+\begin{itemize}
+\item The sound processing language Csound, compiled from C to WebAssembly.
+\item The live coding system Strudel, written in JavaScript.
+\item The algorithmic composition system CsoundAC, compiled from C++ to WebAssembly.
+\item GLSL shaders.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Composing}
+\begin{itemize}
+\item A piece is a single Web page constructed from custom HTML elements that are defined in \texttt{cloud-5.js}.
+\item A high-level menu system provides the shell for a piece.
+\item The design is modular. Components can be omitted or added. A naming convention makes it clear what the composer can add to the shell in order to make an actual piece.
+\item An extension for Visual Studio code makes it possible to edit Csound, Strudel, HTML, and JavaScript code in a piece, and immediately serve that piece in a local Web server to play in the composer's Web browser.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Publishing}
+\begin{itemize}
+\item Copy your cloud-5 directory to become the root directory in any Web server.
+\item Your pieces are, of course, the Web pages in that directory.
+\item Modify the index in that directory to list and link to your pieces.
+\item Period.
+\end{itemize}
 \end{frame}
 
 \begin{frame}[allowframebreaks]
