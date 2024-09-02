@@ -70,8 +70,8 @@ A System for Composing and Publishing Cloud Music}
 \begin{frame}{Introduction}
 \begin{itemize}
 \item cloud-5 is a new system for composing, performing, and publishing computer music. 
-\item In this talk, I focus on my motivations for creating cloud-5.
-\item And I show how cloud-5 accommodates composing, performing, and publishing in one environment. 
+\item In this talk, I focus on motivations for creating cloud-5.
+\item I show how cloud-5 accommodates composing, performing, and publishing in one environment. 
 \item Details on the implementation may be found in the paper presented in this conference, and especially in the \href{https://github.com/gogins/cloud-5}{cloud-5 GitHub repository}.
 \end{itemize}
 \end{frame}
@@ -98,7 +98,7 @@ A System for Composing and Publishing Cloud Music}
 \item ...but at the same time, it has become easier and easier to publish music on the World Wide Web.
 \item Such music can be streamed from files -- or it can be Web pages that actually generate music in real time.
 \item Doing pieces as Web pages makes it possible to use all the resources of contemporary Web browsers.
-\item Within its security sandbox, a browser is basically an operating system plus a game engine plus a high-resolution media player.
+\item Within its security sandbox, \href{https://html5test.co/}{a browser is basically an operating system plus a game engine plus a high-resolution media player}.
 \end{itemize}
 \end{frame}
 
@@ -119,12 +119,14 @@ A System for Composing and Publishing Cloud Music}
 \begin{itemize}
 \item cloud-5 is certainly not the first system that publishes music as Web pages on the World Wide Web:
 \begin{itemize}
-\item Gibber
-\item Strudel
-\item Csound-IDE
+\item \href{https://gibber.cc/playground/}{Gibber}
+\item \href{https://strudel.cc/}{Strudel}
+\item \href{https://ide.csound.com/}{Web-IDE}
 \item ...and others.
 \end{itemize}
-\item But I think cloud-5 offers a combination of features that support algorithmic composition and synthesis at a high level of power, yet a low overhead of development and maintenance.
+\item These systems support multiple users, and provide a playground for shared learning and experimentation..
+\item By contrast, cloud-5 is designed to host \emph{permanent} pieces without compromise. Such pieces can be shared or not, at the discretion of the composer.
+\item cloud-5 supports algorithmic composition and synthesis at a high level of power, yet a low overhead of development and maintenance.
 \end{itemize}
 \end{frame}
 
@@ -135,22 +137,23 @@ A System for Composing and Publishing Cloud Music}
 \item A musical composition is a single Web page.
 \item The score, the orchestra for performing the score, and all required libraries are embedded in that single Web page.
 \item The libraries, any musical assets, and all other pre-requisites are \emph{static resources} on the server filesystem.
-\item Writing a piece is done using a text editor.
+\item Writing a piece is done using a text editor such as Visual Studio Code.
 \item A build system is not used.
-\item All this means, thanks to the versionless nature of Internet protocols and Web browsers, that cloud-5 pieces will last forever.
+\item The version-less nature of Internet protocols and Web browsers means that cloud-5 pieces should last forever.
 \end{itemize}
 \end{frame}
 
 \section{Implementation}
 \begin{frame}{Implementation}
 \begin{itemize}
-\item cloud-5 is a combination of existing systems:
+\item cloud-5 is a combination of existing components::
 \begin{itemize}
 \item The sound processing language Csound, compiled from C to WebAssembly.
 \item The live coding system Strudel, written in JavaScript.
 \item The algorithmic composition system CsoundAC, compiled from C++ to WebAssembly.
 \item GLSL shaders.
 \end{itemize}
+\item These components all provide JavaScript APIs, and JavaScript in a composition is used to connect and control the components.
 \end{itemize}
 \end{frame}
 
@@ -165,12 +168,15 @@ A System for Composing and Publishing Cloud Music}
 
 \begin{frame}{Publishing}
 \begin{itemize}
-\item Copy your cloud-5 directory to become the root directory in any Web server.
-\item Your pieces are, of course, the Web pages in that directory.
-\item Modify the index in that directory to list and link to your pieces.
+\item Copy your cloud-5 directory to any Web server. It contains all the libraries and assets that you need.
+\item That Web server can be a local server for writing pieces, or a server hosted on the Internet for publishing pieces.
+\item The cloud-5 directory can be the server's root directory, or it can be a subdirectory.
+\item Musical compositions, of course, are Web pages in the cloud-5 directory.
+\item Modify the index in the Web server to list and link to pieces to be published.
 \item Period.
 \end{itemize}
 \end{frame}
+
 
 \begin{frame}[allowframebreaks]
   \frametitle<presentation>{References}
