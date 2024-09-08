@@ -27,6 +27,9 @@
 \usepackage{attachfile}
 \usepackage{ifthen}
 
+\setbeamertemplate{caption}[numbered]
+%\numberwithin{figure}{section}
+
 \newboolean{localPieces} %Declaration, defaults to false
 \setboolean{localPieces}{false} %Assignment
 
@@ -69,10 +72,10 @@ A System for Composing and Publishing Cloud Music}
 
 \begin{frame}{Introduction}
 \begin{itemize}
-\item cloud-5 is a new system for composing, performing, and publishing computer music. 
-\item In this talk, I focus on motivations for creating cloud-5.
-\item Details on the implementation may be found in the paper presented in this conference, and especially in the \href{https://github.com/gogins/cloud-5}{cloud-5 GitHub repository}.
-\item I show how cloud-5 accommodates composing, performing, and publishing in one environment. 
+\item cloud-5 is a new system for composing, performing, and publishing computer music, using only Web standards.
+\item In this talk, I focus on the \emph{motivations} for creating cloud-5.
+\item Implementation details may be found in my \href{https://github.com/gogins/michael.gogins.studio/blob/master/music/ICSC-2024/cloud-5.pdf}{paper}, and in the \href{https://github.com/gogins/cloud-5}{cloud-5 GitHub repository}.
+\item I show how cloud-5 accommodates composing, live performance, and online publishing in one environment. 
 \end{itemize}
 \end{frame}
 
@@ -83,41 +86,51 @@ A System for Composing and Publishing Cloud Music}
 
 \begin{frame}{Motivations}
 \begin{itemize}
-\item My \emph{primary} motivation is to make the kind of music that I would like to hear, but nobody else seems to be making, using algorithmic composition and synthesis.
+\item \emph{Primarily} I want to make the kind of music that I like to hear, but nobody else seems to be making, using algorithmic composition and synthesis.
+\begin{itemize}
 \item As I wander down this thorny path, I find myself wanting to perform some pieces live.
 \item I also find myself wanting to make some pieces that play indefinitely, that are "always on."
 \item And to generate visuals \emph{from} my pieces, or to transform visuals \emph{into} pieces.
-\item And to drastically simplify the publication of my pieces.
-\item And to drastically simplify the infrastructure for doing all of this.
+\end{itemize}
+\item \emph{Secondarily}, I need to drastically cut time spent maintaining software:
+\begin{itemize}
+\item By using Web standards to run identically on all platforms...
+\item ...which simplifies my software infrastructure.
+\item ...and simplifies online publication.
+\end{itemize}
 \end{itemize}
 \end{frame}
 
 \begin{frame}{Fundamental Dilemma}
 \begin{itemize}
-\item My \emph{secondary} motivation is ongoing changes in how music is made and disseminated.
-\item If musicians use social media to publish music, it will probably be captured by social media (e.g.YouTube and SoundCloud) in order to gather personal   data from them and their audience to use for targeted advertising.
-\item This is annoying, and cuts mechanical royalties to practically nothing.
-\item Such social media also tend to stylistic conformity and ghettoization.
+\item My \emph{tertiary} motivation is ongoing changes in how music is disseminated.
+\begin{itemize}
+\item If musicians use social media to publish music, it will be captured by social media (e.g.YouTube and SoundCloud) in order to gather personal data from them and their audience, to sell for targeted advertising.
+\item This is annoying, and social media have cut mechanical royalties to practically nothing.
+\item Social media also promote stylistic conformity and ghettoization.
+\end{itemize}
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Fundamental Dilemma}
+\begin{frame}{}
 \begin{itemize}
-\item But if musicians want to avoid capture by advertisers, things get more difficult:
+\item If musicians want to avoid capture by advertisers, difficulties arise:
 \begin{itemize}
-\item Musicians can use social media that rely on paid subscriptions instead of ads to make money.
-\item There are a few social media that are free of both ads and subscriptions.
-\item Musicians can pay to set up their own Web sites, which has gotten easier and cheaper to do.
+\item There are only a few social media that are free of both ads and subscriptions, and they are not popular.
+\item On some social media, musicians can avoid ads, but only by paying for a subscription.
+\item Musicians can avoid social media altogether, but only by setting up their own Web sites.
 \end{itemize}
-\item Yet if musicians create their own Web sites, that opens up wonderful new possibilities.
+\item Fortunately, setting up personal Web sites has gotten easier and cheaper over time.
+\item And if musicians do create their own Web sites, that opens up wonderful new possibilities.
 \end{itemize}
 \end{frame}
 
 \begin{frame}{Online Music}
 \begin{itemize}
-\item Online music can be streamed from files -- or it can be Web pages that actually generate music in real time.
+\item Music on a Web site doesn't need to be streamed from files -- \emph{it can be Web pages actually generating music in real time}.
 \item Writing pieces as Web pages makes it possible to use all the resources of contemporary Web browsers.
 \item Within its security sandbox, \href{https://html5test.co/}{a browser is basically an operating system plus a fast general-purpose programming language plus a game engine plus a high-resolution media player}.
+\item Therefore, Web standards do not impose any particular limitation on audio quality, or other technical aspects (except for local file access), as compared with native applications.
 \end{itemize}
 \end{frame}
 
@@ -138,64 +151,75 @@ A System for Composing and Publishing Cloud Music}
 
 \begin{frame}{New possibilities}
 \begin{itemize}
-\item cloud-5 is certainly not the first system that publishes music as Web pages on the World Wide Web:
+\item cloud-5 is certainly not the first system for publishing music as Web pages on the World Wide Web:
 \begin{itemize}
-\item \href{https://gibber.cc/playground/}{Gibber}
-\item \href{https://strudel.cc/}{Strudel}
-\item \href{https://ide.csound.com/}{Web-IDE}
-\item ...and others.
+\item \href{https://gibber.cc/playground/}{Gibber}, for live coding.
+\item \href{https://strudel.cc/}{Strudel}, for live coding.
+\item \href{https://ide.csound.com/}{Web-IDE}, for online Csound pieces.
+\item ...and many others.
 \end{itemize}
-\item These systems support multiple users, and provide a playground for shared learning and experimentation..
-\item By contrast, cloud-5 is designed to host \emph{permanent} pieces without compromising capabilities.
-\item cloud-5 supports algorithmic composition and synthesis at a high level of power, yet it has a low overhead for development and maintenance.
+\item These systems support multiple users, and provide a playground for shared learning and experimentation.
+\item By contrast, cloud-5 is designed to host \emph{permanent} pieces that use \emph{algorithmic composition and synthesis at a high level of power...}
+\item\emph{ ...yet with a low overhead for development and maintenance.}
 \end{itemize}
 \end{frame}
 
 \section{Design}
-
 \begin{frame}{Design}
 \begin{itemize}
-\item A cloud-5 composition is a single Web page.
-\item The score, the orchestra for performing the score, and all required libraries are embedded in that one Web page.
-\item The libraries, any musical assets, and all other pre-requisites are \emph{static resources} on the server filesystem.
-\item Writing a piece is done using a text editor such as Visual Studio Code.
-\item No build system is used.
-\item The version-less nature of Internet protocols and Web browsers means that cloud-5 pieces will last indefinitely.
-\end{itemize}
-\end{frame}
-
-\section{Implementation}
-\begin{frame}{Implementation}
-\begin{itemize}
-\item cloud-5 is a combination of existing components:
+\item The cloud-5 system is a combination of:
 \begin{itemize}
 \item The sound processing language \href{https://csound.com/}{Csound}, compiled from C to WebAssembly.
 \item The live coding system \href{https://strudel.cc}{Strudel}, written in JavaScript.
 \item The algorithmic composition system \href{https://github.com/gogins/csound-ac/blob/master/README.md}{CsoundAC}, compiled from C++ to WebAssembly.
 \item \href{https://www.shadertoy.com/}{GLSL shaders}.
 \end{itemize}
-\item Each of these components provides a JavaScript API, and JavaScript in a composition is used to connect and control the components.
+\item Each component comes with its own JavaScript API, which cloud-5 encapsulates in custom HTML elements.
+\item All libraries, assets, and all other pre-requisites are \emph{static resources} on the server filesystem.
+\item There is no build system for pieces.
+
 \end{itemize}
 \end{frame}
 
+\section{Composing}
+
 \begin{frame}{Composing}
 \begin{itemize}
-\item A cloud-5 piece is a single Web page assembled from custom HTML elements that are defined in \texttt{cloud-5.js}.
-\item The custom elements encapsulate the components (Csound, Strudel, etc.).
-\item A high-level menu system provides the shell for a piece.
-\item The design is modular. Components can be omitted or added. A naming convention makes it clear what composers can add to the shell in order to make actual pieces.
-\item The computer music \href{https://github.com/gogins/csound-ac/tree/master/vscode-playpen}{playpen} extension for Visual Studio Code makes it possible to edit Csound, Strudel, HTML, and JavaScript code in a piece, and immediately play that revision from a local Web server .
+\item A cloud-5 piece is a Web page written with a text editor.
+\item A high-level menu system provides the shell for a piece; menu items show/hide overlays.
+\item The composer writes code (JavaScript, Csound, Strudel, GLSL...) to fill out, connect, and control custom elements.
+\item A naming convention makes it clear what composers need to add to the elements in order to make actual pieces.
+\item The computer music \href{https://github.com/gogins/csound-ac/tree/master/vscode-playpen}{playpen} extension for Visual Studio Code makes it possible to edit any code in a piece, and immediately play that revision from a local Web server.
+\item The versionless nature of Web standards means pieces should remain playable into the indefinite future.
 \end{itemize}
+\end{frame}
+
+\begin{frame}{Example}
+\begin{figure}
+\centering
+\includegraphics[width=0.90\linewidth]{cloud5}
+\caption{cloud-5 Piece with Strudel and Audio Visualization}
+\label{fig:cloud5}
+\end{figure}
+\end{frame}
+
+\begin{frame}{}
+\begin{figure}
+\centering
+\includegraphics[height=0.85\textheight]{cloud5-code}
+\caption{Outline of code}
+\label{fig:cloud5-code}
+\end{figure}
 \end{frame}
 
 \begin{frame}{Publishing}
 \begin{itemize}
-\item Copy your cloud-5 directory to any Web server. It contains all the libraries and assets that you need.
+\item Copy the cloud-5 directory to any Web server. It contains all the libraries and assets that you need.
 \item The cloud-5 directory can be the server's root directory, or it can be a subdirectory.
-\item The Web server can be a local server for writing pieces or performing live pieces, or a server hosted on the Internet for publishing pieces.
-\item Musical compositions, of course, are Web pages in the cloud-5 directory.
-\item Modify the index page in your Web server to list and link to pieces to be published.
-\item Period.
+\item The Web server can be a local server for writing pieces or performing live pieces, or a server hosted on the Internet for publishing pieces online.
+\item Musical compositions, of course, are simply Web pages in the cloud-5 directory.
+\item Write the index page of your Web server to list and link to pieces to be published.
+\item \href{https://gogins.github.io}{Period}.
 \end{itemize}
 \end{frame}
 
