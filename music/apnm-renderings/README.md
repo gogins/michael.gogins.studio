@@ -20,7 +20,7 @@ This piece is written in Csound using opcodes by me that enable embedding C++ an
 
 ## Porphyry v7.4.2
 
-This piece is written in Python and rendered using Csound. The conceit of the piece is that the actual measures from Mozart's musical dice game are used as motivaic cells, played in sequence a random number of times as in Terry Riley's "In C." Additionally, chord progressions and modulations for these motivic cells are generated at random using my code for ideas of Dmitri Tymoczko.
+This piece is written in Python and rendered using Csound using Modartt's Organteq physical model of a pipe organ. The conceit of the piece is that the actual measures from Mozart's musical dice game are used as motivic cells, played in sequence a random number of times as in Terry Riley's "In C." Additionally, chord progressions and modulations for these motivic cells are generated at random using my CsoundAC code, based on the ideas of Dmitri Tymoczko.
 
 ## Three Trees 1
 

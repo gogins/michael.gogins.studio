@@ -8,7 +8,7 @@ GNU Lesser General Public License.
 print(__doc__)
 print('IMPORTING REQUIRED MODULES...')
 print
-import csnd6
+# import csnd6
 import CsoundAC
 import math
 import os
