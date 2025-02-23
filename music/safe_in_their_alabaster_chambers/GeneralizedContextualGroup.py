@@ -4,13 +4,13 @@ import math
 import os
 import string
 import sys
-sys.path.append('/Users/michaelgogins/Library/Application Support/REAPER/Scripts')
+sys.path.append('/Users/michaelgogins/csound-ac/reaper')
 import types
 import time
 from reaper_python import *
 for p in sys.path:
     RPR_ShowConsoleMsg(p + '\n')
-import csoundac_reaper
+import ac_reaper
 
 began = time.time()
 
@@ -431,115 +431,15 @@ class GeneralizedContextualGroup(CsoundAC.ScoreNode):
             print('Ended merging overlapping notes with %d notes.' % len(self.score))
             print
          
-if __name__ == '__main__':
-    c = [0, 4, 7, 10]
-    print(c)
-    while incrementVoicing(c, 60):
-        print(c)    
-    print
-    c = [60.0, 50.0, 52.0, 58.0]
-    print(c)    
-    while decrementVoicing(c, 60):
-        print(c)
-    print
-    print(-10 % 201)
-    print (10 % 201)
-    c = (0,4,7,10)
-    voiced = voice(c, 1, 36)
-    voicings = voicingsForPcs[c]
-    for i in range(len(voicings)):
-        print('v: %4d  c: %s' % (i, voicings[i]))
-    print
-    print('voiced(%s,1,36): %s' % (c, voiced))
-    print
-    voiced = voice(c, 108, 36)
-    print('voiced(%s,108,36): %s' % (c, voiced))
-    print
-    a = (1, 2, 3)
-    b = tuple(list(a))
-    print(a== b)
-    l = []
-    l.append(4)
-    c = (12, 3, 4, 7, 13)
-    print(c)
-    print(pc(c))
-    print(l)
-    print(T((3., 49., 39.), 2))
-    print(T([3., 49., 39.], 3))
-    print(K(c))
-    print
-    print(c)
-    print(Q(c, 2, c))
-    print
-    d = K(c)
-    print(d)
-    print(Q(d, 2, c))
-    gcg = GeneralizedContextualGroup()
-    gcg.setAxiom('S(0,4,7,11) B')
-    gcg.addRule('B', 'B V+ K V+ V+ WV Q1 D- W B V- D+ V- Q-1 W')
-    gcg.setIterationCount(8)
-    gcg.debug = False
-    gcg.generate()
-    print(gcg.getScore().getCsoundScore())
-    csoundac_reaper.score_to_midiitem(gcg.getScore(), 36)
-    c = (0, 4, 7, 11, 14)
-    print(c, CsoundAC.Voicelead.pitchClassSetToPandT(order(c)))
-    d = K(c)
-    print(d, CsoundAC.Voicelead.pitchClassSetToPandT(order(d)))
-    print 
-    C = (0,4,7)
-    for i in range(12):
-        print('T(%s, %s) is %s' % (C, i, T(C, i)))
-    print
-    for i in range(12):
-        print('I(%s, %s) is %s' % (C, i, I(C, i)))
-    print
-    X = (2, 11, 4, 9)
-    Y = X
-    Yis = (0, 9, 2, 7)
-    print('Q(%s, %s, %s) should be %s, is %s.' % (Y, 10, X, Yis, Q(Y, 10, X)))
-    I11Y = I(Y, 11)
-    I11Yis = (11, 2, 9, 4)
-    print('Q(%s, %s, %s) should be %s, is %s.' % (I11Y, 10, X, I11Yis, Q(I11Y, 10, X)))
-    print 
-    C = (0,4,7)
-    c = (7,3,0)
-    a = (4,0,9)
-    e = (11,7,4)
-    for i in range(12):
-        tC = T(C, i)
-        print('Is %s = T(%s, %s) a T-form of %s? %s' % (tC, C, i, C, Tform(C, tC)))
-        print('Is %s = T(%s, %s) a T-form of %s? %s' % (tC, C, i, c, Tform(c, tC)))
-    print
-    for i in range(12):
-        tC = I(C, i)
-        print('Is %s = I(%s, %s) an I-form of %s? %s' % (tC, C, i, C, Iform(C, tC)))
-        print('Is %s = I(%s, %s) an I-form of %s? %s' % (tC, C, i, c, Iform(c, tC)))
-    print
-    print('P, L, and R via K and Q...')
-    print
-    print('P%s is %s; Q(K(%s), %s, %s) is %s.' % (C, c, C, 9, C, Q(K(C), 9, C)))
-    print('So P(X) = Q(K(X), 9, C)')
-    print
-    print('L%s is %s; K(Q(%s, %s, %s)) is %s.' % (C, e, C, 7, C, K(Q(C, 7, C))))
-    print('So L(X) = K(Q(X, 7, C))')
-    print
-    print('R%s is %s; K%s is %s.' % (C, a, C, K(C)))
-    print('R%s is %s; K%s is %s.' % (a, C, K(C), K(K(C))))
-    print('So R(X) = K(X)')
-    print
-    CM7 = (0, 4, 7, 11)
-    am7 = (4, 0, 9, 5)
-    print('K%s = %s' % (CM7, K(CM7)))
-    print('K%s = %s' % (am7, K(am7)))
-    print
-    for i in range(12):
-        print('Q(%s, %s, %s) = %s %s' % (CM7, i, CM7, Q(CM7, i, CM7), CsoundAC.Voicelead.pitchClassSetToPandT(Q(CM7, i, CM7))))
-    print
-    for i in range(12):
-        print('Q(%s, %s, %s) = %s %s' % (am7, i, CM7, Q(am7, i, CM7), CsoundAC.Voicelead.pitchClassSetToPandT(Q(am7, i, CM7))))
-    print
-        
-    ended = time.time()
-    elapsed = ended - began
-    print('Elapsed:', elapsed)
+
+gcg = GeneralizedContextualGroup()
+gcg.setAxiom('S(0,4,7,10,14) R60 V+209 1 B')  
+gcg.addRule('B', 'T-3 B V+21 K W V+109 V+1 V+11 WV V-11 [ T-13 K Q1 W D/2.1 B [ T+3 ] V-1 B V-8 D/2.1 ] WV V-91 D*1.0 1 V-4 T3 WV')
+gcg.setIterationCount(4) 
+gcg.debug = False 
+gcg.generate()
+score = gcg.getScore() 
+score.setDuration(180)
+print(score.getCsoundScore())  
+ac_reaper.score_to_midiitem(score, 36)
+
