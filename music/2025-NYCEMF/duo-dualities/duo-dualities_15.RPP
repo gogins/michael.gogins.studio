@@ -1,0 +1,2059 @@
+<REAPER_PROJECT 0.1 "7.33/macOS-arm64" 1740853371
+  <NOTES 0 2
+  >
+  RIPPLE 0
+  GROUPOVERRIDE 0 0 0
+  AUTOXFADE 129
+  ENVATTACH 3
+  POOLEDENVATTACH 0
+  MIXERUIFLAGS 11 48
+  ENVFADESZ10 40
+  PEAKGAIN 1
+  FEEDBACK 0
+  PANLAW 1
+  PROJOFFS 0 0 0
+  MAXPROJLEN 0 0
+  GRID 3199 8 1 8 1 0 0 0
+  TIMEMODE 1 5 -1 30 0 0 -1
+  VIDEO_CONFIG 0 0 65792
+  PANMODE 3
+  PANLAWFLAGS 3
+  CURSOR 0
+  ZOOM 0.72795805627751 0 0
+  VZOOMEX 6 0
+  USE_REC_CFG 0
+  RECMODE 1
+  SMPTESYNC 0 30 100 40 1000 300 0 0 1 0 0
+  LOOP 0
+  LOOPGRAN 0 4
+  RECORD_PATH "Media" ""
+  <RECORD_CFG
+    ZXZhdxgAAQ==
+  >
+  <APPLYFX_CFG
+  >
+  RENDER_FILE ""
+  RENDER_PATTERN ""
+  RENDER_FMT 0 2 0
+  RENDER_1X 0
+  RENDER_RANGE 1 0 0 18 1000
+  RENDER_RESAMPLE 3 0 1
+  RENDER_ADDTOPROJ 0
+  RENDER_STEMS 0
+  RENDER_DITHER 0
+  TIMELOCKMODE 1
+  TEMPOENVLOCKMODE 1
+  ITEMMIX 1
+  DEFPITCHMODE 589824 0
+  TAKELANE 1
+  SAMPLERATE 44100 0 0
+  <RENDER_CFG
+    ZXZhdxgAAQ==
+  >
+  LOCK 1
+  <METRONOME 6 2
+    VOL 0.25 0.125
+    BEATLEN 4
+    FREQ 1760 880 1
+    SAMPLES "" "" "" ""
+    SPLIGNORE 0 0
+    SPLDEF 2 660 "" 0 ""
+    SPLDEF 3 440 "" 0 ""
+    PATTERN 0 169
+    PATTERNSTR ABBB
+    MULT 1
+  >
+  GLOBAL_AUTO -1
+  TEMPO 120 4 4 0
+  PLAYRATE 1 0 0.25 4
+  SELECTION 224 352
+  SELECTION2 224 352
+  MASTERAUTOMODE 0
+  MASTERTRACKHEIGHT 0 0
+  MASTERPEAKCOL 16576
+  MASTERMUTESOLO 0
+  MASTERTRACKVIEW 0 0.6667 0.5 0.5 0 0 0 0 0 0 0 0 0 0
+  MASTERHWOUT 0 0 1 0 0 0 0 -1
+  MASTER_NCH 2 2
+  MASTER_VOLUME 0.74917433089972 0 -1 -1 1
+  MASTER_PANMODE 3
+  MASTER_PANLAWFLAGS 3
+  MASTER_FX 1
+  MASTER_SEL 0
+  <MASTERFXLIST
+    WNDRECT 32 548 815 263
+    SHOW 0
+    LASTSEL 0
+    DOCKED 0
+    BYPASS 1 0 0
+    <AU "AU: AUReverb2 (Apple)" "Apple: AUReverb2" "" 1635083896 1920361010 1634758764
+      6QMAAAAAAAACAAAAAQAAAAAAAAACAAAAAAAAAAIAAAABAAAAAAAAAAIAAAAAAAAALwIAADw/eG1sIHZlcnNpb249IjEuMCIgZW5jb2Rpbmc9IlVURi04Ij8+CjwhRE9D
+      VFlQRSBwbGlzdCBQVUJMSUMgIi0vL0FwcGxlLy9EVEQgUExJU1QgMS4wLy9FTiIgImh0dHA6Ly93d3cuYXBwbGUuY29tL0RURHMvUHJvcGVydHlMaXN0LTEuMC5kdGQi
+      Pgo8cGxpc3QgdmVyc2lvbj0iMS4wIj4KPGRpY3Q+Cgk8a2V5PmRhdGE8L2tleT4KCTxkYXRhPgoJQUFBQUFBQUFBQUFBQUFBSEFBQUFBRUdZek0wQUFBQUJQNEFBQUFB
+      QUFBSThBeEp2QUFBQUF6MU16TTBBQUFBRVB3cDkKCU5RQUFBQVUvQUFBQUFBQUFCa0lUMnlJPQoJPC9kYXRhPgoJPGtleT5tYW51ZmFjdHVyZXI8L2tleT4KCTxpbnRl
+      Z2VyPjE2MzQ3NTg3NjQ8L2ludGVnZXI+Cgk8a2V5Pm5hbWU8L2tleT4KCTxzdHJpbmc+VW50aXRsZWQ8L3N0cmluZz4KCTxrZXk+c3VidHlwZTwva2V5PgoJPGludGVn
+      ZXI+MTkyMDM2MTAxMDwvaW50ZWdlcj4KCTxrZXk+dHlwZTwva2V5PgoJPGludGVnZXI+MTYzNTA4Mzg5NjwvaW50ZWdlcj4KCTxrZXk+dmVyc2lvbjwva2V5PgoJPGlu
+      dGVnZXI+MDwvaW50ZWdlcj4KPC9kaWN0Pgo8L3BsaXN0PgoBAAAAAAAAAAAA
+    >
+    FLOATPOS 64 544 600 235
+    FXID {9A605900-225D-E941-9AB3-F46337113F6D}
+    WAK 0 0
+  >
+  <MASTERPLAYSPEEDENV
+    EGUID {62061924-2D06-CA41-B745-01B95C42C262}
+    ACT 0 -1
+    VIS 0 1 1
+    LANEHEIGHT 0 0
+    ARM 0
+    DEFSHAPE 0 -1 -1
+  >
+  <TEMPOENVEX
+    EGUID {A8FBE181-5174-A549-BE0D-A3409F4C84EC}
+    ACT 0 -1
+    VIS 1 0 1
+    LANEHEIGHT 0 0
+    ARM 0
+    DEFSHAPE 1 -1 -1
+  >
+  <PROJBAY
+  >
+  <TRACK {58856C49-DCFE-B24A-85A4-61A95C2CD20B}
+    NAME "Generated score"
+    PEAKCOL 16576
+    BEAT -1
+    AUTOMODE 0
+    PANLAWFLAGS 3
+    VOLPAN 1.82452995868445 0 -1 -1 1
+    MUTESOLO 0 0 0
+    IPHASE 0
+    PLAYOFFS 0 1
+    ISBUS 0 0
+    BUSCOMP 0 0 0 0 0
+    SHOWINMIX 1 0.6667 0.5 1 0.5 0 0 0
+    FIXEDLANES 9 0 0 0 0
+    SEL 1
+    REC 1 5088 1 0 0 0 0 0
+    VU 2
+    TRACKHEIGHT 0 0 0 0 0 0 0
+    INQ 0 0 0 0.5 100 0 0 100
+    NCHAN 2
+    FX 1
+    TRACKID {58856C49-DCFE-B24A-85A4-61A95C2CD20B}
+    PERF 0
+    MIDIOUT -1
+    MAINSEND 1 0
+    <FXCHAIN
+      WNDRECT 0 121 807 690
+      SHOW 0
+      LASTSEL 0
+      DOCKED 0
+    >
+    <ITEM
+      POSITION 0
+      SNAPOFFS 0
+      LENGTH 360.02403252195376
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 1 0 0 1 0 0 0
+      FADEOUT 1 0 0 1 0 0 0
+      MUTE 0 0
+      SEL 1
+      IGUID {F790A29F-BE45-444B-9BDB-4AAF4F5A449C}
+      IID 25
+      NAME ""
+      VOLPAN 1 0 1 -1
+      SOFFS 0 0
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {5BA768F9-897E-9B41-8C1D-04DB8907EFEA}
+      <SOURCE MIDI
+        HASDATA 1 960 QN
+        CCINTERP 32
+        POOLEDEVTS {542C7B0E-17B5-DB41-BA23-A7A17324B1CA}
+        E 46 90 21 36
+        E 0 91 25 36
+        E 0 92 28 36
+        E 3691 80 21 00
+        E 0 81 25 00
+        E 0 82 28 00
+        E 0 90 2b 36
+        E 0 91 3f 36
+        E 0 92 60 36
+        E 1846 81 3f 00
+        E 0 82 60 00
+        E 0 91 4b 36
+        E 0 92 54 36
+        E 1845 80 2b 00
+        E 0 81 4b 00
+        E 0 82 54 00
+        E 0 90 24 36
+        E 0 91 2b 36
+        E 0 92 33 36
+        E 1846 81 2b 00
+        E 0 82 33 00
+        E 0 91 2c 36
+        E 0 92 35 36
+        E 1846 80 24 00
+        E 0 81 2c 00
+        E 0 82 35 00
+        E 0 90 29 36
+        E 0 91 44 36
+        E 0 92 54 36
+        E 1846 81 44 00
+        E 0 82 54 00
+        E 0 91 46 36
+        E 0 92 55 36
+        E 1845 81 46 00
+        E 0 91 44 36
+        E 1483 80 29 00
+        E 0 81 44 00
+        E 0 90 2a 34
+        E 0 91 46 34
+        E 697 82 55 00
+        E 0 81 46 00
+        E 0 91 47 34
+        E 0 92 57 34
+        E 698 80 2a 00
+        E 0 82 57 00
+        E 0 90 2c 34
+        E 0 92 58 34
+        E 698 81 47 00
+        E 0 80 2c 00
+        E 0 90 2d 34
+        E 0 91 49 34
+        E 697 82 58 00
+        E 0 80 2d 00
+        E 0 81 49 00
+        E 0 90 34 36
+        E 0 91 45 36
+        E 0 92 55 36
+        E 1186 91 43 36
+        E 0 92 54 36
+        E 3692 82 55 00
+        E 1186 81 43 00
+        E 1200 90 2a 36
+        E 0 91 46 36
+        E 0 92 49 36
+        E 1854 91 3a 36
+        E 0 92 55 36
+        E 1838 80 34 00
+        E 0 81 45 00
+        E 0 82 54 00
+        E 15 91 31 36
+        E 0 92 52 36
+        E 1838 81 46 00
+        E 0 82 49 00
+        E 15 91 33 36
+        E 0 92 53 36
+        E 1838 81 3a 00
+        E 0 82 55 00
+        E 15 90 23 36
+        E 0 91 27 36
+        E 0 92 42 36
+        E 1838 81 31 00
+        E 0 82 52 00
+        E 15 90 22 36
+        E 0 91 25 36
+        E 1838 80 2a 00
+        E 0 81 33 00
+        E 0 82 53 00
+        E 1504 92 41 34
+        E 349 80 23 00
+        E 351 90 24 34
+        E 0 91 2c 34
+        E 700 91 2b 34
+        E 0 92 3f 34
+        E 701 92 3e 34
+        E 700 90 2e 36
+        E 0 91 37 36
+        E 0 92 62 36
+        E 890 81 27 00
+        E 0 82 42 00
+        E 301 90 2b 36
+        E 0 91 34 36
+        E 0 92 5f 36
+        E 399 81 25 00
+        E 701 82 41 00
+        E 0 81 2c 00
+        E 91 90 2f 36
+        E 609 80 24 00
+        E 0 82 3f 00
+        E 701 80 22 00
+        E 0 81 2b 00
+        E 0 82 3e 00
+        E 1190 80 2e 00
+        E 1191 80 2b 00
+        E 0 81 34 00
+        E 0 82 5f 00
+        E 1221 90 34 36
+        E 0 92 5f 36
+        E 1860 90 28 36
+        E 0 91 2f 36
+        E 0 92 43 36
+        E 1831 82 62 00
+        E 0 80 2f 00
+        E 30 91 30 36
+        E 0 92 45 36
+        E 1831 81 37 00
+        E 0 80 34 00
+        E 0 82 5f 00
+        E 1524 90 24 36
+        E 0 91 28 36
+        E 336 81 2f 00
+        E 1861 82 45 00
+        E 1494 80 28 00
+        E 0 81 30 00
+        E 1240 92 45 36
+        E 1868 90 21 36
+        E 0 91 34 36
+        E 0 92 54 36
+        E 1824 82 43 00
+        E 44 91 35 36
+        E 0 92 56 36
+        E 1824 80 24 00
+        E 0 81 28 00
+        E 0 82 45 00
+        E 1545 90 2d 36
+        E 0 92 60 36
+        E 323 81 34 00
+        E 1868 82 56 00
+        E 1500 80 21 00
+        E 0 82 54 00
+        E 1260 90 23 36
+        E 0 91 2c 36
+        E 0 92 4b 36
+        E 1876 90 2c 36
+        E 0 91 4b 36
+        E 0 92 5f 36
+        E 1816 81 35 00
+        E 0 80 2d 00
+        E 0 82 60 00
+        E 59 91 2f 36
+        E 0 92 33 36
+        E 1816 80 23 00
+        E 0 81 2c 00
+        E 0 82 4b 00
+        E 60 91 31 36
+        E 0 92 34 36
+        E 1816 81 4b 00
+        E 0 82 5f 00
+        E 59 90 38 36
+        E 0 91 49 36
+        E 0 92 58 36
+        E 1816 81 2f 00
+        E 0 82 33 00
+        E 60 90 39 36
+        E 0 92 5a 36
+        E 1816 80 2c 00
+        E 0 81 31 00
+        E 0 82 34 00
+        E 1566 91 4a 34
+        E 309 80 38 00
+        E 400 90 3b 34
+        E 0 92 5b 34
+        E 709 90 3c 34
+        E 0 91 4c 34
+        E 709 91 4d 34
+        E 0 92 5d 34
+        E 709 90 35 36
+        E 0 91 51 36
+        E 0 92 54 36
+        E 855 81 49 00
+        E 0 82 58 00
+        E 350 90 33 36
+        E 0 91 50 36
+        E 359 80 39 00
+        E 0 82 5a 00
+        E 709 81 4a 00
+        E 0 80 3b 00
+        E 137 90 38 36
+        E 0 91 54 36
+        E 0 92 59 36
+        E 572 82 5b 00
+        E 0 81 4c 00
+        E 709 80 3c 00
+        E 0 81 4d 00
+        E 0 82 5d 00
+        E 1205 80 35 00
+        E 0 81 51 00
+        E 1205 82 54 00
+        E 0 80 33 00
+        E 0 81 50 00
+        E 1280 92 57 36
+        E 1883 90 27 36
+        E 0 91 44 36
+        E 0 92 54 36
+        E 1809 82 59 00
+        E 74 91 43 36
+        E 0 92 52 36
+        E 1809 80 38 00
+        E 0 81 54 00
+        E 0 82 57 00
+        E 1587 90 37 36
+        E 0 91 48 36
+        E 0 92 57 36
+        E 296 81 44 00
+        E 1883 82 52 00
+        E 1512 80 27 00
+        E 0 82 54 00
+        E 0 81 43 00
+        E 1300 91 46 36
+        E 1891 91 52 36
+        E 1800 81 48 00
+        E 90 90 35 36
+        E 0 92 56 36
+        E 1801 81 46 00
+        E 1891 82 57 00
+        E 1890 80 35 00
+        E 6635 90 35 3b
+        E 1898 91 50 3b
+        E 0 92 55 3b
+        E 1794 80 37 00
+        E 105 91 46 3b
+        E 0 92 49 3b
+        E 1793 81 52 00
+        E 0 82 56 00
+        E 105 91 44 45
+        E 1483 90 34 45
+        E 0 92 47 45
+        E 310 81 50 00
+        E 0 82 55 00
+        E 1173 90 38 45
+        E 0 91 49 45
+        E 0 92 58 45
+        E 725 81 46 00
+        E 758 91 47 5a
+        E 725 80 35 00
+        E 0 82 49 00
+        E 433 90 37 5a
+        E 0 92 56 5a
+        E 1050 81 44 00
+        E 0 80 34 00
+        E 0 82 47 00
+        E 109 91 53 5a
+        E 1374 81 49 00
+        E 668 90 29 5a
+        E 0 91 31 5a
+        E 0 92 3a 5a
+        E 491 80 38 00
+        E 393 91 2e 5a
+        E 0 92 3d 5a
+        E 765 81 47 00
+        E 0 82 56 00
+        E 119 90 35 5a
+        E 0 91 46 5a
+        E 0 92 55 5a
+        E 884 90 36 5a
+        E 707 90 2e 5a
+        E 0 91 36 5a
+        E 333 82 58 00
+        E 0 80 37 00
+        E 0 81 53 00
+        E 884 81 31 00
+        E 0 82 3a 00
+        E 884 80 29 00
+        E 0 81 2e 00
+        E 0 82 3d 00
+        E 376 90 28 45
+        E 0 91 2b 45
+        E 0 92 60 45
+        E 508 80 35 00
+        E 571 90 2b 45
+        E 0 91 34 45
+        E 0 92 54 45
+        E 136 81 46 00
+        E 0 80 36 00
+        E 943 90 24 45
+        E 0 91 28 45
+        E 0 92 43 45
+        E 1079 90 26 45
+        E 0 91 29 45
+        E 0 92 45 45
+        E 454 82 55 00
+        E 0 80 2e 00
+        E 0 81 36 00
+        E 625 90 35 45
+        E 0 91 3e 45
+        E 0 92 51 45
+        E 454 80 28 00
+        E 0 81 2b 00
+        E 0 82 60 00
+        E 625 90 37 45
+        E 0 92 52 45
+        E 454 80 2b 00
+        E 0 81 34 00
+        E 0 82 54 00
+        E 1079 80 24 00
+        E 0 81 28 00
+        E 0 82 43 00
+        E 413 92 46 45
+        E 666 80 26 00
+        E 0 81 29 00
+        E 0 82 45 00
+        E 1079 82 51 00
+        E 1080 80 37 00
+        E 35 90 28 45
+        E 0 91 2c 45
+        E 0 92 3d 45
+        E 831 82 52 00
+        E 35 90 2c 45
+        E 0 91 31 45
+        E 0 92 34 45
+        E 867 90 38 45
+        E 0 91 49 45
+        E 0 92 58 45
+        E 867 90 39 45
+        E 0 92 5a 45
+        E 867 90 2d 45
+        E 0 91 36 45
+        E 0 92 49 45
+        E 224 80 35 00
+        E 0 81 3e 00
+        E 0 82 46 00
+        E 642 91 34 5a
+        E 225 80 28 00
+        E 0 81 2c 00
+        E 0 82 3d 00
+        E 642 90 2b 5a
+        E 0 92 48 5a
+        E 225 80 2c 00
+        E 0 81 31 00
+        E 0 82 34 00
+        E 642 90 21 5a
+        E 0 92 3c 5a
+        E 224 80 38 00
+        E 0 82 58 00
+        E 867 81 49 00
+        E 0 80 39 00
+        E 0 82 5a 00
+        E 436 90 22 5a
+        E 0 91 33 5a
+        E 0 92 42 5a
+        E 431 81 36 00
+        E 231 90 27 5a
+        E 0 91 2a 5a
+        E 0 92 5e 5a
+        E 635 80 2d 00
+        E 0 82 49 00
+        E 26 90 2e 5a
+        E 0 91 36 5a
+        E 0 92 57 5a
+        E 661 90 2f 5a
+        E 180 80 2b 00
+        E 0 82 48 00
+        E 349 90 36 5a
+        E 0 91 3f 5a
+        E 0 92 47 5a
+        E 1179 81 34 00
+        E 0 80 21 00
+        E 0 82 3c 00
+        E 661 80 22 00
+        E 0 81 33 00
+        E 0 82 42 00
+        E 661 80 27 00
+        E 0 81 2a 00
+        E 0 82 5e 00
+        E 613 90 35 3b
+        E 0 91 45 3b
+        E 0 92 60 3b
+        E 48 80 2e 00
+        E 529 81 36 00
+        E 0 82 57 00
+        E 0 80 2f 00
+        E 684 90 29 3b
+        E 0 91 30 3b
+        E 0 92 39 3b
+        E 1261 91 48 3b
+        E 0 92 51 3b
+        E 1169 80 36 00
+        E 0 81 3f 00
+        E 0 82 47 00
+        E 92 90 38 3b
+        E 0 91 58 3b
+        E 0 92 61 3b
+        E 1170 81 45 00
+        E 0 82 60 00
+        E 92 90 28 3b
+        E 0 91 44 3b
+        E 0 92 55 3b
+        E 1169 80 29 00
+        E 0 81 30 00
+        E 0 82 39 00
+        E 92 90 25 3b
+        E 0 91 38 3b
+        E 0 92 4c 3b
+        E 1169 80 35 00
+        E 0 81 48 00
+        E 0 82 51 00
+        E 92 91 39 3b
+        E 0 92 4e 3b
+        E 1169 80 38 00
+        E 0 81 58 00
+        E 0 82 61 00
+        E 92 90 31 3b
+        E 0 91 36 3b
+        E 0 92 51 3b
+        E 1169 80 28 00
+        E 0 81 44 00
+        E 0 82 55 00
+        E 92 90 32 3b
+        E 0 92 53 3b
+        E 1169 81 38 00
+        E 0 82 4c 00
+        E 1106 91 37 36
+        E 156 80 25 00
+        E 0 81 39 00
+        E 0 82 4e 00
+        E 320 90 34 36
+        E 0 92 54 36
+        E 477 90 35 36
+        E 0 91 39 36
+        E 464 80 31 00
+        E 13 91 3a 36
+        E 0 92 56 36
+        E 476 90 26 3b
+        E 0 91 35 3b
+        E 0 92 46 3b
+        E 811 90 25 3b
+        E 0 92 44 3b
+        E 974 81 36 00
+        E 0 82 51 00
+        E 477 80 32 00
+        E 0 82 53 00
+        E 476 81 37 00
+        E 0 80 34 00
+        E 477 82 54 00
+        E 0 81 39 00
+        E 477 80 35 00
+        E 0 81 3a 00
+        E 0 82 56 00
+        E 810 80 26 00
+        E 1728 90 35 3b
+        E 0 91 38 3b
+        E 0 92 49 3b
+        E 1267 90 33 3b
+        E 0 92 48 3b
+        E 1158 82 46 00
+        E 1125 92 54 3b
+        E 142 81 35 00
+        E 0 80 25 00
+        E 0 82 44 00
+        E 1266 82 49 00
+        E 1266 80 33 00
+        E 682 90 33 3b
+        E 335 82 48 00
+        E 936 90 38 3b
+        E 0 91 3f 3b
+        E 1272 90 37 3b
+        E 0 92 52 3b
+        E 1149 80 35 00
+        E 1143 91 37 3b
+        E 0 92 48 3b
+        E 128 81 38 00
+        E 1271 80 38 00
+        E 1271 82 52 00
+        E 700 90 34 3b
+        E 0 91 39 3b
+        E 0 92 49 3b
+        E 322 82 54 00
+        E 0 81 3f 00
+        E 0 80 37 00
+        E 699 90 2d 3b
+        E 0 91 34 3b
+        E 0 92 55 3b
+        E 1021 90 31 3b
+        E 0 92 45 3b
+        E 1021 90 32 3b
+        E 0 91 36 3b
+        E 628 80 33 00
+        E 0 81 37 00
+        E 0 82 48 00
+        E 394 90 26 3b
+        E 0 91 2d 3b
+        E 0 92 36 3b
+        E 628 80 34 00
+        E 0 81 39 00
+        E 0 82 49 00
+        E 393 91 2f 45
+        E 628 80 2d 00
+        E 0 82 55 00
+        E 393 90 27 45
+        E 0 92 38 45
+        E 628 81 34 00
+        E 0 80 31 00
+        E 393 90 23 45
+        E 0 91 33 45
+        E 628 82 45 00
+        E 0 80 32 00
+        E 0 81 36 00
+        E 1021 81 2d 00
+        E 170 90 24 5a
+        E 0 91 35 5a
+        E 798 90 30 5a
+        E 0 91 38 5a
+        E 0 92 3f 5a
+        E 53 80 26 00
+        E 1021 81 2f 00
+        E 0 80 27 00
+        E 332 90 21 5a
+        E 0 91 36 5a
+        E 0 92 4a 5a
+        E 609 90 36 5a
+        E 0 91 4a 5a
+        E 0 92 5d 5a
+        E 81 82 36 00
+        E 527 90 2d 5a
+        E 0 91 32 5a
+        E 0 92 36 5a
+        E 270 80 23 00
+        E 0 81 33 00
+        E 339 90 2f 5a
+        E 0 91 34 5a
+        E 0 92 37 5a
+        E 459 82 38 00
+        E 0 80 24 00
+        E 0 81 35 00
+        E 28 90 28 5a
+        E 0 91 37 5a
+        E 0 92 53 5a
+        E 1379 80 30 00
+        E 0 81 38 00
+        E 0 82 3f 00
+        E 326 90 35 45
+        E 0 91 3a 45
+        E 0 92 3d 45
+        E 282 80 21 00
+        E 0 81 36 00
+        E 0 82 4a 00
+        E 461 90 2e 45
+        E 0 91 35 45
+        E 0 92 49 45
+        E 148 80 36 00
+        E 0 81 4a 00
+        E 0 82 5d 00
+        E 595 90 25 45
+        E 0 92 46 45
+        E 14 80 2d 00
+        E 0 81 32 00
+        E 0 82 36 00
+        E 486 80 2f 00
+        E 0 81 34 00
+        E 0 82 37 00
+        E 243 91 36 45
+        E 743 91 2e 45
+        E 0 92 36 45
+        E 720 80 28 00
+        E 0 81 37 00
+        E 0 82 53 00
+        E 23 91 2c 45
+        E 0 92 35 45
+        E 720 80 35 00
+        E 0 81 3a 00
+        E 0 82 3d 00
+        E 620 90 22 45
+        E 0 91 29 45
+        E 0 92 61 45
+        E 123 80 2e 00
+        E 0 82 49 00
+        E 743 81 35 00
+        E 743 82 46 00
+        E 0 81 36 00
+        E 360 90 23 45
+        E 0 91 37 45
+        E 0 92 4a 45
+        E 383 82 36 00
+        E 214 90 37 45
+        E 0 91 4a 45
+        E 0 92 5f 45
+        E 529 81 2c 00
+        E 68 90 2f 45
+        E 0 91 32 45
+        E 0 92 37 45
+        E 529 80 25 00
+        E 0 81 2e 00
+        E 0 82 35 00
+        E 68 90 30 45
+        E 0 91 34 45
+        E 597 90 2b 45
+        E 0 91 48 45
+        E 0 92 58 45
+        E 596 90 2d 5a
+        E 597 91 49 5a
+        E 0 92 5a 5a
+        E 111 80 22 00
+        E 0 81 29 00
+        E 0 82 61 00
+        E 486 90 28 5a
+        E 0 91 45 5a
+        E 0 92 55 5a
+        E 111 80 23 00
+        E 0 81 37 00
+        E 0 82 4a 00
+        E 596 80 37 00
+        E 0 81 4a 00
+        E 0 82 5f 00
+        E 345 90 37 5a
+        E 0 91 3f 5a
+        E 0 92 46 5a
+        E 252 80 2f 00
+        E 0 81 32 00
+        E 203 91 3a 5a
+        E 0 92 4b 5a
+        E 394 82 37 00
+        E 0 80 30 00
+        E 0 81 34 00
+        E 62 90 27 5a
+        E 0 91 37 5a
+        E 0 92 52 5a
+        E 455 90 29 5a
+        E 0 91 38 5a
+        E 0 92 54 5a
+        E 80 80 2b 00
+        E 284 90 2c 5a
+        E 0 91 30 5a
+        E 0 92 59 5a
+        E 313 81 48 00
+        E 0 82 58 00
+        E 596 80 2d 00
+        E 0 81 49 00
+        E 0 82 5a 00
+        E 1052 80 28 00
+        E 0 81 45 00
+        E 0 82 55 00
+        E 456 81 3f 00
+        E 0 82 46 00
+        E 455 80 37 00
+        E 0 81 3a 00
+        E 0 82 4b 00
+        E 455 80 27 00
+        E 0 81 37 00
+        E 0 82 52 00
+        E 364 80 29 00
+        E 0 81 38 00
+        E 0 82 54 00
+        E 2524 90 36 3b
+        E 0 90 39 3b
+        E 0 90 4a 3b
+        E 3691 80 2c 00
+        E 0 81 30 00
+        E 0 82 59 00
+        E 651 90 56 3b
+        E 3691 80 4a 00
+        E 651 90 2d 3b
+        E 0 90 32 3b
+        E 3692 80 39 00
+        E 0 80 56 00
+        E 650 90 2f 3b
+        E 0 90 37 3b
+        E 3692 80 36 00
+        E 0 80 2d 00
+        E 650 90 26 3b
+        E 0 90 3b 3b
+        E 3692 80 32 00
+        E 0 80 2f 00
+        E 650 90 36 3b
+        E 0 90 39 3b
+        E 3692 80 37 00
+        E 0 80 3b 00
+        E 651 90 3b 3b
+        E 3487 90 25 36
+        E 1641 90 34 36
+        E 0 90 38 36
+        E 1642 90 23 36
+        E 0 90 33 36
+        E 409 80 26 00
+        E 0 80 3b 00
+        E 1232 90 22 36
+        E 409 80 39 00
+        E 1232 90 27 3b
+        E 0 90 3a 3b
+        E 409 80 25 00
+        E 0 80 34 00
+        E 1641 80 38 00
+        E 0 80 23 00
+        E 740 90 37 3b
+        E 0 90 3c 3b
+        E 901 80 33 00
+        E 0 80 22 00
+        E 2791 80 36 00
+        E 2790 80 3c 00
+        E 7817 90 36 3b
+        E 0 90 49 3b
+        E 0 90 51 3b
+        E 3692 80 27 00
+        E 0 80 3a 00
+        E 0 80 37 00
+        E 668 90 55 3b
+        E 3691 80 49 00
+        E 669 90 31 3b
+        E 0 90 45 3b
+        E 3691 80 51 00
+        E 0 80 55 00
+        E 668 90 32 3b
+        E 0 90 47 3b
+        E 3691 80 31 00
+        E 0 80 45 00
+        E 669 90 2a 3b
+        E 0 90 4a 3b
+        E 3691 80 36 00
+        E 0 80 32 00
+        E 668 90 2b 3b
+        E 0 90 4c 3b
+        E 3692 80 2a 00
+        E 0 80 4a 00
+        E 668 90 4a 3b
+        E 3501 90 48 36
+        E 1648 90 2d 36
+        E 0 90 4d 36
+        E 1648 90 2e 36
+        E 396 80 47 00
+        E 1252 90 4b 36
+        E 0 90 4f 36
+        E 395 80 2b 00
+        E 0 80 4c 00
+        E 1253 90 2b 3b
+        E 0 90 52 3b
+        E 395 80 48 00
+        E 0 80 2d 00
+        E 1648 80 4a 00
+        E 0 80 4d 00
+        E 758 90 2a 3b
+        E 0 90 49 3b
+        E 890 80 2e 00
+        E 0 80 4f 00
+        E 2801 80 2b 00
+        E 2802 80 49 00
+        E 7864 90 49 3b
+        E 3691 80 4b 00
+        E 686 90 55 3b
+        E 3691 80 49 00
+        E 686 90 29 3b
+        E 0 90 50 3b
+        E 3691 80 52 00
+        E 0 80 2a 00
+        E 686 90 52 3b
+        E 3515 90 46 3b
+        E 0 90 49 3b
+        E 176 80 50 00
+        E 3516 80 55 00
+        E 0 80 52 00
+        E 7910 90 44 3b
+        E 3692 80 46 00
+        E 703 90 2c 3b
+        E 0 90 4d 3b
+        E 3691 80 29 00
+        E 0 80 44 00
+        E 703 90 48 3b
+        E 0 90 4b 3b
+        E 3692 80 49 00
+        E 0 80 4d 00
+        E 703 90 4d 3b
+        E 3530 90 54 3b
+        E 161 80 4b 00
+        E 3530 80 48 00
+        E 7957 90 2d 3b
+        E 0 90 36 3b
+        E 0 90 3e 3b
+        E 3692 80 2c 00
+        E 0 80 4d 00
+        E 0 80 54 00
+        E 720 90 4a 3b
+        E 3692 80 3e 00
+        E 721 90 21 3b
+        E 0 90 26 3b
+        E 3691 80 2d 00
+        E 0 80 4a 00
+        E 721 90 23 3b
+        E 0 90 37 3b
+        E 3691 80 36 00
+        E 0 80 21 00
+        E 721 90 2b 3b
+        E 0 90 2f 3b
+        E 0 90 56 3b
+        E 3692 80 26 00
+        E 0 80 23 00
+        E 0 80 37 00
+        E 721 90 2a 3b
+        E 0 90 2d 3b
+        E 3691 80 2b 00
+        E 0 80 2f 00
+        E 721 90 2f 3b
+        E 3544 90 55 36
+        E 1668 90 28 36
+        E 0 90 2c 36
+        E 1667 90 27 36
+        E 0 90 53 36
+        E 356 80 56 00
+        E 0 80 2f 00
+        E 1312 90 52 36
+        E 356 80 2d 00
+        E 1312 90 2e 3b
+        E 0 90 4b 3b
+        E 356 80 55 00
+        E 0 80 28 00
+        E 1667 80 2c 00
+        E 0 80 53 00
+        E 812 90 2b 3b
+        E 0 90 30 3b
+        E 856 80 27 00
+        E 0 80 52 00
+        E 2835 80 2a 00
+        E 2836 80 30 00
+        E 8003 90 30 3b
+        E 3692 80 2e 00
+        E 738 90 24 3b
+        E 3692 80 30 00
+        E 738 90 2c 3b
+        E 0 90 4d 3b
+        E 3692 80 4b 00
+        E 0 80 2b 00
+        E 738 90 4b 3b
+        E 3559 90 27 3b
+        E 0 90 30 3b
+        E 0 90 38 3b
+        E 133 80 4d 00
+        E 3558 80 24 00
+        E 0 80 2c 00
+        E 0 80 4b 00
+        E 8051 90 29 3b
+        E 3691 80 27 00
+        E 757 90 2c 3b
+        E 0 90 4d 3b
+        E 3691 80 38 00
+        E 0 80 29 00
+        E 756 90 2e 3b
+        E 0 90 31 3b
+        E 3692 80 30 00
+        E 0 80 2c 00
+        E 756 90 2c 3b
+        E 3573 90 25 3b
+        E 118 80 2e 00
+        E 3573 80 31 00
+        E 8098 90 4e 34
+        E 0 91 2e 34
+        E 0 92 25 34
+        E 662 91 2f 34
+        E 0 92 27 34
+        E 277 81 2e 00
+        E 0 82 25 00
+        E 385 90 50 34
+        E 0 92 28 34
+        E 276 80 4e 00
+        E 0 82 27 00
+        E 386 90 51 34
+        E 0 91 31 34
+        E 276 81 2f 00
+        E 0 80 50 00
+        E 1429 80 4d 00
+        E 0 80 2c 00
+        E 0 80 25 00
+        E 4407 90 4f 34
+        E 0 91 30 34
+        E 2637 90 45 34
+        E 0 91 3c 34
+        E 1054 80 51 00
+        E 0 81 31 00
+        E 1583 90 43 36
+        E 1054 80 4f 00
+        E 0 81 30 00
+        E 1006 91 3a 36
+        E 0 92 27 36
+        E 1631 80 45 00
+        E 430 90 48 36
+        E 0 91 3f 36
+        E 0 92 2b 36
+        E 1631 82 28 00
+        E 0 81 3c 00
+        E 429 90 46 3b
+        E 1609 91 3d 3b
+        E 0 92 2a 3b
+        E 22 80 43 00
+        E 0 81 3a 00
+        E 0 82 27 00
+        E 1588 90 52 3b
+        E 472 80 48 00
+        E 1610 82 2b 00
+        E 756 90 60 3b
+        E 0 91 39 3b
+        E 0 92 28 3b
+        E 853 80 46 00
+        E 0 81 3d 00
+        E 375 90 34 3b
+        E 0 91 2d 3b
+        E 0 92 24 3b
+        E 1228 90 48 3b
+        E 0 91 45 3b
+        E 1228 92 29 3b
+        E 7 81 3f 00
+        E 0 82 2a 00
+        E 0 80 52 00
+        E 1228 80 60 00
+        E 0 81 39 00
+        E 1228 80 34 00
+        E 0 82 24 00
+        E 1228 82 28 00
+        E 732 90 5f 36
+        E 0 91 57 36
+        E 0 92 2a 36
+        E 251 81 45 00
+        E 1248 90 53 36
+        E 0 91 36 36
+        E 0 92 27 36
+        E 1499 90 4b 36
+        E 0 91 2a 36
+        E 0 92 23 36
+        E 694 81 2d 00
+        E 0 80 48 00
+        E 0 82 29 00
+        E 805 90 49 36
+        E 0 91 2c 36
+        E 0 92 28 36
+        E 694 80 5f 00
+        E 0 81 57 00
+        E 0 82 2a 00
+        E 805 91 34 36
+        E 0 92 2c 36
+        E 694 80 53 00
+        E 0 81 36 00
+        E 0 82 27 00
+        E 806 91 36 36
+        E 0 92 2d 36
+        E 693 80 4b 00
+        E 0 81 2a 00
+        E 0 82 23 00
+        E 1499 81 2c 00
+        E 0 82 28 00
+        E 511 90 45 36
+        E 0 91 31 36
+        E 0 92 28 36
+        E 988 82 2c 00
+        E 1499 81 36 00
+        E 1204 80 49 00
+        E 0 81 34 00
+        E 0 82 2d 00
+        E 282 90 57 36
+        E 0 91 3c 36
+        E 0 92 2b 36
+        E 1204 90 37 36
+        E 0 91 30 36
+        E 0 92 27 36
+        E 1204 90 48 36
+        E 0 91 3f 36
+        E 1204 91 41 36
+        E 0 92 2c 36
+        E 80 80 45 00
+        E 0 81 31 00
+        E 0 82 28 00
+        E 1124 90 35 36
+        E 80 80 57 00
+        E 0 81 3c 00
+        E 1124 90 33 3b
+        E 80 80 37 00
+        E 0 82 27 00
+        E 1125 91 2f 3b
+        E 0 92 2a 3b
+        E 79 82 2b 00
+        E 0 81 3f 00
+        E 1125 90 3f 3b
+        E 79 80 48 00
+        E 0 81 41 00
+        E 1204 80 35 00
+        E 839 90 56 3b
+        E 0 91 29 3b
+        E 0 92 21 3b
+        E 365 81 30 00
+        E 554 90 5d 3b
+        E 0 91 56 3b
+        E 0 92 29 3b
+        E 650 80 33 00
+        E 0 82 2a 00
+        E 269 90 3e 3b
+        E 0 91 2d 3b
+        E 918 91 2e 3b
+        E 735 90 46 3b
+        E 0 92 26 3b
+        E 201 82 2c 00
+        E 0 81 2f 00
+        E 0 80 3f 00
+        E 918 80 56 00
+        E 0 82 21 00
+        E 919 80 5d 00
+        E 0 81 56 00
+        E 919 81 2d 00
+        E 735 82 29 00
+        E 0 80 3e 00
+        E 0 81 2e 00
+        E 634 90 4c 34
+        E 0 91 47 34
+        E 0 92 2c 34
+        E 1752 90 58 34
+        E 0 91 3b 34
+        E 1753 90 53 34
+        E 0 91 34 34
+        E 187 81 29 00
+        E 0 80 46 00
+        E 0 82 26 00
+        E 1565 90 60 34
+        E 0 91 3f 34
+        E 0 92 2b 34
+        E 187 80 4c 00
+        E 0 81 47 00
+        E 1565 90 54 34
+        E 0 91 4b 34
+        E 187 80 58 00
+        E 0 81 3b 00
+        E 1565 90 33 34
+        E 0 91 2b 34
+        E 0 92 24 34
+        E 187 82 2c 00
+        E 0 80 53 00
+        E 0 81 34 00
+        E 1565 90 35 34
+        E 0 91 2c 34
+        E 187 80 60 00
+        E 0 81 3f 00
+        E 1565 91 44 34
+        E 0 92 29 34
+        E 187 82 2b 00
+        E 0 81 4b 00
+        E 1565 90 55 34
+        E 0 91 46 34
+        E 188 80 33 00
+        E 0 81 2b 00
+        E 1752 82 24 00
+        E 0 80 35 00
+        E 0 81 2c 00
+        E 1220 92 2a 32
+        E 532 80 54 00
+        E 130 90 57 32
+        E 0 91 47 32
+        E 663 90 58 32
+        E 0 92 2c 32
+        E 662 91 49 32
+        E 0 92 2d 32
+        E 662 91 45 34
+        E 0 92 34 34
+        E 1042 81 44 00
+        E 0 82 29 00
+        E 84 90 54 34
+        E 0 91 43 34
+        E 579 81 46 00
+        E 662 82 2a 00
+        E 0 80 57 00
+        E 662 81 47 00
+        E 0 82 2c 00
+        E 663 80 58 00
+        E 0 81 49 00
+        E 0 82 2d 00
+        E 1125 80 55 00
+        E 1126 81 43 00
+        E 953 91 43 34
+        E 1759 90 48 34
+        E 0 92 28 34
+        E 1760 90 47 34
+        E 0 92 26 34
+        E 173 81 45 00
+        E 1759 82 34 00
+        E 0 80 54 00
+        E 1240 90 53 34
+        E 519 80 48 00
+        E 1759 82 26 00
+        E 1413 80 47 00
+        E 972 92 26 34
+        E 1766 90 62 34
+        E 0 91 53 34
+        E 0 92 37 34
+        E 1766 91 51 34
+        E 0 92 36 34
+        E 159 82 28 00
+        E 1766 81 43 00
+        E 0 80 53 00
+        E 0 82 26 00
+        E 1260 90 56 34
+        E 0 91 47 34
+        E 507 82 37 00
+        E 1766 81 51 00
+        E 1418 80 62 00
+        E 0 81 53 00
+        E 991 90 4b 34
+        E 0 91 48 34
+        E 0 92 2c 34
+        E 1418 90 57 34
+        E 0 91 3c 34
+        E 1419 90 54 34
+        E 0 91 33 34
+        E 854 82 36 00
+        E 0 80 56 00
+        E 0 81 47 00
+        E 565 90 55 34
+        E 0 91 35 34
+        E 854 80 4b 00
+        E 0 81 48 00
+        E 564 90 44 34
+        E 0 91 29 34
+        E 0 92 25 34
+        E 854 80 57 00
+        E 0 81 3c 00
+        E 565 90 46 36
+        E 854 80 54 00
+        E 0 81 33 00
+        E 565 91 2b 36
+        E 0 92 26 36
+        E 854 82 2c 00
+        E 0 80 55 00
+        E 0 81 35 00
+        E 564 90 56 36
+        E 0 91 35 36
+        E 0 92 22 36
+        E 855 80 44 00
+        E 564 91 37 3b
+        E 854 81 29 00
+        E 0 82 25 00
+        E 255 90 58 3b
+        E 0 92 23 3b
+        E 1108 90 62 3b
+        E 0 92 2f 3b
+        E 56 80 46 00
+        E 0 81 2b 00
+        E 0 82 26 00
+        E 1419 81 35 00
+        E 479 90 61 3b
+        E 0 91 35 3b
+        E 0 92 2c 3b
+        E 629 80 56 00
+        E 0 82 22 00
+        E 216 90 55 3b
+        E 0 91 41 3b
+        E 846 90 2c 3b
+        E 0 91 29 3b
+        E 0 92 25 3b
+        E 46 80 58 00
+        E 0 82 23 00
+        E 800 90 2a 3b
+        E 0 91 27 3b
+        E 0 92 22 3b
+        E 676 90 57 3b
+        E 0 91 52 3b
+        E 0 92 36 3b
+        E 478 81 37 00
+        E 0 80 62 00
+        E 0 82 2f 00
+        E 846 80 61 00
+        E 0 81 35 00
+        E 845 82 2c 00
+        E 0 80 55 00
+        E 0 81 41 00
+        E 200 90 39 36
+        E 0 91 30 36
+        E 0 92 28 36
+        E 646 80 2c 00
+        E 0 81 29 00
+        E 0 82 25 00
+        E 387 90 3c 36
+        E 0 91 2d 36
+        E 289 80 2a 00
+        E 0 81 27 00
+        E 0 82 22 00
+        E 743 90 54 36
+        E 0 91 45 36
+        E 0 92 34 36
+        E 1032 92 35 36
+        E 595 80 57 00
+        E 0 81 52 00
+        E 0 82 36 00
+        E 437 91 35 36
+        E 0 92 2d 36
+        E 595 80 39 00
+        E 0 81 30 00
+        E 438 91 34 36
+        E 0 92 2b 36
+        E 594 82 28 00
+        E 0 80 3c 00
+        E 0 81 2d 00
+        E 1032 82 34 00
+        E 235 90 48 36
+        E 0 92 21 36
+        E 798 81 45 00
+        E 0 82 35 00
+        E 1032 81 35 00
+        E 906 90 3d 36
+        E 0 91 2a 36
+        E 0 92 22 36
+        E 126 82 2b 00
+        E 703 90 5e 36
+        E 0 91 3d 36
+        E 0 92 2a 36
+        E 126 80 54 00
+        E 0 82 2d 00
+        E 703 90 61 36
+        E 0 91 36 36
+        E 0 92 2e 36
+        E 829 90 5f 36
+        E 0 92 33 36
+        E 829 90 4b 36
+        E 0 91 47 36
+        E 0 92 36 36
+        E 375 81 34 00
+        E 0 80 48 00
+        E 0 82 21 00
+        E 454 92 38 3b
+        E 375 80 3d 00
+        E 0 81 2a 00
+        E 0 82 22 00
+        E 454 90 4d 3b
+        E 0 91 48 3b
+        E 375 80 5e 00
+        E 0 81 3d 00
+        E 0 82 2a 00
+        E 455 90 57 3b
+        E 0 91 54 3b
+        E 375 80 61 00
+        E 0 82 2e 00
+        E 829 81 36 00
+        E 0 80 5f 00
+        E 0 82 33 00
+        E 257 90 45 3b
+        E 0 91 2a 3b
+        E 0 92 26 3b
+        E 572 82 36 00
+        E 61 90 39 3b
+        E 0 91 32 3b
+        E 0 92 2a 3b
+        E 632 90 51 3b
+        E 0 91 4a 3b
+        E 0 92 36 3b
+        E 136 80 4b 00
+        E 0 81 47 00
+        E 497 90 4f 3b
+        E 0 91 47 3b
+        E 0 92 34 3b
+        E 332 80 4d 00
+        E 0 81 48 00
+        E 174 90 4c 3b
+        E 0 91 37 3b
+        E 0 92 2f 3b
+        E 1288 82 38 00
+        E 0 80 57 00
+        E 0 81 54 00
+        E 632 80 45 00
+        E 0 81 2a 00
+        E 0 82 26 00
+        E 633 80 39 00
+        E 0 81 32 00
+        E 0 82 2a 00
+        E 632 80 51 00
+        E 0 81 4a 00
+        E 0 82 36 00
+        E 506 80 4f 00
+        E 0 81 47 00
+        E 0 82 34 00
+        E 1173 90 4a 32
+        E 0 91 36 32
+        E 887 90 49 32
+        E 0 92 2d 32
+        E 887 91 34 32
+        E 0 92 2c 32
+        E 887 90 47 32
+        E 0 91 33 32
+        E 887 90 46 32
+        E 0 92 2a 32
+        E 143 80 4c 00
+        E 0 81 37 00
+        E 745 91 31 32
+        E 0 92 29 32
+        E 142 82 2f 00
+        E 0 80 4a 00
+        E 888 81 36 00
+        E 0 82 2d 00
+        E 887 80 49 00
+        E 0 81 34 00
+        E 887 82 2c 00
+        E 0 80 47 00
+        E 887 81 33 00
+        E 0 82 2a 00
+        E 8428 80 46 00
+        E 0 81 31 00
+        E 0 82 29 00
+        E 230415 b0 7b 00
+        CCINTERP 32
+        CHASE_CC_TAKEOFFS 1
+        GUID {C493B4F0-6664-4C4B-8FF1-42FFCDB7372A}
+        IGNTEMPO 0 120 4 4
+        SRCCOLOR 24
+        VELLANE -1 100 0 0 1
+      >
+    >
+  >
+  <TRACK {9DF55AC6-CDE8-504C-BC83-FF8704EEBEDD}
+    NAME "Pianoteq 8"
+    PEAKCOL 16576
+    BEAT -1
+    AUTOMODE 0
+    PANLAWFLAGS 3
+    VOLPAN 2.34731091251803 0 -1 -1 1
+    MUTESOLO 0 0 0
+    IPHASE 0
+    PLAYOFFS 0 1
+    ISBUS 0 0
+    BUSCOMP 0 0 0 0 0
+    SHOWINMIX 1 0.6667 0.5 1 0.5 0 0 0
+    FIXEDLANES 9 0 0 0 0
+    SEL 0
+    REC 1 5088 1 0 0 0 0 0
+    MIDI_INPUT_CHANMAP 0
+    VU 2
+    TRACKHEIGHT 0 0 0 0 0 0 0
+    INQ 0 0 0 0.5 100 0 0 100
+    NCHAN 2
+    FX 1
+    TRACKID {9DF55AC6-CDE8-504C-BC83-FF8704EEBEDD}
+    PERF 0
+    AUXRECV 0 0 1 0 0 0 0 0 0 -1:U 33 -1 ''
+    MIDIOUT -1
+    MAINSEND 1 0
+    <FXCHAIN
+      WNDRECT 32 136 807 690
+      SHOW 0
+      LASTSEL 1
+      DOCKED 0
+      BYPASS 0 0 0
+      <VST "VST3i: Pianoteq 8 (Modartt) (1->5ch)" "Pianoteq 8.vst3" 0 "" 1031062328{565354507438717069616E6F74657120} ""
+        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
+        AAAQAAAA
+      >
+      PRESETNAME "HB Steinway D Felt II (copy)"
+      FLOATPOS 32 149 592 662
+      FXID {B76D5FDE-A8CA-584F-8F0F-DB5EF086AAD7}
+      WAK 0 0
+      BYPASS 0 0 0
+      <AU "AU: VCV Rack 2 FX (VCV)" "VCV: VCV Rack 2 FX" "" 1635085670 1447253574 1447253599
+        6QMAAAAAAAAQAAAAAQAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAQAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADoBwAAPD94bWwgdmVyc2lv
+        bj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPCFET0NUWVBFIHBsaXN0IFBVQkxJQyAiLS8vQXBwbGUvL0RURCBQTElTVCAxLjAvL0VOIiAiaHR0cDovL3d3dy5hcHBs
+        ZS5jb20vRFREcy9Qcm9wZXJ0eUxpc3QtMS4wLmR0ZCI+CjxwbGlzdCB2ZXJzaW9uPSIxLjAiPgo8ZGljdD4KCTxrZXk+ZGF0YTwva2V5PgoJPGRhdGE+CglLTFV2L1FC
+        SVJTTUFodnl6T1VCcjJBQTh4SGhnSHBnSG1WVGdGQzhBakUvTG5VMzdxYzdxeTY0MU9oK3ptY0VhZVF3MwoJT0taTlNVbEo4cmlmMzM3bW54TWdzUFJJQWFrQW5BQ3BB
+        UHdyajE3YUc1YmNxNEYvNVdFdnluckRqNTNVU3JyNFZ4N3MKCWxyZzRmc1BTaFNyS1R2aFhOc3o1Sm95eFc3WUdvZXh1NlZZVkZnN0hxcE9FQmNFU3o5eDgzYzBZZ3NX
+        RE1zRkJCT0pECglCSU1Bd0t3alZjbE9MalV0TnBxbXVraXVVd0FBSThBWTQ4QVk2OEF1TURBaVdBZkdHQVJqN0FKanpESEdCakRHSU5naAoJdkFHRE83V0NNUWdtd0VD
+        QU42T3FWVjE5QmwrYzNYK3pkWlF0SjJ4LzBIVTNlNHl6dTlraVlRbi9mK1hoSUcrWXNoT0kKCWV2aS8wSE5WYnJoYTlXSGwwVy80b1pCYzY2cXMwZEV6TWpGUzVqV043
+        MEhhUzN2RDlvcnFoUDlmVXFrNjhmODc2OVFJCglaUzJKNGtMUEZjRnZPTExQbGJDbHJnUy9ZUW1pY0VYVFEvWmpXb3l2MjJPZ1pPWWJmaUQrLzEvWlVObm9lcTZFZitX
+        aAoJOFN0VE92bGNlN0RCU1djL3VEVGsvNVVIUStlanRPbUVsTWJXNUVJaC82OUVlTU9XclNJUkJnOUVVUWdMMDR1amJGVTUKCUxDNWxBY21ReUtDU2FUam5wTTlOK0dU
+        cmFKQTNERDJRaFA5YllWVTFZcWJSTjh6aFdKQ0ZWZFVJT21nQ1RWaHdidVR3CgliNTlia1NHNkUvOXZ1SXFzSkZVT2gvOHJEdzdyWGtuRmI5aFNrT29GaGlsRDRtSlFU
+        RkJVTlBwaWE2NWxOL01lRTkvdwoJQTdHaWNTZW1yQlZCQ1p5SE82enJXdGNrUVMyK1lhc0JhbURCdWRFRy8vL1MzUlMrWVd2VkN4dE5rbHJ4L3orSW1PQTMKCWJDVjFn
+        WFdnaVgwNEhRcGxyYXBLNW9NYkVkb29oYkpKMnUweHJ0MXpHM0MrRjVuZGFJc1V5a2hieTlkYWZDcmNvSzNGCglOeDBUWVh4VE1sRTZ0akp1ZEIvZ04wemQ2RG9TSkVI
+        V05WblhwYkRSOWR3SzY1cXM2ODdvSUFQam5LK2hqRTF1Vk9mTwoJVmxHTnZHRXJZaFZZOW9GRjJZa0V1U3QwU29hSnNNM1hwcFN5bzF4YVN2cDZ1bjRPTWd6RFRDaVhq
+        ZzFHeHJsdWtycnUKCTduWVRQb2hUSHBJK0NhT2Jrb212dlE2QXA2aUJLVEprYUFBRUFEQWtTSkFBZ0FJQW9hR3FBaEpnWUJnWUN0UWNnMkVNCglBd1laQXdRQUdXTUFC
+        QkJBQUFGTkFBYXJBVUwwS1lSV2tQSWxqRzhPRlNPeDRnRnlvZjJpdlg5ekFxYlUvMXBGU1djOAoJVFhacmprUERqemVVV0JDZUFCRmFvRDhIczBMSDRUM0M0ODNHZEQz
+        d2VtakQxY3JsYWNrelhueEI0S3ZremplUCtqV3MKCXViUHJob0hmSE5oazBwV014QkZYbWlFcUN0eno3ZEFwb0Mwbnp5ZEdKU3hCcVZRVVRxS0Z3WWl1SW8wV0NxTmVG
+        a0h0CglFMlQ2YVhsRStZQjc3V0lnQnh1ckZtZmdiTC9KZjRGV21SN0VOOEVXVlBLVWZ6SmFBMnY0ZE0wenpibmM0anNQN3lMZQoJaVlQVFdneFRxRzFSNERucVZWQWdY
+        V005SExwSVVjZ21PaTJBVUpUSjJCdEtCRDExTkNBZXdVS2RjWmNVbTVXNHM0Q1gKCVRhMzNrdU52UytHcjFUbE1tVCtHdU13enBsQ0lkdlYrSWVHZHVFR2RST0NQeHBO
+        MVNFc3hyNHNySFV4NEk1RzFZelV4Cgl5QUdneTNZQU9IRFoxZ1lreDRCb3Z3bHk2RVJyTU5vTHdnRG90UXVkcVc5cnV2RVg5c09LWVp3Q0tod093MFZSU1M4cwoJRE9O
+        M0p0bk9tMHpQK01MOGRvUW0KCTwvZGF0YT4KCTxrZXk+bWFudWZhY3R1cmVyPC9rZXk+Cgk8aW50ZWdlcj4xNDQ3MjUzNTk5PC9pbnRlZ2VyPgoJPGtleT5uYW1lPC9r
+        ZXk+Cgk8c3RyaW5nPlZDVlJhY2s8L3N0cmluZz4KCTxrZXk+c3VidHlwZTwva2V5PgoJPGludGVnZXI+MTQ0NzI1MzU3NDwvaW50ZWdlcj4KCTxrZXk+dHlwZTwva2V5
+        PgoJPGludGVnZXI+MTYzNTA4NTY3MDwvaW50ZWdlcj4KCTxrZXk+dmVyc2lvbjwva2V5PgoJPGludGVnZXI+MTwvaW50ZWdlcj4KPC9kaWN0Pgo8L3BsaXN0PgoBAAAA
+        AAAAAAAA
+      >
+      FLOATPOS 0 0 0 0
+      FXID {5CF094C6-B0B3-8540-ADA2-6988E546D20D}
+      WAK 0 0
+    >
+  >
+  <TRACK {AA654F10-A467-8D45-86CE-3EA1A1F64A2B}
+    NAME "Pianoteq 8"
+    PEAKCOL 16576
+    BEAT -1
+    AUTOMODE 0
+    PANLAWFLAGS 3
+    VOLPAN 1.12756490099614 -1 -1 -1 1
+    MUTESOLO 0 0 0
+    IPHASE 0
+    PLAYOFFS 0 1
+    ISBUS 0 0
+    BUSCOMP 0 0 0 0 0
+    SHOWINMIX 1 0.6667 0.5 1 0.5 0 0 0
+    FIXEDLANES 9 0 0 0 0
+    SEL 0
+    REC 1 5088 1 0 0 0 0 0
+    MIDI_INPUT_CHANMAP 1
+    VU 2
+    TRACKHEIGHT 0 0 0 0 0 0 0
+    INQ 0 0 0 0.5 100 0 0 100
+    NCHAN 2
+    FX 1
+    TRACKID {AA654F10-A467-8D45-86CE-3EA1A1F64A2B}
+    PERF 0
+    AUXRECV 0 0 1 0 0 0 0 0 0 -1:U 66 -1 ''
+    MIDIOUT -1
+    MAINSEND 1 0
+    <FXCHAIN
+      WNDRECT 32 136 807 690
+      SHOW 0
+      LASTSEL 0
+      DOCKED 0
+      BYPASS 0 0 0
+      <VST "VST3i: Pianoteq 8 (Modartt) (1->5ch)" "Pianoteq 8.vst3" 0 "" 1031062328{565354507438717069616E6F74657120} ""
+        OMN0Pe5e7f4CAAAAAQAAAAAAAAACAAAAAAAAAAUAAAABAAAAAAAAAAIAAAAAAAAABAAAAAAAAAAIAAAAAAAAABAAAAAAAAAA3RYAAAEAAAD//xAA
+        zRYAAAEAAABWc3RXAAAACAAAAAEAAAAAQ2NuSwAAFrVGQkNoAAAAAlB0OHEACAQBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWHaCYE/4CAAAA
+        SDgSANEVAAABAAAAEThWOMUVAABQclZLKQAAAlhGVFC1FQAACgAAADIwMjUvMDMvMDEXAAAAUGlhbm90ZXEgOC40LjEvMjAyNTAyMDS2i7kf6xvTKbl5wjoHCac8ZGxs
+        YXQVAAB0ZHRNhgcAAA8AAABDUC04MCBSZWNvcmRpbmcAAAAABwAAAE1vZGFydHReAAAAVGhlIENQLTgwIHJlYWR5IGZvciByZWNvcmRpbmc6IGEgdG91Y2ggb2YgdHJl
+        bW9sbywgYW1wLCBjb21wcmVzc29yIGFuZCBhdWdtZW50ZWQgc3RlcmVvIHdpZHRoLgAAAABEAQAADwAAAENQLTgwIFJlY29yZGluZwAAAADfBgAAR1JVVQAAAAYAAAAB
+        A8BNVHJrAAAGyQD/AgsgSy5QLlJhdXNjaACQJkJ7LVOBAbBAABuQMklHgCY0IZBAbAA1aAA8YgCALUwGkDlkOIAyN4F7NR8bOTsYPEoDQDx9kEBlADVrBDxkBTllMoA5
+        XAw8UQY1YSdASIQdkDI0DCY/GYAyUhkmTYE8kExwB0FgBkVlAEhhc4BFKxdINQBMSidBIoNZkC1ESoAtWoJpkEh6AEFxBj5nAEVkC0NmMoBDOSBBUhhFQAs+QCtIQoM1
+        kDJHECZJNIAyXQUmYYFYkD5cBEFeADlkBjxTggiAORALPBgPPiQeQSRukC1ZZIAtWXGQO2QKQGYAN1+CPoA3JkdAMROQMkIrgDsfDJAmO0KAMlAtJjRDkDxpBUFwCDli
+        gjyAQSklOSwZPD6BJ5AmXAAyYoE+QGsLPF0EOWEFNWQ+gDIyLyY5VzkpBUA7IjVBBTxJgRCQQGkANWYAPGEFOWBhgDlNHDxLBDVKBkBHg1qQNXcAPHEAQHYAOXZfgDll
+        CzVjBjxcIUBSgzqQMmYrgDJjgVSQTHQLQWIARWcHSFoVR1YtgEdHcEw7IUENBkgqAEUTMpAtdEOALVNJkEp1AEN7AEB7AEdugieARxhHsEB/hC6AQDUzQyMxkEczRIBK
+        P4EgR0IGkEBVgU+AQDcwkCZjDTJggm9DdQdKcwBAcgBHbUKAMkcAJkRrQzsKRz0dSlQOQDmGRpAyZQUmbhywQACBK5A1awA5bABAcAA8ZYIdgEAvADUtETk8GDxIgQ8m
+        MACQPGQGNWcFQGgAOWZJgDJAETlWFjVRBjxWBUBChAKQPHsAQH4ANX8AOXsxPjwNgD5CJzlgAzVhEzxVK0BOgnaQMmAigDJeBZAmQA+AJlOBX5BIaAZMcQBFaAZBX3uA
+        RUELQTgSSEEATESBXpAtZDaALVqBZ5BAdgBKdQVDewBHdjNIQQuASEhdQy0tSjkFRxM9QByBC5AyPxImQQeAMksQJlSBR5BIcAU+awBFbAhBaIF7gD4KR0EqEUg4B5At
+        XACART5BLVWBa5BKcwdHcQBDdwBAdoFTgEpFJUdNAENIC0AugReQSHEFPnIGQXALRWeBWrBAfxGARSSBOJBHXSGAQScRPjw+kEU4CYBIPj+QQUJEgEdGIUU+H5A+SySA
+        QU5dPkxJsEAAG5AyZQwmb4NgQGoUPFwAOWQANWpcgDlUADxRD0BRADVZBSYyTzI0gzGQNX8APHgAOX4HQH9ngDlhDTxXADVfHkBLgzeQLXQ4gC1UgViQNWwAQHAAPGQH
+        OWeBJoA5KhM1MAtAOQA8PYFCkEBwBTxrBjVsBTlriFqAQCgYOT4GPD4LNTYnkCZtBjJngjM5bQY8awU1bARAcGqAJk1ksEB/GYAyURo1TUA5SDs8UABASIRIkC5LgUWw
+        QAAVkDVZDzpNHT5cM0VdB0FDdIA6QTKwQH9JgD5UFEFCPkVJgwGQOi2DSkYwakpCPU1CXlFkgQuATUQXLjwwNU+BLTo9SZBNVymASgGCX5BKSBCAURs3RieBCkowBk0v
+        gjOQRkQNPUYAMVULUloASVUJTVoTsEAAgiBAfy2APRhhRiw2STwVTS+BDZBGSkiAUg5CRjeCLZA4S4MpPWp7gDEIFDgpTz0/apBGXoJwSUmBQoBJVS1GN4MBkDAugQQ3
+        WmewQAAEkE1ZBUNTC0hbDUZagjOwQH+BFYBDLoEiRiJ1kENXN0YgPYBNAgBGHB5IIzdDNIEokDxlUoA8Z4I5kEZQBk1eBUhYgiaAN0IRMBlwRiIHSDcAkENhFoBNMIEQ
+        Q0yEPZBMWxgvYQZJWABFYQRCU06wQACCTUB/NIBCMIEcRR8tSSkATClSkEJWgReAQjWDZC9PhXiQLlUAsEAAI5BITQJEQgZLPwVBRYFwsEB/g1WAQQYVLimDW5BBPoVl
+        gEQPEUEtFkhIMksvg3uQLBY/MzZwODcOsEAAAJBEPxKAMz4QkEhNC0s0DU9FgWKwQH+EHYA4J4FELBlqRBeBVJBERBeASBUDTzoySy9sRD+DIJArGXEyQIERsEAAIJA3
+        Q3BBQGpHJyewQH+BBIBBLgmQSz88gEdMggo3E4FGSwYPkEcfgQeARywAkEFNgVOAQTuBe5A3OoIFPjiFZYA3D4E/Pi4QkDswiFeAMgGBXCsOixo7QoEgkCY5gXCwQAA3
+        kC0/gT6wQH+BM5AyUYFIgDJbgQeQNkQigC0+GiZEgXc2JzGQOVGDGD5aMoA5PIE8PjyBIpBCQoMhRUqCM4BFL3CQSlODI4BKK4EnkEkVQoBJEIIkkEpAgXOASk2DC5BR
+        P4dhgFEBhABCP6dcsEAAAP8vAFByc1XeDQAASQAAAAUAAABjcC04MAAAAAAFAAAAQ1AtODAAAAAAAAAAAHByb21UAAAAAQAAAAEAAAABAAAABQAAAGNwLTgwAAAAAAUA
+        AABDUC04MAAAgD8GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABURv////8AAAAAAAAAAAAAAAAAAAAAcnlhbBAAAAACAAAAAAAAAAAAAAD/////b2xvcxEAAAABAAAAAQAA
+        AEYAAAAAAAAAAAEAAAABAAAAAAAAAAAAAAABAAAAAAAAAAAAAAABAAAAAAAAAAAAAAABAAAAAAAAAAAAAAABAAAAAAAAAAAAAAABAAAAAAAAAAAAAAABAAAAAAAAAAAA
+        AAABAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAA4AAAEADAAAAAACoQQAAcEIAANhCAwAAAAAAAACCAwAAAAEAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAAAAAAADAAAA
+        AAAAAAAAAAAAAAAAAwAAAAEAAAABAAAAAQAAAAAAgEAAAAAAAQAAAAAAAACxORA+A4AAAFAAAHBCAQAAAAAAgD8BAAAAAAAAAAAAAAAAAKDAAACgQAAAukIAAAAAA4AA
+        AFAAAHBCAQAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAKDAAACgQAAAAAADgAAAYAIAAAAAAKhBAACuQgIAAAAAAAAAgQOAAABgAgAAAAAAqEEAAK5CAgAA
+        AAAAgD+BgAAAAAAAAADSBAAAAAAAAAAAAAAAAACAAAAAPwAAgD8DgAAAUAAAcEIBAAAAAAAAAAOAAABgAgAAAAAAqEEAAK5CAgAAAAAAAACBA4AAAGACAAAAAACoQQAA
+        rkICAAAAAACAP4ECAAAAAQAAAFUAAABFcXVhbCB0ZW1wZXJhbWVudApUaGUgc3RhbmRhcmQgdHVuaW5nLCB3aGVyZSB0aGUgb2N0YXZlIGlzIGRpdmlkZWQgaW4gMTIg
+        ZXF1YWwgc3RlcHMuDAAAAAAAyEIAAEhDAACWQwAAyEMAAPpDAAAWRAAAL0QAAEhEAABhRAAAekQAgIlEAACWRAEAAAAAAAAABAAAAAAA3EM8AAAARQAAAEYAAAAAfwAA
+        AAAAAAAHAAAARGVmYXVsdAAAAAAAAAAAAgAAAAOAAABgAgAAAAAAqEEAAK5CAgAAAAAAAACBAAAAAAAAAAAAAIA/AQAAAAEAAAABAAAADAAAAAOAAABIAQAAAAAAgD8A
+        AAAAAACAPwOAAABgAgAAAAAAqEEAAK5CAgAAAAAAgD+BA4AAAGACAAAAAACoQQAArkICAAAAAACAP4EDgAAAUAAAekQBAAAAAAAAAAOAAABQAAB6RAEAAAAAAIA/AAAA
+        AAOAAABQAABwQgEAAAAAAAAAAACAPwOAAABQAABwQgEAAAAAAAAAAQAAAAAAAAAAAAAAzczMvc3MzD0BAAAAAAAAAAAAAAAAAAC/AAAAPwAAgD8DgAAAQAMAAAAAAKhB
+        AABwQgAA2EIDAAAAAACAP4IAAAAAA4AAAGACAAAAAACoQQAArkICAAAAAACAP4EAAIA/A4AAAGACAAAAAACoQQAArkICAAAAAACAP4EAAPBBA4AAAGACAAAAAACoQQAA
+        rkICAAAAAAAAAIEAAIA/A4AAAEADAAAAAACoQQAAcEIAANhCAwAAAAAAgD+CA4AAAEgBAAAAAAAAAAEAAAADgAAAYAIAAAAAAAAAAACAPwIAAAAAAAAAAQAAgD8DgAAA
+        YAIAAAAAAAAAAACAPwIAAAAAAIA/gQOAAABABAAAAAAAAAAmk0k+/n4/PwAAgD8EAAAAAAAAAIEAAIA/gQOAAABgAgAAAAAAAAAAAIA/AgAAAAAAAACBAAAAAM3MTD4A
+        AAAAAAAAAAAAAAAAAAA/AAAAAGZmpj8DgAAAYAIAAAAAAKhBAACuQgIAAAAAAIA/gQAAgL8AAAA/A4AAAEgBAAAAAACAPwEAAAABAAAAAQAAAAoAAABMb25nIFBsYXRl
+        CQAAAGxvbmdwbGF0ZQAAQEAAAMBBAACAPwAAAD8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKpDAACAPwAAgD8BAAAABgAAAAAAgD8AAIA/A4AAAGBYAAAAAACoQQAA
+        gD9YAAAAAACAP5WPwnU/LlyPgj8AAIA/j8KVP65HIT9I4Zo/16OQP7gehT+4HkU/ZmaGPwrXgz9SuF4/zcxMP65HgT8AAIA/rkeBP4/ClT/sUXg/uB6FPwAAgD8K14M/
+        pHC9P+xRmD8K16M/MzOTP2Zmhj8K14M/4XpUPxSuhz9I4Xo/uB6FPwrXIz8zM3M/FK5HP1yPgj8K14M/j8J1P1yPgj9I4Xo/KVxPPwrXgz/sUXg/SOF6P7gehT+kcH0/
+        XI+CP0jhej9I4Xo/gWZmhj8QAACAP6RwfT9cj4I/rkeBP7gehT8AAIA/pHB9P+xReD+uR4E/CteDP6RwfT+uR4E/CteDPylcjz9I4bo/PQoXQAOAAABAAwAAAAAAqEEA
+        AHBCAADYQgMAAAAAAIA/ggAAAAADgAAAYAIAAAAAAKhBAACuQgIAAAAAAAAAgQEAAAAAAAAAAQAAAAAAAD8AAABAAwAAAAAAgD8AAIA/AACAPwOAAABAAwAAAAAAqEEA
+        AHBCAADYQgMAAAAAAIA/ggOAAABAAwAAAAAAqEEAAHBCAADYQgMAAAAAAIA/ggOAAABAAwAAAAAAqEEAAHBCAADYQgMAAAAAAIA/ggAAgD8AAIA/BwAAAAAAgD/NzEw+
+        ZmZmPwAAwD8AAIA+CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4AAAEADAAAAAACoQQAAcEIAANhCAwAAAAAAgD+CA4AAAEADAAAAAACoQQAAcEIA
+        ANhCAwAAAAAAgD+CA4AAAEADAAAAAACoQQAAcEIAANhCAwAAAAAAgD+CA4AAAEADAAAAAACoQQAAcEIAANhCAwAAAAAAgD+CAQAAAAEAAAAAAHBCA4AAAFAAAAAAAQAA
+        AAAAAAAAAAA+A4AAAGACAAAAAACoQQAArkICAAAAAACAP4EBAAAAAAAAAAEAAAAzMzM/ZmamPwEAAAAAAAAAAQAAADMzMz9mZqY/AQAAAAAAAAABAAAAMzMzP2Zmpj8B
+        AAAAAAAAAAEAAAAzMzM/ZmamPwEAAAAAAAAAAQAAADMzMz9mZqY/AQAAAAAAAAAAAPBCAAAAAA4AAAAAAAA/zczMPc3MTD4AAAA/AwAAAAAAAAADgAAASAEAAAAAAAAA
+        AAAAAAOAAABIAQAAAAAAAAAEAAAAAgAAAAMAAAAEAAAAAQAAAAEAAAAAAIA/AACAPwEAAAABAAAAAQAAAAEAAAABAAAAAACAPwAAAAAAAIBAAAC0QkYAAAAAA4AAAEgB
+        AAAAAAAAAAAAAAADgAAASAEAAAAAAAAAAAAAAAAAAAADgAAASAEAAAAAAAAAAAAAAAMAAAABAAAAAQAAAAAAAAAOAAAAEAAAAAAAAAAAACBAAACAPwAAAAAAAAA/AAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAAAACAAAAAEAAAAAAAAADgAAABAAAAAAAAAAAACAPwAAAAAAAPDBmpmZvpqZmb4AAIA/AAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAkAAAABAAAAAAAAAA4AAAAQAAAAAAAAAAAAAD8AAMA/AABAQAAAcMEAACBBAADIQwAAoEAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAABAAAAs+8yPwAAEMEAAAAAAwAAAAEAAAAAAAAAAQAAAAUAAAAEAAAAAQAAAAMAAABmZqY/AACAP5qZmT8AALRCAAAA
+        AAAAAAAFAAAAAAAAAAAA8MEAAMDCAADAwgAAwMIFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAQAAAABAAAAAwAA
+        AAAAwD8AAAA/mpmZPwAAtEIAAAAAAAAAAAUAAAAAAPDBAAAAAAAAwMIAAMDCAADAwgUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAEAAAAAAAAABAAAAAAAAAADAAAAj8L1Pz0KV78fhWs/AAC0QgAAAAAAAAAABQAAAAAAQMEAAEDBAABwwgAAcMIAAHDCBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAEAAAAAAAAAAMAAAAzMzO/XI/CPq5HYT8AAAAAAAAAAAAAAAAFAAAAAABAwQAAQMEAAHDCAABwwgAAcMIFAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAQAAAAAAAAAAwAAALgexT89Clc/rkfhPwAAAAAAAAAAAAAAAAUAAAAAAEDBAABA
+        wQAAcMIAAHDCAABwwgUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAQAAAAAAAAABAAAAAwAAAKRwPT8AAAAASOG6
+        PwAAkEEAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAASlVDRVByaXZhdGVEYXRhAAEBQnlwYXNzAAEBAwAdAAAAAAAAAEpVQ0VQcml2YXRlRGF0YQAAAAAAAAAA
+        AAAQAAAA
+      >
+      PRESETNAME "CP-80 Recording"
+      FLOATPOS 32 149 592 662
+      FXID {1BDB9480-17FE-3248-A735-99C492CB791B}
+      WAK 0 0
+      BYPASS 0 0 0
+      <AU "AU: ValhallaSupermassive (Valhalla DSP, LLC)" "Valhalla DSP, LLC: ValhallaSupermassive" "" 1635083896 1934451059 1866754414
+        6QMAAAAAAAACAAAAAQAAAAAAAAACAAAAAAAAAAIAAAABAAAAAAAAAAIAAAAAAAAAYQYAADw/eG1sIHZlcnNpb249IjEuMCIgZW5jb2Rpbmc9IlVURi04Ij8+CjwhRE9D
+        VFlQRSBwbGlzdCBQVUJMSUMgIi0vL0FwcGxlLy9EVEQgUExJU1QgMS4wLy9FTiIgImh0dHA6Ly93d3cuYXBwbGUuY29tL0RURHMvUHJvcGVydHlMaXN0LTEuMC5kdGQi
+        Pgo8cGxpc3QgdmVyc2lvbj0iMS4wIj4KPGRpY3Q+Cgk8a2V5PmRhdGE8L2tleT4KCTxkYXRhPgoJQUFBQUFBQUFBQUFBQUFBU0FBQUFNRDhBQUFBQUFBQXhQb0FBQUFB
+        QUFESStra2tsQUFBQU16OEFBQUFBQUFBMEFBQUEKCUFBQUFBRFUvZ0FBQUFBQUFOajhBQUFBQUFBQTNBQUFBQUFBQUFEZy9nQUFBQUFBQU9RQUFBQUFBQUFZZlA0QUFB
+        QUFBCglCaUErakRQOEFBQUdJVDhBQUFBQUFBWWlQU3FxcXdBQUJpTUFBQUFBQUFBR0pBQUFBQUFBQUFZbEFBQUFBQUFBQmlZQQoJQUFBQQoJPC9kYXRhPgoJPGtleT5l
+        bGVtZW50LW5hbWU8L2tleT4KCTxkaWN0PgoJCTxrZXk+MTwva2V5PgoJCTxkaWN0PgoJCQk8a2V5PjA8L2tleT4KCQkJPHN0cmluZz5JbnB1dDwvc3RyaW5nPgoJCTwv
+        ZGljdD4KCQk8a2V5PjI8L2tleT4KCQk8ZGljdD4KCQkJPGtleT4wPC9rZXk+CgkJCTxzdHJpbmc+T3V0cHV0PC9zdHJpbmc+CgkJPC9kaWN0PgoJPC9kaWN0PgoJPGtl
+        eT5qdWNlUGx1Z2luU3RhdGU8L2tleT4KCTxkYXRhPgoJVmtNeUlmMEJBQUE4UDNodGJDQjJaWEp6YVc5dVBTSXhMakFpSUdWdVkyOWthVzVuUFNKVlZFWXRPQ0kvUGlB
+        OFZtRnMKCWFHRnNiR0ZUZFhCbGNtMWhjM05wZG1VZ2NHeDFaMmx1Vm1WeWMybHZiajBpTXk0d0xqQWlJSEJ5WlhObGRFNWhiV1U5CglJa1JsWm1GMWJIUWlJRTFwZUQw
+        aU1DNHlNRE01T1RrNU9UWXhPRFV6TURJM0lpQkVaV3hoZVZONWJtTTlJakF1TWpVaQoJSUVSbGJHRjVUbTkwWlQwaU1DNHlPRFUzTVRReU9UZzBPRFkzTURrMklpQkVa
+        V3hoZVY5TmN6MGlNQzQxSWlCRVpXeGgKCWVWZGhjbkE5SWpBdU56STFNREF3TURJek9EUXhPRFUzT1NJZ1EyeGxZWEk5SWpFdU1DSWdSbVZsWkdKaFkyczlJakF1CglO
+        amd4T1RrNU9UZ3hOREF6TXpVd09DSWdSR1Z1YzJsMGVUMGlNQzR6TlRFd01EQXdNVEE1TmpjeU5UUTJJaUJYYVdSMAoJYUQwaU1TNHdJaUJNYjNkRGRYUTlJakF1TUNJ
+        Z1NHbG5hRU4xZEQwaU1TNHdJaUJOYjJSU1lYUmxQU0l3TGpJM016Z3oKCU5ERXdPVE13TmpNek5UUWlJRTF2WkVSbGNIUm9QU0l3TGpVaUlFMXZaR1U5SWpBdU1EUXhO
+        alkyTmpZM09UQTRORE13CglNU0lnVW1WelpYSjJaV1F4UFNJd0xqQWlJRkpsYzJWeWRtVmtNajBpTUM0d0lpQlNaWE5sY25abFpETTlJakF1TUNJZwoJVW1WelpYSjJa
+        V1EwUFNJd0xqQWlJRzFwZUV4dlkyczlJakFpSUhWcFYybGtkR2c5SWpneU1DSWdkV2xJWldsbmFIUTkKCUlqUXpOU0l2UGdBPQoJPC9kYXRhPgoJPGtleT5tYW51ZmFj
+        dHVyZXI8L2tleT4KCTxpbnRlZ2VyPjE4NjY3NTQ0MTQ8L2ludGVnZXI+Cgk8a2V5Pm5hbWU8L2tleT4KCTxzdHJpbmc+VW50aXRsZWQ8L3N0cmluZz4KCTxrZXk+c3Vi
+        dHlwZTwva2V5PgoJPGludGVnZXI+MTkzNDQ1MTA1OTwvaW50ZWdlcj4KCTxrZXk+dHlwZTwva2V5PgoJPGludGVnZXI+MTYzNTA4Mzg5NjwvaW50ZWdlcj4KCTxrZXk+
+        dmVyc2lvbjwva2V5PgoJPGludGVnZXI+MDwvaW50ZWdlcj4KPC9kaWN0Pgo8L3BsaXN0PgoEAAAAZHVvAAAAAAAA
+      >
+      PRESETNAME duo
+      FLOATPOS 64 306 820 488
+      FXID {81992BD9-6484-2340-9F4C-C8B888C3C46D}
+      WAK 0 0
+    >
+  >
+  <TRACK {14243C7B-D387-124E-9C74-CC85789D3829}
+    NAME "Pianoteq 8"
+    PEAKCOL 16576
+    BEAT -1
+    AUTOMODE 0
+    PANLAWFLAGS 3
+    VOLPAN 0.69287534856501 0.68 -1 -1 1
+    MUTESOLO 0 0 0
+    IPHASE 0
+    PLAYOFFS 0 1
+    ISBUS 0 0
+    BUSCOMP 0 0 0 0 0
+    SHOWINMIX 1 0.6667 0.5 1 0.5 0 0 0
+    FIXEDLANES 9 0 0 0 0
+    SEL 0
+    REC 1 5088 1 0 0 0 0 0
+    MIDI_INPUT_CHANMAP 2
+    VU 2
+    TRACKHEIGHT 0 0 0 0 0 0 0
+    INQ 0 0 0 0.5 100 0 0 100
+    NCHAN 2
+    FX 1
+    TRACKID {14243C7B-D387-124E-9C74-CC85789D3829}
+    PERF 0
+    AUXRECV 0 0 1 0 0 0 0 0 0 -1:U 99 -1 ''
+    MIDIOUT -1
+    MAINSEND 1 0
+    <FXCHAIN
+      WNDRECT 32 136 807 690
+      SHOW 0
+      LASTSEL 1
+      DOCKED 0
+      BYPASS 0 0 0
+      <VST "VST3i: Pianoteq 8 (Modartt) (1->5ch)" "Pianoteq 8.vst3" 0 "" 1031062328{565354507438717069616E6F74657120} ""
+        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
+        AAAAAAAAAPgAADhCA4AAAGCAAAAAAAAAAAAAgD+AAAAAIyKCPwZoZiY/NDOzPs/MTD6KiAg+rKqqPQAAAAAAAAAA+AAAPEIDgAAAYIAAAAAAAAAAAACAP4AAAAAgIgI/
+        BmRmpj4wMzM+yszMPYeIiD2oqio9AAAAAAAAAAD4AABAQgOAAABgbAAAAAAAAAAAAIA/bAAAAAAAAADrAABEQgOAAABgbAAAAAAAAAAAAIA/bAAAAAAAAADrAABIQgOA
+        AABgbAAAAAAAAAAAAIA/bAAAAAAAAADrAABMQgOAAABgZgAAAAAAAAAAAIA/ZgAAAAAAAADlAABQQgOAAABgVwAAAAAAAAAAAIA/VwAAAAAAAADWAABUQgOAAABgVwAA
+        AAAAAAAAAIA/VwAAAAAAAADWAABYQgOAAABgVgAAAAAAAAAAAIA/VgAAAAAAAADVAABcQgOAAABgSQAAAAAAAAAAAIA/SQAAAAAAAADIAABgQgOAAABgSQAAAAAAAAAA
+        AIA/SQAAAAAAAADIAABkQgOAAABgSAAAAAAAAAAAAIA/SAAAAAAAAADHAABoQgOAAABgRAAAAAAAAAAAAIA/RAAAAAAAAADDAABsQgOAAABgQAAAAAAAAAAAAIA/QAAA
+        AAAAAAC/AABwQgOAAABgOQAAAAAAAAAAAIA/OQAAAAAAAAC4AAB0QgOAAABgOQAAAAAAAAAAAIA/OQAAAAAAAAC4AAB4QgOAAABgNgAAAAAAAAAAAIA/NgAAAAAAAAC1
+        AAB8QgOAAABgMQAAAAAAAAAAAIA/MQAAAAAAAACwAACAQgOAAABgMAAAAAAAAAAAAIA/MAAAAAAAAACvAACCQgOAAABgLQAAAAAAAAAAAIA/LQAAAAAAAACsAACEQgOA
+        AABgKwAAAAAAAAAAAIA/KwAAAAAAAACqAACGQgOAAABgJwAAAAAAAAAAAIA/JwAAAAAAAACmAACIQgOAAABgJgAAAAAAAAAAAIA/JgAAAAAAAAClAACKQgOAAABgJAAA
+        AAAAAAAAAIA/JAAAAAAAAACjAACMQgOAAABgIgAAAAAAAAAAAIA/IgAAAAAAAAChAACOQgOAAABgIAAAAAAAAAAAAIA/IAAAAAAAAACfAACQQgOAAABgHQAAAAAAAAAA
+        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
+        AAAQAAAA
+      >
+      PRESETNAME "K2 Dreamy"
+      FLOATPOS 32 149 592 662
+      FXID {6C67196E-99C4-ED4E-8335-569CBD97CA14}
+      WAK 0 0
+      BYPASS 0 0 0
+      <AU "AU: VCV Rack 2 FX (VCV)" "VCV: VCV Rack 2 FX" "" 1635085670 1447253574 1447253599
+        6QMAAAAAAAAQAAAAAQAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAQAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACqCAAAPD94bWwgdmVyc2lv
+        bj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPCFET0NUWVBFIHBsaXN0IFBVQkxJQyAiLS8vQXBwbGUvL0RURCBQTElTVCAxLjAvL0VOIiAiaHR0cDovL3d3dy5hcHBs
+        ZS5jb20vRFREcy9Qcm9wZXJ0eUxpc3QtMS4wLmR0ZCI+CjxwbGlzdCB2ZXJzaW9uPSIxLjAiPgo8ZGljdD4KCTxrZXk+ZGF0YTwva2V5PgoJPGRhdGE+CglLTFV2L1FC
+        SXJTY0Fla0pBRERkZ2EyZ0FmL0tmZi83NUZmNzFkR0pEdkpUYnV1VmVhdEw2cDkycWpROUVkQWE0YWlnMAoJaFhkRlJFU2t2TzNKd3NzVndIQzNQNkVVdXdDdEFMVUFj
+        SkVRM2QxS2hHNGMweWtTV2ZCVUtjTzdsY2N2cXh1WDNNdmgKCTNjcURaZ2wzNHcrZHpBbkszcTA4bkMxdllkNk5RN2RPRXAxNHQ1TEJ3YllZL1BVUDEzSU8vajkwcHdx
+        TGhvTm5OR0ZCCglzTHhXTExiL1Z3ckJ3a0doMENEeTBDRkNQUUJRMUlFbVJDZFhpaFpxbzJndWt1c1VBS0FJS0tVMEtLVTJxSXFMaXdpMQoJUVNuMW9KUzZvSlJpU3Fr
+        QlNxa0gxUkRhWWtFN2swS3BCeVhBUUlCK0pVMDg1Vy9sMm92LzNlTDZCeDlHdDdvNTl2K3EKCTM0di9yNVlKUzk3ZHZmeS9kTjA0eGJPQzJrZ3lKKy91ZmhBeDRkMDRs
+        VXdGMUtrVCtuaDNkeXNQQnRHTlMzUlNwY2U3CgliMzN5OU1Zbm5vOHJqKy9HSDRqazRqeGRRc2V2RnhuWUdud091bWZybDlXTjAyem54THU3SlZPYWtYZDNNK3JNaUVR
+        eAoJQkxuMXlSSGVqVnY2WElsVDZVcDROdzdWakd5akIvekdyUGZhcjhZNHlNUnUvS25lM2QydFpKaW96YytWZUxmeWtOQ3QKCVJNaGdZNnU1NWFLTTM5enlFTjNkeW9P
+        UnNVbjVNam9wMzFvQjY2MjNHTWJpZ3kxS2hrVVdXVnlpakpCcERMYi9md3pqCgkzdkx3dmVWZFc2d2JmNnE3RjU5cERqS3kvV0xMSzQrM3VEd3BucGJCQnJWMk9vank1
+        VXNvMjN1TE5iazZGa1EzWHA4cQoJOGU1TGdhZHBuVm15Rzlkd2NHV0FwMmtkcTVNNlljRzUxdkZ1K2x5S0RYc2o3KzdHSjBzaGFHbzQzdDNLUXdQZks1bTgKCUc2Y1ow
+        S3pBRURtUXVCZVFDUWlGYkc4dDl2Q2ZhWTE1M2ZoVFhaRndJNWNvdGpXQjgzZ0h6aGZuQ0tycmRlT1VvMXBZCgljSzdGQ0IyS1JQRTBKZlNaRGtNdTExaDc2RmlVa0VI
+        SHRBaDlER3ovRHo1YkQ3YVhqa0hJVVBndy90ZGFxN0VYMzN0dgoJUFlUUWVXd09JeEk1NE4yNGRPMTFvQXBWbkNPY0w0VGEvRndLbkNPY2I0U3V0WmROUGhnZmxBMWpP
+        cXNWNkZZOHBZeW4KCUJjNFJ6bmNEMTBuRmRZS29CYzRSVkNlSVdqaVEySmlXVGxBSjV3aUMwQ2xISXZXaFVNWjJBMXRZQ3MySTJveU1lMEU1CglLSlVpcmp6b1pHZWtH
+        NGNveDVVaXE1VnZpNUVSUHRmWVlzOFlHZGY2dFFLQXpxZ2hQV1hBMEFBQUFFQUtBRWpBQWdDWgoJR2FvTkVxQmdFQkFKa3hSRVVSQUdLTW9vSWdESUlBQ0VRQUFBRURB
+        VVNFTnJBQmowS3dUaE5leHZoaFVEZUt6bENEVVoKCVJjN0JIZ3Y4QVZ5Mmk2QmV6YkVQam8vU2NKZ3pxcURrRkpCTEZRbVZJSTgrcWt4TUFjc3BXSVhkUE5sTkFHd3lD
+        ZWxHCgkwVTBnT3ZrU3poNFdCNUxZbkc0eCtZbFM2cWZKK3NPVHVCZEdzNGJKZ2RXbHI1MUhTSXM3N2VVdlU1b1NwWkpPV2lYcAoJeVViVGsxQTVPSzlQUEtqOXBLVEVQ
+        UEdpMXBPU1lqMHBJTEpPTGt0eUY4ekk0bXhjZDhpUXB4a29DY1BWbXNvc3ZITTUKCUJTUmJFNFFEVlNFK0xzcEIvSW5qVXhZazhydndaVHlrMTBBS25xWkV3SmE3Z1Fu
+        SSswRW9JU3JodXpNVVRYYUR6YUcrCgl6SWZzRmZHQlFhdWdGemRGRUhVckIxQitNR2dOcnVSVEtqM3JtTHZoK083UVhmUjM0ak5Yam1GZGFxTURXRlhxRWFMQQoJSkkx
+        ZE9PS2J3bEpOaExvZng2SndZaXRUaVRBWUhlZ0FUKyt5R2xOaEthRlZNVXNBMXIxMTRwMGI5QVBkK0puMGVWU0sKCVZFWTB6bzBsY3lBUjEzZEZKSzh1R0V4eHBHcHQx
+        S0plNVZKVzAwczJIWFp6SXlHTFl6VngxZ0FNOCtzQVBvQ3laaG1RCgl3Q0VIOTFzWkRWMEhnOTBpRkI3QUZucUdNL1hhVFYrbmhSaVBmRjlad0lXSFFPT3ZVdkt3cGVD
+        M3BQMWgzcHhqWXRidgoJKzhELwoJPC9kYXRhPgoJPGtleT5tYW51ZmFjdHVyZXI8L2tleT4KCTxpbnRlZ2VyPjE0NDcyNTM1OTk8L2ludGVnZXI+Cgk8a2V5Pm5hbWU8
+        L2tleT4KCTxzdHJpbmc+VkNWUmFjazwvc3RyaW5nPgoJPGtleT5zdWJ0eXBlPC9rZXk+Cgk8aW50ZWdlcj4xNDQ3MjUzNTc0PC9pbnRlZ2VyPgoJPGtleT50eXBlPC9r
+        ZXk+Cgk8aW50ZWdlcj4xNjM1MDg1NjcwPC9pbnRlZ2VyPgoJPGtleT52ZXJzaW9uPC9rZXk+Cgk8aW50ZWdlcj4xPC9pbnRlZ2VyPgo8L2RpY3Q+CjwvcGxpc3Q+CgQA
+        AABkdW8AAAAAAAA=
+      >
+      PRESETNAME duo
+      FLOATPOS 0 0 0 0
+      FXID {B16322B3-AEEB-5747-AC63-1C6F8AC75F9E}
+      WAK 0 0
+    >
+  >
+>
