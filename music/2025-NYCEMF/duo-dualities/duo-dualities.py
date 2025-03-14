@@ -21,7 +21,7 @@ gcg.setAxiom('section1 section2 section3 ')
 gcg.addRule( 'section1', 'P(0,4,7) V+9 R66 I0=1 I1=2 I2=3 WC V+11 1 WC xV-2 WC a3 dd a4 dd ') 
 gcg.addRule( 'section2', 'P(0,3,7) T+2 V+32 L*2 D*2.25 R54 I0=1 I1=1 I2=1 I3=1 I4=1 I5=1 T+2 V+35 a3 D/2.225 ') 
 # gcg.addRule( 'section2', 'P(0,3,7) T+2 L* 2 D*2.25 R54 I0=1 I1=1 I2=1 I3=1 I4=1 I5=1 T+2 V+35 a5 D/2.225 ') 
-gcg.addRule( 'section3', 'P(0,4,7) R69 V+112 O.15 I0=3 I1=2 I2=1 L/2 arp1 dd K D*1.875 L/4 a4 arp2 dd dd ') 
+gcg.addRule( 'section3', 'P(0,4,7) R69 V+110 O.15 I0=3 I1=2 I2=1 L/2 arp1 dd K D*1.875 L/4 a4 arp2 dd dd ') 
   
 # gcg.setAxiom('pcs1 R66 I0=1 I1 =2 I2=3 WC xV+11 WC xV-2 WC a3 dd a4 dd L*2 D*3.2 R54 I0=1 I1=1 I2=1 I3=1 42=1 pcs(0,4,7,11,14) T+2 zV+17 a3 D/3.175 R66 O.15 I0=3 I1=2 I2=1 L/2 arp1 dd K D*1.875 L/4 a4 arp2 dd dd')
  
