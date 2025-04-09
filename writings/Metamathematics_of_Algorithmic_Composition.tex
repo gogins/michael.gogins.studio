@@ -28,13 +28,13 @@
 
 \maketitle
 \begin{abstract}
-This essay recounts my personal journey towards a deeper understanding of the mathematical foundations of algorithmic music composition. I do not spend much time on specific mathematical algorithms used by composers; rather, I focus on general issues such as fundamental limits and possibilities, by analogy with metalogic, metamathematics, and computability theory. I discuss  implications from these foundations for the future of algorithmic composition. 
+This essay recounts my personal journey towards a deeper understanding of the mathematical foundations and computational complexity of algorithmic music composition. I do not spend much time on specific mathematical algorithms used by myself or other composers; rather, I focus on general issues such as fundamental limits and possibilities, by analogy with metalogic, metamathematics, and computability theory. I discuss  implications from these foundations for the practice and future of algorithmic composition. 
 \end{abstract}
 
 %\section{}
 In 1983, when I was a returning undergraduate majoring in comparative religion at the University of Washington, I attended a lecture on fractals by Benoit Mandelbrot, discoverer of the set named after him \parencite{citeulike:580392, peitgen2004mandelbrot}. Briefly, given the quadratic recurrence equation $z_{n+1} = z_n^2 + c$, the Mandelbrot set consists of all points $c$ in the complex plane for which $z$, starting with $z = 0$, does not approach infinity as the equation is iterated. Then, given some particular point $c$ in the Mandelbrot set, there is a Julia set consisting of all points $z$ for which $z_n$ does not approach infinity as the equation is iterated.  Mandelbrot showed slides illustrating how any point in the Mandelbrot set can be used as the generating parameter of a Julia set, and how a plot of the neighborhood near a point in the Mandelbrot set closely resembles the plot of the corresponding Julia set \parencite{lei1990similarity} (this has recently been proved \parencite{kawahira2018julia}). In short, the Mandelbrot set serves as a \emph{parametric map} of all Julia sets. By now there is an extensive literature on the Mandelbrot set and Julia sets, and research continues. 
 
-There are several features of the Mandelbrot set/Julia set duality that are important for a deeper understanding of algorithmic composition not just for these fractals, but for all methods of algorithmic composition.
+There are several features of the Mandelbrot set/Julia set duality that are important for a deeper understanding of algorithmic composition not just for these fractals, but for all methods of algorithmic composition. For definitions of terms, see  \hyperref[sec:complexity]{\emph{The Complexity Classes}} below..
 
 \begin{description}
 \item[Incomputability] The Mandelbrot set, properly speaking, is not \emph{recursively computable}, i.e.\ not Turing computable \parencite{blum1993godel}. The plots that we make of the set are approximations. Note that incomputability in analysis is related to but not identical with incomputability in logic and theoretical computer science. Hertling showed that although the  Mandelbrot set is not recursively computable, it is nevertheless \emph{recursively enumerable} \parencite{Hertling2005-HERITM-3}; given enough time, one can approximate the actual set as closely as one likes. However, Braverman proved that some Julia sets are not even recursively enumerable \parencite{braverman2006non, braverman2009computability}.
@@ -59,17 +59,44 @@ To determine the Hilbert index of a specific point in the $N$-dimensional space,
 Hilbert indices work because all metric spaces have the same cardinality; therefore, there is always a one-to-one mapping between points in any $N$-dimensional space and points on the real line or complex plane.
 
 Here, the $N$-dimensional space consists of points defined by the $N$ parameters of some compositional algorithm, and the index consists of complex numbers in some subset of the complex plane.
-
-In my experience to date, computing parametric maps quickly becomes \emph{computationally intractable}. This is not because of the indexing, but because of the time required to evaluate all the \textbf{pieces} for each point in the index. The algorithms that I have used rely on recursive subdivision of the problem, where nodes at each level of recursion perform about the same amount of work. It then follows from the master theorem of algorithmic analysis  \parencite{bentley1980general, drmota2013master} that the run time for computing a parametric map of such an algorithm is $O(n)$, which is linear time. Looking up the set of parameters for a given point in the map, however, is only $O(log\ n)$ or, for multi-dimensional searches, $O(n^{c}), 0 < c < 1$.
  \end{description}
 
+In my experience to date, computing parametric maps quickly becomes \emph{computationally intractable}. As I continued to pursue algorithmic composition, I found that this question of intractability is not merely a practical question, but has deep mathematical and even philosophical roots in the hierarchy of classes of increasing computational complexity. Indeed, the complexity classes are essential for understanding the foundations of algorithmic composition. 
+ 
+ \section*{The Complexity Classes} \label{sec:complexity}
+ 
+ \cite{10.1145/1283920.1283938}
+
+Theoretical computer science was created by the efforts of philosophers and mathematicians to formalize mathematics. The original goal (of Hilbert, Russell, and others) was to show that all mathematical truths can be formally proved from the axioms of some logical system. But Kurt Godel proved, on the contrary,  there exist true statements of logic that cannot  be proved. Working out the consequences of this has taken a long time, and is still not complete. A major result has been the elucidation of a provable hierarchy of complexity classes. Another major result is proofs that in a completely abstract sense there are machines that are not incomplete, these are called super-Turing and depend, one way or another, on computing with real numbers that are usually of infinite length. 
+
+The complexity classes are based on the capabilities and limitations of Turing machines. A Turing machine is an abstract, idealized computer with infinite memory that can run for an infinite number of steps. Anything that can be computed by a definite, step by step procedure can be computed by a Turing machine. A universal Turing machine is one that can emulate any other Turing machine. Our contemporary digital computers are universal Turing machines -- or would be, if they had infinite memory and infinite time to run.
+
+\begin{description}
+\item[Super-Turing] Problems that have mathematical solutions, but the solutions are not Turing computable. 
+\item[Recursively enumerable (RE)] Also called semi-decidable. Problems where a solution can be verified by a Turing machine, but proving that a solution does not exist is not always possible. If a solution does exist, then a Turing machine can get as close as one likes to solving the problem.
+\item[Recursively computable (R)] This is the same as Turing computable, or decidable. The problem can be decided in a finite number of steps; that is, the problem can be either solved, or proved unsolvable.
+\item[Exponential time (EXP)] Recursively computable, but the time to solve increases exponentially with the size of the problem.
+\item[Non-deterministic polynomial time (NP)] Recursively computable. The time to solve increases faster than any polynomial function of the size of the problem; however, a solution can be verified in polynomial time.
+\item[Deterministic polynomial  time (P)] Computable by a deterministic Turing machine; the time to solve is bounded by some polynomial function of the size of the problem.
+\end{description}
+
+Scientific theories are RE or less, because it must be possible to compare the predictions of the theory to observations of Nature. However, observations are finite in number and of only finite precision. It is a very important open question of philosophy whether Nature herself is super-Turing. If so, then human thought, including musical composition, might as part of Nature be super-Turing. If not, then human thought is at most RE and could be emulated as closely as one likes by a Turing machine.
+
+The closely related question whether NP is contained in P is one of the most important open questions in science. Most mathematicians and scientists believe, for a variety of overlapping reasons, that P != NP.
+
+If P = NP can be proved, it then becomes possible in principle to automatically solve all problems of a size that human beings can grasp. And this means that, given the problem of composing a certain piece of music to specification, a composer is not needed. Algorithmic composition alone could do the job. In terms of parametric composition, computing a finite subset of the parametric map would be in P.
+
+But if P != NP can be proved, then we will know that there are problems that, perhaps, humans can solve, but computers certainly cannot solve. And this means that, given the problem of composing a certain piece of music to specification, a composer is a good thing to have around. Not only that, but the use of algorithmic composition does not change the benefits of involving a composer.  In terms of parametric composition, that is not because of the indexing, but because of the time required to evaluate a \textbf{piece} for each point in the parametric map. Recall that computing a piece as a Julia set may be in NP; therefore, computing a parametric map of pieces also is in NP. However, looking up the set of parameters for a given point in the map is P. It may be only $O(log\ n)$ or, for multi-dimensional searches, $O(n^{c}), 0 < c < 1$.
+
+If neither can be proved, then we will just never know.
+ 
 I have now added to my list of mathematical things with fundamental implications for algorithmic composition:
 
 \begin{description}
-\item[Universality] Not only is it indeed possible to write a computer program that can generate any possible score as precisely as one likes, but it is also possible to greatly compress the amount of information required to represent the score. This, of course, is one of the fundamental motivations for pursuing algorithmic composition.
+\item[Universality] Not only is it indeed possible to write a computer program that can generate any finite score as precisely as one likes, but it is also possible to greatly compress the amount of information required to represent the score. This, of course, is one of the fundamental motivations for pursuing algorithmic composition.
 \item[Mappability] Compositional algorithms that are controlled by numerical parameters are mappable in the sense that a Hilbert index \parencite{patrick1968mapping, hamilton2007compact} on the plane for those parameters, even multi-dimensional parameters, can be colored by some feature of interest in the corresponding scores. This is an analog of the Mandelbrot set. Features in such maps reveal geometric features of the parameters, because the Hilbert index guarantees that points close together in the Hilbert curve are close in the ordering of the multidimensional data. We must not skip over the critical initial assumption, that ``features of interest'' are in some way objective (such as tempo or tuning system). Above all, musical value must be assumed to be objective, at least in the sense that a given composer will consistently assign the same value to a given piece.
 \item[Dimensional mismatch] The plot of a Julia set is a fractal in the complex plane. Its Hausdorff dimension is 2 and the complex plane has topological dimension 2. Mapping either an orbit in the set, or a plot of the set, to a musical score is frustrating. It can be done heuristically, e.g.\ by filtering the plot, but it would be better if either a musical score had dimension 2, or a Julia set had higher dimensionality, i.e.\ to directly represent not just pitch and time but also, e.g., loudness and choice of instrument. However, as previously mentioned, such  dimensional mismatches can be overcome in a mathematically elegant way using Hilbert indices.
-\item[Computational intractability] To plot a parametric map of, e.g., IFS that directly represent musical scores is conceptually simple but, in practice, takes much too long to compute given the number of explorations a composer must try in order to find a good piece.
+\item[Computational intractability] To plot a parametric map of, e.g., IFS that directly represent musical scores is conceptually simple but, in practice, takes much too long to compute given the number of explorations a composer must try in order to find a good piece. Yet, if P = NP, such maps would not be intractable.
 \end{description}
 
 Before further exploring the mathematical foundations of algorithmic composition, I will provide some additional background relating to different software systems for algorithmic composition, and to artificial intelligence, which can also be used to compose music.
@@ -157,6 +184,7 @@ Every method that establishes a more musically compact and/or intelligible order
 
 Every method that speeds up the search process will make algorithmic composition more productive. In particular, the growth of live coding demonstrates that the toolkit approach to algorithmic composition has a future. The underlying reason is that live coding supports faster searching, due to concise commands and immediately audible feedback. Spending time doing live coding also increases the composer's insight into the tools.
 
+
 \subsection*{In Sum}
 
 The main result here is that the major approaches to algorithmic composition --- trial and error with a toolkit of algorithms, live coding, exploration of fractals, and machine learning --- share this fundamental business of zigzagging down a slope on a landscape of evaluations to rest in a local optimum. This result is proved  by the simple fact that the generated music and/or the parameters used to generate it can be ordered. The dimensionality of the musical space is secondary, as it can be reduced to one or two dimensions by means of a Hilbert index. Note that searching for solutions or optimizations in many domains is known to be computationally expensive.
@@ -173,5 +201,14 @@ Progress in algorithmic composition seems likely to depend on speeding up the co
 
 % Check out https://arxiv.org/abs/1909.11066, the Mandelbrot set is the shadow of a Julia set. Possibly implies that my mapping problems can be solved by projection (shadows).
 %\bibliographystyle{cmj}
+
+Parametric map of rule 110
+
+The fixed point of consciousness is not finite
+
+Discrete dynamical systems can perform universal computation (e.g. the rule 110 one-dimensional cellular automaton, or the two-dimensional Game of Life).
+
+Continuous dynamical systems can emulate discrete dynamical systems, so also can perform universal computation. But can a continuous dynamical system perform super-Turing computation? 
+
 \printbibliography
 \end{document}  
