@@ -28,7 +28,7 @@
 
 \maketitle
 \begin{abstract}
-This essay recounts my personal journey towards a deeper understanding of the mathematical foundations and computational complexity of algorithmic music composition. I do not spend much time on specific algorithms used by myself or other composers; rather, I focus on general issues such as fundamental limits and possibilities, by analogy with metalogic, metamathematics, and computability theory. I discuss  implications from these foundations for the practice and future of algorithmic composition. 
+This essay recounts my journey towards a deeper understanding of the mathematical foundations and computational complexity of algorithmic music composition. I do not spend too much time on specific algorithms used by myself or other composers; rather, I focus on general issues such as fundamental limits and possibilities, by analogy with metalogic, metamathematics, and computability theory. I discuss  implications from these foundations for the practice and future of algorithmic composition. 
 \end{abstract}
 
 %\section{}
@@ -44,11 +44,11 @@ The composer explores the actual Mandelbrot set. When a point and its neighborho
 
 An iterated function system (IFS) is a Hutchinson operator, a set of contractive affine transformations, and iterating the operator upon any initial set takes that set to a fixed point that is a fractal \parencite{barnsley1985iterated, barnsley1993}. The Collage Theorem proves that an IFS can approximate any set as closely as desired \parencite{barnsley1989fractal, barnsley1993}. It follows that this method is \emph{compositionally universal} \parencite{obsessed, gogins2023scoregraphs}, that is, capable of directly generating any finite score. It is also possible to generate a parametric map of any subset of IFS, but because the Hutchinson operators have many more than two parameters, generating a parametric map (an analogue of the plot of the Mandelbrot set in the complex plane) for dozens or hundreds of parameters requires the use of a Hilbert index \parencite{patrick1968mapping}. A Hilbert index maps an $N$-dimensional space, such as a plane, cube, or hypercube, to a 1- or 2-dimensional sequence of numbers. The index is constructed in such a way that neighboring points in the $N$-dimensional space have nearby indices in the 1- or 2-dimensional sequence. The key idea behind a Hilbert index is to recursively subdivide the $N$-dimensional space into smaller planes, cubes, or hypercubes, called cells. Each cell is assigned a unique index based on its position within the overall space. The subdivision process continues recursively until a desired level of detail is reached. To determine the Hilbert index of a specific point in the $N$-dimensional space, start with the largest cell that contains the point, level $j = 0$. Then, working in arithmetic to the base $N$, subdivide that cell into $N$ sub-cells for level 1, and select the sub-cell that contains the point. If it is the $kth$ sub-cell at level $j$, then add $((k + 1)/N)^{-j}$ to the index. Repeat this process recursively until the smallest cell containing the point is reached. The index of that cell is  the Hilbert index for the point. Hilbert indices work because all metric spaces have the same cardinality; therefore, there is always a one-to-one mapping between points in any $N$-dimensional space and points on the line or, more usefully, the plane. In any event, the plot of the IFS is translated to a score in much the same way as for the plot of a Julia set.
 
-\noindent I experimented with both of these methods, doing parametric composition by zooming in on interesting regions of the map, generating and rendering scores, exploring points near scores that seemed promising, and iterating this process. Unfortunately, the scores I generated from Julia sets had too much of a sameness, and producing a parametric map of more than just a few points for IFS simply took way too much time. In other words, computing parametric maps for IFS quickly became \emph{computationally intractable}. 
+I experimented with both of these methods, doing parametric composition by zooming in on interesting regions of the map, generating and rendering scores, exploring points near scores that seemed promising, and iterating this process. Unfortunately, the scores I generated from Julia sets had too much of a sameness, and producing a parametric map of more than just a few points for IFS simply took way too much time. In other words, computing parametric maps for IFS quickly became \emph{computationally intractable}. 
 
-As I continued to pursue algorithmic composition, I found that this question of intractability is not merely a practical problem, but has profound mathematical and philosophical roots, beginning with Pythagoras and continuing on through the hierarchy of complexity classes in theoretical computer science.
+As I continued to pursue algorithmic composition, I found that this question of intractability is not merely a practical problem, but has profound mathematical and philosophical roots, beginning with Pythagoras and continuing on through the hierarchy of complexity classes in theoretical computer science. 
 
-\section*{The Philosophical Context}
+\section*{Philosophical Context}
 
 Music has since Pythagoras \parencite{sep-pythagoras, huffman2014history} been understood by some as an intellectual paradigm and to reveal, through harmony that is both numerical and audible, the structure of reality. For this reason music was a central part of the \emph{quadrivium}, the standard curriculum of liberal arts in Western higher education from late Antiquity through the Renaissance.
 
@@ -85,7 +85,7 @@ If neither can be proved, then we will just never know.
  
 \subsection*{Algorithmic Composition in Context}
 
-It is now possible to return to the question of parametric composition with more understanding. It turns out that parametric composition spans the entire hierarchy of complexity classes.
+It is now possible to return to the question of algorithmic composition with more understanding. I will use parametric composition as standing in for algorithmic composition in general. It turns out that parametric composition spans the entire hierarchy of complexity classes.
 
 \begin{description}
 \item[$\mathsf{ST}$]  Braverman proved that some Julia sets, perhaps including some that might be encountered in parametric composition, are not even recursively enumerable \parencite{braverman2006non, braverman2009computability}.
@@ -120,19 +120,21 @@ The toolkit approach includes transformations and generators from many sources:
 \item[Neo-Riemannian Theory] Mathematizes voice-leading and discovers groups acting on notes, scales, and chords, together with their symmetries \parencite{geometryofchords, tymoczko2006geometry, callender2008generalized}.
 \item[Random Variables] Borrowed from mathematics and used to generate series of musical properties such as pitches.
 \item[Dynamical Systems and Cellular Automata] Borrowed from mathematics and used to generate series of musical properties such as pitches \parencite{Miranda1993}.
-\item[Fractals] Borrowed from mathematics and used to generate some or all aspects of musical scores \parencite{madden2007fractals}. Some composers, such as myself, prefer to use an algorithm, such as a Lindenmayer system \parencite{algorithmicbeautyofplants, prusinkiewicz1986sgs,  fractalmusicwithstringrewritinggrammars} or iterated function system (IFS) \parencite{fractalseverywhere, ifsmusic} that will generate an entire piece based on fractals or other mathematical methods, without need of further editing or assembling. 
+\item[Fractals] Borrowed from mathematics and used to generate some or all aspects of musical scores \parencite{miranda2001composing, madden2007fractals}. Some composers, such as myself, prefer to use an algorithm, such as a Lindenmayer system \parencite{algorithmicbeautyofplants, prusinkiewicz1986sgs,  fractalmusicwithstringrewritinggrammars} or iterated function system (IFS) \parencite{fractalseverywhere, ifsmusic} that will generate an entire piece based on fractals or other mathematical methods, without need of further editing or assembling. 
 \item[Evolutionary Computing] Applying evolutionary computing to any of the above \parencite{miranda2007evolutionary}.
 \end{description}
 
-\subsection*{Musical Syntax}
+\subsection*{Intrinsic vs.\ Extrinsic Representations}
 
-Most of the algorithms in the toolkit are computationally irreducible. However, there is a critical difference between applying, \emph{e.g.}, a series of transformations from the General Contextual Group \parencite{fiore2005gcg}, even if the transformations are selected at random, versus simply applying a random variable to scramble or transpose a chord. Any application of the GCG is going to generate a chord progression that sounds more or less musically well-formed, because the group instantiates an analysis of some aspects of neo-Riemannian theory. Simply applying a random variable will sound, well, random, with perhaps some musical color from the nature of the random distribution.
+Most of the algorithms in the toolkit are computationally irreducible. However, there is a critical difference between applying, \emph{e.g.}, a series of transformations from the General Contextual Group \parencite{fiore2005gcg}, even if the transformations are selected at random, versus simply applying a random variable to scramble or transpose a chord. I will define as \emph{intrinsic} all algorithms that are based upon primitive elements of music and follow musically acceptable transformations of the primitives. For example, any application of the GCG is going to generate a chord progression that sounds more or less musically well-formed, because the group instantiates an analysis of some aspects of neo-Riemannian theory. I will define as \emph{extrinsic} all algorithms that are based on non-musical primitives, uses transformations of the primitives that are not necessarily musically acceptable, and end up mapping the productions of the algorithms to musical scores.
 
-In other words, while both procedures are computationally irreducible, the GCG procedure will generate far more musically intelligible results. That is because the GCG models the syntax of some aspects of musical practice.. The elements of the GCG are chords, and the actions of the GCG implement some common transformations of one chord to another. Other such syntaxes include abstracting the pragmatic rules of voice-leading, abstracting the network of chord progressions by scale degree in functional harmony, and so on.
+In other words, while both procedures are computationally irreducible, the GCG procedure will generate far more musically intelligible results. That is because the GCG models the syntax of some aspects of musical practice. The elements of the GCG are chords, and the actions of the GCG implement some common transformations of one chord to another. Other such syntaxes include abstracting the pragmatic rules of voice-leading, abstracting the network of chord progressions by scale degree in functional harmony, and so on.
+
+Note well, a fractal or other mathematically derived algorithm may be modified to be based on, or to transform, musical primitives.
 
 \subsection*{Live Coding}
 
-The more recent method of algorithmic composition known as \emph{live coding} can be considered a variant of the toolkit approach. A live coding system for music consists of a toolkit of routines that are assembled into a music-generating graph during a live performance by interpreting real-time commands in a domain-specific language. Live coding systems have tools and commands for both high-level representations of music (notes, loops, chords, scales, musical transformations, etc.) and sound synthesis (oscillators, envelope generators, filters, etc.). An overview of the field can to some extent be gleaned from the TOPLAP web site \parencite{toplap} and the \emph{Oxford Handbook of Algorithmic Composition} \parencite{mclean2018oxford}. I have some experience with TidalCycles (computer platform, Haskell implementation) \parencite{tidalcycles} and Strudel (a JavaScript version of TidalCycles, Web browser platform, JavaScript implementation) \parencite{strudel}.
+The more recent method of algorithmic composition known as \emph{live coding} can be considered a variant of the toolkit approach. A live coding system for music consists of a toolkit of routines that are assembled into a music-generating graph during a live performance by interpreting real-time commands in a domain-specific language. Live coding systems have tools and commands for both high-level representations of music (notes, loops, chords, scales, musical transformations, \emph{etc.}) and sound synthesis (oscillators, envelope generators, filters, \emph{etc.}). An overview of the field can to some extent be gleaned from the TOPLAP web site \parencite{toplap} and the \emph{Oxford Handbook of Algorithmic Composition} \parencite{mclean2018oxford}. I have some experience with TidalCycles (computer platform, Haskell implementation) \parencite{tidalcycles} and Strudel (a JavaScript version of TidalCycles, Web browser platform, JavaScript implementation) \parencite{strudel}.
 
 \subsection*{Machine Learning}
 
@@ -182,6 +184,7 @@ Before I proceed to look at this kind of production from a mathematical point of
 \item[Incomputability] The set of possible musical compositions (assuming that some pieces either last an infinitely long time, or that between any two pieces is a continuous path consisting of variations between the pieces) is \emph{recursively incomputable}.
 \item[Universality] In spite of the incomputability of compositions, they are \emph{recursively enumerable}, so it is possible to approximate any possible composition as closely as one likes.
 \item[Irreducibility] Compositional algorithms that have a strong analogy to Julia sets are \emph{computationally irreducible}.
+\item[Intrinsic vs.\ Extrinsic] Algorithms that work with musical primitives and transformations do not produce nearly as many musically unacceptable results.
 \item[Opacity] Compositional algorithms based on machine learning are not only computationally irreducible, but also computationally opaque in that we have essentially no insight into the meaning of the steps followed by the LLM.
 \item[Mappability] Compositional algorithms are nevertheless always mappable. This ultimately is because the compositions can be ordered in some way, either as sets of scores, or as sets of generating parameters, and individually evaluted.
 \item[Intractability] Producing a useful parametric map of some subset of compositions is very compute-intensive. 
@@ -203,15 +206,13 @@ Sophisticated forms of algorithmic composition are compute-intensive, and can be
 
 Computer power will continue to increase. This will most likely make algorithmic composition both more productive and more important.
 
-There is a similarity between a composer's experience with a toolkit of algorithms, the transformation of prompts into responses by an LLM, and exploring the parametric map of a fractal compositional algorithm. In all cases, starting with an initial trial, a final composition is approached by a descending, zigzag search through a space representing musical possibilities of differing value, until the search comes to rest in some local optimum.
-
-Every method that establishes a more musically compact and/or intelligible ordering of a space of musical possibilities will make algorithmic composition more productive. As an example, excluding non-musical elements from the space of possibilities can be very helpful, because sounds that human beings consider to be musical occupy a vanishingly small part of the parameter space of universal compositional algorithms. However, it is possible to literally change the mathematical basis of the parameter space to represent only musically pertinent features. For example, rather than representing scores as notes on piano rolls, e.g.\ planes or cubes, one can represent scores as more or less fleeting chord progressions in chord spaces \parencite{gogins2006score, gogins2023scoregraphs}.
+There is a similarity between a composer's experience with a toolkit of algorithms, the transformation of prompts into responses by an LLM, and exploring the parametric map of a fractal compositional algorithm. In all cases, starting with an initial trial, a final composition is approached by a descending, zigzag search through a space representing musical possibilities of differing value, until the search comes to rest in some local optimum. This search can be greatly speeded up by using intrinsically musical algorithms that tend not to produce as many musically unacceptable results. For example, rather than representing scores as notes on piano rolls, e.g.\ planes or cubes, one can represent scores as more or less fleeting chord progressions in chord spaces \parencite{gogins2006score, gogins2023scoregraphs}.
 
 Every method that speeds up the search process will make algorithmic composition more productive. In particular, the growth of live coding demonstrates that the toolkit approach to algorithmic composition has a future. The underlying reason is that live coding supports faster searching, due to concise commands and immediately audible feedback. Spending time doing live coding also increases the composer's insight into the tools.
 
 \subsection*{In Sum}
 
-The main result here is that the major approaches to algorithmic composition --- trial and error with a toolkit of algorithms, live coding, exploration of fractals, and machine learning --- share this fundamental business of zigzagging down a slope on a landscape of evaluations to rest in a local optimum. This result is proved  by the simple fact that the generated music and/or the parameters used to generate it can be ordered. The dimensionality of the musical space is secondary, as it can be reduced to one or two dimensions by means of a Hilbert index. Note that searching for solutions or optimizations in many domains is known to be computationally expensive.
+The main result here is that the major approaches to algorithmic composition --- trial and error with a toolkit of algorithms, live coding, exploration of fractals, and machine learning --- share this fundamental business of zigzagging down a slope on a landscape of evaluations to rest in a local optimum. This result is proved by the simple fact that the generated music and/or the parameters used to generate it can be ordered. The dimensionality of the musical space is secondary, as it can be reduced to one or two dimensions by means of a Hilbert index. Note that searching for solutions or optimizations in many domains is known to be computationally expensive.
 
 Future developments in artificial intelligence may have a significant impact on algorithmic composition. For example, machine learning has been applied to solving the inverse problem for discovering the parameters of fractal algorithms \parencite{tu2023learning}. It might then be possible to represent an existing score, or scores, as fractal parameters and then work with these parameters to vary or interpolate between such pieces. This does not overcome computational irreducibility, as it substitutes the opacity of machine learning for the irreducibility of the inverse problem, yet it still might be very useful.
 
@@ -219,29 +220,9 @@ Future developments in artificial intelligence may have a significant impact on 
 
 As for algorithmic compositions based on fractals, sometimes an analytical understanding of the mathematics can be used as a guide to composition, but this tends in my experience to be of limited use. More often, the only way to penetrate the fog of incomputability, irreducibility, opacity, and intractability is to explore the geometrical order in a subset of compositions. This can be done either by trial and error, or by literally plotting a map of the subset of compositions. One might say that with trial and error one plots a sparse map of fully defined features in a territory, and with a parametric map one explores a densely mapped territory with partially defined features.
 
-Progress in algorithmic composition seems likely to depend on speeding up the composer's workflow, whether in parametric composition, in live coding, in algorithmic composition toolkits, or in machine learning; and, even more so in the long run, on defining more musically compact and intelligible spaces of musical possibility.
+Progress in algorithmic composition seems likely to depend on speeding up the composer's workflow, whether in parametric composition, in live coding, in algorithmic composition toolkits, or in machine learning; and, even more so in the long run, on defining more musically compact and intelligible spaces of musical possibility based on a wider variety of intrinsically musical algorithms. This in my view is one of the most important tasks of future algorithmic composers: identify and refine such processes. 
 
-To state this more clearly, the parameters, prompts, or other inputs to the compositional algorithms can be refined such that they are musically intelligible. The processes are not just mathematical, they have a musical meaning. This in my view is the task of future algorithmic composers: identify and refine such processes. 
-
-There are several features of the Mandelbrot set/Julia set duality that are important for a deeper understanding of algorithmic composition not just for these fractals, but for all methods of algorithmic composition. 
-
-Look for results in mathematical music theory that can be turned into algorithmic generators.
-
-
-
-
-%It is also the case that some art music composers and film, game, or popular music composers have incorporated an algorithmic toolkit into their already massive toolkits of music technology.
-
-% Check out https://arxiv.org/abs/1909.11066, the Mandelbrot set is the shadow of a Julia set. Possibly implies that my mapping problems can be solved by projection (shadows).
-%\bibliographystyle{cmj}
-
-Parametric map of rule 110
-
-The fixed point of consciousness is not finite
-
-Discrete dynamical systems can perform universal computation (e.g. the rule 110 one-dimensional cellular automaton, or the two-dimensional Game of Life).
-
-Continuous dynamical systems can emulate discrete dynamical systems, so also can perform universal computation. But can a continuous dynamical system perform super-Turing computation? 
+However, it would not be wise to exclude extrinsic algorithms from the toolkit, as they can be a fertile source of materials that expand notions of what is musically acceptable.
 
 \printbibliography
 \end{document}  
