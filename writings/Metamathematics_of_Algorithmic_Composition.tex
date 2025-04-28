@@ -140,7 +140,7 @@ Note well, a fractal or other mathematically derived algorithm may be modified t
 
 \subsection*{Live Coding}
 
-The more recent method of algorithmic composition known as \emph{live coding} is a variant of the toolkit approach. A live coding system for music consists of a toolkit of routines that are assembled into a music-generating graph during a live performance by interpreting real-time commands in a domain-specific language. Live coding systems have tools and commands for both high-level representations of music (notes, loops, chords, scales, musical transformations, \emph{etc.}) and sound synthesis (oscillators, envelope generators, filters, \emph{etc.}). An overview of the field can be gleaned from the TOPLAP web site \parencite{toplap} and the \emph{Oxford Handbook of Algorithmic Composition} \parencite{mclean2018oxford}. I have some experience with TidalCycles (computer platform, Haskell implementation) \parencite{tidalcycles} and Strudel (a JavaScript version of TidalCycles, Web browser platform, JavaScript implementation) \parencite{strudel}.
+The more recent method of algorithmic composition known as \emph{live coding} is a variant of the toolkit approach. A live coding system consists of a toolkit of routines that are assembled into a music-generating graph during a live performance by interpreting real-time commands in a domain-specific language. Such systems have tools and commands for both high-level representations of music (notes, loops, chords, scales, musical transformations, \emph{etc.}) and sound synthesis (oscillators, envelope generators, filters, \emph{etc.}). An overview of the field can be gleaned from the TOPLAP web site \parencite{toplap} and the \emph{Oxford Handbook of Algorithmic Composition} \parencite{mclean2018oxford}. I have some experience with TidalCycles (computer platform, Haskell implementation) \parencite{tidalcycles} and Strudel (a JavaScript version of TidalCycles, Web browser platform, JavaScript implementation) \parencite{strudel}.
 
 \subsection*{Machine Learning}
 
@@ -187,9 +187,9 @@ Few if any algorithmic composers simply ``hear music in their heads'' and write 
 Before I proceed to look at this kind of production from a mathematical point of view, I will summarize what I have learned about the mathematical foundations:
 
 \begin{description}
-\item[Uncomputability] The set of musical compositions that are possible in the abstract (assuming that some pieces either last an infinitely long time, or that between any two pieces is a continuous path consisting of variations between the pieces) is \emph{recursively uncomputable}.
-\item[Universality] In spite of the uncomputability of compositions, they are \emph{recursively enumerable}, so it is possible to approximate any possible composition as closely as one likes.
-\item[Irreducibility] Compositional algorithms that have a strong analogy to Julia sets are \emph{computationally irreducible}.
+\item[Uncomputability] The set of musical compositions that are possible \emph{in the abstract} (assuming that some pieces either last an infinitely long time, or that between any two pieces is a continuous path consisting of variations between the pieces) is \emph{recursively uncomputable}.
+\item[Universality] In spite of the uncomputability of compositions, they are \emph{recursively enumerable}, so it is possible to approximate any possible \emph{physical} composition as closely as one likes.
+\item[Irreducibility] Most compositional algorithms are \emph{computationally irreducible}.
 \item[Intrinsic vs.\ Extrinsic] Algorithms based on musical primitives and transformations produce a larger fraction of musically acceptable results.
 \item[Opacity] Compositional algorithms based on machine learning are not only computationally irreducible, but also computationally opaque in that we have essentially no insight into the meaning of the steps followed by the LLM.
 \item[Mappability] Compositional algorithms are nevertheless always mappable. This ultimately is because sets of compositions can be ordered in some way by \emph{musical} criteria, while their corresponding generating parameters can be ordered lexically or numerically.
