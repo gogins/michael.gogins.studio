@@ -46,6 +46,8 @@ It is also possible to generate a parametric map of any subset of IFSs, but as H
 
 I experimented with both methods, doing parametric composition by zooming in on interesting regions of the map, generating and rendering scores, exploring points near scores that seemed promising, and iterating this process. However, I found that scores generated directly from Julia sets had too much of a sameness, and producing a parametric map of more than just a few points for IFSs simply took way too much time. In other words, computing parametric maps for IFSs is \emph{computationally intractable}. 
 
+I have not found explicit discussion of these issues of complexity and intractability in the literature on computer music, or mathematics and music.
+
 As I pursued algorithmic composition, I found that intractability is not merely a practical problem, but has profound mathematical and philosophical roots, beginning with Pythagoras and continuing on through the hierarchy of complexity classes in theoretical computer science. 
 
 \section*{Philosophical Context}
@@ -68,12 +70,14 @@ hope for a \emph{characteristica universalis}, a symbolic language that could ex
  For our purposes, the important complexity classes, assuming complexity is defined as run time on some universal Turing machine, are:
 
 \begin{description}
-\item[Super-Turing ($\mathsf{ST}$)] Problems that have \emph{mathematical} solutions, but these are neither recursively enumerable nor recursively computable.
-\item[Recursively enumerable ($\mathsf{RE}$)] Also called semi-decidable. Problems where a solution can be verified by a Turing machine, but proving a solution does not exist is not always possible. If a solution does exist, then a Turing machine can get as close as one likes to the solution.
-\item[Recursively computable ($\mathsf{R}$)] This is the same as Turing computable, or decidable. The problem can be decided in a finite number of steps; that is, the problem can be either solved, or proved unsolvable.
+\item[$\mathsf{ST}$ or super-Turing] Problems that have \emph{mathematical} solutions, but these are neither recursively enumerable nor recursively computable.
+\item[$\mathsf{RE}$ or recursively enumerable] Also called semi-decidable. Problems where a solution can be verified by a Turing machine, but proving a solution does not exist is not always possible. If a solution does exist, then a Turing machine can get as close as one likes to the solution.
+\item[$\mathsf{R}$ or recursively computable] This is the same as Turing computable, or decidable. The problem can be decided in a finite number of steps; that is, the problem can be either solved, or proved unsolvable.
 \begin{description}
-\item[Non-deterministic polynomial time ($\mathsf{NP}$)] The time to solve increases faster than any polynomial function of the size of the problem. However, a solution can be \emph{verified} in polynomial time.
-\item[Deterministic polynomial  time ($\mathsf{P}$)] The time to \emph{solve} is bounded by some polynomial function of the problem size.
+\item[$\mathsf{PSPACE}$ or polynomial space] The memory required to solve the problem increases as a polynomial function of the problem size. The time to solve can exceed $\mathsf{NP}$.
+\item[$\mathsf{NP}$-complete] The time to solve increases as fast as any other problem in $\mathsf{NP}$.
+\item[$\mathsf{NP}$ or non-deterministic polynomial time ] The time to solve increases faster than any polynomial function of the size of the problem. However, a solution can be \emph{verified} in polynomial time.
+\item[$\mathsf{P}$ or deterministic polynomial  time] The time to \emph{solve} is bounded by some polynomial function of the problem size.
 \end{description}
 \end{description}
 
@@ -85,7 +89,11 @@ The closely related question whether $\mathsf{NP}$ is contained in $\mathsf{P}$ 
  
 \subsection*{Algorithmic Composition in Context}
 
-We can now return to the analysis of algorithmic composition with more understanding. A starting point is to consider Julia sets as musical scores. Braverman proved \parencite{braverman2006non, braverman2008computability, braverman2009computability} that hyperbolic Julia sets are computable, and in $\mathsf{P}$ (measure 1); most parabolic Julia sets are computable, but in $\mathsf{NP}$ or worse (measure 0); and some Julia sets with Siegel discs are neither hyperbolic nor parabolic, but \emph{incomputable} (measure 0).
+We can now return to the analysis of algorithmic composition with more understanding. 
+
+Gwee formalized algorithms for constructing counterpoints given a \emph{cantus firmus}, constructed decision problems for those algorithms, and proved that they are in $\mathsf{PSPACE}$ \parencite{gwee2002complexity}, \emph{i.e.}\ rule- or constraint-based compositional problems are as hard as \emph{any} recursively computable problem.
+
+Turning now to the fractal approach, Braverman proved \parencite{braverman2006non, braverman2008computability, braverman2009computability} that hyperbolic Julia sets are computable, and in $\mathsf{P}$ (measure 1); most parabolic Julia sets are computable, but in $\mathsf{NP}$ or worse (measure 0); and some Julia sets with Siegel discs are neither hyperbolic nor parabolic, but \emph{incomputable} (measure 0).
 \begin{description}
 \item[$\mathsf{ST}$]  Some Julia sets with Siegel discs might be musically interesting in the abstract, but they are uncomputable. Picking Julia set parameters at random won't find any of these.
 \item[$\mathsf{RE}$] The Mandelbrot set, properly speaking, is not \emph{recursively computable}, \emph{i.e.}\ not Turing computable \parencite{blum1993godel}. Plots we make of the set are approximations. Hertling showed that although the Mandelbrot set is not recursively computable, it is nevertheless \emph{recursively enumerable} \parencite{Hertling2005-HERITM-3}; given enough time, one can approximate the actual set as closely as one likes. 
@@ -103,7 +111,9 @@ Julia sets are not the only attractors of dynamical systems that can be $\mathsf
 But if $\mathsf{P} \ne \mathsf{NP}$, parametric maps must exclude not only points with uncomputable attractors, but also larger neighborhoods of these points. This would to some extent fracture and obstruct the intelligibility of parametric composition.
 \end{description}
 
-At this point, the reader may well be wondering why I am talking about uncomputability when algorithmic compositions are normally \emph{computed}. The reason is, composers normally don't think about computability or uncomputability. As I did with the Mandelbrot set/Julia set duality, or as Xenakis did with random variables \parencite{xenakis2001formalized}, composers usually seem to think in terms of continuous mathematics using real numbers. But such ideas must then be implemented, using discrete mathematics and integers, on a physical computer. We should always remember: things may be mathematically true, yet not computable; other things may be computable in the abstract, yet not computable in our physical world; and still other things may be physically computable, yet only given resources far exceeding ours. 
+At this point, the reader may well be wondering why I am talking about uncomputability when algorithmic compositions are normally \emph{computed}. The reason is, composers normally don't think about computability or uncomputability. As I did with the Mandelbrot set/Julia set duality, or as Xenakis did with random variables \parencite{xenakis2001formalized}, composers often seem to think in terms of continuous mathematics using real numbers. But such ideas must then be implemented, using discrete mathematics and integers, on a physical computer. 
+
+We should always remember: things may be mathematically true, yet not computable; other things may be computable in the abstract, yet not computable in our physical world; and still other things may be physically computable, yet only given resources far exceeding ours. 
 
 Beneath this issue is the older issue of philosophical realism (\emph{e.g.}\ considering even uncomputable Julia sets to be real in the Platonic sense, which ultimately derives from Pythagoreanism) versus pragmatism or nominalism (considering uncomputable Julia sets a convenient fiction). With respect to music, realism implies that a composer's idea is based on his or her grasp of an abstract yet real musical object. With respect to algorithmic composition, realism implies that pieces based on uncomputable attractors are nevertheless real musical objects, and neglecting them is ignorant, while pragmatism and nominalism say forget it, just shut up and run the algorithm, the only pieces that matter are those we can compute.
 
