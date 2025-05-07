@@ -1,45 +1,70 @@
-\documentclass[11pt,papersize=a4]{scrartcl}
-\usepackage{graphicx}
-\usepackage{amssymb}
+% interactapasample.tex
+% v1.05 - August 2017
+
+\documentclass[]{interact}
+
+\usepackage{epstopdf}% To incorporate .eps illustrations using PDFLaTeX, etc.
+\usepackage[caption=false]{subfig}% Support for small, `sub' figures and tables
+%\usepackage[nolists,tablesfirst]{endfloat}% To `separate' figures and tables from text if required
+%\usepackage[doublespacing]{setspace}% To produce a `double spaced' document if required
+%\setlength\parindent{24pt}% To increase paragraph indentation when line spacing is doubled
+
+\usepackage[longnamesfirst,sort]{natbib}% Citation support using natbib.sty
+\bibpunct[, ]{(}{)}{;}{a}{,}{,}% Citation support using natbib.sty
+\renewcommand\bibfont{\fontsize{10}{12}\selectfont}% To set the list of references in 10 point font using natbib.sty
+
+%\usepackage[natbibapa,nodoi]{apacite}% Citation support using apacite.sty. Commands using natbib.sty MUST be deactivated first!
+%\setlength\bibhang{12pt}% To set the indentation in the list of references using apacite.sty. Commands using natbib.sty MUST be deactivated first!
+%\renewcommand\bibliographytypesize{\fontsize{10}{12}\selectfont}% To set the list of references in 10 point font using apacite.sty. Commands using natbib.sty MUST be deactivated first!
+
+\theoremstyle{plain}% Theorem-like structures provided by amsthm.sty
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+\newtheorem{notation}{Notation}
+
+\usepackage[style=apa, backend=biber]{biblatex}
+\DeclareLanguageMapping{american}{american-apa}
+\addbibresource{gogins_deduplicated.bib} % Replace with your .bib file
+
 \usepackage{comment}
-\usepackage{epstopdf}
-\usepackage{hyperref}
-\usepackage{scrlayer-scrpage}
-\lohead{Michael Gogins}
-\rohead{Algorithmic Composition}
-\lofoot[Irreducible Productions]{Irreducible Productions}
-\rehead{Michael Gogins}
-\lehead{Algorithmic Composition}
-\refoot[Irreducible Productions]{Irreducible Productions}
-\usepackage[authordate-trad,backend=biber]{biblatex-chicago}
-\addbibresource{gogins_deduplicated.bib}
-%\usepackage{cmjStyle} %use CMJ style
-%\usepackage{natbib} %natbib package, necessary for customized cmj BibTeX style
-%\bibpunct{(}{)}{;}{a}{}{, } %adapt style of references in text
-\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
 
 \begin{document}
 
+%\articletype{ARTICLE TEMPLATE}% Specify the article type or omit as appropriate
+
 \title{Metamathematics of Algorithmic Composition}
-\urlstyle{tt}
-\author{Michael Gogins \\ \\ \texttt{\href{mailto:michael.gogins@gmail.com}{michael.gogins@gmail.com}}  \\ \url{https://michaelgogins.tumblr.com}}
-\date{May 2025}
+
+\author{
+\name{Michael Gogins\textsuperscript{a}\thanks{CONTACT Michael Gogins Email: michael.gogins@gmail.com}}
+\affil{\textsuperscript{a}Irreducible Productions, 1576 Crescent Valley Road, Bovina Center, New York 13740, United States}
+}
+
 \maketitle
+
 \begin{abstract}
 I recount my journey towards a deeper understanding of the philosophical context, mathematical foundations, and computational complexity of algorithmic music composition. I discuss different types of algorithms, but my primary focus is on the fundamental limits and possibilities of algorithmic composition, by analogy with metalogic, metamathematics, and computability theory. I present implications for the practice and future of algorithmic composition. 
 \end{abstract}
 
-\section*{Introduction}
+\section{Introduction}
 
 In 1983, as a returning undergraduate in comparative religion at the University of Washington, I attended a lecture on fractals by Benoit Mandelbrot, discoverer of the eponymous set \parencite{citeulike:580392, peitgen2004mandelbrot}. Briefly, given the quadratic recurrence $z_{n+1} = z_n^2 + c$, the Mandelbrot set consists of all points $c$ in the complex plane for which $z$, starting at 0, does not approach infinity as the equation is iterated. Then, for each point $c$ in the Mandelbrot set there is a connected Julia set, consisting of all points $z$ for which $z_n$ does not approach infinity as the equation is iterated. Mandelbrot's slides showed how a plot of the neighborhood near some $c$ in the Mandelbrot set closely resembles the plot of the corresponding Julia set \parencite{lei1990similarity} (this has recently been proved \parencite{kawahira2018julia}). In short, the Mandelbrot set is a \emph{parametric map} of all connected Julia sets. There is now an extensive and growing literature on the Mandelbrot set and Julia sets. 
 
 I was already interested in computer music, especially algorithmic composition based on fractals. During the lecture it occurred to me that if I zoomed into a plot of the Mandelbrot set, searching for interesting-looking regions, I could plot the Julia set for a point in that region, and then somehow translate that Julia set into a musical score \parencite{obsessed}. I have worked out several variations of this idea.
 
-\subsection*{Mandelbrot Set/Julia Set}
+\subsection{Mandelbrot Set/Julia Set}
 
 The composer explores the Mandelbrot set. When a region seems interesting, the composer selects a point in it, and the corresponding Julia set is first generated, and then translated to a musical score. The 2-dimensional plot of the Julia set is mapped onto a 3-dimensional piano-roll score: the $x$ axis is time, the $y$ axis is pitch, and the $z$ axis is the choice of instrument, also indicated by color.
 
-\subsection*{Parametric Map of Iterated Function Systems}
+\subsection{Parametric Map of Iterated Function Systems}
 
 An iterated function system (IFS) is a Hutchinson operator, a set of contractive affine transformations, each of which is applied to transform an initial set; the union of these transformations becomes the initial set for the next iteration. Iterating the operator upon \emph{any} initial set takes that set to the \emph{same} fixed point, which is a fractal \parencite{barnsley1985iterated, barnsley1993}. The Collage Theorem proves that an IFS can approximate any set as closely as desired \parencite{barnsley1989fractal, barnsley1993}. Therefore this method is \emph{compositionally universal} \parencite{obsessed, gogins2023scoregraphs}: it can generate, as closely as one likes, any finite score. 
 
@@ -51,7 +76,7 @@ I experimented with both methods, doing parametric composition by zooming in on 
 
 As I pursued algorithmic composition, I found that intractability is not merely a practical problem, but has profound mathematical and philosophical roots, beginning with Pythagoras and continuing on through the hierarchy of complexity classes in theoretical computer science. I found only a few discussions of these issues of complexity and intractability in the computer music literature.
 
-\section*{Philosophical Context}
+\section{Philosophical Context}
 
 Music has since Pythagoras \parencite{sep-pythagoras, huffman2014history} been understood by some as an intellectual paradigm and to reveal, through harmony both numerical and audible, the structure of reality. For this reason music was a central part of the \emph{quadrivium}, the standard curriculum of liberal arts in Western higher education from late Antiquity through the Renaissance.
 
@@ -64,7 +89,7 @@ hope for a \emph{characteristica universalis}, a symbolic language that could ex
 \item Proofs that the relationship between energy and information imposes hard \emph{physical} limits on the amount of computation that can be done in the physical universe \parencite{aaronson2005npcomplete, sep-computation-physicalsystems}.
 \end{itemize}
 
- \subsection*{Complexity Classes} \label{sec:complexity}
+ \subsection{Complexity Classes} \label{sec:complexity}
  
  The complexity classes are based on the capabilities and limitations of Turing machines. A Turing machine is an abstract, idealized computer with infinite memory that can run for an infinite number of steps. It may halt after a finite number of steps and produce a result, or never halt. A \emph{universal} Turing machine can emulate any other Turing machine. The widely accepted Church-Turing thesis holds that \emph{anything} computable by a definite, step by step procedure is computable by a universal Turing machine \parencite{sep-church-turing}. Contemporary digital computers are universal Turing machines --- or would be, if they had infinite memory and infinite time to run.
  
@@ -107,9 +132,9 @@ hope for a \emph{characteristica universalis}, a symbolic language that could ex
 
 Yet in either case, scientific theories are $\mathsf{RE}$ or less, because it must be possible to compare the predictions of the theory to observations of Nature that are finite in number and of only finite precision. Nobody can see how Nature or human thought being super-Turing could ever be \emph{proved}, so it is often held that any physical process can be effectively emulated by a Turing machine; this is the \emph{physical} Church-Turing thesis \parencite{aaronson2005npcomplete, sep-church-turing}. Compositional algorithms that halt are $\mathsf{NP}$ or less.
 
-Whether or not $\mathsf{NP}$ is contained in $\mathsf{P}$ is one of the most important open questions in science. Most mathematicians and scientists believe, for overlapping reasons, that $\mathsf{P} \ne \mathsf{NP}$. If $\mathsf{P} = \mathsf{NP}$  can be proved, it becomes possible in principle to automatically solve all problems of a size that human beings can grasp. But if $\mathsf{P} \ne \mathsf{NP}$ can be proved, we will know there are problems that are just too complex for computers to solve.
+Whether or not $\mathsf{NP}$ is contained in $\mathsf{P}$ is one of the most important open questions in science. Most mathematicians and scientists believe, for overlapping reasons, that $\mathsf{P} \ne \mathsf{NP}$. If $\mathsf{P} = \mathsf{NP}$  can be proved, it becomes possible in principle to automatically solve all problems of a size that human beings can grasp. But if $\mathsf{P} \ne \mathsf{NP}$ can be proved, we will know some problems that are complex for computers to solve.
  
-\subsection*{Algorithmic Composition in Context}
+\subsection{Algorithmic Composition in Context}
 
 We can now return to the analysis of algorithmic composition with more understanding. Some compositional algorithms use strictly \emph{finitary} methods, and others use implicitly \emph{infinitary} methods. Both finitary and infinitary algorithms can exhibit \emph{computational irreducibility} in the sense of Wolfram \parencite{wolfram1985undecidability}. In order to know what any non-trivial algorithm actually does, one must actually run the algorithm.
 
@@ -147,7 +172,7 @@ Another significant aspect of parametric composition in particular, and of algor
 
 In sum, uncomputability demonstrates fundamental limitations of compositional algorithms, and irreducibility demonstrates the only partial intelligibility of tractable algorithms.
 
-\section*{Methods of Algorithmic Composition}
+\section{Methods of Algorithmic Composition}
 
 Before further exploring the mathematical foundations of algorithmic composition, I will provide more background on algorithmic composition software.
 
@@ -157,7 +182,7 @@ Irreducibility is a spectrum, not a binary choice. The minimum of irreducibility
 
 Hiller and Isaacson's \emph{Illiac Suite} \parencite{illiacsuite} is the first piece that is unambiguously computer music. The suite is an algorithmic composition assembled using a toolkit of stochastic note generators and music transformation functions, as detailed in \emph{Experimental Music} \parencite{hiller}. This can be called the \emph{toolkit approach} to algorithmic composition. The composer programs a chain of generators, including random variables, and transformations, including serial transformations, to produce a chunk of music. The chunks can then be edited by hand. Multiple chunks can be assembled into a composition by hand. The toolkit approach lives on in contemporary software systems like Open Music \parencite{OpenMusic}, Common Music \parencite{CommonMusic, musx}, and many others. This is to date the most widely used method of algorithmic composition. 
 
-\subsection*{Algorithms in the Toolkit}
+\subsection{Algorithms in the Toolkit}
 
 The toolkit approach includes generators and transformations from many sources:
 
@@ -171,7 +196,7 @@ The toolkit approach includes generators and transformations from many sources:
 \item[Evolutionary Computing] Applying evolutionary computing to any of the above \parencite{miranda2007evolutionary}.
 \end{description}
 
-\subsection*{Intrinsic vs.\ Extrinsic Algorithms}
+\subsection{Intrinsic vs.\ Extrinsic Algorithms}
 
 Most algorithms in the toolkit are computationally irreducible. However, there is a critical difference between applying, \emph{e.g.}, a sequence of transformations from the General Contextual Group \parencite{fiore2005gcg}, even if the transformations are selected at random, versus simply sampling a random variable to sequentially scramble or transpose a chord. I define as \emph{intrinsic} all algorithms that act on primitive elements of music and generate musically acceptable transformations of those primitives, and \emph{extrinsic} all algorithms that are based on non-musical primitives, use transformations of the primitives that are not necessarily musically acceptable, or require mapping the productions of the algorithm to musical scores.
 
@@ -179,11 +204,11 @@ In other words, while both procedures are computationally irreducible, any seque
 
 Note well, a fractal or other mathematically derived algorithm may be modified to be based on, or to transform, musical primitives.
 
-\subsection*{Live Coding}
+\subsection{Live Coding}
 
 A more recent style of algorithmic composition known as \emph{live coding} extends the toolkit approach. A live coding system consists of a library of routines that are assembled into a music-generating graph during a live performance by interpreting real-time commands in a domain-specific language. Such systems have tools and commands for both high-level representations of music (notes, loops, chords, scales, musical transformations, \emph{etc.}) and sound synthesis (oscillators, envelope generators, filters, \emph{etc.}). An overview of the field can be gleaned from the TOPLAP web site \parencite{toplap} and the \emph{Oxford Handbook of Algorithmic Composition} \parencite{mclean2018oxford}.
 
-\subsection*{Artificial Intelligence}
+\subsection{Artificial Intelligence}
 
 Recently it has become possible to compose music using large language models (LLMs) like ChaptGPT. This can be called the \emph{artificial intelligence} (AI) approach to computer music. I discuss only LLMs as they are currently the most influential method of AI. Briefly, the approach is based on biology --- simulating at a high level of abstraction the behavior of nerve cells. A neural network is built up from layers of simulated neurons that connect with each other; the connections have tunable weights that control the output behavior of neurons in one layer given inputs from connected neurons in other layers. First the data, a large corpus of texts, is syntactically broken up into tokens. ``Attention heads'' are trained to learn weights indicating how tokens within the entire data set are related syntactically and semantically; each head looks at a different different aspect of the data. The trained heads are then used to transform the input (the prompt) \emph{plus} the current output (hence the term ``\emph{self}-attention'') into a new input, from which the next token of output is predicted \parencite{vaswani2017attention}. This attention mechanism, and other heuristic mechanisms, have been found to greatly increase the power of the neural networks. In particular, the attention mechanism makes it possible to train the network on a huge body of data more efficiently and without much human intervention. For more detail, see \parencite{zhang2023complete} and OpenAI's paper on their current LLM architecture \parencite{openai2023gpt4}. For working examples of how LLMs can be used to compose music, see Jukebox \parencite{openai2023jukebox}, Gonsalves \parencite{aitunes}, and Ocampo \emph{et al.} \parencite{ocampo2023using}.
 
@@ -195,7 +220,7 @@ Although it is early days for AI, there are some reviews and critical studies of
 \item [Unoriginality] LLMs generate responses to prompts based on high-dimensional correlations that the LLMs have automatically discovered in the training data --- data that \emph{we} have provided. This is a self-referential situation. When we converse with ChatGPT, we are looking at ourselves in a fun-house mirror.
 \end{description}
 
-\section*{Artistic Results and Procedures}
+\section{Artistic Results and Procedures}
 
 To date, not many algorithmically composed pieces have become popular or influential, even among aficionados of art music and experimental music. A few important pieces are Iannis Xenakis' \emph{La Légende D'Eer} \parencite{Solr-8143160} and \emph{Gendy 3} \parencite{gendy3},  Charles Dodge's \emph{Viola Elegy} \parencite{violaelegy}, and Brian Eno's generative works \parencite{eno1996generative, enochilvers}. I have my own idiosyncratic list of different algorithmic composition systems, with my own choice of representative pieces \parencite{rant}.
 
@@ -225,7 +250,7 @@ I see here an analogy with the way in which LLMs work. There are repeated search
 
 Few if any algorithmic composers simply ``hear music in their heads'' and write software to render it. Most fool around producing various experimental chunks of music, refine them more or less as I have described, and assemble some into a finished composition.
 
-\section*{Conclusion}
+\section{Conclusion}
 
 Before I present my conclusions on the limitations and prospects of algorithmic composition, I will summarize what I have learned about the mathematical foundations:
 
@@ -243,13 +268,13 @@ Before I present my conclusions on the limitations and prospects of algorithmic 
 
 I will now put forward some conjectures based on these foundations.
 
-\subsection*{Limitations}
+\subsection{Limitations}
 
 At this time and for the foreseeable future, no form of AI is conscious or has its own goals; AI also is subject to hallucination and unoriginality. Therefore, for the foreseeable future, human composers must and will play a irreplaceable role in algorithmic composition. This involves selecting a set of possible compositions to study, evaluating the musical quality of each composition in the subset, and varying the parameters or prompts to improve  the pieces.
 
 Incomputability, intractability, irreducibility, and opacity set objective limits on how much understanding composers can gain into the working of their algorithms and of the music generated by them. This is both a limitation and an advantage. In practice, it is not possible to determine in advance just where those limits lie.
 
-\subsection*{Prospects}
+\subsection{Prospects}
 
 Computer power will continue to increase. This will most likely make algorithmic composition both more productive and more important.
 
@@ -257,7 +282,7 @@ There is a similarity between a composer's experience with a toolkit of algorith
 
 Every method that speeds up searching makes algorithmic composition more productive. In particular, the growth of live coding demonstrates that the toolkit approach to algorithmic composition has a future. The underlying reason is that live coding supports faster searching, due to concise commands and immediately audible feedback. Spending time doing live coding also increases the composer's insight into the tools.
 
-\subsection*{In Sum}
+\subsection{In Sum}
 
 The major approaches to algorithmic composition --- trial and error with a toolkit of algorithms, live coding, exploration of fractals, and AI --- share this fundamental business of zigzagging down a slope in a multi-dimensional landscape of evaluations to rest in a local optimum. This result is proved by the simple fact that the generated music and/or the parameters used to generate it can be ordered. The dimensionality of the parameter space is secondary, as it can be reduced to one or two dimensions by means of a Hilbert index. Note that searching for solutions or optimizations in many domains is known to be $\mathsf{NP}$ or more.
 
