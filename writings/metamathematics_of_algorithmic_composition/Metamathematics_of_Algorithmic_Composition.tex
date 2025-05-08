@@ -1,12 +1,14 @@
+\PassOptionsToPackage{hyphens}{url}
 % interactapasample.tex
 % v1.05 - August 2017
 
 \documentclass[]{interact}
+\DeclareUnicodeCharacter{0301}{\'{}}  % maps U+0301 to acute accent command
 
 \providecommand{\theoremnotationNotation}{Theorem}
 \usepackage{microtype}
-\usepackage{url}
-\usepackage[hyphens]{url}  % allows breaking at hyphens
+%\usepackage[hyphens]{url}  % allows breaking at hyphens
+%\usepackage[utf8]{inputenc}
 
 \usepackage{epstopdf}% To incorporate .eps illustrations using PDFLaTeX, etc.
 \usepackage[caption=false]{subfig}% Support for small, `sub' figures and tables
