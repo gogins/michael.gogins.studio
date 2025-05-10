@@ -1,0 +1,5 @@
+#!/bin/bash
+zip Metamathematics_of_Algorithmic_Composition_JNMR *.cls *.sty *.bib Metamathematics_of_Algorithmic_Composition_JNMR.pdf Metamathematics_of_Algorithmic_Composition_JNMR.tex
+zip Metamathematics_of_Algorithmic_Composition_JNMR_Anon *.cls *.sty *.bib Metamathematics_of_Algorithmic_Composition_JNMR_Anon.pdf Metamathematics_of_Algorithmic_Composition_JNMR_Anon.tex
+unzip -v Metamathematics_of_Algorithmic_Composition_JNMR.zip
+unzip -v Metamathematics_of_Algorithmic_Composition_JNMR_Anon.zip
