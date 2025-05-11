@@ -6,7 +6,9 @@ The paper analyzes not only the philosophical context and fundamental limitation
 
 I consider the Journal of New Music Research an excellent venue for this work due to its interdisciplinary scope, which includes musicology, computer music, and cognition.
 
-I confirm that this manuscript is original, has not been published previously, and is not under review elsewhere. There are no conflicts of interest to declare, and all sources and contributions have been properly acknowledged. I have also prepared an anonymized version of the manuscript for peer review.
+I confirm that this manuscript is original, has not been published previously, and is not under review elsewhere. There are no conflicts of interest to declare, and all sources and contributions have been properly acknowledged. 
+
+I have also prepared an anonymized version of the manuscript for peer review. The manuscript does refer to previous research, software, and musical works by the author that are needed for contextualizing and supporting the paper’s central argument. I have made every reasonable effort to anonymize these references by presenting them neutrally and avoiding direct self-identification, but determined sleuthing should be able to identify me. While complete anonymity may not be possible in a specialized field such as algorithmic composition, I have followed the journal’s double-blind guidelines to the best of my ability. I respectfully ask that the reviewers evaluate the submission based solely on its scholarly merits.
 
 Thank you for considering my submission. I would be happy to provide any additional information you may require.
 
