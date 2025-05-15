@@ -44,7 +44,7 @@ gcg.generate()
 rescale = CsoundAC.Rescale()
 rescale.setRescale( CsoundAC.Event.TIME,       True, False, (1.0 / 40.0),   60     )
 rescale.setRescale( CsoundAC.Event.KEY,        True, False, 20,             48     )
-rescale.setRescale( CsoundAC.Event.VELOCITY,    True, True,  60,             25     )
+rescale.setRescale( CsoundAC.Event.VELOCITY,    True, True,  60,             25    )
 rescale.setRescale( CsoundAC.Event.PAN,        True, True,   0.1,            0.8   )
 rescale.addChild(gcg) 
 
