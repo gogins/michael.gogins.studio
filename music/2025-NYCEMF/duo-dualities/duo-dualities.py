@@ -19,6 +19,7 @@ gcg.avoidParallelFifths = True
  
 gcg.setAxiom('section1 dd dd dd T+2 V-13 O.2 section2 T+5 V-7 section3 D/2.5 ') 
 gcg.addRule( 'section1', 'B15  R63 P(0,4,7) V+9 I0=1 I1=2 I2=3 V+11 a3 dd a4 dd ') 
+# gcg.addRule( 'section1', 'B15  R63 P(0,4,7) V+9 I0=1 I1=2 I2=3 V+11 WV a3 dd a4 dd ') 
 gcg.addRule( 'section2', 'B24  R45 P(0,3,5,10) V+36 L/12 D*2.25 I0=5 I1=2 I2=5 I3=5 I4=2 I5=5 T+2 V+27 a3x a5 D/2.225 V-7 L*12 ')
 gcg.addRule( 'section3', 'B12   R70 P(0,4,7) V+109 O.15 I0=3 I1=2 I2=1 L*12 arp1 dd K D*1.875 L/4 a4x a6 K V-24 L*16 B0 arp2 arp2 B3 dd dd T+6 sV-2 D*2 WV WC WC WC WC WC ') 
      
@@ -35,7 +36,7 @@ gcg.addRule('a4q',  'Q3 WV K V+1 WC')
 gcg.addRule('arp',  'T+6 V+17 WC V+5 WC V-16 WC V-9 T-7 ') 
 gcg.addRule('arp1', 'L/2 D/2.12 Q5 WV Q5 WV  Q5 WV Q5 WV D*2.12 L*2 O2 ') 
 gcg.addRule('arp2', 'L/2.5 D/2.125 Q5  WV Q5 WV Q5 WV Q5 WV Q5 WV Q5 WV D*2.125 L*2.51 ') 
-gcg.addRule('dd',   'WV WV ')   
+gcg.addRule('dd',   'WV WV V-1 WC V1')   
  
 gcg.setIterationCount(6) 
 gcg.debug = True 
@@ -44,7 +45,7 @@ gcg.generate()
 rescale = CsoundAC.Rescale()
 rescale.setRescale( CsoundAC.Event.TIME,       True, False, (1.0 / 40.0),   60     )
 rescale.setRescale( CsoundAC.Event.KEY,        True, False, 20,             48     )
-rescale.setRescale( CsoundAC.Event.VELOCITY,    True, True,  60,             25    )
+rescale.setRescale( CsoundAC.Event.VELOCITY,    True, True, 55,             30     )
 rescale.setRescale( CsoundAC.Event.PAN,        True, True,   0.1,            0.8   )
 rescale.addChild(gcg) 
 
