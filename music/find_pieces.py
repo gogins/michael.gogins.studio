@@ -26,9 +26,11 @@ print the title, and add it to that entry.
 
 When the filesystem crawl has been completed, match sources with outputs to 
 create the final output table. In theory the basename of the filepath is the 
-title of the piece, but that isn't always the case. Therefore, the join should 
+name of the track, but that isn't always the case. Therefore, the join should 
 try to match metadata titles with source basenames first, then source 
 basenames with output basenames.
+
+In future ensure the full pathname of the source is encoded as a tag.
 
 When that table has been processed, write the following files:
 
@@ -142,6 +144,19 @@ for dir in omitdirs:
     print(dir)
 print()
 
+def parse_tags(audio_file):
+    try:
+        print(pymediainfo.MediaInfo.parse(pathname, output="text", full=False))
+        # media_info = pymediainfo.MediaInfo.parse(audio_file)
+        # for track in media_info.tracks:
+        #     if track.track_type == "Audio":
+        #         print(f"Duration: {track.duration} ms")
+        #         print(f"Sample rate: {track.sampling_rate} Hz")
+        #         print(f"Channels: {track.channel_s}")
+        #         print(f"Codec: {track.codec}")        
+    except:
+        pass
+
 source_extensions = '.html .csd .cpp .bas .pas'.split()
 audio_extensions = '.wav .aif .aiff'.split()
 
@@ -187,7 +202,7 @@ def add(pathname):
                     timesForBasenames[basename] = {}
                 timesForBasenames[basename][filestat.st_ctime] = pathname
                 outputs.add(pathname)
-                print("Audio: ", pathname)
+                parse_tags(pathname)
         if extension.lower() in source_extensions:
             sources.add(pathname)
             print("Source:", pathname)
