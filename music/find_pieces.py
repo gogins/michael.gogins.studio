@@ -47,14 +47,17 @@ import sys
 import time
 import traceback
 
-output = r'complete-%s.m3u' % datetime.date.today()
-spreadsheet = r'complete_pieces-%s.tsv' % datetime.date.today()
+playlist_filename = r'complete-%s.m3u' % datetime.date.today()
+compositions_filename = r'complete_pieces-%s.tsv' % datetime.date.today()
 
 rootdirs = '/Users/michaelgogins'.split()
-# One must simply run this script over and over, and keep adding to omitdirs until only actual pieces are found.
-# Keep this in alphabetical order just to make it easier to check.
-omitdirs = '''Android
+# One must simply run this script over and over, and keep adding to omit_directories until only actual pieces are found.
+# Keep this in alphabetical order just to make it easier to edit.
+omit_directories = '''Android
+Art Hunkins
 Attic
+BlackHole
+CsoundPlugin
 Downloads
 Examples
 Hrabovsky
@@ -65,12 +68,15 @@ MUSIC
 Music
 My-Csound-Wwise
 Nancarrow_Renderings
+Notes from the Metalevel
 Steinberg
 Strudel
 Trash
 VST
 VST_SDK
-ace_builds
+VSTPlugins
+ace-builds
+asiosdk2
 attic
 boost_1_88_0
 build
@@ -94,6 +100,7 @@ csound-vst
 csound-vst2
 csound-vst3
 csound-vst3-opcodes
+csound-vst4cs-opcodes
 csound-wasm
 csound-webserver-opcodes
 csoundvst
@@ -106,6 +113,7 @@ eSupport
 emsdk
 esdocs
 examples
+exercises
 extensions
 functions
 ghc
@@ -121,12 +129,15 @@ music-attic
 musx
 node_modules
 nwbuild-cloud-5
+nwbuild-poustinia
 orc
 p5.js
 performance-mode
 plugins
+python-abx
 rawwaves
 recipes
+shader-web-background
 ssdir
 strudel
 synthv-editor
@@ -134,14 +145,18 @@ technical-manual
 tempy
 test
 tests
+understand
 venvs
 vst
+vst4cs
 vstsdk-2.4
-winabx'''
-omitdirs = omitdirs.split()
+whatthefrack
+winabx
+workshop'''
+omit_directories = omit_directories.split()
 print()
-for dir in omitdirs:
-    print(dir)
+for directory in omit_directories:
+    print(directory)
 print()
 
 def parse_tags(audio_file):
@@ -157,13 +172,13 @@ def parse_tags(audio_file):
     except:
         pass
 
-source_extensions = '.html .csd .cpp .bas .pas'.split()
+composition_extensions = '.html .csd .cpp .bas .pas'.split()
 audio_extensions = '.wav .aif .aiff'.split()
 
-def omit(omitdirs, filepath):
-    for omitdir in omitdirs:
-        omitdir = os.sep + omitdir + os.sep
-        if filepath.find(omitdir) != -1:
+def omit(omit_directories, filepath):
+    for omit_directory in omit_directories:
+        omit_directory = os.sep + omit_directory + os.sep
+        if filepath.find(omit_directory) != -1:
             return True
         if filepath.find(".cd.wav") != -1:
             return True
@@ -186,13 +201,13 @@ def omit(omitdirs, filepath):
     return False
 
 timesForBasenames = {}
-sources = set()
-outputs = set()
+compositions = set()
+soundfiles = set()
 
 def add(pathname):
     filename, extension = os.path.splitext(pathname)
     basename = os.path.basename(pathname)
-    if omit(omitdirs, pathname) == False:
+    if omit(omit_directories, pathname) == False:
         if extension.lower() in audio_extensions:
             filestat = os.stat(pathname)
             # Piece should be at least a minute long.
@@ -201,12 +216,12 @@ def add(pathname):
                 if basename not in timesForBasenames:
                     timesForBasenames[basename] = {}
                 timesForBasenames[basename][filestat.st_ctime] = pathname
-                outputs.add(pathname)
+                soundfiles.add(pathname)
+                print("Soundfile:  ", pathname)
                 parse_tags(pathname)
-        if extension.lower() in source_extensions:
-            sources.add(pathname)
-            print("Source:", pathname)
-        
+        if extension.lower() in composition_extensions:
+            compositions.add(pathname)
+            print("Composition?", pathname)
 
 for rootdir in rootdirs:
     for root, subdirs, files in os.walk(rootdir):
@@ -217,9 +232,9 @@ for rootdir in rootdirs:
             except:
                 traceback.print_exc()
 
+print("\nBuilding a playlist of all audio files...\n")
 filecount = 0
-playlist = open(output, 'w')
-spreadsheet_output = open(spreadsheet, 'w')
+playlist = open(playlist_filename, 'w')
 playlist.write('#EXTM3U\n')
 basenames = sorted(timesForBasenames.keys())
 for basename in basenames:
@@ -233,9 +248,21 @@ for basename in basenames:
     playlist.write('#EXTINF:-1,%s\n' % basename)
     pathname = timesAndPaths[times[0]]
     playlist.write('%s\n' % pathname)
-    spreadsheet_output.write('Michael Gogins\t%s\t%s\t%s\n' % (basename, pathname, timestring))
     print()
 playlist.write('\n')
+print('Finished with', filecount, 'audio files.')
 
-print('Finished with', filecount, 'files.')
+print("\nBuilding a table of all composition files...\n")
+filecount = 0
+composition_files = open(compositions_filename, 'w')
+compositions = sorted(compositions)
+for composition in compositions:
+    # Here we should try to match compositions with outputs, and perhaps even 
+    # with online publications.
+    composition_files.write('%s\n' % composition)
+    filecount = filecount + 1
+
+print('Finished with', filecount, 'composition files.')
+
+
 
