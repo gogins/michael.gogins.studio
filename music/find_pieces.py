@@ -1,47 +1,43 @@
 '''
-Builds a table of all files that might be sources for pieces of mine. Once a 
-piece has been identified, a search for output .wav, .aiff, .mid, or .smf will 
-be made. Metadata also will be read. Progress will be printed to aid in 
-improving the script. Outputs are a table of pieces with columns in the 
-following order: 
+Builds a table of all files that might be pieces of mine. 
 
-Title
-Date composed
-My URL
-Public URL
-Duration
+The script creates two empty tables, sources and soundfiles, and crawls 
+the filesystem (except for omitted directories) to populate these tables. 
 
-This table can have multiple rows for the same title, so the table is joined 
-by title.
+When the filesystem crawl has been completed, soundfiles are matched with 
+sources. The title in the soundfile metadata is used for the title of the 
+piece. If a title is not found, a match with the soundfile basename is tried. 
+Then an outer join is produced, sorted first by composition basename, then by 
+soundfile basename.
 
-And an .m3u playlist of the highest resolution rendering found, e.g.:
+In future, ensure the full pathname of the composition source code is encoded 
+as a tag in the soundfile!
+
+The outputs are as follows.
+
+# playlist.m3u
+
+The playlist has entries like this:
 
 #EXTM3U
 #EXTINF:0,01-19991216a.wav
-D:\\Dropbox\Michael Gogins\Semblance\01-19991216a.wav
+D:\\Dropbox\\Michael Gogins\\Semblance\\01-19991216a.wav
 
-The script will create two empty tables, sources and outputs, and crawl the 
-filesystem except for omitted directories. If there is metadata in an output, 
-print the title, and add it to that entry.
+One may load this playlist into a media player and listen to any piece at 
+any point in time.
 
-When the filesystem crawl has been completed, match sources with outputs to 
-create the final output table. In theory the basename of the filepath is the 
-name of the track, but that isn't always the case. Therefore, the join should 
-try to match metadata titles with source basenames first, then source 
-basenames with output basenames.
+# compositions.tsv
 
-In future ensure the full pathname of the source is encoded as a tag.
-
-When that table has been processed, write the following files:
-
-sources.tsv
-playlist.m3u
-
+This file containing the outer join table. One may scan this table 
+for missing matches; it may then be possible to manually create missing
+matches, usually by re-rendering or re-post-processing the piece.
 '''
 
 import datetime
+import googlesearch
 import os
-import pymediainfo
+import ffmpeg
+import re
 import string
 import sys
 import time
@@ -50,13 +46,17 @@ import traceback
 playlist_filename = r'complete-%s.m3u' % datetime.date.today()
 compositions_filename = r'complete_pieces-%s.tsv' % datetime.date.today()
 
-rootdirs = '/Users/michaelgogins'.split()
+# rootdirs = '/Users/michaelgogins'.split()
+rootdirs = '/Users/michaelgogins/Dropbox /Users/michaelgogins/michael.gogins.studio /Users/michaelgogins/cloud-5'.split()
+
 # One must simply run this script over and over, and keep adding to omit_directories until only actual pieces are found.
 # Keep this in alphabetical order just to make it easier to edit.
-omit_directories = '''Android
+omit_directories = '''.venv
+Android
 Art Hunkins
 Attic
 BlackHole
+CMakeFiles
 CsoundPlugin
 Downloads
 Examples
@@ -76,6 +76,7 @@ VST
 VST_SDK
 VSTPlugins
 ace-builds
+adapt-these
 asiosdk2
 attic
 boost_1_88_0
@@ -132,12 +133,16 @@ nwbuild-cloud-5
 nwbuild-poustinia
 orc
 p5.js
+papers
 performance-mode
+pipx
 plugins
 python-abx
+python-soundfile
 rawwaves
 recipes
 shader-web-background
+spatialization
 ssdir
 strudel
 synthv-editor
@@ -146,6 +151,7 @@ tempy
 test
 tests
 understand
+venv
 venvs
 vst
 vst4cs
@@ -154,25 +160,28 @@ whatthefrack
 winabx
 workshop'''
 omit_directories = omit_directories.split()
-print()
-for directory in omit_directories:
-    print(directory)
-print()
 
+'''
+# This doesn't work well, as it is soon throttled by Google.
+# However, manual searches for pieces can be done.
+results = googlesearch.search('"Michael Gogins" site:sonus.ca', num_results=10)
+for result in results:
+    print(result)
+exit()
+'''
 def parse_tags(audio_file):
     try:
-        print(pymediainfo.MediaInfo.parse(pathname, output="text", full=False))
-        # media_info = pymediainfo.MediaInfo.parse(audio_file)
-        # for track in media_info.tracks:
-        #     if track.track_type == "Audio":
-        #         print(f"Duration: {track.duration} ms")
-        #         print(f"Sample rate: {track.sampling_rate} Hz")
-        #         print(f"Channels: {track.channel_s}")
-        #         print(f"Codec: {track.codec}")        
-    except:
-        pass
+        metadata = ffmpeg.probe(audio_file)
+        tags = metadata.get('format', {}).get('tags', {})
+        composer = tags.get('artist', 'Composer not found')
+        title = tags.get('title', 'Title not found')
+        duration = float(metadata.get('format', {}).get('duration', -1))
+        date = tags.get('date', 'Date not found')
+        return (composer, title, duration, date)
+    except ffmpeg.Error as e:
+        print("ffmpeg error:", e.stderr.decode())
 
-composition_extensions = '.html .csd .cpp .bas .pas'.split()
+composition_extensions = '.html .csd .lua .lisp .cpp .bas .pas .rpp .py'.split()
 audio_extensions = '.wav .aif .aiff'.split()
 
 def omit(omit_directories, filepath):
@@ -198,30 +207,41 @@ def omit(omit_directories, filepath):
             return True
         if filepath.find("csound-extended") != -1:
             return True
+        if filepath.find("-generated.csd") != -1:
+            return True
     return False
 
-timesForBasenames = {}
-compositions = set()
-soundfiles = set()
+compositions = {}
+soundfiles = {}
+
+# Csound and Reaper files can probably always be considered compositions.
+# Other files containing "csound" or "Gogins" likewise.
+# What else?
 
 def add(pathname):
-    filename, extension = os.path.splitext(pathname)
     basename = os.path.basename(pathname)
+    filename, extension = os.path.splitext(basename)
+    extension = extension.lower()
     if omit(omit_directories, pathname) == False:
-        if extension.lower() in audio_extensions:
+        if extension in audio_extensions:
             filestat = os.stat(pathname)
             # Piece should be at least a minute long.
             if filestat.st_size > 10000000:
-            # The most recent version will be picked.
-                if basename not in timesForBasenames:
-                    timesForBasenames[basename] = {}
-                timesForBasenames[basename][filestat.st_ctime] = pathname
-                soundfiles.add(pathname)
+                soundfiles[pathname] = basename
                 print("Soundfile:  ", pathname)
-                parse_tags(pathname)
-        if extension.lower() in composition_extensions:
-            compositions.add(pathname)
-            print("Composition?", pathname)
+        if extension in composition_extensions:
+            if extension == '.csd':
+                compositions[pathname] = basename
+            elif extension == '.rpp':
+                compositions[pathname] = basename
+            else:
+                with open(pathname, 'r') as f:
+                    text = f.read()
+                    if re.search(r'\bcsound\b', text, re.IGNORECASE):
+                        compositions[pathname] = basename
+                    elif 'Gogins' in text:
+                        compositions[pathname] = basename
+            print("Source code:", pathname)
 
 for rootdir in rootdirs:
     for root, subdirs, files in os.walk(rootdir):
@@ -232,37 +252,71 @@ for rootdir in rootdirs:
             except:
                 traceback.print_exc()
 
+soundfiles  = dict(sorted(soundfiles.items()))
+compositions  = dict(sorted(compositions.items()))
+
 print("\nBuilding a playlist of all audio files...\n")
+
 filecount = 0
 playlist = open(playlist_filename, 'w')
 playlist.write('#EXTM3U\n')
-basenames = sorted(timesForBasenames.keys())
-for basename in basenames:
-    timesAndPaths = timesForBasenames[basename]
-    times = sorted(timesAndPaths.keys())
-    times.reverse()
+for soundfile in soundfiles.keys():
+    basename = os.path.basename(soundfile)
     filecount = filecount + 1
-    for tyme in times:
-        timestring = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(tyme))
-        print('[%5d %s] %s\n                            %s' % (filecount, timestring, basename, timesAndPaths[tyme]))
     playlist.write('#EXTINF:-1,%s\n' % basename)
-    pathname = timesAndPaths[times[0]]
-    playlist.write('%s\n' % pathname)
-    print()
+    playlist.write('%s\n' % soundfile)
+    print(f"Playlist: {soundfile}")
 playlist.write('\n')
-print('Finished with', filecount, 'audio files.')
 
-print("\nBuilding a table of all composition files...\n")
-filecount = 0
-composition_files = open(compositions_filename, 'w')
-compositions = sorted(compositions)
-for composition in compositions:
-    # Here we should try to match compositions with outputs, and perhaps even 
-    # with online publications.
-    composition_files.write('%s\n' % composition)
-    filecount = filecount + 1
+print("\nFinding compositions for audio files...\n")
 
-print('Finished with', filecount, 'composition files.')
+# The title is expected to be stored as metadata in the soundfile, 
+# but if the title tag is not found, perhaps the filename encodes the title.
+
+matches = 0
+compositions_matched = set()
+soundfiles_matched = set()
+compositions_tsv = open(compositions_filename, 'w')
+compositions_tsv.write("Composer\tTitle\tSoundfile\tComposition\tDuration\tDate\n")
+for soundfile in soundfiles.keys():
+    composer, title, duration, date = parse_tags(soundfile)
+    for composition in compositions.keys():
+        if title in composition:
+            matches = matches + 1
+            print(f"Match:             {matches}")
+            print(f"\tComposer:  {composer}")
+            print(f"\tTitle:     {title}")
+            print(f"\tSoundfile: {soundfile}")
+            print(f"\tSource:    {composition}")
+            print(f"\tDuration:  {duration}")
+            print(f"\tDate:      {date}")
+            compositions_matched.add(composition)
+            soundfiles_matched.add(soundfile)
+            compositions_tsv.write(f"{composer}\t{title}\t{soundfile}\t{composition}\t{duration}\t{date}\n")
+        else:
+            basename = os.path.basename(soundfile)
+            filename, extension = os.path.splitext(basename)
+            filename = "/" + filename
+            if filename in composition:
+                matches = matches + 1
+                print(f"Match:             {matches}")
+                print(f"\tComposer:  {composer}")
+                print(f"\tFilename:  {filename}")
+                print(f"\tSoundfile: {soundfile}")
+                print(f"\tSource:    {composition}")
+                print(f"\tDuration:  {duration}")
+                print(f"\tDate:      {date}")
+                compositions_matched.add(composition)
+                soundfiles_matched.add(soundfile)
+                compositions_tsv.write(f"{composer}\t{title}\t{soundfile}\t{composition}\t{duration}\t{date}\n")
+for composition in compositions.keys():
+    if composition not in compositions_matched:
+        print(f"Source:    {composition}")
+        compositions_tsv.write(f"\t\t\t{composition}\t\t\n")
+for soundfile in soundfiles.keys():
+    if soundfile not in soundfiles_matched:
+        print(f"Soundfile: {soundfile}")
+        compositions_tsv.write(f"\t\t{soundfile}\t\t\t\n")
 
 
 

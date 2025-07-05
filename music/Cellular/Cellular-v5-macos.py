@@ -30,7 +30,7 @@ import traceback
 
 print('Set "rendering" to:     "soundfile" or "audio".')
 print
-rendering = "audio"
+rendering = "soundfile"
 
 model = CsoundAC.MusicModel()
 score = model.getScore()
