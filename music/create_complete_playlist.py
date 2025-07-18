@@ -60,10 +60,10 @@ def add(pathname):
             filestat = os.stat(pathname)
             # Piece should be at least a minute long.
             if filestat.st_size > 10000000:
-            # The most recent version will be picked.
+            # The most recently _modified_ version will be picked.
                 if basename not in timesForBasenames:
                     timesForBasenames[basename] = {}
-                timesForBasenames[basename][filestat.st_ctime] = pathname
+                timesForBasenames[basename][filestat.st_mtime] = pathname
                 print(pathname)
 
 for rootdir in rootdirs:

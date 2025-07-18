@@ -47,7 +47,7 @@ playlist_filename = r'complete-%s.m3u' % datetime.date.today()
 compositions_filename = r'complete_pieces-%s.tsv' % datetime.date.today()
 
 # rootdirs = '/Users/michaelgogins'.split()
-rootdirs = '/Users/michaelgogins/Dropbox /Users/michaelgogins/michael.gogins.studio /Users/michaelgogins/cloud-5'.split()
+rootdirs = '/Users/michaelgogins/Dropbox /Users/michaelgogins/michael.gogins.studio /Users/michaelgogins/cloud-5 /Users/michaelgogins/from-backups'.split()
 
 # One must simply run this script over and over, and keep adding to omit_directories until only actual pieces are found.
 # Keep this in alphabetical order just to make it easier to edit.
@@ -317,6 +317,10 @@ for soundfile in soundfiles.keys():
     if soundfile not in soundfiles_matched:
         print(f"Soundfile: {soundfile}")
         compositions_tsv.write(f"\t\t{soundfile}\t\t\t\n")
+
+print(f'\nPossible compositions ({len(compositions.keys())}) saved here:\n\t{compositions_filename}')
+print(f'Playlist ({len(soundfiles.keys())}) saved here:\n\t{playlist_filename}')
+print(f'Matched {matches} compositions with soundfiles.\n')
 
 
 
