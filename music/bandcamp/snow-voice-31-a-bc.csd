@@ -102,7 +102,7 @@ if strcmp(gS_os, "Linux") == 0 then
 gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", gi_vstinfo
 endif
 if strcmp(gS_os, "macOS") == 0 then
-gi_Pianoteq vst3init "/Library/Audio/Plug-Ins/VST3/Pianoteq\ 7.vst3", "Pianoteq 7", 0
+gi_Pianoteq vst3init "/Library/Audio/Plug-Ins/VST3/Pianoteq\ 8.vst3", "Pianoteq 8", 0
 endif
 
 // The order of #includes defines the instrument numbers.
@@ -273,10 +273,6 @@ gk_Harpsichord_level init 9
 gk_Xing_level init 42
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   
-
-
-
-
 gS_html init {{<!DOCTYPE html>
 <html>
 <head>
@@ -1052,9 +1048,8 @@ if strcmp(gS_os, "Linux") == 0 then
 i_result cxx_compile "score_generator", S_score_generator_code, "g++ -v -g -O2 -std=c++17 -shared -fPIC -DUSE_DOUBLE -I. -I/usr/local/include/csound -I/home/mkg/csound/interfaces -I/usr/include/eigen3 -I/home/mkg/csound-ac/CsoundAC -lCsoundAC -lpthread -lm", "libcsound_webserver.so libCsoundAC.so"
 endif
 if strcmp(gS_os, "macOS") == 0 then
-i_result cxx_compile "score_generator", S_score_generator_code, "g++ -v -g -O2 -std=c++17 -shared -fPIC -DUSE_DOUBLE -I. -I/usr/local/include/csound -I/Users/michaelgogins/csound/interfaces -I/usr/include/eigen3 -I/System/Volumes/Data/opt/homebrew/include/eigen3 -I/Library/Frameworks/CsoundLib64.framework/Versions/6.0/Headers -I/opt/homebrew/Cellar/boost/1.81.0_1/include -I/home/mkg/csound-ac/CsoundAC -lCsoundAC -lpthread -lm", "/Users/michaelgogins/csound-webserver-opcodes/build/libcsound_webserver.dylib libCsoundAC.dylib"
+i_result cxx_compile "score_generator", S_score_generator_code, "g++ -v -g -O2 -std=c++17 -shared -fPIC -DUSE_DOUBLE -I. -I/usr/local/include/csound -I/Users/michaelgogins/csound/interfaces -I/usr/include/eigen3 -I/System/Volumes/Data/opt/homebrew/include/eigen3 -I/Library/Frameworks/CsoundLib64.framework/Versions/6.0/Headers -I/opt/homebrew/Cellar/boost/1.88.0/include -I/Users/michaelgogins/csound-ac/CsoundAC -L/Users/michaelgogins/csound-ac/build-macos -Wl,-rpath,/opt/homebrew/lib -L/opt/hombrew/lib -lCsoundAC -lpthread -lm", "/Users/michaelgogins/csound-webserver-opcodes/build/libcsound_webserver.dylib"
 endif
-
 
 instr Exit
 prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
@@ -1066,7 +1061,7 @@ endin
 ; f 0 does not work here, we actually need to schedule an instrument that 
 ; turns off Csound.
 ; a 0 1 270
-i "Exit" [610]
+i "Exit" [440]
 ;f 0 [6 * 60 + 5]
 </CsScore>
 </CsoundSynthesizer>

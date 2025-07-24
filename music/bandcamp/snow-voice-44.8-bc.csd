@@ -54,7 +54,7 @@ Side of Manhattan, and in the Catskills.
 
 </CsLicense>
 <CsOptions>
---m-amps=1 --m-range=1 --m-dB=1 --m-benchmarks=1 --m-warnings=0 -+msg_color=0 -d -odac 
+--m-amps=1 --m-range=1 --m-dB=1 --m-benchmarks=1 --m-warnings=0 -+msg_color=0 -d -RWdfo test.wav
 </CsOptions>
 <CsInstruments>
 
@@ -62,8 +62,8 @@ Side of Manhattan, and in the Catskills.
 // Change to sr=96000 with ksmps=1 for final rendering to soundfile.
 //////////////////////////////////////////////////////////////////////////////
 
-sr = 48000
-ksmps = 128
+sr = 44100
+ksmps = 100
 nchnls = 2
 0dbfs = 100
 
@@ -79,7 +79,7 @@ seed 88818145
 // Turn printing of VST plugin parameters off and on globally.
 //////////////////////////////////////////////////////////////////////////////
 
-gi_vstinfo init 0
+gi_vstinfo init 1
 
 //////////////////////////////////////////////////////////////////////////////
 // We will load plugins from different locations on different operating 
@@ -130,7 +130,7 @@ if strcmp(gS_os, "Linux") == 0 then
 gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", gi_vstinfo
 endif
 if strcmp(gS_os, "macOS") == 0 then
-gi_Pianoteq vst3init "/Library/Audio/Plug-Ins/VST3/Pianoteq\ 7.vst3", "Pianoteq 7", 0
+gi_Pianoteq vst3init "/Library/Audio/Plug-Ins/VST3/Pianoteq\ 8.vst3", "Pianoteq 8", 1
 endif
 
 gk_PianoNotePianoteq_midi_dynamic_range chnexport "gk_PianoNotePianoteq_midi_dynamic_range", 3 ;  20
@@ -950,7 +950,7 @@ i_midi_velocity = p5
 ainleft init 0
 ainright init 0
 
-aoutleft, aoutright vst3audio gi_Pianoteq
+aoutleft, aoutright vst3audio gi_Pianoteq, ainleft, ainright
 a_signal = aoutleft + aoutright
 a_signal *= k_gain
 a_signal *= i_amplitude
@@ -1444,8 +1444,8 @@ S_score_generator_code init {{
 #include <VoiceleadingNode.hpp>
 
 //////////////////////////////////////////////////////////////////////////////
-// This symbol is used by a number of C++ libraries, but is not defined in the
-// startup code. Therefore, we may need to define it here.
+// This symbol is used by a number of C++ libraries, but may not be defined in 
+// the startup code. Therefore, we may need to define it here.
 //////////////////////////////////////////////////////////////////////////////
 
 /// void* __dso_handle = (void *)&__dso_handle;
@@ -1757,7 +1757,7 @@ extern "C" int score_generator(CSOUND *csound) {
     //~ index = score_size - 6;
     //~ key = score[index].getKey() + 1;
     //~ score[index].setKey(key);
-    
+  
     std::cout << "score:" << std::endl << score.getCsoundScore() << std::endl;
     std::cout << "Final duration:         " << score.getDuration() << std::endl;
     //////////////////////////////////////////////////////////////////////////
@@ -1775,7 +1775,7 @@ extern "C" int score_generator(CSOUND *csound) {
         evtblk.p[1] = std::floor(note.getInstrument());
         evtblk.p[2] = note.getTime();
         evtblk.p[3] = note.getDuration();
-        evtblk.p[4] = note.getKey();
+        evtblk.p[4] = note.getKey() - 3;
         evtblk.p[5] = note.getVelocity();
         evtblk.p[6] = note.getDepth();
         evtblk.p[7] = note.getPan();
@@ -1809,7 +1809,7 @@ if strcmp(gS_os, "Linux") == 0 then
 i_result cxx_compile "score_generator", S_score_generator_code, "g++ -v -g -O2 -std=c++17 -shared -fPIC -DUSE_DOUBLE -I. -I/usr/local/include/csound -I/home/mkg/csound/interfaces -I/usr/include/eigen3 -I/home/mkg/csound-ac/CsoundAC -lCsoundAC -lpthread -lm", "libcsound_webserver.so libCsoundAC.so"
 endif
 if strcmp(gS_os, "macOS") == 0 then
-i_result cxx_compile "score_generator", S_score_generator_code, "g++ -v -g -O2 -std=c++17 -shared -fPIC -DUSE_DOUBLE -I. -I/usr/local/include/csound -I/Users/michaelgogins/csound/interfaces -I/usr/include/eigen3 -I/System/Volumes/Data/opt/homebrew/include/eigen3 -I/Library/Frameworks/CsoundLib64.framework/Versions/6.0/Headers -I/opt/homebrew/Cellar/boost/1.81.0_1/include -I/home/mkg/csound-ac/CsoundAC -lCsoundAC -lpthread -lm", "/Users/michaelgogins/csound-webserver-opcodes/build/libcsound_webserver.dylib libCsoundAC.dylib"
+i_result cxx_compile "score_generator", S_score_generator_code, "g++ -v -g -O2 -std=c++17 -shared -fPIC -DUSE_DOUBLE -I. -I/usr/local/include/csound -I/Users/michaelgogins/csound/interfaces -I/usr/include/eigen3 -I/System/Volumes/Data/opt/homebrew/include/eigen3 -I/Library/Frameworks/CsoundLib64.framework/Versions/6.0/Headers -I/opt/homebrew/Cellar/boost/1.88.0/include -I/Users/michaelgogins/csound-ac/CsoundAC -L/Users/michaelgogins/csound-ac/build-macos -Wl,-rpath,/opt/homebrew/lib -L/opt/hombrew/lib -lCsoundAC -lpthread -lm", "/Users/michaelgogins/csound-webserver-opcodes/build/libcsound_webserver.dylib"
 endif
 
 instr Exit
@@ -1821,6 +1821,6 @@ endin
 <CsScore>
 ; f 0 does not work here; we actually need to schedule an instrument that 
 ; turns off Csound.
-i "Exit" [465]
+i "Exit" [440]
 </CsScore>
 </CsoundSynthesizer>

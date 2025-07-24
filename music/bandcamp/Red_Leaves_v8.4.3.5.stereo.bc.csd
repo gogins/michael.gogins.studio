@@ -242,13 +242,12 @@ connect "ReverbSC", "outright", "MasterOutput", "inright"
 // These are all the Csound instruments and effects used in this piece.
 //////////////////////////////////////////////////////////////////////////////
 
-TODO: Change from VST2 to VST3 opcodes.
 
 if strcmp(gS_os, "Linux") == 0 then
 gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", gi_vstinfo
 endif
 if strcmp(gS_os, "macOS") == 0 then
-gi_Pianoteq vstinit "/Library/Audio/Plug-Ins/VST/Pianoteq\ 8.vst", gi_vstinfo
+gi_Pianoteq vstinit "/Library/Audio/Plug-Ins/VST/Pianoteq\ 8.vst/Contents/", gi_vstinfo
 endif
 
 #include "PianoNotePianoteq.inc"
