@@ -62,8 +62,8 @@ Side of Manhattan, and in the Catskills.
 // Change to sr=96000 with ksmps=1 for final rendering to soundfile.
 //////////////////////////////////////////////////////////////////////////////
 
-sr = 44100
-ksmps = 100
+sr = 48000
+ksmps = 128
 nchnls = 2
 0dbfs = 100
 
@@ -79,7 +79,7 @@ seed 88818145
 // Turn printing of VST plugin parameters off and on globally.
 //////////////////////////////////////////////////////////////////////////////
 
-gi_vstinfo init 1
+gi_vst3info init 1
 
 //////////////////////////////////////////////////////////////////////////////
 // We will load plugins from different locations on different operating 
@@ -126,6 +126,7 @@ connect "ReverbSC", "outright", "MasterOutput", "inright"
 // These are all the Csound instruments and effects used in this piece.
 //////////////////////////////////////////////////////////////////////////////
 
+gi_vstinfo init 1
 if strcmp(gS_os, "Linux") == 0 then
 gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", gi_vstinfo
 endif

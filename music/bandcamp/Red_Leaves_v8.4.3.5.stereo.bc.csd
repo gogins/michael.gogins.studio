@@ -52,6 +52,7 @@ https://michaelgogins.tumblr.com/csound_extended.
 sr = 48000
 ksmps = 128
 nchnls = 2
+nchnls_i = 1
 0dbfs = 100
 //////////////////////////////////////////////////////////////////////////////
 // This random seed ensures that the same random stream  is used for each 
@@ -63,7 +64,7 @@ seed 88818145
 //////////////////////////////////////////////////////////////////////////////
 // Turn printing of VST plugin parameters off and on globally.
 //////////////////////////////////////////////////////////////////////////////
-gi_vstinfo init 0
+/// gi_vst3info init 0
 
 //////////////////////////////////////////////////////////////////////////////
 // We will load plugins from different locations on different operating 
@@ -244,13 +245,14 @@ connect "ReverbSC", "outright", "MasterOutput", "inright"
 
 
 if strcmp(gS_os, "Linux") == 0 then
+gi_vstinfo init 1
 gi_Pianoteq vstinit "/home/mkg/Pianoteq\ 7/x86-64bit/Pianoteq\ 7.so", gi_vstinfo
 endif
 if strcmp(gS_os, "macOS") == 0 then
-gi_Pianoteq vstinit "/Library/Audio/Plug-Ins/VST/Pianoteq\ 8.vst/Contents/", gi_vstinfo
+gi_Pianoteq vst3init "/Library/Audio/Plug-Ins/VST3/Pianoteq\ 8.vst3", "Pianoteq 8", 1
 endif
 
-#include "PianoNotePianoteq.inc"
+#include "PianoNotePianoteqVst3.inc"
 #include "FMWaterBell1.inc" // Normalized.
 #include "Phaser1.inc"      // Normalized.
 #include "Droner1.inc"      // Normalized.
@@ -261,7 +263,7 @@ endif
 #include "ZakianFlute1.inc" // Normalized.
 #include "STKBowed1.inc"    // Normalized.
 
-#include "PianoOutPianoteq1.inc"
+#include "PianoOutPianoteqVst3.inc"
 gk_PianoOutPianoteq_front_to_back init -3
 gk_PianoOutPianoteq_left_to_right init .4
 gk_PianoOutPianoteq_bottom_to_top init 3
@@ -559,7 +561,7 @@ gk_ReverbSC_feedback init 0.82
 gk_ReverbSC_wet init 0.5
 gi_ReverbSC_delay_modulation init 0.0075
 gk_ReverbSC_frequency_cutoff init 15000
-gk_PianoOutPianoteq_level init -11;;-9;;-3;;9
+gk_PianoOutPianoteq_level init 25
 gi_FMWaterBell_attack init 0.002936276551436901
 gi_FMWaterBell_release init 0.022698875468554768
 gi_FMWaterBell_exponent init 0
@@ -991,7 +993,7 @@ if strcmp(gS_os, "Linux") == 0 then
 gi_webserver webserver_create "/home/mkg/michael.gogins.studio/music/2022-NYCEMF/", 8080, 0
 endif
 if strcmp(gS_os, "macOS") == 0 then
-gi_webserver webserver_create "/Users/michaelgogins/michael.gogins.studio/music/2022-NYCEMF/", 8080, 0
+gi_webserver webserver_create "/Users/michaelgogins/michael.gogins.studio/music/bandcamp/", 8080, 0
 endif
 // The following event source has to be created before we actually send it a 
 // score to display.
@@ -1032,10 +1034,10 @@ S_score_generator_code init {{
 
 //////////////////////////////////////////////////////////////////////////////
 // This symbol is used by a number of C++ libraries, but is not defined in the
-// startup code. Therefore, we mey need to define it here.
+// startup code. Therefore, we may need to define it here.
 //////////////////////////////////////////////////////////////////////////////
 
-/// void* __dso_handle = (void *)&__dso_handle;
+// void* __dso_handle = (void *)&__dso_handle;
 
 static bool diagnostics_enabled = false;
 
@@ -1286,7 +1288,8 @@ if strcmp(gS_os, "Linux") == 0 then
 i_result cxx_compile "score_generator", S_score_generator_code, "g++ -v -g -O2 -std=c++17 -shared -fPIC -DUSE_DOUBLE -I. -I/usr/local/include/csound -I/home/mkg/csound/interfaces -I/usr/include/eigen3 -I/home/mkg/csound-extended/CsoundAC -lCsoundAC -lpthread -lm", "libcsound_webserver.so libCsoundAC.so"
 endif
 if strcmp(gS_os, "macOS") == 0 then
-i_result cxx_compile "score_generator", S_score_generator_code, "g++ -v -g -O2 -std=c++17 -shared -fPIC -DUSE_DOUBLE -I. -I/usr/local/include/csound -I/home/mkg/csound/interfaces -I/usr/include/eigen3 -I/System/Volumes/Data/opt/homebrew/include/eigen3 -I/opt/homebrew/Cellar/csound/6.17.0_5/Frameworks/CsoundLib64.framework/Versions/6.0/Headers -I/opt/homebrew/Cellar/boost/1.78.0_1/include -I/home/mkg/csound-extended/CsoundAC -lCsoundAC -lpthread -lm", "/Users/michaelgogins/csound-webserver-opcodes/build/libcsound_webserver.dylib libCsoundAC.dylib"
+prints "Compiling..."
+i_result cxx_compile "score_generator", S_score_generator_code, "g++ -v -g -O2 -std=c++17 -shared -fPIC -DUSE_DOUBLE -I. -I/usr/local/include/csound -I/Users/michaelgogins/csound/interfaces -I/usr/include/eigen3 -I/System/Volumes/Data/opt/homebrew/include/eigen3 -I/Library/Frameworks/CsoundLib64.framework/Versions/6.0/Headers -I/opt/homebrew/Cellar/boost/1.88.0/include -I/Users/michaelgogins/csound-ac/CsoundAC -L/Users/michaelgogins/csound-ac/build-macos -Wl,-rpath,/opt/homebrew/lib -L/opt/hombrew/lib -lCsoundAC -lpthread -lm", "/Users/michaelgogins/csound-webserver-opcodes/build/libcsound_webserver.dylib"
 endif
 
 instr Exit
