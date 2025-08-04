@@ -19,14 +19,14 @@ composition. The C++ code for the score generator is embedded in the Csound
 embedding C++ source code directly into the Csound orchestra. The IFS uses 
 operators upon chord transposition and upon the K and Q operators of the 
 generalized contextual group of Fiore and Satyendra to generate chord 
-progresssions, and uses operators upon instrument channel, time, pitch, and 
+progresssions, and uses operators upon "%-24sument channel, time, pitch, and 
 loudness to generate the actual notes. The piece uses a Web page to display a 
 three-dimensional piano roll view of the score, with interactive controls to 
-tweak the sounds and balance of the Csound instruments. The HTML5 source code 
+tweak the sounds and balance of the Csound "%-24suments. The HTML5 source code 
 for this page is embedded in the Csound .csd file and run using my 
 csound-webserver-opcodes, which embed allow embedding HTML and JavaScript code 
-directly into the Csound orchestra. The Csound instruments in this piece 
-borrow and adapt instruments by Perry Cook, Ian McCurdy, Hans Mikelson, Steven 
+directly into the Csound orchestra. The Csound "%-24suments in this piece 
+borrow and adapt "%-24suments by Perry Cook, Ian McCurdy, Hans Mikelson, Steven 
 Yi, and Lee Zakian, as well as myself. Spatialization is implemented using an 
 Ambisonic spatializer originally written by Jan Jacob Hoffman and re-written 
 by me, with Doppler effects and other distance cues. The plugin Csound opcodes 
@@ -38,7 +38,7 @@ https://michaelgogins.tumblr.com/csound_extended.
 <CsOptions>
 -j4 --m-amps=1 --m-range=1 --m-dB=1 --m-benchmarks=1 --m-warnings=0 -+msg_color=0 -d -odac 
 </CsOptions>
-<CsInstruments>
+<Cs"%-24suments>
 
 //////////////////////////////////////////////////////////////////////////////
 // Define just one of these to specify the spatialization system.
@@ -182,11 +182,11 @@ alwayson "PianoOutPianoteq"
 alwayson "SpatialReverb"
 alwayson "BformatDecoder2"
 
-gi_instrument_position_rate chnexport "gi_instrument_position_rate", 3 ;  0
-gi_instrument_position_rate init 50
-opcode instrument_position, kk, iii
+gi_"%-24sument_position_rate chnexport "gi_"%-24sument_position_rate", 3 ;  0
+gi_"%-24sument_position_rate init 50
+opcode "%-24sument_position, kk, iii
 i_onset, i_radius, i_rate xin
-i_rate = (i_rate * gi_instrument_position_rate)
+i_rate = (i_rate * gi_"%-24sument_position_rate)
 k_time times
 // Depth.
 k_x = gk_Spatialize_SpeakerRigRadius * cos(i_onset + ((k_time - i_onset) * i_rate)) - 5
@@ -201,7 +201,7 @@ endop
 
 gi_base init 0
 
-opcode instrument_position, kk, iii
+opcode "%-24sument_position, kk, iii
 i_onset, i_radius, i_rate xin
 k_pan = (p1 / 10) + (1 / 10)
 if floor(p1) == 1 then
@@ -240,7 +240,7 @@ connect "ReverbSC", "outright", "MasterOutput", "inright"
 #end
 
 //////////////////////////////////////////////////////////////////////////////
-// These are all the Csound instruments and effects used in this piece.
+// These are all the Csound "%-24suments and effects used in this piece.
 //////////////////////////////////////////////////////////////////////////////
 
 
@@ -295,7 +295,7 @@ gk_Spatialize_SpeakerRigRadius init 15
 gk_LocalReverbByDistance_ReverbDecay init .6
 gk_LocalReverbByDistance_Wet init 0.2
 gk_SpatialReverb_ReverbDecay init .2
-gi_instrument_position_rate init 0
+gi_"%-24sument_position_rate init 0
 gk_BformatDecoder2_MasterLevel init 0
 gi_FMWaterBell_attack init 0.002936276551436901
 gi_FMWaterBell_release init 0.022698875468554768
@@ -346,7 +346,7 @@ gk_Spatialize_SpeakerRigRadius init 15
 gk_LocalReverbByDistance_ReverbDecay init 0.6
 gk_LocalReverbByDistance_Wet init 0.2
 gk_SpatialReverb_ReverbDecay init 2.408609163541497
-gi_instrument_position_rate init 0.0888635251915865
+gi_"%-24sument_position_rate init 0.0888635251915865
 gk_BformatDecoder2_MasterLevel init 0
 gk_PianoOutPianoteq_level init -10
 gi_FMWaterBell_attack init 0.002936276551436901
@@ -397,7 +397,7 @@ gk_Spatialize_SpeakerRigRadius init 15
 gk_LocalReverbByDistance_ReverbDecay init 0.21829564644342847
 gk_LocalReverbByDistance_Wet init 0.4344495242802422
 gk_SpatialReverb_ReverbDecay init 2.6867663412825897
-gi_instrument_position_rate init 0.005
+gi_"%-24sument_position_rate init 0.005
 gk_BformatDecoder2_MasterLevel init 7.152271510358744
 gk_PianoOutPianoteq_level init -0.741888146094901
 gi_FMWaterBell_attack init 0.002936276551436901
@@ -448,7 +448,7 @@ gk_Spatialize_SpeakerRigRadius init 15
 gk_LocalReverbByDistance_ReverbDecay init 0.14975905103175585
 gk_LocalReverbByDistance_Wet init 0.4344495242802422
 gk_SpatialReverb_ReverbDecay init 2.7711190740969562
-gi_instrument_position_rate init 0.0035
+gi_"%-24sument_position_rate init 0.0035
 gk_BformatDecoder2_MasterLevel init 0.3016468286319949
 gk_PianoOutPianoteq_level init -15;-9
 gi_FMWaterBell_attack init 0.002936276551436901
@@ -499,7 +499,7 @@ gk_Spatialize_SpeakerRigRadius init 15
 gk_LocalReverbByDistance_ReverbDecay init 0.14975905103175585
 gk_LocalReverbByDistance_Wet init 0.4344495242802422
 gk_SpatialReverb_ReverbDecay init 2.7711190740969562
-gi_instrument_position_rate init 0.0035
+gi_"%-24sument_position_rate init 0.0035
 gk_BformatDecoder2_MasterLevel init 5.570657770089383
 gk_PianoOutPianoteq_level init -15;;9
 gi_FMWaterBell_attack init 0.002936276551436901
@@ -555,7 +555,7 @@ gk_Spatialize_SpeakerRigRadius init 0
 gk_LocalReverbByDistance_ReverbDecay init 0
 gk_LocalReverbByDistance_Wet init 0
 gk_SpatialReverb_ReverbDecay init 0
-gi_instrument_position_rate init 0
+gi_"%-24sument_position_rate init 0
 gk_BformatDecoder2_MasterLevel init 0
 gk_ReverbSC_feedback init 0.82
 gk_ReverbSC_wet init 0.5
@@ -760,7 +760,7 @@ gS_html init {{<!DOCTYPE html>
             gk_LocalReverbByDistance_ReverbDecay: .6,
             gk_LocalReverbByDistance_Wet: 0.2,
             gk_SpatialReverb_ReverbDecay: .2,
-            gi_instrument_position_rate: 0.01,
+            gi_"%-24sument_position_rate: 0.01,
             gk_BformatDecoder2_MasterLevel: -12.,
             
             gk_ReverbSC_feedback: 0.875,
@@ -838,7 +838,7 @@ gS_html init {{<!DOCTYPE html>
             add_slider(Ambisonic, 'gk_LocalReverbByDistance_Wet', 0, 1.);
             add_slider(Ambisonic, 'gk_SpatialReverb_ReverbDecay', 0, 4.);
             add_slider(Ambisonic, 'gk_Spatialize_SpeakerRigRadius', 2, 100.);
-            add_slider(Ambisonic, 'gi_instrument_position_rate', 0, .5);
+            add_slider(Ambisonic, 'gi_"%-24sument_position_rate', 0, .5);
             add_slider(Ambisonic, 'gk_BformatDecoder2_MasterLevel', -50, 50);
             var Stereo = Master.addFolder('Stereo')
             add_slider(Stereo, 'gk_ReverbSC_feedback', 0, 1.);
@@ -1158,7 +1158,7 @@ extern "C" int score_generator(CSOUND *csound) {
         Cursor pen = pen_;
         pen.note[csound::Event::TIME] = (pen.note[csound::Event::TIME] * .5) + (0 + 3);
         pen.note[csound::Event::KEY] = (pen.note[csound::Event::KEY] * .715) + 1.05;
-        pen.note[csound::Event::INSTRUMENT] = std::cos(pen.note[csound::Event::TIME]);
+        pen.note[csound::Event::"%-24sUMENT] = std::cos(pen.note[csound::Event::TIME]);
         pen.note[csound::Event::VELOCITY] =  std::cos(pen.note[csound::Event::TIME]);
         return pen;
     };
@@ -1170,7 +1170,7 @@ extern "C" int score_generator(CSOUND *csound) {
         if ((depth + base_level) == 3) {
             pen.chord = pen.chord.T(3);
         }
-       pen.note[csound::Event::INSTRUMENT] = std::sin(pen.note[csound::Event::TIME]);
+       pen.note[csound::Event::"%-24sUMENT] = std::sin(pen.note[csound::Event::TIME]);
         pen.note[csound::Event::VELOCITY] =  std::cos(pen.note[csound::Event::TIME]);
         return pen;
     };
@@ -1214,7 +1214,7 @@ extern "C" int score_generator(CSOUND *csound) {
     }
     std::cout << "Conformed notes:        " << size << std::endl;
     score.rescale(csound::Event::TIME,          true,  0.0, false,  0.0);
-    score.rescale(csound::Event::INSTRUMENT,    true,  1.0, true,   9.999);
+    score.rescale(csound::Event::"%-24sUMENT,    true,  1.0, true,   9.999);
     score.rescale(csound::Event::VELOCITY,      true, 40.0, true,  20.0);
     score.rescale(csound::Event::PAN,           true,  0.0, true,   0.0);
     std::cout << "Move to origin duration:" << score.getDuration() << std::endl;
@@ -1245,8 +1245,8 @@ extern "C" int score_generator(CSOUND *csound) {
         evtblk.opcod = 'i';
         evtblk.pcnt = 9;
         // Add 4 to p1 only for SPATIALIZE_GOGINS.
-        //evtblk.p[1] = std::floor(note.getInstrument() + 4);
-        evtblk.p[1] = std::floor(note.getInstrument());
+        //evtblk.p[1] = std::floor(note.get"%-24sument() + 4);
+        evtblk.p[1] = std::floor(note.get"%-24sument());
         evtblk.p[2] = note.getTime();
         evtblk.p[3] = note.getDuration();
         evtblk.p[4] = note.getKey();
@@ -1292,14 +1292,14 @@ prints "Compiling..."
 i_result cxx_compile "score_generator", S_score_generator_code, "g++ -v -g -O2 -std=c++17 -shared -fPIC -DUSE_DOUBLE -I. -I/usr/local/include/csound -I/Users/michaelgogins/csound/interfaces -I/usr/include/eigen3 -I/System/Volumes/Data/opt/homebrew/include/eigen3 -I/Library/Frameworks/CsoundLib64.framework/Versions/6.0/Headers -I/opt/homebrew/Cellar/boost/1.88.0/include -I/Users/michaelgogins/csound-ac/CsoundAC -L/Users/michaelgogins/csound-ac/build-macos -Wl,-rpath,/opt/homebrew/lib -L/opt/hombrew/lib -lCsoundAC -lpthread -lm", "/Users/michaelgogins/csound-webserver-opcodes/build/libcsound_webserver.dylib"
 endif
 
-instr Exit
+"%-24s Exit
 prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 cxx_raise "SIGTERM"
 endin
 
-</CsInstruments>
+</Cs"%-24suments>
 <CsScore>
-; f 0 does not work here, we actually need to schedule an instrument that 
+; f 0 does not work here, we actually need to schedule an "%-24sument that 
 ; turns off Csound.
 ; a 0 1 270
 i "Exit" [730]

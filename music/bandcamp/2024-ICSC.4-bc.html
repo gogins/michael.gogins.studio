@@ -1843,7 +1843,9 @@
         
         gk_MasterOutput_level init 0
         gk_Performance_seconds init 30
-        gS_MasterOutput_filename init "2024-ICSC.wav"
+        ; The basename of the output soundfile must be identical to the title 
+        ; of the HTML document.
+        gS_MasterOutput_filename init "2024-ICSC.4-bc.wav"
     
         chn_k "gk_MasterOutput_output_level_left", 3
         chn_k "gk_MasterOutput_output_level_right", 3

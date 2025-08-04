@@ -1,3 +1,4 @@
+#!python3
 '''
 Builds a table of all files that might be pieces of mine. 
 
@@ -37,11 +38,18 @@ import datetime
 import googlesearch
 import os
 import ffmpeg
+import fnmatch
 import re
 import string
 import sys
 import time
 import traceback
+
+pattern = "*"
+
+if len(sys.argv) > 1:
+    pattern = sys.argv[1]
+    print(f'Finding all compositions that match: {pattern}')
 
 playlist_filename = r'complete-%s.m3u' % datetime.date.today()
 compositions_filename = r'complete_pieces-%s.tsv' % datetime.date.today()
@@ -220,6 +228,8 @@ soundfiles = {}
 
 def add(pathname):
     basename = os.path.basename(pathname)
+    if fnmatch.fnmatch(basename, pattern) == False:
+        return
     filename, extension = os.path.splitext(basename)
     extension = extension.lower()
     if omit(omit_directories, pathname) == False:

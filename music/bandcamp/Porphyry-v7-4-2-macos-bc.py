@@ -30,7 +30,7 @@ import traceback
 
 print('Set "rendering" to:     "soundfile" or "audio".')
 print
-rendering = "soundfile"
+rendering = "audio"
 
 # Using the same random seed for each performance makes the performance 
 # deterministic, not random.
@@ -83,7 +83,7 @@ model.setYear("2021")
 model.generateAllNames()
 soundfile_name = model.getOutputSoundfileFilepath()
 print('Soundfile name:         %s' % soundfile_name)
-dac_name = 'dac:plughw:2,0'
+dac_name = 'dac'
 print('Audio output name:      %s' % dac_name)
 print
 
@@ -254,7 +254,7 @@ def build_voice(voiceleading_node, sequence, instrument, bass_, time_offset, pan
                         print("Possible modulation to: {} {}".format(s.toString(), s.name()))
                     scale = random.choice(scales)
                     if combination != 0:
-                        ### sequence_holder.getScore().append(cumulative_time, 1., 144., 5., combination, combination, 1.)
+                        sequence_holder.getScore().append(cumulative_time, 1., 144., 5., combination, combination, 1.)
                         print("==> Combination:           {}".format(combination))
                     print("==> Modulated to:       {} {}".format(scale.toString(), scale.name()))
                     timescale = random.choices([1., 2., .5, 2./3., 4./3.], [12, 2, 2, 2, 2], k=1)[0]
@@ -343,7 +343,7 @@ orc = '''
 sr = 48000
 ksmps = 128
 nchnls = 2
-nchnls_i = 1
+;; nchnls_i = 1
 0dbfs = 1  
 
 ; Ensure the same random stream for each rendering.
@@ -351,10 +351,9 @@ nchnls_i = 1
 
 seed 29384 ;38493
 
-;;; gi_Freeverb vstinit "/home/mkg/.local/lib/Mverb2020.so", 1
-;;; gi_Organteq vstinit "/home/mkg/Organteq\ 1/x86-64bit/Organteq\ 1.lv2/Organteq_1.so", 0
-gi_Organteq vst3init "/Library/Audio/Plug-ins/VST3/Organteq 2.vst3", "Organteq 2", 1
-vst3info gi_Organteq
+gi_MverbVst vst3init "/Library/Audio/Plug-Ins/VST3/Mverb2020.vst3", "Mverb2020", 1
+gi_Organteq vst3init "/Library/Audio/Plug-Ins/VST3/Organteq\ 2.vst3", "Organteq 2", 1
+gi_Pianoteq vst3init "/Library/Audio/Plug-Ins/VST3/Pianoteq\ 8.vst3", "Pianoteq 8", 1
 
 alwayson "OrganOutOrganteq"
 alwayson "Freeverb"
@@ -387,290 +386,292 @@ i_midi_key = p4
 i_midi_velocity = p5
 i_homogeneity = p11
 instances active p1
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 i_pitch_correction = 44100 / sr
 ; prints "Pitch factor:   %9.4f\\n", i_pitch_correction
-;vstnote gi_Organteq, 3, i_midi_key, i_midi_velocity, i_duration
-;;;vstnote gi_Organteq, i_instrument, i_midi_key, i_midi_velocity, i_duration
 id vst3note gi_Organteq, i_instrument, i_midi_key, i_midi_velocity, i_duration
 endin
 
 instr OrganteqCombination
 prints "\\n****************************************************************************************\\n\\n"
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 prints "\\n****************************************************************************************\\n\\n"
+
+; NOTE: In Organteq 2, the stop buttons are numbered starting with 109, not 
+; with 33 as in Organteq 1.
+
 i_combination = p5
 if (i_combination == 0.) then
 
 ; Keyboard 1 -- Pedale
 
-vst3paramset gi_Organteq, 33, 1 ;  1
-vst3paramset gi_Organteq, 34, 0 ;  2 
-vst3paramset gi_Organteq, 35, 0 ;  3
-vst3paramset gi_Organteq, 36, 0 ;  4
-vst3paramset gi_Organteq, 37, 0 ;  5
-vst3paramset gi_Organteq, 38, 0 ;  6
-vst3paramset gi_Organteq, 39, 0 ;  7
-vst3paramset gi_Organteq, 40, 0 ;  8
-vst3paramset gi_Organteq, 41, 0 ;  9
-vst3paramset gi_Organteq, 42, 0 ; 10
+vst3paramset gi_Organteq, 109, 1 ;  1
+vst3paramset gi_Organteq, 110, 0 ;  2 
+vst3paramset gi_Organteq, 111, 0 ;  3
+vst3paramset gi_Organteq, 112, 0 ;  4
+vst3paramset gi_Organteq, 113, 0 ;  5
+vst3paramset gi_Organteq, 114, 0 ;  6
+vst3paramset gi_Organteq, 115, 1 ;  7
+vst3paramset gi_Organteq, 116, 0 ;  8
+vst3paramset gi_Organteq, 117, 0 ;  9
+vst3paramset gi_Organteq, 118, 0 ; 10
 
 ; Keyboard 2 -- Positif
 
-vst3paramset gi_Organteq, 43, 0 ;  1
-vst3paramset gi_Organteq, 44, 0 ;  2
-vst3paramset gi_Organteq, 45, 1 ;  3
-vst3paramset gi_Organteq, 46, 0 ;  4
-vst3paramset gi_Organteq, 47, 0 ;  5
-vst3paramset gi_Organteq, 48, 1 ;  6
-vst3paramset gi_Organteq, 49, 0 ;  7
-vst3paramset gi_Organteq, 50, 0 ;  8
-vst3paramset gi_Organteq, 51, 0 ;  9
-vst3paramset gi_Organteq, 52, 0 ; 10
+vst3paramset gi_Organteq, 119, 0 ;  1
+vst3paramset gi_Organteq, 120, 0 ;  2
+vst3paramset gi_Organteq, 121, 1 ;  3
+vst3paramset gi_Organteq, 122, 0 ;  4
+vst3paramset gi_Organteq, 123, 0 ;  5
+vst3paramset gi_Organteq, 124, 1 ;  6
+vst3paramset gi_Organteq, 125, 0 ;  7
+vst3paramset gi_Organteq, 126, 0 ;  8
+vst3paramset gi_Organteq, 127, 0 ;  9
+vst3paramset gi_Organteq, 128, 0 ; 10
 
 ; Keyboard 3 -- Grand Orgue
 
-vst3paramset gi_Organteq, 53, 0 ;  1
-vst3paramset gi_Organteq, 54, 0 ;  2
-vst3paramset gi_Organteq, 55, 0 ;  3
-vst3paramset gi_Organteq, 56, 0 ;  4
-vst3paramset gi_Organteq, 57, 1 ;  5
-vst3paramset gi_Organteq, 58, 0 ;  6
-vst3paramset gi_Organteq, 59, 0 ;  7
-vst3paramset gi_Organteq, 60, 0 ;  8
-vst3paramset gi_Organteq, 61, 0 ;  9
-vst3paramset gi_Organteq, 62, 0 ; 10
+vst3paramset gi_Organteq, 129, 0 ;  1
+vst3paramset gi_Organteq, 130, 0 ;  2
+vst3paramset gi_Organteq, 131, 0 ;  3
+vst3paramset gi_Organteq, 132, 0 ;  4
+vst3paramset gi_Organteq, 133, 1 ;  5
+vst3paramset gi_Organteq, 134, 0 ;  6
+vst3paramset gi_Organteq, 135, 0 ;  7
+vst3paramset gi_Organteq, 136, 0 ;  8
+vst3paramset gi_Organteq, 137, 0 ;  9
+vst3paramset gi_Organteq, 138, 0 ; 10
 
 ; Keyboard 4 - Recit 
 
-vst3paramset gi_Organteq, 63, 0 ;  1
-vst3paramset gi_Organteq, 64, 0 ;  2
-vst3paramset gi_Organteq, 65, 0 ;  3
-vst3paramset gi_Organteq, 66, 0 ;  4
-vst3paramset gi_Organteq, 67, 0 ;  5
-vst3paramset gi_Organteq, 68, 0 ;  6
-vst3paramset gi_Organteq, 69, 0 ;  7 
-vst3paramset gi_Organteq, 70, 1 ;  8 
-vst3paramset gi_Organteq, 71, 0 ;  9 
-vst3paramset gi_Organteq, 72, 0 ; 10
+vst3paramset gi_Organteq, 139, 0 ;  1
+vst3paramset gi_Organteq, 140, 0 ;  2
+vst3paramset gi_Organteq, 141, 0 ;  3
+vst3paramset gi_Organteq, 142, 0 ;  4
+vst3paramset gi_Organteq, 143, 0 ;  5
+vst3paramset gi_Organteq, 144, 0 ;  6
+vst3paramset gi_Organteq, 145, 0 ;  7 
+vst3paramset gi_Organteq, 146, 1 ;  8 
+vst3paramset gi_Organteq, 147, 0 ;  9 
+vst3paramset gi_Organteq, 148, 0 ; 10
 
 endif
 if (i_combination == 1.) then
 
 ; Keyboard 1 -- Pedale
 
-vst3paramset gi_Organteq, 33, 1 ;  1
-vst3paramset gi_Organteq, 34, 0 ;  2 
-vst3paramset gi_Organteq, 35, 0 ;  3
-vst3paramset gi_Organteq, 36, 0 ;  4
-vst3paramset gi_Organteq, 37, 0 ;  5
-vst3paramset gi_Organteq, 38, 0 ;  6
-vst3paramset gi_Organteq, 39, 0 ;  7
-vst3paramset gi_Organteq, 40, 0 ;  8
-vst3paramset gi_Organteq, 41, 1 ;  9
-vst3paramset gi_Organteq, 42, 1 ; 10
+vst3paramset gi_Organteq, 109, 1 ;  1
+vst3paramset gi_Organteq, 110, 0 ;  2 
+vst3paramset gi_Organteq, 111, 0 ;  3
+vst3paramset gi_Organteq, 112, 0 ;  4
+vst3paramset gi_Organteq, 113, 0 ;  5
+vst3paramset gi_Organteq, 114, 0 ;  6
+vst3paramset gi_Organteq, 115, 0 ;  7
+vst3paramset gi_Organteq, 116, 0 ;  8
+vst3paramset gi_Organteq, 117, 1 ;  9
+vst3paramset gi_Organteq, 118, 1 ; 10
 
 ; Keyboard 2 -- Positif
 
-vst3paramset gi_Organteq, 43, 0 ;  1
-vst3paramset gi_Organteq, 44, 0 ;  2
-vst3paramset gi_Organteq, 45, 1 ;  3
-vst3paramset gi_Organteq, 46, 0 ;  4
-vst3paramset gi_Organteq, 47, 0 ;  5
-vst3paramset gi_Organteq, 48, 1 ;  6
-vst3paramset gi_Organteq, 49, 0 ;  7
-vst3paramset gi_Organteq, 50, 0 ;  8
-vst3paramset gi_Organteq, 51, 0 ;  9
-vst3paramset gi_Organteq, 52, 0 ; 10
+vst3paramset gi_Organteq, 119, 0 ;  1
+vst3paramset gi_Organteq, 120, 0 ;  2
+vst3paramset gi_Organteq, 121, 1 ;  3
+vst3paramset gi_Organteq, 122, 0 ;  4
+vst3paramset gi_Organteq, 123, 0 ;  5
+vst3paramset gi_Organteq, 124, 1 ;  6
+vst3paramset gi_Organteq, 125, 0 ;  7
+vst3paramset gi_Organteq, 126, 0 ;  8
+vst3paramset gi_Organteq, 127, 0 ;  9
+vst3paramset gi_Organteq, 128, 0 ; 10
 
 ; Keyboard 3 -- Grand Orgue
 
-vst3paramset gi_Organteq, 53, 0 ;  1
-vst3paramset gi_Organteq, 54, 0 ;  2
-vst3paramset gi_Organteq, 55, 1 ;  3
-vst3paramset gi_Organteq, 56, 1 ;  4
-vst3paramset gi_Organteq, 57, 1 ;  5
-vst3paramset gi_Organteq, 58, 0 ;  6
-vst3paramset gi_Organteq, 59, 0 ;  7
-vst3paramset gi_Organteq, 60, 0 ;  8
-vst3paramset gi_Organteq, 61, 0 ;  9
-vst3paramset gi_Organteq, 62, 0 ; 10
+vst3paramset gi_Organteq, 129, 0 ;  1
+vst3paramset gi_Organteq, 130, 0 ;  2
+vst3paramset gi_Organteq, 131, 1 ;  3
+vst3paramset gi_Organteq, 132, 1 ;  4
+vst3paramset gi_Organteq, 133, 1 ;  5
+vst3paramset gi_Organteq, 134, 0 ;  6
+vst3paramset gi_Organteq, 135, 0 ;  7
+vst3paramset gi_Organteq, 136, 0 ;  8
+vst3paramset gi_Organteq, 137, 0 ;  9
+vst3paramset gi_Organteq, 138, 0 ; 10
 
 ; Keyboard 4 - Recit 
 
-vst3paramset gi_Organteq, 63, 0 ;  1
-vst3paramset gi_Organteq, 64, 0 ;  2
-vst3paramset gi_Organteq, 65, 0 ;  3
-vst3paramset gi_Organteq, 66, 0 ;  4
-vst3paramset gi_Organteq, 67, 0 ;  5
-vst3paramset gi_Organteq, 68, 0 ;  6
-vst3paramset gi_Organteq, 69, 0 ;  7 
-vst3paramset gi_Organteq, 70, 0 ;  8 
-vst3paramset gi_Organteq, 71, 1 ;  9 
-vst3paramset gi_Organteq, 72, 0 ; 10
+vst3paramset gi_Organteq, 139, 0 ;  1
+vst3paramset gi_Organteq, 140, 0 ;  2
+vst3paramset gi_Organteq, 141, 0 ;  3
+vst3paramset gi_Organteq, 142, 0 ;  4
+vst3paramset gi_Organteq, 143, 0 ;  5
+vst3paramset gi_Organteq, 144, 0 ;  6
+vst3paramset gi_Organteq, 145, 0 ;  7 
+vst3paramset gi_Organteq, 146, 0 ;  8 
+vst3paramset gi_Organteq, 147, 1 ;  9 
+vst3paramset gi_Organteq, 148, 0 ; 10
 
 endif
 if (i_combination == 2.) then
 
 ; Keyboard 1 -- Pedale
 
-vst3paramset gi_Organteq, 33, 0 ;  1
-vst3paramset gi_Organteq, 34, 0 ;  2 
-vst3paramset gi_Organteq, 35, 0 ;  3
-vst3paramset gi_Organteq, 36, 0 ;  4
-vst3paramset gi_Organteq, 37, 1 ;  5
-vst3paramset gi_Organteq, 38, 0 ;  6
-vst3paramset gi_Organteq, 39, 1 ;  7
-vst3paramset gi_Organteq, 40, 0 ;  8
-vst3paramset gi_Organteq, 41, 1 ;  9
-vst3paramset gi_Organteq, 42, 0 ; 10
+vst3paramset gi_Organteq, 109, 0 ;  1
+vst3paramset gi_Organteq, 110, 0 ;  2 
+vst3paramset gi_Organteq, 111, 0 ;  3
+vst3paramset gi_Organteq, 112, 0 ;  4
+vst3paramset gi_Organteq, 113, 1 ;  5
+vst3paramset gi_Organteq, 114, 0 ;  6
+vst3paramset gi_Organteq, 115, 1 ;  7
+vst3paramset gi_Organteq, 116, 0 ;  8
+vst3paramset gi_Organteq, 117, 1 ;  9
+vst3paramset gi_Organteq, 118, 0 ; 10
 
 ; Keyboard 2 -- Positif
 
-vst3paramset gi_Organteq, 43, 1 ;  1
-vst3paramset gi_Organteq, 44, 0 ;  2
-vst3paramset gi_Organteq, 45, 1 ;  3
-vst3paramset gi_Organteq, 46, 1 ;  4
-vst3paramset gi_Organteq, 47, 1 ;  5
-vst3paramset gi_Organteq, 48, 0 ;  6
-vst3paramset gi_Organteq, 49, 0 ;  7
-vst3paramset gi_Organteq, 50, 0 ;  8
-vst3paramset gi_Organteq, 51, 0 ;  9
-vst3paramset gi_Organteq, 52, 0 ; 10
+vst3paramset gi_Organteq, 119, 1 ;  1
+vst3paramset gi_Organteq, 120, 0 ;  2
+vst3paramset gi_Organteq, 121, 1 ;  3
+vst3paramset gi_Organteq, 122, 1 ;  4
+vst3paramset gi_Organteq, 123, 1 ;  5
+vst3paramset gi_Organteq, 124, 0 ;  6
+vst3paramset gi_Organteq, 125, 0 ;  7
+vst3paramset gi_Organteq, 126, 0 ;  8
+vst3paramset gi_Organteq, 127, 0 ;  9
+vst3paramset gi_Organteq, 128, 0 ; 10
 
 ; Keyboard 3 -- Grand Orgue
 
-vst3paramset gi_Organteq, 53, 1 ;  1
-vst3paramset gi_Organteq, 54, 0 ;  2
-vst3paramset gi_Organteq, 55, 0 ;  3
-vst3paramset gi_Organteq, 56, 0 ;  4
-vst3paramset gi_Organteq, 57, 1 ;  5
-vst3paramset gi_Organteq, 58, 0 ;  6
-vst3paramset gi_Organteq, 59, 1 ;  7
-vst3paramset gi_Organteq, 60, 0 ;  8
-vst3paramset gi_Organteq, 61, 0 ;  9
-vst3paramset gi_Organteq, 62, 0 ; 10
+vst3paramset gi_Organteq, 129, 1 ;  1
+vst3paramset gi_Organteq, 130, 0 ;  2
+vst3paramset gi_Organteq, 131, 0 ;  3
+vst3paramset gi_Organteq, 132, 0 ;  4
+vst3paramset gi_Organteq, 133, 1 ;  5
+vst3paramset gi_Organteq, 134, 0 ;  6
+vst3paramset gi_Organteq, 135, 1 ;  7
+vst3paramset gi_Organteq, 136, 0 ;  8
+vst3paramset gi_Organteq, 137, 0 ;  9
+vst3paramset gi_Organteq, 138, 0 ; 10
 
 ; Keyboard 4 - Recit 
 
-vst3paramset gi_Organteq, 63, 0 ;  1
-vst3paramset gi_Organteq, 64, 1 ;  2
-vst3paramset gi_Organteq, 65, 0 ;  3
-vst3paramset gi_Organteq, 66, 0 ;  4
-vst3paramset gi_Organteq, 67, 1 ;  5
-vst3paramset gi_Organteq, 68, 0 ;  6
-vst3paramset gi_Organteq, 69, 0 ;  7 
-vst3paramset gi_Organteq, 70, 0 ;  8 
-vst3paramset gi_Organteq, 71, 1 ;  9 
-vst3paramset gi_Organteq, 72, 0 ; 10
+vst3paramset gi_Organteq, 139, 0 ;  1
+vst3paramset gi_Organteq, 140, 1 ;  2
+vst3paramset gi_Organteq, 141, 0 ;  3
+vst3paramset gi_Organteq, 142, 0 ;  4
+vst3paramset gi_Organteq, 143, 1 ;  5
+vst3paramset gi_Organteq, 144, 0 ;  6
+vst3paramset gi_Organteq, 145, 0 ;  7 
+vst3paramset gi_Organteq, 146, 0 ;  8 
+vst3paramset gi_Organteq, 147, 1 ;  9 
+vst3paramset gi_Organteq, 148, 0 ; 10
 
 endif
 if (i_combination == 3.) then
 ; Keyboard 1 -- Pedale
 
-vst3paramset gi_Organteq, 33, 1 ;  1
-vst3paramset gi_Organteq, 34, 1 ;  2 
-vst3paramset gi_Organteq, 35, 1 ;  3
-vst3paramset gi_Organteq, 36, 1 ;  4
-vst3paramset gi_Organteq, 37, 1 ;  5
-vst3paramset gi_Organteq, 38, 1 ;  6
-vst3paramset gi_Organteq, 39, 0 ;  7
-vst3paramset gi_Organteq, 40, 1 ;  8
-vst3paramset gi_Organteq, 41, 0 ;  9
-vst3paramset gi_Organteq, 42, 0 ; 10
+vst3paramset gi_Organteq, 109, 1 ;  1
+vst3paramset gi_Organteq, 110, 1 ;  2 
+vst3paramset gi_Organteq, 111, 1 ;  3
+vst3paramset gi_Organteq, 112, 1 ;  4
+vst3paramset gi_Organteq, 113, 1 ;  5
+vst3paramset gi_Organteq, 114, 1 ;  6
+vst3paramset gi_Organteq, 115, 0 ;  7
+vst3paramset gi_Organteq, 116, 1 ;  8
+vst3paramset gi_Organteq, 117, 0 ;  9
+vst3paramset gi_Organteq, 18, 0 ; 10
 
 ; Keyboard 2 -- Positif
 
-vst3paramset gi_Organteq, 43, 1 ;  1
-vst3paramset gi_Organteq, 44, 1 ;  2
-vst3paramset gi_Organteq, 45, 1 ;  3
-vst3paramset gi_Organteq, 46, 0 ;  4
-vst3paramset gi_Organteq, 47, 1 ;  5
-vst3paramset gi_Organteq, 48, 0 ;  6
-vst3paramset gi_Organteq, 49, 0 ;  7
-vst3paramset gi_Organteq, 50, 1 ;  8
-vst3paramset gi_Organteq, 51, 0 ;  9
-vst3paramset gi_Organteq, 52, 0 ; 10
+vst3paramset gi_Organteq, 119, 1 ;  1
+vst3paramset gi_Organteq, 120, 1 ;  2
+vst3paramset gi_Organteq, 121, 1 ;  3
+vst3paramset gi_Organteq, 122, 0 ;  4
+vst3paramset gi_Organteq, 123, 1 ;  5
+vst3paramset gi_Organteq, 124, 0 ;  6
+vst3paramset gi_Organteq, 125, 0 ;  7
+vst3paramset gi_Organteq, 126, 1 ;  8
+vst3paramset gi_Organteq, 127, 0 ;  9
+vst3paramset gi_Organteq, 128, 0 ; 10
 
 ; Keyboard 3 -- Grand Orgue
 
-vst3paramset gi_Organteq, 53, 1 ;  1
-vst3paramset gi_Organteq, 54, 1 ;  2
-vst3paramset gi_Organteq, 55, 0 ;  3
-vst3paramset gi_Organteq, 56, 0 ;  4
-vst3paramset gi_Organteq, 57, 1 ;  5
-vst3paramset gi_Organteq, 58, 1 ;  6
-vst3paramset gi_Organteq, 59, 1 ;  7
-vst3paramset gi_Organteq, 60, 1 ;  8
-vst3paramset gi_Organteq, 61, 1 ;  9
-vst3paramset gi_Organteq, 62, 0 ; 10
+vst3paramset gi_Organteq, 129, 1 ;  1
+vst3paramset gi_Organteq, 130, 1 ;  2
+vst3paramset gi_Organteq, 131, 0 ;  3
+vst3paramset gi_Organteq, 132, 0 ;  4
+vst3paramset gi_Organteq, 133, 1 ;  5
+vst3paramset gi_Organteq, 134, 1 ;  6
+vst3paramset gi_Organteq, 135, 1 ;  7
+vst3paramset gi_Organteq, 136, 1 ;  8
+vst3paramset gi_Organteq, 137, 1 ;  9
+vst3paramset gi_Organteq, 138, 0 ; 10
 
 ; Keyboard 4 - Recit 
 
-vst3paramset gi_Organteq, 63, 1 ;  1
-vst3paramset gi_Organteq, 64, 0 ;  2
-vst3paramset gi_Organteq, 65, 0 ;  3
-vst3paramset gi_Organteq, 66, 1 ;  4
-vst3paramset gi_Organteq, 67, 1 ;  5
-vst3paramset gi_Organteq, 68, 0 ;  6
-vst3paramset gi_Organteq, 69, 0 ;  7 
-vst3paramset gi_Organteq, 70, 0 ;  8 
-vst3paramset gi_Organteq, 71, 1 ;  9 
-vst3paramset gi_Organteq, 72, 1 ; 10
+vst3paramset gi_Organteq, 139, 1 ;  1
+vst3paramset gi_Organteq, 140, 0 ;  2
+vst3paramset gi_Organteq, 141, 0 ;  3
+vst3paramset gi_Organteq, 142, 1 ;  4
+vst3paramset gi_Organteq, 143, 1 ;  5
+vst3paramset gi_Organteq, 144, 0 ;  6
+vst3paramset gi_Organteq, 145, 0 ;  7 
+vst3paramset gi_Organteq, 146, 0 ;  8 
+vst3paramset gi_Organteq, 147, 1 ;  9 
+vst3paramset gi_Organteq, 148, 1 ; 10
 
 endif
 if (i_combination == 4.) then
 ; Keyboard 1 -- Pedale
 
-vst3paramset gi_Organteq, 33, 1 ;  1
-vst3paramset gi_Organteq, 34, 1 ;  2 
-vst3paramset gi_Organteq, 35, 0 ;  3
-vst3paramset gi_Organteq, 36, 0 ;  4
-vst3paramset gi_Organteq, 37, 0 ;  5
-vst3paramset gi_Organteq, 38, 0 ;  6
-vst3paramset gi_Organteq, 39, 1 ;  7
-vst3paramset gi_Organteq, 40, 0 ;  8
-vst3paramset gi_Organteq, 41, 0 ;  9
-vst3paramset gi_Organteq, 42, 0 ; 10
+vst3paramset gi_Organteq, 109, 1 ;  1
+vst3paramset gi_Organteq, 110, 1 ;  2 
+vst3paramset gi_Organteq, 111, 0 ;  3
+vst3paramset gi_Organteq, 112, 0 ;  4
+vst3paramset gi_Organteq, 113, 0 ;  5
+vst3paramset gi_Organteq, 114, 0 ;  6
+vst3paramset gi_Organteq, 115, 1 ;  7
+vst3paramset gi_Organteq, 116, 0 ;  8
+vst3paramset gi_Organteq, 117, 0 ;  9
+vst3paramset gi_Organteq, 118, 0 ; 10
 
 ; Keyboard 2 -- Positif
 
-vst3paramset gi_Organteq, 43, 0 ;  1
-vst3paramset gi_Organteq, 44, 0 ;  2
-vst3paramset gi_Organteq, 45, 1 ;  3
-vst3paramset gi_Organteq, 46, 0 ;  4
-vst3paramset gi_Organteq, 47, 0 ;  5
-vst3paramset gi_Organteq, 48, 0 ;  6
-vst3paramset gi_Organteq, 49, 1 ;  7
-vst3paramset gi_Organteq, 50, 0 ;  8
-vst3paramset gi_Organteq, 51, 0 ;  9
-vst3paramset gi_Organteq, 52, 0 ; 10
+vst3paramset gi_Organteq, 119, 0 ;  1
+vst3paramset gi_Organteq, 120, 0 ;  2
+vst3paramset gi_Organteq, 121, 1 ;  3
+vst3paramset gi_Organteq, 122, 0 ;  4
+vst3paramset gi_Organteq, 123, 0 ;  5
+vst3paramset gi_Organteq, 124, 0 ;  6
+vst3paramset gi_Organteq, 125, 1 ;  7
+vst3paramset gi_Organteq, 126, 0 ;  8
+vst3paramset gi_Organteq, 127, 0 ;  9
+vst3paramset gi_Organteq, 128, 0 ; 10
 
 ; Keyboard 3 -- Grand Orgue
 
-vst3paramset gi_Organteq, 53, 0 ;  1
-vst3paramset gi_Organteq, 54, 0 ;  2
-vst3paramset gi_Organteq, 55, 0 ;  3
-vst3paramset gi_Organteq, 56, 0 ;  4
-vst3paramset gi_Organteq, 57, 1 ;  5
-vst3paramset gi_Organteq, 58, 0 ;  6
-vst3paramset gi_Organteq, 59, 1 ;  7
-vst3paramset gi_Organteq, 60, 0 ;  8
-vst3paramset gi_Organteq, 61, 0 ;  9
-vst3paramset gi_Organteq, 62, 0 ; 10
+vst3paramset gi_Organteq, 129, 0 ;  1
+vst3paramset gi_Organteq, 130, 0 ;  2
+vst3paramset gi_Organteq, 131, 0 ;  3
+vst3paramset gi_Organteq, 132, 0 ;  4
+vst3paramset gi_Organteq, 133, 1 ;  5
+vst3paramset gi_Organteq, 134, 0 ;  6
+vst3paramset gi_Organteq, 135, 1 ;  7
+vst3paramset gi_Organteq, 136, 0 ;  8
+vst3paramset gi_Organteq, 137, 0 ;  9
+vst3paramset gi_Organteq, 138, 0 ; 10
 
 ; Keyboard 4 - Recit 
 
-vst3paramset gi_Organteq, 63, 1 ;  1
-vst3paramset gi_Organteq, 64, 0 ;  2
-vst3paramset gi_Organteq, 65, 0 ;  3
-vst3paramset gi_Organteq, 66, 0 ;  4
-vst3paramset gi_Organteq, 67, 1 ;  5
-vst3paramset gi_Organteq, 68, 0 ;  6
-vst3paramset gi_Organteq, 69, 0 ;  7 
-vst3paramset gi_Organteq, 70, 0 ;  8 
-vst3paramset gi_Organteq, 71, 0 ;  9 
-vst3paramset gi_Organteq, 72, 0 ; 10
+vst3paramset gi_Organteq, 139, 1 ;  1
+vst3paramset gi_Organteq, 140, 0 ;  2
+vst3paramset gi_Organteq, 141, 0 ;  3
+vst3paramset gi_Organteq, 142, 0 ;  4
+vst3paramset gi_Organteq, 143, 1 ;  5
+vst3paramset gi_Organteq, 144, 0 ;  6
+vst3paramset gi_Organteq, 145, 0 ;  7 
+vst3paramset gi_Organteq, 146, 0 ;  8 
+vst3paramset gi_Organteq, 147, 0 ;  9 
+vst3paramset gi_Organteq, 148, 0 ; 10
 
 endif
 endin
@@ -682,14 +683,9 @@ gk_OrganOutOrganteq_left_to_right init 0.5
 gk_OrganOutOrganteq_bottom_to_top init 0
 instr OrganOutOrganteq
 ; Internal reverb off.
-vst3paramset gi_Organteq, 4, 0
+vst3paramset gi_Organteq, 8, 0
 
-; Set up all stops...
-
-vst3paramset gi_Organteq, 6, 0
-scoreline_i "i 5 0 .1 0 0 0"
-
-; Uncomment a line for evaluating stops in that particular section.
+; Uncomment a line to evaluate stops starting from that particular time.
 
 //scoreline_i "a 0 .5 45"
 //scoreline_i "a 0 .5 106.2"
@@ -704,9 +700,6 @@ k_gain = ampdb(gk_OrganOutOrganteq_level)
 i_overall_amps = 100
 i_normalization = ampdb(-i_overall_amps) * 2
 i_amplitude = ampdb(80) * i_normalization
-;;;if gi_OrganOutOrganteq_print == 1 then
-;;;  vst3info gi_Organteq
-;;;endif
 i_instrument = p1
 i_time = p2
 i_duration = p3
@@ -714,25 +707,13 @@ i_midi_key = p4
 i_midi_velocity = p5
 ainleft init 0
 ainright init 0
-aoutleft, aoutright vst3audio gi_Organteq, ainleft, ainright
-a_signal = aoutleft + aoutright
-a_signal *= k_gain
-a_signal *= i_amplitude
-a_out_left, a_out_right pan2 a_signal, gk_OrganOutOrganteq_left_to_right
-printks "vstaudio:       %9.4f   %9.4f\\n", 0.5, aoutleft, aoutright
-#ifdef USE_SPATIALIZATION
-a_signal = a_out_left + a_out_right
-a_spatial_reverb_send init 0
-a_bsignal[] init 16
-a_bsignal, a_spatial_reverb_send Spatialize a_signal, gk_OrganOutOrganteq_front_to_back, gk_OrganOutOrganteq_left_to_right, gk_OrganOutOrganteq_bottom_to_top
-outletv "outbformat", a_bsignal
-outleta "out", a_spatial_reverb_send
-#else
-; printks "OrganOutPt     L %9.4f R %9.4f l %9.4f\\n", 0.5, a_out_left, a_out_right, gk_Organ_level
+a_out_left, a_out_right vst3audio gi_Organteq
+printks "OrganOutPt     L %9.4f R %9.4f l %9.4f\\n", 0.5, a_out_left, a_out_right, gk_OrganOutOrganteq_level
 outleta "outleft", a_out_left
 outleta "outright", a_out_right
-#endif
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "Loading preset...\\n"
+vst3presetload gi_Organteq, "/Users/michaelgogins/Library/Application Support/Modartt/Organteq/Presets/My Presets/Porphyry-1.fxp"
 endin
 
 gk_Freeverb_level init 0
@@ -744,7 +725,7 @@ ainright inleta "inright"
 aoutleft, aoutright freeverb ainleft, ainright, .8, .8, sr
 outleta "outleft", aoutleft
 outleta "outright", aoutright
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
 gk_MasterOutput_level init 0
@@ -767,7 +748,7 @@ filename_exists:
 prints sprintf("Output filename: %s\\n", gS_MasterOutput_filename)
 fout gS_MasterOutput_filename, 18, aleft * i_amplitude_adjustment, aright * i_amplitude_adjustment
 filename_endif:
-prints "%-24.24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
 ; It is important for levels to be evenly balanced _on average_! This 
