@@ -1,11 +1,20 @@
 # Computer Music by <a href="https://michaelgogins.tumblr.com">Michael Gogins</a>
 
+Copyright (C) Michael Gogins<br>
+All rights reserved<br>
+http://michaelgogins.tumblr.com<br>
+michael /dot/ gogins /at/ gmail /dot/ com
+
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" 
 style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" />
 </a>
-<p>All music and code herein are licensed under the  
+
+All _music_ herein is licensed under the  
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">
 Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
+
+All _software_ herein is licensed under one or another 
+[open source license](https://opensource.org/licenses).
 
 ## Contents
 
