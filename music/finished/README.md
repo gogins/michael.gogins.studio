@@ -29,6 +29,10 @@ algorithmically composed, that I consider "finished" in the senses that:
  - I have rendered them to high-resolution audio, inspected and auditioned 
    them, and have found no obvious audio artifacts.
 
+To avoid confusion, once I have finished a piece and moved it to this 
+directory, I generally move all earlier or alternative versions and their 
+associated files to the `michael.gogins.studio/music/attic` directory.
+
 ## Requirements
 
 The following is required of all pieces that I maintain here:
