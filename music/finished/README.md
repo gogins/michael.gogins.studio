@@ -63,10 +63,10 @@ The following is required of all pieces that I maintain here:
    workstation).
 
  - In some cases, a piece requires a specific software environment, notably my 
-   cloud-5 project, to run. In such cases, the user must create a symbolic 
-   link in the cloud-5 directory (or other environment) to the source code 
-   file stored here, and execute that piece in the cloud-5 directory (or other 
-   environment).
+   [cloud-5](https://github.com/gogins/cloud-5) project, to run. In such cases, 
+   the user must create a symbolic link in the cloud-5 directory (or other 
+   environment) to the source code file stored here, and execute that piece in 
+   the cloud-5 directory (or other environment).
 
  
 
