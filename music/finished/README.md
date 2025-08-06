@@ -48,9 +48,10 @@ The following is required of all pieces that I maintain here:
    required that they can be produced by executing the composition file.
 
  - Dependencies for the composition code must be kept to a minimum, and 
-   consist of open source code as far as possible. Proprietary software is 
-   permitted if and only if it is both highly superior and widely used (e.g., 
-   Modartt's Pianoteq VST3 plugin, the Reaper digital audio workstation).
+   consist of widely used open source code as far as possible. Proprietary 
+   software is permitted if and only if it is both highly superior and widely 
+   used (e.g., Modartt's Pianoteq VST3 plugin, the Reaper digital audio 
+   workstation).
 
  - In some cases, a piece requires a specific software environment, notably my 
    cloud-5 project, to run. In such cases, the user must create a symbolic 
