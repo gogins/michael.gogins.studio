@@ -26,15 +26,19 @@ The following is required of all pieces that I maintain here:
 
  - Each piece is stored in its own subdirectory.
 
- - The title of the piece is _identical_ to the filename of the piece's source 
-   code file without its filename extension, is _identical_ to the name of the 
-   output soundfile without its filename extension, is _identical_ to the name 
-   of the subdirectory containing the piece. This is to prevent any further 
-   unfortunate incidents of the sort in which I have a very nice soundfile of 
-   a piece, but I can't find the source code that produced the piece.
+ - The title of the piece is _unique_ across my work, and is_identical_ to the 
+   filename of the piece's source code file without its filename extension, is 
+   _identical_ to the name of the output soundfile without its filename 
+   extension, is _identical_ to the name of the subdirectory containing the 
+   piece. This is to prevent any further unfortunate accidents of the sort in 
+   which I have a very nice soundfile of a piece, but I can't find the source 
+   code that produced that piece.
 
  - If at all possible the pathname of the composition source code file is 
    embedded in the output soundfile metadata.
+
+ - If at all possible, each piece is contained in one single, self-sufficient 
+   source code file.
 
  - "Liner notes," composer information, instructions for performers, and other 
    such documentation is embedded im the source code file, or kept as a 
