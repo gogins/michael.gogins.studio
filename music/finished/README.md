@@ -40,8 +40,8 @@ The following is required of all pieces that I maintain here:
    extension, is _identical_ to the name of the output soundfile without its 
    filename extension, is _identical_ to the name of the subdirectory 
    containing the piece. This is to prevent any further unfortunate accidents 
-   of the sort in which I had a very nice soundfile of a piece, but I can't 
-   find the source code that produced that piece.
+   of the sort in which I have a very nice soundfile of a piece -- but I can 
+   no longer find the source code that produced that piece.
 
  - If at all possible, the pathname of the composition source code file is 
    embedded in the output soundfile metadata.
