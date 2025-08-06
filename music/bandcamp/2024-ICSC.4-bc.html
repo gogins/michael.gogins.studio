@@ -1839,17 +1839,11 @@
     
         gk_MasterOutput_level chnexport "gk_MasterOutput_level", 3 ; 0
         gk_Performance_seconds chnexport "gk_Performance_seconds", 3 ; 0
-        gS_MasterOutput_filename chnexport "gS_MasterOutput_filename", 3 ; ""
-        
         gk_MasterOutput_level init 0
         gk_Performance_seconds init 30
-        ; The basename of the output soundfile must be identical to the title 
-        ; of the HTML document.
-        gS_MasterOutput_filename init "2024-ICSC.4-bc.wav"
     
         chn_k "gk_MasterOutput_output_level_left", 3
         chn_k "gk_MasterOutput_output_level_right", 3
-        gk_record init 0
 
         instr MasterOutputOff
         i_MasterOutput_insno nstrnum "MasterOutput"
@@ -1876,13 +1870,15 @@
         a_out_right = aright * k_gain
         i_duration = p3
 
-        ; We need a toggle for recording/pausing.
+        ; Whether to write a soundfile is configurable.
     
-        gk_record chnget "gk_record"
+        gk_cloud5_record chnget "gk_cloud5_record"
+        gS_cloud5_soundfile_name chnget "gS_cloud5_soundfile_name"
         
-        if gk_record == 1 then 
-        prints sprintf("Recording to output filename: %s\n", gS_MasterOutput_filename)
-        fout gS_MasterOutput_filename, 19, a_out_left, a_out_right
+        if gk_cloud5_record == 1 then 
+        gS_cloud5_soundfile_name chnget "gS_cloud5_soundfile_name" 
+        prints sprintf("MasterOutput recording to output filename: %s\n", gS_cloud5_soundfile_name)
+        fout gS_cloud5_soundfile_name, 19, a_out_left, a_out_right
         else 
         prints "Not recording.\n"
         endif
@@ -2424,7 +2420,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ){
                     let off_event = this.playing_events.get(key);
                     let instrument_number = off_event[0];
                     if (sampled_event[4] < threshold) {
-                        this.cloud5_piece.csound.KillInstance(instrument_number, "", 4, true);
+                        this.cloud5_piece.csound.KillInstance(instrument_number, "", 4, 1);
                         console.info("Turned off instrument number: " + instrument_number + ".");
                         this.playing_events.delete(key);
                     }
