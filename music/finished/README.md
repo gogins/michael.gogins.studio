@@ -1,4 +1,4 @@
-# Music by <a href="https://michaelgogins.tumblr.com">Michael Gogins</a>
+# Computer Music by <a href="https://michaelgogins.tumblr.com">Michael Gogins</a>
 
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" 
 style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" />
@@ -6,6 +6,8 @@ style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.p
 <p>All music and examples herein are licensed under the  
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">
 Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
+
+## Contents
 
 This directory contains all of my recent works of computer music, mostly 
 algorithmically composed, that I consider "finished" in the senses that:
@@ -18,13 +20,15 @@ algorithmically composed, that I consider "finished" in the senses that:
  - I have rendered them to high-resolution audio, inspected and auditioned 
    them, and have found no obvious audio artifacts.
 
+## Requirements
+
 The following is required of all pieces that I maintain here:
 
  - Each piece is stored in its own subdirectory.
 
- - The title of the piece is identical to the filename of the piece's source 
-   code file without its filename extension, is identical to the name of the 
-   output soundfile without its filename extension, is identical to the name 
+ - The title of the piece is _identical_ to the filename of the piece's source 
+   code file without its filename extension, is _identical_ to the name of the 
+   output soundfile without its filename extension, is _identical_ to the name 
    of the subdirectory containing the piece. This is to prevent any further 
    unfortunate incidents of the sort in which I have a very nice soundfile of 
    a piece, but I can't find the source code that produced the piece.
