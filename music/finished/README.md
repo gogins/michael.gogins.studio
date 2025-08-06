@@ -13,8 +13,8 @@ All _music_ herein is licensed under the
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">
 Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
 
-All _software_ herein is licensed under one or another 
-[open source license](https://opensource.org/licenses).
+All _software_ herein is licensed under the [GNU Lesser General Public License, 
+Version 2.1](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html#SEC1).
 
 ## Contents
 
