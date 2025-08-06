@@ -1,5 +1,3 @@
-<h2 align="center"><a href="https://michaelgogins.tumblr.com">Michael Gogins</a></h2>
-
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" 
 style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" />
 </a>
@@ -7,7 +5,7 @@ style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.p
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">
 Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
 
-# Music by Michael Gogins
+# Music by <a href="https://michaelgogins.tumblr.com">Michael Gogins</a>
 
 This directory contains all of my recent works of computer music, mostly 
 algorithmically composed, that I consider "finished" in the senses that:
@@ -49,7 +47,7 @@ The following is required of all pieces that I maintain here:
  - In some cases, a piece requires a specific software environment, notably my 
    cloud-5 project, to run. In such cases, the user must create a symbolic 
    link in the cloud-5 directory (or other environment) to the source code 
-   file stored here, and execute the piece in the cloud-5 directory (or other 
+   file stored here, and execute that piece in the cloud-5 directory (or other 
    environment).
 
  
