@@ -4,12 +4,12 @@ import math
 import os
 import string
 import sys
-import types 
+import types  
 import time
 from reaper_python import *
 for p in sys.path:
     RPR_ShowConsoleMsg(p + '\n')
-import ac_reaper
+import ac_reaper 
 import CsoundAC
 import GeneralizedContextualGroup
  

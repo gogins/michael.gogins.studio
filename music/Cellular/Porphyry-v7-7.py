@@ -53,7 +53,7 @@ random.seed(11117111) # Champ so far.
 
 scale = CsoundAC.Scale("F# major")
 #scale = CsoundAC.Scale("G# major")
-chord = scale.chord(1, 5)
+chord = scale.chord(1, 5, 3)
 #chord = scale.chord(4, 4)
 
 bass_offset = 18

@@ -2156,20 +2156,21 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ){
         // #endregion
         // #region Controls 
         cloud5_piece.control_parameters_addon = {
-            "NoteTempo": 15,
+            "gk_Performance_seconds": 600,
+            "NoteTempo": 16.3173,
             "VelocityThreshold": 50,
-            "NoteDurationFactor": 6,
-            "GraphicsTempo": 0.24234484175914509,
+            "NoteDurationFactor": 2.9069000000000003,
+            "GraphicsTempo": 0.0122,
             "GraphicsHue": 0.2722975750102754,
             "GraphicsValue": 0.035552815454171806,
-            "CanonDelay": 0,
-            "CanonTranspose": 0,
-            "gk_Duration_factor": 0.8682696259761612,
-            "gk_Performance_seconds": 600,
-            "gk_Iterations": 4,
+            "CanonDelay": 1.7890000000000001,
+            "CanonTranspose": 4,
+            "CanonLayers": 2,
             "gk_MasterOutput_level": 2.882540335011818,
-            "gk_ReverbSC_wet": 0.5,
+            "gk_Iterations": 4,
+            "gk_Duration_factor": 0.8682696259761612,
             "gk_ReverbSC_feedback": 0.85,
+            "gk_ReverbSC_wet": 0.5,
             "gk_ReverbSC_delay_modulation": 0.0075,
             "gk_ReverbSC_frequency_cutoff": 9000,
             "gk_Blower_level": -29.344363374781626,
@@ -2223,6 +2224,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ){
             "gk_TubularBell_level": -6.982838351659645,
             "gk_YiString_level": 0,
             "gk_Xing_level": 0
+      
         };
 
         let Composition = cloud5_piece.menu_folder_addon('Composition');
@@ -2235,6 +2237,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ){
         cloud5_piece.menu_slider_addon(Composition, "GraphicsValue", 0., 1., .0001, "Brightness [Ctl-Alt-B]");
         cloud5_piece.menu_slider_addon(Composition, "CanonDelay", 0., 5., .001, "Canon delay [Ctl-Alt-D]");
         cloud5_piece.menu_slider_addon(Composition, "CanonTranspose", -12., 12., 1, "Canon interval [Ctl-Alt-I]");
+        cloud5_piece.menu_slider_addon(Composition, "CanonLayers", 0, 4, 1, "Canon layers [Ctl-Alt-L]");
         let Master = cloud5_piece.menu_folder_addon('Master'); .2
         cloud5_piece.menu_slider_addon(Master, 'gk_MasterOutput_level', -50, 50);
         cloud5_piece.menu_slider_addon(Master, 'gk_Iterations', 2., 9., 1.);
@@ -2494,7 +2497,13 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ){
                 let score_text;
                 if (this.cloud5_piece.control_parameters_addon.CanonDelay > 0) {
                     this.cloud5_piece.log("Current: " + this.score.getCsoundScore(12., true) + "\n")
-                    this.score = canon(this.CsoundAC, this.score, this.cloud5_piece.control_parameters_addon.CanonDelay, this.cloud5_piece.control_parameters_addon.CanonTranspose, this.scale);
+                    // function canon(CsoundAC, csoundac_score, delay, transposition, layers, csoundac_scale) {
+                        this.score = canon(this.CsoundAC, 
+                        this.score, 
+                        this.cloud5_piece.control_parameters_addon.CanonDelay, 
+                        this.cloud5_piece.control_parameters_addon.CanonTranspose, 
+                        this.cloud5_piece.control_parameters_addon.CanonLayers, 
+                    this.scale);
                     this.CsoundAC.apply(this.score, this.chord, 0, 1000000, true);
                     score_text = this.score.getCsoundScore(12., true);
                     this.cloud5_piece.log("Canon:  " + score_text + "\n\n")
