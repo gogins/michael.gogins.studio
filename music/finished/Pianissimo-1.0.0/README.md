@@ -20,8 +20,10 @@ Version 2.1](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html#SEC1).
 
 ## Notes
 
-A Python script running as ReaScript in Reaper generates a Lindenmayer system 
-in chord space with operations from the Generalized Contextual Group of Fiore 
-and Satyendra as implemented by my CsoundAC algorthmic composition library, 
-and rendered in Reaper using a variety of piano presets for the Modartt 
-Pianoteq physically modeled piano, with a little effects processing.
+I composed this piece using a Lindenmayer system operating in chord space and 
+applying actions from the generalized contextual group of Fiore and Satyendra, 
+thus creating a varied harmonic progression that is almost but not really 
+tonal. The code for this piece runs as a Python action in Reaper, and 
+generates a MIDI track that is rendered with a variety of Pianoteq presets and 
+other plugins. This piece was premiered 26 June 2025 at the New York City 
+Electroacoustic Music Festival.
