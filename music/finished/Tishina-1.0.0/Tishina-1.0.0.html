@@ -810,15 +810,26 @@ outleta "outright", arightoutmix
 prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
-
 gk_MasterOutput_level chnexport "gk_MasterOutput_level", 3 ; 0
-gS_MasterOutput_filename chnexport "gS_MasterOutput_filename", 3 ; ""
-
+gk_Performance_seconds chnexport "gk_Performance_seconds", 3 ; 0
 gk_MasterOutput_level init 0
-gS_MasterOutput_filename init ""
+gk_Performance_seconds init 30
 
 chn_k "gk_MasterOutput_output_level_left", 3
 chn_k "gk_MasterOutput_output_level_right", 3
+
+instr MasterOutputOff
+i_MasterOutput_insno nstrnum "MasterOutput"
+k_triggered init 0
+if gk_Performance_seconds > 0 && k_triggered == 0 then
+k_time times
+if k_time >= gk_Performance_seconds then
+turnoff2 i_MasterOutput_insno, 0, 1
+k_triggered = 1
+printks "Turning off insno: %d  gk_Performance_seconds: %9.4f  k_time: %9.4f...\n", 1, i_MasterOutput_insno, gk_Performance_seconds, k_time
+endif
+endif
+endin
 
 instr MasterOutput
 aleft inleta "inleft"
@@ -830,20 +841,33 @@ aleft butterlp aleft, 18000
 aright butterlp aright, 18000
 a_out_left = aleft * k_gain
 a_out_right = aright * k_gain
-outs a_out_left, a_out_right
-; We want something that will play on my phone.
-i_amplitude_adjustment = ampdbfs(-3) / 32767
-i_filename_length strlen gS_MasterOutput_filename
-;if i_filename_length > 0 then
-;prints sprintf("Output filename: %s\n", gS_MasterOutput_filename)
-;fout gS_MasterOutput_filename, 18, a_out_left * i_amplitude_adjustment, a_out_right * i_amplitude_adjustment
-;endif
+i_duration = p3
+
+; Whether to write a soundfile is configurable.
+; In NW.js with the launcher page, this soundfile will be written to the 
+; `csound-nwjs/nwjs-launcher/` directory.
+
+gk_cloud5_record chnget "gk_cloud5_record"
+gS_cloud5_soundfile_name chnget "gS_cloud5_soundfile_name"
+
+if gk_cloud5_record == 1 then 
+gS_cloud5_soundfile_name chnget "gS_cloud5_soundfile_name" 
+fout gS_cloud5_soundfile_name, 19, a_out_left, a_out_right
+prints sprintf("MasterOutput recording to output filename: %s\n", gS_cloud5_soundfile_name)
+else 
+prints "Not recording.\n"
+endif
+
 prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 gk_MasterOutput_output_level_left = dbfsamp(rms(a_out_left))
 gk_MasterOutput_output_level_right = dbfsamp(rms(a_out_right))
 chnset gk_MasterOutput_output_level_left, "gk_MasterOutput_output_level_left"
 chnset gk_MasterOutput_output_level_right, "gk_MasterOutput_output_level_right"
-;;; printks "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d l%9.4f r%9.4f\n", 1, nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1), gk_MasterOutput_output_level_left, gk_MasterOutput_output_level_right
+// printks "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d l%9.4f r%9.4f\n", 1, nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1), gk_MasterOutput_output_level_left, gk_MasterOutput_output_level_right
+// Use a fade-in, fade-out envelope.
+// kres cossegr ia, idur1, ib [, idur2] [, ic] [...], irel, iz
+k_envelope linsegr 0, 6, 1, 1000000000, 1, 6, 0
+outs a_out_left * k_envelope, a_out_right * k_envelope
 endin
 
 </CsInstruments>
@@ -997,7 +1021,9 @@ f 0 [ (9 * 60) + 10]
                 are then conformed. These operations are the generators of the
                 <a href="https://mtosmt.org/classic/mto.05.11.3/mto.05.11.3.fiore_satyendra.pdf">Generalized Contextual
                     Group</a>
-                of Fiore and Satyendra, as implemented by me.
+                of Fiore and Satyendra, as implemented by me. In this case, the 
+                Lindenmayer system actually implements a kind of iterated 
+                function system!
 
             <h2 style="font-size:13px">Credits</h2>
 
@@ -1054,7 +1080,7 @@ f 0 [ (9 * 60) + 10]
             "artist": "Michael Gogins",
             "copyright": "Copyright (C) 2025",
             "performer": "Michael Gogins",
-            "title": window.location.pathname.split('/').pop().split('.')[0],
+            "title": "",
             "album": "Tishina",
             "track": "1",
             "tracknumber": "1",
