@@ -8,6 +8,21 @@
 #include <VoiceleadingNode.hpp>
 #include <vector>
 
+/**
+ * Blue Leaves-2.0.0
+ * Michael Gogins
+ * 
+ * This piece is algorithmically composed in C++ using a recurrent iterated 
+ * function system rom my CsoundAC algorithmic composition library. The RIFS 
+ * operates upon a point in score space that contains both a note and an 
+ * associated chord to which the note may be conformed. The chord and thus 
+ * the note may be transformed by the K and Q operations from the Generalized 
+ * Contextual Group of Fiore and Satyendra.
+ * 
+ * The C++ code embeds Csound and a Csound orchestra in order to 
+ * render high-resolution audio.
+ */
+
 struct Cursor
 {
     csound::Event note;
