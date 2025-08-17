@@ -7,7 +7,7 @@
 <CsoundSynthesizer>
 <CsOptions>
 ; for Windows, Mac
--odac -m167 -b128 -B2048 -Q2 --midioutfile=MIDIFile2.mid
+-odac -m167 -b128 -B2048 -Q2 
 ; for Linux
 ;-odac -+rtaudio=alsa -+rtmidi=alsa -m0d -b128 -B2048 -Q hw:0,1
 ; to create a MIDI file, add the following line, substituting your desired filename

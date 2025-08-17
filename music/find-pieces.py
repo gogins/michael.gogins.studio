@@ -262,15 +262,24 @@ for rootdir in rootdirs:
             except:
                 traceback.print_exc()
 
-soundfiles  = dict(sorted(soundfiles.items()))
-compositions  = dict(sorted(compositions.items()))
+# Pathnames are unique, filenames and titles are not unique.
+# Sort first by basename, then by full path to break ties.
+# Sort by (title, pathname).
+
+soundfiles = dict(
+    sorted(soundfiles.items(), key=lambda item: (item[1].lower(), item[0]))
+)
+compositions = dict(
+    sorted(compositions.items(), key=lambda item: (item[1].lower(), item[0]))
+)
 
 print("\nBuilding a playlist of all audio files...\n")
 
 filecount = 0
+
 playlist = open(playlist_filename, 'w')
 playlist.write('#EXTM3U\n')
-for soundfile in soundfiles.keys():
+for pathname, soundfile in soundfiles.items():
     basename = os.path.basename(soundfile)
     filecount = filecount + 1
     playlist.write('#EXTINF:-1,%s\n' % basename)
