@@ -1,49 +1,17 @@
+
+; A CARILLON FOR CREATION (2025) for realtime Csound - by Arthur B. Hunkins
+; requires ASCII keyboard, and a selection of 6-8 MIDI note numbers corresponding to pitches from E3 - G5, non-duplicating and from a single octatonic scale
+; Performance is via MIDI-controlled 23+ note carillon
+; ASCII keys must be *tapped*, not held 
+
 <CsoundSynthesizer>
-<CsLicense>
-
-A CARILLON FOR CREATION (2025) for realtime Csound
-By Arthur B. Hunkins
-
-Requires ASCII keyboard, and a selection of 6-8 MIDI note numbers 
-corresponding to pitches from E3 - G5, non-duplicating and from a single 
-octatonic scale. Performance is via MIDI-controlled 23+ note carillon.
-
-ASCII keys must be *tapped*, not held.
-
-ISSUE
-
-Glad to have any feedback regarding my issue as demoed in the attached 
-.csd.
-
-The problem is simple: run as is, everything works as expected, except that 
-the MIDI file written is empty. This is associated with the fact that the 
-duration of performance (via ASC keyboard, the first 8 number keys) is 
-infinite (z) and must be stopped by CTRL-C.
-
-Changing the z infinite duration to a finite number (say 5 or 10) finishes 
-the performance normally and writes an appropriate MIDI file. (Try it and 
-see/verify.)
-
-According to Victor L., z (CTRL-C) should write a proper MIDI file as well. 
-This is the only issue. The audio performance depends on the right -Q value, 
-but the MIDI file output seems totally independent of this.
-
-Actually, as long as you have some kind of MIDI device plugged in (or an 
-active MIDI cable), you can test this out without any audio at all. Just see 
-whether the MIDI file (which if Csound runs, will be created) has any bytes!
-
-Thanks for any insight. Victor suggests that "this is a Windows problem" -- 
-which may well be true. (Do you find the same results with Mac or Linux?) 
-
-</CsLicense>
 <CsOptions>
-
 ; for Windows, Mac
--odac -m0d  -b128 -B2048 -Q1
+-odac -m167 -b128 -B2048 -Q2 --midioutfile=MIDIFile2.mid
 ; for Linux
 ;-odac -+rtaudio=alsa -+rtmidi=alsa -m0d -b128 -B2048 -Q hw:0,1
 ; to create a MIDI file, add the following line, substituting your desired filename
---midioutfile=MIDIFile2.mid
+
 
 </CsOptions>
 <CsInstruments>
@@ -143,8 +111,8 @@ end:	endin
 <CsScore>
 
 ; to create a MIDI file, take the approx duration in seconds you would like the file to last, and substitute this value for "z" below.
-i1 0 z
-
+f 0 120
+i 1 0 120
 e
 
 </CsScore>
