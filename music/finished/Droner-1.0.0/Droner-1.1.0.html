@@ -150,6 +150,8 @@
           k_space_left_to_right = p7
           endif
           k_space_bottom_to_top = p8
+          i_pan_ trirand .3
+          i_pan = .5 + i_pan_
           i_phase = p9
           i_frequency = cpsmidinn(i_midi_key)
           ; Adjust the following value until "overall amps" at the end of performance is about -6 dB.
@@ -203,8 +205,8 @@
           ; That envelope is then low-pass filtered to remove most discontinuities.
           a_filtered_envelope tonex a_envelope, 40, 4
           a_signal = a_signal * i_amplitude * a_filtered_envelope * k_gain *.001
-          prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
-          a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+          prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, i_pan, active(p1)
+          a_out_left, a_out_right pan2 a_signal, i_pan
           outleta "outleft", a_out_left
           outleta "outright", a_out_right
           endin
@@ -252,6 +254,8 @@
           else
           k_space_left_to_right = p7
           endif
+          i_pan_ trirand .3
+          i_pan = .6 + i_pan_
           k_space_bottom_to_top = p8
           i_phase = p9
           i_frequency = cpsmidinn(i_midi_key)
@@ -267,7 +271,7 @@
           a_declicking cossegr 0, i_releasing_attack, 1, gi_FMWaterBell_sustain - 1, 1, i_releasing_release, 0
           ;;;a_signal = a_signal * i_amplitude * a_envelope * a_declicking * k_gain
           a_signal = a_signal * i_amplitude * a_envelope * a_declicking * k_gain
-          a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
+          a_out_left, a_out_right pan2 a_signal, i_pan
           outleta "outleft", a_out_left
           outleta "outright", a_out_right
           prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
@@ -359,6 +363,8 @@
           else
           k_space_left_to_right = p7
           endif
+          i_pan_ trirand .4
+          i_pan = .5 + i_pan_
           k_space_bottom_to_top = p8
           i_phase = p9
           i_frequency = cpsmidinn(i_midi_key)
@@ -412,7 +418,7 @@
           ; That envelope is then low-pass filtered to remove most discontinuities.
           a_filtered_envelope tonex a_envelope, 40, 4
           a_signal = a_signal * i_amplitude * a_filtered_envelope * k_gain *.001
-          prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
+          prints "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, i_pan, active(p1)
           a_out_left, a_out_right pan2 a_signal, k_space_left_to_right
           outleta "outleft", a_out_left
           outleta "outright", a_out_right
@@ -1965,8 +1971,8 @@ chnset k_meter_right, "gk_MasterOutput_output_level_right"
 ;    the output soundfile.
 outs a_left, a_right
 prints  "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
-k_times times 
-printks "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d l%9.4f r%9.4f\n", 1, nstrstr(p1), p1, k_times, p3, p4, p5, p7, active(p1), k(a_left), k(a_right)
+; k_times times 
+; printks "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d l%9.4f r%9.4f\n", 1, nstrstr(p1), p1, k_times, p3, p4, p5, p7, active(p1), k(a_left), k(a_right)
 if gi_cloud5_performance_mode == 2 || gi_cloud5_performance_mode == 4 then
 fout gS_cloud5_soundfile_name, 19, a_left, a_right
 endif
@@ -2133,13 +2139,13 @@ pat
     // #region Controls 
     cloud5_piece.control_parameters_addon = {
     "gk_MasterOutput_level": -50,
-    "gi_cloud5_duration": 720,
+    "gi_cloud5_duration": 660,
     "gi_cloud5_fadeout": 30,
-    "gk_Reverberator_feedback": 0.6800246609124537,
+    "gk_Reverberator_feedback": 0.9167694204685574,
     "gk_Reverberator_wet": 0.7768390686173501,
     "gk_Reverberator_delay_modulation": 0.6843403205918619,
     "gk_Reverberator_frequency_cutoff": 6100,
-    "gk_Droner_level": 10.110974106041922,
+    "gk_Droner_level": 5.50760378133991,
     "gk_Droner_partial1": 0.154,
     "gk_Droner_partial2": 0.055,
     "gk_Droner_partial3": 0.154,
