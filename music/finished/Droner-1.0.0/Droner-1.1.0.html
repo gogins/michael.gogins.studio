@@ -1943,6 +1943,13 @@
 gk_MasterOutput_level chnexport "gk_MasterOutput_level", 3
 gk_MasterOutput_level init -40 ; Updated from: gk_MasterOutput_level init 0
 instr MasterOutput
+; Possible values of gi_cloud5_performance_mode:
+; 1. Start the Csound performance to audio out, and continue indefinitely 
+;    until the user stops it manually (default).
+; 4. Start the Csound performance to the audio output for a fixed duration 
+;    with a fadeout, and also record the audio output to the output soundfile;
+;    when the performance has finished or is stopped, automatically download
+;    the output soundfile.
 printf "MasterOutput: gi_cloud5_performance_mode: %d gi_cloud5_duration: %f gi_cloud5_fadeout: %f gS_cloud5_soundfile_name: %s\n", 1, gi_cloud5_performance_mode, gi_cloud5_duration, gi_cloud5_fadeout, gS_cloud5_soundfile_name
 a_left inleta "inleft"
 a_right inleta "inright"
@@ -1960,15 +1967,6 @@ k_meter_left dbfsamp k_rms_left
 k_meter_right dbfsamp k_rms_right
 chnset k_meter_left, "gk_MasterOutput_output_level_left"
 chnset k_meter_right, "gk_MasterOutput_output_level_right"
-; Possible values of gi_cloud5_performance_mode:
-; 1. Start the Csound performance to audio out, and continue indefinitely 
-;    until the user stops it manually (default).
-; 2. Start recording the audio output to the output soundfile.
-; 3. Pause recording, and automatically download the output soundfile.
-; 4. Start the Csound performance to the audio output for a fixed duration 
-;    with a fadeout, and also record the audio output to the output soundfile;
-;    when the performance has finished or is stopped, automatically download
-;    the output soundfile.
 outs a_left, a_right
 prints  "%-24s i %9.4f t %9.4f d %9.4f k %9.4f v %9.4f p %9.4f #%3d\n", nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 ; k_times times 
