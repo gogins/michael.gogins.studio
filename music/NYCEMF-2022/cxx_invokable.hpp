@@ -1,1 +1,0 @@
-/home/mkg/csound-cxx-opcodes/examples/cxx_invokable.hpp
