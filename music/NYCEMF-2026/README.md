@@ -18,13 +18,13 @@ I am married to Heidi Rogers, who before retiring owned Framk Music Company, a c
 
 ## Julia Suite
 
-This piece arises from my interest in what I call parametric composition. The piece is realized in the cloud-5 system. It uses the WebAssembly build of Csound for synthesis, as well as the software synthesizers Pianoteq and Organteq from Modartt.
+This piece arises from my interest in what I call parametric composition. The piece is realized in the cloud-5 system, and for synthesis uses Csound and the Pianoteq and Organteq software synthesizers.
 
-I wrote a Mandelbrot-set explorer in JavaScript accelerated with WebGPU. The user can zoom in and out of the Mandelbrot set. Whenever the user clicks on a point in the Mandelbrot set, the software quickly computes and displays the corresponding Julia set.
+I wrote a Mandelbrot-set explorer in JavaScript accelerated with WebGPU. The user can zoom in and out of the Mandelbrot set. Whenever the user clicks on a point in the Mandelbrot set, the software displays the corresponding Julia set.
 
-The user may then drag the mouse to lasso an interesting region of the Julia set. The software then quickly generates a musical score from that region, which can be performed using the embedded Csound synthesizer or an external MIDI synthesizer. Various parameters can be tweaked to thicken or thin the scare, change tempo, arrange instruments, etc.
+The user may then lasso an interesting region of the Julia set. From that region the software generates a score that can be performed using the embedded Csound synthesizer or an external MIDI synthesizer. Various parameters can be tweaked to thicken or thin the scare, change tempo, arrange instruments, etc.
 
-In this piece there are nine movements, alternating between Pianoteq, Organteq, and Csound.
+In this piece nine movements alternate between Pianoteq, Organteq, and Csound.
 
-My term parametric composition reflects the idea that pieces may be composed by exploring the Mandelbrot set as a parametric map of musical material.
+My term "parametric composition" reflects the idea that pieces may be composed by exploring the Mandelbrot set as a parametric map of musical material.
 

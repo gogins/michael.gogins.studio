@@ -6,7 +6,7 @@
     "gk_ReverbSC_wet": 0.5,
     "gk_ReverbSC_delay_modulation": 0.0075,
     "gk_ReverbSC_frequency_cutoff": 9000,
-    "gk_FMWaterBell_level": 11.510790574123497,
+    "gk_FMWaterBell_level": 0,
     "gi_FMWaterBell_attack": 0.002,
     "gi_FMWaterBell_release": 0.01,
     "gi_FMWaterBell_exponent": 15,
@@ -57,22 +57,22 @@
     "gk_YiString_level": 0,
     "gk_Xing_level": 0
   },
-  "mandelbrot_julia_overlay.exponent": 1.875,
+  "mandelbrot_julia_overlay.exponent": 2.127,
   "mandelbrot_julia_overlay.maxIterM": 500,
   "mandelbrot_julia_overlay.maxIterJ": 1000,
-  "mandelbrot_julia_overlay.nTime": 200,
-  "mandelbrot_julia_overlay.bass": 36,
-  "mandelbrot_julia_overlay.nPitch": 60,
-  "mandelbrot_julia_overlay.nInst": 6,
-  "mandelbrot_julia_overlay.bpm": 25,
-  "mandelbrot_julia_overlay.density": 3,
-  "mandelbrot_julia_overlay.seconds": 60,
+  "mandelbrot_julia_overlay.nTime": 160,
+  "mandelbrot_julia_overlay.bass": 21,
+  "mandelbrot_julia_overlay.nPitch": 88,
+  "mandelbrot_julia_overlay.nInst": 1,
+  "mandelbrot_julia_overlay.bpm": 80,
+  "mandelbrot_julia_overlay.density": 2e-7,
+  "mandelbrot_julia_overlay.seconds": 15,
   "mandelbrot_julia_overlay.base_instrument": 1,
-  "mandelbrot_julia_overlay.maxVoicesPerSlice": 6,
+  "mandelbrot_julia_overlay.maxVoicesPerSlice": 1,
   "mandelbrot_julia_overlay.viewM": {
-    "cx": -0.2469203118110246,
-    "cy": 0.6146958892353338,
-    "scale": 0.09851165831963286
+    "cx": -1.126807630959,
+    "cy": 0.18791312789618053,
+    "scale": 0.14637037805276634
   },
   "mandelbrot_julia_overlay.viewJ": {
     "cx": 0,
@@ -80,16 +80,16 @@
     "scale": 1.5
   },
   "mandelbrot_julia_overlay.c": {
-    "x": -0.2469203118110246,
-    "y": 0.6146958892353338
+    "x": -1.126807630959,
+    "y": 0.18791312789618053
   },
   "mandelbrot_julia_overlay.roiJ": {
-    "minx": -0.009169572346122479,
-    "maxx": 0.4837805361137473,
-    "miny": -0.16317979063749824,
-    "maxy": 0.14918463452519146
+    "minx": -0.5362845398081617,
+    "maxx": -0.10678345520946314,
+    "miny": 0.16005530533201007,
+    "maxy": 0.6090791665033767
   },
-  "mandelbrot_julia_overlay._midiOutId": "-195980315",
+  "mandelbrot_julia_overlay._midiOutId": "-1692892885",
   "parameters": {
     "NoteTempo": 50,
     "NoteDensity": 96.57846058986743,
