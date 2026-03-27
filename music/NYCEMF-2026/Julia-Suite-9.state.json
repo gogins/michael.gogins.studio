@@ -6,7 +6,7 @@
     "gk_ReverbSC_wet": 0.5,
     "gk_ReverbSC_delay_modulation": 0.0075,
     "gk_ReverbSC_frequency_cutoff": 9000,
-    "gk_FMWaterBell_level": 0,
+    "gk_FMWaterBell_level": 12.82385597153636,
     "gi_FMWaterBell_attack": 0.002,
     "gi_FMWaterBell_release": 0.01,
     "gi_FMWaterBell_exponent": 15,
@@ -16,7 +16,7 @@
     "gk_FMWaterBell_index": 0.5,
     "gk_FMWaterBell_vibrato_depth": 0.05,
     "gk_FMWaterBell_vibrato_rate": 6,
-    "gk_Phaser_level": 0,
+    "gk_Phaser_level": -7.528657688362955,
     "gk_Phaser_ratio1": 2,
     "gk_Phaser_ratio2": 3,
     "gk_Phaser_index1": 1.0266159695817492,
@@ -60,14 +60,15 @@
   "mandelbrot_julia_overlay.exponent": 2,
   "mandelbrot_julia_overlay.maxIterM": 500,
   "mandelbrot_julia_overlay.maxIterJ": 1000,
-  "mandelbrot_julia_overlay.nTime": 400,
+  "mandelbrot_julia_overlay.nTime": 500,
   "mandelbrot_julia_overlay.nPitch": 88,
   "mandelbrot_julia_overlay.nInst": "6",
-  "mandelbrot_julia_overlay.bpm": 25,
+  "mandelbrot_julia_overlay.bpm": 20.833333333333332,
   "mandelbrot_julia_overlay.density": 0.5,
-  "mandelbrot_julia_overlay.seconds": 120,
+  "mandelbrot_julia_overlay.seconds": 180,
   "mandelbrot_julia_overlay.base_instrument": 1,
-  "mandelbrot_julia_overlay.maxVoicesPerSlice": 6,
+  "mandelbrot_julia_overlay.maxVoicesPerSlice": 4,
+  "mandelbrot_julia_overlay.velocityThreshold": 50,
   "mandelbrot_julia_overlay.viewM": {
     "cx": -0.5947880099730067,
     "cy": -0.43402276266120243,
@@ -83,10 +84,10 @@
     "y": -0.43402276266120243
   },
   "mandelbrot_julia_overlay.roiJ": {
-    "minx": -0.6143756460988341,
-    "maxx": -0.5021196808059925,
-    "miny": -0.4704832213561085,
-    "maxy": -0.006817277755240874
+    "minx": -0.49235829251965835,
+    "maxx": 0.757099408131101,
+    "miny": -0.26633065279548945,
+    "maxy": 0.6414784578335777
   },
   "mandelbrot_julia_overlay._midiOutId": "-438642859"
 }
