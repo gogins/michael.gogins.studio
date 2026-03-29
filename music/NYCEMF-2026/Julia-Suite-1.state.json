@@ -57,22 +57,22 @@
     "gk_YiString_level": 0,
     "gk_Xing_level": 0
   },
-  "mandelbrot_julia_overlay.exponent": 2.127,
-  "mandelbrot_julia_overlay.maxIterM": 500,
+  "mandelbrot_julia_overlay.exponent": 2,
+  "mandelbrot_julia_overlay.maxIterM": 1,
   "mandelbrot_julia_overlay.maxIterJ": 1000,
-  "mandelbrot_julia_overlay.nTime": 140,
+  "mandelbrot_julia_overlay.nTime": 240,
   "mandelbrot_julia_overlay.bass": 30,
-  "mandelbrot_julia_overlay.nPitch": 88,
+  "mandelbrot_julia_overlay.nPitch": 72,
   "mandelbrot_julia_overlay.nInst": "1",
-  "mandelbrot_julia_overlay.bpm": 70,
-  "mandelbrot_julia_overlay.density": 0.5,
-  "mandelbrot_julia_overlay.seconds": 15,
+  "mandelbrot_julia_overlay.bpm": 60,
+  "mandelbrot_julia_overlay.density": 0.01,
+  "mandelbrot_julia_overlay.seconds": 30,
   "mandelbrot_julia_overlay.base_instrument": 1,
-  "mandelbrot_julia_overlay.maxVoicesPerSlice": 1,
+  "mandelbrot_julia_overlay.maxVoicesPerSlice": 4,
   "mandelbrot_julia_overlay.viewM": {
-    "cx": -1.126807630959,
-    "cy": 0.18791312789618053,
-    "scale": 0.14637037805276634
+    "cx": 6949.32418797099,
+    "cy": -12623.104879513614,
+    "scale": 1647.9417646449115
   },
   "mandelbrot_julia_overlay.viewJ": {
     "cx": 0,
@@ -80,14 +80,14 @@
     "scale": 1.5
   },
   "mandelbrot_julia_overlay.c": {
-    "x": -1.126807630959,
-    "y": 0.18791312789618053
+    "x": 6949.32418797099,
+    "y": -12623.104879513614
   },
   "mandelbrot_julia_overlay.roiJ": {
-    "minx": -0.8291261883981833,
-    "maxx": -0.1555903966411334,
-    "miny": 0.060001075397085955,
-    "maxy": 0.7677017261563052
+    "minx": -0.018930960632456695,
+    "maxx": 0.3910473473935737,
+    "miny": -0.4119148916381041,
+    "maxy": -0.197164349338755
   },
   "mandelbrot_julia_overlay._midiOutId": "-1692892885"
 }

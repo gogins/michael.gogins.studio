@@ -99,7 +99,7 @@ gk_Duration_factor init 0.8682696259761612 ; Updated from: gk_Duration_factor in
           gk_FMWaterBell_vibrato_depth chnexport "gk_FMWaterBell_vibrato_depth", 3 ; 0.05
           gk_FMWaterBell_vibrato_rate chnexport "gk_FMWaterBell_vibrato_rate", 3 ; 6
           gk_FMWaterBell_midi_dynamic_range chnexport "gk_FMWaterBell_midi_dynamic_range", 3 ; 20
-gk_FMWaterBell_level init 10.854257875417076 ; Updated from: gk_FMWaterBell_level init 0
+gk_FMWaterBell_level init 12.82385597153636 ; Updated from: gk_FMWaterBell_level init 0
 gi_FMWaterBell_attack init 0.002 ; Updated from: gi_FMWaterBell_attack init 0.002
 gi_FMWaterBell_release init 0.01 ; Updated from: gi_FMWaterBell_release init 0.01
 gi_FMWaterBell_sustain init 20 ; Updated from: gi_FMWaterBell_sustain init 20
@@ -1738,7 +1738,7 @@ gk_ReverbSC_frequency_cutoff init 9000 ; Updated from: gk_ReverbSC_frequency_cut
           gk_MasterOutput_level chnexport "gk_MasterOutput_level", 3 ; 0
           gS_MasterOutput_filename chnexport "gS_MasterOutput_filename", 3 ; ""
           
-          gk_MasterOutput_level init 0
+gk_MasterOutput_level init 7 ; Updated from: gk_MasterOutput_level init 0
           gS_MasterOutput_filename init ""
         
           chn_k "gk_MasterOutput_output_level_left", 3
