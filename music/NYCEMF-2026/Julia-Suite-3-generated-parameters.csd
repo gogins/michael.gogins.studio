@@ -1738,7 +1738,7 @@ gk_ReverbSC_frequency_cutoff init 9000 ; Updated from: gk_ReverbSC_frequency_cut
           gk_MasterOutput_level chnexport "gk_MasterOutput_level", 3 ; 0
           gS_MasterOutput_filename chnexport "gS_MasterOutput_filename", 3 ; ""
           
-gk_MasterOutput_level init -0.9633307012986592 ; Updated from: gk_MasterOutput_level init 0
+gk_MasterOutput_level init 7 ; Updated from: gk_MasterOutput_level init 0
           gS_MasterOutput_filename init ""
         
           chn_k "gk_MasterOutput_output_level_left", 3
