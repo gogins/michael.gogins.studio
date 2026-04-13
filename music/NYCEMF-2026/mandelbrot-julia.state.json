@@ -71,8 +71,8 @@
   "mandelbrot_julia_overlay.maxVoicesPerSlice": 9,
   "mandelbrot_julia_overlay.velocityThreshold": 15,
   "mandelbrot_julia_overlay.viewM": {
-    "cx": -1.3944531496808226,
-    "cy": 0.05326391415681254,
+    "cx": -1.3673427651538805,
+    "cy": 0.059367511239180194,
     "scale": 0.01937656940607791
   },
   "mandelbrot_julia_overlay.viewJ": {
@@ -81,8 +81,8 @@
     "scale": 1.5
   },
   "mandelbrot_julia_overlay.c": {
-    "x": -1.3944531496808226,
-    "y": 0.05326391415681254
+    "x": -1.3673427651538805,
+    "y": 0.059367511239180194
   },
   "mandelbrot_julia_overlay.roiJ": {
     "minx": -0.27272705607714215,
@@ -90,5 +90,5 @@
     "miny": 0.19329118211460736,
     "maxy": 0.6374343491428069
   },
-  "mandelbrot_julia_overlay._midiOutId": "-1692892885"
+  "mandelbrot_julia_overlay._midiOutId": "-438642859"
 }
