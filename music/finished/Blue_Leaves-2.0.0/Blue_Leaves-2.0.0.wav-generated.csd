@@ -1,6 +1,6 @@
 <CsoundSynthesizer>
 <CsOptions>
---midi-key=4 --midi-velocity=5 -m168 -j1 -RWdfo "/Users/michaelgogins/michael.gogins.studio/music/finished/Blue_Leaves-2.0.0/Blue_Leaves-2.0.0.wav"
+csound --midi-key=4 --midi-velocity=5 -m162 -+rtaudio=PortAudio -odac
 </CsOptions>
 <CsInstruments>
 
