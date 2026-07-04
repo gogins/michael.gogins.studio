@@ -99,20 +99,9 @@ uses. All of these materials are available at my Github respository
 \cite{gogins_github_io}.
 
 In brief, it is possible to approximate what I heard by convolving a source 
-signal with an impulse containing only the pitch-classes of a chord. This functions as a filter to 
-emphasize those frequencies of the source that also occur in the chord. I call 
-this effect \emph{chord convolution}.
-
-\emph{To convolve with the pitch-classes of a chord} means to convolve with an 
-impulse response consisting of all sinusoids within the range of human 
-hearing that belong to any of the pitch-classes of the chord. For example, the 
-chord C major consists of pitch-classes C, E, and G. For the pitch-class C, 
-there is one sinusoid at 32.703 Hz, one at 65.406 Hz, and so on up to 
-16,744.036 Hz; for G, one sinusoid at 41.203 Hz and so on up to 21,906.164 Hz; 
-and for E, one at 48.999 Hz and so on up to 12,543.854 Hz. Please note, 
-pitch-classes are not limited to 12-tone equal temperament; \emph{pitch-class} 
-is simply an equivalence class that identifies frequencies \emph{modulo} the 
-octave. 
+signal with an impulse containing only the pitch-classes of a chord. This 
+functions as a filter to emphasize those frequencies of the source that also 
+occur in the chord. I call this effect \emph{chord convolution}.
 
 The main artifact of concern in this case is the smearing caused by 
 convolution. Because in all representations of sound there is an irreducible 
@@ -153,8 +142,7 @@ based on a different builtin opcode.
  
 Chord convolution can be synthesized optimally by performing one direct 
 convolution of the source signal with $N$ cycles of \emph{each} sinusoidal 
-component of the chord signal. This minimizes all artifacts as much possible. 
-shorter 
+component of the chord signal. This minimizes all artifacts as much possible.  
 Each component of the chord smears the source signal by exactly the length of 
 $N$ cycles.  As the frequency of a chord sinusoid increases, the duration of 
 its smearing decreases. This implementation is equivalent to creating one 
