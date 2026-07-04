@@ -11,53 +11,72 @@ layout: null
     <link rel="stylesheet" href="{{ '/readme.css' | relative_url }}">
 </head>
 
-<body>
-    <header id="title-block-header">
-        <h1 class="title">Michael Gogins</h1>
-    </header>
+<body class="landing-page">
+    <div class="page-layout">
+        <aside class="sidebar" aria-label="Links">
+            <h2 id="links">Links</h2>
+            <nav>
+                <ul class="sidebar-links">
+                    <li><a href="https://michaelgogins.tumblr.com">Blog (Tumblr)</a></li>
+                    <li><a href="https://www.youtube.com/channel/UCG9XGUQzP1ddkOmLNKot7kw">YouTube</a></li>
+                    <li><a href="https://michaelgogins.bandcamp.com/">Bandcamp</a></li>
+                    <li><a href="https://github.com/gogins">GitHub: gogins</a></li>
+                    <li><a href="https://github.com/gogins-dev">GitHub: gogins-dev</a></li>
+                    <li><a href="https://github.com/gogins/michael.gogins.studio">GitHub: michael.gogins.studio</a></li>
+                    <li><a href="https://gogins.github.io/cloud-music.html">cloud-5 music</a></li>
+                </ul>
+            </nav>
+        </aside>
 
-    <h3 align="center">
-        <a href="https://michaelgogins.tumblr.com">Copyright &#xA9; 2026 Michael Gogins</a>
-    </h3>
+        <main class="main-content">
+            <header id="title-block-header">
+                <h1 class="title">Michael Gogins</h1>
+            </header>
 
-    <p align="center">
-        <img src="{{ '/michael-gogins.jpg' | relative_url }}" alt="Michael Gogins" width="300" />
-    </p>
+            <h3 align="center">
+                <a href="https://michaelgogins.tumblr.com">Copyright &#xA9; 2026 Michael Gogins</a>
+            </h3>
 
-    <p>I compose algorithmic and electroacoustic music, and build tools for
-        making music in Web browsers with
-        <a href="https://csound.com/">Csound</a>,
-        <a href="https://github.com/gogins/csound-ac">CsoundAC</a>, and
-        related systems.</p>
-
-    <h2 id="evoking-harmony-via-convolution">Evoking Harmony via Convolution</h2>
-    <ul class="media-list">
-        <li class="media-item">
-            <p class="media-item-title">
-                <button type="button" class="media-open" id="open-pdf-reader">Paper (4 pages, PDF)</button>
+            <p align="center">
+                <img src="{{ '/michael-gogins.jpg' | relative_url }}" alt="Michael Gogins" width="300" />
             </p>
-            <a class="media-download"
-                href="https://github.com/gogins/michael.gogins.studio/releases/download/2026-ICSC/icsc2026_evoking_harmony_4p.pdf">Download PDF</a>
-        </li>
-        <li class="media-item">
-            <p class="media-item-title">imparting_harmonies_test.wav</p>
-            <audio controls preload="metadata"
-                src="https://github.com/gogins/michael.gogins.studio/releases/download/2026-ICSC/imparting_harmonies_test.wav">
-                Your browser does not support embedded audio.
-            </audio>
-            <a class="media-download"
-                href="https://github.com/gogins/michael.gogins.studio/releases/download/2026-ICSC/imparting_harmonies_test.wav">Download</a>
-        </li>
-        <li class="media-item">
-            <p class="media-item-title">harmony_convolver_walk.wav</p>
-            <audio controls preload="metadata"
-                src="https://github.com/gogins/michael.gogins.studio/releases/download/2026-ICSC/Michael.Gogins.harmony_convolver_walk.int24.wav">
-                Your browser does not support embedded audio.
-            </audio>
-            <a class="media-download"
-                href="https://github.com/gogins/michael.gogins.studio/releases/download/2026-ICSC/Michael.Gogins.harmony_convolver_walk.int24.wav">Download</a>
-        </li>
-    </ul>
+
+            <p>I compose algorithmic and electroacoustic music, and build tools for
+                making music in Web browsers with
+                <a href="https://csound.com/">Csound</a>,
+                <a href="https://github.com/gogins/csound-ac">CsoundAC</a>, and
+                related systems.</p>
+
+            <h2 id="evoking-harmony-via-convolution">Evoking Harmony via Convolution</h2>
+            <ul class="media-list">
+                <li class="media-item">
+                    <p class="media-item-title">
+                        <button type="button" class="media-open" id="open-pdf-reader">Paper (4 pages, PDF)</button>
+                    </p>
+                    <a class="media-download"
+                        href="https://github.com/gogins/michael.gogins.studio/releases/download/2026-ICSC/icsc2026_evoking_harmony_4p.pdf">Download PDF</a>
+                </li>
+                <li class="media-item">
+                    <p class="media-item-title">imparting_harmonies_test.wav</p>
+                    <audio controls preload="metadata"
+                        src="https://github.com/gogins/michael.gogins.studio/releases/download/2026-ICSC/imparting_harmonies_test.wav">
+                        Your browser does not support embedded audio.
+                    </audio>
+                    <a class="media-download"
+                        href="https://github.com/gogins/michael.gogins.studio/releases/download/2026-ICSC/imparting_harmonies_test.wav">Download</a>
+                </li>
+                <li class="media-item">
+                    <p class="media-item-title">harmony_convolver_walk.wav</p>
+                    <audio controls preload="metadata"
+                        src="https://github.com/gogins/michael.gogins.studio/releases/download/2026-ICSC/Michael.Gogins.harmony_convolver_walk.int24.wav">
+                        Your browser does not support embedded audio.
+                    </audio>
+                    <a class="media-download"
+                        href="https://github.com/gogins/michael.gogins.studio/releases/download/2026-ICSC/Michael.Gogins.harmony_convolver_walk.int24.wav">Download</a>
+                </li>
+            </ul>
+        </main>
+    </div>
 
     <dialog id="pdf-reader" class="pdf-dialog" aria-labelledby="pdf-reader-title">
         <div class="pdf-dialog-header">
@@ -69,17 +88,6 @@ layout: null
                 src="{{ '/icsc2026_evoking_harmony_4p.pdf' | relative_url }}#view=FitH" />
         </div>
     </dialog>
-
-    <h2 id="links">Links</h2>
-    <ul>
-        <li><a href="https://michaelgogins.tumblr.com">Blog (Tumblr)</a></li>
-        <li><a href="https://www.youtube.com/channel/UCG9XGUQzP1ddkOmLNKot7kw">YouTube</a></li>
-        <li><a href="https://michaelgogins.bandcamp.com/">Bandcamp</a></li>
-        <li><a href="https://github.com/gogins">GitHub: gogins</a></li>
-        <li><a href="https://github.com/gogins-dev">GitHub: gogins-dev</a></li>
-        <li><a href="https://github.com/gogins/michael.gogins.studio">GitHub: michael.gogins.studio</a></li>
-        <li><a href="https://gogins.github.io/cloud-music.html">cloud-5 music at gogins.github.io</a></li>
-    </ul>
 
     <script>
         (function () {
