@@ -249,3 +249,93 @@
     li {
       font-family: Georgia, Garamond, serif;
     }
+
+    .media-list {
+      list-style: none;
+      padding-left: 0;
+      margin-top: 1em;
+    }
+
+    .media-item {
+      margin: 1.25em 0;
+    }
+
+    .media-item-title {
+      margin: 0 0 0.5em 0;
+      font-family: Georgia, Garamond, serif;
+    }
+
+    .media-item audio {
+      display: block;
+      width: 100%;
+      margin: 0.25em 0 0.5em 0;
+    }
+
+    .media-open,
+    .media-download {
+      font-family: Verdana, Geneva, sans-serif;
+      font-size: 100%;
+    }
+
+    .media-open {
+      background: none;
+      border: none;
+      padding: 0;
+      color: #0645ad;
+      cursor: pointer;
+      text-align: left;
+      font-family: Georgia, Garamond, serif;
+    }
+
+    .media-open:hover {
+      text-decoration: underline;
+    }
+
+    .pdf-dialog {
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 0;
+      width: min(92vw, 52rem);
+      height: min(92vh, 44rem);
+      max-width: none;
+      max-height: none;
+      background: whitesmoke;
+    }
+
+    .pdf-dialog::backdrop {
+      background: rgba(0, 0, 0, 0.45);
+    }
+
+    .pdf-dialog-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1em;
+      padding: 0.6em 0.8em;
+      border-bottom: 1px solid #ddd;
+      font-family: Verdana, Geneva, sans-serif;
+      font-size: 0.9em;
+    }
+
+    .pdf-dialog-close {
+      background: none;
+      border: none;
+      font-size: 1.4em;
+      line-height: 1;
+      cursor: pointer;
+      color: #1a1a1a;
+      padding: 0 0.25em;
+    }
+
+    .pdf-dialog-body {
+      height: calc(100% - 2.6em);
+      margin: 0;
+      padding: 0;
+    }
+
+    .pdf-dialog-body embed {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }

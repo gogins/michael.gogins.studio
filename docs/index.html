@@ -31,11 +31,44 @@ layout: null
         related systems.</p>
 
     <h2 id="evoking-harmony-via-convolution">Evoking Harmony via Convolution</h2>
-    <ul>
-        <li><a href="https://github.com/gogins/michael.gogins.studio/releases/download/2026-ICSC/icsc2026_evoking_harmony_4p.pdf">Paper (4 pages, PDF)</a></li>
-        <li><a href="https://github.com/gogins/michael.gogins.studio/releases/download/2026-ICSC/imparting_harmonies_test.wav">imparting_harmonies_test.wav</a></li>
-        <li><a href="https://github.com/gogins/michael.gogins.studio/releases/download/2026-ICSC/Michael.Gogins.harmony_convolver_walk.int24.wav">harmony_convolver_walk.wav</a></li>
+    <ul class="media-list">
+        <li class="media-item">
+            <p class="media-item-title">
+                <button type="button" class="media-open" id="open-pdf-reader">Paper (4 pages, PDF)</button>
+            </p>
+            <a class="media-download"
+                href="https://github.com/gogins/michael.gogins.studio/releases/download/2026-ICSC/icsc2026_evoking_harmony_4p.pdf">Download PDF</a>
+        </li>
+        <li class="media-item">
+            <p class="media-item-title">imparting_harmonies_test.wav</p>
+            <audio controls preload="metadata"
+                src="https://github.com/gogins/michael.gogins.studio/releases/download/2026-ICSC/imparting_harmonies_test.wav">
+                Your browser does not support embedded audio.
+            </audio>
+            <a class="media-download"
+                href="https://github.com/gogins/michael.gogins.studio/releases/download/2026-ICSC/imparting_harmonies_test.wav">Download</a>
+        </li>
+        <li class="media-item">
+            <p class="media-item-title">harmony_convolver_walk.wav</p>
+            <audio controls preload="metadata"
+                src="https://github.com/gogins/michael.gogins.studio/releases/download/2026-ICSC/Michael.Gogins.harmony_convolver_walk.int24.wav">
+                Your browser does not support embedded audio.
+            </audio>
+            <a class="media-download"
+                href="https://github.com/gogins/michael.gogins.studio/releases/download/2026-ICSC/Michael.Gogins.harmony_convolver_walk.int24.wav">Download</a>
+        </li>
     </ul>
+
+    <dialog id="pdf-reader" class="pdf-dialog" aria-labelledby="pdf-reader-title">
+        <div class="pdf-dialog-header">
+            <span id="pdf-reader-title">Evoking Harmony via Convolution</span>
+            <button type="button" class="pdf-dialog-close" id="close-pdf-reader" aria-label="Close">&#xD7;</button>
+        </div>
+        <div class="pdf-dialog-body">
+            <embed id="pdf-embed" type="application/pdf"
+                src="{{ '/icsc2026_evoking_harmony_4p.pdf' | relative_url }}#view=FitH" />
+        </div>
+    </dialog>
 
     <h2 id="links">Links</h2>
     <ul>
@@ -47,6 +80,35 @@ layout: null
         <li><a href="https://github.com/gogins/michael.gogins.studio">GitHub: michael.gogins.studio</a></li>
         <li><a href="https://gogins.github.io/cloud-music.html">cloud-5 music at gogins.github.io</a></li>
     </ul>
+
+    <script>
+        (function () {
+            const dialog = document.getElementById('pdf-reader');
+            const openButton = document.getElementById('open-pdf-reader');
+            const closeButton = document.getElementById('close-pdf-reader');
+            const pdfUrl = {{ '/icsc2026_evoking_harmony_4p.pdf' | relative_url | jsonify }};
+            const pdfEmbed = document.getElementById('pdf-embed');
+
+            openButton.addEventListener('click', function () {
+                pdfEmbed.src = pdfUrl + '#view=FitH';
+                dialog.showModal();
+            });
+
+            closeButton.addEventListener('click', function () {
+                dialog.close();
+            });
+
+            dialog.addEventListener('click', function (event) {
+                if (event.target === dialog) {
+                    dialog.close();
+                }
+            });
+
+            dialog.addEventListener('close', function () {
+                pdfEmbed.removeAttribute('src');
+            });
+        }());
+    </script>
 </body>
 
 </html>
