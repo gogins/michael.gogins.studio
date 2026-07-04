@@ -1,3 +1,6 @@
+---
+layout: null
+---
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
     <title>Michael Gogins</title>
-    <link rel="stylesheet" href="readme.css" />
+    <link rel="stylesheet" href="{{ '/readme.css' | relative_url }}">
 </head>
 
 <body>
@@ -18,7 +21,7 @@
     </h3>
 
     <p align="center">
-        <img src="michael-gogins.jpg" alt="Michael Gogins" width="300" />
+        <img src="{{ '/michael-gogins.jpg' | relative_url }}" alt="Michael Gogins" width="300" />
     </p>
 
     <p>I compose algorithmic and electroacoustic music, and build tools for

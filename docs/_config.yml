@@ -1,3 +1,6 @@
+title: Michael Gogins
+url: https://gogins.github.io
+baseurl: /michael.gogins.studio
 plugins:
   - jekyll-redirect-from
 theme: jekyll-theme-cayman
