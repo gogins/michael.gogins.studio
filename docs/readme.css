@@ -347,19 +347,23 @@
     }
 
     .page-layout {
-      display: flex;
-      align-items: flex-start;
-      gap: 2.5em;
-      max-width: 52rem;
-      margin: 0 auto;
-      padding: 2em 1.5em;
+      display: block;
+      min-height: 100vh;
     }
 
     .sidebar {
-      flex: 0 0 10.5em;
-      padding-top: 0.25em;
-      border-right: 1px solid #ddd;
-      padding-right: 1.5em;
+      position: fixed;
+      top: 0;
+      right: 0;
+      left: auto;
+      width: 11.5em;
+      height: 100vh;
+      box-sizing: border-box;
+      padding: 2em 1.25em;
+      border-left: 1px solid #ddd;
+      border-right: none;
+      background: whitesmoke;
+      overflow-y: auto;
     }
 
     .sidebar h2 {
@@ -381,9 +385,10 @@
     }
 
     .main-content {
-      flex: 1;
-      min-width: 0;
-      max-width: 36em;
+      margin-right: 11.5em;
+      margin-left: 0;
+      padding: 2em 2.5em 3em 2em;
+      max-width: 40em;
     }
 
     .main-content header {
@@ -391,17 +396,17 @@
     }
 
     @media (max-width: 640px) {
-      .page-layout {
-        flex-direction: column;
-        gap: 1.5em;
+      .sidebar {
+        position: static;
+        width: auto;
+        height: auto;
+        border-left: none;
+        border-bottom: 1px solid #ddd;
+        padding: 1.25em 1.5em;
       }
 
-      .sidebar {
-        flex: none;
-        width: 100%;
-        border-right: none;
-        border-bottom: 1px solid #ddd;
-        padding-right: 0;
-        padding-bottom: 1em;
+      .main-content {
+        margin-right: 0;
+        padding: 1.5em;
       }
     }
