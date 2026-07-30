@@ -2,6 +2,7 @@
 % Short (4-page) variant of icsc2026_evoking_harmony.tex
 
 \documentclass[runningheads,a4paper]{llncs}
+\usepackage{icsc2026_submission}
 \usepackage{url}
 \usepackage{amsmath}
 \usepackage{graphicx}
@@ -19,9 +20,9 @@
 
 \title{Evoking Harmony via Convolution}
 \titlerunning{Evoking Harmony}
-\author{AuthorA\inst{1}\and AuthorB\inst{2}}
-\authorrunning{AuthorA and AuthorB (or AuthorA et al. if too long)}
-\institute{InstituteA \and InstituteB\\ \email{your.email@yourdomain.com}}
+\author{\submissionauthor}
+\authorrunning{\submissionauthorrunning}
+\institute{\submissioninstitute}
 
 \maketitle
 
@@ -49,8 +50,7 @@ effect in electroacoustic music. I have now performed some experiments using
 Csound \cite{csound_home}, and here I report my results. These include some 
 user-defined opcodes, a Csound test orchestra, some input soundfiles, the 
 resulting test soundfile, and an example piece demonstrating some musical 
-uses. All of these materials are available at my Github respository 
-\cite{gogins_github_io}.
+uses. All of these materials are available at \submissionmaterialsrepo.
 
 In brief, it is possible to approximate what I heard by convolving a source 
 signal with the pitch-classes of a chord. This functions as a filter to 
@@ -99,8 +99,8 @@ artifact, but also increases the subjective time resolution of the effect.
 Direct convolution with $N$ cycles of each chord partial is optimal but
 impractical; I did not implement it. Three efficient variants are compared
 (Table~\ref{tab:udos}). All accept up to six chord voices (MIDI key numbers,
-possibly fractional), wet/dry mix, and output gain; full signatures are in the
-repository \cite{gogins_github_io}.
+possibly fractional), wet/dry mix, and output gain; full signatures are in
+\submissionmaterialsrepocite.
 
 \begin{table}[t]
 \centering
@@ -157,7 +157,7 @@ not always sound \emph{more} tonal: on rain, 100 cents sounds stronger than
 5 cents because resonances overlap; on the bowl, narrow bands often fail to
 catch inharmonic partials. Multi-\texttt{ftconv} at 8 cycles balances soft
 tonality with sharper attacks than plain \texttt{ftconv}. See 
-\cite{evoking_harmony_test} for more results.
+\submissioncitetestresults{} for more results.
 
 \begin{figure}[t]
  \centering
@@ -168,7 +168,7 @@ tonality with sharper attacks than plain \texttt{ftconv}. See
 
 A sound walk with a field recorder at twilight alongside a ruined castle in a 
 French village demonstrates various applications of harmonic evocation to 
-ambient sounds \cite{evoking_harmony_sound_walk}
+ambient sounds \submissioncitesoundwalk
 
 \section{Discussion}
 
@@ -177,13 +177,11 @@ tonality is audible when time/frequency settings match the source. It works
 best when harmonic sensation is subtle---on unpitched or varied textures, or as
 a ``harmonic shadow'' on pitched sources in a different key. A wetter, longer
 smear (filter bank) can suggest ringing arpeggios on rhythmic material.
-Implementation and parameter choices are audible but nuanced; supplementary
-figures and audio on GitHub cover bowl, rainspout, and time-domain responses.
+Implementation and parameter choices are audible but nuanced;
+\submissiongithubsupplement{} cover bowl, rainspout, and time-domain responses.
 
 \paragraph{Note.}
-This abbreviated version was edited for length with assistance from generative
-AI tools; the author reviewed the text and retains responsibility for all
-technical content.
+\submissionainote{}
 
 \bibliographystyle{unsrt}
 \bibliography{icsc2026_evoking_harmony}

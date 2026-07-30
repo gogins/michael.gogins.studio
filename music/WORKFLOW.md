@@ -15,6 +15,6 @@ Use a consistent toolkit on both macOS and Linux. This should be as small as pos
 
  - When a piece is finished, it should be post-processed using `playpen.py` to produce soundfiles for different media outlets. All prior versions and non-essential working materials for the piece should be deleted or moved to a subdirectory of the `music/attic` subdirectory. Then the subdirectory of the piece should be moved to the `michael.gogins.studio/music/finished directory`.
 
- - For cloud-5 and NW.js pieces, a symbolic link to the piece should be created in the `cloud-5` directory, so that the piece can be run from there without having to copy lots of things to the piece directory.
+ - For cloud-5 and NW.js pieces, **keep the canonical HTML in michael.gogins.studio**. Do not maintain a second editable copy under cloud-5. Run the piece with `playpen.py html-localhost` or `playpen.py html-nw`, which symlink the piece (and optional `.state.json`) into `cloud5-web-root` from `playpen.ini` — normally `cloud-5/strudel/website/dist`, which is what the local server and NW.js actually load. Edits belong in the studio file; the dist entry is only a link. Framework examples that live in the cloud-5 repo itself are the exception (they already live beside the runtime assets).
 
  - Pieces that are not good enough should be moved to their own subdirectory of `michael.gogins.studio/music/attic`.
