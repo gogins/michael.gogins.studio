@@ -9,19 +9,7 @@ This is my Git repository, intended to serve as my creative studio for computer 
 
 ## Online Compositions
 
-I am publishing here a number of online compositions of visual music, interactive music, and straight ahead electroacoustic music. These are compositions that you can play right here from your Web browser with high-resolution audio using my WebAssembly build of Csound.
-
-Some of these pieces play indefinitely, some accept user interaction, and some just play and stop.
-
-Click on _Play_ once to load Csound, and then click on _Play_ again to play the piece.
-
-### [Scrims v2](https://gogins.github.io/csound-extended/scrims.html)
-
-An interactive piece of visual music. The user controls various parameters of Hopalong fractals, how they are mapped to music notes, their chords and chord progressions, and parameters of the Csound instruments.
-
-### [Unperformed Experiments Have No Results](https://gogins.github.io/csound-extended/Unperformed_experiments.html)
-
-An interactive piece of visual music. The user controls various parameters of a display of interfering sine patterns, which are sparsely mapped to musical notes. Try a duration of -1 for a fixed number of notes, or a positive duration for any number of notes of that duration -- but they can really pile up! Try changing tempo, reverb, and so on.
+You may fined online at https://gogins.github.io/ a number of pieces that run and play in a Web browser. Some of these pieces permit greater or lesser degrees of control by the user.
 
 ## Live Talks
 
