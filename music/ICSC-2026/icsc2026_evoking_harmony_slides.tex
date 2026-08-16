@@ -1,0 +1,353 @@
+\documentclass{beamer}
+% About 1 minute per slide: 20 slides.
+\mode<presentation>
+{
+  \usetheme{Warsaw}
+  % or ...
+  \setbeamercovered{transparent}
+  % or whatever (possibly just delete it)
+}
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{fancyvrb}
+\usepackage{caption}
+\usepackage{listings}
+
+\title[Evoking Harmony via Convolution] % (optional, use only with long paper titles)
+{Evoking Harmony}
+
+\author[Gogins] % (optional, use only with lots of authors)
+{Michael Gogins\inst{1}}
+% - Give the names in the same order as the appear in the paper.
+% - Use the \inst{?} command only if the authors have different
+%   affiliation.
+
+\institute % (optional, but mostly needed)
+{
+	\inst{1}Irreducible Productions, New York\\
+	\url{http://michaelgogins.tumblr.com}
+}
+% - Use the \inst command only if there are several affiliations.
+% - Keep it simple, no one is interested in your street address.
+
+\date[NYCEMF]% (optional, should be abbreviation of conference name)
+{New York City Electroacoustic Music Festival 2026}
+% - Either use conference name or its abbreviation.
+% - Not really informative to the audience, more for people (including
+%   yourself) who are reading the slides online
+
+\subject{Computer Music}
+% This is only inserted into the PDF information catalog. Can be left
+% out. 
+\begin{document}
+\lstset{basicstyle=\ttfamily\tiny,commentstyle=\ttfamily\tiny,tabsize=2,breaklines,fontadjust=true,keepspaces=false,fancyvrb=true,showstringspaces=false,moredelim=[is][\textbf]{\\emph\{}{\}}}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Outline}
+  \tableofcontents
+  % You might wish to add the option [pausesections]
+\end{frame}
+
+\section{Summary}
+
+\begin{frame}[allowframebreaks]{Summary}
+  \begin{itemize}
+	\item
+		\emph{As a kid I heard chords and harmonies in the wind outside the car.}
+	\item
+		This is my attempt to evoke such chords and harmonies from various sounds.
+	\item
+		The basic idea is to convolve a source sound with the impulse response of a specific chord, \emph{i.e.} of the chord's \emph{pitch-classes}.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Related Techniques}
+  \begin{itemize}
+	\item
+		Constant-Q filter bank, if its filters are centered on the pitch-classes.
+	\item
+		Gabor/Morland wavelet, but its cells are not centered on the pitch-classes, so it's not a good fit for this application.
+	\item \emph{Not related}: Comb filter. That's periodic in linear frequency, this is logarithmic in frequency period.
+\end{itemize}
+\end{frame}
+
+\section{Motivation}
+
+\begin{frame}[allowframebreaks]{Why?}
+  \begin{itemize}
+		\item
+			\emph{Caveat emptor}: These are my personal views based on my own personal history in computer music as a composer, programmer, and occasional performer.
+		\item
+			HTML with JavaScript can do it all.
+		\item
+			HTML with JavaScript is standardized and stable.
+		\item
+			All you need is a standard Web browser. Chrome, Firefox, Internet Explorer, Safari will all work. These programs are free.
+		\item
+			Whatever works in a standalone Web browser should \emph{also} work in a Web browser that is embedded into some other computer music application. CsoundQt and Csound for Android are already examples of this.
+		\item
+			JavaScript, as a dynamically typed language, is well suited to work as ``glue'' for building mashups, to get one system working with another, and so on.
+		\item
+			\emph{Therefore}, the use of HTML and JavaScript in computer music has the potential to rein in the proliferation of computer music languages and systems, of which there are far too many, causing endless reinventing of the wheel and splintering of communities.
+	\end{itemize}
+\end{frame}
+
+\section{Agenda}
+
+\begin{frame}{Agenda}
+  	\begin{itemize}
+		\item
+			I will focus on Gibber and Csound because they are self-contained systems in which one can edit pieces and then run them.
+		\item
+			For each system, I will demonstrate installation, configuration, and use.
+		\item
+			I expect other computer music systems also to pick on HTML and JavaScript.
+	\end{itemize}
+\end{frame}
+
+\section{Gibber}
+
+\begin{frame}{Gibber \url{http://charlie-roberts.com/gibber/}}
+  	\begin{itemize}
+		\item
+			Gibber shows the power of live coding \url{http://gibber.mat.ucsb.edu/}.
+		\item
+			There is no installation.
+		\item
+			There is no configuration..
+		\item
+			You edit code and run it interactively --- it is live coding.
+		\item
+			One caveat --- it really is usable only on personal computers (because of awkward key bindings, not because devices are not powerful enough).
+		\item
+			\emph{Also} available as library for use in other HTML projects.
+		\item 
+			As such, works with p5.js, a JavaScript environment similar to Processing.
+	\end{itemize}
+\end{frame}
+
+\section{Csound}
+
+\begin{frame}[allowframebreaks]{Csound}
+  	\begin{itemize}
+  		\item
+  			Csound is \emph{at least} as powerful as any other computer music system.
+		\item
+			Currently you can use HTML and JavaScript with Csound on:
+  			\begin{itemize}
+				\item
+					Emscripten Csound (any browser) \url{http://eddyc.github.io/CsoundEmscripten/}, not yet ready for prime time.
+				\item
+					PNaCl Csound (Google Chrome browser on personal computers) \url{http://vlazzarini.github.io/}.
+				\item
+					Csound for Android (any powerful smartphone, tablet, etc.).
+				\item
+					CsoundQt (on Windows, soon Linux and OS X?).
+				\item
+					csound.node with NW.js on any personal computer operating system (I think).
+			\end{itemize}
+		\item
+			I will focus on CsoundQt but also show a bit of the others.
+		\item
+			How to create and edit \texttt{.csd} files with embedded HTML and JavaScript..
+		\item
+			How to create your own user interface with HTML and JavaScript.
+		\item
+			How to generate scores in JavaScript.
+		\item
+			Some tidbits to whet your appetite...
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[allowframebreaks,fragile]{Step by Step}
+  	\begin{itemize}
+  		\item
+			I will demonstrate a simple piece, which I will refine step by step to give you an idea of what part of Web standards does what.
+		\item
+			I start with ``Hello, World!'' to show where the HTML goes in a Csound file. It's pretty simple. 
+		\item
+			Everything from the beginning \texttt{<html>} tag to the final \texttt{</html>} tag, \emph{inclusive}, is absolutely any valid HTML code.
+		\item
+			In other words, the \texttt{.csd} file simply embeds a regular Web page that is like any other Web page.
+			\begin{lstlisting}[language=HTML]
+<CsoundSynthesizer>
+<CsOptions>
+</CsOptions>
+<CsInstruments>
+sr = 44100
+ksmps = 128
+nchnls = 2
+0dbfs = 1.0
+</CsInstruments>
+<html>
+Hello, World, this is Csound!
+</html>
+<CsScore>
+</CsScore>
+</CsoundSynthesizer>			
+			\end{lstlisting}
+		\item
+			Next, I add some JavaScript code to generate a Csound score. I omit the orchestra code and show only the \texttt{<html>} element.
+			\begin{lstlisting}[language=HTML]
+<html>
+<h1>Score Generator</h1>
+<button onclick="generate()"> Generate score </button>
+<script>
+var c = 0.99;
+var y = 0.5;
+function generate() {
+	csound.message("generate()...\n");
+	for (i = 0; i < 200; i++) {
+	  var t = i * (1.0 / 3.0);	
+	  var y1 = 4.0 * c * y * (1.0 - y);
+	  y = y1;
+	  var key = Math.round(36.0 + (y * 60.0));
+	  var note = "i 1 " + t + " 2.0 " + key + " 60 0.0 0.5\n";
+	  csound.readScore(note);		
+	};
+};
+</script>
+</html>
+			\end{lstlisting}
+	\item
+		I must emphasize that the \emph{only} difference between this Web page (running in CsoundQt) and any other Web page running in any standard Web browser is that in this Web page, there exists a JavaScript object named \texttt{csound} and this object has JavaScript functions for the core of the Csound API.
+	\item
+		Next, I add some sliders to control the simple Csound orchestra in this piece.
+	\item 
+		I show only excerpts from the code. First, I use a slider to control the value of the variable \texttt{c} in the score generating code. I use a table to layout the sliders, their labels, and the fields displaying their values:
+			\begin{lstlisting}
+<tr>
+<td>
+<label for=sliderC>c</label>
+<td>
+<input type=range min=0 max=1 value=.5 id=sliderC step=0.001 oninput="on_sliderC(value)">
+<td>
+<output for=sliderC id=sliderCOutput>.5</output>
+</tr>
+			\end{lstlisting}
+	\item
+		JavaScript:
+			\begin{lstlisting}
+function on_sliderC(value) {
+	c = parseFloat(value);
+	document.querySelector('#sliderCOutput').value = c;
+}
+			\end{lstlisting}
+	\item
+		Second, I use sliders to set the values of some Csound channels that 
+		control the frequency modulation parameters and reverberation time of 
+		the Csound orchestra.
+	\item 
+		Here's the JavaScript event handler for the FM index slider:
+			\begin{lstlisting}
+function on_sliderFmIndex(value) {
+	var numberValue = parseFloat(value);
+	document.querySelector('#sliderFmIndexOutput').value = numberValue;
+	csound.setControlChannel('gk_FmIndex', numberValue);
+}
+			\end{lstlisting}
+	\item
+		Of course, this parameter requires code in the Csound orchestra to receive the channel value and convert it to a form that the FM instrument can use.
+	\item
+		The best practice is declare global variables for the channels whose names are prefixed with the instrument name, and then set those variables in an always on instrument like this:
+		\begin{lstlisting}
+instr Controls
+gk_FmIndex_ chnget "gk_FmIndex"
+if gk_FmIndex_  != 0 then
+ gk_FmIndex = gk_FmIndex_
+endif
+gk_FmCarrier_ chnget "gk_FmCarrier"
+if gk_FmCarrier_  != 0 then
+ gk_FmCarrier = gk_FmCarrier_
+endif
+gk_ReverberationDelay_ chnget "gk_ReverberationDelay"
+if gk_ReverberationDelay_  != 0 then
+ gk_ReverberationDelay = gk_ReverberationDelay_
+endif
+gk_MasterLevel_ chnget "gk_MasterLevel"
+if gk_MasterLevel_  != 0 then
+ gk_MasterLevel = gk_MasterLevel_
+endif
+endin
+		\end{lstlisting}
+	\item
+		Note that this style of coding permits the global variables to have default values that will work without the sliders.
+	\item
+		You may have noticed that the appearance of this Web page is rather bland and plain. That's easy to fix with a style sheet.
+	\item
+		Here's a style sheet to improve the fonts, colors, and layout of the page:
+		\begin{lstlisting}[language=HTML]
+<style type="text/css">
+input[type='range'] {
+    -webkit-appearance: none;
+    border-radius: 5px;
+    box-shadow: inset 0 0 5px #333;
+    background-color: #999;
+    height: 10px;
+    width: 100%;
+    vertical-align: middle;
+}
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    border: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background: yellow;
+    margin-top: -4px;
+    border-radius: 10px;
+}
+table td {
+    border-width: 2px;
+    padding: 8px;
+    border-style: solid;
+    border-color: transparent;
+    color:yellow;
+    background-color: teal;
+    font-family: sans-serif
+}
+</style>
+		\end{lstlisting}
+	\end{itemize}
+\end{frame}
+\begin{frame}[allowframebreaks]{That Was Simple}
+  \begin{itemize}
+	\item
+		Now that I have presented the rudiments of binding Csound to HTML with JavaScript, here are some more fleshed-out examples of what is possible. These are still very basic examples, tests of possibilities, not finished pieces.
+	\item
+		Here is a piece that uses a Lindenmayer system written in JavaScript to generate a more sophisticated score. The Lindenmayer system is also displayed on an HTML canvas element.
+	\item
+		Here is a piece that demonstrates WebGL, that is, 3-dimensional animated computer graphics programmed in JavaScript and displayed in a Web page. Every time this little ``Game of Life'' iterates, it plays a chord using Csound.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[allowframebreaks, fragile]{Current State of the JavaScript API}
+These are declared as in Java. Just omit the type names in your JavaScript code.
+\begin{lstlisting}
+int csound.getVersion()
+int csound.compileCsd(String path_name)
+void csound.compileOrc(String orchestra_code)
+double csound.evalCode(String orchestra_code)
+void csound.readScore(String score_lines)
+void csound.setControlChannel(String channel_name, double value)
+double csound.getControlChannel(String channel_name)
+void csound.message(String message_text)
+int csound.getSr()
+int csound.getKsmps()
+int csound.getNchnls()
+int csound.isPlaying()
+int csound.perform()
+int csound.stop()
+\end{lstlisting}
+\end{frame}
+\begin{frame}[allowframebreaks]{Questions?}
+\end{frame}
+\end{document}
+
+
