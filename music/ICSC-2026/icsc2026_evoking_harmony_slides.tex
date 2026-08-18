@@ -8,7 +8,7 @@
   % or whatever (possibly just delete it)
 }
 
-\usepackage[english]{babel}
+\usepackage[greek,english]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{times}
 \usepackage[T1]{fontenc}
@@ -16,8 +16,8 @@
 \usepackage{caption}
 \usepackage{listings}
 
-\title[Evoking Harmony via Convolution] % (optional, use only with long paper titles)
-{Evoking Harmony}
+\title[Evoking Harmony] % (optional, use only with long paper titles)
+{Evoking Harmony via Convolution}
 
 \author[Gogins] % (optional, use only with lots of authors)
 {Michael Gogins\inst{1}}
@@ -34,7 +34,7 @@
 % - Keep it simple, no one is interested in your street address.
 
 \date[NYCEMF]% (optional, should be abbreviation of conference name)
-{New York City Electroacoustic Music Festival 2026}
+{International Csound Conference 2026}
 % - Either use conference name or its abbreviation.
 % - Not really informative to the audience, more for people (including
 %   yourself) who are reading the slides online
@@ -43,7 +43,7 @@
 % This is only inserted into the PDF information catalog. Can be left
 % out. 
 \begin{document}
-\lstset{basicstyle=\ttfamily\tiny,commentstyle=\ttfamily\tiny,tabsize=2,breaklines,fontadjust=true,keepspaces=false,fancyvrb=true,showstringspaces=false,moredelim=[is][\textbf]{\\emph\{}{\}}}
+\lstset{basicstyle=\ttfamily\tiny,commentstyle=\ttfamily\tiny,tabsize=2,breaklines,showstringspaces=false}
 
 \begin{frame}
   \titlepage
@@ -56,14 +56,14 @@
 
 \section{Summary}
 
-\begin{frame}[allowframebreaks]{Summary}
+\begin{frame}{Summary}
   \begin{itemize}
 	\item
-		\emph{As a kid I heard chords and harmonies in the wind outside the car.}
+		\emph{As a kid, as my father drove across the desert, I heard melodies and chords within the wind outside the car.}
 	\item
-		This is my attempt to evoke such chords and harmonies from various sounds.
+		This is my attempt to evoke such harmonies from various sounds.
 	\item
-		The basic idea is to convolve a source sound with the impulse response of a specific chord, \emph{i.e.} of the chord's \emph{pitch-classes}.
+		The basic idea is to convolve a source sound with the impulse response of a specific chord, \emph{i.e.} of the chord's \emph{pitch-classes}, on \emph{every} octave.
 	\end{itemize}
 \end{frame}
 
@@ -72,100 +72,116 @@
 	\item
 		Constant-Q filter bank, if its filters are centered on the pitch-classes.
 	\item
-		Gabor/Morland wavelet, but its cells are not centered on the pitch-classes, so it's not a good fit for this application.
-	\item \emph{Not related}: Comb filter. That's periodic in linear frequency, this is logarithmic in frequency period.
+	\emph{Not closely related}: Gabor/Morland wavelet, but its cells are not centered on pitch-classes, so it's not a good fit.
+	\item \emph{Even less related}: Comb filter, but that's periodic in linear frequency; this is logarithmic in frequency period.
 \end{itemize}
 \end{frame}
 
 \section{Motivation}
 
-\begin{frame}[allowframebreaks]{Why?}
+\begin{frame}{Musical Motivation}
   \begin{itemize}
 		\item
-			\emph{Caveat emptor}: These are my personal views based on my own personal history in computer music as a composer, programmer, and occasional performer.
-		\item
-			HTML with JavaScript can do it all.
-		\item
-			HTML with JavaScript is standardized and stable.
-		\item
-			All you need is a standard Web browser. Chrome, Firefox, Internet Explorer, Safari will all work. These programs are free.
-		\item
-			Whatever works in a standalone Web browser should \emph{also} work in a Web browser that is embedded into some other computer music application. CsoundQt and Csound for Android are already examples of this.
-		\item
-			JavaScript, as a dynamically typed language, is well suited to work as ``glue'' for building mashups, to get one system working with another, and so on.
-		\item
-			\emph{Therefore}, the use of HTML and JavaScript in computer music has the potential to rein in the proliferation of computer music languages and systems, of which there are far too many, causing endless reinventing of the wheel and splintering of communities.
-	\end{itemize}
+			There has beeb a disjunction between "non-tonal" (loosely speaking) electroacoustic music and 'non-tonal" (loosely speaking) electroacoustic music.
+		\item 
+		    This goes back to the roots of computer music in the 1950s and 1960s, a period dominated by technological utopianism and musical serialism.
+		\item "Non-tonal" has implied a focus on \textgreek{>ako\'usmata}; "tonal" implies a focus on pitch relations abstracted from actual sounds.
+		\item This particular algorithm works at the \emph{boundary} of timbre and tonality.
+\end{itemize}
 \end{frame}
 
 \section{Agenda}
 
-\begin{frame}{Agenda}
-  	\begin{itemize}
-		\item
-			I will focus on Gibber and Csound because they are self-contained systems in which one can edit pieces and then run them.
-		\item
-			For each system, I will demonstrate installation, configuration, and use.
-		\item
-			I expect other computer music systems also to pick on HTML and JavaScript.
-	\end{itemize}
+\begin{frame}{The Mathematics}
+
+For each pitch class $c$, the corresponding filter responses form an octave-related family of scaled kernels.
+
+\[
+	H_C(f)
+	=
+	\sum_{c\in C}\sum_n H_{c,n}(f),
+	\qquad
+	H_{c,n}(f)
+	\simeq
+	H_c\!\left(2^{-n}f\right).
+\]
+
 \end{frame}
 
-\section{Gibber}
-
-\begin{frame}{Gibber \url{http://charlie-roberts.com/gibber/}}
-  	\begin{itemize}
-		\item
-			Gibber shows the power of live coding \url{http://gibber.mat.ucsb.edu/}.
-		\item
-			There is no installation.
-		\item
-			There is no configuration..
-		\item
-			You edit code and run it interactively --- it is live coding.
-		\item
-			One caveat --- it really is usable only on personal computers (because of awkward key bindings, not because devices are not powerful enough).
-		\item
-			\emph{Also} available as library for use in other HTML projects.
-		\item 
-			As such, works with p5.js, a JavaScript environment similar to Processing.
-	\end{itemize}
+\begin{frame}{The Mathematics (continued)}
+In log-frequency coordinates
+\[
+	u=\log_2 f,
+\]
+octave transposition becomes translation by one unit, and the total chordal response is approximately periodic with period one octave:
+\[
+	H_C(u+1)\simeq H_C(u).
+\]
+Each octave therefore contains $K$ peaks, whose positions within the octave are determined by the $K$ pitch classes of the chord. The chord functions as the unit cell of a periodic filter in log-frequency space.
 \end{frame}
 
-\section{Csound}
+\section{The Implementation}
 
-\begin{frame}[allowframebreaks]{Csound}
-  	\begin{itemize}
-  		\item
-  			Csound is \emph{at least} as powerful as any other computer music system.
-		\item
-			Currently you can use HTML and JavaScript with Csound on:
-  			\begin{itemize}
-				\item
-					Emscripten Csound (any browser) \url{http://eddyc.github.io/CsoundEmscripten/}, not yet ready for prime time.
-				\item
-					PNaCl Csound (Google Chrome browser on personal computers) \url{http://vlazzarini.github.io/}.
-				\item
-					Csound for Android (any powerful smartphone, tablet, etc.).
-				\item
-					CsoundQt (on Windows, soon Linux and OS X?).
-				\item
-					csound.node with NW.js on any personal computer operating system (I think).
-			\end{itemize}
-		\item
-			I will focus on CsoundQt but also show a bit of the others.
-		\item
-			How to create and edit \texttt{.csd} files with embedded HTML and JavaScript..
-		\item
-			How to create your own user interface with HTML and JavaScript.
-		\item
-			How to generate scores in JavaScript.
-		\item
-			Some tidbits to whet your appetite...
-	\end{itemize}
+\begin{frame}[fragile]{Algorithm (1/2): partials}
+\footnotesize
+\begin{verbatim}
+harmony_convolver_scaled(x, T, g_imp, g_dirac, PC[1..5]):
+
+  T     = clamp(abs(T), 0.01, 1.0)
+  n_max = T * 440
+  N     = max(2, round(T * sr))
+
+  // PC x octave partials + loudness weights
+  freqs = [];  weights = []
+  for midi = 0..127:
+    if (midi mod 12) not in PCs: continue
+    f = cpsmidinn(midi)
+    if f < 20 or f > 0.95*Nyquist: continue
+    fp = max(f, 150)            // rumble shelf
+    w  = R_A(1000) / R_A(fp)    // inverse A-weight
+    w  = min(w, 10^(6/20))      // cap boost +6 dB
+    append f to freqs
+    append w to weights
+
+  M = length(freqs)
+  h = zeros(N)
+\end{verbatim}
 \end{frame}
 
-\begin{frame}[allowframebreaks,fragile]{Step by Step}
+\begin{frame}[fragile]{Algorithm (2/2): grain, mix, convolve}
+\footnotesize
+\begin{verbatim}
+  // Build harmonic grain
+  if M > 0:
+    for n = 0..N-1:
+      t = n / sr;  s = 0
+      for i = 0..M-1:
+        f  = freqs[i]
+        Tf = min(T, n_max / f)  // shorter at high f
+        if t < Tf:
+          hann = 0.5-0.5*cos(2*pi*t/Tf)
+          s = s + weights[i]*hann*sin(2*pi*f*t)
+      h[n] = (s / M) * g_imp
+
+  // Dry+wet in one IR, then unit L2
+  h[0] = h[0] + g_dirac
+  h    = h / L2norm(h)
+
+  return ftconv(x, h)
+\end{verbatim}
+\end{frame}
+
+
+
+
+
+\section{Results}
+
+\begin{frame}[allowframebreaks]{Time vs. Frequency}
+
+\end{frame}
+
+\begin{frame}[allowframebreaks,fragile]{Sound Walk}
   	\begin{itemize}
   		\item
 			I will demonstrate a simple piece, which I will refine step by step to give you an idea of what part of Web standards does what.
