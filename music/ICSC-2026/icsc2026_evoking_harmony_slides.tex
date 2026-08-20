@@ -67,12 +67,12 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Related Techniques}
+\begin{frame}{Related Techniques?}
   \begin{itemize}
 	\item
-		Constant-Q filter bank, if its filters are centered on the pitch-classes.
+		Constant-Q filter bank, \emph{iff} its filters are centered on the pitch-classes.
 	\item
-	\emph{Not closely related}: Gabor/Morland wavelet, but its cells are not centered on pitch-classes, so it's not a good fit.
+	\emph{Not closely related}: Gabor/Morland wavelet, but its cells are not centered on pitch-classes -- not a good fit.
 	\item \emph{Even less related}: Comb filter, but that's periodic in linear frequency; this is logarithmic in frequency period.
 \end{itemize}
 \end{frame}
@@ -82,7 +82,7 @@
 \begin{frame}{Musical Motivation}
   \begin{itemize}
 		\item
-			There has beeb a disjunction between "non-tonal" (loosely speaking) electroacoustic music and 'non-tonal" (loosely speaking) electroacoustic music.
+			There has been a disjunction between "non-tonal" (loosely speaking) electroacoustic music and 'non-tonal" (loosely speaking) electroacoustic music.
 		\item 
 		    This goes back to the roots of computer music in the 1950s and 1960s, a period dominated by technological utopianism and musical serialism.
 		\item "Non-tonal" has implied a focus on \textgreek{>ako\'usmata}; "tonal" implies a focus on pitch relations abstracted from actual sounds.
@@ -90,7 +90,7 @@
 \end{itemize}
 \end{frame}
 
-\section{Agenda}
+\section{How It Works}
 
 \begin{frame}{The Mathematics}
 
@@ -120,17 +120,13 @@ octave transposition becomes translation by one unit, and the total chordal resp
 Each octave therefore contains $K$ peaks, whose positions within the octave are determined by the $K$ pitch classes of the chord. The chord functions as the unit cell of a periodic filter in log-frequency space.
 \end{frame}
 
-\section{The Implementation}
-
 \begin{frame}[fragile]{Algorithm (1/2): partials}
 \footnotesize
 \begin{verbatim}
 harmony_convolver_scaled(x, T, g_imp, g_dirac, PC[1..5]):
-
   T     = clamp(abs(T), 0.01, 1.0)
   n_max = T * 440
   N     = max(2, round(T * sr))
-
   // PC x octave partials + loudness weights
   freqs = [];  weights = []
   for midi = 0..127:
@@ -142,7 +138,6 @@ harmony_convolver_scaled(x, T, g_imp, g_dirac, PC[1..5]):
     w  = min(w, 10^(6/20))      // cap boost +6 dB
     append f to freqs
     append w to weights
-
   M = length(freqs)
   h = zeros(N)
 \end{verbatim}
@@ -162,207 +157,69 @@ harmony_convolver_scaled(x, T, g_imp, g_dirac, PC[1..5]):
           hann = 0.5-0.5*cos(2*pi*t/Tf)
           s = s + weights[i]*hann*sin(2*pi*f*t)
       h[n] = (s / M) * g_imp
-
   // Dry+wet in one IR, then unit L2
   h[0] = h[0] + g_dirac
   h    = h / L2norm(h)
-
   return ftconv(x, h)
 \end{verbatim}
 \end{frame}
 
-
-
-
-
 \section{Results}
 
-\begin{frame}[allowframebreaks]{Time vs. Frequency}
-
+\begin{frame}{Time vs.\ Frequency}
+\begin{center}
+\includegraphics[width=\linewidth,height=0.52\textheight,keepaspectratio=true]{spectrogram.png}\\[0.6em]
+{\scriptsize Impulse responses (narrow analysis window). Columns: unprocessed;
+filter bank 100 cents; 5 cents; \texttt{ftconv} (1 cycle); multi-\texttt{ftconv}
+8 cycles; 32 cycles.}
+\end{center}
 \end{frame}
 
 \begin{frame}[allowframebreaks,fragile]{Sound Walk}
-  	\begin{itemize}
-  		\item
-			I will demonstrate a simple piece, which I will refine step by step to give you an idea of what part of Web standards does what.
+	\begin{itemize}
 		\item
-			I start with ``Hello, World!'' to show where the HTML goes in a Csound file. It's pretty simple. 
+			I went out at twilight and walked up from my village in France alongside the ruins of Château de Lagarde.
 		\item
-			Everything from the beginning \texttt{<html>} tag to the final \texttt{</html>} tag, \emph{inclusive}, is absolutely any valid HTML code.
+			I recorded my walk with a Tascam field recorder: my footsteps through fallen leaves, voices from the village, cars returning home, the wind in the trees, jackdaws, and the bells of the church.
 		\item
-			In other words, the \texttt{.csd} file simply embeds a regular Web page that is like any other Web page.
-			\begin{lstlisting}[language=HTML]
-<CsoundSynthesizer>
-<CsOptions>
-</CsOptions>
-<CsInstruments>
-sr = 44100
-ksmps = 128
-nchnls = 2
-0dbfs = 1.0
-</CsInstruments>
-<html>
-Hello, World, this is Csound!
-</html>
-<CsScore>
-</CsScore>
-</CsoundSynthesizer>			
-			\end{lstlisting}
+			I did not edit the source recording.
 		\item
-			Next, I add some JavaScript code to generate a Csound score. I omit the orchestra code and show only the \texttt{<html>} element.
-			\begin{lstlisting}[language=HTML]
-<html>
-<h1>Score Generator</h1>
-<button onclick="generate()"> Generate score </button>
-<script>
-var c = 0.99;
-var y = 0.5;
-function generate() {
-	csound.message("generate()...\n");
-	for (i = 0; i < 200; i++) {
-	  var t = i * (1.0 / 3.0);	
-	  var y1 = 4.0 * c * y * (1.0 - y);
-	  y = y1;
-	  var key = Math.round(36.0 + (y * 60.0));
-	  var note = "i 1 " + t + " 2.0 " + key + " 60 0.0 0.5\n";
-	  csound.readScore(note);		
-	};
-};
-</script>
-</html>
-			\end{lstlisting}
-	\item
-		I must emphasize that the \emph{only} difference between this Web page (running in CsoundQt) and any other Web page running in any standard Web browser is that in this Web page, there exists a JavaScript object named \texttt{csound} and this object has JavaScript functions for the core of the Csound API.
-	\item
-		Next, I add some sliders to control the simple Csound orchestra in this piece.
-	\item 
-		I show only excerpts from the code. First, I use a slider to control the value of the variable \texttt{c} in the score generating code. I use a table to layout the sliders, their labels, and the fields displaying their values:
-			\begin{lstlisting}
-<tr>
-<td>
-<label for=sliderC>c</label>
-<td>
-<input type=range min=0 max=1 value=.5 id=sliderC step=0.001 oninput="on_sliderC(value)">
-<td>
-<output for=sliderC id=sliderCOutput>.5</output>
-</tr>
-			\end{lstlisting}
-	\item
-		JavaScript:
-			\begin{lstlisting}
-function on_sliderC(value) {
-	c = parseFloat(value);
-	document.querySelector('#sliderCOutput').value = c;
-}
-			\end{lstlisting}
-	\item
-		Second, I use sliders to set the values of some Csound channels that 
-		control the frequency modulation parameters and reverberation time of 
-		the Csound orchestra.
-	\item 
-		Here's the JavaScript event handler for the FM index slider:
-			\begin{lstlisting}
-function on_sliderFmIndex(value) {
-	var numberValue = parseFloat(value);
-	document.querySelector('#sliderFmIndexOutput').value = numberValue;
-	csound.setControlChannel('gk_FmIndex', numberValue);
-}
-			\end{lstlisting}
-	\item
-		Of course, this parameter requires code in the Csound orchestra to receive the channel value and convert it to a form that the FM instrument can use.
-	\item
-		The best practice is declare global variables for the channels whose names are prefixed with the instrument name, and then set those variables in an always on instrument like this:
-		\begin{lstlisting}
-instr Controls
-gk_FmIndex_ chnget "gk_FmIndex"
-if gk_FmIndex_  != 0 then
- gk_FmIndex = gk_FmIndex_
-endif
-gk_FmCarrier_ chnget "gk_FmCarrier"
-if gk_FmCarrier_  != 0 then
- gk_FmCarrier = gk_FmCarrier_
-endif
-gk_ReverberationDelay_ chnget "gk_ReverberationDelay"
-if gk_ReverberationDelay_  != 0 then
- gk_ReverberationDelay = gk_ReverberationDelay_
-endif
-gk_MasterLevel_ chnget "gk_MasterLevel"
-if gk_MasterLevel_  != 0 then
- gk_MasterLevel = gk_MasterLevel_
-endif
-endin
-		\end{lstlisting}
-	\item
-		Note that this style of coding permits the global variables to have default values that will work without the sliders.
-	\item
-		You may have noticed that the appearance of this Web page is rather bland and plain. That's easy to fix with a style sheet.
-	\item
-		Here's a style sheet to improve the fonts, colors, and layout of the page:
-		\begin{lstlisting}[language=HTML]
-<style type="text/css">
-input[type='range'] {
-    -webkit-appearance: none;
-    border-radius: 5px;
-    box-shadow: inset 0 0 5px #333;
-    background-color: #999;
-    height: 10px;
-    width: 100%;
-    vertical-align: middle;
-}
-input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    border: none;
-    height: 16px;
-    width: 16px;
-    border-radius: 50%;
-    background: yellow;
-    margin-top: -4px;
-    border-radius: 10px;
-}
-table td {
-    border-width: 2px;
-    padding: 8px;
-    border-style: solid;
-    border-color: transparent;
-    color:yellow;
-    background-color: teal;
-    font-family: sans-serif
-}
-</style>
-		\end{lstlisting}
+			I wrote a Csound instrument to apply the algorithm, and a score of notes that apply the algorithm with various parameters at various times in the source soundfile. 
+
 	\end{itemize}
-\end{frame}
-\begin{frame}[allowframebreaks]{That Was Simple}
-  \begin{itemize}
-	\item
-		Now that I have presented the rudiments of binding Csound to HTML with JavaScript, here are some more fleshed-out examples of what is possible. These are still very basic examples, tests of possibilities, not finished pieces.
-	\item
-		Here is a piece that uses a Lindenmayer system written in JavaScript to generate a more sophisticated score. The Lindenmayer system is also displayed on an HTML canvas element.
-	\item
-		Here is a piece that demonstrates WebGL, that is, 3-dimensional animated computer graphics programmed in JavaScript and displayed in a Web page. Every time this little ``Game of Life'' iterates, it plays a chord using Csound.
-	\end{itemize}
+\end{frame} 
+\begin{SaveVerbatim}{scorefrag}
+;            onset   duration   fadein  fadeout      T    wet    dry   pitch-classes
+; Voices and cars
+i "evoke"    0.000     29.266     8.00     1.00   0.03   0.30    0.6   0  4  7 11 14
+i "evoke"   29.266     15.663     1.00     1.00   0.04   0.10    0.6   2  5  9 12 14
+i "evoke"   44.929     52.171     1.00     1.00   0.06   0.15    0.7   5  7  9    14
+i "evoke"   97.100     26.208     1.00     1.00   0.05   0.10    0.5   2  5  9 12  4
+; Three bell strikes
+i "evoke"  123.308      1.832     0.05     0.05   0.05   0.10    0.9   7 10 13    15
+i "evoke"  125.140      1.782     0.05     0.05   0.05   0.20    0.9   3  6 10 13 15
+i "evoke"  126.922     22.078     0.05    10.00   0.02   0.10    0.8   0  4  7 11 14
+\end{SaveVerbatim}
+
+\begin{frame}{Sound Walk (score)}
+	The first section of this score is:
+\begin{flushleft}
+\resizebox{\linewidth}{!}{\BUseVerbatim{scorefrag}}
+\end{flushleft}
 \end{frame}
 
-\begin{frame}[allowframebreaks, fragile]{Current State of the JavaScript API}
-These are declared as in Java. Just omit the type names in your JavaScript code.
-\begin{lstlisting}
-int csound.getVersion()
-int csound.compileCsd(String path_name)
-void csound.compileOrc(String orchestra_code)
-double csound.evalCode(String orchestra_code)
-void csound.readScore(String score_lines)
-void csound.setControlChannel(String channel_name, double value)
-double csound.getControlChannel(String channel_name)
-void csound.message(String message_text)
-int csound.getSr()
-int csound.getKsmps()
-int csound.getNchnls()
-int csound.isPlaying()
-int csound.perform()
-int csound.stop()
-\end{lstlisting}
+\begin{frame}{Moments}
+	Effect can be subtle or obvious!
+  \begin{itemize}
+	\item Change of chord within voices.
+	\item Bells.
+	\item Stronger effect in bells, with voices following.
+	\item ``Bonjour''\!
+	\item Harmony in footsteps and jackdaws.
+  \end{itemize}
 \end{frame}
-\begin{frame}[allowframebreaks]{Questions?}
+
+\begin{frame}{Questions?}
 \end{frame}
 \end{document}
 
