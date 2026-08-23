@@ -59,7 +59,7 @@
 \begin{frame}{Summary}
   \begin{itemize}
 	\item
-		\emph{As a kid, as my father drove across the desert, I heard melodies and chords within the wind outside the car.}
+		\emph{As a kid, as my father drove across the desert at night, I heard melodies and chords within the wind outside the car.}
 	\item
 		This is my attempt to evoke such harmonies from various sounds.
 	\item
@@ -85,14 +85,14 @@
 			There has been a disjunction between "non-tonal" (loosely speaking) electroacoustic music and 'non-tonal" (loosely speaking) electroacoustic music.
 		\item 
 		    This goes back to the roots of computer music in the 1950s and 1960s, a period dominated by technological utopianism and musical serialism.
-		\item "Non-tonal" has implied a focus on \textgreek{>ako\'usmata}; "tonal" implies a focus on pitch relations abstracted from actual sounds.
+		\item "Non-tonal" has implied a focus on \emph{acousmata}; "tonal" implies a focus on pitch relations abstracted from actual sounds.
 		\item This particular algorithm works at the \emph{boundary} of timbre and tonality.
 \end{itemize}
 \end{frame}
 
 \section{How It Works}
 
-\begin{frame}{The Mathematics}
+\begin{frame}{Mathematics}
 
 For each pitch class $c$, the corresponding filter responses form an octave-related family of scaled kernels.
 
@@ -108,7 +108,7 @@ For each pitch class $c$, the corresponding filter responses form an octave-rela
 
 \end{frame}
 
-\begin{frame}{The Mathematics (continued)}
+\begin{frame}{Mathematics (continued)}
 In log-frequency coordinates
 \[
 	u=\log_2 f,
@@ -167,27 +167,40 @@ harmony_convolver_scaled(x, T, g_imp, g_dirac, PC[1..5]):
 \section{Results}
 
 \begin{frame}{Time vs.\ Frequency}
-\begin{center}
-\includegraphics[width=\linewidth,height=0.52\textheight,keepaspectratio=true]{spectrogram.png}\\[0.6em]
-{\scriptsize Impulse responses (narrow analysis window). Columns: unprocessed;
-filter bank 100 cents; 5 cents; \texttt{ftconv} (1 cycle); multi-\texttt{ftconv}
-8 cycles; 32 cycles.}
-\end{center}
+\begin{columns}[c,onlytextwidth]
+\begin{column}{0.20\textwidth}
+\raggedright\scriptsize
+Left$\rightarrow$right:\\[0.6em]
+click\\
+click comb\\
+click CQT\\
+click conv.\ CM7\\[0.8em]
+noise\\
+noise comb\\
+noise CQT\\
+noise conv.\ CM7
+\end{column}
+\begin{column}{0.78\textwidth}
+\centering
+\includegraphics[height=0.85\textheight,width=\linewidth,keepaspectratio]{icsc2026_spectrograms.png}
+\end{column}
+\end{columns}
 \end{frame}
 
 \begin{frame}[allowframebreaks,fragile]{Sound Walk}
 	\begin{itemize}
 		\item
-			I went out at twilight and walked up from my village in France alongside the ruins of Château de Lagarde.
+			At twilight I walked up from my village in France alongside the ruins of Château de Lagarde.
 		\item
-			I recorded my walk with a Tascam field recorder: my footsteps through fallen leaves, voices from the village, cars returning home, the wind in the trees, jackdaws, and the bells of the church.
+			I recorded my walk with a Tascam field recorder: my footsteps through fallen leaves, voices from the village, cars returning home, the wind in the trees, jackdaws, and church bells.
 		\item
 			I did not edit the source recording.
 		\item
-			I wrote a Csound instrument to apply the algorithm, and a score of notes that apply the algorithm with various parameters at various times in the source soundfile. 
+			I wrote a Csound instrument to apply the algorithm, and a Csound score with notes that apply the algorithm with various parameters at various times in the source soundfile. 
 
 	\end{itemize}
 \end{frame} 
+
 \begin{SaveVerbatim}{scorefrag}
 ;            onset   duration   fadein  fadeout      T    wet    dry   pitch-classes
 ; Voices and cars
@@ -208,7 +221,7 @@ i "evoke"  126.922     22.078     0.05    10.00   0.02   0.10    0.8   0  4  7 1
 \end{flushleft}
 \end{frame}
 
-\begin{frame}{Moments}
+\begin{frame}{SoundWalk (moments)}
 	Effect can be subtle or obvious!
   \begin{itemize}
 	\item Change of chord within voices.
