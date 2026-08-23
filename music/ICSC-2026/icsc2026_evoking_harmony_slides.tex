@@ -6,6 +6,8 @@
   % or ...
   \setbeamercovered{transparent}
   % or whatever (possibly just delete it)
+  % No Roman I, II, … on [allowframebreaks] titles
+  \setbeamertemplate{frametitle continuation}{}
 }
 
 \usepackage[greek,english]{babel}
@@ -33,11 +35,7 @@
 % - Use the \inst command only if there are several affiliations.
 % - Keep it simple, no one is interested in your street address.
 
-\date[NYCEMF]% (optional, should be abbreviation of conference name)
-{International Csound Conference 2026}
-% - Either use conference name or its abbreviation.
-% - Not really informative to the audience, more for people (including
-%   yourself) who are reading the slides online
+\date
 
 \subject{Computer Music}
 % This is only inserted into the PDF information catalog. Can be left
@@ -59,7 +57,7 @@
 \begin{frame}{Summary}
   \begin{itemize}
 	\item
-		\emph{As a kid, as my father drove across the desert at night, I heard melodies and chords within the wind outside the car.}
+		\emph{As a kid, while my father drove across the desert at night, I heard melodies and chords in the wind outside the car.}
 	\item
 		This is my attempt to evoke such harmonies from various sounds.
 	\item
@@ -82,9 +80,9 @@
 \begin{frame}{Musical Motivation}
   \begin{itemize}
 		\item
-			There has been a disjunction between "non-tonal" (loosely speaking) electroacoustic music and 'non-tonal" (loosely speaking) electroacoustic music.
+			There has been a disjunction between "non-tonal" (loosely speaking) electroacoustic music and "non-tonal" (loosely speaking) electroacoustic music.
 		\item 
-		    This goes back to the roots of computer music in the 1950s and 1960s, a period dominated by technological utopianism and musical serialism.
+		    This goes back to the roots of computer music in the 1950s and 1960s, a period dominated by technological Utopianism and musical serialism.
 		\item "Non-tonal" has implied a focus on \emph{acousmata}; "tonal" implies a focus on pitch relations abstracted from actual sounds.
 		\item This particular algorithm works at the \emph{boundary} of timbre and tonality.
 \end{itemize}
@@ -174,11 +172,11 @@ Left$\rightarrow$right:\\[0.6em]
 click\\
 click comb\\
 click CQT\\
-click conv.\ CM7\\[0.8em]
+click evoke CM7\\[0.8em]
 noise\\
 noise comb\\
 noise CQT\\
-noise conv.\ CM7
+noise evoke CM7
 \end{column}
 \begin{column}{0.78\textwidth}
 \centering
@@ -187,16 +185,16 @@ noise conv.\ CM7
 \end{columns}
 \end{frame}
 
-\begin{frame}[allowframebreaks,fragile]{Sound Walk}
+\begin{frame}{Sound Walk (materials)}
 	\begin{itemize}
 		\item
 			At twilight I walked up from my village in France alongside the ruins of Château de Lagarde.
 		\item
-			I recorded my walk with a Tascam DR-40 field recorder: my footsteps through fallen leaves, voices from the village, cars returning home, the wind in the trees, jackdaws, church bells.
+			I recorded my walk with a Tascam DR-40 field recorder: my footsteps through fallen leaves, voices from the village, cars returning home, wind in the trees, jackdaws, church bells.
 		\item
 			I did not edit the source recording.
 		\item
-			I wrote a Csound instrument to apply the algorithm, and a Csound score with notes to apply the algorithm with various parameters at various times in the source soundfile. 
+			I wrote a Csound instrument to apply the algorithm, and a Csound score with notes that apply the algorithm with various parameters at various times in the source soundfile. 
 
 	\end{itemize}
 \end{frame} 
