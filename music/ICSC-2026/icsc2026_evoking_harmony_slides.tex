@@ -1,5 +1,5 @@
 \documentclass{beamer}
-% About 1 minute per slide: 20 slides.
+% About 1 minute per slide.
 \mode<presentation>
 {
   \usetheme{Warsaw}
@@ -41,7 +41,8 @@
 % This is only inserted into the PDF information catalog. Can be left
 % out. 
 \begin{document}
-\lstset{basicstyle=\ttfamily\tiny,commentstyle=\ttfamily\tiny,tabsize=2,breaklines,showstringspaces=false}
+\lstset{basicstyle=\ttfamily\tiny,commentstyle=\ttfamily\tiny,
+  tabsize=2,breaklines,showstringspaces=false}
 
 \begin{frame}
   \titlepage
@@ -57,34 +58,45 @@
 \begin{frame}{Summary}
   \begin{itemize}
 	\item
-		\emph{As a kid, while my father drove across the desert at night, I heard melodies and chords in the wind outside the car.}
+		\emph{When I was a boy, as my father drove across the desert at night, I
+		heard melodies and chords in the wind outside the car.}
 	\item
 		This is my attempt to evoke such harmonies from various sounds.
 	\item
-		The basic idea is to convolve a source sound with the impulse response of a specific chord, \emph{i.e.} of the chord's \emph{pitch-classes}, on \emph{every} octave.
+		The basic idea is to convolve a source sound with the impulse response of a
+		specific chord, \emph{i.e.} of the chord's \emph{pitch-classes}, on
+		\emph{every} octave.
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{Related Techniques?}
   \begin{itemize}
 	\item
-		Constant-Q filter bank, \emph{iff} its filters are centered on the pitch-classes.
+		Constant-Q filter bank, \emph{iff} its filters are centered on the
+		pitch-classes.
 	\item
-	\emph{Not closely related}: Gabor/Morland wavelet, but its cells are not centered on pitch-classes -- not a good fit.
-	\item \emph{Even less related}: Comb filter, but that's periodic in linear frequency; this is logarithmic in frequency period.
+	\emph{Not closely related}: Gabor/Morlet wavelet, but its cells are not
+	centered on pitch-classes -- not a good fit.
+	\item \emph{Even less related}: Comb filter, but that's periodic in linear
+	Hz; this is periodic in log frequency (one octave).
 \end{itemize}
 \end{frame}
 
-\section{Motivation}
+\section{Why Do This?}
 
 \begin{frame}{Musical Motivation}
   \begin{itemize}
 		\item
-			There has been a disjunction between "non-tonal" (loosely speaking) electroacoustic music and "non-tonal" (loosely speaking) electroacoustic music.
+			There has been a disjunction between "non-tonal" (loosely speaking)
+			electroacoustic practice and tonal practice oriented toward pitch
+			relations abstracted from actual sounds.
 		\item 
-		    This goes back to the roots of computer music in the 1950s and 1960s, a period dominated by technological Utopianism and musical serialism.
-		\item "Non-tonal" has implied a focus on \emph{acousmata}; "tonal" implies a focus on pitch relations abstracted from actual sounds.
-		\item This particular algorithm works at the \emph{boundary} of timbre and tonality.
+		    This goes back to the roots of computer music in the 1950s and 1960s, a
+		    period dominated by technological Utopianism and musical serialism.
+		\item "Non-tonal" has implied a focus on \emph{acousmata}; "tonal" implies a
+		focus on pitch relations abstracted from actual sounds.
+		\item This particular algorithm works at the \emph{boundary} of timbre and
+		tonality.
 \end{itemize}
 \end{frame}
 
@@ -92,7 +104,8 @@
 
 \begin{frame}{Mathematics}
 
-For each pitch class $c$ of a chord $C$, the corresponding filter responses form an octave-related family of scaled kernels.
+For each pitch class $c$ of a chord $C$, the corresponding filter responses
+form an octave-related family of scaled kernels.
 
 \[
 	H_C(f)
@@ -104,6 +117,13 @@ For each pitch class $c$ of a chord $C$, the corresponding filter responses form
 	H_c\!\left(2^{-n}f\right).
 \]
 
+Grain length
+\[
+T(f)=\min\bigl(T,\,T\cdot 440/f\bigr)
+\]
+is constant-$Q$ above $440\,\mathrm{Hz}$, so that scaling is exact there;
+below the pivot, duration is capped at $T$.
+
 \end{frame}
 
 \begin{frame}{Mathematics (continued)}
@@ -111,47 +131,51 @@ In log-frequency coordinates
 \[
 	u=\log_2 f,
 \]
-octave transposition becomes translation by one unit, and the total chordal response is approximately periodic with period one octave:
+octave transposition becomes translation by one unit, and the total chordal
+response is approximately periodic with period one octave:
 \[
 	H_C(u+1)\simeq H_C(u).
 \]
-Each octave therefore contains $K$ peaks, whose positions within the octave are determined by the $K$ pitch classes of the chord. The chord functions as the unit cell of a periodic filter in log-frequency space.
+Each octave therefore contains $K$ peaks, whose positions within the octave are
+determined by the $K$ pitch classes of the chord. The chord functions as the
+unit cell of a periodic filter in log-frequency space.
 \end{frame}
 
-\begin{frame}{Levelling the octaves}
-Grains shorten with frequency, so equal amplitude is not equal presence.
-Two stages:
+\begin{frame}{Levelling Octaves}
+Above the pivot, grains shorten with frequency, so equal amplitude is not
+equal presence. Two stages:
 \begin{enumerate}
 \item \textbf{Equal energy.} Sources are broadband, so by Parseval the power
-      partial $k$ contributes is
+      that partial $k$ contributes is
       \[
-        P_k = S_0\!\int\! \bigl|G_k(f)\bigr|^2 df = S_0\!\int\! g_k(t)^2 dt = S_0 E_k ,
+        P_k = S_0\!\int\! \bigl|G_k(f)\bigr|^2 df = S_0\!\int\! g_k(t)^2 dt =
+        S_0 E_k ,
       \]
       hence $A(f)\propto T(f)^{-1/2}$.
 \item \textbf{Inverse A-weighting}, converting equal power into equal loudness.
 \end{enumerate}
 {\small
-Loudness tracks power, not spectral density: every grain occupies under one
+Loudness tracks power, not spectral density: every partial occupies under one
 auditory filter ($\le 0.74$ ERB). Normalizing the window \emph{integral}
 instead fixes peak gain while the bandwidth $\approx 1/T(f)$ widens, tilting
 the lattice bright by ${\sim}8\,\mathrm{dB}$.}
 \end{frame}
 
-\begin{frame}{Latent, not added}
-The aim is that the harmony seem \emph{latent} in the source and emergent from
+\begin{frame}{Latent, Not Added}
+The aim is that the harmony seem \emph{latent} in the source and evoked from
 it, not added to it.
 \begin{itemize}
-\item Convolution serves this by construction: $Y(f)=H(f)X(f)$ vanishes wherever
-      the source has no energy, so the lattice can only expose pitch content the
-      source already contains.
-\item What betrays the effect is \emph{time}: common onset fuses concurrent
-      sounds, while energy persisting after the source falls silent is a cue for
-      a separate resonating object.
+\item Convolution serves this by construction: $Y(f)=H(f)X(f)$ vanishes
+      wherever the source has no energy, so the lattice can only expose pitch
+      content the source already contains.
+\item Energy persisting after the source falls silent betrays the effect by
+      sounding like a separate resonating object.
 \item The causal window and the cap on $T(f)$ are therefore fusion devices,
       keeping the harmonic response inside the events of the source.
 \end{itemize}
-{\small On an impulse train this design leaves under $3\,\%$ of each period's
-energy outside the interval the dry source occupies; uncapped or symmetrically
+{\small On a $50\,\mathrm{ms}$ impulse response driven by a $3\,\mathrm{Hz}$
+impulse train, this design leaves under $3\,\%$ of each period's energy
+outside the interval the dry source occupies; uncapped or symmetrically
 windowed grains displace a third or more.}
 \end{frame}
 
@@ -159,13 +183,13 @@ windowed grains displace a third or more.}
 \scriptsize
 \begin{verbatim}
 harmony_convolver_scaled(x, T, g_imp, g_dirac, PC[1..5]):
-  T     = clamp(abs(T), 0.01, 1.0)
+  T     = clamp(abs(T), 0.01, 1.5)
   n_max = T * 440
   N     = max(2, round(T * sr))
   // degrees reduce mod 12; negatives unused
   PCs   = { p mod 12 : p in PC, p >= 0 }
   // PC x octave partials + loudness weights
-  freqs = [];  weights = [];  Tf = [];  amp = []
+  freqs = [];  weights = [];  Tf = []
   for midi = 0..127:
     if (midi mod 12) not in PCs: continue
     f = cpsmidinn(midi)
@@ -180,10 +204,12 @@ harmony_convolver_scaled(x, T, g_imp, g_dirac, PC[1..5]):
 \end{verbatim}
 \end{frame}
 
-\begin{frame}[fragile]{Algorithm (2/2): grain, mix, convolve}
-\footnotesize
+\begin{frame}[fragile]{Algorithm (2/2): equal energy, mix}
+\scriptsize
 \begin{verbatim}
   // Equal energy per partial, total energy held fixed
+  // (default opcode; no ERB correction)
+  amp = []
   for i = 0..M-1:  amp[i] = sqrt(T / Tf[i])
   c = sqrt(sum(Tf) / sum(amp^2 * Tf))
   for i = 0..M-1:  amp[i] = c * amp[i]
@@ -193,8 +219,7 @@ harmony_convolver_scaled(x, T, g_imp, g_dirac, PC[1..5]):
     for i = 0..M-1:
       if t < Tf[i]:
         env = 0.5+0.5*cos(pi*t/Tf[i])  // causal, 1 -> 0
-        s = s + weights[i]*amp[i]*env
-                *sin(2*pi*freqs[i]*t)
+        s = s + weights[i]*amp[i]*env*sin(2*pi*freqs[i]*t)
     h[n] = (s / M) * g_imp
   // Dry+wet in one IR, then unit L2
   h[0] = h[0] + g_dirac
@@ -203,25 +228,26 @@ harmony_convolver_scaled(x, T, g_imp, g_dirac, PC[1..5]):
 \end{verbatim}
 \end{frame}
 
-\section{Results}
+\section{How It Sounds}
 
 \begin{frame}{Time vs.\ Frequency}
 \begin{columns}[c,onlytextwidth]
 \begin{column}{0.20\textwidth}
 \raggedright\scriptsize
 Left$\rightarrow$right:\\[0.6em]
-click\\
+dry click\\
 click comb\\
 click CQT\\
 click evoke CM7\\[0.8em]
-noise\\
+dry noise\\
 noise comb\\
 noise CQT\\
 noise evoke CM7
 \end{column}
 \begin{column}{0.78\textwidth}
 \centering
-\includegraphics[height=0.85\textheight,width=\linewidth,keepaspectratio]{icsc2026_spectrograms.png}
+\includegraphics[height=0.85\textheight,width=\linewidth,
+  keepaspectratio]{icsc2026_spectrograms.png}
 \end{column}
 \end{columns}
 \end{frame}
@@ -229,13 +255,19 @@ noise evoke CM7
 \begin{frame}{Sound Walk (materials)}
 	\begin{itemize}
 		\item
-			At twilight I walked up from my village in France alongside the ruins of Château de Lagarde.
+			At twilight I walked up from my village in France alongside the ruins of
+			Château de Lagarde.
 		\item
-			I recorded my walk with a Tascam DR-40 field recorder: my footsteps through fallen leaves, voices from the village, cars returning home, wind in the trees, jackdaws, church bells.
+			I recorded my walk with a Tascam DR-40 field recorder: my footsteps through
+			fallen leaves, voices from the village, cars returning home, wind in the
+			trees, jackdaws, church bells.
 		\item
-			I did not edit the source recording.
+			I did not otherwise edit the source; one $60\,\mathrm{s}$ stretch was
+			cut from the file.
 		\item
-			I wrote a Csound instrument to apply the algorithm, and a Csound score with notes that apply the algorithm with various parameters at various times in the source soundfile. 
+			I wrote a Csound instrument to apply the algorithm, and a Csound score with
+			notes that apply the algorithm with various parameters at various times in
+			the source soundfile.
 
 	\end{itemize}
 \end{frame} 
@@ -254,19 +286,19 @@ i "evoke"  126.922     22.078     0.05    10.00   0.02   0.10    0.8   0  4  7 1
 \end{SaveVerbatim}
 
 \begin{frame}{Sound Walk (score)}
-	The first section of this score is:
+	The first section of this score is (degrees reduce modulo 12):
 \begin{flushleft}
 \resizebox{\linewidth}{!}{\BUseVerbatim{scorefrag}}
 \end{flushleft}
 \end{frame}
 
-\begin{frame}{SoundWalk (moments)}
-	Effect can be subtle or obvious!
+\begin{frame}{Sound Walk (moments)}
+	The effect can be subtle or obvious!
   \begin{itemize}
 	\item Chord progression within voices.
 	\item Bells.
 	\item Stronger effect in bells, with voices following.
-	\item ``Bonjour''\!
+	\item ``Bonjour!''
 	\item Harmony in footsteps and jackdaws.
   \end{itemize}
 \end{frame}
