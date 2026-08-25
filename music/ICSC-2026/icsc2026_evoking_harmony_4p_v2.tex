@@ -28,28 +28,31 @@
 \begin{abstract}
 I show how to evoke the pitch-class content of a chord from an arbitrary
 source by convolving it with a short impulse response whose partials lie on
-those pitch-classes in every octave. The preferred Csound implementation
-(\texttt{harmony\_convolver\_scaled}) builds one joint IR with
+those pitch-classes in every octave. A Csound implementation
+(\texttt{chord\_convolver}) builds one joint IR with
 frequency-dependent grain length, equal-energy normalization across octaves,
 inverse A-weighting, a dry Dirac, and a single \texttt{ftconv}. I contrast the effect with a linear comb and a generic
-constant-$Q$ bank, and demonstrate it on an unedited twilight field recording
-beside Ch\^{a}teau de Lagarde.
+constant-$Q$ bank, and demonstrate it on a twilight field recording beside Ch\^{a}teau de
+Lagarde (one $60\,\mathrm{s}$ stretch cut, otherwise unedited).
 \keywords{csound, harmony, convolution, constant-$Q$, field recording}
 \end{abstract}
 
 \section{Introduction}
 
 As a boy crossing the desert at night I heard melodies and chords in the wind
-outside the car. This paper reports Csound~\cite{csound_home} experiments that
+outside my father's car. This paper reports Csound~\cite{csound_home} experiments that
 evoke such harmonies from varied sources by convolving a signal with an
 impulse response containing only the pitch-classes of a chosen chord on every
 octave. Materials are in \submissionmaterialsrepo.
 
-The effect sits at the boundary of timbre and tonality. A constant-$Q$ bank
-\emph{centered on those pitch-classes} is closely related; a generic
-constant-$Q$ tiling is only loosely related; a comb filter is less related
-still (periodic in linear Hz). Gabor/Morlet cells not centered on
-pitch-classes are a poor fit for this goal.
+The effect sits at the boundary of timbre and tonality, against a long-standing
+disjunction between ``non-tonal'' electroacoustic practice (acousmata) and
+tonal practice (pitch relations abstracted from actual sounds). That split
+goes back to the 1950s--1960s mix of technological utopianism and musical
+serialism. A constant-$Q$ bank \emph{centered on those pitch-classes} is
+closely related; a generic constant-$Q$ tiling is only loosely related; a comb
+filter is less related still (periodic in linear Hz). Gabor/Morlet cells not
+centered on pitch-classes are a poor fit for this goal.
 
 \section{Mathematics}
 
@@ -60,15 +63,20 @@ H_{c,n}(f)\simeq H_c(2^{-n}f).
 \]
 With $u=\log_2 f$, octave shift is unit translation and
 $H_C(u+1)\simeq H_C(u)$: the chord is the unit cell of a log-periodic filter.
-Grain duration $T$ trades time against frequency
-resolution~\cite{gabor1946theory}.
+Grain length
+\[
+T(f)=\min\bigl(T,\,T\cdot 440/f\bigr)
+\]
+is constant-$Q$ above $440\,\mathrm{Hz}$; below the pivot, duration is capped
+at $T$~\cite{gabor1946theory}.
 
 \section{Method}
 
-\texttt{harmony\_convolver\_scaled} selects MIDI notes whose pitch-classes are
-in $C$ and assigns each partial $f$ a causal half-cosine of length
-$T(f)=\min(T,T\cdot 440/f)$. Grains are averaged, a Dirac is added at
-sample~$0$, the IR is jointly $\ell_2$-normalized, and
+\texttt{chord\_convolver} selects MIDI notes whose pitch-classes are
+in $C$ (reduced modulo 12; negatives unused) and assigns each partial $f$ a
+causal half-cosine of length $T(f)$, with $T$ clamped to
+$[0.01,1.5]\,\mathrm{s}$ (starts at $1$, fades to $0$). Grains are averaged, a
+Dirac is added at sample~$0$, the IR is jointly $\ell_2$-normalized, and
 \texttt{ftconv}~\cite{csoundmanualftconv} is applied once. Full signatures and
 code are in \submissionmaterialsrepocite.
 
@@ -77,9 +85,10 @@ $Y(f)=H(f)X(f)$ vanishes wherever the source has no energy, the lattice can only
 expose pitch content the source already contains; what makes that content read
 as latent in the source rather than as an added voice is keeping the harmonic
 response inside the source's own events, since energy persisting after the
-source falls silent is a cue for a separate resonating object. On an impulse
-train this design leaves under $3\,\%$ of each period's energy outside the
-interval the dry source occupies, against a third or more for an uncapped or
+source falls silent is a cue for a separate resonating object. On a
+$50\,\mathrm{ms}$ impulse response driven by a $3\,\mathrm{Hz}$ impulse train,
+this design leaves under $3\,\%$ of each period's energy outside the interval
+the dry source occupies, against a third or more for an uncapped or
 symmetrically windowed grain.
 
 Levelling the octaves takes two stages. Since the sources are broadband, the
@@ -93,10 +102,10 @@ window integral instead, which fixes peak transfer gain, tilts the lattice
 bright by some $8\,\mathrm{dB}$, because the grain bandwidth $\approx 1/T(f)$
 widens as the window shortens. The second stage is inverse IEC A-weighting
 (shelf at $150\,\mathrm{Hz}$, boost capped at $+6\,\mathrm{dB}$), which turns
-equal power into approximately equal loudness; measured band powers follow that
-curve to within $0.02\,\mathrm{dB}$. Equalizing critical bands rather than
+equal power into approximately equal loudness. Equalizing critical bands rather than
 partials, which attenuates the crowded low octaves by 4 to $6\,\mathrm{dB}$, is
-available as an option but is not used here.
+available as an option but is not used here (compensation 1; no ERB
+correction).
 
 A chord-restricted constant-$Q$ bank is a near neighbour (same lattice,
 ongoing IIR filtering). A generic three-semitone constant-$Q$ tiling lacks
@@ -105,25 +114,27 @@ chord identity. A comb with delay $1/f_0$ has equal linear-Hz spacing.
 \section{Results}
 
 Figure~\ref{fig:spectrograms} compares click and noise under dry, comb
-($f_0=200\,\mathrm{Hz}$), sparse constant-$Q$ (every three semitones), and
-evoke with PCs $0,4,7,11$ (CM7), loudness-matched to within
-$1.1\,\mathrm{dB}$ A-weighted within each source group. Comb is
-linear-periodic; constant-$Q$ is log-periodic but not chordal; the convolver
-shows the CM7 lattice, articulated to the top of the audible range under
-equal-energy normalization.
+($f_0=200\,\mathrm{Hz}$), sparse CQT (every three semitones), and evoke with
+PCs $0,4,7,11$ (CM7), loudness-matched to within $1.1\,\mathrm{dB}$
+A-weighted within each source group. Comb is linear-periodic; CQT is
+log-periodic but not chordal; the convolver shows the CM7 lattice,
+articulated to the top of the audible range under equal-energy normalization.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth,keepaspectratio]{icsc2026_spectrograms.png}
-\caption{Comparison spectrogram: click / comb / CQT / evoke CM7, then the same
-four treatments of noise.}
+\caption{Log-frequency spectrogram (left to right): dry click; click comb;
+click CQT; click evoke CM7; then the same four treatments of noise.}
 \label{fig:spectrograms}
 \end{figure}
 
-A twilight walk beside Ch\^{a}teau de Lagarde (Tascam DR-40; unedited source)
-is processed under score control of $T$, wet/dry, and pitch-classes
-\submissioncitesoundwalk. Moments include chord colour under voices, bells,
-``Bonjour,'' and harmony in footsteps and jackdaws.
+A twilight walk beside Ch\^{a}teau de Lagarde (Tascam DR-40; one
+$60\,\mathrm{s}$ stretch cut, otherwise unedited) is processed under score
+control of $T$, wet/dry, compensation type (here always 1, equal energy), and
+pitch-classes (degrees reduce modulo 12)
+\submissioncitesoundwalk. Moments include a chord progression within voices,
+bells with a subtle effect, bells again with a stronger effect and voices 
+following, and ``Bonjour'' with voices following.
 
 \section{Discussion}
 

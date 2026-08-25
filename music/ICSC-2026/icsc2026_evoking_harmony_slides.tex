@@ -1,4 +1,6 @@
 \documentclass{beamer}
+% Compile with LuaLaTeX (fontspec):
+%   latexmk -pdflua icsc2026_evoking_harmony_slides.tex
 % About 1 minute per slide.
 \mode<presentation>
 {
@@ -8,12 +10,28 @@
   % or whatever (possibly just delete it)
   % No Roman I, II, … on [allowframebreaks] titles
   \setbeamertemplate{frametitle continuation}{}
+  \usefonttheme{professionalfonts}
 }
 
+\usepackage{fontspec}
+\usepackage{unicode-math}
+% TeX Live file names (Source Sans 3, Source Serif 4, STIX Two Math).
+\setsansfont{SourceSans3}[
+  Extension = .otf,
+  UprightFont = *-Regular,
+  ItalicFont = *-RegularIt,
+  BoldFont = *-Bold,
+  BoldItalicFont = *-BoldIt]
+\setmainfont{SourceSerif4}[
+  Extension = .otf,
+  UprightFont = *-Regular,
+  ItalicFont = *-RegularIt,
+  BoldFont = *-Bold,
+  BoldItalicFont = *-BoldIt]
+\setmathfont{STIXTwoMath-Regular.otf}
+\renewcommand{\familydefault}{\sfdefault}
+
 \usepackage[greek,english]{babel}
-\usepackage[utf8]{inputenc}
-\usepackage{times}
-\usepackage[T1]{fontenc}
 \usepackage{fancyvrb}
 \usepackage{caption}
 \usepackage{listings}
@@ -87,13 +105,13 @@
 \begin{frame}{Musical Motivation}
   \begin{itemize}
 		\item
-			There has been a disjunction between "non-tonal" (loosely speaking)
+			There has been a disjunction between ``non-tonal'' (loosely speaking)
 			electroacoustic practice and tonal practice oriented toward pitch
 			relations abstracted from actual sounds.
 		\item 
 		    This goes back to the roots of computer music in the 1950s and 1960s, a
 		    period dominated by technological Utopianism and musical serialism.
-		\item "Non-tonal" has implied a focus on \emph{acousmata}; "tonal" implies a
+		\item ``Non-tonal'' has implied a focus on \emph{acousmata}; ``tonal'' implies a
 		focus on pitch relations abstracted from actual sounds.
 		\item This particular algorithm works at the \emph{boundary} of timbre and
 		tonality.
@@ -182,12 +200,12 @@ windowed grains displace a third or more.}
 \begin{frame}[fragile]{Algorithm (1/2): partials}
 \scriptsize
 \begin{verbatim}
-harmony_convolver_scaled(x, T, g_imp, g_dirac, PC[1..5]):
+chord_convolver(x, T, g_imp, g_dirac, compensation, PCs...):
   T     = clamp(abs(T), 0.01, 1.5)
   n_max = T * 440
   N     = max(2, round(T * sr))
   // degrees reduce mod 12; negatives unused
-  PCs   = { p mod 12 : p in PC, p >= 0 }
+  PCs   = { p mod 12 : p in PCs, p >= 0 }
   // PC x octave partials + loudness weights
   freqs = [];  weights = [];  Tf = []
   for midi = 0..127:
@@ -204,14 +222,13 @@ harmony_convolver_scaled(x, T, g_imp, g_dirac, PC[1..5]):
 \end{verbatim}
 \end{frame}
 
-\begin{frame}[fragile]{Algorithm (2/2): equal energy, mix}
+\begin{frame}[fragile]{Algorithm (2/2): mix}
 \scriptsize
 \begin{verbatim}
-  // Equal energy per partial, total energy held fixed
-  // (default opcode; no ERB correction)
+  p = [0, 0.5, 1, 0.5][compensation]  // 3 also * D_k^-1/2
   amp = []
-  for i = 0..M-1:  amp[i] = sqrt(T / Tf[i])
-  c = sqrt(sum(Tf) / sum(amp^2 * Tf))
+  for i = 0..M-1:  amp[i] = (T / Tf[i])^p
+  c = sqrt(sum(Tf) / sum(amp^2 * Tf))  // hold total energy
   for i = 0..M-1:  amp[i] = c * amp[i]
   h = zeros(N)
   for n = 0..N-1:
@@ -273,20 +290,21 @@ noise evoke CM7
 \end{frame} 
 
 \begin{SaveVerbatim}{scorefrag}
-;            onset   duration   fadein  fadeout      T    wet    dry   pitch-classes
+; instr     onset duration  fadein fadeout      T    wet    dry  comp  pitch-classes
 ; Voices and cars
-i "evoke"    0.000     29.266     8.00     1.00   0.03   0.30    0.6   0  4  7 11 14
-i "evoke"   29.266     15.663     1.00     1.00   0.04   0.10    0.6   2  5  9 12 14
-i "evoke"   44.929     52.171     1.00     1.00   0.06   0.15    0.7   5  7  9    14
-i "evoke"   97.100     26.208     1.00     1.00   0.05   0.10    0.5   2  5  9 12  4
+i "evoke"   0.000   29.266    8.00    1.00   0.03   0.30    0.6     1  0  4  7 11 14
+i "evoke"  29.266   15.663    1.00    1.00   0.04   0.10    0.6     1  2  5  9 12 14
+i "evoke"  44.929   52.171    1.00    1.00   0.06   0.15    0.7     1  5  7  9 14
+i "evoke"  97.100   26.208    1.00    1.00   0.05   0.10    0.5     1  2  5  9 12  4
 ; Three bell strikes
-i "evoke"  123.308      1.832     0.05     0.05   0.05   0.10    0.9   7 10 13    15
-i "evoke"  125.140      1.782     0.05     0.05   0.05   0.20    0.9   3  6 10 13 15
-i "evoke"  126.922     22.078     0.05    10.00   0.02   0.10    0.8   0  4  7 11 14
+i "evoke" 123.308    1.832    0.05    0.05   0.05   0.10    0.9     1  7 10 13 15
+i "evoke" 125.140    1.782    0.05    0.05   0.05   0.20    0.9     1  3  6 10 13 15
+i "evoke" 126.922   22.078    0.05   10.00   0.02   0.10    0.8     1  0  4  7 11 14
 \end{SaveVerbatim}
 
 \begin{frame}{Sound Walk (score)}
-	The first section of this score is (degrees reduce modulo 12):
+	The first section of this score is (compensation 1 = equal energy;
+	degrees reduce modulo 12):
 \begin{flushleft}
 \resizebox{\linewidth}{!}{\BUseVerbatim{scorefrag}}
 \end{flushleft}
@@ -299,7 +317,6 @@ i "evoke"  126.922     22.078     0.05    10.00   0.02   0.10    0.8   0  4  7 1
 	\item Bells.
 	\item Stronger effect in bells, with voices following.
 	\item ``Bonjour!''
-	\item Harmony in footsteps and jackdaws.
   \end{itemize}
 \end{frame}
 

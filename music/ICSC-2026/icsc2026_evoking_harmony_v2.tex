@@ -1,5 +1,5 @@
 %%%%%%%%%%%%%%%%%%%% icsc2026_evoking_harmony_v2.tex %%%%%%%%%%%%%%%%%%%%%
-% New version (2026-08) aligned with ICSC 2026 slides (harmony_convolver_scaled,
+% New version (2026-08) aligned with ICSC 2026 slides (chord_convolver,
 % comb/CQT comparison, Château de Lagarde sound walk).
 % Does not replace icsc2026_evoking_harmony.tex.
 
@@ -40,11 +40,12 @@ tabsize=2,breaklines,showstringspaces=false}
 I show how to evoke the pitch-class content of a chord from an arbitrary
 source sound by convolving the source with an impulse response whose
 partials consist of one sinusoid for each pitch-class, across each octave of hearing range; while, at the same time, minimizing artifacts.
-A Csound user-defined opcode (\texttt{harmony\_convolver\_scaled}) mixes a dry Dirac component into that
+A Csound user-defined opcode (\texttt{chord\_convolver}) mixes a dry Dirac component into that
 response, and applies partitioned convolution once. I contrast the effect with
 a linear-frequency comb filter and with a generic constant-$Q$ resonator bank,
-and I demonstrate musical use on an unedited field recording of a twilight
-walk alongside the ruins of Ch\^{a}teau de Lagarde.
+and I demonstrate musical use on a twilight field recording alongside the
+ruins of Ch\^{a}teau de Lagarde (one $60\,\mathrm{s}$ stretch cut, otherwise
+unedited).
 \keywords{csound, harmony, convolution, constant-$Q$, field recording}
 \end{abstract}
 
@@ -76,11 +77,11 @@ good fit for this musical goal.
 There has long been a practical disjunction between ``non-tonal''
 electroacoustic practice---often oriented toward acousmata and continuum of
 timbre---and tonal practice oriented toward pitch relations abstracted from
-sound. That split goes back to mid-twentieth-century computer music, when
-technological utopianism and serialism both shaped the art. The algorithm
-described here deliberately works on the boundary: it leaves the source audible 
-while imparting a faint or strong sense of chords or chord progressions,
-depending on parameters and mix.
+actual sounds. That split goes back to the roots of computer music in the
+1950s and 1960s, a period dominated by technological utopianism and musical
+serialism. The algorithm described here deliberately works on the boundary of
+timbre and tonality: it leaves the source audible while imparting a faint or
+strong sense of chords or chord progressions, depending on parameters and mix.
 
 \section{Mathematics}
 
@@ -126,8 +127,8 @@ $55\,\mathrm{Hz}$. Smearing is thus least, and the transients of the source best
 preserved, in the upper octaves; it is the bass that rings and blurs.
 
 There is a further reason to hold the grains short, and it is perceptual rather
-than spectral. The aim is that the harmony seem latent in the source and
-emergent from it, not added to it. Convolution serves that aim by construction,
+than spectral. The aim is that the harmony seem latent in the source and evoked from
+it, not added to it. Convolution serves that aim by construction,
 since $Y(f)=H(f)X(f)$ vanishes wherever the source has no energy: the lattice
 can only expose pitch content the source already contains, never introduce any.
 What can still betray the effect is time. Common onset binds concurrent sounds
@@ -136,10 +137,10 @@ is a cue for a separate resonating object, so a grain that outlasts its own
 excitation is heard as a struck resonator rather than as a property of the
 source. The causal window and the cap on $T(f)$ both serve auditory fusion in
 this sense, by keeping the harmonic response inside the events of the source.
-Measured on an impulse train, the design used here leaves under $3\,\%$ of each
-period's energy outside the interval the dry source occupies, whereas an
-uncapped or symmetrically windowed grain displaces between a third and two
-thirds of it. On sustained material the tail is never exposed and longer grains
+On a $50\,\mathrm{ms}$ impulse response driven by a $3\,\mathrm{Hz}$ impulse
+train, the design used here leaves under $3\,\%$ of each period's energy
+outside the interval the dry source occupies, whereas an uncapped or
+symmetrically windowed grain displaces a third or more. On sustained material the tail is never exposed and longer grains
 cost nothing, which makes $T$ properly a function of the transient density of
 the source rather than a constant of the method.
 
@@ -148,7 +149,7 @@ the source rather than a constant of the method.
 \subsection{Implementation}
 
 The Csound user-defined opcode is
-\texttt{harmony\_convolver\_scaled}. It builds one impulse response $h$, and
+\texttt{chord\_convolver}. It builds one impulse response $h$, and
 applies partitioned convolution once via \texttt{ftconv}~\cite{csoundmanualftconv}.
 The design choices are:
 
@@ -226,12 +227,12 @@ reading equally rather than evening out the harmony as a whole.
 Pseudocode:
 
 \begin{verbatim}
-harmony_convolver_scaled(x, T, g_imp, g_dirac, PC[1..5]):
+chord_convolver(x, T, g_imp, g_dirac, compensation, PCs...):
   T     = clamp(abs(T), 0.01, 1.5)
   n_max = T * 440
   N     = max(2, round(T * sr))
   // scale degrees reduce to pitch-classes; negatives are unused
-  PCs   = { p mod 12 : p in PC, p >= 0 }
+  PCs   = { p mod 12 : p in PCs, p >= 0 }
   freqs = [];  weights = [];  Tf = [];  amp = []
   for midi = 0..127:
     if (midi mod 12) not in PCs: continue
@@ -243,10 +244,9 @@ harmony_convolver_scaled(x, T, g_imp, g_dirac, PC[1..5]):
     append f to freqs;  append w to weights
     append min(T, n_max / f) to Tf
   M = length(freqs)
-  // equal energy per partial: A ~ 1/sqrt(T(f))
-  for i = 0..M-1:  amp[i] = sqrt(T / Tf[i])
-  // hold total grain energy fixed
-  c = sqrt(sum(Tf) / sum(amp^2 * Tf))
+  p = [0, 0.5, 1, 0.5][compensation]  // 3 also * D_k^-1/2
+  for i = 0..M-1:  amp[i] = (T / Tf[i])^p
+  c = sqrt(sum(Tf) / sum(amp^2 * Tf))  // hold total energy
   for i = 0..M-1:  amp[i] = c * amp[i]
   h = zeros(N)
   for n = 0..N-1:
@@ -262,8 +262,8 @@ harmony_convolver_scaled(x, T, g_imp, g_dirac, PC[1..5]):
 \end{verbatim}
 
 Earlier experiments compared IIR resonator banks and multi-\texttt{ftconv}
-variants; the scaled joint IR is the implementation used in the comparison
-spectrograms and the sound walk below.
+variants; the joint IR of \texttt{chord\_convolver} is the implementation used
+in the comparison spectrograms and the sound walk below.
 
 \subsection{What It Is Not}
 
@@ -273,7 +273,7 @@ versus convolution with a finite grain). A generic constant-$Q$ tiling spaced
 every few semitones (not chord-restricted) emphasizes a regular pitch grid
 without chord identity. A \emph{comb} filter with delay $1/f_0$ emphasizes
 harmonics of $f_0$ in linear Hz; on a linear-frequency spectrogram its teeth
-are equally spaced, whereas the harmony convolver (and a chord-centered
+are equally spaced, whereas the chord convolver (and a chord-centered
 constant-$Q$ bank) show an octave-periodic pattern.
 
 \section{Results}
@@ -283,7 +283,7 @@ constant-$Q$ bank) show an octave-periodic pattern.
 Figure~\ref{fig:spectrograms} compares treatments of a Dirac-like click and of
 white noise: dry source; comb with $f_0=200\,\mathrm{Hz}$; a sparse
 constant-$Q$ bank (centers every three semitones); and
-\texttt{harmony\_convolver\_scaled} with pitch-classes $0,4,7,11$ (C--E--G--B,
+\texttt{chord\_convolver} with pitch-classes $0,4,7,11$ (C--E--G--B,
 ``CM7''). Segments are loudness-matched for listening, to within
 $1.1\,\mathrm{dB}$ A-weighted within each source group. The comb shows
 equal spacing in linear Hz; the constant-$Q$ bank shows log spacing without
@@ -294,9 +294,8 @@ rather than fading out above the low mids.
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth,keepaspectratio]{icsc2026_spectrograms.png}
-\caption{Log-frequency spectrogram of the comparison sequence (left to right):
-click; click comb; click constant-$Q$; click evoke CM7; noise; noise comb;
-noise constant-$Q$; noise evoke CM7.}
+\caption{Log-frequency spectrogram (left to right): dry click; click comb;
+click CQT; click evoke CM7; then the same four treatments of noise.}
 \label{fig:spectrograms}
 \end{figure}
 
@@ -305,48 +304,51 @@ noise constant-$Q$; noise evoke CM7.}
 At twilight I walked up from my village in France and alongside the ruins of
 Ch\^{a}teau de Lagarde and used a Tascam DR-40 to record my footsteps in fallen
 leaves, voices from the village, cars, wind in trees, jackdaws, and church bells. I did
-not edit the source. A Csound instrument applies
-\texttt{harmony\_convolver\_scaled} under score control of onset, duration,
-fades, grain duration $T$, wet and dry gains, and up to five pitch-classes.
+not otherwise edit the source; one $60\,\mathrm{s}$ stretch was cut from the
+file. A Csound instrument applies
+\texttt{chord\_convolver} under score control of onset, duration,
+fades, grain duration $T$, wet and dry gains, compensation type, and any
+number of pitch-classes.
 
-The opening of the score is:
+The first section of this score is (compensation 1 = equal energy;
+pitch-classes reduce modulo 12):
 
 \begin{verbatim}
-;            onset   duration   fadein  fadeout     T   wet  dry  pitch-classes
-i "evoke"    0.000     29.266     8.00     1.00  0.03  0.30  0.6  0  4  7 11 14
-i "evoke"   29.266     15.663     1.00     1.00  0.04  0.10  0.6  2  5  9 12 14
-i "evoke"   44.929     52.171     1.00     1.00  0.06  0.15  0.7  5  7  9    14
-i "evoke"   97.100     26.208     1.00     1.00  0.05  0.10  0.5  2  5  9 12  4
+; instr     onset duration  fadein fadeout      T    wet    dry  comp  pitch-classes
+i "evoke"   0.000   29.266    8.00    1.00   0.03   0.30    0.6     1  0  4  7 11 14
+i "evoke"  29.266   15.663    1.00    1.00   0.04   0.10    0.6     1  2  5  9 12 14
+i "evoke"  44.929   52.171    1.00    1.00   0.06   0.15    0.7     1  5  7  9 14
+i "evoke"  97.100   26.208    1.00    1.00   0.05   0.10    0.5     1  2  5  9 12  4
 ; Three bell strikes
-i "evoke"  123.308      1.832     0.05     0.05  0.05  0.10  0.9  7 10 13    15
-i "evoke"  125.140      1.782     0.05     0.05  0.05  0.20  0.9  3  6 10 13 15
-i "evoke"  126.922     22.078     0.05    10.00  0.02  0.10  0.8  0  4  7 11 14
+i "evoke" 123.308    1.832    0.05    0.05   0.05   0.10    0.9     1  7 10 13 15
+i "evoke" 125.140    1.782    0.05    0.05   0.05   0.20    0.9     1  3  6 10 13 15
+i "evoke" 126.922   22.078    0.05   10.00   0.02   0.10    0.8     1  0  4  7 11 14
 \end{verbatim}
 
-Effects can be subtle or obvious. Instructive moments include a chord
-progression evoked from village voices; church bells (where the effect is often
-stronger); the bells ring again with voices following; a spoken ``Bonjour''; and harmony
-evoked in footsteps and jackdaws. Audio and further materials are in the
+Effects can be subtle or obvious. Instructive moments include a chord progression within voices,
+bells with a subtle effect, bells again with a stronger effect and voices 
+following, and ``Bonjour'' with voices following. Audio and further materials are in the
 repository~\cite{evoking_harmony_sound_walk,gogins_github_io}.
 
 \section{Discussion}
 
 Evoking harmony is related to comb filtering and to constant-$Q$ analysis, but
-it is not the same as either: the lattice is logarithmic and chord-specific,
-and the preferred realization is a short to medium duration causal grain plus dry Dirac in one
-IR. It works best when harmonic sensation remains subordinate to the source
-timbre---a faint chordal colour on broadband or mixed field sound---though wetter
-settings and pitched sources can produce a clear ``harmonic shadow'' or
-ringing, or more abstract rhythmic and harmonic textures. Parameter choices ($T$, wet/dry, pitch-classes, A-weight shelf) are
-audible and musical.
+it is not the same as either. The lattice is logarithmic and chord-specific, and
+the preferred realization is a causal grain of short to medium duration plus a
+dry Dirac in one impulse response. It works best when harmonic sensation remains
+subordinate to the source timbre---a faint chordal colour on broadband or mixed
+field sound. Wetter settings and pitched sources can produce a clear
+``harmonic shadow,'' ringing, or more abstract rhythmic and harmonic
+textures. Parameter choices ($T$, wet and dry gains, compensation type,
+pitch-classes, A-weight shelf) are all audible, and all musical.
 
-The levelling of Section~\ref{sec:levelling} is also a compositional choice
-rather than a purely technical one. Equalizing amplitude, energy, or window
-integral spans roughly $17\,\mathrm{dB}$ of spectral tilt across the lattice,
-from a dark reading in which the upper octaves vanish to a glassy one in which
-they dominate; equal energy is the setting for which each pitch-class is equally
-present, and is what the recordings here use. Choosing instead to equalize
-critical bands rather than partials is a further, audibly distinct option.
+The levelling of Section~\ref{sec:levelling} is a compositional choice as well
+as a technical one. Equalizing amplitude, energy, or window integral spans
+roughly $17\,\mathrm{dB}$ of spectral tilt across the lattice, from a dark
+balance in which the upper octaves vanish to a glassy one in which they
+dominate. The recordings here use equal energy, so that each pitch-class is
+equally present. Equalizing critical bands rather than partials is a further,
+audibly distinct option.
 
 \bibliographystyle{unsrt}
 \bibliography{icsc2026_evoking_harmony}
