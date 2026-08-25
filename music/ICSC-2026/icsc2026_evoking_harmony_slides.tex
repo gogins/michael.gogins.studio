@@ -92,7 +92,7 @@
 
 \begin{frame}{Mathematics}
 
-For each pitch class $c$, the corresponding filter responses form an octave-related family of scaled kernels.
+For each pitch class $c$ of a chord $C$, the corresponding filter responses form an octave-related family of scaled kernels.
 
 \[
 	H_C(f)
@@ -118,15 +118,54 @@ octave transposition becomes translation by one unit, and the total chordal resp
 Each octave therefore contains $K$ peaks, whose positions within the octave are determined by the $K$ pitch classes of the chord. The chord functions as the unit cell of a periodic filter in log-frequency space.
 \end{frame}
 
+\begin{frame}{Levelling the octaves}
+Grains shorten with frequency, so equal amplitude is not equal presence.
+Two stages:
+\begin{enumerate}
+\item \textbf{Equal energy.} Sources are broadband, so by Parseval the power
+      partial $k$ contributes is
+      \[
+        P_k = S_0\!\int\! \bigl|G_k(f)\bigr|^2 df = S_0\!\int\! g_k(t)^2 dt = S_0 E_k ,
+      \]
+      hence $A(f)\propto T(f)^{-1/2}$.
+\item \textbf{Inverse A-weighting}, converting equal power into equal loudness.
+\end{enumerate}
+{\small
+Loudness tracks power, not spectral density: every grain occupies under one
+auditory filter ($\le 0.74$ ERB). Normalizing the window \emph{integral}
+instead fixes peak gain while the bandwidth $\approx 1/T(f)$ widens, tilting
+the lattice bright by ${\sim}8\,\mathrm{dB}$.}
+\end{frame}
+
+\begin{frame}{Latent, not added}
+The aim is that the harmony seem \emph{latent} in the source and emergent from
+it, not added to it.
+\begin{itemize}
+\item Convolution serves this by construction: $Y(f)=H(f)X(f)$ vanishes wherever
+      the source has no energy, so the lattice can only expose pitch content the
+      source already contains.
+\item What betrays the effect is \emph{time}: common onset fuses concurrent
+      sounds, while energy persisting after the source falls silent is a cue for
+      a separate resonating object.
+\item The causal window and the cap on $T(f)$ are therefore fusion devices,
+      keeping the harmonic response inside the events of the source.
+\end{itemize}
+{\small On an impulse train this design leaves under $3\,\%$ of each period's
+energy outside the interval the dry source occupies; uncapped or symmetrically
+windowed grains displace a third or more.}
+\end{frame}
+
 \begin{frame}[fragile]{Algorithm (1/2): partials}
-\footnotesize
+\scriptsize
 \begin{verbatim}
 harmony_convolver_scaled(x, T, g_imp, g_dirac, PC[1..5]):
   T     = clamp(abs(T), 0.01, 1.0)
   n_max = T * 440
   N     = max(2, round(T * sr))
+  // degrees reduce mod 12; negatives unused
+  PCs   = { p mod 12 : p in PC, p >= 0 }
   // PC x octave partials + loudness weights
-  freqs = [];  weights = []
+  freqs = [];  weights = [];  Tf = [];  amp = []
   for midi = 0..127:
     if (midi mod 12) not in PCs: continue
     f = cpsmidinn(midi)
@@ -136,25 +175,27 @@ harmony_convolver_scaled(x, T, g_imp, g_dirac, PC[1..5]):
     w  = min(w, 10^(6/20))      // cap boost +6 dB
     append f to freqs
     append w to weights
+    append min(T, n_max / f) to Tf
   M = length(freqs)
-  h = zeros(N)
 \end{verbatim}
 \end{frame}
 
 \begin{frame}[fragile]{Algorithm (2/2): grain, mix, convolve}
 \footnotesize
 \begin{verbatim}
-  // Build harmonic grain
-  if M > 0:
-    for n = 0..N-1:
-      t = n / sr;  s = 0
-      for i = 0..M-1:
-        f  = freqs[i]
-        Tf = min(T, n_max / f)  // shorter at high f
-        if t < Tf:
-          hann = 0.5-0.5*cos(2*pi*t/Tf)
-          s = s + weights[i]*hann*sin(2*pi*f*t)
-      h[n] = (s / M) * g_imp
+  // Equal energy per partial, total energy held fixed
+  for i = 0..M-1:  amp[i] = sqrt(T / Tf[i])
+  c = sqrt(sum(Tf) / sum(amp^2 * Tf))
+  for i = 0..M-1:  amp[i] = c * amp[i]
+  h = zeros(N)
+  for n = 0..N-1:
+    t = n / sr;  s = 0
+    for i = 0..M-1:
+      if t < Tf[i]:
+        env = 0.5+0.5*cos(pi*t/Tf[i])  // causal, 1 -> 0
+        s = s + weights[i]*amp[i]*env
+                *sin(2*pi*freqs[i]*t)
+    h[n] = (s / M) * g_imp
   // Dry+wet in one IR, then unit L2
   h[0] = h[0] + g_dirac
   h    = h / L2norm(h)
