@@ -77,7 +77,7 @@
   \begin{itemize}
 	\item
 		\emph{When I was a boy, as my father drove across the desert at night, I
-		heard melodies and chords in the wind outside the car.}
+		heard melodies and chords in the wind outside our car.}
 	\item
 		This is my attempt to evoke such harmonies from various sounds.
 	\item
@@ -106,8 +106,7 @@
   \begin{itemize}
 		\item
 			There has been a disjunction between ``non-tonal'' (loosely speaking)
-			electroacoustic practice and tonal practice oriented toward pitch
-			relations abstracted from actual sounds.
+			electroacoustic music and ``tonal'' (loosely speaking) electroacoustic music.
 		\item 
 		    This goes back to the roots of computer music in the 1950s and 1960s, a
 		    period dominated by technological Utopianism and musical serialism.
@@ -161,9 +160,9 @@ unit cell of a periodic filter in log-frequency space.
 
 \begin{frame}{Levelling Octaves}
 Above the pivot, grains shorten with frequency, so equal amplitude is not
-equal presence. Two stages:
+equal presence. Two stages of compensation:
 \begin{enumerate}
-\item \textbf{Equal energy.} Sources are broadband, so by Parseval the power
+\item \textbf{Equal energy.} Considering sources as broadband, by Parseval the power
       that partial $k$ contributes is
       \[
         P_k = S_0\!\int\! \bigl|G_k(f)\bigr|^2 df = S_0\!\int\! g_k(t)^2 dt =
@@ -173,7 +172,7 @@ equal presence. Two stages:
 \item \textbf{Inverse A-weighting}, converting equal power into equal loudness.
 \end{enumerate}
 {\small
-Loudness tracks power, not spectral density: every partial occupies under one
+Loudness tracks power, not spectral density: every partial falls within one
 auditory filter ($\le 0.74$ ERB). Normalizing the window \emph{integral}
 instead fixes peak gain while the bandwidth $\approx 1/T(f)$ widens, tilting
 the lattice bright by ${\sim}8\,\mathrm{dB}$.}
@@ -181,7 +180,7 @@ the lattice bright by ${\sim}8\,\mathrm{dB}$.}
 
 \begin{frame}{Latent, Not Added}
 The aim is that the harmony seem \emph{latent} in the source and evoked from
-it, not added to it.
+it -- not added to it.
 \begin{itemize}
 \item Convolution serves this by construction: $Y(f)=H(f)X(f)$ vanishes
       wherever the source has no energy, so the lattice can only expose pitch
@@ -276,16 +275,12 @@ noise evoke CM7
 			Château de Lagarde.
 		\item
 			I recorded my walk with a Tascam DR-40 field recorder: my footsteps through
-			fallen leaves, voices from the village, cars returning home, wind in the
-			trees, jackdaws, church bells.
-		\item
-			I did not otherwise edit the source; one $60\,\mathrm{s}$ stretch was
-			cut from the file.
+			fallen leaves, voices from the village, cars returning home, church bells, wind in the
+			trees, jackdaws.
 		\item
 			I wrote a Csound instrument to apply the algorithm, and a Csound score with
-			notes that apply the algorithm with various parameters at various times in
+			notes to apply that algorithm with various parameters at various times in
 			the source soundfile.
-
 	\end{itemize}
 \end{frame} 
 
@@ -304,7 +299,7 @@ i "evoke" 126.922   22.078    0.05   10.00   0.02   0.10    0.8     1  0  4  7 1
 
 \begin{frame}{Sound Walk (score)}
 	The first section of this score is (compensation 1 = equal energy;
-	degrees reduce modulo 12):
+	pitch-classes reduce modulo 12):
 \begin{flushleft}
 \resizebox{\linewidth}{!}{\BUseVerbatim{scorefrag}}
 \end{flushleft}
@@ -316,7 +311,7 @@ i "evoke" 126.922   22.078    0.05   10.00   0.02   0.10    0.8     1  0  4  7 1
 	\item Chord progression within voices.
 	\item Bells.
 	\item Stronger effect in bells, with voices following.
-	\item ``Bonjour!''
+	\item \emph{``Bonjour!''}
   \end{itemize}
 \end{frame}
 
