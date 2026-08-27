@@ -27,13 +27,13 @@
 
 \begin{abstract}
 I show how to evoke the pitch-class content of a chord from an arbitrary
-source by convolving it with a short impulse response whose partials lie on
+source by convolving it with a short impulse response whose grains lie on
 those pitch-classes in every octave. A Csound implementation
 (\texttt{chord\_convolver}) builds one joint IR with
 frequency-dependent grain length, equal-energy normalization across octaves,
 inverse A-weighting, a dry Dirac, and a single \texttt{ftconv}. I contrast the effect with a linear comb and a generic
-constant-$Q$ bank, and demonstrate it on a twilight field recording beside Ch\^{a}teau de
-Lagarde (one $60\,\mathrm{s}$ stretch cut, otherwise unedited).
+constant-$Q$ bank, and demonstrate it on a twilight field recording alongside Ch\^{a}teau de
+Lagarde.
 \keywords{csound, harmony, convolution, constant-$Q$, field recording}
 \end{abstract}
 
@@ -42,7 +42,7 @@ Lagarde (one $60\,\mathrm{s}$ stretch cut, otherwise unedited).
 As a boy crossing the desert at night I heard melodies and chords in the wind
 outside my father's car. This paper reports Csound~\cite{csound_home} experiments that
 evoke such harmonies from varied sources by convolving a signal with an
-impulse response containing only the pitch-classes of a chosen chord on every
+impulse response whose grains occupy the pitch-classes of a chosen chord on every
 octave. Materials are in \submissionmaterialsrepo.
 
 The effect sits at the boundary of timbre and tonality, against a long-standing
@@ -51,12 +51,16 @@ tonal practice (pitch relations abstracted from actual sounds). That split
 goes back to the 1950s--1960s mix of technological utopianism and musical
 serialism. A constant-$Q$ bank \emph{centered on those pitch-classes} is
 closely related; a generic constant-$Q$ tiling is only loosely related; a comb
-filter is less related still (periodic in linear Hz). Gabor/Morlet cells not
-centered on pitch-classes are a poor fit for this goal.
+filter is less related still (periodic in linear Hz); Gabor/Morlet cells not
+centered on pitch-classes are a poor fit.
 
 \section{Mathematics}
 
-For pitch-class set $C$,
+A \emph{grain} is one windowed sinusoid (pitch-class $c$, octave $n$). Its
+frequency response is a \emph{kernel} $H_{c,n}$. The \emph{impulse response}
+is the sum of the loudness-balanced grains plus a Dirac, then jointly
+$\ell_2$-normalized. For a chord $C$ those kernels form an octave-related
+scaled family:
 \[
 H_C(f)=\sum_{c\in C}\sum_n H_{c,n}(f),\qquad
 H_{c,n}(f)\simeq H_c(2^{-n}f).
@@ -75,7 +79,7 @@ at $T$~\cite{gabor1946theory}.
 \texttt{chord\_convolver} selects MIDI notes whose pitch-classes are
 in $C$ (reduced modulo 12; negatives unused) and assigns each partial $f$ a
 causal half-cosine of length $T(f)$, with $T$ clamped to
-$[0.01,1.5]\,\mathrm{s}$ (starts at $1$, fades to $0$). Grains are averaged, a
+$[0.01,1.5]\,\mathrm{s}$ (starts at $1$, fades to $0$). Grains are levelled by octave, a
 Dirac is added at sample~$0$, the IR is jointly $\ell_2$-normalized, and
 \texttt{ftconv}~\cite{csoundmanualftconv} is applied once. Full signatures and
 code are in \submissionmaterialsrepocite.
@@ -85,13 +89,13 @@ $Y(f)=H(f)X(f)$ vanishes wherever the source has no energy, the lattice can only
 expose pitch content the source already contains; what makes that content read
 as latent in the source rather than as an added voice is keeping the harmonic
 response inside the source's own events, since energy persisting after the
-source falls silent is a cue for a separate resonating object. On a
+source falls silent would be a cue for a separate resonating object. On a
 $50\,\mathrm{ms}$ impulse response driven by a $3\,\mathrm{Hz}$ impulse train,
 this design leaves under $3\,\%$ of each period's energy outside the interval
 the dry source occupies, against a third or more for an uncapped or
 symmetrically windowed grain.
 
-Levelling the octaves takes two stages. Since the sources are broadband, the
+Levelling the octaves takes two stages. Considering a source as broadband, the
 output power contributed by partial $k$ is $S_0 E_k$ by Parseval's theorem, so
 equal presence requires equal grain \emph{energy}, giving
 $A(f)\propto T(f)^{-1/2}$; a constant factor holds total grain energy fixed so
@@ -128,20 +132,19 @@ click CQT; click evoke CM7; then the same four treatments of noise.}
 \label{fig:spectrograms}
 \end{figure}
 
-A twilight walk beside Ch\^{a}teau de Lagarde (Tascam DR-40; one
-$60\,\mathrm{s}$ stretch cut, otherwise unedited) is processed under score
+A twilight walk alongside Ch\^{a}teau de Lagarde recorded with a Tascam DR-40 is processed under score
 control of $T$, wet/dry, compensation type (here always 1, equal energy), and
-pitch-classes (degrees reduce modulo 12)
+pitch-classes (MIDI key numbers, reduced modulo 12)
 \submissioncitesoundwalk. Moments include a chord progression within voices,
 bells with a subtle effect, bells again with a stronger effect and voices 
-following, and ``Bonjour'' with voices following.
+following, and \emph{``Bonjour''} with voices following.
 
 \section{Discussion}
 
-Evoking harmony is chord-specific and log-periodic, unlike a comb, and uses a
-finite causal grain plus dry Dirac rather than a steady filterbank. It is most
+Evoking harmony is chord-specific and log-periodic, unlike a comb, and uses
+finite causal grains plus a dry Dirac in one impulse response rather than a steady filterbank. It is most
 appealing when harmonic sensation remains subtle relative to the source;
-wetter settings yield a clearer shadow or ring.
+wetter settings yield a clearer shadow or ring, or even more abstract harmonic and rhythmic textures. To see more:
 \submissiongithubsupplement{} include audio and orchestra code.
 
 \paragraph{Note.}

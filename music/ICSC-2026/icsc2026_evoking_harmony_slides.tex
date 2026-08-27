@@ -81,8 +81,8 @@
 	\item
 		This is my attempt to evoke such harmonies from various sounds.
 	\item
-		The basic idea is to convolve a source sound with the impulse response of a
-		specific chord, \emph{i.e.} of the chord's \emph{pitch-classes}, on
+		The basic idea is to convolve a source sound with an impulse response
+		whose grains occupy a specific chord's \emph{pitch-classes}, on
 		\emph{every} octave.
 	\end{itemize}
 \end{frame}
@@ -121,8 +121,11 @@
 
 \begin{frame}{Mathematics}
 
-For each pitch class $c$ of a chord $C$, the corresponding filter responses
-form an octave-related family of scaled kernels.
+A \emph{grain} is one half-cosine windowed sinusoid (pitch-class $c$, octave
+$n$). Its frequency response is a \emph{kernel} $H_{c,n}$. The
+\emph{impulse response} is the sum of the loudness-balanced grains plus a
+Dirac, then jointly $\ell_2$-normalized. For a chord $C$ those kernels form
+an octave-related scaled family.
 
 \[
 	H_C(f)
@@ -134,7 +137,7 @@ form an octave-related family of scaled kernels.
 	H_c\!\left(2^{-n}f\right).
 \]
 
-Kernel length
+Grain length
 \[
 T(f)=\min\bigl(T,\,T\cdot 440/f\bigr)
 \]
@@ -159,7 +162,7 @@ unit cell of a periodic filter in log-frequency space.
 \end{frame}
 
 \begin{frame}{Levelling Octaves}
-Above the pivot, kernels shorten with frequency, so equal amplitude is not
+Above the pivot, grains shorten with frequency, so equal amplitude is not
 equal presence. Two stages of compensation:
 \begin{enumerate}
 \item \textbf{Equal energy.} Considering sources as broadband, by Parseval the power
@@ -175,7 +178,7 @@ equal presence. Two stages of compensation:
 Loudness tracks power, not spectral density: every partial falls within one
 auditory filter ($\le 0.74$ ERB). Normalizing the window \emph{integral}
 instead would fix peak gain while the bandwidth $\approx 1/T(f)$ widens, tilting
-the chord impulse response bright by ${\sim}8\,\mathrm{dB}$.}
+the lattice bright by ${\sim}8\,\mathrm{dB}$.}
 \end{frame}
 
 \begin{frame}{Latent, Not Added}
@@ -183,7 +186,7 @@ The aim is that the harmony seem \emph{latent} in the source and evoked from
 it -- not added to it.
 \begin{itemize}
 \item Convolution serves this by construction: $Y(f)=H(f)X(f)$ vanishes
-      wherever the source has no energy, so the chord impulse response can only expose pitch
+      wherever the source has no energy, so the lattice can only expose pitch
       content the source already contains.
 \item Energy persisting after the source falls silent betrays the effect by
       sounding like a separate resonating object.
@@ -193,7 +196,7 @@ it -- not added to it.
 {\small On a $50\,\mathrm{ms}$ impulse response driven by a $3\,\mathrm{Hz}$
 impulse train, this design leaves under $3\,\%$ of each period's energy
 outside the interval the dry source occupies; uncapped or symmetrically
-windowed impulse responses displace a third or more.}
+windowed grains displace a third or more.}
 \end{frame}
 
 \begin{frame}[fragile]{Algorithm (1/2): partials}

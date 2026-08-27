@@ -39,7 +39,7 @@ tabsize=2,breaklines,showstringspaces=false}
 \begin{abstract}
 I show how to evoke the pitch-class content of a chord from an arbitrary
 source sound by convolving the source with an impulse response whose
-partials consist of one sinusoid for each pitch-class, across each octave of hearing range; while, at the same time, minimizing artifacts.
+grains are one windowed sinusoid per pitch-class, across each octave of hearing range; while, at the same time, minimizing artifacts.
 A Csound user-defined opcode (\texttt{chord\_convolver}) mixes a dry Dirac component into that
 response, and applies partitioned convolution once. I contrast the effect with
 a linear-frequency comb filter and with a generic constant-$Q$ resonator bank,
@@ -59,7 +59,7 @@ from broadband sound.
 
 This paper reports experiments in Csound~\cite{csound_home} that aim to evoke
 such harmonies from varied sources. Conceptually, the effect convolves a
-source signal with an impulse response that contains only the pitch-classes of
+source signal with an impulse response whose grains occupy only the pitch-classes of
 a chosen chord, realized as sinusoids across every octave within hearing range.
 I call the result \emph{evoking harmony} (or harmony convolution). Materials
 are available online~\cite{gogins_github_io}.
@@ -70,7 +70,7 @@ constant-$Q$ tiling that is \emph{not} restricted to a chord is only loosely
 related; a classical comb filter is even less related, because its teeth are
 periodic in \emph{linear} Hz rather than in log frequency. Gabor- or
 Morlet-style wavelet cells that are not centered on pitch-classes are not a
-good fit for this musical goal.
+good fit.
 
 \section{Motivation}
 
@@ -85,8 +85,11 @@ strong sense of chords or chord progressions, depending on parameters and mix.
 
 \section{Mathematics}
 
-Let $C$ be a finite set of pitch-classes and let $H_{c,n}$ be a bandpass-like
-kernel associated with pitch-class $c$ in octave $n$. The chordal response is
+Let $C$ be a finite set of pitch-classes. A \emph{grain} is one causal
+half-cosine windowed sinusoid (pitch-class $c$, octave $n$). Its frequency
+response is a \emph{kernel} $H_{c,n}$. The \emph{impulse response} is the sum
+of the loudness-balanced grains plus a Dirac, then jointly $\ell_2$-normalized.
+For a chord $C$ those kernels form an octave-related scaled family:
 \[
 H_C(f)
 =
@@ -114,7 +117,7 @@ at the cost of time resolution.
 The duration of the grain is therefore a musical parameter. The
 frequency-dependent window length $T(f)=\min(T,\,T\cdot 440/f)$ used below
 distributes that tradeoff unevenly across the lattice, and deliberately so.
-Above the pivot at $440\,\mathrm{Hz}$, $T(f)=T\cdot 440/f$ holds the number of
+Above a pivot at $440\,\mathrm{Hz}$, $T(f)=T\cdot 440/f$ holds the number of
 cycles in every grain constant at $T\cdot 440$, so the treatment is
 constant-$Q$ with $Q=T\cdot 440$: temporal smear falls as $1/f$, while spectral
 smear stays constant in the very coordinate $u=\log_2 f$ in which the chord is
@@ -269,7 +272,7 @@ in the comparison spectrograms and the sound walk below.
 
 A \emph{constant-$Q$} bank with centers restricted to the chord's pitch-classes
 is a near neighbour: same log lattice, different dynamics (ongoing filtering
-versus convolution with a finite grain). A generic constant-$Q$ tiling spaced
+versus convolution with a finite impulse response). A generic constant-$Q$ tiling spaced
 every few semitones (not chord-restricted) emphasizes a regular pitch grid
 without chord identity. A \emph{comb} filter with delay $1/f_0$ emphasizes
 harmonics of $f_0$ in linear Hz; on a linear-frequency spectrogram its teeth
@@ -334,7 +337,7 @@ repository~\cite{evoking_harmony_sound_walk,gogins_github_io}.
 
 Evoking harmony is related to comb filtering and to constant-$Q$ analysis, but
 it is not the same as either. The lattice is logarithmic and chord-specific, and
-the preferred realization is a causal grain of short to medium duration plus a
+the preferred realization is causal grains of short to medium duration plus a
 dry Dirac in one impulse response. It works best when harmonic sensation remains
 subordinate to the source timbre---a chordal coloration in broadband or mixed
 field sound. Wetter settings and pitched sources can produce a clearer
