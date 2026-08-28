@@ -43,8 +43,7 @@ A Csound user-defined opcode (\texttt{chord\_convolver}) mixes a dry Dirac compo
 response, and applies partitioned convolution once. I contrast the effect with
 a linear-frequency comb filter and with a generic constant-$Q$ resonator bank,
 and I demonstrate musical use on a twilight field recording alongside the
-ruins of Ch\^{a}teau de Lagarde (one $60\,\mathrm{s}$ stretch cut, otherwise
-unedited).
+ruins of Ch\^{a}teau de Lagarde.
 \keywords{csound, harmony, convolution, constant-$Q$, field recording}
 \end{abstract}
 
@@ -56,7 +55,7 @@ I lay with my head against the window and listened to the car, the road, and
 the wind. In that rushing noise I heard melodies and chords---tonality arising
 from broadband sound.
 
-This paper reports experiments in Csound~\cite{csound_home} that aim to evoke
+This paper reports experiments in Csound~\cite{csound_home} that evoke
 such harmonies from varied sources. Conceptually, the effect convolves a
 source signal with an impulse response whose grains occupy only the pitch-classes of
 a chosen chord, realized as sinusoids across every octave within hearing range.
@@ -68,7 +67,7 @@ filterbank centered on the same pitch-classes is closely related; a generic
 constant-$Q$ tiling that is \emph{not} restricted to a chord is only loosely
 related; a classical comb filter is even less related, because its teeth are
 periodic in \emph{linear} Hz rather than in log frequency. Gabor- or
-Morlet-style wavelet cells that are not centered on pitch-classes are not a
+Morlet-style wavelet cells, not being centered on pitch-classes, are not a
 good fit.
 
 \section{Motivation}
@@ -109,7 +108,7 @@ are fixed by the chord. The chord acts as the unit cell of a periodic filter
 in log-frequency space. That is the structural difference from a comb filter,
 whose peaks are equally spaced in linear Hz.
 
-Convolution with a finite impulse response also incurs Gabor's time--frequency
+Convolution with a finite impulse response incurs Gabor's time--frequency
 tradeoff~\cite{gabor1946theory}: a shorter grain improves time resolution at
 the cost of frequency resolution, while a longer grain improves frequency resolution 
 at the cost of time resolution. 
@@ -131,18 +130,18 @@ preserved, in the upper octaves; it is the bass that rings and blurs.
 There is a further reason to hold the grains short, and it is perceptual rather
 than spectral. The aim is that the harmony seem latent in the source and evoked from
 it, not added to it. Convolution serves that aim by construction,
-since $Y(f)=H(f)X(f)$ vanishes wherever the source has no energy: the lattice
-can only expose pitch content the source already contains, never introduce any.
+since $Y(f)=H(f)X(f)$ vanishes wherever the source has no energy: convolution 
+can only expose pitch content that the source already contains, never introduce any.
 What can still betray the effect is time. Common onset binds concurrent sounds
-into a single event, while energy persisting after the source has fallen silent
-is a cue for a separate resonating object, so a grain that outlasts its own
-excitation is heard as a struck resonator rather than as a property of the
+into a single event, but energy persisting after the source has fallen silent
+would be a cue for a separate, struck resonator -- not a property of the
 source. The causal window and the cap on $T(f)$ both serve auditory fusion in
-this sense, by keeping the harmonic response inside the events of the source.
+this sense, by keeping the harmonic response within the duration of the source.
 On a $50\,\mathrm{ms}$ impulse response driven by a $3\,\mathrm{Hz}$ impulse
 train, the design used here leaves under $3\,\%$ of each period's energy
 outside the interval the dry source occupies, whereas an uncapped or
-symmetrically windowed grain displaces a third or more. On sustained material the tail is never exposed and longer grains
+symmetrically windowed grain displaces a third or more. On sustained material 
+the tail is never exposed and longer grains
 cost nothing, which makes $T$ properly a function of the transient density of
 the source rather than a constant of the method.
 
@@ -164,7 +163,7 @@ The design choices are:
   \[
   T(f)=\min\bigl(T,\,T\cdot 440/f\bigr),
   \]
-  so highs are not over-long. A full Hann peaking mid-window would delay the
+  keeping ringing equal across higher partials. A full Hann peaking mid-window would delay the
   audible onset of the grain, loosening its fusion with the attack of the
   source; the half-cosine starts at $1$ and fades to $0$.
 \item
@@ -180,7 +179,7 @@ The design choices are:
   normalization to the whole IR, and convolve.
 \end{enumerate}
 
-\subsection{Levelling the Octaves}
+\subsection{Levelling Octaves}
 \label{sec:levelling}
 
 Because $T(f)$ shrinks with frequency, partials of equal amplitude are not
@@ -286,7 +285,7 @@ Figure~\ref{fig:spectrograms} compares treatments of a Dirac-like click and of
 white noise: dry source; comb with $f_0=200\,\mathrm{Hz}$; a sparse
 constant-$Q$ bank (centers every three semitones); and
 \texttt{chord\_convolver} with pitch-classes $0,4,7,11$ (C--E--G--B,
-``CM7''). Segments are loudness-matched for listening, to within
+CM7). Segments are loudness-matched for listening, to within
 $1.1\,\mathrm{dB}$ A-weighted within each source group. The comb shows
 equal spacing in linear Hz; the constant-$Q$ bank shows log spacing without
 chord restriction; the convolver shows a sparser chordal lattice, which under
@@ -305,15 +304,14 @@ click CQT; click evoke CM7; then the same four treatments of noise.}
 
 At twilight I walked up from my village in France and alongside the ruins of
 Ch\^{a}teau de Lagarde and used a Tascam DR-40 to record my footsteps in fallen
-leaves, voices from the village, cars, wind in trees, jackdaws, and church bells. I did
-not otherwise edit the source; one $60\,\mathrm{s}$ stretch was cut from the
-file. A Csound instrument applies
+leaves, voices from the village, cars, wind in trees, church bells, and jackdaws. 
+A Csound instrument applies
 \texttt{chord\_convolver} under score control of onset, duration,
 fades, grain duration $T$, wet and dry gains, compensation type, and any
 number of pitch-classes.
 
 The first section of this score is (compensation 1 = equal energy;
-pitch-classes reduce modulo 12):
+pitch-classes are MIDI keys reduced modulo 12):
 
 \begin{verbatim}
 ; instr     onset duration  fadein fadeout      T    wet    dry  comp  pitch-classes
