@@ -1,0 +1,108 @@
+% icsc2026_submission.sty
+% Toggle for ICSC 2026 double-blind submission builds.
+%
+% Enable by defining \icscsubmissionanonymous before \input{...}:
+%   \def\icscsubmissionanonymous{}
+%   \input{icsc2026_evoking_harmony_4p.tex}
+%
+% Or use the wrapper: icsc2026_evoking_harmony_4p_anonymous.tex
+
+\ProvidesPackage{icsc2026_submission}[2026/07/04 ICSC submission anonymization]
+
+\newif\ifsubmissionanon
+\ifdefined\icscsubmissionanonymous
+  \submissionanontrue
+\else
+  \submissionanonfalse
+\fi
+
+\newcommand{\submissionauthor}{%
+  \ifsubmissionanon
+    Anonymous Author(s)%
+  \else
+    Michael Gogins\inst{1}%
+  \fi
+}
+
+\newcommand{\submissionauthorrunning}{%
+  \ifsubmissionanon
+    Anonymous Author(s)%
+  \else
+    M.~Gogins%
+  \fi
+}
+
+\newcommand{\submissioninstitute}{%
+  \ifsubmissionanon
+    Anonymous Institution(s)%
+  \else
+    Independent Researcher\\ \email{michael.gogins@gmail.com}%
+  \fi
+}
+
+\newcommand{\submissionmaterialsrepo}{%
+  \ifsubmissionanon
+    an online repository (omitted for review)%
+  \else
+    my GitHub repository \cite{gogins_github_io}%
+  \fi
+}
+
+\newcommand{\submissionmaterialsrepocite}{%
+  \ifsubmissionanon
+    the online repository (omitted for review)%
+  \else
+    the repository \cite{gogins_github_io}%
+  \fi
+}
+
+\newcommand{\submissiongithubsupplement}{%
+  \ifsubmissionanon
+    supplementary figures and audio (repository omitted for review)%
+  \else
+    supplementary figures and audio on GitHub \cite{gogins_github_io}%
+  \fi
+}
+
+\newcommand{\submissioncitematerials}{%
+  \ifsubmissionanon
+    \cite{gogins_github_io_anon}%
+  \else
+    \cite{gogins_github_io}%
+  \fi
+}
+
+\newcommand{\submissioncitetestresults}{%
+  \ifsubmissionanon
+    \cite{evoking_harmony_test_anon}%
+  \else
+    \cite{evoking_harmony_test}%
+  \fi
+}
+
+\newcommand{\submissioncitesoundwalk}{%
+  \ifsubmissionanon
+    \cite{evoking_harmony_sound_walk_anon}%
+  \else
+    \cite{evoking_harmony_sound_walk}%
+  \fi
+}
+
+\newcommand{\submissionainote}{%
+  \ifsubmissionanon
+    This abbreviated version was edited for length with assistance from
+    generative AI tools.%
+  \else
+    This abbreviated version was edited for length with assistance from
+    generative AI tools; the author reviewed the text and retains
+    responsibility for all technical content.%
+  \fi
+}
+
+\AtBeginDocument{%
+  \ifsubmissionanon
+    \hypersetup{pdfauthor={Anonymous}}%
+  \else
+    \hypersetup{pdfauthor={Michael Gogins}}%
+  \fi
+}
