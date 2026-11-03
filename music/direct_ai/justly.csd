@@ -18,9 +18,10 @@ cantus onsets: bass re-attacks every note; upper voices may tie. Cantus is
 centered; accompaniment pans two voices per side.
 
 The final Em hold lasts twice the earlier phrase holds (6 vs 3 beats). After
-it completes, a four-voice canon of the cantus enters at delays of 4/3 beat
-(one entry per chord voice register), modulating to just B Phrygian. After
-another 6-beat hold, the piece returns to E Phrygian: four moving quartal
+it completes, a four-voice canon enters at delays of 4/3 beat: each voice
+begins on its tone of that final Em chord (E Phrygian); only the next
+movement modulates up 4 semitones to just G-sharp Phrygian. A bridging
+G-sharp hold then yields to section 3 back in E Phrygian, with quartal
 voices under the cantus as the high voice (centered).
 </CsLicense>
 <CsOptions>
@@ -96,6 +97,8 @@ gi_Justly_tempo init 60
 gi_Justly_tonic init 4
 ; Extra duration (beats) for legato overlap in sections 1 and 3 (not canon).
 gi_Justly_legato init 0.75
+; Cantus level boost in sections 1 and 3 (dB); canon voices stay unboosted.
+gi_Justly_cantus_db init 3
 
 gi_SmoothPad_sine ftgen 0, 0, 65537, 10, 1
 gi_ChebyshevPoly_sine ftgen 0, 0, 65537, 10, 1
@@ -327,7 +330,8 @@ opcode PhrygianKey, i, ii
 endop
 
 ; p4 start (beats), p5 dur (beats), p6 ET MIDI spelling, p7 vel, p8 pan,
-; p9 attack (0=pad default), p10 tonic MIDI class (<0 => gi_Justly_tonic)
+; p9 attack (0=pad default), p10 tonic MIDI class (<0 => gi_Justly_tonic),
+; p11 optional extra dB (cantus in sections 1 and 3)
 instr JustTone
     istart = p4 * 60 / gi_Justly_tempo
     iduration = p5 * 60 / gi_Justly_tempo
@@ -339,6 +343,10 @@ instr JustTone
         itonic = gi_Justly_tonic
     else
         itonic = p10
+    endif
+    ; ChebyshevPoly maps p5 through ampdb; offset velocity for exact +p11 dB.
+    if p11 != 0 then
+        ivelocity = ivelocity + p11 * 127 / i(gk_ChebyshevPoly_midi_dynamic_range)
     endif
     ikey PhrygianKey imid, itonic
     ; ChebyshevPoly: p4 key, p5 vel, p6 front/back, p7 pan, p8 elevation, p9 phase
@@ -358,26 +366,35 @@ instr Melody
         itonic = p9
     endif
     iattack = 0.32
-    schedule "JustTone", 0, 1, ist, idu, imid, ivel, ipan, iattack, itonic
+    schedule "JustTone", 0, 1, ist, idu, imid, ivel, ipan, iattack, itonic, gi_Justly_cantus_db
 endin
 
 ; Recursively schedule cantus notes from gi_Cantus (start, dur, midi, vel).
-; ilegato = extra beats of overlap (0 for canon stretto).
-opcode ScheduleCantus, 0, iiiiiiiii
-    indx, ientry, ibase, ixpose, ipan, itonic, ivscale, iattack, ilegato xin
+; ilegato = extra beats of overlap (0 for canon stretto). idb = optional level boost.
+; If itonic_alt > 0: note 0 uses ixpose/itonic; notes 1.. use ixpose_alt/itonic_alt.
+opcode ScheduleCantus, 0, iiiiiiiiiiii
+    indx, ientry, ibase, ixpose, ipan, itonic, ivscale, iattack, ilegato, idb, ixpose_alt, itonic_alt xin
     if indx >= gi_Cantus_nnotes igoto ScheduleCantus_done
     ist tab_i indx * 4 + 0, gi_Cantus
     idu tab_i indx * 4 + 1, gi_Cantus
     imid tab_i indx * 4 + 2, gi_Cantus
     ivel tab_i indx * 4 + 3, gi_Cantus
-    schedule "JustTone", 0, 1, ientry + (ist - ibase), idu + ilegato, imid + ixpose, ivel * ivscale, ipan, iattack, itonic
-    ScheduleCantus indx + 1, ientry, ibase, ixpose, ipan, itonic, ivscale, iattack, ilegato
+    ix = ixpose
+    iton = itonic
+    if itonic_alt > 0 && indx > 0 then
+        ix = ixpose_alt
+        iton = itonic_alt
+    endif
+    schedule "JustTone", 0, 1, ientry + (ist - ibase), idu + ilegato, imid + ix, ivel * ivscale, ipan, iattack, iton, idb
+    ScheduleCantus indx + 1, ientry, ibase, ixpose, ipan, itonic, ivscale, iattack, ilegato, idb, ixpose_alt, itonic_alt
 ScheduleCantus_done:
 endop
 
-; One canon voice: full Liber cantus transposed and just-tuned to p7 tonic.
-; p4 = entry beat, p5 = MIDI transpose (added to E-Phrygian spellings),
-; p6 = pan, p7 = tonic MIDI class, p8 = velocity scale, p9 = attack, p10 = legato
+; One canon / section-3 cantus voice from gi_Cantus.
+; p4 = entry beat, p5 = MIDI transpose for the first note (E-Phrygian spellings),
+; p6 = pan, p7 = tonic MIDI class for notes after a pivot (or all notes if no pivot),
+; p8 = velocity scale, p9 = attack, p10 = legato,
+; p11 = optional extra dB, p12 = post-pivot MIDI transpose (0 => no pivot; all notes use p5/p7)
 instr CanonVoice
     i_entry = p4
     i_xpose = p5
@@ -394,7 +411,15 @@ instr CanonVoice
     else
         ilegato = p10
     endif
-    ScheduleCantus 0, i_entry, 1.5, i_xpose, i_pan, i_tonic, i_vscale, iattack, ilegato
+    idb = p11
+    i_xpose_alt = p12
+    if i_xpose_alt == 0 then
+        ; No pivot (section 3): every note uses p5 transpose and p7 tonic.
+        ScheduleCantus 0, i_entry, 1.5, i_xpose, i_pan, i_tonic, i_vscale, iattack, ilegato, idb, 0, 0
+    else
+        ; Canon pivot: first note on final Em chord (E Phrygian); rest in G# Phrygian.
+        ScheduleCantus 0, i_entry, 1.5, i_xpose, i_pan, gi_Justly_tonic, i_vscale, iattack, ilegato, idb, i_xpose_alt, i_tonic
+    endif
 endin
 
 ; Accompaniment pitch for section 1 (wide tertian) or 3 (quartal): ivox 0..3.
@@ -639,33 +664,39 @@ i "Melody"  0 1  67   6.00  64  64  0.50
 
 ; ------------------------------------------------------------------
 ; Canon begins only after the final hold completes (beat 73).
-; Entries every 4/3 beat on final-chord tones E2 B2 G3 D4; just B Phrygian.
-; Soft B-Phrygian pedal under the canon.
+; Each voice starts on its final-Em chord tone (E2 B2 G3 D4, E Phrygian);
+; from the second note, +4 semitones to G# Phrygian (tonic class 8).
 ; ------------------------------------------------------------------
-; B pedal under the canon (through last entry's cantus, ~beat 146)
-i "JustTone" 0 1  73  74  23  42  0.12  0  11
-i "JustTone" 0 1  73.2 74  30  40  0.34  0  11
-i "JustTone" 0 1  73.4 74  38  38  0.66  0  11
-i "JustTone" 0 1  73.6 74  45  36  0.88  0  11
+; Em pedal (section-1 final chord) until the first voice's second note (~beat 75)
+i "JustTone" 0 1  73    2.2  28  42  0.12  0  4
+i "JustTone" 0 1  73.2  2.0  35  40  0.34  0  4
+i "JustTone" 0 1  73.4  1.8  43  38  0.66  0  4
+i "JustTone" 0 1  73.6  1.6  50  36  0.88  0  4
+; G# pedal for the rest of the canon (~through beat 146)
+i "JustTone" 0 1  75.2  71.8  32  42  0.12  0  8
+i "JustTone" 0 1  75.4  71.6  39  40  0.34  0  8
+i "JustTone" 0 1  75.6  71.4  47  38  0.66  0  8
+i "JustTone" 0 1  75.8  71.2  54  36  0.88  0  8
 
-i "CanonVoice" 0 1  73      -24  0.12  11  1.00  0.14
-i "CanonVoice" 0 1  74.3333 -17  0.34  11  1.00  0.14
-i "CanonVoice" 0 1  75.6667  -9  0.66  11  1.00  0.14
-i "CanonVoice" 0 1  77        -2  0.88  11  1.00  0.14
+; p5 = Em-chord entry xpose; p12 = G#-Phrygian continuation xpose
+i "CanonVoice" 0 1  73      -24  0.12  8  1.00  0.14  0  0  -20
+i "CanonVoice" 0 1  74.3333 -17  0.34  8  1.00  0.14  0  0  -13
+i "CanonVoice" 0 1  75.6667  -9  0.66  8  1.00  0.14  0  0   -5
+i "CanonVoice" 0 1  77        -2  0.88  8  1.00  0.14  0  0    2
 
 ; ------------------------------------------------------------------
-; Post-canon double hold, then section 3: quartal under cantus.
+; Reverse pivot into section 3: hold still in G# Phrygian, then E Phrygian.
 ; Accomp starts with cantus, moves only on cantus onsets; bass untied.
 ; ------------------------------------------------------------------
-; Hold (6 beats) with cantus E -- bass re-attacks once for this hold note
-i "Melody"   0 1  147  6  64  62  0.50
-i "JustTone" 0 1  147  6  40  54  0.12
-i "JustTone" 0 1  147  6  45  52  0.34
-i "JustTone" 0 1  147  6  50  50  0.66
-i "JustTone" 0 1  147  6  55  50  0.88
+; Bridging hold (6 beats) on G# -- mirror of the Em entry pivot
+i "Melody"   0 1  147  6  68  62  0.50  8
+i "JustTone" 0 1  147  6  44  54  0.12  0  8
+i "JustTone" 0 1  147  6  49  52  0.34  0  8
+i "JustTone" 0 1  147  6  54  50  0.66  0  8
+i "JustTone" 0 1  147  6  59  50  0.88  0  8
 
-; Cantus + quartal accomp (tied upper voices, bass every cantus note)
-i "CanonVoice" 0 1  153  0  0.50  4  1.05  0.32  0.75
+; Section 3: return to E Phrygian (next movement after the G# hold)
+i "CanonVoice" 0 1  153  0  0.50  4  1.05  0.32  0.75  3
 i "AccompWithCantus" 0 1  153  3  4
 
 e 235
