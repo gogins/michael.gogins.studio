@@ -202,26 +202,24 @@ instr SwirlPad
     endif
     kenvelope transeg 0.0, iattack, 0.0, iamp, isustain, 0.0, iamp, idecay, 0.0, 0.0
     ilimit = sr * gi_Swirl_nyquist_guard
-    ; Normalize roughly like the GEN10 peak mix (3,1,2) plus extras.
-    inorm = 3 + 1 + 2 + 0.7 + 0.45 + 0.3
+    ; Softer top than drone.csd GEN10 (was 6th@2): chrome lived in 4–6.
+    inorm = 3 + 0.85 + 0.5 + 0.35 + 0.12
     asignal = poscil3(kenvelope * (3 / inorm), i_frequency, gi_Swirl_sine)
     if i_frequency * 2 < ilimit then
-        asignal += poscil3(kenvelope * (0.7 / inorm), i_frequency * 2, gi_Swirl_sine)
+        asignal += poscil3(kenvelope * (0.85 / inorm), i_frequency * 2, gi_Swirl_sine)
     endif
     if i_frequency * 3 < ilimit then
-        asignal += poscil3(kenvelope * (0.45 / inorm), i_frequency * 3, gi_Swirl_sine)
+        asignal += poscil3(kenvelope * (0.5 / inorm), i_frequency * 3, gi_Swirl_sine)
     endif
     if i_frequency * 4 < ilimit then
-        asignal += poscil3(kenvelope * (1 / inorm), i_frequency * 4, gi_Swirl_sine)
+        asignal += poscil3(kenvelope * (0.35 / inorm), i_frequency * 4, gi_Swirl_sine)
     endif
     if i_frequency * 5 < ilimit then
-        asignal += poscil3(kenvelope * (0.3 / inorm), i_frequency * 5, gi_Swirl_sine)
+        asignal += poscil3(kenvelope * (0.12 / inorm), i_frequency * 5, gi_Swirl_sine)
     endif
-    if i_frequency * 6 < ilimit then
-        asignal += poscil3(kenvelope * (2 / inorm), i_frequency * 6, gi_Swirl_sine)
-    endif
-    ; Presence where hearing usually remains.
-    asignal pareq asignal, 2800, ampdb(5), 0.85, 0
+    ; No 6th partial — that was the main steely edge on high notes.
+    asignal butterlp asignal, 3800
+    asignal pareq asignal, 2600, ampdb(2.5), 0.9, 0
     aleft, aright pan2 asignal, ipan
     outleta "outleft", aleft
     outleta "outright", aright
