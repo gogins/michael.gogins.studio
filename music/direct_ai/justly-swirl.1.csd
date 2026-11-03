@@ -7,10 +7,10 @@ License:    Lesser GNU General Public License version 2.1
 Copyright:  2026 Michael Gogins
 
 Variant of justly.csd: same Mode III (Phrygian) Liber form, but every note of
-cantus, accompaniment, and canon uses the drone.csd voice path (ampdb ->
-poscil3 harmonic table -> distort, transeg bloom, dry+0.8*reverbsc) at a slow
-tempo so just intervals have time to beat, swirl, and grow moving inner voices
-in the notes themselves.
+cantus, accompaniment, and canon uses a bandlimited drone-like voice (same
+partial recipe as drone.csd's GEN10, no waveshaping aliasing) through
+dry+0.8*reverbsc at a slow tempo so just intervals beat and swirl without
+foldover.
 
     E 1/1 | F 16/15 | G 6/5 | A 4/3 | B 3/2 | C 8/5 | D 9/5
 
@@ -54,10 +54,10 @@ gS_MasterOutput_filename chnexport "gS_MasterOutput_filename", 3
 
 ; Level is dB relative to drone.csd's ampdb(velocity) drive (velocity ~60).
 gk_SwirlPad_level init 0
-; drone.csd reverb: feedback 0.9, outs dry + wet*0.8, cutoff 15000.
-gk_DroneField_feedback init 0.9
-gk_DroneField_wet init 0.8
-gk_DroneField_frequency_cutoff init 15000
+; Wet field for swirl, but darker tank so reverbsc does not ring metallic.
+gk_DroneField_feedback init 0.85
+gk_DroneField_wet init 0.72
+gk_DroneField_frequency_cutoff init 5500
 ; Headroom for many overlapping voices (drone.csd uses only ~3 at once).
 gk_MasterOutput_level init -12
 gS_MasterOutput_filename init ""
@@ -72,9 +72,10 @@ gi_Justly_cantus_db init 3
 ; Light overlap inside canon voices so notes bloom into each other.
 gi_Justly_canon_legato init 0.75
 
-; Identical tables to drone.csd (f 1 / f 2).
-gi_Swirl_harm ftgen 0, 0, 65536, 10, 3, 0, 0, 1, 0, 2
-gi_Swirl_distort ftgen 0, 0, 65536, 13, 1, 1, 0, 3, 0, 2
+; Sine for bandlimited additive partials (drone.csd GEN10 weights, no distort).
+gi_Swirl_sine ftgen 0, 0, 65536, 10, 1
+; Safety limit: keep every partial below this fraction of Nyquist.
+gi_Swirl_nyquist_guard init 0.45
 
 ; Liber Mode III cantus: start (beats), dur, MIDI, velocity — 52 notes.
 ; Never use Csound macros in this piece; prefer UDOs (including recursion).
@@ -133,16 +134,18 @@ gi_Cantus ftgen 0, 0, -208, -2, \
     66, 1.75, 62, 59, \
     67, 6.00, 64, 64
 
-; Same mix as drone.csd instr 3: dry + wet*0.8, feedback 0.9, cutoff 15 kHz.
-; Asymmetric feed mirrors gareverb2 = gareverb1 + aright.
+; Dry + wet*gk_DroneField_wet; mild crossfeed for swirl without comb sheen.
 instr DroneField
     aleftin init 0
     arightin init 0
     aleftin inleta "inleft"
     arightin inleta "inright"
     aL = aleftin
-    aR = aleftin + arightin
+    aR = arightin + aleftin * 0.25
     aleftout, arightout reverbsc aL, aR, gk_DroneField_feedback, gk_DroneField_frequency_cutoff
+    ; Extra damp on the wet only (tank cutoff already low; this softens the return).
+    aleftout butterlp aleftout, 4500
+    arightout butterlp arightout, 4500
     aleftoutmix = aleftin + aleftout * gk_DroneField_wet
     arightoutmix = arightin + arightout * gk_DroneField_wet
     outleta "outleft", aleftoutmix
@@ -170,16 +173,16 @@ instr MasterOutput
            nstrstr(p1), p1, p2, p3, p4, p5, p7, active(p1)
 endin
 
-; Voice matched to drone.csd instr 1: ampdb(vel) -> poscil3(env) -> distort,
-; transeg bloom, p3 extended by (attack+decay)/2.
+; Drone-like voice without waveshape aliasing: bandlimited additive partials
+; matching drone.csd f1 weights (1:3, 4:1, 6:2), plus a few extra odd partials
+; only while n*f0 stays under gi_Swirl_nyquist_guard * sr. Swirl comes from
+; just beating + wet reverb, not from folded ultrasonics.
 instr SwirlPad
     i_midi_key = p4
-    ; Score velocities are already ~drone MIDI velocities (mid 50s–60s).
     ivelocity = p5
     ipan = p7
     i_frequency = cpsmidinn(i_midi_key)
     iamp = ampdb(ivelocity) * ampdb(i(gk_SwirlPad_level))
-    ; Slow linear bloom like drone (20 s there); scale to note length, cap high.
     iattack = 12
     idecay = 12
     if p3 < 24 then
@@ -198,8 +201,27 @@ instr SwirlPad
         isustain = 0.05
     endif
     kenvelope transeg 0.0, iattack, 0.0, iamp, isustain, 0.0, iamp, idecay, 0.0, 0.0
-    asignal poscil3 kenvelope, i_frequency, gi_Swirl_harm
-    asignal distort asignal, 0.125, gi_Swirl_distort
+    ilimit = sr * gi_Swirl_nyquist_guard
+    ; Normalize roughly like the GEN10 peak mix (3,1,2) plus extras.
+    inorm = 3 + 1 + 2 + 0.7 + 0.45 + 0.3
+    asignal = poscil3(kenvelope * (3 / inorm), i_frequency, gi_Swirl_sine)
+    if i_frequency * 2 < ilimit then
+        asignal += poscil3(kenvelope * (0.7 / inorm), i_frequency * 2, gi_Swirl_sine)
+    endif
+    if i_frequency * 3 < ilimit then
+        asignal += poscil3(kenvelope * (0.45 / inorm), i_frequency * 3, gi_Swirl_sine)
+    endif
+    if i_frequency * 4 < ilimit then
+        asignal += poscil3(kenvelope * (1 / inorm), i_frequency * 4, gi_Swirl_sine)
+    endif
+    if i_frequency * 5 < ilimit then
+        asignal += poscil3(kenvelope * (0.3 / inorm), i_frequency * 5, gi_Swirl_sine)
+    endif
+    if i_frequency * 6 < ilimit then
+        asignal += poscil3(kenvelope * (2 / inorm), i_frequency * 6, gi_Swirl_sine)
+    endif
+    ; Presence where hearing usually remains.
+    asignal pareq asignal, 2800, ampdb(5), 0.85, 0
     aleft, aright pan2 asignal, ipan
     outleta "outleft", aleft
     outleta "outright", aright
