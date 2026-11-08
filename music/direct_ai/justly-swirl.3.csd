@@ -65,10 +65,10 @@ gk_ZakianFlute_level init 2
 gk_ZakianFlute_pan init 0.5
 gi_ZakianFLute_seed init 0.5
 gi_ZakianFLute_space_left_to_front init 0.5
-; Drone-like wet amount, but darker tank so HF/aliases do not recirculate.
+; Drone-like wet amount; darker tank + softer waveshape to cut edge/grit.
 gk_DroneField_feedback init 0.9
 gk_DroneField_wet init 0.8
-gk_DroneField_frequency_cutoff init 8000
+gk_DroneField_frequency_cutoff init 5500
 ; Headroom for many overlapping voices (drone.csd uses only ~3 at once).
 gk_MasterOutput_level init -12
 gS_MasterOutput_filename init ""
@@ -78,19 +78,28 @@ gi_Justly_tempo init 25.111111
 gi_Justly_tonic init 4
 ; Extra beats of overlap so just stacks ring into each other.
 gi_Justly_legato init 1.5
-; Cantus level boost in sections 1 and 3 (dB); canon voices stay unboosted.
+; Cantus level boost in sections 1 and 3 (dB) above the alto reference.
 gi_Justly_cantus_db init 3
 ; Extra beats so each canon note lasts through the next attack (legato).
 gi_Justly_canon_legato init 1.5
 ; Beat where section 2 / flute canon must be silent (G# reverse-pivot hold).
 gi_Justly_canon_end init 147
+; Canon voices only (ZakianFlute), not pedals: about half the former excess vs section 3.
+gi_Justly_canon_section_db init -2.5
+; Voice ladder (dB): each lower voice +2 vs the one above (alto = 0).
+gi_Justly_db_bass init 6
+gi_Justly_db_bari init 4
+gi_Justly_db_tenor init 2
+gi_Justly_db_alto init 0
 ; Pre-reverb send lowpass (Hz): unload distort aliases before the tank.
-gi_Swirl_pre_reverb_lp init 6000
-gi_Flute_pre_reverb_lp init 8000
+gi_Swirl_pre_reverb_lp init 4200
+gi_Flute_pre_reverb_lp init 6000
+; Milder distort drive than drone.csd's 0.125 (less grit on mid/high notes).
+gi_Swirl_distort_drive init 0.08
 
-; Same tables as drone.csd f1 / f2.
-gi_Swirl_harm ftgen 0, 0, 65536, 10, 3, 0, 0, 1, 0, 2
-gi_Swirl_distort ftgen 0, 0, 65536, 13, 1, 1, 0, 3, 0, 2
+; Same harmonic skeleton as drone.csd f1 / f2; 6th partial eased (was 2).
+gi_Swirl_harm ftgen 0, 0, 65536, 10, 3, 0, 0, 1, 0, 1
+gi_Swirl_distort ftgen 0, 0, 65536, 13, 1, 1, 0, 2, 0, 1
 ; From patches/ZakianFlute.inc (Lee Zakian / Michael Gogins).
 gi_ZakianFLute_f2  ftgen 0, 0, 16, -2, 40, 40, 80, 160, 320, 640, 1280, 2560, 5120, 10240, 10240
 gi_ZakianFlute_f26 ftgen 0, 0, 65537, -10, 2000, 489, 74, 219, 125, 9, 33, 5, 5
@@ -421,7 +430,7 @@ instr SwirlPad
     endif
     kenvelope transeg 0.0, iattack, 0.0, iamp, isustain, 0.0, iamp, idecay, 0.0, 0.0
     asignal poscil3 kenvelope, i_frequency, gi_Swirl_harm
-    asignal distort asignal, 0.125, gi_Swirl_distort
+    asignal distort asignal, gi_Swirl_distort_drive, gi_Swirl_distort
     ; Unload waveshape / alias energy before the shared reverb send.
     asignal butterlp asignal, gi_Swirl_pre_reverb_lp
     aleft, aright pan2 asignal, ipan
@@ -564,7 +573,8 @@ instr CanonVoice
     if i_entry >= gi_Justly_canon_end then
         ScheduleCantus 0, i_entry, 1.5, i_xpose, i_pan, i_tonic, i_vscale, iattack, ilegato, idb, 0, 0, 0
     elseif i_xpose_alt != 0 then
-        ; Canon section: ZakianFlute on every new note; pivot then G# Phrygian.
+        ; Canon section: ZakianFlute; whole-section trim vs final section level.
+        idb = idb + gi_Justly_canon_section_db
         ScheduleCantus 0, i_entry, 1.5, i_xpose, i_pan, gi_Justly_tonic, i_vscale, iattack, ilegato, idb, i_xpose_alt, i_tonic, 1
     else
         ScheduleCantus 0, i_entry, 1.5, i_xpose, i_pan, i_tonic, i_vscale, iattack, ilegato, idb, 0, 0, 0
@@ -671,26 +681,35 @@ HarmPitch_pick:
 endop
 
 ; Bass: one attack per cantus note (never tied). Always into the drone field.
+; Section 1: skip the final hold (indx 51) — handoff pads in the score replace it.
 opcode ScheduleAccompBass, 0, iiiii
     indx, ientry, ibase, isect, itonic xin
     if indx >= gi_Cantus_nnotes igoto ScheduleAccompBass_done
+    if isect == 1 && indx >= gi_Cantus_nnotes - 1 igoto ScheduleAccompBass_next
     ist tab_i indx * 4 + 0, gi_Cantus
     idu tab_i indx * 4 + 1, gi_Cantus
     ivel tab_i indx * 4 + 3, gi_Cantus
     imid HarmPitch indx, 0, isect
-    schedule "JustTone", 0, 1, ientry + (ist - ibase), idu + gi_Justly_legato, imid, ivel * 0.88, 0.12, 0, itonic
+    schedule "JustTone", 0, 1, ientry + (ist - ibase), idu + gi_Justly_legato, imid, ivel, 0.12, 0, itonic, gi_Justly_db_bass
+ScheduleAccompBass_next:
     ScheduleAccompBass indx + 1, ientry, ibase, isect, itonic
 ScheduleAccompBass_done:
 endop
 
 ; Upper voice: tied across equal HarmPitch values; changes only with cantus.
+; Section 1: ties stop before the final hold so score handoff pads own that chord.
 opcode ScheduleAccompTied, 0, iiiiii
     indx, ientry, ibase, ivox, isect, itonic xin
     if indx >= gi_Cantus_nnotes igoto ScheduleAccompTied_done
+    if isect == 1 && indx >= gi_Cantus_nnotes - 1 igoto ScheduleAccompTied_skip
     ipit HarmPitch indx, ivox, isect
     iend = indx
+    ilast = gi_Cantus_nnotes - 1
+    if isect == 1 then
+        ilast = gi_Cantus_nnotes - 2
+    endif
 ScheduleAccompTied_scan:
-    if iend + 1 >= gi_Cantus_nnotes igoto ScheduleAccompTied_fire
+    if iend + 1 > ilast igoto ScheduleAccompTied_fire
     inext HarmPitch iend + 1, ivox, isect
     if inext != ipit igoto ScheduleAccompTied_fire
     iend = iend + 1
@@ -703,16 +722,19 @@ ScheduleAccompTied_fire:
     ivel tab_i indx * 4 + 3, gi_Cantus
     if ivox == 1 then
         ipan = 0.34
-        ivelscl = 0.82
+        idb = gi_Justly_db_bari
     elseif ivox == 2 then
         ipan = 0.66
-        ivelscl = 0.80
+        idb = gi_Justly_db_tenor
     else
         ipan = 0.88
-        ivelscl = 0.78
+        idb = gi_Justly_db_alto
     endif
-    schedule "JustTone", 0, 1, ientry + (ist - ibase), idu, ipit, ivel * ivelscl, ipan, 0, itonic
+    schedule "JustTone", 0, 1, ientry + (ist - ibase), idu, ipit, ivel, ipan, 0, itonic, idb
     ScheduleAccompTied iend + 1, ientry, ibase, ivox, isect, itonic
+    igoto ScheduleAccompTied_done
+ScheduleAccompTied_skip:
+    ScheduleAccompTied indx + 1, ientry, ibase, ivox, isect, itonic
 ScheduleAccompTied_done:
 endop
 
@@ -813,35 +835,34 @@ i "Melody"  0 1  66   1.75  62  59  0.50
 i "Melody"  0 1  67   6.00  64  64  0.50
 
 ; ------------------------------------------------------------------
-; Canon begins only after the final hold completes (beat 73).
+; Final Em chord of section 1 (E B G D): each pad stops when the matching
+; canon voice enters (root, then up by chord tone / entrance order). Once
+; all four canon voices are in, there is no underlying pad.
+; ------------------------------------------------------------------
+i "JustTone" 0 1  67  6.0000  28  42  0.12  0  4  6
+i "JustTone" 0 1  67  7.3333  35  40  0.34  0  4  4
+i "JustTone" 0 1  67  8.6667  43  38  0.66  0  4  2
+i "JustTone" 0 1  67 10.0000  50  36  0.88  0  4  0
+
+; ------------------------------------------------------------------
+; Canon begins as the final hold completes (beat 73).
 ; Each voice starts on its final-Em chord tone (E2 B2 G3 D4, E Phrygian);
 ; from the second note, +4 semitones to G# Phrygian (tonic class 8).
+; p5 = Em-chord entry xpose; p11 = voice ladder dB; p12 = G# continuation xpose
 ; ------------------------------------------------------------------
-; Em pedal until the first voice's second note (~beat 75)
-i "JustTone" 0 1  73    2.2  28  42  0.12  0  4
-i "JustTone" 0 1  73.2  2.0  35  40  0.34  0  4
-i "JustTone" 0 1  73.4  1.8  43  38  0.66  0  4
-i "JustTone" 0 1  73.6  1.6  50  36  0.88  0  4
-; G# pedal for the rest of the canon (~through beat 146)
-i "JustTone" 0 1  75.2  71.8  32  42  0.12  0  8
-i "JustTone" 0 1  75.4  71.6  39  40  0.34  0  8
-i "JustTone" 0 1  75.6  71.4  47  38  0.66  0  8
-i "JustTone" 0 1  75.8  71.2  54  36  0.88  0  8
-
-; p5 = Em-chord entry xpose; p12 = G#-Phrygian continuation xpose
-i "CanonVoice" 0 1  73      -24  0.12  8  1.00  0  0  0  -20
-i "CanonVoice" 0 1  74.3333 -17  0.34  8  1.00  0  0  0  -13
-i "CanonVoice" 0 1  75.6667  -9  0.66  8  1.00  0  0  0   -5
+i "CanonVoice" 0 1  73      -24  0.12  8  1.00  0  0  6  -20
+i "CanonVoice" 0 1  74.3333 -17  0.34  8  1.00  0  0  4  -13
+i "CanonVoice" 0 1  75.6667  -9  0.66  8  1.00  0  0  2   -5
 i "CanonVoice" 0 1  77        -2  0.88  8  1.00  0  0  0    2
 
 ; ------------------------------------------------------------------
 ; Reverse pivot into section 3: hold still in G# Phrygian, then E Phrygian.
 ; ------------------------------------------------------------------
 i "Melody"   0 1  147  6  68  62  0.50  8
-i "JustTone" 0 1  147  6  44  54  0.12  0  8
-i "JustTone" 0 1  147  6  49  52  0.34  0  8
-i "JustTone" 0 1  147  6  54  50  0.66  0  8
-i "JustTone" 0 1  147  6  59  50  0.88  0  8
+i "JustTone" 0 1  147  6  44  54  0.12  0  8  6
+i "JustTone" 0 1  147  6  49  52  0.34  0  8  4
+i "JustTone" 0 1  147  6  54  50  0.66  0  8  2
+i "JustTone" 0 1  147  6  59  50  0.88  0  8  0
 
 ; Section 3: return to E Phrygian (p12 must be explicit 0 — score carry
 ; would otherwise inherit the last canon voice's G# xpose_alt and mute the cantus).
