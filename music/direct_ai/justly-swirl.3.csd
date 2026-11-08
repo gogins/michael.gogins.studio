@@ -61,7 +61,7 @@ gS_MasterOutput_filename chnexport "gS_MasterOutput_filename", 3
 gk_SwirlPad_level init 0
 ; Canon flutes +4 dB (same boost previously on FMBell).
 gk_ZakianFlute_midi_dynamic_range init 20
-gk_ZakianFlute_level init 2
+gk_ZakianFlute_level init -2.5
 gk_ZakianFlute_pan init 0.5
 gi_ZakianFLute_seed init 0.5
 gi_ZakianFLute_space_left_to_front init 0.5
@@ -84,13 +84,22 @@ gi_Justly_cantus_db init 3
 gi_Justly_canon_legato init 1.5
 ; Beat where section 2 / flute canon must be silent (G# reverse-pivot hold).
 gi_Justly_canon_end init 147
-; Canon voices only (ZakianFlute), not pedals: about half the former excess vs section 3.
-gi_Justly_canon_section_db init -2.5
-; Voice ladder (dB): each lower voice +2 vs the one above (alto = 0).
+; Canon voices only (ZakianFlute): section trim vs accomp/final section.
+gi_Justly_canon_section_db init -5.0
+; Voice ladder (dB): each lower accomp voice +2 vs the one above (alto = 0).
+; Cantus is +gi_Justly_cantus_db above alto. Canon p11 vs top voice matches
+; accomp vs cantus: (6/4/2/0) − 3 → +3/+1/−1/0.
 gi_Justly_db_bass init 6
 gi_Justly_db_bari init 4
 gi_Justly_db_tenor init 2
 gi_Justly_db_alto init 0
+; Stereo: cantus + highest canon at center; others even between 5° in from hard L/R.
+; Field is hard-left=0 … hard-right=1 over 180° (edges at 5/180 and 1-5/180).
+gi_Justly_pan_center init 0.5
+gi_Justly_pan_bass init 0.185185
+gi_Justly_pan_bari init 0.342593
+gi_Justly_pan_tenor init 0.657407
+gi_Justly_pan_alto init 0.814815
 ; Pre-reverb send lowpass (Hz): unload distort aliases before the tank.
 gi_Swirl_pre_reverb_lp init 4200
 gi_Flute_pre_reverb_lp init 6000
@@ -690,7 +699,7 @@ opcode ScheduleAccompBass, 0, iiiii
     idu tab_i indx * 4 + 1, gi_Cantus
     ivel tab_i indx * 4 + 3, gi_Cantus
     imid HarmPitch indx, 0, isect
-    schedule "JustTone", 0, 1, ientry + (ist - ibase), idu + gi_Justly_legato, imid, ivel, 0.12, 0, itonic, gi_Justly_db_bass
+    schedule "JustTone", 0, 1, ientry + (ist - ibase), idu + gi_Justly_legato, imid, ivel, gi_Justly_pan_bass, 0, itonic, gi_Justly_db_bass
 ScheduleAccompBass_next:
     ScheduleAccompBass indx + 1, ientry, ibase, isect, itonic
 ScheduleAccompBass_done:
@@ -721,13 +730,13 @@ ScheduleAccompTied_fire:
     idu = (i_last_st + i_last_du) - ist + gi_Justly_legato
     ivel tab_i indx * 4 + 3, gi_Cantus
     if ivox == 1 then
-        ipan = 0.34
+        ipan = gi_Justly_pan_bari
         idb = gi_Justly_db_bari
     elseif ivox == 2 then
-        ipan = 0.66
+        ipan = gi_Justly_pan_tenor
         idb = gi_Justly_db_tenor
     else
-        ipan = 0.88
+        ipan = gi_Justly_pan_alto
         idb = gi_Justly_db_alto
     endif
     schedule "JustTone", 0, 1, ientry + (ist - ibase), idu, ipit, ivel, ipan, 0, itonic, idb
@@ -762,12 +771,12 @@ t 0 25.111111
 ; ------------------------------------------------------------------
 ; Section 1: accomp starts with cantus and moves only on cantus onsets.
 ; All voices are SwirlPad notes; swirl happens in the sounding intervals.
-; Pans: bass 0.12 | bari 0.34 | (cantus 0.50) | tenor 0.66 | alto 0.88
+; Pans: bass|bari | cantus=center | tenor|alto (5° in from hard L/R, even gaps).
 ; ------------------------------------------------------------------
 i "AccompWithCantus" 0 1  1.5  1  4
 
 ; ------------------------------------------------------------------
-; Cantus -- Liber Mode III at E4; center of the stage (0.50)
+; Cantus -- Liber Mode III at E4; dead center
 ; ------------------------------------------------------------------
 ; Phrase 1 -- Pange lingua gloriosi: E~ F E D | G G A C C~
 i "Melody"  0 1   1.5  2.50  64  63  0.50
@@ -839,30 +848,31 @@ i "Melody"  0 1  67   6.00  64  64  0.50
 ; canon voice enters (root, then up by chord tone / entrance order). Once
 ; all four canon voices are in, there is no underlying pad.
 ; ------------------------------------------------------------------
-i "JustTone" 0 1  67  6.0000  28  42  0.12  0  4  6
-i "JustTone" 0 1  67  7.3333  35  40  0.34  0  4  4
-i "JustTone" 0 1  67  8.6667  43  38  0.66  0  4  2
-i "JustTone" 0 1  67 10.0000  50  36  0.88  0  4  0
+i "JustTone" 0 1  67  6.0000  28  42  0.185185  0  4  6
+i "JustTone" 0 1  67  7.3333  35  40  0.342593  0  4  4
+i "JustTone" 0 1  67  8.6667  43  38  0.657407  0  4  2
+i "JustTone" 0 1  67 10.0000  50  36  0.814815  0  4  0
 
 ; ------------------------------------------------------------------
 ; Canon begins as the final hold completes (beat 73).
 ; Each voice starts on its final-Em chord tone (E2 B2 G3 D4, E Phrygian);
 ; from the second note, +4 semitones to G# Phrygian (tonic class 8).
-; p5 = Em-chord entry xpose; p11 = voice ladder dB; p12 = G# continuation xpose
+; Highest canon voice (D4 entry) at center; p11 = dB vs top (= accomp vs cantus).
+; p5 = Em-chord entry xpose; p12 = G# continuation xpose
 ; ------------------------------------------------------------------
-i "CanonVoice" 0 1  73      -24  0.12  8  1.00  0  0  6  -20
-i "CanonVoice" 0 1  74.3333 -17  0.34  8  1.00  0  0  4  -13
-i "CanonVoice" 0 1  75.6667  -9  0.66  8  1.00  0  0  2   -5
-i "CanonVoice" 0 1  77        -2  0.88  8  1.00  0  0  0    2
+i "CanonVoice" 0 1  73      -24  0.185185  8  1.00  0  0  3  -20
+i "CanonVoice" 0 1  74.3333 -17  0.342593  8  1.00  0  0  1  -13
+i "CanonVoice" 0 1  75.6667  -9  0.657407  8  1.00  0  0 -1   -5
+i "CanonVoice" 0 1  77        -2  0.5      8  1.00  0  0  0    2
 
 ; ------------------------------------------------------------------
 ; Reverse pivot into section 3: hold still in G# Phrygian, then E Phrygian.
 ; ------------------------------------------------------------------
 i "Melody"   0 1  147  6  68  62  0.50  8
-i "JustTone" 0 1  147  6  44  54  0.12  0  8  6
-i "JustTone" 0 1  147  6  49  52  0.34  0  8  4
-i "JustTone" 0 1  147  6  54  50  0.66  0  8  2
-i "JustTone" 0 1  147  6  59  50  0.88  0  8  0
+i "JustTone" 0 1  147  6  44  54  0.185185  0  8  6
+i "JustTone" 0 1  147  6  49  52  0.342593  0  8  4
+i "JustTone" 0 1  147  6  54  50  0.657407  0  8  2
+i "JustTone" 0 1  147  6  59  50  0.814815  0  8  0
 
 ; Section 3: return to E Phrygian (p12 must be explicit 0 — score carry
 ; would otherwise inherit the last canon voice's G# xpose_alt and mute the cantus).
