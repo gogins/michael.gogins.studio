@@ -72,8 +72,8 @@ gk_DroneField_frequency_cutoff init 8000
 ; Headroom for many overlapping voices (drone.csd uses only ~3 at once).
 gk_MasterOutput_level init -12
 gS_MasterOutput_filename init ""
-; Slow enough that ~1.75-beat notes last ~9 s and holds ~15–30 s.
-gi_Justly_tempo init 18
+; Tempo so last written note-off (beat 226) falls at 9:00; file ends +8 s.
+gi_Justly_tempo init 25.111111
 ; Fixed tonic for the notional just Phrygian scale (E0 MIDI key class).
 gi_Justly_tonic init 4
 ; Extra beats of overlap so just stacks ring into each other.
@@ -735,7 +735,7 @@ endin
 <CsScore>
 
 ; Match gi_Justly_tempo so score end covers the full audio (plus release/reverb).
-t 0 18
+t 0 25.111111
 
 ; ------------------------------------------------------------------
 ; Section 1: accomp starts with cantus and moves only on cantus onsets.
@@ -814,25 +814,25 @@ i "Melody"  0 1  67   6.00  64  64  0.50
 
 ; ------------------------------------------------------------------
 ; Canon begins only after the final hold completes (beat 73).
-; Entries ascend by pitch through Em7 (E2 G2 B2 D3), not root/fifth/third
-; skip-voicing; from the second note, +4 semitones to G# Phrygian (tonic 8).
+; Each voice starts on its final-Em chord tone (E2 B2 G3 D4, E Phrygian);
+; from the second note, +4 semitones to G# Phrygian (tonic class 8).
 ; ------------------------------------------------------------------
-; Em pedal until the first voice's second note (~beat 75): E1 G1 B1 D2
+; Em pedal until the first voice's second note (~beat 75)
 i "JustTone" 0 1  73    2.2  28  42  0.12  0  4
-i "JustTone" 0 1  73.2  2.0  31  40  0.34  0  4
-i "JustTone" 0 1  73.4  1.8  35  38  0.66  0  4
-i "JustTone" 0 1  73.6  1.6  38  36  0.88  0  4
-; G# pedal for the rest of the canon (~through beat 146): G#1 B1 D#2 F#2
+i "JustTone" 0 1  73.2  2.0  35  40  0.34  0  4
+i "JustTone" 0 1  73.4  1.8  43  38  0.66  0  4
+i "JustTone" 0 1  73.6  1.6  50  36  0.88  0  4
+; G# pedal for the rest of the canon (~through beat 146)
 i "JustTone" 0 1  75.2  71.8  32  42  0.12  0  8
-i "JustTone" 0 1  75.4  71.6  35  40  0.34  0  8
-i "JustTone" 0 1  75.6  71.4  39  38  0.66  0  8
-i "JustTone" 0 1  75.8  71.2  42  36  0.88  0  8
+i "JustTone" 0 1  75.4  71.6  39  40  0.34  0  8
+i "JustTone" 0 1  75.6  71.4  47  38  0.66  0  8
+i "JustTone" 0 1  75.8  71.2  54  36  0.88  0  8
 
-; p5 = Em7 entry xpose (low→high); p12 = G#-Phrygian continuation xpose
+; p5 = Em-chord entry xpose; p12 = G#-Phrygian continuation xpose
 i "CanonVoice" 0 1  73      -24  0.12  8  1.00  0  0  0  -20
-i "CanonVoice" 0 1  74.3333 -21  0.34  8  1.00  0  0  0  -17
-i "CanonVoice" 0 1  75.6667 -17  0.66  8  1.00  0  0  0  -13
-i "CanonVoice" 0 1  77        -14  0.88  8  1.00  0  0  0  -10
+i "CanonVoice" 0 1  74.3333 -17  0.34  8  1.00  0  0  0  -13
+i "CanonVoice" 0 1  75.6667  -9  0.66  8  1.00  0  0  0   -5
+i "CanonVoice" 0 1  77        -2  0.88  8  1.00  0  0  0    2
 
 ; ------------------------------------------------------------------
 ; Reverse pivot into section 3: hold still in G# Phrygian, then E Phrygian.
@@ -848,8 +848,8 @@ i "JustTone" 0 1  147  6  59  50  0.88  0  8
 i "CanonVoice" 0 1  153  0  0.50  4  1.05  0  1.5  3  0
 i "AccompWithCantus" 0 1  153  3  4
 
-; Tail for long release + reverb after last cantus (~beat 220)
-e 280
+; File ends 8 s after musical end at beat 226 (9:00 → 9:08).
+e 229.348148
 
 </CsScore>
 </CsoundSynthesizer>
