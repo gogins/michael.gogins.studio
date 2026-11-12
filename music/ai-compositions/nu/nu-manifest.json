@@ -4,7 +4,7 @@
     "model": "Claude Fable 5.2"
   },
   "composition": "nu",
-  "created_at": "2026-11-12T20:10:51Z",
+  "created_at": "2026-11-12T20:12:07Z",
   "dependencies": {
     "includes": [],
     "plugins": [],
@@ -52,56 +52,91 @@
     "studio_python": "3.12.16"
   },
   "files": {
+    "code/nu-generate.py": {
+      "bytes": 4670,
+      "sha256": "43e07156f4c7c44352c6b80789a926eb8c7771cba8b038e63fcd52ca0619b42e"
+    },
     "nu-prompt-001.md": {
       "bytes": 517,
       "sha256": "3f611e71f2648528027bbe2d3b376ebb4a9f1f537626f17fb5f3c67e31943e77"
     },
+    "nu-prompt-002.md": {
+      "bytes": 624,
+      "sha256": "5c5273f69ec837bdc84a957e5d84992cc71da06bc659dab82ec446901be92967"
+    },
     "nu.csd": {
-      "bytes": 2800,
-      "sha256": "26db34a31d95053210a736bec8a9def894fe68f66995add77ad9158d186a278f"
+      "bytes": 2657,
+      "sha256": "064a267fd7086392cef442b542ddf1a0ffcd53e9efeb64b82d0d82c8ccd65e6a"
+    },
+    "outputs/nu-generate.log": {
+      "bytes": 134,
+      "sha256": "ef3a2644267161a59aa334560905a948b762e2d6ae5598bbdb3aae28d12442eb"
     },
     "outputs/nu-render.log": {
-      "bytes": 3050,
-      "sha256": "876bf1569f113dcbdc57c8bda270bb9102ee4936a1d309dcc71565ce923dfb2a"
+      "bytes": 3658,
+      "sha256": "36d6910db47da84a0c2159569a5daa8f03917b629c4464fe1d2062be9b6c9a3e"
     },
     "outputs/nu.flac": {
-      "bytes": 1823939,
-      "sha256": "a425778eb15eea5f9872553ad538cbda0db3f7bffccc80fcd7a9e44cfd0cc97e"
+      "bytes": 1577650,
+      "sha256": "16971e96ddab1dac981ef966a9d6e6519272a1f760da061fed3767629bb6da8a"
     },
     "outputs/nu.mp3": {
-      "bytes": 281732,
-      "sha256": "90bc4523c9ef5c6df08a17bf4f74448ff145fc9e4f4fc20952d8207a734f2f6b"
+      "bytes": 256028,
+      "sha256": "98d3a90dc00abfd38a05043bddfe06a9e2d2cf2318bf4cc7eec48ff1c5beddc2"
     }
   },
   "generator": {
-    "kind": "direct-csd",
-    "runs": [],
-    "seeds": [],
-    "sources": []
+    "kind": "python-csoundac",
+    "runs": [
+      {
+        "argv": [
+          "python",
+          "code/nu-generate.py"
+        ],
+        "exit_code": 0,
+        "seconds": 0.028,
+        "seed": 7,
+        "started_at": "2026-11-12T20:11:57Z"
+      }
+    ],
+    "seeds": [
+      7
+    ],
+    "sources": [
+      "code/nu-generate.py"
+    ]
   },
-  "history": [],
+  "history": [
+    {
+      "archived_at": "2026-11-12T20:12:07Z",
+      "ordinal": 1,
+      "tree_sha256": "145c7d43c5c234bc3cbb458622b62e734ba34f87b38352f779bb2d55ac4bca56",
+      "version": "version-0001"
+    }
+  ],
   "new_prompts": [
-    "nu-prompt-001.md"
+    "nu-prompt-002.md"
   ],
   "notes": "Demonstration composition created while implementing the studio.",
-  "ordinal": 1,
+  "ordinal": 2,
   "prompts": [
-    "nu-prompt-001.md"
+    "nu-prompt-001.md",
+    "nu-prompt-002.md"
   ],
   "render": {
     "analysis": {
       "bits": 24,
       "channel_peaks_dbfs": [
-        -7.52,
-        -6.34
+        -4.92,
+        -5.09
       ],
       "channels": 2,
       "clipped_samples": 0,
       "duration_seconds": 18.0,
       "frames": 864000,
-      "peak": 0.481683,
-      "peak_dbfs": -6.34,
-      "rms_dbfs": -22.19,
+      "peak": 0.567721,
+      "peak_dbfs": -4.92,
+      "rms_dbfs": -20.76,
       "sample_format": "pcm",
       "sample_rate": 48000
     },
@@ -113,7 +148,7 @@
           "nu.csd"
         ],
         "exit_code": 0,
-        "seconds": 0.022,
+        "seconds": 0.023,
         "step": "syntax-check"
       },
       {
@@ -127,7 +162,7 @@
           "nu.csd"
         ],
         "exit_code": 0,
-        "seconds": 0.132,
+        "seconds": 0.176,
         "step": "render"
       },
       {
@@ -147,7 +182,7 @@
           "outputs/nu.flac"
         ],
         "exit_code": 0,
-        "seconds": 0.063,
+        "seconds": 0.07,
         "step": "encode-flac"
       },
       {
@@ -167,18 +202,18 @@
           "outputs/nu.mp3"
         ],
         "exit_code": 0,
-        "seconds": 0.096,
+        "seconds": 0.094,
         "step": "encode-mp3"
       }
     ],
-    "finished_at": "2026-11-12T20:10:51Z",
+    "finished_at": "2026-11-12T20:11:57Z",
     "log": "outputs/nu-render.log",
     "outputs": [
       "outputs/nu.flac",
       "outputs/nu.mp3"
     ],
-    "started_at": "2026-11-12T20:10:50Z",
-    "wav_sha256": "4cf536b6bf2ffea3db058e05a020f90ce5993b2dec7cd3bbe8c2edecd6c3d5b7"
+    "started_at": "2026-11-12T20:11:57Z",
+    "wav_sha256": "8a60136b08cb3e3961e962b0db089c6b3de23d2db24b718b53d2f48ea035c726"
   },
   "schema": "ai-composition-studio/manifest/1",
   "title": "Nu (studio demonstration)",
@@ -216,7 +251,7 @@
       },
       {
         "check": "audio is not silent",
-        "detail": "peak -6.34 dBFS",
+        "detail": "peak -4.92 dBFS",
         "passed": true
       },
       {

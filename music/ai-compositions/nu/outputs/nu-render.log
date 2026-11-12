@@ -1,4 +1,4 @@
-Render of nu started 2026-11-12T20:10:50Z
+Render of nu started 2026-11-12T20:11:57Z
 
 $ csound --syntax-check-only nu.csd
 Reading CSD file:  nu.csd
@@ -6,14 +6,14 @@ Reading CSD file:  nu.csd
 [commit: f9434ffc51954b20314352e1620e19cc5ec67185]
 Compiling Csound code...
 	 ...done
-Elapsed time at end of code compilation: real: 0.011s, CPU: 0.009s
+Elapsed time at end of code compilation: real: 0.012s, CPU: 0.011s
 Syntax check completed.
 		   overall amps:  0.00000  0.00000
-Elapsed time at end of performance: real: 0.011s, CPU: 0.009s
+Elapsed time at end of performance: real: 0.012s, CPU: 0.011s
 --Csound version 7.0 (double samples) Oct 28 2026
 [commit: f9434ffc51954b20314352e1620e19cc5ec67185]
 
-[exit 0; 0.022 s]
+[exit 0; 0.023 s]
 
 $ csound -d -W -3 -o outputs/nu.wav nu.csd
 Reading CSD file:  nu.csd
@@ -21,7 +21,7 @@ Reading CSD file:  nu.csd
 [commit: f9434ffc51954b20314352e1620e19cc5ec67185]
 Compiling Csound code...
 	 ...done
-Elapsed time at end of code compilation: real: 0.010s, CPU: 0.009s
+Elapsed time at end of code compilation: real: 0.012s, CPU: 0.010s
 displays suppressed
 sr = 48000.0, kr = 3000.000, ksmps = 16
 0dBFS level = 1.0, A4 tuning = 440.0
@@ -34,45 +34,58 @@ new alloc for instr 99:
 B  0.000 ..  0.500 T  0.500 TT  0.500 M:  0.00677  0.00636
 new alloc for instr 1:
 warning: instr 1 uses 7 p-fields but is given 11
-B  0.500 ..  2.000 T  2.000 TT  2.000 M:  0.39127  0.21291
+B  0.500 ..  1.000 T  1.000 TT  1.000 M:  0.29634  0.16848
 new alloc for instr 1:
 warning: instr 1 uses 7 p-fields but is given 11
-B  2.000 ..  3.500 T  3.500 TT  3.500 M:  0.20870  0.36742
+B  1.000 ..  2.500 T  2.500 TT  2.500 M:  0.28174  0.40020
 new alloc for instr 1:
 warning: instr 1 uses 7 p-fields but is given 11
-B  3.500 ..  4.500 T  4.500 TT  4.500 M:  0.35246  0.23727
-warning: instr 1 uses 7 p-fields but is given 11
-B  4.500 ..  6.000 T  6.000 TT  6.000 M:  0.30750  0.40569
-warning: instr 1 uses 7 p-fields but is given 11
-B  6.000 ..  7.000 T  7.000 TT  7.000 M:  0.32789  0.17784
-warning: instr 1 uses 7 p-fields but is given 11
-B  7.000 ..  8.500 T  8.500 TT  8.500 M:  0.25458  0.46392
-warning: instr 1 uses 7 p-fields but is given 11
-B  8.500 ..  9.500 T  9.500 TT  9.500 M:  0.34110  0.27297
-warning: instr 1 uses 7 p-fields but is given 11
-B  9.500 .. 11.000 T 11.000 TT 11.000 M:  0.30235  0.35749
-warning: instr 1 uses 7 p-fields but is given 11
-B 11.000 .. 12.000 T 12.000 TT 12.000 M:  0.39642  0.39324
-warning: instr 1 uses 7 p-fields but is given 11
+B  2.500 ..  3.000 T  3.000 TT  3.000 M:  0.44033  0.14481
 new alloc for instr 1:
 warning: instr 1 uses 7 p-fields but is given 11
-B 12.000 .. 18.000 T 18.000 TT 18.000 M:  0.42055  0.48168
+B  3.000 ..  4.500 T  4.500 TT  4.500 M:  0.33833  0.39757
+warning: instr 1 uses 7 p-fields but is given 11
+B  4.500 ..  5.000 T  5.000 TT  5.000 M:  0.35462  0.17469
+warning: instr 1 uses 7 p-fields but is given 11
+B  5.000 ..  5.500 T  5.500 TT  5.500 M:  0.29970  0.51765
+warning: instr 1 uses 7 p-fields but is given 11
+B  5.500 ..  6.250 T  6.250 TT  6.250 M:  0.43994  0.30060
+new alloc for instr 1:
+warning: instr 1 uses 7 p-fields but is given 11
+B  6.250 ..  7.000 T  7.000 TT  7.000 M:  0.27073  0.55633
+warning: instr 1 uses 7 p-fields but is given 11
+new alloc for instr 2:
+warning: instr 2 uses 7 p-fields but is given 11
+B  7.000 ..  8.000 T  8.000 TT  8.000 M:  0.42980  0.22663
+new alloc for instr 1:
+warning: instr 1 uses 7 p-fields but is given 11
+B  8.000 ..  9.000 T  9.000 TT  9.000 M:  0.27919  0.43189
+warning: instr 1 uses 7 p-fields but is given 11
+B  9.000 ..  9.500 T  9.500 TT  9.500 M:  0.46185  0.25970
+warning: instr 1 uses 7 p-fields but is given 11
+B  9.500 .. 10.500 T 10.500 TT 10.500 M:  0.37556  0.50450
+warning: instr 1 uses 7 p-fields but is given 11
+B 10.500 .. 11.500 T 11.500 TT 11.500 M:  0.49447  0.20415
+warning: instr 1 uses 7 p-fields but is given 11
+B 11.500 .. 12.000 T 12.000 TT 12.000 M:  0.24711  0.49711
+warning: instr 1 uses 7 p-fields but is given 11
+B 12.000 .. 18.000 T 18.000 TT 18.000 M:  0.56772  0.39325
 end of Performance
 256 768 sample blks of 24bit ints written to outputs/nu.wav (WAV)
 inactive allocs returned to freespace
-		   overall amps:  0.42055  0.48168
-Elapsed time at end of performance: real: 0.122s, CPU: 0.120s
+		   overall amps:  0.56772  0.55633
+Elapsed time at end of performance: real: 0.166s, CPU: 0.164s
 
-[exit 0; 0.132 s]
+[exit 0; 0.176 s]
 
-Audio: 18.0 s, 2 ch, 48000 Hz, 24-bit pcm; peak -6.34 dBFS, RMS -22.19 dBFS, 0 clipped samples
+Audio: 18.0 s, 2 ch, 48000 Hz, 24-bit pcm; peak -4.92 dBFS, RMS -20.76 dBFS, 0 clipped samples
 
 $ ffmpeg -hide_banner -loglevel error -nostdin -y -i outputs/nu.wav -c:a flac -compression_level 8 outputs/nu.flac
 
-[exit 0; 0.063 s]
+[exit 0; 0.07 s]
 
 $ ffmpeg -hide_banner -loglevel error -nostdin -y -i outputs/nu.wav -c:a libmp3lame -q:a 2 outputs/nu.mp3
 
-[exit 0; 0.096 s]
+[exit 0; 0.094 s]
 
-Render finished 2026-11-12T20:10:51Z: ok
+Render finished 2026-11-12T20:11:57Z: ok
