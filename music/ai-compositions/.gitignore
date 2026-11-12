@@ -1,0 +1,4 @@
+# Working state of the studio tools; never committed.
+.staging/
+.locks/
+.DS_Store

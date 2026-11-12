@@ -1,0 +1,9 @@
+#!/bin/sh
+# Launcher for the AI composition studio tools.
+#
+# The tools themselves need only the Python 3 standard library (3.9+).
+# STUDIO_PYTHON names the Python that can import CsoundAC; it is used for
+# generator programs and, when set, for the tools as well.
+here=$(cd "$(dirname "$0")/.." && pwd)
+python=${STUDIO_PYTHON:-python3}
+PYTHONPATH="$here${PYTHONPATH:+:$PYTHONPATH}" PYTHONDONTWRITEBYTECODE=1 exec "$python" -m studio.cli "$@"
