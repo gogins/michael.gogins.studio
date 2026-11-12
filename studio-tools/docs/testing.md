@@ -26,7 +26,7 @@ real tools use them when present and are reported as skipped otherwise:
 | --- | --- | --- |
 | `test_render.RealCsoundTests` | `csound` on the PATH (and `ffmpeg` for the encoding part) | skipped |
 | `test_generators` | `STUDIO_PYTHON` with CsoundAC; Node.js with `CSOUNDAC_WASM_DIR`; `STUDIO_CSOUNDAC_CXXFLAGS`/`LDFLAGS` | each skipped separately |
-| `test_viewer.BrowserTests` | Chrome or Chromium (`STUDIO_CHROME` to name it) | skipped |
+| `test_viewer.BrowserTests`, `test_viewer.PublishedSiteTests` | Chrome or Chromium (`STUDIO_CHROME` to name it) | skipped |
 | `test_viewer.DiffModuleTests` | Node.js | skipped |
 | `test_branches` | Git | skipped |
 | `test_repository.PreexistingFilesTests` | A Git checkout with the base branch (`STUDIO_BASE_BRANCH`, default `master` or `main`) | skipped |
@@ -56,6 +56,7 @@ run the suite outside the sandbox; those tests fail there, they do not skip.
 | No publication outside `docs/compositions/` | `test_publish.PublishSafetyTests`: symbolic links in and at the destination, a tampered state file, and a check that everything published is inside the directory. |
 | The archive is not modified by publishing | `test_publish`: the archive's tree hash is compared before and after. |
 | Browser loading of the catalog; audio playback | `test_viewer.BrowserTests`: headless Chrome loads the viewer in a 412 x 915 frame against a site published by the tools; checks the library, version selection, prompts, `.csd`, code, files, provenance, comparison, playback and seeking of real audio, an archived version, missing optional artifacts, an unknown composition, an empty library, a missing catalog, and that no view is wider than the frame. |
+| The published site | `test_viewer.PublishedSiteTests`: the real `docs/` is served read-only and every published version of every composition is opened in headless Chrome: the `.csd` shown equals the published file, the prompts are those of the catalog, the audio loads with the recorded duration and plays, and nothing overflows a phone-sized frame. |
 | Viewer code | `test_viewer.DiffModuleTests` (the diff reproduces both texts for 300 random cases); `test_repository.StudioFilesTests`: no absolute URLs, no `innerHTML`, all references resolve. |
 | Command line and local server | `test_cli_serve`: a complete session through `bin/studio`; exit status on errors; `publish`, `catalog`, `recover`; whole files, content types, byte ranges and refusal of escapes by the server. |
 | Generating programs | `test_generators`: Python, JavaScript (WebAssembly) and C++ programs using the real CsoundAC write the same score with the studio's p-field layout, are recorded in the manifest, and regenerate the identical `.csd`. |
@@ -69,10 +70,10 @@ the suite, outside the sandbox:
 
 | Environment | Result |
 | --- | --- |
-| Configured with `config/studio-env.macos.example.sh` (Csound 7.0, ffmpeg 9.0.2, CsoundAC under Python 3.12.16, Node.js 26.13.1 with the WebAssembly build, C++ flags, Chrome, Git) | **129 tests, all passed, none skipped** (109 s) |
-| No configuration (Csound, ffmpeg, Node.js, Chrome and Git on the PATH; no CsoundAC) | 129 tests: 126 passed, 3 skipped (the three `test_generators` tests) |
-| Csound, ffmpeg and Node.js removed from the PATH | 129 tests: 123 passed, 6 skipped (generators, real Csound, the diff module) |
-| No configuration, suite and tools run by the system Python 3.9.6 | 129 tests: 126 passed, 3 skipped (the three `test_generators` tests) |
+| Configured with `config/studio-env.macos.example.sh` (Csound 7.0, ffmpeg 9.0.2, CsoundAC under Python 3.12.16, Node.js 26.13.1 with the WebAssembly build, C++ flags, Chrome, Git) | **130 tests, all passed, none skipped** (78 s) |
+| No configuration (Csound, ffmpeg, Node.js, Chrome and Git on the PATH; no CsoundAC) | 130 tests: 127 passed, 3 skipped (the three `test_generators` tests) |
+| Csound, ffmpeg and Node.js removed from the PATH | 130 tests: 124 passed, 6 skipped (generators, real Csound, the diff module) |
+| No configuration, suite and tools run by the system Python 3.9.6 | 130 tests: 127 passed, 3 skipped (the three `test_generators` tests) |
 
 `cloud/check.sh` on the same machine: all twelve checks passed with the
 example configuration; without configuration the nine Csound checks passed
@@ -84,7 +85,7 @@ Not run anywhere: the suite and `check.sh` on Linux, and
 
 Test counts by module: `test_naming_paths` 13, `test_versioning` 25,
 `test_recovery` 9, `test_render` 22, `test_publish` 30, `test_cli_serve` 7,
-`test_generators` 3, `test_branches` 4, `test_viewer` 4,
+`test_generators` 3, `test_branches` 4, `test_viewer` 5,
 `test_repository` 12.
 
 ## Manual checks

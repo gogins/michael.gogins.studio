@@ -13,9 +13,11 @@ import os
 import shutil
 import subprocess
 import sys
+import tempfile
 import threading
 import time
 import unittest
+from pathlib import Path
 
 from support import REPO, StudioTestCase
 
@@ -72,6 +74,7 @@ async function run() {
   result.state = state();
   result.catalogError = text('#catalog-error');
   result.emptyLibrary = text('#empty-library');
+  if (mode === 'real') return realSite(result);
   if (mode !== 'full') return result;
 
   // Library.
@@ -172,31 +175,73 @@ async function run() {
   return result;
 }
 
+// Whatever is really published: open every version of every composition.
+async function realSite(result) {
+  const catalog = await (await fetch('/compositions/catalog.json')).json();
+  result.compositions = [];
+  for (const composition of catalog.compositions) {
+    const entry = { name: composition.name, versions: [] };
+    for (const version of composition.versions) {
+      const selected = () => doc().getElementById('version-select').value === version.id;
+      const item = { id: version.id };
+      if (version.csd) {
+        await show(`#${composition.name}/${version.id}/csound`, 'csd',
+          () => selected() && tab('csound', '.source .code')());
+        item.csd = text('.source .code');
+      }
+      await show(`#${composition.name}/${version.id}/prompts`, 'prompts',
+        () => selected() && doc().getElementById('panel').dataset.tab === 'prompts');
+      item.prompts = all('.prompt pre').map((pre) => pre.textContent);
+      item.overflow = overflow();
+      const audio = doc().getElementById('player');
+      if (audio) {
+        audio.muted = true;
+        await until('audio metadata', () => audio.readyState >= 1 && isFinite(audio.duration));
+        await audio.play();
+        await until('audio to advance', () => audio.currentTime > 0.05);
+        audio.pause();
+        item.audio = { source: audio.currentSrc, duration: audio.duration };
+      }
+      entry.versions.push(item);
+    }
+    result.compositions.push(entry);
+  }
+  return result;
+}
+
 run().catch((error) => ({ mode, error: String(error), stack: error.stack }))
   .then((result) => fetch('/__result', { method: 'POST', body: JSON.stringify(result) }));
 </script>
 """
 
 
-@unittest.skipUnless(find_chrome(), "Chrome or Chromium not found")
-class BrowserTests(StudioTestCase):
-    def setUp(self):
-        super().setUp()
-        # Real ffmpeg, when there is one, gives a real MP3; otherwise the WAV is used.
-        real_ffmpeg = shutil.which("ffmpeg")
-        os.environ["STUDIO_FFMPEG"] = real_ffmpeg or "none"
-        environment.reset_cache()
-        self.has_mp3 = bool(real_ffmpeg)
+class Browser:
+    """Serves a directory with the studio's server and drives headless Chrome.
+
+    The harness page is served from memory and results are posted back, so
+    nothing is written into the directory being served.
+    """
+
+    def start_site(self, directory):
         self.results = []
-        shutil.copytree(REPO / "docs" / "studio", self.studio.viewer)
-        (self.root / "docs" / "harness.html").write_text(HARNESS, encoding="utf-8")
         test = self
 
         class Handler(serve.StaticHandler):
             quiet = True
 
             def __init__(self, *args, **kwargs):
-                super().__init__(*args, directory=str(test.root / "docs"), **kwargs)
+                super().__init__(*args, directory=str(directory), **kwargs)
+
+            def do_GET(self):
+                if self.path.split("?")[0] == "/harness.html":
+                    body = HARNESS.encode("utf-8")
+                    self.send_response(200)
+                    self.send_header("Content-Type", "text/html; charset=utf-8")
+                    self.send_header("Content-Length", str(len(body)))
+                    self.end_headers()
+                    self.wfile.write(body)
+                else:
+                    super().do_GET()
 
             def do_POST(self):
                 length = int(self.headers.get("Content-Length", "0"))
@@ -210,18 +255,21 @@ class BrowserTests(StudioTestCase):
         self.port = self.server.server_address[1]
         threading.Thread(target=self.server.serve_forever, daemon=True).start()
 
-    def tearDown(self):
+    def stop_site(self):
         self.server.shutdown()
         self.server.server_close()
-        super().tearDown()
 
     def browse(self, mode, timeout=90):
-        profile = self.tmp / f"chrome-{mode}"
+        profile = self.profiles / f"chrome-{mode}"
         command = [
             find_chrome(), "--headless=new", "--disable-gpu", "--no-first-run",
             "--no-default-browser-check", "--disable-extensions", "--mute-audio",
             "--autoplay-policy=no-user-gesture-required", f"--user-data-dir={profile}",
             "--window-size=1200,1000",
+            # Without these, Chrome may throttle the harness's timers to one
+            # per second when it considers the page hidden.
+            "--disable-background-timer-throttling", "--disable-renderer-backgrounding",
+            "--disable-backgrounding-occluded-windows",
         ]
         if sys.platform.startswith("linux"):
             command += ["--no-sandbox", "--disable-dev-shm-usage"]
@@ -241,6 +289,23 @@ class BrowserTests(StudioTestCase):
         result = self.results.pop()
         self.assertNotIn("error", result, result.get("stack"))
         return result
+
+@unittest.skipUnless(find_chrome(), "Chrome or Chromium not found")
+class BrowserTests(Browser, StudioTestCase):
+    def setUp(self):
+        super().setUp()
+        # Real ffmpeg, when there is one, gives a real MP3; otherwise the WAV is used.
+        real_ffmpeg = shutil.which("ffmpeg")
+        os.environ["STUDIO_FFMPEG"] = real_ffmpeg or "none"
+        environment.reset_cache()
+        self.has_mp3 = bool(real_ffmpeg)
+        self.profiles = self.tmp
+        shutil.copytree(REPO / "docs" / "studio", self.studio.viewer)
+        self.start_site(self.root / "docs")
+
+    def tearDown(self):
+        self.stop_site()
+        super().tearDown()
 
     def test_missing_catalog_is_reported(self):
         result = self.browse("missing")
@@ -325,6 +390,56 @@ class BrowserTests(StudioTestCase):
         # Phone-sized layout: nothing is wider than the 412 px frame.
         for view, extra in result["overflow"].items():
             self.assertLessEqual(extra, 0, f"the {view} view is {extra}px wider than a phone screen")
+
+
+@unittest.skipUnless(find_chrome(), "Chrome or Chromium not found")
+class PublishedSiteTests(Browser, unittest.TestCase):
+    """The files really published in this repository, in the real viewer.
+
+    docs/ is served as it is and only read.
+    """
+
+    def setUp(self):
+        self.catalog_path = REPO / "docs" / "compositions" / "catalog.json"
+        if not self.catalog_path.is_file():
+            self.skipTest("nothing has been published")
+        self.catalog = json.loads(self.catalog_path.read_text(encoding="utf-8"))
+        if not self.catalog["compositions"]:
+            self.skipTest("nothing has been published")
+        self.profiles = Path(tempfile.mkdtemp(prefix="studio-chrome-"))
+        self.start_site(REPO / "docs")
+
+    def tearDown(self):
+        if hasattr(self, "server"):
+            self.stop_site()
+            shutil.rmtree(self.profiles, ignore_errors=True)
+
+    def test_every_published_version_opens_and_plays(self):
+        versions = sum(len(c["versions"]) for c in self.catalog["compositions"])
+        result = self.browse("real", timeout=60 + 20 * versions)
+        self.assertEqual(result["state"], "ready")
+        self.assertEqual([c["name"] for c in result["compositions"]],
+                         [c["name"] for c in self.catalog["compositions"]])
+        for expected, shown in zip(self.catalog["compositions"], result["compositions"]):
+            self.assertEqual([v["id"] for v in shown["versions"]], [v["id"] for v in expected["versions"]])
+            for version, view in zip(expected["versions"], shown["versions"]):
+                label = f"{expected['name']} {version['id']}"
+                base = REPO / "docs" / "compositions"
+                if version.get("csd"):
+                    on_disk = (base / version["csd"]["path"]).read_text(encoding="utf-8")
+                    self.assertEqual(view["csd"].strip(), on_disk.strip(), label)
+                self.assertEqual(len(view["prompts"]), len(version["prompts"]), label)
+                for prompt, text in zip(version["prompts"], view["prompts"]):
+                    self.assertIn(text.strip(), expected["prompt_texts"][prompt["sha256"]], label)
+                self.assertLessEqual(view["overflow"], 0, label)
+                listening = [a for a in version["audio"] if a["role"] == "listening"] or version["audio"]
+                if listening:
+                    self.assertTrue(view["audio"]["source"].endswith("/compositions/" + listening[0]["path"]), label)
+                    duration = (version.get("info") or {}).get("duration_seconds")
+                    if duration:
+                        self.assertAlmostEqual(view["audio"]["duration"], duration, delta=0.2, msg=label)
+                else:
+                    self.assertNotIn("audio", view, label)
 
 
 @unittest.skipUnless(shutil.which(os.environ.get("STUDIO_NODE", "node")), "node not found")
