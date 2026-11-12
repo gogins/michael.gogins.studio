@@ -4,7 +4,7 @@
     "model": "Claude Fable 5.2"
   },
   "composition": "nu",
-  "created_at": "2026-11-12T20:12:07Z",
+  "created_at": "2026-11-12T20:12:41Z",
   "dependencies": {
     "includes": [],
     "plugins": [],
@@ -53,8 +53,8 @@
   },
   "files": {
     "code/nu-generate.py": {
-      "bytes": 4670,
-      "sha256": "43e07156f4c7c44352c6b80789a926eb8c7771cba8b038e63fcd52ca0619b42e"
+      "bytes": 5090,
+      "sha256": "49687c86a722a31940d4c24da739e8241e705416774f10e0f341be6bb6a9d6fa"
     },
     "nu-prompt-001.md": {
       "bytes": 517,
@@ -64,25 +64,29 @@
       "bytes": 624,
       "sha256": "5c5273f69ec837bdc84a957e5d84992cc71da06bc659dab82ec446901be92967"
     },
+    "nu-prompt-003.md": {
+      "bytes": 524,
+      "sha256": "70921141ba13af23f9c5b36510ff981fb186c1aa2a476cd377248877ac3d7be3"
+    },
     "nu.csd": {
-      "bytes": 2657,
-      "sha256": "064a267fd7086392cef442b542ddf1a0ffcd53e9efeb64b82d0d82c8ccd65e6a"
+      "bytes": 2873,
+      "sha256": "30fe0eb239ab7ae828dbfae40a7667ddd107ef66e0322d338df7d403f7ec49bb"
     },
     "outputs/nu-generate.log": {
-      "bytes": 134,
-      "sha256": "ef3a2644267161a59aa334560905a948b762e2d6ae5598bbdb3aae28d12442eb"
+      "bytes": 135,
+      "sha256": "c709a85779d82a69ac926fea87dd883bceb3c860198ac8c874df17a8691921c3"
     },
     "outputs/nu-render.log": {
-      "bytes": 3658,
-      "sha256": "36d6910db47da84a0c2159569a5daa8f03917b629c4464fe1d2062be9b6c9a3e"
+      "bytes": 4102,
+      "sha256": "9a7f050751b754776c8cbabe42b451235afff1846985fe43bfbd2dd0fc740afe"
     },
     "outputs/nu.flac": {
-      "bytes": 1577650,
-      "sha256": "16971e96ddab1dac981ef966a9d6e6519272a1f760da061fed3767629bb6da8a"
+      "bytes": 2037101,
+      "sha256": "e8e07decef11c2926163d7d65b35b90be8d1e66fbf08a74acd69a51d539c3a65"
     },
     "outputs/nu.mp3": {
-      "bytes": 256028,
-      "sha256": "98d3a90dc00abfd38a05043bddfe06a9e2d2cf2318bf4cc7eec48ff1c5beddc2"
+      "bytes": 290780,
+      "sha256": "5edaede947ab0513dc420291ffe3832ba3b2e70d54f6ba18037e74e5bc38f6f7"
     }
   },
   "generator": {
@@ -94,13 +98,17 @@
           "code/nu-generate.py"
         ],
         "exit_code": 0,
+        "parameters": {
+          "canon_delay": "2.0",
+          "canon_steps": "4"
+        },
         "seconds": 0.028,
-        "seed": 7,
-        "started_at": "2026-11-12T20:11:57Z"
+        "seed": 11,
+        "started_at": "2026-11-12T20:12:31Z"
       }
     ],
     "seeds": [
-      7
+      11
     ],
     "sources": [
       "code/nu-generate.py"
@@ -112,31 +120,38 @@
       "ordinal": 1,
       "tree_sha256": "145c7d43c5c234bc3cbb458622b62e734ba34f87b38352f779bb2d55ac4bca56",
       "version": "version-0001"
+    },
+    {
+      "archived_at": "2026-11-12T20:12:41Z",
+      "ordinal": 2,
+      "tree_sha256": "b14360f131afaf425b7d2673cb476c52b4c515dedc7628256bd6aa9b35540868",
+      "version": "version-0002"
     }
   ],
   "new_prompts": [
-    "nu-prompt-002.md"
+    "nu-prompt-003.md"
   ],
   "notes": "Demonstration composition created while implementing the studio.",
-  "ordinal": 2,
+  "ordinal": 3,
   "prompts": [
     "nu-prompt-001.md",
-    "nu-prompt-002.md"
+    "nu-prompt-002.md",
+    "nu-prompt-003.md"
   ],
   "render": {
     "analysis": {
       "bits": 24,
       "channel_peaks_dbfs": [
-        -4.92,
-        -5.09
+        -5.44,
+        -4.31
       ],
       "channels": 2,
       "clipped_samples": 0,
       "duration_seconds": 18.0,
       "frames": 864000,
-      "peak": 0.567721,
-      "peak_dbfs": -4.92,
-      "rms_dbfs": -20.76,
+      "peak": 0.608907,
+      "peak_dbfs": -4.31,
+      "rms_dbfs": -20.93,
       "sample_format": "pcm",
       "sample_rate": 48000
     },
@@ -148,7 +163,7 @@
           "nu.csd"
         ],
         "exit_code": 0,
-        "seconds": 0.023,
+        "seconds": 0.024,
         "step": "syntax-check"
       },
       {
@@ -162,7 +177,7 @@
           "nu.csd"
         ],
         "exit_code": 0,
-        "seconds": 0.176,
+        "seconds": 0.174,
         "step": "render"
       },
       {
@@ -182,7 +197,7 @@
           "outputs/nu.flac"
         ],
         "exit_code": 0,
-        "seconds": 0.07,
+        "seconds": 0.073,
         "step": "encode-flac"
       },
       {
@@ -202,18 +217,18 @@
           "outputs/nu.mp3"
         ],
         "exit_code": 0,
-        "seconds": 0.094,
+        "seconds": 0.1,
         "step": "encode-mp3"
       }
     ],
-    "finished_at": "2026-11-12T20:11:57Z",
+    "finished_at": "2026-11-12T20:12:31Z",
     "log": "outputs/nu-render.log",
     "outputs": [
       "outputs/nu.flac",
       "outputs/nu.mp3"
     ],
-    "started_at": "2026-11-12T20:11:57Z",
-    "wav_sha256": "8a60136b08cb3e3961e962b0db089c6b3de23d2db24b718b53d2f48ea035c726"
+    "started_at": "2026-11-12T20:12:31Z",
+    "wav_sha256": "3ef08cd22b00d4b63aaaceca5a8750c7dbd044333b23d691909a326cf4b4f112"
   },
   "schema": "ai-composition-studio/manifest/1",
   "title": "Nu (studio demonstration)",
@@ -251,7 +266,7 @@
       },
       {
         "check": "audio is not silent",
-        "detail": "peak -4.92 dBFS",
+        "detail": "peak -4.31 dBFS",
         "passed": true
       },
       {

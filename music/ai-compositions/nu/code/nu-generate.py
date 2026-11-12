@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Generates nu.csd: bells walking at random on D Dorian over a drone.
+"""Generates nu.csd: bells walking at random on D Dorian, answered in canon
+a diatonic fifth higher, over a drone.
 
 Run it from the directory that is to contain nu.csd:
 
@@ -99,18 +100,26 @@ def note(score, instrument, time, duration, key, velocity, depth, pan):
                  0.0, pan, depth, 0.0, ALL_PITCH_CLASSES)
 
 
-def bells(score, rng, start=0.5, end=12.5):
-    """A random walk on the scale, with irregular rhythm and wandering pan."""
+CANON_DELAY = 2.0     # seconds
+CANON_STEPS = 4       # scale steps: a diatonic fifth, staying in D Dorian
+CANON_SOFTER = 12     # MIDI velocity
+CANON_FARTHER = 0.25  # depth
+
+
+def bells(score, rng, start=0.5, end=10.5):
+    """A random walk on the scale, answered in canon on the opposite side."""
     time, degree, pan, count = start, 0, 0.3, 0
     while time < end:
         duration = rng.choice([2.5, 3.0, 3.5, 4.0])
         velocity = rng.randint(74, 94)
-        depth = round(rng.uniform(0.1, 0.6), 2)
+        depth = round(rng.uniform(0.1, 0.4), 2)
         note(score, BELL, time, duration, key_of(degree), velocity, depth, pan)
-        count += 1
+        note(score, BELL, time + CANON_DELAY, duration, key_of(degree + CANON_STEPS),
+             velocity - CANON_SOFTER, round(depth + CANON_FARTHER, 2), round(1.0 - pan, 2))
+        count += 2
         time = round(time + rng.choice([0.5, 0.75, 1.0, 1.0, 1.5]), 3)
-        degree = max(-3, min(9, degree + rng.choice([-2, -1, -1, 1, 1, 2])))
-        pan = round(1.0 - pan + rng.uniform(-0.1, 0.1), 2)
+        degree = max(-4, min(7, degree + rng.choice([-3, -2, -1, 1, 2, 3])))
+        pan = round(min(0.95, max(0.05, 1.0 - pan + rng.uniform(-0.1, 0.1))), 2)
     return count
 
 
@@ -118,8 +127,8 @@ def main():
     rng = random.Random(SEED)
     score = CsoundAC.Score()
     count = bells(score, rng)
-    note(score, DRONE, 0.0, 15.0, 38.0, 84.0, 0.5, 0.5)   # D2
-    note(score, DRONE, 7.0, 8.0, 45.0, 74.0, 0.5, 0.5)    # A2 joins halfway
+    note(score, DRONE, 0.0, 15.0, 38.0, 72.0, 0.5, 0.5)   # D2
+    note(score, DRONE, 7.0, 8.0, 45.0, 62.0, 0.5, 0.5)    # A2 joins halfway
     total = 18.0
     # 12 tones per octave: keys are written as whole MIDI key numbers.
     notes = score.getCsoundScore(12.0, False)
