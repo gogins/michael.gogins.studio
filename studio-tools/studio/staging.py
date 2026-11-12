@@ -13,6 +13,7 @@ been validated and rendered.
 from __future__ import annotations
 
 import os
+import re
 import subprocess
 import time
 from pathlib import Path
@@ -162,7 +163,20 @@ def format_prompt(name: str, number: int, text: str, source: str, recorded_at: s
     )
 
 
-def add_prompt(staging_dir: Path, text: str, source: str = "user") -> Path:
+_PROMPT_FILE = re.compile(
+    r"\A# [^\n]* - prompt [0-9]+\n\n<!-- recorded: (?P<recorded>[^;\n]*); source: (?P<source>[a-z]+) -->\n\n"
+)
+
+
+def parse_prompt(content: str) -> Dict[str, str]:
+    """The verbatim text, source and recording time held in a prompt file."""
+    match = _PROMPT_FILE.match(content)
+    if not match:
+        raise StagingError("not a prompt file written by the studio")
+    return {"text": content[match.end():], "source": match.group("source"), "recorded_at": match.group("recorded")}
+
+
+def add_prompt(staging_dir: Path, text: str, source: str = "user", recorded_at: Optional[str] = None) -> Path:
     """Save the next prompt, verbatim, beside the .csd it will produce."""
     if source not in PROMPT_SOURCES:
         raise StagingError(f"prompt source must be one of {PROMPT_SOURCES}")
@@ -175,8 +189,137 @@ def add_prompt(staging_dir: Path, text: str, source: str = "user") -> Path:
     path = safe_join(Path(staging_dir), naming.prompt_name(name, number))
     if path.exists():
         raise StagingError(f"{path.name} already exists")
-    fsutil.atomic_write_text(path, format_prompt(name, number, text, source, fsutil.utc_now()))
+    fsutil.atomic_write_text(path, format_prompt(name, number, text, source, recorded_at or fsutil.utc_now()))
     return path
+
+
+def _foreign_state(name: str, source_dir: Path, version: Optional[int]) -> Path:
+    source = Path(source_dir)
+    if not source.is_dir():
+        raise StagingError(f"not a directory: {source_dir}")
+    state = source if version is None else source / naming.version_dir_name(version)
+    if not (state / naming.csd_name(name)).is_file():
+        raise StagingError(f"{state} does not hold a version of {name}")
+    return state
+
+
+def _known_states(studio: Studio, name: str) -> set:
+    """Tree hashes of the versions here and of the versions they were adopted from."""
+    from . import manifest as manifest_module
+    from . import versioning
+
+    comp = studio.composition_dir(name)
+    states = [(comp, True)] + [(comp / naming.version_dir_name(n), False) for n in versioning.list_versions(comp)]
+    known = set()
+    for state, is_current in states:
+        known.add(fsutil.state_hash(state, skip_versions=is_current))
+        origin = (manifest_module.load(state, name).get("adopted_from") or {}).get("tree_sha256")
+        if origin:
+            known.add(origin)
+    return known
+
+
+def foreign_versions(studio: Studio, name: str, source_dir: Path) -> List[Dict[str, Any]]:
+    """Versions in another copy of a composition (for example another Git
+    branch, extracted to a directory), each marked as present here or not.
+
+    A version is present here when a version with exactly the same files
+    exists in this archive, whatever its number, or when a version here
+    was adopted from it.
+    """
+    from . import manifest as manifest_module
+
+    ours = _known_states(studio, name)
+    source = Path(source_dir)
+    numbers = sorted(
+        number for number in (naming.parse_version_dir(entry.name) for entry in source.iterdir() if entry.is_dir())
+        if number is not None
+    )
+    result = []
+    for version in [*numbers, None]:
+        state = _foreign_state(name, source, version)
+        document = manifest_module.load(state, name)
+        result.append({
+            "version": version,
+            "ordinal": document["ordinal"],
+            "created_at": document["created_at"],
+            "ai": document["ai"],
+            "present_here": fsutil.state_hash(state, skip_versions=version is None) in ours,
+        })
+    return result
+
+
+def adopt(studio: Studio, name: str, source_dir: Path, version: Optional[int] = None) -> Path:
+    """Stage a revision made elsewhere, on top of the current version here.
+
+    ``source_dir`` is another copy of the composition's directory, typically
+    from another Git branch. Its current version (or ``version``) supplies
+    the .csd, the code, the prompts that were new in it, and the record of
+    how it was generated. Nothing is copied into this archive directly: the
+    result is an ordinary staging area, to be rendered and accepted, so the
+    version current here is archived under the next number and none is lost.
+    """
+    from . import manifest as manifest_module
+
+    state = _foreign_state(name, source_dir, version)
+    if state.resolve() == studio.composition_dir(name).resolve():
+        raise StagingError("that is this archive's own current version")
+    files = fsutil.list_files(state, skip_versions=version is None)
+    problems = naming.state_problems(name, files)
+    document = manifest_module.load(state, name)
+    problems += manifest_module.problems(document, name)
+    table = fsutil.hash_files(state, files)
+    for rel, entry in document["files"].items():
+        if rel not in table or table[rel]["sha256"] != entry["sha256"]:
+            problems.append(f"{rel} does not match its manifest")
+    if problems:
+        raise StagingError(f"cannot adopt {state}: " + "; ".join(problems[:5]))
+    if fsutil.tree_hash(table) in _known_states(studio, name):
+        raise StagingError("that version is already in this archive")
+
+    directory = stage_revision(studio, name)
+    try:
+        meta = load_meta(directory)
+        # The other version's .csd and code replace the working copy.
+        for rel in fsutil.list_files(directory):
+            if (naming.classify(name, rel) or {}).get("kind") == "code":
+                (directory / rel).unlink()
+        carried = [rel for rel in files if (naming.classify(name, rel) or {}).get("kind") in ("csd", "code")]
+        fsutil.copy_files(state, directory, carried)
+        fsutil.make_tree_writable(directory)
+        # Every earlier prompt of the other version must already be here,
+        # or a version in between has been skipped and its prompt would be lost.
+        here = {
+            parse_prompt((directory / naming.prompt_name(name, n)).read_text(encoding="utf-8"))["text"]
+            for n in prompt_numbers(name, directory)
+        }
+        for rel in document["prompts"]:
+            if rel in document["new_prompts"]:
+                continue
+            if parse_prompt((state / rel).read_text(encoding="utf-8"))["text"] not in here:
+                raise StagingError(
+                    f"{rel} of the other copy is not among the prompts here: adopt its earlier "
+                    "versions first, oldest first (see 'studio adopt --list')"
+                )
+        # Its new prompts are appended under the next numbers, text unchanged.
+        for rel in document["new_prompts"]:
+            prompt = parse_prompt((state / rel).read_text(encoding="utf-8"))
+            add_prompt(directory, prompt["text"], prompt["source"], prompt["recorded_at"])
+        runs = document["generator"].get("runs") or []
+        if runs:
+            fsutil.atomic_write_json(directory / RUNS_META, runs)
+        meta["adopted_from"] = {
+            "ordinal": document["ordinal"],
+            "created_at": document["created_at"],
+            "tree_sha256": fsutil.tree_hash(table),
+            "ai": document["ai"],
+            "prompts": document["new_prompts"],
+        }
+        fsutil.atomic_write_json(directory / STAGING_META, meta)
+    except BaseException:
+        fsutil.remove_tree(directory)
+        raise
+    return directory
 
 
 def run_command(
@@ -203,16 +346,21 @@ def run_command(
     environment = dict(os.environ)
     environment["STUDIO_COMPOSITION"] = name
     environment["STUDIO_STAGING"] = str(staging_dir)
+    # Where the studio's own helpers live (js/csoundac-node.mjs, bin/studio-cxx).
+    environment["STUDIO_TOOLS"] = str(Path(__file__).resolve().parents[1])
     if seed is not None:
         environment["STUDIO_SEED"] = str(seed)
     started = fsutil.utc_now()
     clock = time.monotonic()
-    # "python" and "node" mean the interpreters configured for the studio, so
-    # that recorded commands stay portable between machines.
+    # "python", "node" and "studio-cxx" mean the interpreters and the C++
+    # helper configured for the studio, so that recorded commands stay
+    # portable between machines.
     actual = list(argv)
     override = {"python": "STUDIO_PYTHON", "python3": "STUDIO_PYTHON", "node": "STUDIO_NODE"}.get(argv[0])
     if override and os.environ.get(override):
         actual[0] = os.environ[override]
+    elif argv[0] == "studio-cxx":
+        actual[0] = os.path.join(environment["STUDIO_TOOLS"], "bin", "studio-cxx")
     try:
         result = subprocess.run(
             actual,

@@ -1,0 +1,3 @@
+{
+  "install": "if [ -f studio-tools/cloud/install.sh ]; then bash studio-tools/cloud/install.sh; fi"
+}

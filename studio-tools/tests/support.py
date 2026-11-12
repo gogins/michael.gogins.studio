@@ -113,6 +113,9 @@ class StudioTestCase(unittest.TestCase):
             os.environ["STUDIO_CSOUND"] = str(write_executable(self.bin / "csound", FAKE_CSOUND))
             os.environ["STUDIO_FFMPEG"] = str(write_executable(self.bin / "ffmpeg", FAKE_FFMPEG))
         os.environ["STUDIO_PYTHON"] = sys.executable
+        # The tests configure everything themselves; no environment file.
+        os.environ["STUDIO_ENV_FILE"] = ""
+        os.environ.pop("STUDIO_ENV_LOADED", None)
         environment.reset_cache()
         versioning.set_fault_hook(None)
 

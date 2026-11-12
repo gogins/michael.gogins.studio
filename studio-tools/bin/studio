@@ -1,9 +1,25 @@
 #!/bin/sh
-# Launcher for the AI composition studio tools.
+# The studio command. See studio-tools/README.md.
 #
-# The tools themselves need only the Python 3 standard library (3.9+).
-# STUDIO_PYTHON names the Python that can import CsoundAC; it is used for
-# generator programs and, when set, for the tools as well.
-here=$(cd "$(dirname "$0")/.." && pwd)
-python=${STUDIO_PYTHON:-python3}
-PYTHONPATH="$here${PYTHONPATH:+:$PYTHONPATH}" PYTHONDONTWRITEBYTECODE=1 exec "$python" -m studio.cli "$@"
+# If an environment file exists it is loaded first, so that the tools find
+# Csound, CsoundAC and the rest without any shell configuration. That is how
+# Cursor Cloud Agents get their settings (cloud/install.sh writes the file),
+# and it can be used the same way on the MacBook.
+#
+#   STUDIO_ENV_FILE   the file (default: ~/.local/ai-composition-studio/studio-env.sh);
+#                     set it to an empty string to load nothing
+#   STUDIO_PYTHON     a Python that can import CsoundAC, used for generating
+#                     programs and for these tools (default: python3)
+set -eu
+tools=$(cd "$(dirname "$0")/.." && pwd)
+env_file=${STUDIO_ENV_FILE-$HOME/.local/ai-composition-studio/studio-env.sh}
+if [ -n "$env_file" ] && [ -r "$env_file" ] && [ -z "${STUDIO_ENV_LOADED:-}" ]; then
+    # shellcheck disable=SC1090
+    . "$env_file"
+    STUDIO_ENV_LOADED=$env_file
+    export STUDIO_ENV_LOADED
+fi
+PYTHONPATH="$tools${PYTHONPATH:+:$PYTHONPATH}"
+PYTHONDONTWRITEBYTECODE=1
+export PYTHONPATH PYTHONDONTWRITEBYTECODE
+exec "${STUDIO_PYTHON:-python3}" -m studio.cli "$@"

@@ -56,6 +56,9 @@ def cmd_env(studio: Studio, args: argparse.Namespace) -> int:
             _out(f"CsoundAC     importable; p-field layout: {python.get('csoundac_pfield_layout')}"
                  f"; revision: {python.get('csoundac_revision') or 'not recorded'}")
             _out(f"             probe: {python.get('csoundac_probe_istatement')}")
+            if python.get("csoundac_default_event_nan"):
+                _out("             note: CsoundAC.Event() leaves fields uninitialized (nan) in this build;"
+                     " create events with all 11 arguments")
         else:
             _out(f"CsoundAC     NOT importable ({python.get('csoundac_error', 'unknown error')})")
         _out(f"node         {node.get('version', 'NOT FOUND')}; CsoundAC WASM: "
@@ -81,6 +84,21 @@ def cmd_stage(studio: Studio, args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_adopt(studio: Studio, args: argparse.Namespace) -> int:
+    if args.list:
+        for entry in staging.foreign_versions(studio, args.name, Path(args.source)):
+            label = "current" if entry["version"] is None else f"version {entry['version']}"
+            state = "already here" if entry["present_here"] else "NOT here"
+            _out(f"  {label:12} ordinal {entry['ordinal']:<3} {entry['created_at']}  "
+                 f"{entry['ai'].get('model', '')}  [{state}]")
+        return 0
+    directory = staging.adopt(studio, args.name, Path(args.source), args.version)
+    _note(f"staging area for {args.name}, holding the revision adopted from {args.source};")
+    _note("render and accept it as usual:")
+    _out(str(directory))
+    return 0
+
+
 def cmd_prompt(studio: Studio, args: argparse.Namespace) -> int:
     directory = staging.resolve(studio, args.staging)
     if args.text is not None:
@@ -96,9 +114,9 @@ def cmd_prompt(studio: Studio, args: argparse.Namespace) -> int:
 
 def cmd_run(studio: Studio, args: argparse.Namespace) -> int:
     directory = staging.resolve(studio, args.staging)
-    command = list(args.command)
-    if command and command[0] == "--":
-        command = command[1:]
+    command = list(args.command or [])
+    if not command:
+        raise StudioError("give the program to run after '--', e.g.: studio run DIR -- python code/NAME-generate.py")
     parameters = {}
     for item in args.param or []:
         key, separator, value = item.partition("=")
@@ -349,6 +367,13 @@ def build_parser() -> argparse.ArgumentParser:
     p = add("stage", cmd_stage, "start a revision of a composition; prints its staging directory")
     p.add_argument("name")
 
+    p = add("adopt", cmd_adopt, "stage a revision made in another copy (branch) of a composition")
+    p.add_argument("name")
+    p.add_argument("--from", dest="source", required=True, metavar="DIR",
+                   help="the composition's directory in the other copy")
+    p.add_argument("--version", type=int, help="an archived version of the other copy (default: its current)")
+    p.add_argument("--list", action="store_true", help="list the other copy's versions and which are missing here")
+
     p = add("prompt", cmd_prompt, "save a prompt, verbatim, as the next numbered prompt file")
     p.add_argument("staging")
     group = p.add_mutually_exclusive_group(required=True)
@@ -362,7 +387,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--seed", type=int, help="random seed; passed as STUDIO_SEED and recorded")
     p.add_argument("--param", action="append", metavar="KEY=VALUE", help="generation parameter to record")
     p.add_argument("--timeout", type=int, default=3600)
-    p.add_argument("command", nargs=argparse.REMAINDER, help="-- program and arguments")
+    p.epilog = "Put the program and its arguments after '--':  studio run DIR --seed 7 -- python code/nu-generate.py"
 
     p = add("render", cmd_render, "validate and render the staged .csd with Csound")
     p.add_argument("staging")
@@ -434,7 +459,14 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: Optional[List[str]] = None) -> int:
     parser = build_parser()
+    argv = list(sys.argv[1:] if argv is None else argv)
+    # Everything after "--" is a program for "studio run", not options of ours.
+    command = None
+    if "--" in argv:
+        split = argv.index("--")
+        argv, command = argv[:split], argv[split + 1:]
     args = parser.parse_args(argv)
+    args.command = command
     if not getattr(args, "function", None):
         parser.print_help()
         return 2

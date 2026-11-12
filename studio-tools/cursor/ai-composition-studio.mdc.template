@@ -1,0 +1,28 @@
+---
+description: AI composition studio - creating, revising, rendering and publishing Csound compositions
+globs: music/ai-compositions/**, docs/compositions/**, docs/studio/**, studio-tools/**
+alwaysApply: false
+---
+
+# AI composition studio
+
+Read and follow `studio-tools/AGENT_INSTRUCTIONS.md` before creating or
+revising a composition, publishing, or changing the studio's tools or viewer.
+
+- Work only in `music/ai-compositions/`, `docs/compositions/`, `docs/studio/`
+  and `studio-tools/`. Do not modify anything else in this repository.
+- Use `studio-tools/bin/studio` for every change to the archive and the
+  published files: `new` or `stage`, `prompt`, `run`, `render`, `accept`,
+  `publish`. Never edit `version-NNNN/` directories, accepted prompts or
+  manifests by hand.
+- Save the user's prompt verbatim with `studio prompt` before doing the work.
+- The composition is one complete `.csd`. P-fields: p1 instrument, p2 time,
+  p3 duration, p4 MIDI key, p5 MIDI velocity, p6 depth, p7 pan, p8 height,
+  p9 phase, p10 pitch-class set, p11 homogeneity.
+- With CsoundAC, use only methods that exist; see
+  `studio-tools/docs/csound-conventions.md`. Create events with all eleven
+  arguments.
+- Do not pass `;` comment lines to `scoreline` or `scorelinei`.
+- Commit only the studio's directories; never `git add -A`. Do not push,
+  merge or deploy unless asked.
+- Report actual command output; do not claim unverified results.

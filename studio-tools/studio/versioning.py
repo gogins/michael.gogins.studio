@@ -290,7 +290,8 @@ def _build_manifest(
         except OSError:
             code_texts[rel] = ""
     csd_text = (staging_dir / naming.csd_name(name)).read_text(encoding="utf-8", errors="replace")
-    runs = staging.load_runs(staging_dir)
+    # Failed attempts stay in the generation log; the manifest records what worked.
+    runs = [run for run in staging.load_runs(staging_dir) if run.get("exit_code") == 0]
     dependencies = manifest_module.detect_dependencies(csd_text)
     for extra in options.get("dependencies") or []:
         kind, _, value = extra.partition(":")
@@ -298,7 +299,10 @@ def _build_manifest(
         if value.strip() and value.strip() not in dependencies[kind.strip() or "other"]:
             dependencies[kind.strip() or "other"].append(value.strip())
     prompts = sorted(rel for rel in files if (naming.classify(name, rel) or {}).get("kind") == "prompts")
-    return manifest_module.build(
+    # A revision adopted from another copy keeps the credit of whoever made it.
+    adopted = meta.get("adopted_from") or {}
+    made_by = adopted.get("ai") or {}
+    document = manifest_module.build(
         name,
         title=options.get("title") or meta.get("title") or name,
         ordinal=ordinal,
@@ -308,8 +312,10 @@ def _build_manifest(
         files=table,
         history=history,
         ai={
-            "model": options.get("ai_model") or os.environ.get("STUDIO_AI_MODEL") or "unspecified",
-            "agent": options.get("ai_agent") or os.environ.get("STUDIO_AI_AGENT") or "unspecified",
+            "model": options.get("ai_model") or made_by.get("model")
+            or os.environ.get("STUDIO_AI_MODEL") or "unspecified",
+            "agent": options.get("ai_agent") or made_by.get("agent")
+            or os.environ.get("STUDIO_AI_AGENT") or "unspecified",
         },
         generator={
             "kind": options.get("generator_kind")
@@ -331,6 +337,9 @@ def _build_manifest(
         dependencies=dependencies,
         notes=options.get("notes"),
     )
+    if adopted:
+        document["adopted_from"] = adopted
+    return document
 
 
 def accept(studio: Studio, staging_dir: Path, **options: Any) -> Dict[str, Any]:

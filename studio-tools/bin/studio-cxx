@@ -1,0 +1,25 @@
+#!/bin/sh
+# Compiles a C++ generating program and runs it in the current directory.
+#
+#   studio run STAGING -- studio-cxx code/NAME-generate.cpp [arguments]
+#
+# The executable is built in a temporary directory and removed afterwards,
+# so that only the source is kept with the composition.
+#
+#   CXX                       compiler (default: c++)
+#   STUDIO_CSOUNDAC_CXXFLAGS  include paths for CsoundAC, Csound, Eigen, Boost
+#   STUDIO_CSOUNDAC_LDFLAGS   library path, -lCsoundAC, and rpath
+#
+# Both variables may be empty for programs that do not use CsoundAC.
+set -eu
+if [ "$#" -lt 1 ]; then
+    echo "usage: studio-cxx SOURCE.cpp [arguments]" >&2
+    exit 2
+fi
+source_file=$1
+shift
+build_dir=$(mktemp -d "${TMPDIR:-/tmp}/studio-cxx.XXXXXX")
+trap 'rm -rf "$build_dir"' EXIT INT TERM
+# shellcheck disable=SC2086  # the flag variables hold several words
+${CXX:-c++} -std=c++17 -O1 ${STUDIO_CSOUNDAC_CXXFLAGS:-} "$source_file" ${STUDIO_CSOUNDAC_LDFLAGS:-} -o "$build_dir/generate"
+"$build_dir/generate" "$@"

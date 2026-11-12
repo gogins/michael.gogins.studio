@@ -51,7 +51,8 @@ def infer_generator_kind(code_files: List[str], code_texts: Dict[str, str]) -> s
     if not code_files:
         return "direct-csd"
     suffixes = {Path(rel).suffix.lower() for rel in code_files}
-    uses_csoundac = any("CsoundAC" in text for text in code_texts.values())
+    # C++ programs name CsoundAC only through its namespace, csound::.
+    uses_csoundac = any("CsoundAC" in text or "csound::" in text for text in code_texts.values())
     if ".py" in suffixes:
         return "python-csoundac" if uses_csoundac else "python"
     if suffixes & {".js", ".mjs"}:

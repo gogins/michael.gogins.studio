@@ -1,0 +1,39 @@
+# Instructions for AI agents
+
+## AI composition studio
+
+When a task concerns compositions under `music/ai-compositions/`, the
+published copies under `docs/compositions/`, the viewer under `docs/studio/`,
+or the tools under `studio-tools/`, read and follow
+`studio-tools/AGENT_INSTRUCTIONS.md` before doing anything else.
+
+In short:
+
+- Work only in those four directories. Do not modify, rename, move or delete
+  anything else in this repository.
+- Create and revise compositions only with `studio-tools/bin/studio`
+  (`new` or `stage`, `prompt`, `run`, `render`, `accept`). Never edit a
+  `version-NNNN/` directory, an accepted prompt or a manifest by hand.
+- Save the user's prompt verbatim before doing the work.
+- A composition is one complete Csound `.csd`. Follow the p-field
+  conventions in `studio-tools/docs/csound-conventions.md`.
+- Commit with `git add -- music/ai-compositions docs/compositions docs/studio studio-tools`,
+  never `git add -A`.
+- Do not merge, deploy or change repository settings unless asked. Publish
+  (`studio publish`) only when asked.
+- Report what you ran and what it printed. Do not claim that something
+  works unless you ran it.
+
+## Cursor Cloud specific instructions
+
+- The environment is prepared by `studio-tools/cloud/install.sh`. The
+  `studio` command loads `~/.local/ai-composition-studio/studio-env.sh` by
+  itself; no shell setup is needed.
+- At the start of a run, execute `studio-tools/bin/studio env`. If Csound 7
+  is not found, run `bash studio-tools/cloud/install.sh` and then
+  `studio-tools/cloud/check.sh`, and report the result before composing.
+- Nothing outside the repository survives the run. Commit and push every
+  accepted version, with its audio, before finishing.
+- If another branch has revised the same composition, integrate with
+  `studio adopt` as described in `studio-tools/docs/cloud-agents.md`. Do
+  not resolve conflicts in `music/ai-compositions/` by hand.

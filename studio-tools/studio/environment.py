@@ -49,11 +49,10 @@ try:
     import CsoundAC
     out["csoundac"] = True
     out["module"] = getattr(CsoundAC, "__file__", None)
-    e = CsoundAC.Event()
-    e.setStatus(144); e.setInstrument(3); e.setTime(1.5); e.setDuration(2.5)
-    e.setKey(61); e.setVelocity(71)
-    e.setPhase(0.11); e.setPan(0.22); e.setDepth(0.33); e.setHeight(0.44)
+    # time, duration, status, instrument, key, velocity, phase, pan, depth, height, pitches
+    e = CsoundAC.Event(1.5, 2.5, 144.0, 3.0, 61.0, 71.0, 0.11, 0.22, 0.33, 0.44, 4095.0)
     out["istatement"] = e.toCsoundIStatement()
+    out["default_event_nan"] = "nan" in CsoundAC.Event().toCsoundIStatement().lower()
     out["event_csound_methods"] = sorted(m for m in dir(e) if "sound" in m.lower() or "Blue" in m)
 except Exception as error:
     out["csoundac"] = False
@@ -146,6 +145,7 @@ def python_info() -> Dict[str, Any]:
                     info["csoundac_probe_istatement"] = (probe.get("istatement") or "").strip()
                     info["csoundac_pfield_layout"] = classify_pfield_layout(probe.get("istatement"))
                     info["csoundac_event_csound_methods"] = probe.get("event_csound_methods")
+                    info["csoundac_default_event_nan"] = bool(probe.get("default_event_nan"))
                 else:
                     info["csoundac_error"] = probe.get("error")
     info["csoundac_revision"] = csoundac_revision()
