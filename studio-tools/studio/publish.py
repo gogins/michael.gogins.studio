@@ -20,9 +20,10 @@ from .paths import PathSafetyError, Studio, StudioError, check_relative, is_with
 
 STATE_NAME = ".publish-state.json"
 STATE_SCHEMA = "ai-composition-studio/publish-state/1"
-ALL_KINDS = ("csd", "prompts", "code", "manifest", "audio", "master", "derived", "logs")
-#: Masters (large) and logs (machine details) are published only on request.
-DEFAULT_KINDS = ("csd", "prompts", "code", "manifest", "audio", "derived")
+ALL_KINDS = ("csd", "prompts", "code", "manifest", "derived", "logs")
+#: Logs (machine details) are published only on request. There is no audio
+#: to publish: the viewer performs the published .csd.
+DEFAULT_KINDS = ("csd", "prompts", "code", "manifest", "derived")
 _FRONT_MATTER = re.compile(rb"\A(?:\xef\xbb\xbf)?---[ \t]*\r?\n")
 
 

@@ -1,8 +1,10 @@
 // AI Composition Studio viewer.
 //
 // A static page: it reads ../compositions/catalog.json and shows the
-// published compositions, their versions, prompts, Csound files, generating
-// programs and rendered audio. Location: #<composition>/<version>/<tab>.
+// published compositions, their versions, prompts, Csound files and
+// generating programs. A version is heard by performing its .csd here, in
+// the browser, with Csound for WebAssembly (player.js); no soundfiles are
+// published. Location: #<composition>/<version>/<tab>.
 
 import {
   CATALOG_URL, fetchText, fileUrl, findComposition, findVersion, loadCatalog, promptParts,
@@ -10,6 +12,7 @@ import {
 } from './catalog.js';
 import { diffLines, hunks, summarize } from './diff.js';
 import { h, replaceChildren, formatBytes, formatDate, formatDuration } from './dom.js';
+import { createPlayer, stopAllPlayers } from './player.js';
 
 const TABS = [
   ['prompts', 'Prompts'],
@@ -82,7 +85,7 @@ function renderLibrary() {
 // ------------------------------------------------------------ composition
 
 // The page for one version is built once; changing tabs only replaces the
-// panel, so audio keeps playing while you read the prompts or the code.
+// panel, so the piece keeps playing while you read the prompts or the code.
 let view = null;
 
 function renderComposition(composition, version, tab) {
@@ -107,6 +110,7 @@ function renderComposition(composition, version, tab) {
 }
 
 function buildComposition(composition, version) {
+  stopAllPlayers(); // another version: what was playing belongs to the page being replaced
   document.title = `${composition.title || composition.name} · AI Composition Studio`;
   const versions = composition.versions; // newest first
   const index = versions.indexOf(version);
@@ -145,7 +149,7 @@ function buildComposition(composition, version) {
     h('p', { class: 'back' }, h('a', { href: '#' }, '← All compositions')),
     h('h1', { id: 'composition-title' }, composition.title || composition.name),
     versionBar,
-    player(version, 'player'),
+    createPlayer({ id: 'player', csd: version.csd, info: version.info }),
     tabBar,
     panel);
   view = { composition, version, tabBar, panel };
@@ -156,25 +160,6 @@ function tabCount(id, version) {
   if (id === 'prompts' && version.prompts.length) return ` (${version.prompts.length})`;
   if (id === 'code' && version.code.length) return ` (${version.code.length})`;
   return '';
-}
-
-function player(version, id) {
-  const playable = version.audio.filter((item) => ['mp3', 'opus', 'ogg', 'oga', 'm4a', 'aac', 'wav', 'flac']
-    .includes(item.format));
-  if (playable.length === 0) {
-    return h('p', { class: 'status no-audio', id: `${id}-none` }, 'No audio was published for this version.');
-  }
-  const types = { mp3: 'audio/mpeg', opus: 'audio/ogg', ogg: 'audio/ogg', oga: 'audio/ogg',
-    m4a: 'audio/mp4', aac: 'audio/aac', wav: 'audio/wav', flac: 'audio/flac' };
-  return h('div', { class: 'player' },
-    h('audio', { id, controls: true, preload: 'metadata' },
-      playable.map((item) => h('source', { src: fileUrl(item.path), type: types[item.format] }))),
-    h('p', { class: 'player-caption' },
-      [version.info.duration_seconds ? formatDuration(version.info.duration_seconds) : null,
-        version.info.peak_dbfs !== undefined ? `peak ${version.info.peak_dbfs} dBFS` : null]
-        .filter(Boolean).join(' · '),
-      ' ',
-      playable.map((item) => [' ', download(item, `${item.format.toUpperCase()} ${formatBytes(item.bytes)}`)])));
 }
 
 function download(entry, label) {
@@ -276,7 +261,6 @@ function filesPanel(panel, composition, version) {
     h('td', {}, download(entry, 'download'))));
   if (version.csd) add('Csound', version.csd);
   version.code.forEach((entry) => add(`Code (${entry.language})`, entry));
-  version.audio.forEach((entry) => add(entry.role === 'master' ? 'Audio master' : 'Audio', entry));
   const names = { midi: 'MIDI', musicxml: 'MusicXML', pdf: 'Score (PDF)', image: 'Image', lilypond: 'LilyPond' };
   version.derived.forEach((entry) => add(names[entry.kind] || entry.kind, entry));
   version.logs.forEach((entry) => add('Log', entry));
@@ -312,6 +296,7 @@ function infoPanel(panel, composition, version) {
     ['Duration', info.duration_seconds ? `${formatDuration(info.duration_seconds)} (${info.duration_seconds} s)` : ''],
     ['Audio', info.sample_rate ? `${info.sample_rate} Hz, ${info.channels} channel(s)` : ''],
     ['Level', info.peak_dbfs !== undefined ? `peak ${info.peak_dbfs} dBFS, RMS ${info.rms_dbfs} dBFS` : ''],
+    ['Playing here', browserVerdict(info)],
     ['Notes', info.notes],
   ].filter(([, value]) => value !== undefined && value !== null && value !== '');
   if (rows.length <= 2 && !version.manifest) {
@@ -324,6 +309,18 @@ function infoPanel(panel, composition, version) {
         h('ul', {}, info.warnings.map((warning) => h('li', {}, warning)))) : null,
     version.manifest ? h('p', {}, h('a', { href: fileUrl(version.manifest.path), target: '_blank', rel: 'noopener' },
       'Complete provenance manifest (JSON)')) : null);
+}
+
+// What was found when the version was made and its .csd was performed in
+// the same Csound engine that the player uses.
+function browserVerdict(info) {
+  if (info.browser_checked === undefined) return '';
+  const engine = info.browser_engine || 'the Csound engine of this viewer';
+  if (!info.browser_checked) return `Not checked in ${engine} when this version was made.`;
+  if (!info.browser_playable) return `Did not perform in ${engine} when this version was made.`;
+  const speed = info.browser_realtime_factor
+    ? ` (${info.browser_realtime_factor} times faster than real time on the machine that made it)` : '';
+  return `Performed completely in ${engine} when this version was made${speed}.`;
 }
 
 // ---------------------------------------------------------------- compare
@@ -362,10 +359,12 @@ function comparePanel(panel, composition, version, isCurrent) {
       options.length > 1 ? h('label', {}, 'File ',
         h('select', { id: 'compare-what', onchange: (event) => choose({ what: event.target.value }) },
           options.map(([id, label]) => h('option', { value: id, selected: id === what }, label)))) : null),
-    h('div', { class: 'compare-audio' },
-      h('div', {}, h('h2', {}, versionLabel(other)), player(other, 'player-other')),
+    h('div', { class: 'compare-players' },
+      h('div', {}, h('h2', {}, versionLabel(other)),
+        createPlayer({ id: 'player-other', csd: other.csd, info: other.info })),
       h('div', {}, h('h2', {}, `${versionLabel(version)} (selected)`),
-        h('p', { class: 'meta' }, 'Use the player at the top of the page.'))),
+        h('p', { class: 'meta' }, 'Use the player at the top of the page. Only one version plays at a time: '
+          + 'starting one stops the other.'))),
     promptDifference(version, other),
     result);
   if (!what) {
@@ -438,6 +437,7 @@ function render() {
   const { name, version: versionId, tab } = parseLocation();
   if (!name) {
     view = null;
+    stopAllPlayers();
     renderLibrary();
     setState('ready');
     return;
@@ -445,6 +445,7 @@ function render() {
   const composition = findComposition(catalog, name);
   if (!composition) {
     view = null;
+    stopAllPlayers();
     replaceChildren(app,
       h('p', { class: 'back' }, h('a', { href: '#' }, '← All compositions')),
       h('p', { class: 'status error', id: 'not-found' }, `There is no published composition named “${name}”.`));

@@ -12,8 +12,6 @@ music/ai-compositions/nu/
     nu-prompt-003.md
     nu-manifest.json          provenance of this version
     code/nu-generate.py       programs that generated nu.csd, if any
-    outputs/nu.flac           master
-    outputs/nu.mp3            listening copy
     outputs/nu-render.log     Csound's log and the measurements
     outputs/nu-generate.log   output of the generating programs
     version-0001/             the first version, in the same layout
@@ -24,6 +22,11 @@ The files directly in `nu/` are the **current** version. There is no
 `current/` directory. Each `version-NNNN/` directory is a complete earlier
 version with its own `.csd`, prompts, manifest, `code/` and `outputs/`.
 
+Soundfiles are never part of a composition. A version is heard by performing
+its `.csd`: in the viewer with the official Csound 7 for WebAssembly
+(`@csound/browser`), or anywhere else with Csound. A temporary WAV may be
+kept outside the archive with `studio render --wav` or `studio rerender --wav`.
+
 ## Names
 
 - Composition names: letters, digits and underscores, beginning with a
@@ -33,13 +36,13 @@ version with its own `.csd`, prompts, manifest, `code/` and `outputs/`.
   `<name>-`; files in `outputs/` may also be `<name>.<extension>`.
 - Prompts are `<name>-prompt-NNN.md`, numbered from 001 without gaps.
 - Programs are in `code/`, derived artifacts in `outputs/`.
-- Anything else (unknown names, stray directories, symbolic links) is
-  reported by `studio render`, `studio accept` and `studio verify`.
+- Anything else (unknown names, stray directories, symbolic links, or any
+  soundfile) is reported by `studio render`, `studio accept` and
+  `studio verify`.
 
 Files are classified by kind, which the publishing tool uses:
-`csd`, `prompts`, `manifest`, `code`, `audio` (MP3, Opus, Ogg, M4A),
-`master` (FLAC, WAV, AIFF), `derived` (MIDI, MusicXML, PDF, images and
-other outputs), `logs`.
+`csd`, `prompts`, `manifest`, `code`, `derived` (MIDI, MusicXML, PDF,
+images and other outputs), `logs`.
 
 ## How a version is made
 
@@ -82,8 +85,8 @@ nothing else:
 | `history` | For each archived version: its directory, ordinal, tree hash and archival time. |
 | `ai` | Model and agent, as given to `accept`. |
 | `generator` | `kind` (`direct-csd`, `python-csoundac`, `javascript-csoundac-wasm`, `cpp-csoundac`, ...), source files, the commands that were run, seeds and parameters. |
-| `environment` | Csound version and commit, CsoundAC revision and p-field layout, Python, Node.js and ffmpeg versions, platform. |
-| `render` | The Csound and ffmpeg commands, times, measurements (duration, peak, RMS, clipped samples), a hash of the rendered samples, the output files and the log. |
+| `environment` | Csound version and commit, CsoundAC revision and p-field layout, Python, Node.js, the viewer's `@csound/browser` version, platform. |
+| `render` | The Csound commands, times, measurements (duration, peak, RMS, clipped samples), a hash of the rendered samples, the check in the viewer's engine, and the log. |
 | `validation` | The checks that passed, and warnings. |
 | `dependencies` | `#include`d files, sample files and plugins referred to by the `.csd`, and any given with `--dependency`. |
 | `adopted_from` | Present when the revision was made on another branch; see [cloud-agents.md](cloud-agents.md). |
@@ -98,27 +101,29 @@ manifests do not carry a user name.
 the `.csd` lacks `<CsoundSynthesizer>`, `<CsInstruments>` or `<CsScore>`;
 `csound --syntax-check-only` fails; Csound exits with an error; the log
 reports errors in performance, `INIT ERROR` or `PERF ERROR`; no audio was
-written; the audio is silent (peak below -80 dBFS); or samples are out of
-range. The last two can be overridden deliberately with `--allow-silence`
-and `--allow-clipping`.
+rendered; the audio is silent (peak below -80 dBFS); samples are out of
+range; or the piece does not perform in the viewer's Csound engine. The
+silence, clipping and browser-playability checks can be overridden
+deliberately with `--allow-silence`, `--allow-clipping` and
+`--allow-unplayable`.
 
-The render is a 24-bit WAV. With ffmpeg it is encoded to FLAC (the master)
-and MP3 (the listening copy) and the WAV is deleted; without ffmpeg the WAV
-is kept as the master. Real-time output options such as `-odac` in
-`<CsOptions>` are overridden.
+The render is a temporary 24-bit WAV outside the repository. It is measured
+and deleted. With `--wav FILE` a copy is kept at that path, which must be
+outside `music/ai-compositions/` and `docs/`. Real-time and file output
+options such as `-odac` or `-o file.wav` in `<CsOptions>` are overridden.
 
 `accept` also refuses when the `.csd` or code changed after the last
-render, so the stored audio always belongs to the stored `.csd`.
+render, so the recorded measurements always belong to the stored `.csd`.
 
 ## Checking and reproducing
 
 - `studio verify [NAME...]` checks names, manifests, the hash of every file
   against its manifest, and every archived version against the history.
 - `studio rerender NAME [--version N]` renders a stored version again in a
-  scratch directory and compares the samples with the stored render.
-  With `--regenerate` it first re-runs the recorded generator commands and
-  compares the regenerated `.csd` with the stored one. The stored version
-  is only read.
+  scratch directory and compares the samples with the render recorded in
+  the manifest. With `--regenerate` it first re-runs the recorded generator
+  commands and compares the regenerated `.csd` with the stored one. The
+  stored version is only read.
 
 One limitation: a `.csd` that refers to external files by a path relative
 to itself resolves that path one directory deeper once it is archived in
@@ -204,13 +209,10 @@ exactly the old or exactly the new state each time; see
 The archive is ordinary files, so it is committed like anything else:
 
 ```sh
-git add -- music/ai-compositions docs/compositions
+git add -- music/ai-compositions docs/compositions docs/studio
 git commit -m "nu: version 4"
 ```
 
-`.staging/` and `.locks/` are ignored. Rendered audio is committed: the
-FLAC master and the MP3 of every version. `accept` warns about any file
-over 20 MB and refuses files over 95 MB (GitHub rejects 100 MB) unless
-`--allow-large` is given. For long pieces consider keeping only the MP3 in
-Git, or Git LFS; that is a decision for the composer, see
-[deployment.md](deployment.md).
+`.staging/` and `.locks/` are ignored. Soundfiles are refused by the naming
+rules and by `music/ai-compositions/.gitignore`. Listening is always the
+published `.csd` performed in the viewer.

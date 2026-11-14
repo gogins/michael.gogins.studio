@@ -51,20 +51,30 @@ class NamingTests(unittest.TestCase):
         self.assertEqual(kind("code/nu-generate.py"), "code")
         self.assertEqual(kind("code/nu-generate.mjs"), "code")
         self.assertEqual(kind("code/nu-score.cpp"), "code")
-        self.assertEqual(kind("outputs/nu.mp3"), "audio")
-        self.assertEqual(kind("outputs/nu.flac"), "master")
-        self.assertEqual(kind("outputs/nu.wav"), "master")
         self.assertEqual(kind("outputs/nu.mid"), "derived")
         self.assertEqual(kind("outputs/nu.musicxml"), "derived")
         self.assertEqual(kind("outputs/nu.pdf"), "derived")
         self.assertEqual(kind("outputs/nu-render.log"), "logs")
-        for rel in ("other.csd", "nu.orc", "notes.txt", "code/generate.py", "outputs/other.mp3",
-                    "outputs/nu", "current/nu.csd", "code/.hidden.py", "outputs/nu .mp3", "nu-prompt-1.md"):
+        for rel in ("other.csd", "nu.orc", "notes.txt", "code/generate.py", "outputs/other.mid",
+                    "outputs/nu", "current/nu.csd", "code/.hidden.py", "outputs/nu .mid", "nu-prompt-1.md"):
             self.assertIsNone(naming.classify("nu", rel), rel)
+
+    def test_soundfiles_are_never_part_of_a_composition(self):
+        good = ["nu.csd", "nu-manifest.json", "nu-prompt-001.md"]
+        for rel in ("outputs/nu.wav", "outputs/nu.flac", "outputs/nu.mp3", "outputs/nu.WAV",
+                    "outputs/nu.aiff", "outputs/nu.ogg", "outputs/nu.opus", "outputs/nu.m4a",
+                    "outputs/nu-take2.wav", "nu.wav", "code/nu-sample.flac"):
+            self.assertIsNone(naming.classify("nu", rel), rel)
+            self.assertTrue(naming.is_soundfile(rel), rel)
+            problems = naming.state_problems("nu", good + [rel])
+            self.assertEqual(len(problems), 1, rel)
+            self.assertIn("soundfiles are not stored in the archive", problems[0])
+        for rel in ("nu.csd", "outputs/nu.mid", "outputs/nu.pdf", "outputs/nu-render.log", "code/nu-wave.py"):
+            self.assertFalse(naming.is_soundfile(rel), rel)
 
     def test_state_problems(self):
         good = ["nu.csd", "nu-manifest.json", "nu-prompt-001.md", "nu-prompt-002.md",
-                "code/nu-generate.py", "outputs/nu.mp3"]
+                "code/nu-generate.py", "outputs/nu.mid", "outputs/nu-render.log"]
         self.assertEqual(naming.state_problems("nu", good), [])
         self.assertTrue(naming.state_problems("nu", good + ["stray.txt"]))
         self.assertTrue(naming.state_problems("nu", [f for f in good if f != "nu.csd"]))

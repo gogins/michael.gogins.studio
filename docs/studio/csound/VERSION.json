@@ -1,0 +1,14 @@
+{
+  "package": "@csound/browser",
+  "version": "7.0.0",
+  "license": "Apache-2.0",
+  "source": "https://www.npmjs.com/package/@csound/browser/v/7.0.0",
+  "repository": "https://github.com/csound/csound",
+  "npm_integrity": "sha512-dACLiNXLaFXsWkIa5kQHE821cNK3kD4E1JazGIJ3QLTBs4hBXfDUg7bvg+9E4EjE20XZNWzHhsoXew5GQTGh6g==",
+  "files": {
+    "csound.js": {"from": "dist/csound.js", "sha256": "c86c69291326fa3d64872f430ca9a06324a94c96db373d6bd207fdd4e5a3fc9e"},
+    "LICENSE": {"from": "LICENSE", "sha256": "3f3adbdc06d616ccfd85151124dddca09fcf324494f72d549db961b6b088c9b5"},
+    "THIRD_PARTY.md": {"from": "THIRD_PARTY.md", "sha256": "d0be724a19ab4c3d3c0f4cbe41e5eafa2dd530ec0e0dbaca4b0901d6b13feda7"}
+  },
+  "note": "Unmodified files from the npm package; installed by studio-tools/js/update-csound-browser.sh."
+}

@@ -4,9 +4,10 @@ Tools are located through environment variables so that the same commands
 work on macOS, in a Cursor Cloud Agent, and in the test suite:
 
     STUDIO_CSOUND   csound executable            (default: csound)
-    STUDIO_FFMPEG   ffmpeg executable or "none"  (default: ffmpeg)
     STUDIO_PYTHON   Python that can import CsoundAC (default: this Python)
     STUDIO_NODE     node executable              (default: node)
+    STUDIO_CSOUND_WASM    the @csound/browser module the viewer plays with,
+                          or "none" (default: docs/studio/csound/csound.js)
     CSOUNDAC_WASM_DIR     directory holding CsoundAC.js and CsoundAC.wasm
     CSOUNDAC_SOURCE_DIR   CsoundAC source checkout, to record its revision
     STUDIO_CSOUNDAC_REVISION  explicit CsoundAC revision string
@@ -20,9 +21,10 @@ import re
 import shutil
 import subprocess
 import sys
+from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from .fsutil import scrub_home
+from .fsutil import scrub_home, sha256_file
 
 _CACHE: Dict[str, Any] = {}
 
@@ -185,22 +187,38 @@ def node_info() -> Dict[str, Any]:
     return info
 
 
-def ffmpeg_info() -> Dict[str, Any]:
-    if "ffmpeg" in _CACHE:
-        return _CACHE["ffmpeg"]
+#: Where the viewer's Csound engine lives, relative to the repository root.
+BROWSER_ENGINE_REL = "docs/studio/csound/csound.js"
+BROWSER_CHECK_SCRIPT = Path(__file__).resolve().parents[1] / "js" / "csound-browser-check.mjs"
+
+
+def browser_engine_path() -> Optional[Path]:
+    """The @csound/browser module used to check that a piece plays in the viewer."""
+    value = os.environ.get("STUDIO_CSOUND_WASM")
+    if value is not None:
+        if not value or value.lower() == "none":
+            return None
+        path = Path(value).expanduser()
+    else:
+        path = Path(__file__).resolve().parents[2] / BROWSER_ENGINE_REL
+    return path if path.is_file() else None
+
+
+def browser_engine_info() -> Dict[str, Any]:
+    """The Csound WebAssembly engine of the viewer, as installed in this checkout."""
+    if "browser_csound" in _CACHE:
+        return _CACHE["browser_csound"]
     info: Dict[str, Any] = {"available": False}
-    path = find_tool("STUDIO_FFMPEG", "ffmpeg")
+    path = browser_engine_path()
     if path:
-        result = _run([path, "-hide_banner", "-version"])
-        if result and result.returncode == 0:
-            first = (result.stdout or "").splitlines()[0] if result.stdout else ""
-            match = re.search(r"ffmpeg version\s+(\S+)", first)
-            info = {
-                "available": True,
-                "path": scrub_home(path),
-                "version": match.group(1) if match else first,
-            }
-    _CACHE["ffmpeg"] = info
+        info = {"available": True, "file": path.name, "sha256": sha256_file(path)}
+        try:
+            version = json.loads((path.parent / "VERSION.json").read_text(encoding="utf-8"))
+            info["package"] = version.get("package")
+            info["version"] = version.get("version")
+        except (OSError, ValueError):
+            pass
+    _CACHE["browser_csound"] = info
     return info
 
 
@@ -213,7 +231,7 @@ def collect() -> Dict[str, Any]:
         "csound": csound_info(),
         "python": python_info(),
         "node": node_info(),
-        "ffmpeg": ffmpeg_info(),
+        "browser_csound": browser_engine_info(),
     }
 
 
@@ -229,8 +247,14 @@ def problems(require_csoundac: bool = False) -> List[str]:
         found.append("csound not found (set STUDIO_CSOUND or install Csound 7)")
     elif csound.get("major") != 7:
         found.append(f"Csound {csound.get('version')} found, but Csound 7 is required")
-    if not ffmpeg_info().get("available"):
-        found.append("ffmpeg not found: FLAC masters and MP3 listening copies cannot be made")
+    if os.environ.get("STUDIO_CSOUND_WASM", "").lower() != "none":
+        if not browser_engine_info().get("available"):
+            found.append(
+                "the viewer's Csound engine was not found (docs/studio/csound/csound.js, or set "
+                "STUDIO_CSOUND_WASM): renders cannot be checked for playing in the browser"
+            )
+        elif not node_info().get("available"):
+            found.append("node not found: renders cannot be checked for playing in the browser")
     python = python_info()
     if not python.get("csoundac"):
         message = "CsoundAC is not importable by " + str(python.get("path"))

@@ -79,8 +79,9 @@ in a file in the repository.
 - It does not keep exported shell variables or running processes. For that
   reason the `studio` command loads `studio-env.sh` itself, every time.
 - A run's working files are not kept after the run. Whatever matters must be
-  committed and pushed: the composition, its versions, its audio. Staging
-  directories and `/tmp` are scratch space.
+  committed and pushed: the composition, its versions, prompts, code and
+  manifests (not soundfiles — listening is the viewer). Staging directories
+  and `/tmp` are scratch space.
 
 ## Working from a phone
 
@@ -95,10 +96,11 @@ in a file in the repository.
 
 3. The agent stages a revision, saves the prompt, edits or regenerates the
    `.csd`, renders, accepts, publishes, commits, and pushes its branch.
-4. Review the result. The agent's branch is on GitHub, where the `.csd`,
-   the prompts and the MP3 can be opened from the phone. The viewer at
-   `/studio/` shows a version only after its branch has been merged into the
-   branch that GitHub Pages deploys.
+4. Review the result. The agent's branch is on GitHub, where the `.csd`
+   and the prompts can be opened from the phone. The viewer at `/studio/`
+   shows a version only after its branch has been merged into the branch
+   that GitHub Pages deploys; Play then performs the `.csd` in the browser
+   (no soundfile).
 
 How merging and deployment are to be authorized is an open decision; see
 [deployment.md](deployment.md).

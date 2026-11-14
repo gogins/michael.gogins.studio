@@ -8,8 +8,9 @@
 #   studio-tools/cloud/check.sh --tests    also run the automated tests
 #
 # Works on macOS and Linux. Exits non-zero when a required part fails.
-# Csound 7 is required; CsoundAC (Python), CsoundAC (WebAssembly), C++ and
-# ffmpeg are each checked when configured and reported as missing otherwise.
+# Csound 7 is required; the viewer's @csound/browser engine, CsoundAC
+# (Python / WebAssembly / C++) are each checked when configured and reported
+# as missing otherwise.
 
 set -euo pipefail
 
@@ -82,15 +83,20 @@ else
         try "render a revision" "$STUDIO" render "$staging"
         try "archive version-0001 and promote the revision" "$STUDIO" accept "$staging" --model "environment check"
         try "verify the archive" "$STUDIO" verify check
-        try "re-render the archived version identically" bash -c "\"$STUDIO\" rerender check --version 1 | grep -q 'identical to the stored render'"
+        try "re-render the archived version identically" bash -c "\"$STUDIO\" rerender check --version 1 | grep -q 'identical to the render recorded in the manifest'"
         try "publish and build the catalog" "$STUDIO" publish check
+        if [ -z "$(find "$STUDIO_ROOT/music/ai-compositions/check" -type f \( -name '*.wav' -o -name '*.flac' -o -name '*.mp3' \) 2>/dev/null)" ]; then
+            ok "no soundfile was written into the archive"
+        else
+            bad "a soundfile was written into the archive"
+        fi
+        if "$STUDIO" env --json | python3 -c 'import json,sys; raise SystemExit(0 if json.load(sys.stdin).get("browser_csound",{}).get("available") else 1)'; then
+            ok "viewer engine (@csound/browser) is installed"
+        else
+            skip "viewer engine (@csound/browser) not installed under docs/studio/csound/"
+        fi
     else
         bad "the first version was not accepted, so no revision could be staged"
-    fi
-    if [ -f "$STUDIO_ROOT/music/ai-compositions/check/outputs/check.mp3" ]; then
-        ok "FLAC master and MP3 listening copy encoded"
-    else
-        skip "ffmpeg (the WAV render is kept as the master; no MP3 for the viewer)"
     fi
 fi
 

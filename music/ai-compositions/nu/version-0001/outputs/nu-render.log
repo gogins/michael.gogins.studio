@@ -1,4 +1,4 @@
-Render of nu started 2026-11-12T20:10:50Z
+Render of nu started 2026-11-14T14:35:45Z
 
 $ csound --syntax-check-only nu.csd
 Reading CSD file:  nu.csd
@@ -6,27 +6,27 @@ Reading CSD file:  nu.csd
 [commit: f9434ffc51954b20314352e1620e19cc5ec67185]
 Compiling Csound code...
 	 ...done
-Elapsed time at end of code compilation: real: 0.011s, CPU: 0.009s
+Elapsed time at end of code compilation: real: 0.010s, CPU: 0.009s
 Syntax check completed.
 		   overall amps:  0.00000  0.00000
-Elapsed time at end of performance: real: 0.011s, CPU: 0.009s
+Elapsed time at end of performance: real: 0.010s, CPU: 0.009s
 --Csound version 7.0 (double samples) Oct 28 2026
 [commit: f9434ffc51954b20314352e1620e19cc5ec67185]
 
-[exit 0; 0.022 s]
+[exit 0; 0.021 s]
 
-$ csound -d -W -3 -o outputs/nu.wav nu.csd
+$ csound -d -W -3 -o <temporary>/nu.wav nu.csd
 Reading CSD file:  nu.csd
 --Csound version 7.0 (double samples) Oct 28 2026
 [commit: f9434ffc51954b20314352e1620e19cc5ec67185]
 Compiling Csound code...
 	 ...done
-Elapsed time at end of code compilation: real: 0.010s, CPU: 0.009s
+Elapsed time at end of code compilation: real: 0.011s, CPU: 0.009s
 displays suppressed
 sr = 48000.0, kr = 3000.000, ksmps = 16
 0dBFS level = 1.0, A4 tuning = 440.0
 audio buffered in 128 sample-frame blocks
-writing 768-byte blks of 24bit ints to outputs/nu.wav (WAV)
+writing 768-byte blks of 24bit ints to <temporary>/nu.wav (WAV)
 SECTION 1:
 new alloc for instr 2:
 warning: instr 2 uses 7 p-fields but is given 11
@@ -58,21 +58,27 @@ new alloc for instr 1:
 warning: instr 1 uses 7 p-fields but is given 11
 B 12.000 .. 18.000 T 18.000 TT 18.000 M:  0.42055  0.48168
 end of Performance
-256 768 sample blks of 24bit ints written to outputs/nu.wav (WAV)
+256 768 sample blks of 24bit ints written to <temporary>/nu.wav (WAV)
 inactive allocs returned to freespace
 		   overall amps:  0.42055  0.48168
-Elapsed time at end of performance: real: 0.122s, CPU: 0.120s
+Elapsed time at end of performance: real: 0.124s, CPU: 0.122s
 
-[exit 0; 0.132 s]
+[exit 0; 0.134 s]
 
 Audio: 18.0 s, 2 ch, 48000 Hz, 24-bit pcm; peak -6.34 dBFS, RMS -22.19 dBFS, 0 clipped samples
 
-$ ffmpeg -hide_banner -loglevel error -nostdin -y -i outputs/nu.wav -c:a flac -compression_level 8 outputs/nu.flac
+Browser engine (@csound/browser 7.0.0): {"channels": 2, "checked": true, "compiled": true, "csound_version": "7.0", "duration_seconds": 18, "errors": [], "performed": true, "playable": true, "realtime_factor": 90.5, "runtime_errors": 0, "sample_rate": 48000, "seconds": 0.368, "started": true}
+warning: instr 1 uses 7 p-fields but is given 11
+new alloc for instr 1:
+warning: instr 1 uses 7 p-fields but is given 11
+B 12.000 .. 18.000 T 18.000 TT 18.000 M:  0.42055  0.48168
+end of Performance
+resetting Csound instance
+no sound written to disk
+inactive allocs returned to freespace
+		   overall amps:  0.42055  0.48168
+Elapsed time at end of performance: real: 0.000s, CPU: 0.210s
+		   overall amps:      0.0
+Elapsed time at end of performance: real: 0.000s, CPU: 0.000s
 
-[exit 0; 0.063 s]
-
-$ ffmpeg -hide_banner -loglevel error -nostdin -y -i outputs/nu.wav -c:a libmp3lame -q:a 2 outputs/nu.mp3
-
-[exit 0; 0.096 s]
-
-Render finished 2026-11-12T20:10:51Z: ok
+Render finished 2026-11-14T14:35:46Z: ok

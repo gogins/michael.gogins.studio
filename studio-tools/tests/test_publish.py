@@ -3,7 +3,7 @@ import json
 import os
 import unittest
 
-from support import StudioTestCase, tree_snapshot
+from support import StudioTestCase, soundfiles, tree_snapshot
 
 from studio import catalog, fsutil, publish, render, versioning
 from studio.cli import main as cli_main
@@ -40,8 +40,7 @@ class PublishTests(PublishTestCase):
         self.assertTrue(result["written"])
         expected = []
         for prefix, prompts in (("nu/", 3), ("nu/version-0001/", 1), ("nu/version-0002/", 2)):
-            expected += [prefix + "nu.csd", prefix + "nu-manifest.json", prefix + "code/nu-generate.py",
-                         prefix + "outputs/nu.mp3"]
+            expected += [prefix + "nu.csd", prefix + "nu-manifest.json", prefix + "code/nu-generate.py"]
             expected += [f"{prefix}nu-prompt-00{n}.md" for n in range(1, prompts + 1)]
         self.assertEqual(self.published(), sorted(expected))
         for rel in self.published():
@@ -50,10 +49,10 @@ class PublishTests(PublishTestCase):
             )
         self.assertArchiveUntouched()
 
-    def test_masters_logs_and_other_compositions_are_not_published_by_default(self):
+    def test_logs_and_other_compositions_are_not_published_by_default(self):
         publish.publish(self.studio, ["nu"])
         names = self.published()
-        self.assertFalse(any(rel.endswith((".flac", ".wav", ".log")) for rel in names))
+        self.assertFalse(any(rel.endswith(".log") for rel in names))
         self.assertFalse(any(rel.startswith("xi/") for rel in names))
         text = (self.studio.published / "catalog.json").read_text()
         self.assertNotIn("xi", json.loads(text)["compositions"][0]["name"])
@@ -86,10 +85,26 @@ class PublishTests(PublishTestCase):
                                             "nu/nu-prompt-003.md", "nu/nu.csd"])
         publish.publish(self.studio, ["nu"], kinds=publish.parse_kinds("all"),
                         versions=publish.parse_versions("current"))
-        self.assertIn("nu/outputs/nu.flac", self.published())
         self.assertIn("nu/outputs/nu-render.log", self.published())
         with self.assertRaises(StudioError):
             publish.parse_kinds("csd,everything")
+        # There is no audio to select: the viewer performs the .csd.
+        for gone in ("audio", "master", "csd,audio"):
+            with self.assertRaises(StudioError):
+                publish.parse_kinds(gone)
+
+    def test_no_soundfile_is_ever_published(self):
+        publish.publish(self.studio, ["nu", "xi"], kinds=publish.ALL_KINDS)
+        self.assertEqual(soundfiles(self.root), [])
+        self.assertNotIn('"audio"', (self.studio.published / "catalog.json").read_text())
+
+    def test_a_version_holding_a_soundfile_is_not_published(self):
+        from studio import audio
+        audio.write_test_wav(self.comp() / "outputs" / "nu.wav", seconds=0.05)
+        with self.assertRaises(StudioError) as caught:
+            publish.publish(self.studio, ["nu"])
+        self.assertIn("soundfiles are not stored", str(caught.exception))
+        self.assertFalse(self.studio.published.exists())
 
     def test_several_compositions(self):
         publish.publish(self.studio, ["nu", "xi"])
@@ -100,7 +115,7 @@ class PublishTests(PublishTestCase):
         result = publish.publish(self.studio, ["nu"], dry_run=True)
         self.assertFalse(result["written"])
         self.assertEqual({a["action"] for a in result["actions"]}, {"copy"})
-        self.assertEqual(len(result["actions"]), 18)
+        self.assertEqual(len(result["actions"]), 15)
         self.assertFalse(self.studio.published.exists())
         publish.publish(self.studio, ["nu"])
         before = tree_snapshot(self.studio.published)
@@ -203,7 +218,7 @@ class PublishTests(PublishTestCase):
         note = self.studio.published / "nu" / "README.txt"
         note.write_text("hand-written")
         result = publish.unpublish(self.studio, "nu", versions=[1], dry_run=True)
-        self.assertEqual(len(result["removed"]), 5)
+        self.assertEqual(len(result["removed"]), 4)
         self.assertTrue((self.studio.published / "nu" / "version-0001").exists())
         publish.unpublish(self.studio, "nu", versions=[1])
         self.assertFalse((self.studio.published / "nu" / "version-0001").exists())
@@ -314,8 +329,9 @@ class CatalogTests(PublishTestCase):
                          ["nu-prompt-001.md", "nu-prompt-002.md", "nu-prompt-003.md"])
         self.assertEqual([p["new"] for p in current["prompts"]], [False, False, True])
         self.assertEqual(current["code"][0]["language"], "python")
-        self.assertEqual(current["audio"][0]["path"], "nu/outputs/nu.mp3")
-        self.assertEqual(current["audio"][0]["role"], "listening")
+        self.assertNotIn("audio", current)
+        self.assertAlmostEqual(current["info"]["duration_seconds"], 2.0)
+        self.assertEqual(current["info"]["sample_rate"], 48000)
         self.assertEqual(current["info"]["ai_model"], "test-model")
         self.assertEqual(current["info"]["generator"], "python")
         oldest = composition["versions"][-1]
@@ -352,8 +368,8 @@ class CatalogTests(PublishTestCase):
         versions = data["compositions"][0]["versions"]
         self.assertEqual([v["id"] for v in versions], ["current", "version-0001"])
         for version in versions:
-            self.assertEqual((version["prompts"], version["code"], version["audio"], version["derived"]),
-                             ([], [], [], []))
+            self.assertEqual((version["prompts"], version["code"], version["derived"]), ([], [], []))
+            self.assertNotIn("audio", version)
             self.assertIsNone(version["manifest"])
             self.assertEqual(version["info"], {})
         # Only an archived version published: there is no "current" entry.

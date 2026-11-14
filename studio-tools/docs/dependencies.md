@@ -8,9 +8,10 @@ small piece in a temporary directory.
 | --- | --- | --- |
 | Python 3.9 or later, standard library | The tools themselves | yes |
 | Csound 7 (`csound` command) | Validation and rendering | yes, to render |
-| ffmpeg with FLAC and LAME | FLAC master and MP3 listening copy | no; without it the WAV is kept and there is no MP3 |
+| `@csound/browser` under `docs/studio/csound/` | Listening in the viewer, and the render-time playability check | yes for listening; install with `studio-tools/js/update-csound-browser.sh` |
 | Python 3.12 with the CsoundAC module | Python generating programs | no |
-| Node.js, `CsoundAC.js` and `CsoundAC.wasm` | JavaScript generating programs | no |
+| Node.js | Render-time check that a piece performs in `@csound/browser`; JavaScript generators | recommended for the check; required for JS generators |
+| `CsoundAC.js` and `CsoundAC.wasm` | JavaScript generating programs that use CsoundAC | no |
 | C++17 compiler, CsoundAC headers and library, Boost, Eigen | C++ generating programs | no |
 | Git | Committing; the repository tests | no |
 | Chrome or Chromium | The browser test of the viewer | no |
@@ -25,7 +26,7 @@ Everything is found through environment variables, with sensible defaults:
 | Variable | Meaning | Default |
 | --- | --- | --- |
 | `STUDIO_CSOUND` | Csound executable | `csound` on the PATH |
-| `STUDIO_FFMPEG` | ffmpeg executable, or `none` to do without | `ffmpeg` on the PATH |
+| `STUDIO_CSOUND_WASM` | path to `@csound/browser`'s `csound.js`, or `none` | `docs/studio/csound/csound.js` |
 | `STUDIO_PYTHON` | Python that can import CsoundAC | `python3` |
 | `STUDIO_NODE` | Node.js executable | `node` on the PATH |
 | `CSOUNDAC_WASM_DIR` | Directory holding `CsoundAC.js` and `CsoundAC.wasm` | not set |
@@ -43,7 +44,7 @@ silicon) with:
 
 - Csound 7.0 (commit `f9434ffc`), installed in `/usr/local/bin`, framework
   in `/Library/Frameworks/CsoundLib64.framework`.
-- ffmpeg 9.0.2 and Node.js 26.13 from Homebrew.
+- Node.js 26.13 from Homebrew; `@csound/browser` 7.0.0 under `docs/studio/csound/`.
 - CsoundAC built from `~/csound-ac` (`v9.1.1-beta-26-gd884dea62`) with its
   Python module installed in the virtual environment `~/venv/csound`
   (Python 3.12.16).
@@ -68,7 +69,7 @@ does not build or modify them.
 `studio-tools/cloud/install.sh` builds the same environment on Ubuntu:
 
 1. Installs the Ubuntu packages that the CsoundAC continuous integration
-   installs for its Linux build, plus ffmpeg, Node.js, curl and unzip.
+   installs for its Linux build, plus Node.js, curl and unzip.
 2. Builds Csound 7 from `https://github.com/csound/csound.git` with the
    options of the CsoundAC CI (no Java or Python interfaces, no tests).
 3. Builds CsoundAC and its Python module from
@@ -94,7 +95,7 @@ likely places for a first run to need correction:
 - CsoundAC requires Python 3.12 or later with development headers
   (`find_package(Python3 3.12 REQUIRED ...)`). Ubuntu 24.04 has it; older
   releases do not. The script stops with a message in that case; it can
-  still set up Csound, ffmpeg and the WebAssembly route with
+  still set up Csound and the CsoundAC WebAssembly route with
   `STUDIO_INSTALL_STEPS="packages csound wasm env"`.
 - The CsoundAC repository has a branch named `copilot/fix-build-linux-job`,
   which suggests that its Linux build has needed repair. If the build

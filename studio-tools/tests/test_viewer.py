@@ -119,25 +119,56 @@ async function run() {
   result.compareOthers = all('#compare-other option').map((option) => option.value);
   result.overflow.compare = overflow();
 
-  // Audio: play, then seek. The player must survive a change of tab.
+  // Real-time player: play, survive a tab change, then seek.
   await show('#nu/current/prompts', 'player', tab('prompts', '.prompt pre'));
-  const audio = doc().getElementById('player');
-  audio.muted = true;
-  await until('audio metadata', () => audio.readyState >= 1 && isFinite(audio.duration));
-  await audio.play();
-  await until('audio to advance', () => audio.currentTime > 0.05);
+  const player = doc().getElementById('player');
+  async function playFrom(root, seconds = null) {
+    const before = Number(root.dataset.completed || 0);
+    if (seconds !== null) {
+      const seek = root.querySelector('.seek');
+      seek.value = String(seconds);
+      seek.dispatchEvent(new Event('input', { bubbles: true }));
+      seek.dispatchEvent(new Event('change', { bubbles: true }));
+      // Seeking while idle only remembers the position; start from there.
+      if (root.dataset.state !== 'playing' && root.dataset.state !== 'loading') {
+        root.querySelector('.play').click();
+      }
+    } else {
+      root.querySelector('.play').click();
+    }
+    const describe = () => 'state=' + root.dataset.state
+      + '; status=' + (text('#' + root.id + ' .player-status') || '')
+      + '; time=' + root.dataset.time;
+    try {
+      await until('loading', () => ['loading', 'playing', 'error'].includes(root.dataset.state)
+        || Number(root.dataset.completed) > before, 60000);
+    } catch (error) {
+      throw new Error(error.message + ' (' + describe() + ')');
+    }
+    if (root.dataset.state === 'error') {
+      throw new Error('player error: ' + (text('#' + root.id + ' .player-status') || ''));
+    }
+    await until('playing', () => root.dataset.state === 'playing'
+      || Number(root.dataset.completed) > before, 60000);
+    if (root.dataset.state === 'playing') {
+      await until('score time advances', () => Number(root.dataset.time) > (seconds || 0) + 0.05, 30000);
+    }
+  }
+  await playFrom(player);
   await show('#nu/current/csound', 'csd text', tab('csound', '.source .code'));
-  result.audio = {
-    source: audio.currentSrc, duration: audio.duration, played: audio.currentTime,
-    stillTheSameElement: doc().getElementById('player') === audio,
+  result.player = {
+    state: player.dataset.state, time: Number(player.dataset.time),
+    caption: text('#player .player-caption'),
+    stillTheSameElement: doc().getElementById('player') === player,
   };
-  audio.pause();
-  const target = audio.duration / 2;
-  const seeked = new Promise((resolve) => audio.addEventListener('seeked', resolve, { once: true }));
-  audio.currentTime = target;
-  await Promise.race([seeked, sleep(5000)]);
-  result.audio.seekTarget = target;
-  result.audio.seekedTo = audio.currentTime;
+  player.querySelector('.stop').click();
+  await until('stopped', () => player.dataset.state === 'idle');
+  const target = 0.2;
+  await playFrom(player, target);
+  result.player.seekTarget = target;
+  result.player.seekedTo = Number(player.dataset.time);
+  player.querySelector('.stop').click();
+  await until('stopped after seek', () => player.dataset.state === 'idle');
 
   // An archived version, reached with the Older button.
   doc().getElementById('older').click();
@@ -149,17 +180,18 @@ async function run() {
     hash: frame.contentWindow.location.hash,
     csd: text('.source .code'),
     olderDisabled: doc().getElementById('older').disabled,
-    audioSource: doc().getElementById('player').currentSrc || doc().querySelector('#player source').src,
+    playerState: doc().getElementById('player').dataset.state,
+    caption: text('#player .player-caption'),
   };
   await show('#nu/version-0001/code', 'no code message', tab('code', '#panel .status'));
   result.oldest.codeMessage = text('#panel .status');
   await show('#nu/version-0001/prompts', 'prompts', tab('prompts', '.prompt pre'));
   result.oldest.prompts = all('.prompt pre').map((pre) => pre.textContent);
 
-  // A composition published without audio, code or manifest.
+  // A composition published without its .csd: nothing to play.
   await show('#xi', 'xi', () => text('#composition-title') === 'xi');
   result.sparse = {
-    noAudio: text('#player-none'), versions: all('#version-select option').length,
+    noPlayer: text('#player-none'), versions: all('#version-select option').length,
     label: doc().querySelector('#version-select option').textContent,
   };
   await show('#xi/current/info', 'xi info', tab('info', 'dl.info'));
@@ -182,6 +214,7 @@ async function realSite(result) {
   for (const composition of catalog.compositions) {
     const entry = { name: composition.name, versions: [] };
     for (const version of composition.versions) {
+      const label = `${composition.name}/${version.id}`;
       const selected = () => doc().getElementById('version-select').value === version.id;
       const item = { id: version.id };
       if (version.csd) {
@@ -193,14 +226,19 @@ async function realSite(result) {
         () => selected() && doc().getElementById('panel').dataset.tab === 'prompts');
       item.prompts = all('.prompt pre').map((pre) => pre.textContent);
       item.overflow = overflow();
-      const audio = doc().getElementById('player');
-      if (audio) {
-        audio.muted = true;
-        await until('audio metadata', () => audio.readyState >= 1 && isFinite(audio.duration));
-        await audio.play();
-        await until('audio to advance', () => audio.currentTime > 0.05);
-        audio.pause();
-        item.audio = { source: audio.currentSrc, duration: audio.duration };
+      const player = doc().getElementById('player');
+      if (player && !doc().getElementById('player-none')) {
+        player.querySelector('.play').click();
+        await until('playing ' + label, () => player.dataset.state === 'playing', 60000);
+        await until('time ' + label, () => Number(player.dataset.time) > 0.05, 30000);
+        item.player = {
+          state: player.dataset.state, time: Number(player.dataset.time),
+          caption: text('#player .player-caption'),
+        };
+        player.querySelector('.stop').click();
+        await until('stopped ' + label, () => player.dataset.state === 'idle');
+      } else {
+        item.noPlayer = text('#player-none');
       }
       entry.versions.push(item);
     }
@@ -294,12 +332,8 @@ class Browser:
 class BrowserTests(Browser, StudioTestCase):
     def setUp(self):
         super().setUp()
-        # Real ffmpeg, when there is one, gives a real MP3; otherwise the WAV is used.
-        real_ffmpeg = shutil.which("ffmpeg")
-        os.environ["STUDIO_FFMPEG"] = real_ffmpeg or "none"
-        environment.reset_cache()
-        self.has_mp3 = bool(real_ffmpeg)
         self.profiles = self.tmp
+        # The real viewer, including its @csound/browser engine.
         shutil.copytree(REPO / "docs" / "studio", self.studio.viewer)
         self.start_site(self.root / "docs")
 
@@ -327,8 +361,9 @@ class BrowserTests(Browser, StudioTestCase):
         self.make_version(name="xi", prompt="Only prompt of xi.")
         self.make_version(name="hidden", prompt="This one is never published.")
         publish.publish(self.studio, ["nu"], kinds=publish.ALL_KINDS)
-        publish.publish(self.studio, ["xi"], kinds=("csd",))
-        result = self.browse("full")
+        # No .csd published: the player has nothing to perform.
+        publish.publish(self.studio, ["xi"], kinds=("prompts", "manifest"))
+        result = self.browse("full", timeout=180)
 
         # Catalog and selection.
         self.assertEqual(result["state"], "ready")
@@ -360,29 +395,28 @@ class BrowserTests(Browser, StudioTestCase):
         self.assertTrue(any("FREQ=550" in line for line in result["diffRemoved"]))
         self.assertEqual(result["compareOthers"], ["version-0002", "version-0001"])
 
-        # Audio really played, kept playing across a tab change, and seeked.
-        audio = result["audio"]
-        expected = "/compositions/nu/outputs/nu.mp3" if self.has_mp3 else "/compositions/nu/outputs/nu.wav"
-        self.assertTrue(audio["source"].endswith(expected), audio["source"])
-        self.assertAlmostEqual(audio["duration"], 0.5, delta=0.1)
-        self.assertGreater(audio["played"], 0.05)
-        self.assertTrue(audio["stillTheSameElement"])
-        self.assertAlmostEqual(audio["seekedTo"], audio["seekTarget"], delta=0.06)
+        # The .csd was performed in the browser; the player survived a tab change and seeked.
+        player = result["player"]
+        self.assertIn("WebAssembly", player["caption"])
+        self.assertIn("no soundfile", player["caption"].lower())
+        self.assertGreater(player["time"], 0.05)
+        self.assertTrue(player["stillTheSameElement"])
+        self.assertAlmostEqual(player["seekedTo"], player["seekTarget"], delta=0.15)
 
         # Archived versions.
         oldest = result["oldest"]
         self.assertTrue(oldest["hash"].startswith("#nu/version-0001"))
         self.assertIn("FREQ=440", oldest["csd"])
         self.assertTrue(oldest["olderDisabled"])
-        self.assertIn("/compositions/nu/version-0001/outputs/", oldest["audioSource"])
+        self.assertIn("WebAssembly", oldest["caption"])
         self.assertIn("written directly", oldest["codeMessage"])
         self.assertEqual([p.strip() for p in oldest["prompts"]], ["First prompt of nu."])
 
         # Missing optional artifacts are handled.
-        self.assertIn("No audio", result["sparse"]["noAudio"])
+        self.assertIn("cannot be played", result["sparse"]["noPlayer"])
         self.assertEqual(result["sparse"]["versions"], 1)
-        self.assertEqual(result["sparse"]["label"].strip(), "Current")
-        self.assertIn("not published", result["sparse"]["info"])
+        self.assertTrue(result["sparse"]["label"].strip().startswith("Current"), result["sparse"]["label"])
+        self.assertIn("test-model", result["sparse"]["info"])
         self.assertIn("nothing to compare", result["sparse"]["compare"])
         self.assertIn("nope", result["notFound"])
         self.assertEqual(result["backToLibrary"], 2)
@@ -432,14 +466,12 @@ class PublishedSiteTests(Browser, unittest.TestCase):
                 for prompt, text in zip(version["prompts"], view["prompts"]):
                     self.assertIn(text.strip(), expected["prompt_texts"][prompt["sha256"]], label)
                 self.assertLessEqual(view["overflow"], 0, label)
-                listening = [a for a in version["audio"] if a["role"] == "listening"] or version["audio"]
-                if listening:
-                    self.assertTrue(view["audio"]["source"].endswith("/compositions/" + listening[0]["path"]), label)
-                    duration = (version.get("info") or {}).get("duration_seconds")
-                    if duration:
-                        self.assertAlmostEqual(view["audio"]["duration"], duration, delta=0.2, msg=label)
+                if version.get("csd"):
+                    self.assertEqual(view["player"]["state"], "playing", label)
+                    self.assertGreater(view["player"]["time"], 0.05, label)
+                    self.assertIn("WebAssembly", view["player"]["caption"], label)
                 else:
-                    self.assertNotIn("audio", view, label)
+                    self.assertIn("cannot be played", view.get("noPlayer") or "", label)
 
 
 @unittest.skipUnless(shutil.which(os.environ.get("STUDIO_NODE", "node")), "node not found")

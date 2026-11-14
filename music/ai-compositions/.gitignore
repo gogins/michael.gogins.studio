@@ -2,3 +2,24 @@
 .staging/
 .locks/
 .DS_Store
+
+# No soundfiles in the archive: a version is heard by performing its .csd.
+# (The tools refuse them as well; this is a second line of defence.)
+*.wav
+*.flac
+*.aif
+*.aiff
+*.aifc
+*.w64
+*.caf
+*.rf64
+*.au
+*.snd
+*.mp3
+*.opus
+*.ogg
+*.oga
+*.m4a
+*.aac
+*.wma
+*.mp4

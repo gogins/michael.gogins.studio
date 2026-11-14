@@ -262,7 +262,7 @@ def _check_sizes(staging_dir: Path, files: List[str], allow_large: bool) -> List
         if size > MAX_FILE_BYTES and not allow_large:
             raise staging.StagingError(
                 f"{rel} is {size / 1e6:.0f} MB; GitHub rejects files of 100 MB or more. "
-                "Shorten the render, keep only the FLAC/MP3, or pass --allow-large"
+                "Make it smaller, or pass --allow-large"
             )
         if size > LARGE_FILE_BYTES:
             warnings.append(f"{rel} is {size / 1e6:.0f} MB and will be committed to Git")
@@ -327,7 +327,7 @@ def _build_manifest(
         environment=environment.collect(),
         render={
             key: render.get(key)
-            for key in ("commands", "started_at", "finished_at", "analysis", "wav_sha256", "outputs", "log")
+            for key in ("commands", "started_at", "finished_at", "analysis", "wav_sha256", "browser", "log")
         },
         validation={
             "status": "passed",

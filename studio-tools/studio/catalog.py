@@ -12,7 +12,7 @@ from typing import Any, Dict, List, Optional
 from . import fsutil, naming
 from .paths import Studio
 
-SCHEMA = "ai-composition-studio/catalog/1"
+SCHEMA = "ai-composition-studio/catalog/2"
 CATALOG_NAME = "catalog.json"
 #: Prompts larger than this are linked but not embedded in the catalog.
 MAX_EMBEDDED_PROMPT_BYTES = 200_000
@@ -29,6 +29,7 @@ def _info_from_manifest(manifest: Dict[str, Any]) -> Dict[str, Any]:
         return value
 
     analysis = get("render", "analysis") or {}
+    browser = get("render", "browser") or {}
     info = {
         "ordinal": get("ordinal"),
         "created_at": get("created_at"),
@@ -45,6 +46,14 @@ def _info_from_manifest(manifest: Dict[str, Any]) -> Dict[str, Any]:
         "channels": analysis.get("channels"),
         "peak_dbfs": analysis.get("peak_dbfs"),
         "rms_dbfs": analysis.get("rms_dbfs"),
+        # Whether the version was performed in the viewer's engine when it was made.
+        "browser_checked": browser.get("checked"),
+        "browser_playable": browser.get("playable"),
+        "browser_engine": " ".join(
+            str(part) for part in ((browser.get("engine") or {}).get("package"),
+                                   (browser.get("engine") or {}).get("version")) if part
+        ),
+        "browser_realtime_factor": browser.get("realtime_factor"),
         "new_prompts": get("new_prompts") or [],
         "warnings": get("validation", "warnings") or [],
         "notes": get("notes"),
@@ -62,7 +71,6 @@ def _scan_state(
         "manifest": None,
         "prompts": [],
         "code": [],
-        "audio": [],
         "derived": [],
         "logs": [],
         "info": {},
@@ -100,10 +108,6 @@ def _scan_state(
         elif kind["kind"] == "code":
             entry["language"] = kind["language"]
             state["code"].append(entry)
-        elif kind["kind"] in ("audio", "master"):
-            entry["format"] = kind["format"]
-            entry["role"] = "listening" if kind["kind"] == "audio" else "master"
-            state["audio"].append(entry)
         elif kind["kind"] == "derived":
             entry["kind"] = kind["derived"]
             state["derived"].append(entry)
@@ -112,8 +116,6 @@ def _scan_state(
     if not found:
         return None
     state["prompts"].sort(key=lambda item: item["number"])
-    # Listening copies first, so the viewer's default player uses the small file.
-    state["audio"].sort(key=lambda item: (item["role"] != "listening", item["file"]))
     new = set(state["info"].get("new_prompts", []))
     for prompt in state["prompts"]:
         prompt["new"] = prompt["file"] in new

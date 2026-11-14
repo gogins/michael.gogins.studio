@@ -19,8 +19,7 @@ class VersioningTests(StudioTestCase):
         self.assertEqual(versioning.list_versions(self.comp()), [])
         self.assertEqual(
             fsutil.list_files(self.comp()),
-            ["nu-manifest.json", "nu-prompt-001.md", "nu.csd",
-             "outputs/nu-render.log", "outputs/nu.flac", "outputs/nu.mp3"],
+            ["nu-manifest.json", "nu-prompt-001.md", "nu.csd", "outputs/nu-render.log"],
         )
         self.assertFalse((self.comp() / "current").exists())
         self.assertVerified()
@@ -44,7 +43,7 @@ class VersioningTests(StudioTestCase):
         self.assertEqual(fsutil.state_hash(archived), before_hash)
         # Code, outputs, prompts and manifest all travel with the version.
         for rel in ("nu.csd", "nu-manifest.json", "nu-prompt-001.md", "code/nu-generate.py",
-                    "outputs/nu.flac", "outputs/nu.mp3", "outputs/nu-render.log"):
+                    "outputs/nu-render.log"):
             self.assertTrue((archived / rel).is_file(), rel)
         self.assertIn("FREQ=440", (archived / "nu.csd").read_text())
         self.assertIn("FREQ=550", (self.comp() / "nu.csd").read_text())

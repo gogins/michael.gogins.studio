@@ -1,10 +1,11 @@
 """Shared fixtures for the studio test suite.
 
 Every test works in a temporary directory that stands in for the
-repository root, so nothing in the real repository is touched. Csound and
-ffmpeg are replaced by small fake programs (so the suite runs anywhere and
-can inject failures); tests that need the real tools say so and are skipped
-when the tools are missing.
+repository root, so nothing in the real repository is touched. Csound is
+replaced by a small fake program (so the suite runs anywhere and can inject
+failures), and the check in the viewer's Csound engine is switched off;
+tests that need the real tools say so and are skipped when the tools are
+missing.
 """
 from __future__ import annotations
 
@@ -51,28 +52,17 @@ if "NO_OUTPUT" in text:
 out = args[args.index("-o") + 1]
 frequency = float((re.search(r"FREQ=([0-9.]+)", text) or [0, 440])[1])
 amplitude = 0.0 if "SILENT" in text else (1.0 if "CLIP" in text else 0.5)
-audio.write_test_wav(out, seconds=0.5, frequency=frequency, amplitude=amplitude, bits=16)
+audio.write_test_wav(out, seconds=2.0, frequency=frequency, amplitude=amplitude, bits=16)
 print("end of Performance")
 """
-
-FAKE_FFMPEG = f"""#!{sys.executable}
-# Fake ffmpeg for tests: "encodes" by copying the input file.
-import shutil, sys
-args = sys.argv[1:]
-if "-version" in args:
-    print("ffmpeg version fake-for-tests")
-    sys.exit(0)
-shutil.copyfile(args[args.index("-i") + 1], args[-1])
-"""
-
 
 def csd_text(marker: str = "FREQ=440") -> str:
     return (
         "<CsoundSynthesizer>\n<CsOptions>\n-d\n</CsOptions>\n<CsInstruments>\n"
         "sr = 48000\nksmps = 32\nnchnls = 2\n0dbfs = 1\n"
         f"; {marker}\n"
-        "instr 1\n  a1 poscil 0.3 * (p5 / 127), cpsmidinn(p4)\n  outs a1, a1\nendin\n"
-        "</CsInstruments>\n<CsScore>\ni 1 0 0.5 60 80\n</CsScore>\n</CsoundSynthesizer>\n"
+        "instr 1\n  a1 poscil 0.3 * (p5 / 127), cpsmidinn(p4)\n  out a1, a1\nendin\n"
+        "</CsInstruments>\n<CsScore>\ni 1 0 2 60 80\n</CsScore>\n</CsoundSynthesizer>\n"
     )
 
 
@@ -94,7 +84,7 @@ def tree_snapshot(directory: Path) -> Dict[str, str]:
 
 
 class StudioTestCase(unittest.TestCase):
-    """A temporary studio with fake Csound and ffmpeg."""
+    """A temporary studio with a fake Csound and no browser-engine check."""
 
     use_fake_tools = True
 
@@ -111,7 +101,8 @@ class StudioTestCase(unittest.TestCase):
             os.environ.pop(variable, None)
         if self.use_fake_tools:
             os.environ["STUDIO_CSOUND"] = str(write_executable(self.bin / "csound", FAKE_CSOUND))
-            os.environ["STUDIO_FFMPEG"] = str(write_executable(self.bin / "ffmpeg", FAKE_FFMPEG))
+        # Tests that exercise the viewer's engine turn this on themselves.
+        os.environ["STUDIO_CSOUND_WASM"] = "none"
         os.environ["STUDIO_PYTHON"] = sys.executable
         # The tests configure everything themselves; no environment file.
         os.environ["STUDIO_ENV_FILE"] = ""
@@ -168,3 +159,23 @@ class StudioTestCase(unittest.TestCase):
 
 def real_csound_available() -> bool:
     return shutil.which(os.environ.get("STUDIO_CSOUND", "csound")) is not None
+
+
+#: The Csound WebAssembly engine installed in this repository's viewer.
+BROWSER_ENGINE = REPO / "docs" / "studio" / "csound" / "csound.js"
+
+
+def browser_engine_available() -> bool:
+    """The viewer's engine is installed and there is a Node.js to run it."""
+    return BROWSER_ENGINE.is_file() and shutil.which(os.environ.get("STUDIO_NODE", "node")) is not None
+
+
+def soundfiles(directory: Path) -> list:
+    """Every soundfile under a directory, hidden places included."""
+    from studio import naming
+
+    return sorted(
+        path.relative_to(directory).as_posix()
+        for path in Path(directory).rglob("*")
+        if path.is_file() and naming.is_soundfile(path.name)
+    )

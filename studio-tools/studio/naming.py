@@ -6,11 +6,13 @@ For a composition called ``nu``:
     nu-manifest.json       provenance manifest
     nu-prompt-001.md       prompts, numbered in order
     code/nu-*.py|js|cpp    generated compositional programs
-    outputs/nu.*           rendered audio and derived outputs
+    outputs/nu.*           derived outputs (MIDI, MusicXML, PDF, images)
     outputs/nu-*.*         logs and other outputs
     version-0001/          archived versions, same layout inside
 
-Nothing else is allowed in a composition state.
+Nothing else is allowed in a composition state. In particular there are no
+soundfiles: a version is heard by performing its .csd, in the viewer with
+Csound for WebAssembly or anywhere else with Csound.
 """
 from __future__ import annotations
 
@@ -28,9 +30,12 @@ VERSION_DIR_RE = re.compile(r"\Aversion-([0-9]{4,})\Z")
 CODE_DIR = "code"
 OUTPUTS_DIR = "outputs"
 
+#: Soundfiles are never part of a composition state.
+SOUNDFILE_EXT = {
+    ".wav", ".flac", ".aif", ".aiff", ".aifc", ".w64", ".caf", ".rf64", ".au", ".snd",
+    ".mp3", ".opus", ".ogg", ".oga", ".m4a", ".aac", ".wma", ".mp4",
+}
 #: Kinds of artifacts, used for publication selection and the catalog.
-AUDIO_LISTENING_EXT = {".mp3", ".opus", ".ogg", ".oga", ".m4a", ".aac"}
-AUDIO_MASTER_EXT = {".wav", ".flac", ".aif", ".aiff", ".w64"}
 DERIVED_KINDS = {
     ".mid": "midi",
     ".midi": "midi",
@@ -117,17 +122,24 @@ def is_hidden(relpath: str) -> bool:
     return any(part.startswith(".") for part in relpath.split("/"))
 
 
+def is_soundfile(relpath: str) -> bool:
+    return Path(relpath).suffix.lower() in SOUNDFILE_EXT
+
+
 def classify(name: str, relpath: str) -> Optional[Dict[str, str]]:
     """Classify a file of a composition state by its relative path.
 
-    Returns a dict with ``kind`` (csd, manifest, prompts, code, audio, master,
-    derived, logs) and details, or None if the path is not allowed.
+    Returns a dict with ``kind`` (csd, manifest, prompts, code, derived,
+    logs) and details, or None if the path is not allowed. Soundfiles are
+    not allowed anywhere.
     """
     parts = relpath.split("/")
     base = parts[-1]
     if not all(FILENAME_RE.match(part) for part in parts):
         return None
     suffix = Path(base).suffix.lower()
+    if suffix in SOUNDFILE_EXT:
+        return None
     if len(parts) == 1:
         if base == csd_name(name):
             return {"kind": "csd"}
@@ -147,10 +159,6 @@ def classify(name: str, relpath: str) -> Optional[Dict[str, str]]:
         )
         if not stem_ok:
             return None
-        if suffix in AUDIO_LISTENING_EXT:
-            return {"kind": "audio", "format": suffix[1:]}
-        if suffix in AUDIO_MASTER_EXT:
-            return {"kind": "master", "format": suffix[1:]}
         if suffix in DERIVED_KINDS:
             return {"kind": "derived", "derived": DERIVED_KINDS[suffix]}
         return {"kind": "logs"}
@@ -175,7 +183,13 @@ def state_problems(name: str, files: List[str], *, require_manifest: bool = True
         seen_lower[lowered] = rel
         info = classify(name, rel)
         if info is None:
-            problems.append(f"{rel}: not allowed by the naming conventions for {name!r}")
+            if is_soundfile(rel):
+                problems.append(
+                    f"{rel}: soundfiles are not stored in the archive; remove it "
+                    "(to keep a rendering, write it elsewhere with 'studio rerender --wav')"
+                )
+            else:
+                problems.append(f"{rel}: not allowed by the naming conventions for {name!r}")
             continue
         if info["kind"] == "csd":
             has_csd = True

@@ -26,9 +26,10 @@ S=$(studio stage xi)                 # a working copy of the current version
 studio prompt "$S" --file -          # paste the prompt, end with Control-D
 $EDITOR "$S/xi.csd"                  # or edit and run "$S/code/xi-generate.py"
 studio run "$S" --seed 3 -- python code/xi-generate.py
-studio render "$S"                   # prints duration and levels
-open "$S/outputs/xi.mp3"             # listen before accepting
+studio render "$S"                   # prints duration and levels; checks @csound/browser
 studio accept "$S" --model "manual edit" --agent "Michael Gogins"
+studio publish xi
+studio serve                         # listen: Play performs the .csd in the browser
 ```
 
 Looking at what exists:
@@ -50,9 +51,10 @@ studio publish xi                    # copy to docs/compositions/, update the ca
 studio serve                         # http://127.0.0.1:8000/studio/
 ```
 
-`studio serve` is a small static server for `docs/` with support for byte
-ranges, which browsers need for seeking in audio. Any static server that
-serves `docs/` will do, provided it supports ranges.
+`studio serve` is a small static server for `docs/`. Any static server that
+serves `docs/` will do. The viewer performs each published `.csd` with the
+official Csound 7 for WebAssembly (`@csound/browser`) in this browser; the
+same player is used on the deployed site.
 
 To use the local viewer from the phone on the same network:
 
@@ -67,7 +69,7 @@ In the viewer:
 
 - The first page lists the published compositions.
 - A composition's page has a version selector (and Older and Newer
-  buttons), an audio player with seeking, and tabs:
+  buttons), a real-time Csound player with seeking, and tabs:
   **Prompts** (all prompts up to that version; the new ones are marked),
   **Csound** (the `.csd`, with a download link),
   **Code** (the generating programs),
@@ -101,10 +103,10 @@ happens in Cursor on the MacBook.
 ## Listening levels and length
 
 `studio render` prints the duration, the peak and the RMS level. It refuses
-silence and clipping. A peak around -6 to -3 dBFS leaves headroom for the
-MP3 encoder.
+silence and clipping, and checks that the piece performs in the viewer's
+Csound engine. A peak around -6 to -3 dBFS leaves headroom when that engine
+plays the piece in the browser.
 
-Each version's FLAC and MP3 are committed to Git. Eighteen seconds of
-stereo at 48 kHz is about 1.6 MB of FLAC and 0.3 MB of MP3; ten minutes is
-roughly 60 MB and 10 MB. Keep that in mind for long pieces with many
-versions; see [deployment.md](deployment.md).
+No soundfile is kept in the archive or published. To keep a one-off WAV
+outside the repository, use `studio render --wav ~/Desktop/nu.wav` or
+`studio rerender nu --wav ~/Desktop/nu.wav`.

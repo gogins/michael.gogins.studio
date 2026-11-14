@@ -1,16 +1,23 @@
 {
   "ai": {
-    "agent": "Cursor desktop (macOS)",
-    "model": "Claude Fable 5.2"
+    "agent": "implementing agent",
+    "model": "studio demonstration"
   },
   "composition": "nu",
-  "created_at": "2026-11-12T20:12:07Z",
+  "created_at": "2026-11-14T14:35:47Z",
   "dependencies": {
     "includes": [],
     "plugins": [],
     "samples": []
   },
   "environment": {
+    "browser_csound": {
+      "available": true,
+      "file": "csound.js",
+      "package": "@csound/browser",
+      "sha256": "c86c69291326fa3d64872f430ca9a06324a94c96db373d6bd207fdd4e5a3fc9e",
+      "version": "7.0.0"
+    },
     "csound": {
       "available": true,
       "banner": "Csound version 7.0 (double samples) Oct 28 2026",
@@ -18,11 +25,6 @@
       "major": 7,
       "path": "/usr/local/bin/csound",
       "version": "7.0"
-    },
-    "ffmpeg": {
-      "available": true,
-      "path": "/opt/homebrew/bin/ffmpeg",
-      "version": "9.0.2"
     },
     "machine": "arm64",
     "node": {
@@ -58,66 +60,40 @@
     },
     "nu-prompt-001.md": {
       "bytes": 517,
-      "sha256": "3f611e71f2648528027bbe2d3b376ebb4a9f1f537626f17fb5f3c67e31943e77"
+      "sha256": "9541e095bf039cc2a82a02f4d3b80b4f3a218fc4288c83a2b3caf97d8d903054"
     },
     "nu-prompt-002.md": {
       "bytes": 624,
-      "sha256": "5c5273f69ec837bdc84a957e5d84992cc71da06bc659dab82ec446901be92967"
+      "sha256": "ca4c3922c0f22aba2f7b10c6a4b4959091a87b1ce1c93298fadc71ef3511c53d"
     },
     "nu.csd": {
       "bytes": 2657,
       "sha256": "064a267fd7086392cef442b542ddf1a0ffcd53e9efeb64b82d0d82c8ccd65e6a"
     },
-    "outputs/nu-generate.log": {
-      "bytes": 134,
-      "sha256": "ef3a2644267161a59aa334560905a948b762e2d6ae5598bbdb3aae28d12442eb"
-    },
     "outputs/nu-render.log": {
-      "bytes": 3658,
-      "sha256": "36d6910db47da84a0c2159569a5daa8f03917b629c4464fe1d2062be9b6c9a3e"
-    },
-    "outputs/nu.flac": {
-      "bytes": 1577650,
-      "sha256": "16971e96ddab1dac981ef966a9d6e6519272a1f760da061fed3767629bb6da8a"
-    },
-    "outputs/nu.mp3": {
-      "bytes": 256028,
-      "sha256": "98d3a90dc00abfd38a05043bddfe06a9e2d2cf2318bf4cc7eec48ff1c5beddc2"
+      "bytes": 4217,
+      "sha256": "354bbf3317a204553fb25bd26a81c01da96d2cc3c61f36f900e82371b3e66a52"
     }
   },
   "generator": {
     "kind": "python-csoundac",
-    "runs": [
-      {
-        "argv": [
-          "python",
-          "code/nu-generate.py"
-        ],
-        "exit_code": 0,
-        "seconds": 0.028,
-        "seed": 7,
-        "started_at": "2026-11-12T20:11:57Z"
-      }
-    ],
-    "seeds": [
-      7
-    ],
+    "runs": [],
+    "seeds": [],
     "sources": [
       "code/nu-generate.py"
     ]
   },
   "history": [
     {
-      "archived_at": "2026-11-12T20:12:07Z",
+      "archived_at": "2026-11-14T14:35:47Z",
       "ordinal": 1,
-      "tree_sha256": "145c7d43c5c234bc3cbb458622b62e734ba34f87b38352f779bb2d55ac4bca56",
+      "tree_sha256": "6dd8d39e49edce628491023b860a1b4f2ec39cfad175abe69c842f3077b25a3d",
       "version": "version-0001"
     }
   ],
   "new_prompts": [
     "nu-prompt-002.md"
   ],
-  "notes": "Demonstration composition created while implementing the studio.",
   "ordinal": 2,
   "prompts": [
     "nu-prompt-001.md",
@@ -140,6 +116,26 @@
       "sample_format": "pcm",
       "sample_rate": 48000
     },
+    "browser": {
+      "channels": 2,
+      "checked": true,
+      "compiled": true,
+      "csound_version": "7.0",
+      "duration_seconds": 18,
+      "engine": {
+        "package": "@csound/browser",
+        "sha256": "c86c69291326fa3d64872f430ca9a06324a94c96db373d6bd207fdd4e5a3fc9e",
+        "version": "7.0.0"
+      },
+      "errors": [],
+      "performed": true,
+      "playable": true,
+      "realtime_factor": 64.4,
+      "runtime_errors": 0,
+      "sample_rate": 48000,
+      "seconds": 0.451,
+      "started": true
+    },
     "commands": [
       {
         "argv": [
@@ -148,7 +144,7 @@
           "nu.csd"
         ],
         "exit_code": 0,
-        "seconds": 0.023,
+        "seconds": 0.02,
         "step": "syntax-check"
       },
       {
@@ -158,61 +154,17 @@
           "-W",
           "-3",
           "-o",
-          "outputs/nu.wav",
+          "<temporary>/nu.wav",
           "nu.csd"
         ],
         "exit_code": 0,
-        "seconds": 0.176,
+        "seconds": 0.171,
         "step": "render"
-      },
-      {
-        "argv": [
-          "ffmpeg",
-          "-hide_banner",
-          "-loglevel",
-          "error",
-          "-nostdin",
-          "-y",
-          "-i",
-          "outputs/nu.wav",
-          "-c:a",
-          "flac",
-          "-compression_level",
-          "8",
-          "outputs/nu.flac"
-        ],
-        "exit_code": 0,
-        "seconds": 0.07,
-        "step": "encode-flac"
-      },
-      {
-        "argv": [
-          "ffmpeg",
-          "-hide_banner",
-          "-loglevel",
-          "error",
-          "-nostdin",
-          "-y",
-          "-i",
-          "outputs/nu.wav",
-          "-c:a",
-          "libmp3lame",
-          "-q:a",
-          "2",
-          "outputs/nu.mp3"
-        ],
-        "exit_code": 0,
-        "seconds": 0.094,
-        "step": "encode-mp3"
       }
     ],
-    "finished_at": "2026-11-12T20:11:57Z",
+    "finished_at": "2026-11-14T14:35:47Z",
     "log": "outputs/nu-render.log",
-    "outputs": [
-      "outputs/nu.flac",
-      "outputs/nu.mp3"
-    ],
-    "started_at": "2026-11-12T20:11:57Z",
+    "started_at": "2026-11-14T14:35:47Z",
     "wav_sha256": "8a60136b08cb3e3961e962b0db089c6b3de23d2db24b718b53d2f48ea035c726"
   },
   "schema": "ai-composition-studio/manifest/1",
@@ -245,8 +197,8 @@
         "passed": true
       },
       {
-        "check": "audio file written",
-        "detail": "outputs/nu.wav",
+        "check": "audio rendered",
+        "detail": "temporary file, measured and deleted",
         "passed": true
       },
       {
@@ -257,6 +209,11 @@
       {
         "check": "no clipping",
         "detail": "0 samples out of range",
+        "passed": true
+      },
+      {
+        "check": "performs in the viewer's Csound engine (@csound/browser 7.0.0)",
+        "detail": "18 s at 64.4 times real time here",
         "passed": true
       }
     ],

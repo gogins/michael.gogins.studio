@@ -19,7 +19,7 @@ from . import (
     staging,
     versioning,
 )
-from .paths import Studio, StudioError
+from .paths import Studio, StudioError, is_within
 
 EPILOG = """\
 Typical session:
@@ -27,10 +27,11 @@ Typical session:
   studio prompt "$S" --file request.txt   # save the instructions, verbatim
   ... write $S/nu.csd, or $S/code/nu-generate.py and:
   studio run "$S" -- python code/nu-generate.py
-  studio render "$S"                      # validate, render, measure, encode
+  studio render "$S"                      # validate, render, measure, check
   studio accept "$S" --model "<AI model>" # archive the old version, promote
   studio publish nu                       # copy to docs/compositions/
-See studio-tools/README.md.
+  studio serve                            # listen: the viewer performs the .csd
+No soundfiles are stored. See studio-tools/README.md.
 """
 
 
@@ -47,7 +48,7 @@ def cmd_env(studio: Studio, args: argparse.Namespace) -> int:
     if args.json:
         _out(json.dumps(info, indent=2, sort_keys=True))
     else:
-        csound, python, node, ffmpeg = info["csound"], info["python"], info["node"], info["ffmpeg"]
+        csound, python, node, browser = info["csound"], info["python"], info["node"], info["browser_csound"]
         _out(f"repository   {studio.root}")
         _out(f"platform     {info['platform']}")
         _out(f"csound       {csound.get('banner') or 'NOT FOUND'}  [{csound.get('path', '-')}]")
@@ -63,7 +64,11 @@ def cmd_env(studio: Studio, args: argparse.Namespace) -> int:
             _out(f"CsoundAC     NOT importable ({python.get('csoundac_error', 'unknown error')})")
         _out(f"node         {node.get('version', 'NOT FOUND')}; CsoundAC WASM: "
              f"{'present in ' + str(node.get('csoundac_wasm_dir')) if node.get('csoundac_wasm_present') else 'not configured (CSOUNDAC_WASM_DIR)'}")
-        _out(f"ffmpeg       {ffmpeg.get('version', 'NOT FOUND')}")
+        if browser.get("available"):
+            _out(f"viewer engine {browser.get('package') or browser.get('file')} {browser.get('version') or ''}"
+                 f"  [{environment.BROWSER_ENGINE_REL}]")
+        else:
+            _out("viewer engine NOT FOUND (renders cannot be checked for playing in the browser)")
     problems = environment.problems(require_csoundac=args.require_csoundac)
     for problem in problems:
         _note(f"problem: {problem}")
@@ -130,18 +135,52 @@ def cmd_run(studio: Studio, args: argparse.Namespace) -> int:
     return 0
 
 
+def _wav_destination(studio: Studio, text: Optional[str]) -> Optional[Path]:
+    """Where to keep a rendered WAV: anywhere except the archive and docs/."""
+    if not text:
+        return None
+    path = Path(text).expanduser().resolve()
+    for forbidden in (studio.archive, studio.docs):
+        if is_within(path, forbidden):
+            raise StudioError(
+                f"{path} is inside {studio.relative(forbidden)}/: soundfiles are not kept in the "
+                "archive or on the website. Choose a path outside them"
+            )
+    if path.is_dir():
+        raise StudioError(f"{path} is a directory; give the name of the WAV file to write")
+    return path
+
+
+def _describe_browser(record: dict) -> Optional[str]:
+    browser = record.get("browser") or {}
+    if not browser.get("checked"):
+        return None
+    engine = browser.get("engine") or {}
+    label = f"{engine.get('package') or 'Csound WebAssembly'} {engine.get('version') or ''}".strip()
+    if browser.get("playable"):
+        return (f"viewer engine ({label}): performed {browser.get('duration_seconds')} s, "
+                f"{browser.get('realtime_factor')} times faster than real time on this machine")
+    return f"viewer engine ({label}): DOES NOT PERFORM"
+
+
 def cmd_render(studio: Studio, args: argparse.Namespace) -> int:
     directory = staging.resolve(studio, args.staging)
+    wav_to = _wav_destination(studio, args.wav)
     record = render_module.render(
         directory,
-        keep_wav=args.keep_wav,
+        wav_to=wav_to,
         allow_clipping=args.allow_clipping,
         allow_silence=args.allow_silence,
+        allow_unplayable=args.allow_unplayable,
         timeout=args.timeout,
     )
     for line in audio.summary({**record["analysis"], "data_sha256": ""}):
         _out(line)
-    _out("outputs: " + ", ".join(record["outputs"]))
+    browser = _describe_browser(record)
+    if browser:
+        _out(browser)
+    _out(f"audio: measured and discarded; wrote {wav_to}" if wav_to
+         else "audio: measured and discarded (no soundfile is kept; listen in the viewer)")
     for warning in record["warnings"]:
         _note(f"warning: {warning}")
     return 0
@@ -213,7 +252,11 @@ def cmd_show(studio: Studio, args: argparse.Namespace) -> int:
     _out(f"  AI          {manifest['ai'].get('model')} / {manifest['ai'].get('agent')}")
     _out(f"  generator   {manifest['generator'].get('kind')} {manifest['generator'].get('sources')}")
     _out(f"  csound      {(manifest['environment'].get('csound') or {}).get('banner')}")
-    _out(f"  audio       {analysis.get('duration_seconds')} s, peak {analysis.get('peak_dbfs')} dBFS")
+    _out(f"  render      {analysis.get('duration_seconds')} s, peak {analysis.get('peak_dbfs')} dBFS "
+         "(measured; no soundfile is kept)")
+    browser = _describe_browser(manifest["render"])
+    if browser:
+        _out(f"  {browser}")
     _out(f"  prompts     {', '.join(manifest['prompts'])}")
     _out(f"  files       {', '.join(sorted(manifest['files']))}")
     return 0
@@ -253,8 +296,10 @@ def cmd_recover(studio: Studio, args: argparse.Namespace) -> int:
 
 
 def cmd_rerender(studio: Studio, args: argparse.Namespace) -> int:
+    wav_to = _wav_destination(studio, args.wav)
     result = render_module.rerender(
-        studio, args.name, args.version, regenerate=args.regenerate, keep=args.keep, timeout=args.timeout
+        studio, args.name, args.version, regenerate=args.regenerate, keep=args.keep,
+        wav_to=wav_to, timeout=args.timeout,
     )
     analysis = result["analysis"]
     _out(f"{args.name} {result['version']}: rendered {analysis['duration_seconds']} s, "
@@ -263,6 +308,8 @@ def cmd_rerender(studio: Studio, args: argparse.Namespace) -> int:
         _out(f"  generator: {result['regenerated']}")
     if result["stored_csound"] != result["csound"]:
         _out(f"  note: stored render used {result['stored_csound']}; this is {result['csound']}")
+    if result.get("wav"):
+        _out(f"  wrote {result['wav']}")
     if result.get("scratch"):
         _out(f"  kept in {result['scratch']}")
     return 0
@@ -391,9 +438,12 @@ def build_parser() -> argparse.ArgumentParser:
 
     p = add("render", cmd_render, "validate and render the staged .csd with Csound")
     p.add_argument("staging")
-    p.add_argument("--keep-wav", action="store_true", help="keep the WAV beside the FLAC master")
+    p.add_argument("--wav", metavar="FILE",
+                   help="also keep the rendered WAV in FILE, outside the archive and docs/")
     p.add_argument("--allow-clipping", action="store_true")
     p.add_argument("--allow-silence", action="store_true")
+    p.add_argument("--allow-unplayable", action="store_true",
+                   help="keep a piece that does not perform in the viewer's Csound engine")
     p.add_argument("--timeout", type=int, default=3600, help="seconds (default 3600)")
 
     p = add("accept", cmd_accept, "archive the current version and promote the staged one")
@@ -425,10 +475,12 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--rollback", action="store_true", help="undo instead of completing")
     p.add_argument("--break-lock", action="store_true", help="take over a lock left by another machine")
 
-    p = add("rerender", cmd_rerender, "render a stored version again and compare with the stored audio")
+    p = add("rerender", cmd_rerender, "render a stored version again and compare with the recorded render")
     p.add_argument("name")
     p.add_argument("--version", type=_version_number, dest="version")
     p.add_argument("--regenerate", action="store_true", help="also re-run the recorded generator commands")
+    p.add_argument("--wav", metavar="FILE",
+                   help="keep the rendered WAV in FILE, outside the archive and docs/")
     p.add_argument("--keep", action="store_true", help="keep the scratch directory")
     p.add_argument("--timeout", type=int, default=3600)
 
@@ -451,7 +503,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     add("catalog", cmd_catalog, "regenerate docs/compositions/catalog.json")
 
-    p = add("serve", cmd_serve, "serve docs/ locally to try the viewer")
+    p = add("serve", cmd_serve, "serve docs/ locally: the viewer, which performs the published .csd files")
     p.add_argument("--host", default="127.0.0.1", help="use 0.0.0.0 to reach it from a phone on the LAN")
     p.add_argument("--port", type=int, default=8000)
     return parser

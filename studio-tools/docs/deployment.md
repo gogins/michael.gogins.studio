@@ -43,18 +43,17 @@ studio-tools/bin/studio serve      # http://127.0.0.1:8000/studio/
    settings, which the studio does not make.
 2. **What becomes public.** Merging to `master` publishes everything under
    `docs/compositions/` on the branch: at present the three demonstration
-   versions of `nu` (`.csd`, prompts, generating program, manifest and
-   MP3; 17 files, about 0.9 MB). Withdraw anything first with
-   `studio unpublish`. The archive under `music/ai-compositions/` is not
-   served by GitHub Pages, but it is in the repository, and the repository
-   is public on GitHub; "unpublished" means not on the website, not secret.
-3. **Audio in Git.** Every version adds a FLAC master and an MP3 to the
-   repository, permanently. The demonstration's three versions are 6.1 MB
-   in the archive. A ten-minute piece is roughly 60 MB of FLAC per
-   version, and GitHub rejects single files of 100 MB. Options: keep
-   pieces and version counts modest; keep only MP3s in Git and masters
-   elsewhere; or use Git LFS. The tools warn above 20 MB and refuse above
-   95 MB per file unless told otherwise.
+   versions of `nu` (`.csd`, prompts, generating program and manifest; no
+   soundfiles). Withdraw anything first with `studio unpublish`. The
+   archive under `music/ai-compositions/` is not served by GitHub Pages,
+   but it is in the repository, and the repository is public on GitHub;
+   "unpublished" means not on the website, not secret.
+3. **No soundfiles in Git.** Versions are heard by performing their `.csd`
+   in the viewer with `@csound/browser`, locally or on the site. The
+   archive and `docs/compositions/` refuse soundfiles. A temporary WAV
+   can be written outside them with `studio render --wav` or
+   `studio rerender --wav`. The tools still warn about any other file
+   above 20 MB and refuse above 95 MB per file unless told otherwise.
 4. **The demonstration.** `nu` and its prompts were written by the
    implementing agent to exercise the studio; the prompt files say so.
    Keep it as an example, or remove it before merging:

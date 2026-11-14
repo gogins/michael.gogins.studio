@@ -6,7 +6,7 @@ import subprocess
 import threading
 import unittest
 
-from support import TOOLS, StudioTestCase, csd_text
+from support import TOOLS, StudioTestCase, csd_text, soundfiles
 
 from studio import serve
 
@@ -38,7 +38,12 @@ class CommandLineTests(StudioTestCase):
         with open(os.path.join(staging, "nu.csd"), "w") as handle:
             handle.write(csd_text())
         self.cli("accept", staging, expect=1)  # not rendered yet
-        self.cli("render", staging)
+        # A rendering may be kept, but never inside the archive or the website.
+        for inside in (self.studio.archive / "nu.wav", self.comp() / "outputs" / "nu.wav",
+                       self.studio.docs / "compositions" / "nu" / "nu.wav"):
+            self.cli("render", staging, "--wav", str(inside), expect=1)
+        self.assertIn("no soundfile is kept", self.cli("render", staging))
+        self.assertEqual(soundfiles(self.tmp), [])
         self.assertIn("created", self.cli("accept", staging, "--model", "model-x", "--agent", "agent-y"))
         self.assertFalse(os.path.exists(staging))
 
@@ -70,8 +75,16 @@ class CommandLineTests(StudioTestCase):
         self.assertIn("identical", self.cli("rerender", "nu", "--version", "1"))
         output = self.cli("rerender", "nu", "--version", "2", "--regenerate")
         self.assertIn("identical .csd", output)
-        self.assertIn("identical to the stored render", output)
+        self.assertIn("identical to the render recorded in the manifest", output)
         self.assertIn("identical .csd", self.cli("rerender", "nu", "--regenerate"))
+        self.assertIn("no soundfile is kept", self.cli("show", "nu"))
+
+        # A soundfile of any version, written outside the repository on request.
+        self.cli("rerender", "nu", "--version", "1", "--wav", str(self.comp() / "nu.wav"), expect=1)
+        kept = self.tmp / "masters" / "nu-1.wav"
+        self.assertIn(str(kept), self.cli("rerender", "nu", "--version", "1", "--wav", str(kept)))
+        self.assertEqual(soundfiles(self.tmp), ["masters/nu-1.wav"])
+        self.assertEqual(soundfiles(self.root), [])
 
         # Publication.
         self.assertIn("nothing written", self.cli("publish", "nu", "--dry-run"))
@@ -82,11 +95,13 @@ class CommandLineTests(StudioTestCase):
         self.make_version(marker="FREQ=550", prompt="Two.")
         self.cli("publish", "nu", "--dry-run")
         self.assertFalse(self.studio.published.exists())
-        self.assertIn("9 copy", self.cli("publish", "nu"))
-        self.assertIn("9 skip", self.cli("publish", "nu"))
+        self.assertIn("7 copy", self.cli("publish", "nu"))
+        self.assertIn("7 skip", self.cli("publish", "nu"))
         self.assertIn("unchanged", self.cli("catalog"))
-        self.assertIn("removed 4", self.cli("unpublish", "nu", "--versions", "1"))
-        self.assertIn("5 skip", self.cli("publish", "nu", "--versions", "current"))
+        self.assertIn("removed 3", self.cli("unpublish", "nu", "--versions", "1"))
+        self.assertIn("4 skip", self.cli("publish", "nu", "--versions", "current"))
+        self.cli("publish", "nu", "--kinds", "audio", expect=1)
+        self.assertEqual(soundfiles(self.root), [])
 
     def test_errors_exit_with_status_one(self):
         self.cli("stage", "missing", expect=1)
@@ -126,7 +141,7 @@ class ServerTests(StudioTestCase):
         self.docs = self.root / "docs"
         (self.docs / "compositions").mkdir(parents=True)
         self.payload = bytes(range(256)) * 40
-        (self.docs / "compositions" / "audio.mp3").write_bytes(self.payload)
+        (self.docs / "compositions" / "score.pdf").write_bytes(self.payload)
         (self.docs / "compositions" / "catalog.json").write_text('{"compositions": []}')
         (self.docs / "compositions" / "nu.csd").write_text("<CsoundSynthesizer>")
         (self.root / "secret.txt").write_text("outside docs")
@@ -153,27 +168,27 @@ class ServerTests(StudioTestCase):
         self.assertEqual((response.status, body), (200, b'{"compositions": []}'))
         self.assertEqual(response.getheader("Content-Type"), "application/json")
         self.assertEqual(response.getheader("Accept-Ranges"), "bytes")
-        response, body = self.get("/compositions/audio.mp3")
+        response, body = self.get("/compositions/score.pdf")
         self.assertEqual((response.status, body), (200, self.payload))
-        self.assertEqual(response.getheader("Content-Type"), "audio/mpeg")
+        self.assertEqual(response.getheader("Content-Type"), "application/pdf")
         response, _ = self.get("/compositions/nu.csd")
         self.assertTrue(response.getheader("Content-Type").startswith("text/plain"))
 
-    def test_byte_ranges_for_seeking(self):
+    def test_byte_ranges(self):
         size = len(self.payload)
         for header, start, end in (("bytes=100-199", 100, 199), ("bytes=5000-", 5000, size - 1),
                                    ("bytes=-300", size - 300, size - 1), ("bytes=0-0", 0, 0),
                                    (f"bytes=10-{size + 500}", 10, size - 1)):
-            response, body = self.get("/compositions/audio.mp3", {"Range": header})
+            response, body = self.get("/compositions/score.pdf", {"Range": header})
             self.assertEqual(response.status, 206, header)
             self.assertEqual(body, self.payload[start:end + 1], header)
             self.assertEqual(response.getheader("Content-Range"), f"bytes {start}-{end}/{size}")
-        response, _ = self.get("/compositions/audio.mp3", {"Range": f"bytes={size + 10}-"})
+        response, _ = self.get("/compositions/score.pdf", {"Range": f"bytes={size + 10}-"})
         self.assertEqual(response.status, 416)
 
     def test_missing_files_and_escapes(self):
-        self.assertEqual(self.get("/compositions/none.mp3")[0].status, 404)
-        self.assertEqual(self.get("/compositions/none.mp3", {"Range": "bytes=0-10"})[0].status, 404)
+        self.assertEqual(self.get("/compositions/none.pdf")[0].status, 404)
+        self.assertEqual(self.get("/compositions/none.pdf", {"Range": "bytes=0-10"})[0].status, 404)
         for path in ("/../secret.txt", "/compositions/../../secret.txt", "/%2e%2e/secret.txt"):
             response, body = self.get(path)
             self.assertNotIn(b"outside docs", body, path)

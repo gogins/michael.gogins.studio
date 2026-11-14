@@ -79,7 +79,7 @@ relative, so they work under any site address and from `studio serve`.
 | `paths.py` | The four authorized directories; refusal of path traversal, absolute paths, hidden segments and symbolic links. |
 | `naming.py` | Composition, file and version names; classification of files by kind. |
 | `fsutil.py` | Hashing, atomic writes, copying, read-only archival. |
-| `environment.py` | Discovery of Csound, ffmpeg, Python with CsoundAC, Node.js; versions for the manifest. |
+| `environment.py` | Discovery of Csound, `@csound/browser`, Python with CsoundAC, Node.js; versions for the manifest. |
 | `staging.py` | Staging areas, verbatim prompts, recorded generator runs, adoption of revisions from another branch. |
 | `render.py` | Validation, rendering with Csound, log scanning, encoding, re-rendering of stored versions. |
 | `audio.py` | Measurement of WAV files: duration, peak, RMS, clipping, a hash of the samples. |

@@ -1,20 +1,26 @@
-"""Validation and rendering of a staged composition with native Csound.
+"""Validation and rendering of a staged composition.
 
     1. structural check of the .csd
     2. csound --syntax-check-only
-    3. csound render to a 24-bit WAV
+    3. csound render to a temporary 24-bit WAV, outside the repository
     4. scan of the Csound log for run-time errors
     5. measurement of the audio (silence, clipping, levels)
-    6. FLAC master and MP3 listening copy via ffmpeg
+    6. a performance in the viewer's Csound engine (WebAssembly, under Node)
 
-Everything happens inside the staging directory; the result is recorded in
-.render.json there. A failed render leaves the current composition alone.
+No soundfile is kept: the temporary WAV is measured and deleted (or, on
+request, copied to a path outside the archive). What a version sounds like
+is defined by its .csd; the manifest records the measurements and the hash
+of the rendered samples. The result is recorded in .render.json in the
+staging directory. A failed render leaves the current composition alone.
 """
 from __future__ import annotations
 
+import json
 import os
 import re
+import shutil
 import subprocess
+import tempfile
 import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -28,6 +34,9 @@ _ERRORS_LINE = re.compile(r"^\s*(\d+) errors in performance", re.MULTILINE)
 _RUNTIME_ERRORS = re.compile(r"^.*\b(INIT ERROR|PERF ERROR)\b.*$", re.MULTILINE)
 _OUT_OF_RANGE = re.compile(r"samples out of range:((?:[ \t]+\d+)+)")
 _REALTIME_OUTPUT = re.compile(r"(?:^|\s)(?:-o\s*|--output=)(dac\S*)", re.MULTILINE)
+_FILE_OUTPUT = re.compile(r"(?:^|\s)(?:-o\s*|--output=)(?!dac)\S+", re.MULTILINE)
+#: How the temporary render directory is shown in logs and manifests.
+TEMPORARY = "<temporary>"
 
 
 class RenderError(StudioError):
@@ -94,16 +103,82 @@ def samples_out_of_range(log_text: str) -> int:
     return total
 
 
+def _display_argv(argv: List[str], scratch: Optional[Path]) -> List[str]:
+    """A command as recorded: no home directory, no temporary directory."""
+    shown = []
+    for arg in argv:
+        if scratch is not None:
+            arg = arg.replace(str(scratch), TEMPORARY)
+        shown.append(fsutil.scrub_home(arg))
+    shown[0] = Path(argv[0]).name
+    return shown
+
+
+def browser_check(csd: Path, timeout: int = 3600) -> Dict[str, Any]:
+    """Perform a .csd in the viewer's Csound engine (WebAssembly, under Node).
+
+    Returns a record with ``checked``; when the check ran, also ``playable``
+    and what the engine reported.
+    """
+    if os.environ.get("STUDIO_CSOUND_WASM", "").lower() == "none":
+        return {"checked": False, "reason": "disabled (STUDIO_CSOUND_WASM=none)", "silent": True}
+    engine = environment.browser_engine_path()
+    if not engine:
+        return {"checked": False, "reason": "the viewer's Csound engine is not installed "
+                f"({environment.BROWSER_ENGINE_REL})"}
+    node = environment.find_tool("STUDIO_NODE", "node")
+    if not node:
+        return {"checked": False, "reason": "node was not found"}
+    info = environment.browser_engine_info()
+    record: Dict[str, Any] = {
+        "checked": True,
+        "engine": {key: info.get(key) for key in ("package", "version", "sha256")},
+    }
+    code, output, seconds = _execute(
+        [node, str(environment.BROWSER_CHECK_SCRIPT), str(engine), str(csd), str(timeout)],
+        csd.parent, timeout + 60,
+    )
+    record["seconds"] = seconds
+    result = None
+    for line in output.splitlines():
+        if line.startswith("STUDIO-BROWSER-CHECK "):
+            try:
+                result = json.loads(line[len("STUDIO-BROWSER-CHECK "):])
+            except ValueError:
+                result = None
+    if not isinstance(result, dict):
+        tail = " | ".join(output.strip().splitlines()[-3:])
+        return {"checked": False, "reason": f"the check did not run (exit {code}): {tail[:300]}"}
+    if result.get("engine_error"):
+        return {"checked": False, "reason": f"the engine could not be loaded: {result['engine_error']}"}
+    for key in ("csound_version", "commit", "compiled", "started", "performed", "timed_out",
+                "duration_seconds", "sample_rate", "channels", "realtime_factor", "runtime_errors"):
+        if result.get(key) is not None:
+            record[key] = result[key]
+    record["errors"] = result.get("errors") or []
+    record["playable"] = bool(
+        result.get("compiled") and result.get("started") and result.get("performed")
+        and not result.get("runtime_errors")
+    )
+    record["messages_tail"] = result.get("messages_tail") or []
+    return record
+
+
 def render(
     staging_dir: Path,
     *,
-    keep_wav: bool = False,
+    wav_to: Optional[Path] = None,
     allow_clipping: bool = False,
     allow_silence: bool = False,
+    allow_unplayable: bool = False,
+    check_browser: bool = True,
     timeout: int = 3600,
-    encode: bool = True,
 ) -> Dict[str, Any]:
     """Validate and render the staged .csd; returns the render record.
+
+    The audio is rendered to a temporary file, measured and deleted. With
+    ``wav_to`` the rendered WAV is also copied to that path, which the
+    caller must have checked to be outside the archive.
 
     Raises RenderError on any failure, after writing the record (status
     "failed") and the log, so that the problem can be diagnosed and fixed.
@@ -111,16 +186,34 @@ def render(
     staging_dir = Path(staging_dir)
     meta = staging.load_meta(staging_dir)
     name = meta["composition"]
+    scratch = Path(tempfile.mkdtemp(prefix="studio-render-")).resolve()
+    try:
+        return _render(
+            staging_dir, name, scratch, wav_to=wav_to, allow_clipping=allow_clipping,
+            allow_silence=allow_silence, allow_unplayable=allow_unplayable,
+            check_browser=check_browser, timeout=timeout,
+        )
+    finally:
+        shutil.rmtree(scratch, ignore_errors=True)
+
+
+def _render(
+    staging_dir: Path,
+    name: str,
+    scratch: Path,
+    *,
+    wav_to: Optional[Path],
+    allow_clipping: bool,
+    allow_silence: bool,
+    allow_unplayable: bool,
+    check_browser: bool,
+    timeout: int,
+) -> Dict[str, Any]:
     csd = staging_dir / naming.csd_name(name)
     outputs = safe_join(staging_dir, naming.OUTPUTS_DIR)
     outputs.mkdir(exist_ok=True)
     log_path = outputs / f"{name}-render.log"
-    wav_rel = f"{naming.OUTPUTS_DIR}/{name}.wav"
-    flac_rel = f"{naming.OUTPUTS_DIR}/{name}.flac"
-    mp3_rel = f"{naming.OUTPUTS_DIR}/{name}.mp3"
-    for rel in (wav_rel, flac_rel, mp3_rel):
-        if (staging_dir / rel).exists():
-            (staging_dir / rel).unlink()
+    wav = scratch / f"{name}.wav"
 
     record: Dict[str, Any] = {
         "status": "failed",
@@ -128,7 +221,6 @@ def render(
         "commands": [],
         "checks": [],
         "warnings": [],
-        "outputs": [],
         "log": f"{naming.OUTPUTS_DIR}/{log_path.name}",
     }
     log_parts: List[str] = [f"Render of {name} started {record['started_at']}\n"]
@@ -136,17 +228,20 @@ def render(
     def check(label: str, passed: bool, detail: str = "") -> None:
         record["checks"].append({"check": label, "passed": passed, "detail": detail})
 
+    def write_log() -> None:
+        text = "".join(log_parts).replace(str(scratch), TEMPORARY)
+        fsutil.atomic_write_text(log_path, _trim(fsutil.scrub_home(text) or ""))
+
     def fail(message: str) -> None:
         record["error"] = message
         record["finished_at"] = fsutil.utc_now()
-        fsutil.atomic_write_text(log_path, _trim(fsutil.scrub_home("".join(log_parts)) or ""))
+        write_log()
         fsutil.atomic_write_json(staging_dir / staging.RENDER_META, record)
         raise RenderError(f"{message}\n(log: {log_path})")
 
     def run(argv: List[str], label: str, limit: int) -> Tuple[Optional[int], str]:
         code, output, seconds = _execute(argv, staging_dir, limit)
-        shown = [fsutil.scrub_home(arg) for arg in argv]
-        shown[0] = Path(argv[0]).name
+        shown = _display_argv(argv, scratch)
         record["commands"].append({"step": label, "argv": shown, "exit_code": code, "seconds": seconds})
         log_parts.append(f"\n$ {' '.join(shown)}\n{output}\n[exit {code}; {seconds} s]\n")
         return code, output
@@ -171,9 +266,10 @@ def render(
     if structure:
         fail("the .csd is not a complete Csound file: " + "; ".join(structure))
     options = csd_text.split("<CsOptions>", 1)[1].split("</CsOptions>", 1)[0] if "<CsOptions>" in csd_text else ""
-    if _REALTIME_OUTPUT.search(options):
+    if _FILE_OUTPUT.search(options) or _REALTIME_OUTPUT.search(options):
         record["warnings"].append(
-            "<CsOptions> selects real-time output; the studio overrides it with -o on the command line"
+            "<CsOptions> names an audio output; it is ignored: the studio renders to a temporary "
+            "file and the viewer plays in real time. Leave the output out of <CsOptions>"
         )
 
     # 2. Syntax check.
@@ -186,9 +282,8 @@ def render(
         tail = "\n".join(output.strip().splitlines()[-25:])
         fail(f"Csound syntax check failed (exit {code}):\n{tail}")
 
-    # 3. Render.
-    code, output = run([csound, "-d", "-W", "-3", "-o", wav_rel, csd.name], "render", timeout)
-    wav = staging_dir / wav_rel
+    # 3. Render, to a temporary file outside the repository.
+    code, output = run([csound, "-d", "-W", "-3", "-o", str(wav), csd.name], "render", timeout)
     check("csound render", code == 0, "" if code == 0 else f"exit {code}")
     if code != 0:
         tail = "\n".join(output.strip().splitlines()[-25:])
@@ -200,9 +295,9 @@ def render(
     if runtime:
         fail("Csound reported run-time errors: " + "; ".join(runtime))
     if not wav.is_file() or wav.stat().st_size < 64:
-        check("audio file written", False)
-        fail("Csound finished but wrote no audio file")
-    check("audio file written", True, wav_rel)
+        check("audio rendered", False)
+        fail("Csound finished but rendered no audio")
+    check("audio rendered", True, "temporary file, measured and deleted")
 
     # 5. Measure the audio.
     try:
@@ -231,39 +326,69 @@ def render(
     if overs:
         record["warnings"].append(f"{overs} samples out of range (accepted with --allow-clipping)")
 
-    # 6. Encode the master and the listening copy.
-    ffmpeg = environment.find_tool("STUDIO_FFMPEG", "ffmpeg") if encode else None
-    made_flac = made_mp3 = False
-    if ffmpeg:
-        base = [ffmpeg, "-hide_banner", "-loglevel", "error", "-nostdin", "-y", "-i", wav_rel]
-        code, _ = run(base + ["-c:a", "flac", "-compression_level", "8", flac_rel], "encode-flac", timeout)
-        made_flac = code == 0 and (staging_dir / flac_rel).is_file()
-        code, _ = run(base + ["-c:a", "libmp3lame", "-q:a", "2", mp3_rel], "encode-mp3", timeout)
-        made_mp3 = code == 0 and (staging_dir / mp3_rel).is_file()
-        if not made_flac:
-            record["warnings"].append("FLAC encoding failed; the WAV file is kept as the master")
-            (staging_dir / flac_rel).unlink(missing_ok=True)
-        if not made_mp3:
-            record["warnings"].append("MP3 encoding failed; there is no compressed listening copy")
-            (staging_dir / mp3_rel).unlink(missing_ok=True)
-    else:
-        record["warnings"].append(
-            "ffmpeg not available: the WAV file is kept as the master and there is no MP3 listening copy"
-        )
-    if made_flac and not keep_wav:
-        wav.unlink()
+    # 6. The viewer's engine: the piece is heard by performing the .csd there.
+    if check_browser:
+        browser = browser_check(csd, timeout)
+        silent_skip = browser.pop("silent", False)
+        tail = browser.pop("messages_tail", [])
+        record["browser"] = browser
+        if browser["checked"]:
+            engine = browser["engine"]
+            label = f"{engine.get('package') or 'Csound WebAssembly'} {engine.get('version') or ''}".strip()
+            log_parts.append(
+                f"\nBrowser engine ({label}): "
+                + json.dumps({k: v for k, v in browser.items() if k != "engine"}, sort_keys=True)
+                + "\n" + "\n".join(tail) + "\n"
+            )
+            detail = "; ".join(browser["errors"][:2]) if not browser["playable"] else (
+                f"{browser.get('duration_seconds')} s at {browser.get('realtime_factor')} times real time here"
+            )
+            check(f"performs in the viewer's Csound engine ({label})", browser["playable"], detail)
+            if not browser["playable"]:
+                reason = (
+                    "; ".join(browser["errors"][:3])
+                    or ("it did not finish within the time limit" if browser.get("timed_out") else "")
+                    or "no error message was given"
+                )
+                message = (
+                    f"the piece does not perform in the viewer's Csound engine ({label}): {reason}. "
+                    "The viewer is how a version is heard, so use only what that engine provides"
+                )
+                if not allow_unplayable:
+                    fail(message + " (or pass --allow-unplayable to keep a piece that cannot be heard there)")
+                record["warnings"].append(message + " (accepted with --allow-unplayable)")
+            else:
+                duration = browser.get("duration_seconds")
+                if duration is not None and abs(duration - analysis["duration_seconds"]) > 0.5:
+                    record["warnings"].append(
+                        f"the viewer's engine performed {duration} s but native Csound rendered "
+                        f"{analysis['duration_seconds']} s"
+                    )
+                factor = browser.get("realtime_factor")
+                if factor is not None and factor < 2.0:
+                    record["warnings"].append(
+                        f"in WebAssembly this machine performs the piece only {factor} times faster than "
+                        "real time; it may not keep up in a browser, especially on a phone"
+                    )
+        elif not silent_skip:
+            record["warnings"].append(
+                f"not checked in the viewer's Csound engine: {browser['reason']}"
+            )
 
-    record["outputs"] = sorted(
-        rel
-        for rel in fsutil.list_files(staging_dir)
-        if (naming.classify(name, rel) or {}).get("kind") in ("audio", "master")
-    )
+    # Keep a copy of the audio only where the caller asked for one.
+    if wav_to is not None:
+        wav_to = Path(wav_to)
+        wav_to.parent.mkdir(parents=True, exist_ok=True)
+        partial = wav_to.with_name(wav_to.name + ".partial")
+        shutil.copyfile(wav, partial)
+        os.replace(partial, wav_to)
+
     record["status"] = "ok"
     record["finished_at"] = fsutil.utc_now()
     log_parts.append(f"\nRender finished {record['finished_at']}: ok\n")
     for warning in record["warnings"]:
         log_parts.append(f"warning: {warning}\n")
-    fsutil.atomic_write_text(log_path, _trim(fsutil.scrub_home("".join(log_parts)) or ""))
+    write_log()
     fsutil.atomic_write_json(staging_dir / staging.RENDER_META, record)
     return record
 
@@ -275,13 +400,16 @@ def rerender(
     *,
     regenerate: bool = False,
     keep: bool = False,
+    wav_to: Optional[Path] = None,
     timeout: int = 3600,
 ) -> Dict[str, Any]:
     """Render a stored version again, in a scratch area, and compare.
 
     The stored version is only read. With ``regenerate`` the recorded
     generator commands are run first and the regenerated .csd is compared
-    with the stored one.
+    with the stored one. The rendered samples are compared, by hash, with
+    those of the render recorded in the manifest. With ``wav_to`` the
+    rendered WAV is copied to that path.
     """
     from . import manifest as manifest_module
     from . import versioning
@@ -330,14 +458,15 @@ def rerender(
                 result["regenerated"] = (
                     "identical .csd" if fsutil.sha256_file(regenerated) == stored else "different .csd"
                 )
-        record = render(scratch, keep_wav=True, allow_clipping=True, allow_silence=True,
-                        timeout=timeout, encode=False)
+        record = render(scratch, wav_to=wav_to, allow_clipping=True, allow_silence=True,
+                        check_browser=False, timeout=timeout)
         result["analysis"] = record["analysis"]
+        result["wav"] = str(wav_to) if wav_to is not None else None
         stored_hash = manifest["render"].get("wav_sha256")
         result["audio"] = (
-            "identical to the stored render"
+            "identical to the render recorded in the manifest"
             if stored_hash and stored_hash == record["wav_sha256"]
-            else "differs from the stored render"
+            else "differs from the render recorded in the manifest"
         )
         result["stored_csound"] = (manifest["environment"].get("csound") or {}).get("banner")
         result["csound"] = environment.csound_info().get("banner")

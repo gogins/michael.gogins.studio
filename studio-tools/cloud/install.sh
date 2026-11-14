@@ -4,7 +4,7 @@
 #
 #   Csound 7 (from source), CsoundAC with its Python bindings (from source),
 #   the CsoundAC WebAssembly build (from a csound-wasm release), Node.js,
-#   ffmpeg, and a C++ toolchain.
+#   Node.js, and a C++ toolchain.
 #
 # STATUS: this script has NOT been run on Linux. It was written on macOS,
 # where neither Docker nor a Cloud Agent was available, from the recipes that
@@ -85,7 +85,7 @@ step_packages() {
     export DEBIAN_FRONTEND=noninteractive
     as_root apt-get update
     # The list of the CsoundAC Linux build, plus what the studio itself uses:
-    # ffmpeg (FLAC and MP3), Node.js (JavaScript generators), unzip and curl
+    # Node.js (JavaScript generators and the viewer-engine check), unzip and curl
     # (the WebAssembly release), libsamplerate and gettext (csound/BUILD.md).
     as_root apt-get install -y --no-install-recommends \
         git ca-certificates curl unzip \
@@ -97,7 +97,7 @@ step_packages() {
         libasound2-dev libjack-jackd2-dev libpulse-dev portaudio19-dev libportaudio2 \
         liblo-dev libffi-dev libcurl4-openssl-dev \
         doxygen graphviz \
-        ffmpeg nodejs
+        nodejs
 }
 
 step_csound() {

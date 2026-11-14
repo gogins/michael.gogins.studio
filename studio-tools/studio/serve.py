@@ -2,8 +2,11 @@
 
 Serves the repository's docs/ directory as GitHub Pages would lay it out,
 so the viewer is at /studio/ and the published files at /compositions/.
-It supports HTTP Range requests, which browsers need for seeking in audio.
-It serves files exactly as they are: Jekyll processing is not emulated.
+The viewer performs the published .csd files itself, with Csound for
+WebAssembly, so what is served is text and the viewer's own files; there
+are no soundfiles. HTTP Range requests are supported (for large files such
+as PDF scores). Files are served exactly as they are: Jekyll processing is
+not emulated.
 """
 from __future__ import annotations
 
@@ -25,11 +28,6 @@ _TYPES = {
     ".py": "text/plain; charset=utf-8",
     ".cpp": "text/plain; charset=utf-8",
     ".log": "text/plain; charset=utf-8",
-    ".mp3": "audio/mpeg",
-    ".flac": "audio/flac",
-    ".wav": "audio/wav",
-    ".opus": "audio/ogg",
-    ".ogg": "audio/ogg",
     ".mid": "audio/midi",
     ".musicxml": "application/vnd.recordare.musicxml+xml",
 }

@@ -1,6 +1,6 @@
 # nu - prompt 003
 
-<!-- recorded: 2026-11-12T20:12:08Z; source: agent -->
+<!-- recorded: 2026-11-14T14:35:48Z; source: agent -->
 
 Demonstration prompt, written by the implementing agent (Claude) to exercise the studio; it is not a prompt from Michael Gogins.
 

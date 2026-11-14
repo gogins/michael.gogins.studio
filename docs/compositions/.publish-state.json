@@ -7,22 +7,22 @@
     },
     "nu/nu-manifest.json": {
       "kind": "manifest",
-      "sha256": "d6a5a13260288851f3e9a39c16ad9bfb7dd5bea2fa0786eb76da35803786eb06",
+      "sha256": "2d080ab5e014807c4d8291ee5ba83b6122185949f2e2dd9085f170078eb72980",
       "source": "music/ai-compositions/nu/nu-manifest.json"
     },
     "nu/nu-prompt-001.md": {
       "kind": "prompts",
-      "sha256": "3f611e71f2648528027bbe2d3b376ebb4a9f1f537626f17fb5f3c67e31943e77",
+      "sha256": "9541e095bf039cc2a82a02f4d3b80b4f3a218fc4288c83a2b3caf97d8d903054",
       "source": "music/ai-compositions/nu/nu-prompt-001.md"
     },
     "nu/nu-prompt-002.md": {
       "kind": "prompts",
-      "sha256": "5c5273f69ec837bdc84a957e5d84992cc71da06bc659dab82ec446901be92967",
+      "sha256": "ca4c3922c0f22aba2f7b10c6a4b4959091a87b1ce1c93298fadc71ef3511c53d",
       "source": "music/ai-compositions/nu/nu-prompt-002.md"
     },
     "nu/nu-prompt-003.md": {
       "kind": "prompts",
-      "sha256": "70921141ba13af23f9c5b36510ff981fb186c1aa2a476cd377248877ac3d7be3",
+      "sha256": "579fed5dd7813a1355e62921e84f5060c802790fc7a20bfa0c6e7940e2fcbff4",
       "source": "music/ai-compositions/nu/nu-prompt-003.md"
     },
     "nu/nu.csd": {
@@ -30,30 +30,20 @@
       "sha256": "30fe0eb239ab7ae828dbfae40a7667ddd107ef66e0322d338df7d403f7ec49bb",
       "source": "music/ai-compositions/nu/nu.csd"
     },
-    "nu/outputs/nu.mp3": {
-      "kind": "audio",
-      "sha256": "5edaede947ab0513dc420291ffe3832ba3b2e70d54f6ba18037e74e5bc38f6f7",
-      "source": "music/ai-compositions/nu/outputs/nu.mp3"
-    },
     "nu/version-0001/nu-manifest.json": {
       "kind": "manifest",
-      "sha256": "1015d086400a2a185c47e28f297a37001ff5c24ce6c5fe067565899e8cf6ece6",
+      "sha256": "8f498a39bdd8404907dff49663b00a59e71c45cc73a810a6e00cb01653cb8705",
       "source": "music/ai-compositions/nu/version-0001/nu-manifest.json"
     },
     "nu/version-0001/nu-prompt-001.md": {
       "kind": "prompts",
-      "sha256": "3f611e71f2648528027bbe2d3b376ebb4a9f1f537626f17fb5f3c67e31943e77",
+      "sha256": "9541e095bf039cc2a82a02f4d3b80b4f3a218fc4288c83a2b3caf97d8d903054",
       "source": "music/ai-compositions/nu/version-0001/nu-prompt-001.md"
     },
     "nu/version-0001/nu.csd": {
       "kind": "csd",
       "sha256": "26db34a31d95053210a736bec8a9def894fe68f66995add77ad9158d186a278f",
       "source": "music/ai-compositions/nu/version-0001/nu.csd"
-    },
-    "nu/version-0001/outputs/nu.mp3": {
-      "kind": "audio",
-      "sha256": "90bc4523c9ef5c6df08a17bf4f74448ff145fc9e4f4fc20952d8207a734f2f6b",
-      "source": "music/ai-compositions/nu/version-0001/outputs/nu.mp3"
     },
     "nu/version-0002/code/nu-generate.py": {
       "kind": "code",
@@ -62,28 +52,23 @@
     },
     "nu/version-0002/nu-manifest.json": {
       "kind": "manifest",
-      "sha256": "abe43294aff69b0f1cdaf6d15a8d864fb907a66605c405f270b6410f56ff6241",
+      "sha256": "77c02d79b98c9b780d24e7096bb6a3f657442755fa43a3ed4d2d1f022549804d",
       "source": "music/ai-compositions/nu/version-0002/nu-manifest.json"
     },
     "nu/version-0002/nu-prompt-001.md": {
       "kind": "prompts",
-      "sha256": "3f611e71f2648528027bbe2d3b376ebb4a9f1f537626f17fb5f3c67e31943e77",
+      "sha256": "9541e095bf039cc2a82a02f4d3b80b4f3a218fc4288c83a2b3caf97d8d903054",
       "source": "music/ai-compositions/nu/version-0002/nu-prompt-001.md"
     },
     "nu/version-0002/nu-prompt-002.md": {
       "kind": "prompts",
-      "sha256": "5c5273f69ec837bdc84a957e5d84992cc71da06bc659dab82ec446901be92967",
+      "sha256": "ca4c3922c0f22aba2f7b10c6a4b4959091a87b1ce1c93298fadc71ef3511c53d",
       "source": "music/ai-compositions/nu/version-0002/nu-prompt-002.md"
     },
     "nu/version-0002/nu.csd": {
       "kind": "csd",
       "sha256": "064a267fd7086392cef442b542ddf1a0ffcd53e9efeb64b82d0d82c8ccd65e6a",
       "source": "music/ai-compositions/nu/version-0002/nu.csd"
-    },
-    "nu/version-0002/outputs/nu.mp3": {
-      "kind": "audio",
-      "sha256": "98d3a90dc00abfd38a05043bddfe06a9e2d2cf2318bf4cc7eec48ff1c5beddc2",
-      "source": "music/ai-compositions/nu/version-0002/outputs/nu.mp3"
     }
   },
   "schema": "ai-composition-studio/publish-state/1"

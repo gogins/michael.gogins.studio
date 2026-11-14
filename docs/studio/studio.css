@@ -129,18 +129,46 @@ button:not(:disabled) { cursor: pointer; }
 .card-name { font-family: var(--mono); font-size: 0.85rem; color: var(--muted); }
 .card-details { color: var(--muted); font-size: 0.9rem; }
 
-/* Version selection and audio */
+/* Version selection and the player */
 
 .version-bar { display: flex; gap: 0.5rem; align-items: stretch; }
 .version-bar select { flex: 1 1 auto; min-width: 0; }
 .version-bar button { flex: 0 0 auto; white-space: nowrap; }
 
-.player { margin: 0.9rem 0 0.4rem; }
-.player audio, .compare-audio audio { width: 100%; display: block; }
-.player-caption { margin: 0.3rem 0 0; color: var(--muted); font-size: 0.875rem; }
-.no-audio { margin: 0.9rem 0 0.4rem; }
+.player {
+  margin: 0.9rem 0 0.4rem;
+  padding: 0.7rem 0.8rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.player-controls { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.player-controls button { min-height: 2.75rem; min-width: 5.5rem; }
+.player-controls .play { background: var(--accent); color: var(--accent-text); border-color: var(--accent); font-weight: 600; }
+.player-controls .play:disabled { opacity: 0.7; }
+.player-time { margin-left: auto; font-variant-numeric: tabular-nums; color: var(--muted); }
+.player .seek { display: block; width: 100%; margin: 0.7rem 0 0.3rem; min-height: 1.75rem; accent-color: var(--accent); }
+.meter { height: 4px; margin: 0.5rem 0 0; background: var(--code-bg); border-radius: 2px; overflow: hidden; }
+.meter-level { height: 100%; width: 0; background: var(--accent); transition: width 80ms linear; }
+.player-caption { margin: 0.45rem 0 0; color: var(--muted); font-size: 0.875rem; }
+.player-status { margin: 0.3rem 0 0; font-size: 0.875rem; min-height: 1.3em; }
+.player-status.error { color: var(--remove); }
+.player-warning { margin: 0.3rem 0 0; font-size: 0.875rem; color: var(--remove); }
+.player-log { margin: 0.2rem 0 0; font-size: 0.875rem; color: var(--muted); }
+.player-log summary { cursor: pointer; padding: 0.3rem 0; }
+.player-log-text {
+  max-height: 16rem;
+  overflow: auto;
+  margin: 0.3rem 0 0;
+  padding: 0.5rem;
+  background: var(--code-bg);
+  color: var(--text);
+  font: 0.75rem/1.4 var(--mono);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.no-player { margin: 0.9rem 0 0.4rem; }
 .download { margin-left: 0.6rem; font-size: 0.875rem; white-space: nowrap; }
-.player-caption .download:first-of-type { margin-left: 0.3rem; }
 
 /* Tabs */
 
@@ -266,9 +294,9 @@ dl.info dd { margin: 0; overflow-wrap: anywhere; }
 
 .compare-controls { display: flex; flex-wrap: wrap; gap: 0.6rem 1rem; align-items: center; }
 .compare-controls label { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
-.compare-audio { display: grid; gap: 0.8rem; margin: 1rem 0; }
-.compare-audio .player { margin: 0.3rem 0 0; }
-.compare-audio .no-audio { margin: 0.3rem 0 0; }
+.compare-players { display: grid; gap: 0.8rem; margin: 1rem 0; }
+.compare-players .player { margin: 0.3rem 0 0; }
+.compare-players .no-player { margin: 0.3rem 0 0; }
 
 .diff {
   background: var(--code-bg);
@@ -295,7 +323,7 @@ dl.info dd { margin: 0; overflow-wrap: anywhere; }
 @media (min-width: 44rem) {
   h1 { font-size: 2rem; }
   .library { grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr)); }
-  .compare-audio { grid-template-columns: 1fr 1fr; }
+  .compare-players { grid-template-columns: 1fr 1fr; }
   dl.info { grid-template-columns: 11rem 1fr; gap: 0.45rem 1rem; }
   dl.info dt { margin-top: 0; font-size: 0.9rem; }
   .tabs { margin-left: 0; margin-right: 0; padding: 0; }

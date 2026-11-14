@@ -15,7 +15,7 @@ fresh temporary directory, with its own archive, staging area and
 published directory. The repository is read by a few tests and written by
 none.
 
-Most tests use small stand-ins for `csound` and `ffmpeg`
+Most tests use a small stand-in for `csound`
 (`tests/support.py`) that behave like the real programs as far as the
 studio can tell, and that can be told to fail in specific ways: a syntax
 error, a crash, a run-time error in the log, no output, silence, clipping.
@@ -24,7 +24,8 @@ real tools use them when present and are reported as skipped otherwise:
 
 | Tests | Need | Otherwise |
 | --- | --- | --- |
-| `test_render.RealCsoundTests` | `csound` on the PATH (and `ffmpeg` for the encoding part) | skipped |
+| `test_render.RealCsoundTests` | `csound` on the PATH | skipped |
+| `test_render.BrowserEngineTests` | `@csound/browser` installed and Node.js on the PATH | skipped |
 | `test_generators` | `STUDIO_PYTHON` with CsoundAC; Node.js with `CSOUNDAC_WASM_DIR`; `STUDIO_CSOUNDAC_CXXFLAGS`/`LDFLAGS` | each skipped separately |
 | `test_viewer.BrowserTests`, `test_viewer.PublishedSiteTests` | Chrome or Chromium (`STUDIO_CHROME` to name it) | skipped |
 | `test_viewer.DiffModuleTests` | Node.js | skipped |
@@ -43,7 +44,7 @@ run the suite outside the sandbox; those tests fail there, they do not skip.
 | Sequential allocation of versions | `test_versioning.VersioningTests`: versions are 1, 2, 3 in order; a number is not reused after a gap; an existing version directory is never overwritten. |
 | Immutability of archived versions | `test_versioning.VersioningTests`: an archived version equals the previous current state, is read-only, and is unchanged after further revisions; `verify` detects modified, added, removed and missing files. |
 | Prompt order and preservation | `test_versioning.PromptTests`: numbered in order, text verbatim, accumulated across versions; changing or deleting an earlier prompt, an empty prompt, and a revision without a new prompt are refused. |
-| Preservation of code and outputs | `test_versioning`, `test_render`, `test_generators`: code and outputs are archived with their version and re-rendering reproduces the stored audio. |
+| Preservation of code and outputs | `test_versioning`, `test_render`, `test_generators`: code and outputs are archived with their version and re-rendering reproduces the samples recorded in the manifest. |
 | Manifests | `test_versioning.ManifestTests`: contents, history linking every archived version, detection of invalid manifests, no score data and no home directory in a manifest. |
 | Render failures | `test_render.RenderTests`: syntax error, crash, run-time errors in the log, no audio, silence, clipping, incomplete `.csd`, missing Csound, failing generator; a failed revision leaves the current version intact; a failed render can be corrected and accepted; an unrendered or stale staging area cannot be accepted. |
 | Audio measurement | `test_render.AudioAnalysisTests`: levels of known signals, silence, clipping, sample hash, rejection of non-audio. |
@@ -55,8 +56,8 @@ run the suite outside the sandbox; those tests fail there, they do not skip.
 | Dry run | `test_publish.PublishTests.test_dry_run_writes_nothing`. |
 | No publication outside `docs/compositions/` | `test_publish.PublishSafetyTests`: symbolic links in and at the destination, a tampered state file, and a check that everything published is inside the directory. |
 | The archive is not modified by publishing | `test_publish`: the archive's tree hash is compared before and after. |
-| Browser loading of the catalog; audio playback | `test_viewer.BrowserTests`: headless Chrome loads the viewer in a 412 x 915 frame against a site published by the tools; checks the library, version selection, prompts, `.csd`, code, files, provenance, comparison, playback and seeking of real audio, an archived version, missing optional artifacts, an unknown composition, an empty library, a missing catalog, and that no view is wider than the frame. |
-| The published site | `test_viewer.PublishedSiteTests`: the real `docs/` is served read-only and every published version of every composition is opened in headless Chrome: the `.csd` shown equals the published file, the prompts are those of the catalog, the audio loads with the recorded duration and plays, and nothing overflows a phone-sized frame. |
+| Browser loading of the catalog; audio playback | `test_viewer.BrowserTests`: headless Chrome loads the viewer in a 412 x 915 frame against a site published by the tools; checks the library, version selection, prompts, `.csd`, code, files, provenance, comparison, real-time performance and seeking of the published `.csd` with `@csound/browser`, an archived version, missing optional artifacts, an unknown composition, an empty library, a missing catalog, and that no view is wider than the frame. |
+| The published site | `test_viewer.PublishedSiteTests`: the real `docs/` is served read-only and every published version of every composition is opened in headless Chrome: the `.csd` shown equals the published file, the prompts are those of the catalog, the player performs the published `.csd` in real time, and nothing overflows a phone-sized frame. |
 | Viewer code | `test_viewer.DiffModuleTests` (the diff reproduces both texts for 300 random cases); `test_repository.StudioFilesTests`: no absolute URLs, no `innerHTML`, all references resolve. |
 | Command line and local server | `test_cli_serve`: a complete session through `bin/studio`; exit status on errors; `publish`, `catalog`, `recover`; whole files, content types, byte ranges and refusal of escapes by the server. |
 | Generating programs | `test_generators`: Python, JavaScript (WebAssembly) and C++ programs using the real CsoundAC write the same score with the studio's p-field layout, are recorded in the manifest, and regenerate the identical `.csd`. |
@@ -70,10 +71,10 @@ the suite, outside the sandbox:
 
 | Environment | Result |
 | --- | --- |
-| Configured with `config/studio-env.macos.example.sh` (Csound 7.0, ffmpeg 9.0.2, CsoundAC under Python 3.12.16, Node.js 26.13.1 with the WebAssembly build, C++ flags, Chrome, Git) | **130 tests, all passed, none skipped** (78 s) |
-| No configuration (Csound, ffmpeg, Node.js, Chrome and Git on the PATH; no CsoundAC) | 130 tests: 127 passed, 3 skipped (the three `test_generators` tests) |
-| Csound, ffmpeg and Node.js removed from the PATH | 130 tests: 124 passed, 6 skipped (generators, real Csound, the diff module) |
-| No configuration, suite and tools run by the system Python 3.9.6 | 130 tests: 127 passed, 3 skipped (the three `test_generators` tests) |
+| Configured with `config/studio-env.macos.example.sh` (Csound 7.0, `@csound/browser` 7.0.0, CsoundAC under Python 3.12.16, Node.js 26.13.1 with CsoundAC WASM, C++ flags, Chrome, Git) | **147 tests, all passed, none skipped** (72 s) |
+| No configuration (same tools on the PATH; no CsoundAC) | not re-measured this run; generators skip without CsoundAC |
+| Csound and Node.js removed from the PATH | not re-measured this run |
+| System Python 3.9.6 | not re-measured this run |
 
 `cloud/check.sh` on the same machine: all twelve checks passed with the
 example configuration; without configuration the nine Csound checks passed
@@ -83,7 +84,7 @@ and the three CsoundAC routes were reported as not configured; with
 Not run anywhere: the suite and `check.sh` on Linux, and
 `cloud/install.sh`.
 
-Test counts by module: `test_naming_paths` 13, `test_versioning` 25,
+Test counts by module: `test_naming_paths` 14, `test_versioning` 25, `test_recovery` 9, `test_render` 30, `test_publish` 30, `test_cli_serve` 7, `test_generators` 3, `test_branches` 4, `test_viewer` 5, `test_repository` 12 (plus browser-engine cases inside `test_render`).
 `test_recovery` 9, `test_render` 22, `test_publish` 30, `test_cli_serve` 7,
 `test_generators` 3, `test_branches` 4, `test_viewer` 5,
 `test_repository` 12.
@@ -94,10 +95,10 @@ Things the suite does not cover and that were checked by hand while
 building the studio:
 
 - The viewer in Cursor's built-in browser against the published `nu`:
-  catalog loaded, three versions listed, audio played and seeked,
+  catalog loaded, three versions listed, the `.csd` performed in real time and seeked,
   comparison shown.
 - `studio rerender` of all three versions of `nu`, with `--regenerate` for
-  the two generated ones: identical audio and identical `.csd`.
+  the two generated ones: identical samples (by hash) and identical `.csd`.
 
 Things not checked at all:
 

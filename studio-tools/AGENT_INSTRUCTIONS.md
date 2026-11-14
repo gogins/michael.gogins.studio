@@ -28,7 +28,7 @@ Cursor Cloud Agents alike. The human-readable documentation is in
   written to `outputs/`.
 - Names: letters, digits and underscores, starting with a letter or digit.
   Every file of a composition starts with its name: `nu.csd`, `nu-prompt-001.md`,
-  `nu-manifest.json`, `code/nu-generate.py`, `outputs/nu.flac`.
+  `nu-manifest.json`, `code/nu-generate.py`, `outputs/nu-render.log` (no soundfiles).
 - Follow Michael Gogins's p-field conventions exactly; see
   `studio-tools/docs/csound-conventions.md`:
 
@@ -59,7 +59,9 @@ Use `studio-tools/bin/studio`. Run `studio env` first in a new environment.
    complete `NAME.csd` there. Take the random seed from `STUDIO_SEED`, so
    that the same seed reproduces the same file.
 4. Render: `studio render "$S"`. This checks the structure and the syntax,
-   renders, scans the log, measures the audio, and encodes FLAC and MP3.
+   renders to a temporary file, measures the audio, discards it, and checks
+   that the piece performs in the viewer's Csound engine (`@csound/browser`).
+   Do not write soundfiles into the archive.
    If it fails, read the message and `$S/outputs/NAME-render.log`, correct
    the `.csd` or the program, and render again. Do not pass
    `--allow-clipping` or `--allow-silence` to get past a real problem; fix

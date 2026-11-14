@@ -1,16 +1,23 @@
 {
   "ai": {
-    "agent": "Cursor desktop (macOS)",
-    "model": "Claude Fable 5.2"
+    "agent": "implementing agent",
+    "model": "studio demonstration"
   },
   "composition": "nu",
-  "created_at": "2026-11-12T20:12:41Z",
+  "created_at": "2026-11-14T14:35:49Z",
   "dependencies": {
     "includes": [],
     "plugins": [],
     "samples": []
   },
   "environment": {
+    "browser_csound": {
+      "available": true,
+      "file": "csound.js",
+      "package": "@csound/browser",
+      "sha256": "c86c69291326fa3d64872f430ca9a06324a94c96db373d6bd207fdd4e5a3fc9e",
+      "version": "7.0.0"
+    },
     "csound": {
       "available": true,
       "banner": "Csound version 7.0 (double samples) Oct 28 2026",
@@ -18,11 +25,6 @@
       "major": 7,
       "path": "/usr/local/bin/csound",
       "version": "7.0"
-    },
-    "ffmpeg": {
-      "available": true,
-      "path": "/opt/homebrew/bin/ffmpeg",
-      "version": "9.0.2"
     },
     "machine": "arm64",
     "node": {
@@ -58,80 +60,50 @@
     },
     "nu-prompt-001.md": {
       "bytes": 517,
-      "sha256": "3f611e71f2648528027bbe2d3b376ebb4a9f1f537626f17fb5f3c67e31943e77"
+      "sha256": "9541e095bf039cc2a82a02f4d3b80b4f3a218fc4288c83a2b3caf97d8d903054"
     },
     "nu-prompt-002.md": {
       "bytes": 624,
-      "sha256": "5c5273f69ec837bdc84a957e5d84992cc71da06bc659dab82ec446901be92967"
+      "sha256": "ca4c3922c0f22aba2f7b10c6a4b4959091a87b1ce1c93298fadc71ef3511c53d"
     },
     "nu-prompt-003.md": {
       "bytes": 524,
-      "sha256": "70921141ba13af23f9c5b36510ff981fb186c1aa2a476cd377248877ac3d7be3"
+      "sha256": "579fed5dd7813a1355e62921e84f5060c802790fc7a20bfa0c6e7940e2fcbff4"
     },
     "nu.csd": {
       "bytes": 2873,
       "sha256": "30fe0eb239ab7ae828dbfae40a7667ddd107ef66e0322d338df7d403f7ec49bb"
     },
-    "outputs/nu-generate.log": {
-      "bytes": 135,
-      "sha256": "c709a85779d82a69ac926fea87dd883bceb3c860198ac8c874df17a8691921c3"
-    },
     "outputs/nu-render.log": {
-      "bytes": 4102,
-      "sha256": "9a7f050751b754776c8cbabe42b451235afff1846985fe43bfbd2dd0fc740afe"
-    },
-    "outputs/nu.flac": {
-      "bytes": 2037101,
-      "sha256": "e8e07decef11c2926163d7d65b35b90be8d1e66fbf08a74acd69a51d539c3a65"
-    },
-    "outputs/nu.mp3": {
-      "bytes": 290780,
-      "sha256": "5edaede947ab0513dc420291ffe3832ba3b2e70d54f6ba18037e74e5bc38f6f7"
+      "bytes": 4662,
+      "sha256": "257feb7b972769d2573dbaeb34420d7ccf5abfe554a57c959059a0a2a9732fee"
     }
   },
   "generator": {
     "kind": "python-csoundac",
-    "runs": [
-      {
-        "argv": [
-          "python",
-          "code/nu-generate.py"
-        ],
-        "exit_code": 0,
-        "parameters": {
-          "canon_delay": "2.0",
-          "canon_steps": "4"
-        },
-        "seconds": 0.028,
-        "seed": 11,
-        "started_at": "2026-11-12T20:12:31Z"
-      }
-    ],
-    "seeds": [
-      11
-    ],
+    "runs": [],
+    "seeds": [],
     "sources": [
       "code/nu-generate.py"
     ]
   },
   "history": [
     {
-      "archived_at": "2026-11-12T20:12:07Z",
+      "archived_at": "2026-11-14T14:35:47Z",
       "ordinal": 1,
-      "tree_sha256": "145c7d43c5c234bc3cbb458622b62e734ba34f87b38352f779bb2d55ac4bca56",
+      "tree_sha256": "6dd8d39e49edce628491023b860a1b4f2ec39cfad175abe69c842f3077b25a3d",
       "version": "version-0001"
     },
     {
-      "archived_at": "2026-11-12T20:12:41Z",
+      "archived_at": "2026-11-14T14:35:49Z",
       "ordinal": 2,
-      "tree_sha256": "b14360f131afaf425b7d2673cb476c52b4c515dedc7628256bd6aa9b35540868",
+      "tree_sha256": "5c69505a11f8986943531d4e234d77e25344d10350a8a395eef3b235b1a70608",
       "version": "version-0002"
     }
   ],
   "new_prompts": [
     "nu-prompt-003.md"
   ],
-  "notes": "Demonstration composition created while implementing the studio.",
   "ordinal": 3,
   "prompts": [
     "nu-prompt-001.md",
@@ -155,6 +127,26 @@
       "sample_format": "pcm",
       "sample_rate": 48000
     },
+    "browser": {
+      "channels": 2,
+      "checked": true,
+      "compiled": true,
+      "csound_version": "7.0",
+      "duration_seconds": 18,
+      "engine": {
+        "package": "@csound/browser",
+        "sha256": "c86c69291326fa3d64872f430ca9a06324a94c96db373d6bd207fdd4e5a3fc9e",
+        "version": "7.0.0"
+      },
+      "errors": [],
+      "performed": true,
+      "playable": true,
+      "realtime_factor": 63.2,
+      "runtime_errors": 0,
+      "sample_rate": 48000,
+      "seconds": 0.454,
+      "started": true
+    },
     "commands": [
       {
         "argv": [
@@ -163,7 +155,7 @@
           "nu.csd"
         ],
         "exit_code": 0,
-        "seconds": 0.024,
+        "seconds": 0.02,
         "step": "syntax-check"
       },
       {
@@ -173,61 +165,17 @@
           "-W",
           "-3",
           "-o",
-          "outputs/nu.wav",
+          "<temporary>/nu.wav",
           "nu.csd"
         ],
         "exit_code": 0,
-        "seconds": 0.174,
+        "seconds": 0.175,
         "step": "render"
-      },
-      {
-        "argv": [
-          "ffmpeg",
-          "-hide_banner",
-          "-loglevel",
-          "error",
-          "-nostdin",
-          "-y",
-          "-i",
-          "outputs/nu.wav",
-          "-c:a",
-          "flac",
-          "-compression_level",
-          "8",
-          "outputs/nu.flac"
-        ],
-        "exit_code": 0,
-        "seconds": 0.073,
-        "step": "encode-flac"
-      },
-      {
-        "argv": [
-          "ffmpeg",
-          "-hide_banner",
-          "-loglevel",
-          "error",
-          "-nostdin",
-          "-y",
-          "-i",
-          "outputs/nu.wav",
-          "-c:a",
-          "libmp3lame",
-          "-q:a",
-          "2",
-          "outputs/nu.mp3"
-        ],
-        "exit_code": 0,
-        "seconds": 0.1,
-        "step": "encode-mp3"
       }
     ],
-    "finished_at": "2026-11-12T20:12:31Z",
+    "finished_at": "2026-11-14T14:35:49Z",
     "log": "outputs/nu-render.log",
-    "outputs": [
-      "outputs/nu.flac",
-      "outputs/nu.mp3"
-    ],
-    "started_at": "2026-11-12T20:12:31Z",
+    "started_at": "2026-11-14T14:35:48Z",
     "wav_sha256": "3ef08cd22b00d4b63aaaceca5a8750c7dbd044333b23d691909a326cf4b4f112"
   },
   "schema": "ai-composition-studio/manifest/1",
@@ -260,8 +208,8 @@
         "passed": true
       },
       {
-        "check": "audio file written",
-        "detail": "outputs/nu.wav",
+        "check": "audio rendered",
+        "detail": "temporary file, measured and deleted",
         "passed": true
       },
       {
@@ -272,6 +220,11 @@
       {
         "check": "no clipping",
         "detail": "0 samples out of range",
+        "passed": true
+      },
+      {
+        "check": "performs in the viewer's Csound engine (@csound/browser 7.0.0)",
+        "detail": "18 s at 63.2 times real time here",
         "passed": true
       }
     ],

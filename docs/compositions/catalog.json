@@ -4,23 +4,14 @@
       "name": "nu",
       "path": "nu/",
       "prompt_texts": {
-        "3f611e71f2648528027bbe2d3b376ebb4a9f1f537626f17fb5f3c67e31943e77": "# nu - prompt 001\n\n<!-- recorded: 2026-11-12T20:10:17Z; source: agent -->\n\nDemonstration prompt, written by the implementing agent (Claude) to exercise the studio; it is not a prompt from Michael Gogins.\n\nCompose a very short study called nu, about 18 seconds long: a slow, bell-like melody in D Dorian over a low drone, with reverberation. Write it directly as one complete Csound .csd file, with the instruments and the notes, using the studio p-field conventions (p4 MIDI key, p5 MIDI velocity, p6 depth, p7 pan).\n",
-        "5c5273f69ec837bdc84a957e5d84992cc71da06bc659dab82ec446901be92967": "# nu - prompt 002\n\n<!-- recorded: 2026-11-12T20:11:13Z; source: agent -->\n\nDemonstration prompt, written by the implementing agent (Claude) to exercise the studio; it is not a prompt from Michael Gogins.\n\nKeep the instruments of nu exactly as they are, but stop writing the notes by hand. Generate the score with a Python program that uses CsoundAC: the bells play a seeded random walk on the D Dorian scale with irregular rhythm, moving between left and right; the drone on D is joined by its fifth halfway through. Keep the program beside the piece so that the .csd can be regenerated from it, and record the random seed.\n",
-        "70921141ba13af23f9c5b36510ff981fb186c1aa2a476cd377248877ac3d7be3": "# nu - prompt 003\n\n<!-- recorded: 2026-11-12T20:12:08Z; source: agent -->\n\nDemonstration prompt, written by the implementing agent (Claude) to exercise the studio; it is not a prompt from Michael Gogins.\n\nRevise the generator. Answer the bell melody with a canon: the same melody four scale steps higher (a diatonic fifth, staying in D Dorian), two seconds later, softer, farther away, and on the opposite side. Let the melody range more widely than before. Make the drone a little softer so the two bell voices stay clear.\n"
+        "579fed5dd7813a1355e62921e84f5060c802790fc7a20bfa0c6e7940e2fcbff4": "# nu - prompt 003\n\n<!-- recorded: 2026-11-14T14:35:48Z; source: agent -->\n\nDemonstration prompt, written by the implementing agent (Claude) to exercise the studio; it is not a prompt from Michael Gogins.\n\nRevise the generator. Answer the bell melody with a canon: the same melody four scale steps higher (a diatonic fifth, staying in D Dorian), two seconds later, softer, farther away, and on the opposite side. Let the melody range more widely than before. Make the drone a little softer so the two bell voices stay clear.\n",
+        "9541e095bf039cc2a82a02f4d3b80b4f3a218fc4288c83a2b3caf97d8d903054": "# nu - prompt 001\n\n<!-- recorded: 2026-11-14T14:35:45Z; source: agent -->\n\nDemonstration prompt, written by the implementing agent (Claude) to exercise the studio; it is not a prompt from Michael Gogins.\n\nCompose a very short study called nu, about 18 seconds long: a slow, bell-like melody in D Dorian over a low drone, with reverberation. Write it directly as one complete Csound .csd file, with the instruments and the notes, using the studio p-field conventions (p4 MIDI key, p5 MIDI velocity, p6 depth, p7 pan).\n",
+        "ca4c3922c0f22aba2f7b10c6a4b4959091a87b1ce1c93298fadc71ef3511c53d": "# nu - prompt 002\n\n<!-- recorded: 2026-11-14T14:35:46Z; source: agent -->\n\nDemonstration prompt, written by the implementing agent (Claude) to exercise the studio; it is not a prompt from Michael Gogins.\n\nKeep the instruments of nu exactly as they are, but stop writing the notes by hand. Generate the score with a Python program that uses CsoundAC: the bells play a seeded random walk on the D Dorian scale with irregular rhythm, moving between left and right; the drone on D is joined by its fifth halfway through. Keep the program beside the piece so that the .csd can be regenerated from it, and record the random seed.\n"
       },
       "title": "Nu (studio demonstration)",
-      "updated_at": "2026-11-12T20:12:41Z",
+      "updated_at": "2026-11-14T14:35:49Z",
       "versions": [
         {
-          "audio": [
-            {
-              "bytes": 290780,
-              "file": "nu.mp3",
-              "format": "mp3",
-              "path": "nu/outputs/nu.mp3",
-              "role": "listening"
-            }
-          ],
           "code": [
             {
               "bytes": 5090,
@@ -37,10 +28,14 @@
           "derived": [],
           "id": "current",
           "info": {
-            "ai_agent": "Cursor desktop (macOS)",
-            "ai_model": "Claude Fable 5.2",
+            "ai_agent": "implementing agent",
+            "ai_model": "studio demonstration",
+            "browser_checked": true,
+            "browser_engine": "@csound/browser 7.0.0",
+            "browser_playable": true,
+            "browser_realtime_factor": 63.2,
             "channels": 2,
-            "created_at": "2026-11-12T20:12:41Z",
+            "created_at": "2026-11-14T14:35:49Z",
             "csound": "Csound version 7.0 (double samples) Oct 28 2026",
             "csoundac_revision": "v9.1.1-beta-26-gd884dea62 (source checkout; installed binary may differ)",
             "duration_seconds": 18.0,
@@ -49,20 +44,16 @@
               "nu-prompt-003.md"
             ],
             "node": "v26.13.1",
-            "notes": "Demonstration composition created while implementing the studio.",
             "ordinal": 3,
             "peak_dbfs": -4.31,
             "python": "3.12.16",
             "rms_dbfs": -20.93,
-            "sample_rate": 48000,
-            "seeds": [
-              11
-            ]
+            "sample_rate": 48000
           },
           "is_current": true,
           "logs": [],
           "manifest": {
-            "bytes": 6923,
+            "bytes": 6068,
             "file": "nu-manifest.json",
             "path": "nu/nu-manifest.json"
           },
@@ -75,7 +66,7 @@
               "new": false,
               "number": 1,
               "path": "nu/nu-prompt-001.md",
-              "sha256": "3f611e71f2648528027bbe2d3b376ebb4a9f1f537626f17fb5f3c67e31943e77"
+              "sha256": "9541e095bf039cc2a82a02f4d3b80b4f3a218fc4288c83a2b3caf97d8d903054"
             },
             {
               "bytes": 624,
@@ -83,7 +74,7 @@
               "new": false,
               "number": 2,
               "path": "nu/nu-prompt-002.md",
-              "sha256": "5c5273f69ec837bdc84a957e5d84992cc71da06bc659dab82ec446901be92967"
+              "sha256": "ca4c3922c0f22aba2f7b10c6a4b4959091a87b1ce1c93298fadc71ef3511c53d"
             },
             {
               "bytes": 524,
@@ -91,20 +82,11 @@
               "new": true,
               "number": 3,
               "path": "nu/nu-prompt-003.md",
-              "sha256": "70921141ba13af23f9c5b36510ff981fb186c1aa2a476cd377248877ac3d7be3"
+              "sha256": "579fed5dd7813a1355e62921e84f5060c802790fc7a20bfa0c6e7940e2fcbff4"
             }
           ]
         },
         {
-          "audio": [
-            {
-              "bytes": 256028,
-              "file": "nu.mp3",
-              "format": "mp3",
-              "path": "nu/version-0002/outputs/nu.mp3",
-              "role": "listening"
-            }
-          ],
           "code": [
             {
               "bytes": 4670,
@@ -121,10 +103,14 @@
           "derived": [],
           "id": "version-0002",
           "info": {
-            "ai_agent": "Cursor desktop (macOS)",
-            "ai_model": "Claude Fable 5.2",
+            "ai_agent": "implementing agent",
+            "ai_model": "studio demonstration",
+            "browser_checked": true,
+            "browser_engine": "@csound/browser 7.0.0",
+            "browser_playable": true,
+            "browser_realtime_factor": 64.4,
             "channels": 2,
-            "created_at": "2026-11-12T20:12:07Z",
+            "created_at": "2026-11-14T14:35:47Z",
             "csound": "Csound version 7.0 (double samples) Oct 28 2026",
             "csoundac_revision": "v9.1.1-beta-26-gd884dea62 (source checkout; installed binary may differ)",
             "duration_seconds": 18.0,
@@ -133,20 +119,16 @@
               "nu-prompt-002.md"
             ],
             "node": "v26.13.1",
-            "notes": "Demonstration composition created while implementing the studio.",
             "ordinal": 2,
             "peak_dbfs": -4.92,
             "python": "3.12.16",
             "rms_dbfs": -20.76,
-            "sample_rate": 48000,
-            "seeds": [
-              7
-            ]
+            "sample_rate": 48000
           },
           "is_current": false,
           "logs": [],
           "manifest": {
-            "bytes": 6467,
+            "bytes": 5709,
             "file": "nu-manifest.json",
             "path": "nu/version-0002/nu-manifest.json"
           },
@@ -159,7 +141,7 @@
               "new": false,
               "number": 1,
               "path": "nu/version-0002/nu-prompt-001.md",
-              "sha256": "3f611e71f2648528027bbe2d3b376ebb4a9f1f537626f17fb5f3c67e31943e77"
+              "sha256": "9541e095bf039cc2a82a02f4d3b80b4f3a218fc4288c83a2b3caf97d8d903054"
             },
             {
               "bytes": 624,
@@ -167,20 +149,11 @@
               "new": true,
               "number": 2,
               "path": "nu/version-0002/nu-prompt-002.md",
-              "sha256": "5c5273f69ec837bdc84a957e5d84992cc71da06bc659dab82ec446901be92967"
+              "sha256": "ca4c3922c0f22aba2f7b10c6a4b4959091a87b1ce1c93298fadc71ef3511c53d"
             }
           ]
         },
         {
-          "audio": [
-            {
-              "bytes": 281732,
-              "file": "nu.mp3",
-              "format": "mp3",
-              "path": "nu/version-0001/outputs/nu.mp3",
-              "role": "listening"
-            }
-          ],
           "code": [],
           "csd": {
             "bytes": 2800,
@@ -190,10 +163,14 @@
           "derived": [],
           "id": "version-0001",
           "info": {
-            "ai_agent": "Cursor desktop (macOS)",
-            "ai_model": "Claude Fable 5.2",
+            "ai_agent": "implementing agent",
+            "ai_model": "studio demonstration",
+            "browser_checked": true,
+            "browser_engine": "@csound/browser 7.0.0",
+            "browser_playable": true,
+            "browser_realtime_factor": 90.5,
             "channels": 2,
-            "created_at": "2026-11-12T20:10:51Z",
+            "created_at": "2026-11-14T14:35:46Z",
             "csound": "Csound version 7.0 (double samples) Oct 28 2026",
             "csoundac_revision": "v9.1.1-beta-26-gd884dea62 (source checkout; installed binary may differ)",
             "duration_seconds": 18.0,
@@ -202,7 +179,6 @@
               "nu-prompt-001.md"
             ],
             "node": "v26.13.1",
-            "notes": "Demonstration composition created while implementing the studio.",
             "ordinal": 1,
             "peak_dbfs": -6.34,
             "python": "3.12.16",
@@ -212,7 +188,7 @@
           "is_current": false,
           "logs": [],
           "manifest": {
-            "bytes": 5557,
+            "bytes": 5171,
             "file": "nu-manifest.json",
             "path": "nu/version-0001/nu-manifest.json"
           },
@@ -225,13 +201,13 @@
               "new": true,
               "number": 1,
               "path": "nu/version-0001/nu-prompt-001.md",
-              "sha256": "3f611e71f2648528027bbe2d3b376ebb4a9f1f537626f17fb5f3c67e31943e77"
+              "sha256": "9541e095bf039cc2a82a02f4d3b80b4f3a218fc4288c83a2b3caf97d8d903054"
             }
           ]
         }
       ]
     }
   ],
-  "generated_at": "2026-11-12T20:12:51Z",
-  "schema": "ai-composition-studio/catalog/1"
+  "generated_at": "2026-11-14T14:35:59Z",
+  "schema": "ai-composition-studio/catalog/2"
 }

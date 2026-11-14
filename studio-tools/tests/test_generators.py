@@ -161,7 +161,7 @@ class GeneratorTests(StudioTestCase):
         # The stored program reproduces the stored .csd, and the .csd the audio.
         result = render.rerender(self.studio, "nu", regenerate=True)
         self.assertEqual(result["regenerated"], "identical .csd")
-        self.assertEqual(result["audio"], "identical to the stored render")
+        self.assertEqual(result["audio"], "identical to the render recorded in the manifest")
         return document
 
     @unittest.skipUnless(python_has_csoundac(), "STUDIO_PYTHON cannot import CsoundAC")
