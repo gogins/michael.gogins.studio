@@ -124,6 +124,78 @@ and the `studio` cycle are the same as above; listening is again the
 viewer after publish (local `studio serve` on a machine that has the
 branch, or `/studio/` on the site after merge).
 
+### A simple example
+
+Goal: a new twenty-second study named `bells`, then one revision. Do this
+in desktop Cursor (local agent) once `studio env` looks right; the same
+prompts work on the phone after the cloud environment passes `check.sh`.
+
+**1. Create the first version.** Paste into the Cursor chat:
+
+> Follow studio-tools/AGENT_INSTRUCTIONS.md.
+> Create a composition named `bells`, about 20 seconds long: a slow
+> bell-like melody in D Dorian over a low drone, with reverberation.
+> Write it directly as one complete Csound `.csd` (instruments and notes),
+> using the studio p-field conventions. Render it, accept it, publish it,
+> and tell me the duration and peak level.
+
+What each part asks for:
+
+| Phrase | Why it is there |
+| --- | --- |
+| `Follow studio-tools/AGENT_INSTRUCTIONS.md` | Loads the studio rules (staging, naming, no soundfiles, p-fields). |
+| `Create a composition named bells` | `studio new bells` — the archive directory name. |
+| `about 20 seconds…` | Musical brief; saved verbatim as `bells-prompt-001.md`. |
+| `Write it directly as one complete Csound .csd` | No generator program; the agent writes `bells.csd` itself. |
+| `studio p-field conventions` | p4 key, p5 velocity, p6–p8 space, etc. (see `docs/csound-conventions.md`). |
+| `Render it` | `studio render` — Csound offline measure + `@csound/browser` check. |
+| `accept it` | `studio accept` — becomes the current version (ordinal 1). |
+| `publish it` | `studio publish bells` — copy into `docs/compositions/` for the viewer. |
+| `duration and peak level` | So you can confirm the render without opening files. |
+
+**2. Listen.** In a terminal (or ask the agent):
+
+```sh
+studio serve
+```
+
+Open `http://127.0.0.1:8000/studio/`, choose **bells**, press **Play**. The
+browser runs the published `.csd`; there is no MP3. On the phone, after a
+Cloud Agent has published and the branch is on the deployed site, use the
+site’s `/studio/` address the same way.
+
+**3. Revise.** A second prompt; the previous version is kept as
+`version-0001/`:
+
+> Follow studio-tools/AGENT_INSTRUCTIONS.md.
+> Revise `bells`: make the drone a fifth lower and the melody quieter by
+> about 3 dB. Render, accept, publish, and summarize what changed.
+
+| Phrase | Why it is there |
+| --- | --- |
+| `Revise bells` | `studio stage bells` — working copy of the current `.csd` and prompts. |
+| `make the drone…` | New instructions; saved as `bells-prompt-002.md` (prompt 1 kept). |
+| `Render, accept, publish` | Same pipeline; current becomes version 2, old current → `version-0001/`. |
+
+**4. Compare.** In the viewer, open **bells** → **Compare**, pick version 1,
+and play either version (only one plays at a time). The **Prompts** tab
+shows both briefs; the new one is marked.
+
+If you prefer the terminal instead of prompting, the same example is:
+
+```sh
+S=$(studio new bells --title "Bells")
+studio prompt "$S" --file - <<'EOF'
+About 20 seconds: slow bell-like melody in D Dorian over a low drone, with
+reverberation. One complete .csd, studio p-field conventions.
+EOF
+# write $S/bells.csd, then:
+studio render "$S"
+studio accept "$S" --model "manual" --agent "terminal"
+studio publish bells
+studio serve
+```
+
 ## Commands
 
 | Command | Purpose |
