@@ -37,69 +37,92 @@ Everything belonging to the studio is in four directories of this repository:
 
 ## Getting started
 
-Listening is the same everywhere: the viewer performs the published `.csd`
-with official Csound 7 for WebAssembly (`@csound/browser`). No soundfile is
-stored. The compose → render → accept → publish cycle is the same locally
-and in the cloud; only how you start the tools differs.
+Listening is the same on every device: the viewer performs the published
+`.csd` with official Csound 7 for WebAssembly (`@csound/browser`). No
+soundfile is stored. The work is always compose → render → accept →
+publish; what changes is whether an agent on your Mac or in the cloud does
+it, and where you open the viewer.
 
-### Locally (MacBook, Cursor desktop)
+Use the branch that has the studio (today: `feature/ai-composition-studio`).
+Begin agent prompts with “Follow studio-tools/AGENT_INSTRUCTIONS.md”
+unless the Cursor templates under `studio-tools/cursor/` have been
+installed (see [cursor/INSTALL.md](cursor/INSTALL.md)).
 
-1. Open this repository on the branch that has the studio (today:
-   `feature/ai-composition-studio`).
-2. Put the tools on your `PATH`, and load the macOS example environment if
-   you use CsoundAC:
+### Desktop Cursor IDE (MacBook)
+
+1. Open this repository in the Cursor desktop app.
+2. Once per machine, put the tools on your `PATH` and load the macOS
+   example environment if you use CsoundAC (a terminal in Cursor is fine):
 
    ```sh
    export PATH="$PWD/studio-tools/bin:$PATH"
    . studio-tools/config/studio-env.macos.example.sh   # optional; or your own copy
-   studio env                                          # what this machine has
+   studio env
    ```
 
-3. Compose yourself, or prompt Cursor to follow
-   [AGENT_INSTRUCTIONS.md](AGENT_INSTRUCTIONS.md):
+3. In the Cursor chat, prompt the agent, for example:
 
-   ```sh
-   S=$(studio new nu)                       # or: S=$(studio stage nu) to revise
-   studio prompt "$S" --file request.txt    # save the instructions, verbatim
-   # write "$S/nu.csd", or write "$S/code/nu-generate.py" and:
-   studio run "$S" --seed 7 -- python code/nu-generate.py
-   studio render "$S"                       # validate, measure, check in @csound/browser
-   studio accept "$S" --model "<AI model>" --agent "Cursor desktop"
-   studio publish nu
-   studio serve                             # http://127.0.0.1:8000/studio/
-   ```
+   > Follow studio-tools/AGENT_INSTRUCTIONS.md. Create a composition named
+   > `xi`: three minutes, slow bowed-string drones in just intonation.
+   > Write the score with Python and CsoundAC. Render, accept, and publish it.
 
-Nothing changes in the archive until `studio accept`, and `accept` refuses
-a staging area that has not rendered successfully. More detail:
+4. Listen: ask the agent to run `studio serve`, or run it yourself, and open
+   `http://127.0.0.1:8000/studio/` in a browser on the Mac.
+
+You can drive the same commands in the terminal without the agent
+(`studio new` / `stage` / `prompt` / `run` / `render` / `accept` /
+`publish`). Nothing enters the archive until `accept`, and `accept`
+refuses a staging area that has not rendered successfully. More detail:
 [docs/usage.md](docs/usage.md).
 
-### In the cloud (Cursor Cloud Agents, including from Android)
+### Phone (Chrome on Android)
 
-A Cloud Agent runs on Ubuntu in Cursor's cloud, clones from GitHub, works on
-its own branch, and pushes. The MacBook can be off. One-time setup (not yet
-verified on a real agent — see [docs/cloud-agents.md](docs/cloud-agents.md)):
+The phone is for prompting and listening. Rendering runs in a Cursor Cloud
+Agent (Ubuntu in Cursor’s cloud); the MacBook can be off.
+
+**One-time cloud setup** (not yet verified on a real agent — full steps in
+[docs/cloud-agents.md](docs/cloud-agents.md)):
 
 1. Connect GitHub to Cursor Cloud Agents for this repository.
-2. Put the studio on a branch the agent can see (push this feature branch;
-   environments build from the default branch, so merging to `master` is
-   what makes a lasting cloud install — see [docs/deployment.md](docs/deployment.md)).
-3. In the Cloud Agents dashboard, create an environment whose install script is:
+2. Push this feature branch; for a lasting install, merge to `master`
+   (environments build from the default branch — see
+   [docs/deployment.md](docs/deployment.md)).
+3. In the Cloud Agents dashboard, create an environment whose install
+   script is:
 
    ```sh
    if [ -f studio-tools/cloud/install.sh ]; then bash studio-tools/cloud/install.sh; fi
    ```
 
-4. Start an agent and ask it to run `studio-tools/cloud/check.sh --tests` and
-   report the output. Treat the environment as working only after that passes.
+4. Start an agent once and ask it to run `studio-tools/cloud/check.sh --tests`
+   and report the output. Treat the environment as working only after that
+   passes.
 
-Then, from the MacBook or from `cursor.com/agents` on a phone:
+**Each session on the phone:**
 
-> Follow studio-tools/AGENT_INSTRUCTIONS.md. Revise `nu`: … Render, accept,
-> publish, commit, and push.
+1. In Chrome, open `cursor.com/agents` (install as an app from Chrome’s
+   menu if you like). Choose this repository.
+2. Prompt, for example:
 
-Listen in the same viewer: locally with `studio serve`, or on the site at
-`/studio/` after the agent's branch is merged to the deployed branch. Play
-performs the `.csd` in the browser either way.
+   > Follow studio-tools/AGENT_INSTRUCTIONS.md. Revise `nu`: make the bells
+   > sparser in the second half. Render, accept, publish, commit, and push.
+
+3. When the agent has pushed, review the branch on GitHub. After that branch
+   is merged to the deployed branch, open the site’s `/studio/` address and
+   Play — the `.csd` performs in the phone’s browser.
+
+Until the cloud environment works, you can still listen on the phone to a
+viewer the Mac is serving (`studio serve --host 0.0.0.0`) while prompting
+in desktop Cursor; see [docs/usage.md](docs/usage.md).
+
+### Cloud Agents from desktop Cursor
+
+Same cloud environment as on the phone. In desktop Cursor you can start a
+Cloud Agent (instead of a local agent) so the work runs on Ubuntu and
+pushes a branch; useful when the Mac should not do the render. Prompting
+and the `studio` cycle are the same as above; listening is again the
+viewer after publish (local `studio serve` on a machine that has the
+branch, or `/studio/` on the site after merge).
 
 ## Commands
 
