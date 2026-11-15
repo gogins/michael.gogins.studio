@@ -15,10 +15,10 @@
 
 import { fetchText } from './catalog.js';
 import { h, replaceChildren, formatDuration } from './dom.js';
+import { appendMessages, clearMessages, revealMessages } from './messages.js';
 
 const ENGINE_URL = new URL('./csound/csound.js', import.meta.url);
 const TICK_MS = 100;
-const MAX_LOG_LINES = 3000;
 
 let enginePromise = null;
 let active = null; // the player that is loading, playing or paused
@@ -78,8 +78,6 @@ export function createPlayer({ id, csd, info }) {
   });
   const level = h('div', { class: 'meter-level' });
   const status = h('p', { class: 'player-status', role: 'status' });
-  const logText = h('pre', { class: 'player-log-text' });
-  const log = h('details', { class: 'player-log' }, h('summary', {}, 'Csound messages'), logText);
   const caption = h('p', { class: 'player-caption' },
     ['Performed in this browser by Csound (WebAssembly); no soundfile',
       duration ? formatDuration(duration) : null,
@@ -92,8 +90,7 @@ export function createPlayer({ id, csd, info }) {
     caption,
     info.browser_playable === false ? h('p', { class: 'player-warning' },
       'When this version was made, it did not perform in this Csound engine; it may not play.') : null,
-    status,
-    log);
+    status);
 
   let state = 'idle';
   let position = 0; // where Play starts from, and the time shown when not playing
@@ -102,8 +99,7 @@ export function createPlayer({ id, csd, info }) {
   let dragging = false;
   let completed = 0;
   let peak = 0;
-  const lines = [];
-  let logDirty = false;
+  const lines = []; // recent messages for this performance (compile-error lookup)
 
   function showTime(seconds) {
     root.dataset.time = String(Math.round(seconds * 100) / 100);
@@ -121,16 +117,10 @@ export function createPlayer({ id, csd, info }) {
     replaceChildren(status, message || '');
   }
 
-  function flushLog(force) {
-    if (!logDirty || !(force || log.open)) return;
-    logText.textContent = lines.join('\n');
-    logDirty = false;
-  }
-
   function note(message) {
     for (const line of String(message).split('\n')) lines.push(line);
-    if (lines.length > MAX_LOG_LINES) lines.splice(0, lines.length - MAX_LOG_LINES);
-    logDirty = true;
+    if (lines.length > 3000) lines.splice(0, lines.length - 3000);
+    appendMessages(message);
   }
 
   async function release(current) {
@@ -163,7 +153,6 @@ export function createPlayer({ id, csd, info }) {
         if (now > peak) { peak = now; root.dataset.peak = String(Math.round(peak * 10000) / 10000); }
         setLevel(now);
       }
-      flushLog(false);
     } catch (error) {
       // The performance is ending; the end event reports it.
     } finally {
@@ -184,7 +173,7 @@ export function createPlayer({ id, csd, info }) {
     root.dataset.peak = '0';
     setLevel(0);
     lines.length = 0;
-    logDirty = true;
+    clearMessages();
     setState('loading', 'Loading Csound…');
     if (!window.isSecureContext) {
       active = null;
@@ -223,7 +212,6 @@ export function createPlayer({ id, csd, info }) {
         position = 0;
         showTime(0);
         setLevel(0);
-        flushLog(false);
         setState('idle', 'Finished.');
         release(current);
       });
@@ -245,8 +233,7 @@ export function createPlayer({ id, csd, info }) {
       session = null;
       if (active === api) active = null;
       await release(current);
-      flushLog(true);
-      if (lines.length) log.open = true;
+      if (lines.length) revealMessages();
       setLevel(0);
       setState('error', error && error.message ? error.message : String(error));
     }
@@ -261,7 +248,6 @@ export function createPlayer({ id, csd, info }) {
     showTime(0);
     setLevel(0);
     setState('idle', '');
-    flushLog(false);
     await release(current);
   }
 
@@ -300,7 +286,6 @@ export function createPlayer({ id, csd, info }) {
     dragging = false;
     seekTo(Number(seek.value));
   });
-  log.addEventListener('toggle', () => flushLog(false));
 
   const api = { stop };
   root.dataset.completed = '0';

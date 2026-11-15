@@ -74,6 +74,19 @@ async function run() {
   result.state = state();
   result.catalogError = text('#catalog-error');
   result.emptyLibrary = text('#empty-library');
+  result.composeFormNew = Boolean(doc().getElementById('compose-form-new'));
+  result.composePromptNewDisabled = (() => {
+    const field = doc().getElementById('compose-prompt-new');
+    return field ? field.disabled : null;
+  })();
+  result.composeSubmitNewDisabled = (() => {
+    const button = doc().getElementById('compose-submit-new');
+    return button ? button.disabled : null;
+  })();
+  // Messages dock is always on screen (windowshade), never a disclosure arrow.
+  result.csoundMessages = Boolean(doc().getElementById('csound-messages'));
+  result.csoundMessagesShade = Boolean(doc().getElementById('csound-messages-shade'));
+  result.csoundMessagesDetails = Boolean(doc().querySelector('#csound-messages summary'));
   if (mode === 'real') return realSite(result);
   if (mode !== 'full') return result;
 
@@ -82,13 +95,27 @@ async function run() {
   result.libraryText = text('.library');
   result.overflow.library = overflow();
 
-  // A composition: versions and prompts.
+  // A composition: versions, prompts, and the revision prompt field.
   await show('#nu', 'version selector', () => doc().getElementById('version-select'));
   result.title = text('#composition-title');
   result.versions = all('#version-select option').map((option) => option.value);
   result.selected = doc().getElementById('version-select').value;
   result.prompts = all('.prompt pre').map((pre) => pre.textContent);
   result.newPrompts = all('.prompt.new h2').map((heading) => heading.textContent);
+  result.composeForm = Boolean(doc().getElementById('compose-form'));
+  result.composePrompt = Boolean(doc().getElementById('compose-prompt'));
+  result.composePromptDisabled = (() => {
+    const field = doc().getElementById('compose-prompt');
+    return field ? field.disabled : null;
+  })();
+  result.composeSubmitDisabled = (() => {
+    const button = doc().getElementById('compose-submit');
+    return button ? button.disabled : null;
+  })();
+  const messages = doc().getElementById('csound-messages');
+  const mainPlayer = doc().getElementById('player');
+  result.csoundMessagesOutsidePlayer = Boolean(
+    messages && mainPlayer && !mainPlayer.contains(messages));
   result.overflow.prompts = overflow();
 
   // Csound file of the current version.
@@ -351,6 +378,14 @@ class BrowserTests(Browser, StudioTestCase):
         result = self.browse("empty")
         self.assertEqual(result["state"], "ready")
         self.assertIn("No compositions have been published yet", result["emptyLibrary"])
+        self.assertIn("same catalog", result["emptyLibrary"])
+        # Prompt and Submit stay usable; Submit retries API discovery on click.
+        self.assertTrue(result["composeFormNew"])
+        self.assertFalse(result["composePromptNewDisabled"])
+        self.assertFalse(result["composeSubmitNewDisabled"])
+        self.assertTrue(result["csoundMessages"])
+        self.assertTrue(result["csoundMessagesShade"])
+        self.assertFalse(result["csoundMessagesDetails"])
 
     def test_browsing_versions_sources_and_audio(self):
         self.make_version(prompt="First prompt of nu.")
@@ -369,6 +404,15 @@ class BrowserTests(Browser, StudioTestCase):
         self.assertEqual(result["state"], "ready")
         self.assertEqual(result["library"], ["nu", "xi"])
         self.assertNotIn("hidden", json.dumps(result))
+        self.assertTrue(result["composeFormNew"])  # library form
+        self.assertTrue(result["composeForm"])  # revision form on the composition page
+        self.assertTrue(result["composePrompt"])
+        self.assertFalse(result["composePromptDisabled"])
+        self.assertFalse(result["composeSubmitDisabled"])
+        self.assertTrue(result["csoundMessages"])
+        self.assertTrue(result["csoundMessagesShade"])
+        self.assertFalse(result["csoundMessagesDetails"])
+        self.assertTrue(result["csoundMessagesOutsidePlayer"])
         self.assertEqual(result["title"], "nu")
         self.assertEqual(result["versions"], ["current", "version-0002", "version-0001"])
         self.assertEqual(result["selected"], "current")

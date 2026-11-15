@@ -52,20 +52,24 @@ class PreexistingFilesTests(unittest.TestCase):
         fields = done.stdout.split("\0")
         return [(fields[i], fields[i + 1]) for i in range(0, len(fields) - 1, 2)]
 
-    def assertOnlyAdditions(self, changes):
+    def assertAuthorizedStudioChanges(self, changes):
+        # After the studio landed on the default branch, authorized files may
+        # be modified in place. Additions and modifications stay inside the
+        # four studio directories; nothing else in the repository is touched.
         for status, path in changes:
-            self.assertEqual(status, "A", f"{path}: a file that existed before was changed ({status})")
+            self.assertIn(status[0], ("A", "M"),
+                          f"{path}: unexpected change ({status}); only add/modify in studio dirs")
             self.assertTrue(authorized(path), f"{path}: outside the authorized directories")
 
-    def test_commits_only_add_files_in_authorized_directories(self):
+    def test_commits_only_change_files_in_authorized_directories(self):
         merge_base = git("merge-base", BASE, "HEAD").stdout.strip()
         self.assertTrue(merge_base)
-        self.assertOnlyAdditions(self.changes(merge_base, "HEAD"))
+        self.assertAuthorizedStudioChanges(self.changes(merge_base, "HEAD"))
 
-    def test_working_tree_only_adds_files_in_authorized_directories(self):
+    def test_working_tree_only_changes_files_in_authorized_directories(self):
         merge_base = git("merge-base", BASE, "HEAD").stdout.strip()
         # Tracked files as they are on disk now, staged or not, against the base.
-        self.assertOnlyAdditions(self.changes(merge_base))
+        self.assertAuthorizedStudioChanges(self.changes(merge_base))
 
     def test_no_preexisting_file_is_modified_deleted_or_renamed(self):
         done = git("status", "--porcelain", "--no-renames", "-z")
@@ -155,13 +159,15 @@ class StudioFilesTests(unittest.TestCase):
             self.skipTest("viewer not present")
         names = sorted(p.name for p in viewer.iterdir() if p.is_file())
         self.assertIn("index.html", names)
+        self.assertIn("config.json", names)
         for name in names:
-            self.assertTrue(name.endswith((".html", ".js", ".css")), name)
+            self.assertTrue(name.endswith((".html", ".js", ".css", ".json")), name)
             text = (viewer / name).read_text(encoding="utf-8")
             self.assertFalse(text.startswith("---"), f"{name} would be processed by Jekyll")
-            self.assertIsNone(re.search(r"https?://", text), f"{name} refers to an absolute URL")
-            self.assertNotIn("innerHTML", text, name)
-            self.assertNotIn("eval(", text, name)
+            if name.endswith((".html", ".js", ".css")):
+                self.assertIsNone(re.search(r"https?://", text), f"{name} refers to an absolute URL")
+                self.assertNotIn("innerHTML", text, name)
+                self.assertNotIn("eval(", text, name)
         html = (viewer / "index.html").read_text(encoding="utf-8")
         for reference in re.findall(r'(?:src|href)="([^"#]+)"', html):
             if reference.startswith("../"):

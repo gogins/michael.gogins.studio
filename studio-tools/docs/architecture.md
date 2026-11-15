@@ -2,30 +2,32 @@
 
 ## Purpose
 
-The studio is a way of composing by conversation. The composer prompts an AI
-agent in Cursor, on the MacBook or through a Cursor Cloud Agent from a
-phone. The agent writes or revises a complete Csound piece, renders it, and
-keeps the result as a new version. The composer listens, compares and
-prompts again. It is not a digital audio workstation: there is no editing
-surface other than the prompt and the files.
+The studio is a way of composing by conversation. The composer prompts in
+Cursor (desktop or Cloud Agent) or in the viewer prompt field. Either path
+writes or revises a complete Csound piece, renders it, accepts it into the
+archive, and publishes it. Both paths share one archive and one catalog:
+a piece created in Cursor and a piece created in the viewer appear the same
+way in `docs/compositions/catalog.json`. The composer listens, compares and
+prompts again. It is not a digital audio workstation.
 
 ## Parts
 
 ```
-                 prompt
-  composer ───────────────► AI agent (Cursor desktop, or Cursor Cloud Agent)
-     ▲                            │  studio new / stage / prompt / run / render / accept
-     │                            ▼
+                 prompt                         prompt
+  composer ───────────────► Cursor agent          viewer (/api/v1/compose via studio serve)
+     ▲                    │ studio new/stage/…    │ same: stage → prompt → render → accept
+     │                    └──────────┬────────────┘
+     │                               ▼
      │               music/ai-compositions/         the archive (authoritative)
      │                 nu/  nu.csd, prompts, manifest, code/, outputs/
      │                 nu/version-0001/ ...          earlier versions, never changed
      │                            │  studio publish (copies; never changes the archive)
      │                            ▼
      │               docs/compositions/             published copies + catalog.json
-     │                            │  fetched with relative URLs, no server API
+     │                            │  catalog is the same for every entry path
      │                            ▼
-     └──────────────  docs/studio/                  the viewer (static)
-        listen, read, compare
+     └──────────────  docs/studio/                  the viewer (static + local compose API)
+        listen, read, compare; submit new / revise when serve provides /api/v1
 ```
 
 1. **Archive**, `music/ai-compositions/`. One directory per composition. The
@@ -69,8 +71,9 @@ relative, so they work under any site address and from `studio serve`.
 - **The archive and the published copies are separate.** Publishing copies
   selected files and never writes to the archive. What has not been
   published is not in `docs/` and is not served.
-- **No database, no service.** The catalog is a generated JSON file; the
-  viewer is static; the tools are command-line programs.
+- **No database.** The catalog is a generated JSON file. The viewer is
+  static on GitHub Pages; locally, `studio serve` may also expose `/api/v1`
+  so the same prompt field can create and revise pieces into that catalog.
 
 ## Tools package
 

@@ -8,7 +8,7 @@ import unittest
 
 from support import TOOLS, StudioTestCase, csd_text, soundfiles
 
-from studio import serve
+from studio import api, serve, versioning
 
 GENERATOR = '''\
 import os
@@ -163,6 +163,11 @@ class ServerTests(StudioTestCase):
         connection.close()
         return response, body
 
+    def test_api_disabled_without_studio(self):
+        response, body = self.get("/api/v1/status")
+        self.assertEqual(response.status, 503)
+        self.assertFalse(json.loads(body)["ok"])
+
     def test_whole_files_and_types(self):
         response, body = self.get("/compositions/catalog.json")
         self.assertEqual((response.status, body), (200, b'{"compositions": []}'))
@@ -192,6 +197,138 @@ class ServerTests(StudioTestCase):
         for path in ("/../secret.txt", "/compositions/../../secret.txt", "/%2e%2e/secret.txt"):
             response, body = self.get(path)
             self.assertNotIn(b"outside docs", body, path)
+
+
+class ComposeApiTests(StudioTestCase):
+    """Local compose API: prompt → render → accept → publish."""
+
+    def setUp(self):
+        super().setUp()
+        (self.root / "docs" / "compositions").mkdir(parents=True)
+        self.server = serve.make_server(self.studio.docs, "127.0.0.1", 0, quiet=True, studio=self.studio)
+        self.port = self.server.server_address[1]
+        self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
+        self.thread.start()
+
+    def tearDown(self):
+        self.server.shutdown()
+        self.server.server_close()
+        super().tearDown()
+
+    def request(self, method, path, body=None):
+        connection = http.client.HTTPConnection("127.0.0.1", self.port, timeout=60)
+        payload = None if body is None else json.dumps(body).encode("utf-8")
+        headers = {"Content-Type": "application/json"} if payload is not None else {}
+        connection.request(method, path, body=payload, headers=headers)
+        response = connection.getresponse()
+        data = response.read()
+        connection.close()
+        return response, json.loads(data.decode("utf-8")) if data else {}
+
+    def test_status_and_new_composition(self):
+        response, status = self.request("GET", "/api/v1/status")
+        self.assertEqual(response.status, 200)
+        self.assertTrue(status["ok"])
+        self.assertEqual(status["mode"], "local")
+        self.assertIn("compose_ai", status)
+
+        response, result = self.request("POST", "/api/v1/compose", {
+            "name": "xi",
+            "title": "Xi",
+            "prompt": "A short stub piece for the viewer field.",
+        })
+        self.assertEqual(response.status, 200, result)
+        self.assertTrue(result["ok"])
+        self.assertEqual(result["composition"], "xi")
+        self.assertEqual(result["version"], "current")
+        self.assertTrue((self.studio.composition_dir("xi") / "xi.csd").is_file())
+        catalog = json.loads((self.studio.published / "catalog.json").read_text())
+        self.assertEqual([c["name"] for c in catalog["compositions"]], ["xi"])
+
+    def test_revision_keeps_csd_without_hook(self):
+        self.make_version(name="nu", prompt="First.")
+        from studio import publish
+        publish.publish(self.studio, ["nu"])
+        before = (self.studio.composition_dir("nu") / "nu.csd").read_text(encoding="utf-8")
+        response, result = self.request("POST", "/api/v1/compose", {
+            "composition": "nu",
+            "prompt": "Revision from the viewer; keep the music.",
+        })
+        self.assertEqual(response.status, 200, result)
+        self.assertEqual(result["kind"], "revision")
+        self.assertEqual(result["ordinal"], 2)
+        after = (self.studio.composition_dir("nu") / "nu.csd").read_text(encoding="utf-8")
+        self.assertEqual(before, after)
+        prompts = list(self.studio.composition_dir("nu").glob("nu-prompt-*.md"))
+        self.assertEqual(len(prompts), 2)
+
+    def test_compose_rejects_empty_prompt(self):
+        response, result = self.request("POST", "/api/v1/compose", {"name": "bad", "prompt": "  "})
+        self.assertEqual(response.status, 409)
+        self.assertFalse(result["ok"])
+
+    def test_compose_requires_ai_without_allow_unchanged(self):
+        os.environ.pop("STUDIO_COMPOSE_ALLOW_UNCHANGED", None)
+        os.environ.pop("STUDIO_COMPOSE_HOOK", None)
+        os.environ.pop("ANTHROPIC_API_KEY", None)
+        os.environ.pop("STUDIO_COMPOSE_API_KEY", None)
+        response, result = self.request("POST", "/api/v1/compose", {
+            "name": "needsai",
+            "prompt": "Write a short drone.",
+        })
+        self.assertEqual(response.status, 409, result)
+        self.assertIn("ANTHROPIC_API_KEY", result.get("error", ""))
+
+    def test_compose_hook_rewrites_csd(self):
+        hook = self.tmp / "hook.py"
+        hook.write_text(
+            "import os\n"
+            "from pathlib import Path\n"
+            "name = os.environ['STUDIO_COMPOSITION']\n"
+            "staging = Path(os.environ['STUDIO_STAGING'])\n"
+            "text = (staging / '.compose-request.txt').read_text()\n"
+            "assert 'hook tone' in text\n"
+            f"staging.joinpath(name + '.csd').write_text({csd_text('FREQ=777')!r})\n",
+            encoding="utf-8",
+        )
+        os.environ["STUDIO_COMPOSE_HOOK"] = f"{os.environ['STUDIO_PYTHON']} {hook}"
+        response, result = self.request("POST", "/api/v1/compose", {
+            "name": "hooked",
+            "prompt": "Please make a hook tone.",
+        })
+        self.assertEqual(response.status, 200, result)
+        csd = (self.studio.composition_dir("hooked") / "hooked.csd").read_text(encoding="utf-8")
+        self.assertIn("FREQ=777", csd)
+
+    def test_api_module_direct(self):
+        result = api.compose(self.studio, name="direct", prompt="Direct call.")
+        self.assertTrue(result["ok"])
+        self.assertEqual(versioning.describe(self.studio, "direct")["ordinal"], 1)
+
+    def test_cursor_and_viewer_new_pieces_share_catalog_shape(self):
+        # Cursor path: new → prompt → csd → render → accept → publish.
+        staging_dir = self.prepare(name="from_cursor", prompt="Made in Cursor.")
+        versioning.accept(self.studio, staging_dir, ai_model="cursor-test", ai_agent="Cursor desktop")
+        from studio import publish
+        publish.publish(self.studio, ["from_cursor"])
+
+        # Viewer path: compose API (same accept + publish).
+        api.compose(self.studio, name="from_viewer", prompt="Made in the viewer.", title="From Viewer")
+
+        catalog = json.loads((self.studio.published / "catalog.json").read_text(encoding="utf-8"))
+        by_name = {c["name"]: c for c in catalog["compositions"]}
+        self.assertEqual(set(by_name), {"from_cursor", "from_viewer"})
+        for name, expected_title in (("from_cursor", "from_cursor"), ("from_viewer", "From Viewer")):
+            composition = by_name[name]
+            self.assertEqual(composition["title"], expected_title)
+            self.assertTrue(composition["versions"])
+            current = composition["versions"][0]
+            self.assertEqual(current["id"], "current")
+            self.assertTrue(current.get("is_current"))
+            self.assertEqual(current["ordinal"], 1)
+            self.assertTrue(current.get("csd"))
+            self.assertEqual(len(current["prompts"]), 1)
+            self.assertIn(current["prompts"][0]["sha256"], composition.get("prompt_texts") or {})
 
 
 if __name__ == "__main__":

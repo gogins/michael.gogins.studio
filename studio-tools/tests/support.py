@@ -97,13 +97,17 @@ class StudioTestCase(unittest.TestCase):
         self.bin = self.tmp / "bin"
         self.bin.mkdir()
         for variable in ("STUDIO_FAULT_AT", "STUDIO_FAULT_MODE", "STUDIO_ROOT", "STUDIO_AI_MODEL",
-                         "STUDIO_AI_AGENT", "STUDIO_SEED"):
+                         "STUDIO_AI_AGENT", "STUDIO_SEED", "STUDIO_COMPOSE_HOOK",
+                         "STUDIO_COMPOSE_MODEL", "STUDIO_COMPOSE_AGENT", "STUDIO_SKIP_BROWSER_CHECK",
+                         "STUDIO_COMPOSE_API_KEY", "ANTHROPIC_API_KEY"):
             os.environ.pop(variable, None)
         if self.use_fake_tools:
             os.environ["STUDIO_CSOUND"] = str(write_executable(self.bin / "csound", FAKE_CSOUND))
         # Tests that exercise the viewer's engine turn this on themselves.
         os.environ["STUDIO_CSOUND_WASM"] = "none"
         os.environ["STUDIO_PYTHON"] = sys.executable
+        # Tests keep the prior/stub .csd unless they set a compose hook or AI key.
+        os.environ["STUDIO_COMPOSE_ALLOW_UNCHANGED"] = "1"
         # The tests configure everything themselves; no environment file.
         os.environ["STUDIO_ENV_FILE"] = ""
         os.environ.pop("STUDIO_ENV_LOADED", None)

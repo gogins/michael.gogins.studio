@@ -10,16 +10,20 @@
 </head>
 <body>
 <header class="site-header">
-  <a class="site-title" href="#">AI Composition Studio</a>
-  <a class="site-home" href="../">Michael Gogins</a>
+  <div class="site-header-row">
+    <a class="site-title" href="#">AI Composition Studio</a>
+    <a class="site-home" href="../">Michael Gogins</a>
+  </div>
+  <p class="site-readiness" id="site-readiness" role="status">Checking compose…</p>
 </header>
 <main id="app" aria-live="polite">
   <p class="status">Loading the catalog…</p>
 </main>
+<footer class="site-footer" id="footer"></footer>
+<div id="csound-messages-host"></div>
 <noscript>
   <p class="status">This viewer needs JavaScript. The published files are in
   <a href="../compositions/">../compositions/</a>.</p>
 </noscript>
-<footer class="site-footer" id="footer"></footer>
 </body>
 </html>

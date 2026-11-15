@@ -37,8 +37,18 @@ Cursor Cloud Agents alike. The human-readable documentation is in
   | instrument | time | duration | MIDI key | MIDI velocity | depth (front to back) | pan (left to right) | height | phase | pitch-class set | homogeneity |
 
 - Set `0dbfs = 1`. Do not rely on real-time output; the studio renders to a file.
-- Keep demonstration and test pieces short. Rendered audio is committed to
-  Git: a FLAC master and an MP3 for each version.
+- Keep demonstration and test pieces short. No soundfiles in the archive or
+  in Git: listening is real-time performance of the published `.csd` in the
+  viewer.
+
+## One catalog, two ways in
+
+A new piece may be created in Cursor (these commands) or in the viewer
+prompt field (`studio serve` → `/api/v1/compose`). Both paths must finish
+with `accept` and `publish` so the piece lands in the same archive
+(`music/ai-compositions/`) and the same catalog (`docs/compositions/catalog.json`).
+Do not leave a finished piece accepted but unpublished: the viewer only
+lists what has been published.
 
 ## Workflow
 
@@ -70,9 +80,10 @@ Use `studio-tools/bin/studio`. Run `studio env` first in a new environment.
    The previous current version is archived as the next `version-NNNN/` and
    the staged one becomes current. State your model truthfully.
 6. Check: `studio verify NAME`.
-7. Publish only when the user asks for it: `studio publish NAME`
-   (try `--dry-run` first). Published files become public once the branch
-   is deployed.
+7. Publish: `studio publish NAME` (try `--dry-run` first). Always publish
+   after a successful accept when the piece should appear in the viewer,
+   the same as a viewer-submitted composition. Published files become
+   public once the branch is deployed.
 8. Commit only the studio's directories, and say what you committed:
    `git add -- music/ai-compositions docs/compositions docs/studio studio-tools`.
    Never use `git add -A` or `git add .` in this repository.

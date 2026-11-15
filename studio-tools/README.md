@@ -40,8 +40,9 @@ Everything belonging to the studio is in four directories of this repository:
 Listening is the same on every device: the viewer performs the published
 `.csd` with official Csound 7 for WebAssembly (`@csound/browser`). No
 soundfile is stored. The work is always compose → render → accept →
-publish; what changes is whether an agent on your Mac or in the cloud does
-it, and where you open the viewer.
+publish. You can start a new piece in Cursor or in the viewer prompt field;
+both use the same archive and the same `catalog.json`, so either path lists
+the piece the same way in the library.
 
 Use the branch that has the studio (today: `feature/ai-composition-studio`).
 Begin agent prompts with “Follow studio-tools/AGENT_INSTRUCTIONS.md”
@@ -66,10 +67,27 @@ installed (see [cursor/INSTALL.md](cursor/INSTALL.md)).
    > `xi`: three minutes, slow bowed-string drones in just intonation.
    > Write the score with Python and CsoundAC. Render, accept, and publish it.
 
-4. Listen: ask the agent to run `studio serve`, or run it yourself, and open
-   `http://127.0.0.1:8000/studio/` in a browser on the Mac.
+4. Listen and prompt in the viewer. In the **same** terminal that will run
+   the server, export an Anthropic key so Submit can rewrite the `.csd`:
 
-You can drive the same commands in the terminal without the agent
+   ```sh
+   export ANTHROPIC_API_KEY="…"          # required for viewer Submit to change the music
+   export PATH="$PWD/studio-tools/bin:$PATH"
+   studio serve
+   ```
+
+   Open `http://127.0.0.1:8000/studio/` in Chrome or Safari. **Submit new
+   version** records the prompt, calls the model to rewrite the staged
+   `.csd`, then renders, accepts and publishes. Alternatively set
+   `STUDIO_COMPOSE_HOOK` to a command that writes the `.csd` yourself.
+   Without a key or hook, Submit refuses rather than republishing the same music.
+
+The same viewer on GitHub Pages shows the field but cannot compose until
+`docs/studio/config.json` sets `composeApi` to a hosted service that
+implements that API (Pages alone is static). Until then, use local
+`studio serve` or Cursor for compose.
+
+You can still drive the same commands in the terminal without the agent
 (`studio new` / `stage` / `prompt` / `run` / `render` / `accept` /
 `publish`). Nothing enters the archive until `accept`, and `accept`
 refuses a staging area that has not rendered successfully. More detail:

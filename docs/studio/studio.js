@@ -10,8 +10,10 @@ import {
   CATALOG_URL, fetchText, fileUrl, findComposition, findVersion, loadCatalog, promptParts,
   versionLabel,
 } from './catalog.js';
+import { discoverComposeApi, resetComposeDiscovery, submitCompose } from './compose.js';
 import { diffLines, hunks, summarize } from './diff.js';
 import { h, replaceChildren, formatBytes, formatDate, formatDuration } from './dom.js';
+import { clearMessages, mountMessagesPanel } from './messages.js';
 import { createPlayer, stopAllPlayers } from './player.js';
 
 const TABS = [
@@ -26,9 +28,12 @@ const MAX_INLINE_BYTES = 1500000;
 
 const app = document.getElementById('app');
 const footer = document.getElementById('footer');
+const readiness = document.getElementById('site-readiness');
 let catalog = null;
+let composeApi = null; // { base, status } or null
 const compareChoice = new Map(); // composition name -> { other, what }
 let renderToken = 0;
+let composing = false;
 
 function setState(state) {
   document.documentElement.dataset.studioState = state;
@@ -57,12 +62,15 @@ function go(name, version, tab) {
 
 function renderLibrary() {
   document.title = 'AI Composition Studio';
+  clearMessages();
   if (catalog.compositions.length === 0) {
     replaceChildren(app,
       h('h1', {}, 'Compositions'),
       h('p', { class: 'status', id: 'empty-library' },
-        'No compositions have been published yet. Publish one with ',
-        h('code', {}, 'studio-tools/bin/studio publish NAME'), '.'));
+        'No compositions have been published yet. Create one with the prompt field below, or in Cursor with ',
+        h('code', {}, 'studio new'), ' … ', h('code', {}, 'studio publish'),
+        ' — both land in the same catalog.'),
+      composeForm({ mode: 'new' }));
     return;
   }
   const items = catalog.compositions.map((composition) => {
@@ -79,7 +87,10 @@ function renderLibrary() {
           ? h('span', { class: 'card-name' }, composition.name) : null,
         h('span', { class: 'card-details' }, details)));
   });
-  replaceChildren(app, h('h1', {}, 'Compositions'), h('ul', { class: 'library' }, items));
+  replaceChildren(app,
+    h('h1', {}, 'Compositions'),
+    h('ul', { class: 'library' }, items),
+    composeForm({ mode: 'new' }));
 }
 
 // ------------------------------------------------------------ composition
@@ -145,15 +156,207 @@ function buildComposition(composition, version) {
 
   const panel = h('section', { class: 'panel', id: 'panel' });
   const isNewComposition = !view || view.composition !== composition;
+  // Messages dock is mounted once at the bottom of the window; clear it when
+  // the composition or version changes (or a new piece is created).
+  clearMessages();
   replaceChildren(app,
     h('p', { class: 'back' }, h('a', { href: '#' }, '← All compositions')),
     h('h1', { id: 'composition-title' }, composition.title || composition.name),
     versionBar,
     createPlayer({ id: 'player', csd: version.csd, info: version.info }),
+    composeForm({ mode: 'revision', composition: composition.name }),
     tabBar,
     panel);
   view = { composition, version, tabBar, panel };
-  if (isNewComposition) window.scrollTo(0, 0);
+  if (isNewComposition) app.scrollTop = 0;
+}
+
+// --------------------------------------------------------------- compose
+
+function composeAvailabilityNote() {
+  if (composeApi) {
+    const st = composeApi.status || {};
+    if (st.compose_hook) {
+      return 'Submit runs your compose hook to rewrite the .csd, then renders, accepts and publishes.';
+    }
+    if (st.compose_ai) {
+      return `Submit rewrites the .csd with ${st.compose_model || 'the configured model'}, `
+        + 'then renders, accepts and publishes.';
+    }
+    return st.message
+      || 'Compose API is up, but no AI key is configured for studio serve.';
+  }
+  return 'Compose API not found. Keep studio serve running, then open '
+    + 'http://127.0.0.1:8000/studio/ in Chrome or Safari (not only a Cursor preview). '
+    + `This tab is: ${window.location.href}`;
+}
+
+function composeForm({ mode, composition }) {
+  const status = h('p', {
+    class: 'compose-status status',
+    id: mode === 'new' ? 'compose-status-new' : 'compose-status',
+  }, composeAvailabilityNote());
+  // Prompt, name/title, and Submit stay usable for drafting and for retrying
+  // API discovery; Submit only locks while a compose job is running.
+  const nameInput = mode === 'new'
+    ? h('input', {
+      type: 'text', id: 'compose-name', name: 'name',
+      maxlength: '64',
+      placeholder: 'name (e.g. xi)', autocomplete: 'off', disabled: composing,
+      'aria-label': 'Composition name',
+    })
+    : null;
+  const titleInput = mode === 'new'
+    ? h('input', {
+      type: 'text', id: 'compose-title', name: 'title',
+      placeholder: 'Title (optional)', disabled: composing, 'aria-label': 'Title',
+    })
+    : null;
+  const textarea = h('textarea', {
+    id: mode === 'new' ? 'compose-prompt-new' : 'compose-prompt',
+    name: 'prompt',
+    rows: '5',
+    placeholder: mode === 'new'
+      ? 'Describe the new composition…'
+      : 'Describe the next version of this composition…',
+    disabled: composing,
+    'aria-label': 'Prompt',
+  });
+  const button = h('button', {
+    type: 'submit',
+    id: mode === 'new' ? 'compose-submit-new' : 'compose-submit',
+    class: 'compose-submit',
+    disabled: composing,
+  }, composing ? 'Working…' : (mode === 'new' ? 'Create composition' : 'Submit new version'));
+
+  const form = h('form', {
+    class: composeApi ? 'compose' : 'compose unavailable',
+    id: mode === 'new' ? 'compose-form-new' : 'compose-form',
+    // Own validation so an empty field shows in the status line (browser
+    // "required" often blocks submit with no obvious feedback here).
+    novalidate: true,
+    onsubmit: (event) => {
+      event.preventDefault();
+      if (composing) return;
+      const prompt = textarea.value.trim();
+      if (!prompt) {
+        status.className = 'compose-status status error';
+        status.textContent = 'Enter a prompt before submitting.';
+        textarea.focus();
+        return;
+      }
+      let body;
+      if (mode === 'new') {
+        const name = nameInput.value.trim();
+        if (!/^[A-Za-z0-9][A-Za-z0-9_]{0,63}$/.test(name)) {
+          status.className = 'compose-status status error';
+          status.textContent = 'Name must be 1–64 letters, digits or underscores, starting with a letter or digit.';
+          nameInput.focus();
+          return;
+        }
+        const title = titleInput.value.trim();
+        body = { name, title: title || undefined, prompt };
+      } else {
+        body = { composition, prompt };
+      }
+      runCompose(body, status, form, button);
+    },
+  },
+    button,
+    mode === 'new'
+      ? h('div', { class: 'compose-fields' }, nameInput, titleInput)
+      : null,
+    textarea,
+    status);
+
+  // If serve started after this tab loaded, pick up /api/v1 without a full rebuild.
+  if (!composeApi) {
+    refreshComposeApi().then((api) => {
+      if (!api || !form.isConnected || composing) return;
+      form.className = 'compose';
+      status.className = 'compose-status status';
+      status.textContent = composeAvailabilityNote();
+      updateFooterComposeHint();
+    });
+  }
+  return form;
+}
+
+async function refreshComposeApi() {
+  resetComposeDiscovery();
+  composeApi = await discoverComposeApi({ force: true });
+  return composeApi;
+}
+
+function updateFooterComposeHint() {
+  if (footer) {
+    const bits = [];
+    if (catalog && catalog.generated_at) bits.push(`Catalog ${formatDate(catalog.generated_at)}`);
+    if (composeApi && composeApi.base) bits.push(composeApi.base);
+    replaceChildren(footer, bits.join(' · ') || '');
+  }
+  updateSiteReadiness();
+}
+
+function updateSiteReadiness() {
+  if (!readiness) return;
+  if (!composeApi) {
+    readiness.className = 'site-readiness warning';
+    replaceChildren(readiness,
+      'Compose offline — run studio serve and open http://127.0.0.1:8000/studio/');
+    return;
+  }
+  const st = composeApi.status || {};
+  if (st.compose_hook || st.compose_ai) {
+    readiness.className = 'site-readiness ready';
+    replaceChildren(readiness,
+      st.compose_hook
+        ? 'Compose ready (hook) — Submit rewrites the .csd, then publishes.'
+        : `Compose ready (${st.compose_model || 'AI'}) — Submit rewrites the .csd, then publishes.`);
+    return;
+  }
+  readiness.className = 'site-readiness warning';
+  replaceChildren(readiness,
+    'Compose API up, but no AI key — export ANTHROPIC_API_KEY and restart studio serve.');
+}
+
+async function runCompose(body, statusEl, form, submit) {
+  const showStatus = (text, kind = '') => {
+    statusEl.className = kind === 'error' ? 'compose-status status error' : 'compose-status status';
+    statusEl.textContent = text;
+    try { statusEl.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (_) { /* old browsers */ }
+  };
+
+  if (!composeApi) {
+    showStatus('Looking for the compose API…');
+    await refreshComposeApi();
+    if (!composeApi) {
+      showStatus(composeAvailabilityNote(), 'error');
+      return;
+    }
+    form.className = 'compose';
+    updateFooterComposeHint();
+  }
+  composing = true;
+  showStatus('Submitting… rendering and publishing may take a minute.');
+  form.querySelectorAll('button, input, textarea').forEach((el) => { el.disabled = true; });
+  submit = submit || form.querySelector('button[type="submit"]');
+  if (submit) submit.textContent = 'Working…';
+  try {
+    const result = await submitCompose(body);
+    showStatus(result.message || 'Published.');
+    catalog = await loadCatalog();
+    composing = false;
+    go(result.composition, result.version || 'current', 'prompts');
+  } catch (error) {
+    composing = false;
+    showStatus(error.message || String(error), 'error');
+    form.querySelectorAll('input, textarea').forEach((el) => { el.disabled = false; });
+    if (submit) {
+      submit.disabled = false;
+      submit.textContent = body.composition ? 'Submit new version' : 'Create composition';
+    }
+  }
 }
 
 function tabCount(id, version) {
@@ -446,6 +649,7 @@ function render() {
   if (!composition) {
     view = null;
     stopAllPlayers();
+    clearMessages();
     replaceChildren(app,
       h('p', { class: 'back' }, h('a', { href: '#' }, '← All compositions')),
       h('p', { class: 'status error', id: 'not-found' }, `There is no published composition named “${name}”.`));
@@ -460,6 +664,8 @@ function render() {
 
 async function main() {
   setState('loading');
+  mountMessagesPanel();
+  updateSiteReadiness();
   try {
     catalog = await loadCatalog();
   } catch (error) {
@@ -469,12 +675,20 @@ async function main() {
         `The catalog could not be loaded (${error.message}). `,
         'It is expected at ', h('code', {}, new URL(CATALOG_URL).pathname), '.'));
     setState('error');
+    updateSiteReadiness();
     return;
   }
-  if (catalog.generated_at) {
-    replaceChildren(footer, `Catalog generated ${formatDate(catalog.generated_at)}`);
-  }
+  composeApi = await discoverComposeApi({ force: true });
+  updateFooterComposeHint();
   window.addEventListener('hashchange', render);
+  window.addEventListener('focus', () => {
+    refreshComposeApi().then(() => {
+      updateFooterComposeHint();
+      if (document.getElementById('compose-form') || document.getElementById('compose-form-new')) {
+        render();
+      }
+    });
+  });
   render();
 }
 
