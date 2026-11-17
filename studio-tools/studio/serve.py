@@ -25,7 +25,7 @@ from pathlib import Path
 from typing import Any, Optional, Tuple
 from urllib.parse import urlparse
 
-from . import api as compose_api
+from . import compose
 from .paths import Studio, StudioError
 
 _RANGE = re.compile(r"^bytes=(\d*)-(\d*)$")
@@ -204,13 +204,13 @@ class StaticHandler(SimpleHTTPRequestHandler):
             return
         try:
             if route in ("", "status") and method in ("GET", "HEAD"):
-                self._send_json(HTTPStatus.OK, compose_api.status())
+                self._send_json(HTTPStatus.OK, compose.status())
                 return
             if route == "compose" and method == "POST":
                 body = self._read_json()
                 if not isinstance(body, dict):
                     raise ComposeRequestError("JSON object required")
-                result = compose_api.compose(
+                result = compose.compose(
                     self.studio,
                     prompt=str(body.get("prompt") or ""),
                     composition=body.get("composition") or None,

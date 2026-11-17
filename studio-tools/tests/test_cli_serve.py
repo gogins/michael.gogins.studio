@@ -8,7 +8,7 @@ import unittest
 
 from support import TOOLS, StudioTestCase, csd_text, soundfiles
 
-from studio import api, serve, versioning
+from studio import compose, serve, versioning
 
 GENERATOR = '''\
 import os
@@ -300,8 +300,8 @@ class ComposeApiTests(StudioTestCase):
         csd = (self.studio.composition_dir("hooked") / "hooked.csd").read_text(encoding="utf-8")
         self.assertIn("FREQ=777", csd)
 
-    def test_api_module_direct(self):
-        result = api.compose(self.studio, name="direct", prompt="Direct call.")
+    def test_compose_module_direct(self):
+        result = compose.compose(self.studio, name="direct", prompt="Direct call.")
         self.assertTrue(result["ok"])
         self.assertEqual(versioning.describe(self.studio, "direct")["ordinal"], 1)
 
@@ -312,8 +312,8 @@ class ComposeApiTests(StudioTestCase):
         from studio import publish
         publish.publish(self.studio, ["from_cursor"])
 
-        # Viewer path: compose API (same accept + publish).
-        api.compose(self.studio, name="from_viewer", prompt="Made in the viewer.", title="From Viewer")
+        # Viewer path: compose module (same accept + publish).
+        compose.compose(self.studio, name="from_viewer", prompt="Made in the viewer.", title="From Viewer")
 
         catalog = json.loads((self.studio.published / "catalog.json").read_text(encoding="utf-8"))
         by_name = {c["name"]: c for c in catalog["compositions"]}
