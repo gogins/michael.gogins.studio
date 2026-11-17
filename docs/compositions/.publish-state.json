@@ -7,7 +7,7 @@
     },
     "nu/nu-manifest.json": {
       "kind": "manifest",
-      "sha256": "4ff336c5248977b55ab629d82629c755721b00cb834d1ee3b55c97d09dc6c1cf",
+      "sha256": "57c7d68d6f1c7b085eeb4a220230aecdeda65abe6e469a4798994f3d7edb0973",
       "source": "music/ai-compositions/nu/nu-manifest.json"
     },
     "nu/nu-prompt-001.md": {
@@ -27,23 +27,8 @@
     },
     "nu/nu-prompt-004.md": {
       "kind": "prompts",
-      "sha256": "1ea933beb578fed7d1f3a5274ed8f05fb2357fd8f6ee71cde5bda9af08136f8d",
+      "sha256": "bcbc52ff3e465597480d404c214a02970a2512326ff364ceeabc044009cab8f3",
       "source": "music/ai-compositions/nu/nu-prompt-004.md"
-    },
-    "nu/nu-prompt-005.md": {
-      "kind": "prompts",
-      "sha256": "f94031cf4dfb7f47533db6df04cfa534892461f57fc1d4a700c405652a4ae3a1",
-      "source": "music/ai-compositions/nu/nu-prompt-005.md"
-    },
-    "nu/nu-prompt-006.md": {
-      "kind": "prompts",
-      "sha256": "750acd16db5c806deea5f0660c2c78ecc903ce5545750b6ab98dd306f8b66331",
-      "source": "music/ai-compositions/nu/nu-prompt-006.md"
-    },
-    "nu/nu-prompt-007.md": {
-      "kind": "prompts",
-      "sha256": "1a286812ed6230e4c6c0c8d7d54720a8a060b62da39e7685e2e22bfe5ed337d1",
-      "source": "music/ai-compositions/nu/nu-prompt-007.md"
     },
     "nu/nu.csd": {
       "kind": "csd",
@@ -119,126 +104,6 @@
       "kind": "csd",
       "sha256": "30fe0eb239ab7ae828dbfae40a7667ddd107ef66e0322d338df7d403f7ec49bb",
       "source": "music/ai-compositions/nu/version-0003/nu.csd"
-    },
-    "nu/version-0004/code/nu-generate.py": {
-      "kind": "code",
-      "sha256": "49687c86a722a31940d4c24da739e8241e705416774f10e0f341be6bb6a9d6fa",
-      "source": "music/ai-compositions/nu/version-0004/code/nu-generate.py"
-    },
-    "nu/version-0004/nu-manifest.json": {
-      "kind": "manifest",
-      "sha256": "6525954320b1f6e784f83226df7ec5468513c6e8c485a41a34dbfa08f55c2f40",
-      "source": "music/ai-compositions/nu/version-0004/nu-manifest.json"
-    },
-    "nu/version-0004/nu-prompt-001.md": {
-      "kind": "prompts",
-      "sha256": "9541e095bf039cc2a82a02f4d3b80b4f3a218fc4288c83a2b3caf97d8d903054",
-      "source": "music/ai-compositions/nu/version-0004/nu-prompt-001.md"
-    },
-    "nu/version-0004/nu-prompt-002.md": {
-      "kind": "prompts",
-      "sha256": "ca4c3922c0f22aba2f7b10c6a4b4959091a87b1ce1c93298fadc71ef3511c53d",
-      "source": "music/ai-compositions/nu/version-0004/nu-prompt-002.md"
-    },
-    "nu/version-0004/nu-prompt-003.md": {
-      "kind": "prompts",
-      "sha256": "579fed5dd7813a1355e62921e84f5060c802790fc7a20bfa0c6e7940e2fcbff4",
-      "source": "music/ai-compositions/nu/version-0004/nu-prompt-003.md"
-    },
-    "nu/version-0004/nu-prompt-004.md": {
-      "kind": "prompts",
-      "sha256": "1ea933beb578fed7d1f3a5274ed8f05fb2357fd8f6ee71cde5bda9af08136f8d",
-      "source": "music/ai-compositions/nu/version-0004/nu-prompt-004.md"
-    },
-    "nu/version-0004/nu.csd": {
-      "kind": "csd",
-      "sha256": "30fe0eb239ab7ae828dbfae40a7667ddd107ef66e0322d338df7d403f7ec49bb",
-      "source": "music/ai-compositions/nu/version-0004/nu.csd"
-    },
-    "nu/version-0005/code/nu-generate.py": {
-      "kind": "code",
-      "sha256": "49687c86a722a31940d4c24da739e8241e705416774f10e0f341be6bb6a9d6fa",
-      "source": "music/ai-compositions/nu/version-0005/code/nu-generate.py"
-    },
-    "nu/version-0005/nu-manifest.json": {
-      "kind": "manifest",
-      "sha256": "6f8e73634f4ce79a11a62beaec335a9a7978449cabb0b28b4464ba272cefe20d",
-      "source": "music/ai-compositions/nu/version-0005/nu-manifest.json"
-    },
-    "nu/version-0005/nu-prompt-001.md": {
-      "kind": "prompts",
-      "sha256": "9541e095bf039cc2a82a02f4d3b80b4f3a218fc4288c83a2b3caf97d8d903054",
-      "source": "music/ai-compositions/nu/version-0005/nu-prompt-001.md"
-    },
-    "nu/version-0005/nu-prompt-002.md": {
-      "kind": "prompts",
-      "sha256": "ca4c3922c0f22aba2f7b10c6a4b4959091a87b1ce1c93298fadc71ef3511c53d",
-      "source": "music/ai-compositions/nu/version-0005/nu-prompt-002.md"
-    },
-    "nu/version-0005/nu-prompt-003.md": {
-      "kind": "prompts",
-      "sha256": "579fed5dd7813a1355e62921e84f5060c802790fc7a20bfa0c6e7940e2fcbff4",
-      "source": "music/ai-compositions/nu/version-0005/nu-prompt-003.md"
-    },
-    "nu/version-0005/nu-prompt-004.md": {
-      "kind": "prompts",
-      "sha256": "1ea933beb578fed7d1f3a5274ed8f05fb2357fd8f6ee71cde5bda9af08136f8d",
-      "source": "music/ai-compositions/nu/version-0005/nu-prompt-004.md"
-    },
-    "nu/version-0005/nu-prompt-005.md": {
-      "kind": "prompts",
-      "sha256": "f94031cf4dfb7f47533db6df04cfa534892461f57fc1d4a700c405652a4ae3a1",
-      "source": "music/ai-compositions/nu/version-0005/nu-prompt-005.md"
-    },
-    "nu/version-0005/nu.csd": {
-      "kind": "csd",
-      "sha256": "30fe0eb239ab7ae828dbfae40a7667ddd107ef66e0322d338df7d403f7ec49bb",
-      "source": "music/ai-compositions/nu/version-0005/nu.csd"
-    },
-    "nu/version-0006/code/nu-generate.py": {
-      "kind": "code",
-      "sha256": "49687c86a722a31940d4c24da739e8241e705416774f10e0f341be6bb6a9d6fa",
-      "source": "music/ai-compositions/nu/version-0006/code/nu-generate.py"
-    },
-    "nu/version-0006/nu-manifest.json": {
-      "kind": "manifest",
-      "sha256": "70d6a59f55762f83852e0c8bbc83535475cf14be956e6be6e498b9f70b67b224",
-      "source": "music/ai-compositions/nu/version-0006/nu-manifest.json"
-    },
-    "nu/version-0006/nu-prompt-001.md": {
-      "kind": "prompts",
-      "sha256": "9541e095bf039cc2a82a02f4d3b80b4f3a218fc4288c83a2b3caf97d8d903054",
-      "source": "music/ai-compositions/nu/version-0006/nu-prompt-001.md"
-    },
-    "nu/version-0006/nu-prompt-002.md": {
-      "kind": "prompts",
-      "sha256": "ca4c3922c0f22aba2f7b10c6a4b4959091a87b1ce1c93298fadc71ef3511c53d",
-      "source": "music/ai-compositions/nu/version-0006/nu-prompt-002.md"
-    },
-    "nu/version-0006/nu-prompt-003.md": {
-      "kind": "prompts",
-      "sha256": "579fed5dd7813a1355e62921e84f5060c802790fc7a20bfa0c6e7940e2fcbff4",
-      "source": "music/ai-compositions/nu/version-0006/nu-prompt-003.md"
-    },
-    "nu/version-0006/nu-prompt-004.md": {
-      "kind": "prompts",
-      "sha256": "1ea933beb578fed7d1f3a5274ed8f05fb2357fd8f6ee71cde5bda9af08136f8d",
-      "source": "music/ai-compositions/nu/version-0006/nu-prompt-004.md"
-    },
-    "nu/version-0006/nu-prompt-005.md": {
-      "kind": "prompts",
-      "sha256": "f94031cf4dfb7f47533db6df04cfa534892461f57fc1d4a700c405652a4ae3a1",
-      "source": "music/ai-compositions/nu/version-0006/nu-prompt-005.md"
-    },
-    "nu/version-0006/nu-prompt-006.md": {
-      "kind": "prompts",
-      "sha256": "750acd16db5c806deea5f0660c2c78ecc903ce5545750b6ab98dd306f8b66331",
-      "source": "music/ai-compositions/nu/version-0006/nu-prompt-006.md"
-    },
-    "nu/version-0006/nu.csd": {
-      "kind": "csd",
-      "sha256": "0f3615b05da595d9ce69325f02f03381d6a1877f857f7891928c2cd2af2884d8",
-      "source": "music/ai-compositions/nu/version-0006/nu.csd"
     }
   },
   "schema": "ai-composition-studio/publish-state/1"

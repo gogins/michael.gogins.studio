@@ -6,9 +6,10 @@
 #   the CsoundAC WebAssembly build (from a csound-wasm release), Node.js,
 #   Node.js, and a C++ toolchain.
 #
-# STATUS: this script has NOT been run on Linux. It was written on macOS,
-# where neither Docker nor a Cloud Agent was available, from the recipes that
-# the Csound and CsoundAC projects use themselves:
+# STATUS: verified on Ubuntu 24.04 (Cursor's Cloud Agent image). That image
+# leaves /usr/bin/c++ pointing at clang, which cannot link libstdc++. The
+# packages step selects g++, and the Csound builds pass gcc/g++ to CMake.
+# It was written from the recipes that the Csound and CsoundAC projects use:
 #
 #   csound/BUILD.md ("Ubuntu Linux")
 #   csound-ac/.github/workflows/cmake.yml (the "Linux" job: package list,
@@ -50,6 +51,12 @@ CSOUND_WASM_REPO=${CSOUND_WASM_REPO:-gogins/csound-wasm}
 CSOUND_WASM_RELEASE=${CSOUND_WASM_RELEASE:-v4.1.2-beta}
 CSOUND_WASM_ASSET=${CSOUND_WASM_ASSET:-csound-wasm-4.0.0-beta.zip}
 STUDIO_JOBS=${STUDIO_JOBS:-$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo 2)}
+# Cursor's default image points /usr/bin/c++ at clang. That clang selects the
+# GCC 14 installation, which has no libstdc++ development symlink, so CMake's
+# compiler test fails with "cannot find -lstdc++". Csound's Ubuntu recipe
+# uses g++. Honor an explicit CC/CXX; otherwise force the GNU compilers.
+export CC="${CC:-gcc}"
+export CXX="${CXX:-g++}"
 
 TOOLS_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 
@@ -98,6 +105,12 @@ step_packages() {
         liblo-dev libffi-dev libcurl4-openssl-dev \
         doxygen graphviz \
         nodejs
+    # The image's c++ alternative is clang in manual mode. Clang selects the
+    # GCC 14 installation, which has no libstdc++ headers, so CMake and
+    # studio-cxx fail. g++ is already the higher-priority alternative.
+    if [ -x /usr/bin/g++ ] && update-alternatives --display c++ >/dev/null 2>&1; then
+        as_root update-alternatives --set c++ /usr/bin/g++
+    fi
 }
 
 step_csound() {
@@ -105,6 +118,8 @@ step_csound() {
     mkdir -p "$STUDIO_SOURCE_DIR" "$STUDIO_PREFIX"
     fetch "$CSOUND_REPO" "$STUDIO_SOURCE_DIR/csound" "$CSOUND_REF"
     cmake -S "$STUDIO_SOURCE_DIR/csound" -B "$STUDIO_SOURCE_DIR/csound/build-studio" -G Ninja \
+        -DCMAKE_C_COMPILER="$CC" \
+        -DCMAKE_CXX_COMPILER="$CXX" \
         -DCMAKE_BUILD_TYPE=Release \
         -DBUILD_TESTS=OFF \
         -DBUILD_JAVA_INTERFACE=OFF \
@@ -127,6 +142,8 @@ step_csoundac() {
     fetch "$CSOUNDAC_REPO" "$STUDIO_SOURCE_DIR/csound-ac" "$CSOUNDAC_REF"
     export LD_LIBRARY_PATH="$STUDIO_PREFIX/lib:$STUDIO_PREFIX/lib64${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
     cmake -S "$STUDIO_SOURCE_DIR/csound-ac" -B "$STUDIO_SOURCE_DIR/csound-ac/build-studio" -G Ninja \
+        -DCMAKE_C_COMPILER="$CC" \
+        -DCMAKE_CXX_COMPILER="$CXX" \
         -DCMAKE_BUILD_TYPE=RelWithDebInfo \
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
         -DCMAKE_INSTALL_PREFIX="$STUDIO_PREFIX" \
@@ -181,6 +198,8 @@ export CSOUNDAC_WASM_DIR="$STUDIO_PREFIX/csound-wasm"
 export STUDIO_CSOUNDAC_REVISION="${csoundac_rev:-unknown}"
 export STUDIO_CSOUNDAC_CXXFLAGS="-I$STUDIO_PREFIX/include/csound/CsoundAC -I$STUDIO_PREFIX/include/csound -I/usr/include/eigen3"
 export STUDIO_CSOUNDAC_LDFLAGS="-L$STUDIO_PREFIX/lib -lCsoundAC -Wl,-rpath,$STUDIO_PREFIX/lib"
+export CC="$CC"
+export CXX="$CXX"
 EOF
     cat "$STUDIO_PREFIX/studio-versions.txt"
 }

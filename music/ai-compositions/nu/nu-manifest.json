@@ -1,10 +1,10 @@
 {
   "ai": {
-    "agent": "studio-compose-ai",
-    "model": "claude-sonnet-4-5"
+    "agent": "Cursor Cloud Agent",
+    "model": "environment-repair"
   },
   "composition": "nu",
-  "created_at": "2026-11-15T18:58:31Z",
+  "created_at": "2026-11-17T18:32:19Z",
   "dependencies": {
     "includes": [],
     "plugins": [],
@@ -20,29 +20,38 @@
     },
     "csound": {
       "available": true,
-      "banner": "Csound version 7.0 (double samples) Oct 28 2026",
-      "commit": "f9434ffc51954b20314352e1620e19cc5ec67185",
+      "banner": "Csound version 7.0 (double samples) Nov 17 2026",
+      "commit": "45b233184491e1557c694d44861a2bbc692c502b",
       "major": 7,
-      "path": "/usr/local/bin/csound",
+      "path": "~/.local/ai-composition-studio/bin/csound",
       "version": "7.0"
     },
-    "machine": "arm64",
+    "machine": "x86_64",
     "node": {
       "available": true,
-      "csoundac_wasm_dir": null,
-      "csoundac_wasm_present": false,
-      "path": "/opt/homebrew/bin/node",
-      "version": "v26.13.1"
+      "csoundac_wasm_dir": "~/.local/ai-composition-studio/csound-wasm",
+      "csoundac_wasm_present": true,
+      "path": "/exec-daemon/node",
+      "version": "v22.23.4"
     },
-    "platform": "macOS-27.2.1-arm64-arm-64bit-Mach-O",
+    "platform": "Linux-6.12.113+-x86_64-with-glibc2.39",
     "python": {
-      "csoundac": false,
-      "csoundac_error": "ModuleNotFoundError(\"No module named 'CsoundAC'\", name='CsoundAC')",
-      "csoundac_revision": null,
-      "path": "/opt/homebrew/opt/python@3.15/bin/python3.15",
-      "version": "3.15.2"
+      "csoundac": true,
+      "csoundac_default_event_nan": false,
+      "csoundac_event_csound_methods": [
+        "toBlueIStatement",
+        "toCsoundIStatement",
+        "toCsoundIStatementHeld",
+        "toCsoundIStatementRelease"
+      ],
+      "csoundac_module": "~/.local/ai-composition-studio/lib/python3.12/site-packages/CsoundAC.py",
+      "csoundac_pfield_layout": "gogins",
+      "csoundac_probe_istatement": "i 3 1.5 2.5 61 71 0.33 0.22 0.44 0.11 4095 1",
+      "csoundac_revision": "v9.1.1-beta-26-gd884dea62",
+      "path": "/usr/bin/python3",
+      "version": "3.12.3"
     },
-    "studio_python": "3.15.2"
+    "studio_python": "3.12.3"
   },
   "files": {
     "code/nu-generate.py": {
@@ -62,28 +71,16 @@
       "sha256": "579fed5dd7813a1355e62921e84f5060c802790fc7a20bfa0c6e7940e2fcbff4"
     },
     "nu-prompt-004.md": {
-      "bytes": 99,
-      "sha256": "1ea933beb578fed7d1f3a5274ed8f05fb2357fd8f6ee71cde5bda9af08136f8d"
-    },
-    "nu-prompt-005.md": {
-      "bytes": 162,
-      "sha256": "f94031cf4dfb7f47533db6df04cfa534892461f57fc1d4a700c405652a4ae3a1"
-    },
-    "nu-prompt-006.md": {
-      "bytes": 150,
-      "sha256": "750acd16db5c806deea5f0660c2c78ecc903ce5545750b6ab98dd306f8b66331"
-    },
-    "nu-prompt-007.md": {
-      "bytes": 186,
-      "sha256": "1a286812ed6230e4c6c0c8d7d54720a8a060b62da39e7685e2e22bfe5ed337d1"
+      "bytes": 169,
+      "sha256": "bcbc52ff3e465597480d404c214a02970a2512326ff364ceeabc044009cab8f3"
     },
     "nu.csd": {
       "bytes": 7336,
       "sha256": "3f67a2e6d4c0884e6a9c3192c135f182fb8a0055ed92e630ce71a42ab85ae76f"
     },
     "outputs/nu-render.log": {
-      "bytes": 13996,
-      "sha256": "87a7b5cb5006209c1ce7cb7535f1154af724b0981c2f364a955956e968dc8fcd"
+      "bytes": 13998,
+      "sha256": "913dafebca88f184dcaae602afb02978062192fcae4c99ba61cc67f049cf4ba8"
     }
   },
   "generator": {
@@ -108,43 +105,21 @@
       "version": "version-0002"
     },
     {
-      "archived_at": "2026-11-15T18:33:14Z",
+      "archived_at": "2026-11-17T18:32:19Z",
       "ordinal": 3,
       "tree_sha256": "3157bd6c2c105fe11875ec4b9ccde276dd9e0c2ed761077c109db157c2e7fe5e",
       "version": "version-0003"
-    },
-    {
-      "archived_at": "2026-11-15T18:38:45Z",
-      "ordinal": 4,
-      "tree_sha256": "3aca09e326b2c31b5e4aee95d00242ae73b1485b14fe7d371acce0bc607b394f",
-      "version": "version-0004"
-    },
-    {
-      "archived_at": "2026-11-15T18:52:37Z",
-      "ordinal": 5,
-      "tree_sha256": "51ee240431571717d22d0ad8124c9274379f85589e504bef428135ff8923da73",
-      "version": "version-0005"
-    },
-    {
-      "archived_at": "2026-11-15T18:58:31Z",
-      "ordinal": 6,
-      "tree_sha256": "5ecf24625e668c0a7bc22fe6e5af4b2a7f6c3de4805e12012cdfe70200d57378",
-      "version": "version-0006"
     }
   ],
   "new_prompts": [
-    "nu-prompt-007.md"
+    "nu-prompt-004.md"
   ],
-  "notes": "Submitted through the studio compose API (viewer).",
-  "ordinal": 7,
+  "ordinal": 4,
   "prompts": [
     "nu-prompt-001.md",
     "nu-prompt-002.md",
     "nu-prompt-003.md",
-    "nu-prompt-004.md",
-    "nu-prompt-005.md",
-    "nu-prompt-006.md",
-    "nu-prompt-007.md"
+    "nu-prompt-004.md"
   ],
   "render": {
     "analysis": {
@@ -177,10 +152,10 @@
       "errors": [],
       "performed": true,
       "playable": true,
-      "realtime_factor": 31.6,
+      "realtime_factor": 18.2,
       "runtime_errors": 0,
       "sample_rate": 48000,
-      "seconds": 4.029,
+      "seconds": 6.901,
       "started": true
     },
     "commands": [
@@ -191,7 +166,7 @@
           "nu.csd"
         ],
         "exit_code": 0,
-        "seconds": 0.037,
+        "seconds": 0.014,
         "step": "syntax-check"
       },
       {
@@ -205,14 +180,14 @@
           "nu.csd"
         ],
         "exit_code": 0,
-        "seconds": 1.727,
+        "seconds": 4.847,
         "step": "render"
       }
     ],
-    "finished_at": "2026-11-15T18:58:31Z",
+    "finished_at": "2026-11-17T18:32:14Z",
     "log": "outputs/nu-render.log",
-    "started_at": "2026-11-15T18:58:24Z",
-    "wav_sha256": "b4e974fb59f5055442197bf88af81cdf21d120cacda601df9a0b30a0b18106b0"
+    "started_at": "2026-11-17T18:32:01Z",
+    "wav_sha256": "c00ea4eab92cbce72419c25625ca6a40503f808a9e9c5b5d95972391996171d6"
   },
   "schema": "ai-composition-studio/manifest/1",
   "title": "Nu (studio demonstration)",
@@ -260,7 +235,7 @@
       },
       {
         "check": "performs in the viewer's Csound engine (@csound/browser 7.0.0)",
-        "detail": "122 s at 31.6 times real time here",
+        "detail": "122 s at 18.2 times real time here",
         "passed": true
       }
     ],

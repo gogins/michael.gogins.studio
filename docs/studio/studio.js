@@ -187,7 +187,7 @@ function composeAvailabilityNote() {
       || 'Compose API is up, but no AI key is configured for studio serve.';
   }
   return 'Compose API not found. Keep studio serve running, then open '
-    + 'http://127.0.0.1:8000/studio/ in Chrome or Safari (not only a Cursor preview). '
+    + '/studio/ on that same origin in Chrome or Safari (not only a Cursor preview). '
     + `This tab is: ${window.location.href}`;
 }
 
@@ -303,7 +303,7 @@ function updateSiteReadiness() {
   if (!composeApi) {
     readiness.className = 'site-readiness warning';
     replaceChildren(readiness,
-      'Compose offline — run studio serve and open http://127.0.0.1:8000/studio/');
+      'Compose offline — run studio serve and open /studio/ on that same origin');
     return;
   }
   const st = composeApi.status || {};

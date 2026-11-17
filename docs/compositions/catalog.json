@@ -4,16 +4,13 @@
       "name": "nu",
       "path": "nu/",
       "prompt_texts": {
-        "1a286812ed6230e4c6c0c8d7d54720a8a060b62da39e7685e2e22bfe5ed337d1": "# nu - prompt 007\n\n<!-- recorded: 2026-11-15T18:57:15Z; source: user -->\n\nAdd a breathy, windy pad alongside the existing pad, in the same harmony but on a different voice of the chord.\n",
-        "1ea933beb578fed7d1f3a5274ed8f05fb2357fd8f6ee71cde5bda9af08136f8d": "# nu - prompt 004\n\n<!-- recorded: 2026-11-15T18:33:13Z; source: user -->\n\nviewer submit smoke test\n",
         "579fed5dd7813a1355e62921e84f5060c802790fc7a20bfa0c6e7940e2fcbff4": "# nu - prompt 003\n\n<!-- recorded: 2026-11-14T14:35:48Z; source: agent -->\n\nDemonstration prompt, written by the implementing agent (Claude) to exercise the studio; it is not a prompt from Michael Gogins.\n\nRevise the generator. Answer the bell melody with a canon: the same melody four scale steps higher (a diatonic fifth, staying in D Dorian), two seconds later, softer, farther away, and on the opposite side. Let the melody range more widely than before. Make the drone a little softer so the two bell voices stay clear.\n",
-        "750acd16db5c806deea5f0660c2c78ecc903ce5545750b6ab98dd306f8b66331": "# nu - prompt 006\n\n<!-- recorded: 2026-11-15T18:51:37Z; source: user -->\n\nExtend the process in version 3 at the same tempo for piece 2 minutes long.\n",
         "9541e095bf039cc2a82a02f4d3b80b4f3a218fc4288c83a2b3caf97d8d903054": "# nu - prompt 001\n\n<!-- recorded: 2026-11-14T14:35:45Z; source: agent -->\n\nDemonstration prompt, written by the implementing agent (Claude) to exercise the studio; it is not a prompt from Michael Gogins.\n\nCompose a very short study called nu, about 18 seconds long: a slow, bell-like melody in D Dorian over a low drone, with reverberation. Write it directly as one complete Csound .csd file, with the instruments and the notes, using the studio p-field conventions (p4 MIDI key, p5 MIDI velocity, p6 depth, p7 pan).\n",
-        "ca4c3922c0f22aba2f7b10c6a4b4959091a87b1ce1c93298fadc71ef3511c53d": "# nu - prompt 002\n\n<!-- recorded: 2026-11-14T14:35:46Z; source: agent -->\n\nDemonstration prompt, written by the implementing agent (Claude) to exercise the studio; it is not a prompt from Michael Gogins.\n\nKeep the instruments of nu exactly as they are, but stop writing the notes by hand. Generate the score with a Python program that uses CsoundAC: the bells play a seeded random walk on the D Dorian scale with irregular rhythm, moving between left and right; the drone on D is joined by its fifth halfway through. Keep the program beside the piece so that the .csd can be regenerated from it, and record the random seed.\n",
-        "f94031cf4dfb7f47533db6df04cfa534892461f57fc1d4a700c405652a4ae3a1": "# nu - prompt 005\n\n<!-- recorded: 2026-11-15T18:38:44Z; source: user -->\n\nExtend the process in version 3 but at the same tempo to make the piece 2 minutes long.\n"
+        "bcbc52ff3e465597480d404c214a02970a2512326ff364ceeabc044009cab8f3": "# nu - prompt 004\n\n<!-- recorded: 2026-11-17T18:32:01Z; source: agent -->\n\nImproved the viewer; keep and publish the revised nu music from the incomplete master commit.\n",
+        "ca4c3922c0f22aba2f7b10c6a4b4959091a87b1ce1c93298fadc71ef3511c53d": "# nu - prompt 002\n\n<!-- recorded: 2026-11-14T14:35:46Z; source: agent -->\n\nDemonstration prompt, written by the implementing agent (Claude) to exercise the studio; it is not a prompt from Michael Gogins.\n\nKeep the instruments of nu exactly as they are, but stop writing the notes by hand. Generate the score with a Python program that uses CsoundAC: the bells play a seeded random walk on the D Dorian scale with irregular rhythm, moving between left and right; the drone on D is joined by its fifth halfway through. Keep the program beside the piece so that the .csd can be regenerated from it, and record the random seed.\n"
       },
       "title": "Nu (studio demonstration)",
-      "updated_at": "2026-11-15T18:58:31Z",
+      "updated_at": "2026-11-17T18:32:19Z",
       "versions": [
         {
           "code": [
@@ -32,36 +29,36 @@
           "derived": [],
           "id": "current",
           "info": {
-            "ai_agent": "studio-compose-ai",
-            "ai_model": "claude-sonnet-4-5",
+            "ai_agent": "Cursor Cloud Agent",
+            "ai_model": "environment-repair",
             "browser_checked": true,
             "browser_engine": "@csound/browser 7.0.0",
             "browser_playable": true,
-            "browser_realtime_factor": 31.6,
+            "browser_realtime_factor": 18.2,
             "channels": 2,
-            "created_at": "2026-11-15T18:58:31Z",
-            "csound": "Csound version 7.0 (double samples) Oct 28 2026",
+            "created_at": "2026-11-17T18:32:19Z",
+            "csound": "Csound version 7.0 (double samples) Nov 17 2026",
+            "csoundac_revision": "v9.1.1-beta-26-gd884dea62",
             "duration_seconds": 122.0,
             "generator": "python-csoundac",
             "new_prompts": [
-              "nu-prompt-007.md"
+              "nu-prompt-004.md"
             ],
-            "node": "v26.13.1",
-            "notes": "Submitted through the studio compose API (viewer).",
-            "ordinal": 7,
+            "node": "v22.23.4",
+            "ordinal": 4,
             "peak_dbfs": -3.8,
-            "python": "3.15.2",
+            "python": "3.12.3",
             "rms_dbfs": -22.49,
             "sample_rate": 48000
           },
           "is_current": true,
           "logs": [],
           "manifest": {
-            "bytes": 7176,
+            "bytes": 6438,
             "file": "nu-manifest.json",
             "path": "nu/nu-manifest.json"
           },
-          "ordinal": 7,
+          "ordinal": 4,
           "path": "nu/",
           "prompts": [
             {
@@ -89,309 +86,12 @@
               "sha256": "579fed5dd7813a1355e62921e84f5060c802790fc7a20bfa0c6e7940e2fcbff4"
             },
             {
-              "bytes": 99,
+              "bytes": 169,
               "file": "nu-prompt-004.md",
-              "new": false,
+              "new": true,
               "number": 4,
               "path": "nu/nu-prompt-004.md",
-              "sha256": "1ea933beb578fed7d1f3a5274ed8f05fb2357fd8f6ee71cde5bda9af08136f8d"
-            },
-            {
-              "bytes": 162,
-              "file": "nu-prompt-005.md",
-              "new": false,
-              "number": 5,
-              "path": "nu/nu-prompt-005.md",
-              "sha256": "f94031cf4dfb7f47533db6df04cfa534892461f57fc1d4a700c405652a4ae3a1"
-            },
-            {
-              "bytes": 150,
-              "file": "nu-prompt-006.md",
-              "new": false,
-              "number": 6,
-              "path": "nu/nu-prompt-006.md",
-              "sha256": "750acd16db5c806deea5f0660c2c78ecc903ce5545750b6ab98dd306f8b66331"
-            },
-            {
-              "bytes": 186,
-              "file": "nu-prompt-007.md",
-              "new": true,
-              "number": 7,
-              "path": "nu/nu-prompt-007.md",
-              "sha256": "1a286812ed6230e4c6c0c8d7d54720a8a060b62da39e7685e2e22bfe5ed337d1"
-            }
-          ]
-        },
-        {
-          "code": [
-            {
-              "bytes": 5090,
-              "file": "nu-generate.py",
-              "language": "python",
-              "path": "nu/version-0006/code/nu-generate.py"
-            }
-          ],
-          "csd": {
-            "bytes": 6336,
-            "file": "nu.csd",
-            "path": "nu/version-0006/nu.csd"
-          },
-          "derived": [],
-          "id": "version-0006",
-          "info": {
-            "ai_agent": "studio-compose-ai",
-            "ai_model": "claude-sonnet-4-5",
-            "browser_checked": true,
-            "browser_engine": "@csound/browser 7.0.0",
-            "browser_playable": true,
-            "browser_realtime_factor": 78.2,
-            "channels": 2,
-            "created_at": "2026-11-15T18:52:37Z",
-            "csound": "Csound version 7.0 (double samples) Oct 28 2026",
-            "duration_seconds": 122.0,
-            "generator": "python-csoundac",
-            "new_prompts": [
-              "nu-prompt-006.md"
-            ],
-            "node": "v26.13.1",
-            "notes": "Submitted through the studio compose API (viewer).",
-            "ordinal": 6,
-            "peak_dbfs": -3.77,
-            "python": "3.15.2",
-            "rms_dbfs": -22.49,
-            "sample_rate": 48000
-          },
-          "is_current": false,
-          "logs": [],
-          "manifest": {
-            "bytes": 6820,
-            "file": "nu-manifest.json",
-            "path": "nu/version-0006/nu-manifest.json"
-          },
-          "ordinal": 6,
-          "path": "nu/version-0006/",
-          "prompts": [
-            {
-              "bytes": 517,
-              "file": "nu-prompt-001.md",
-              "new": false,
-              "number": 1,
-              "path": "nu/version-0006/nu-prompt-001.md",
-              "sha256": "9541e095bf039cc2a82a02f4d3b80b4f3a218fc4288c83a2b3caf97d8d903054"
-            },
-            {
-              "bytes": 624,
-              "file": "nu-prompt-002.md",
-              "new": false,
-              "number": 2,
-              "path": "nu/version-0006/nu-prompt-002.md",
-              "sha256": "ca4c3922c0f22aba2f7b10c6a4b4959091a87b1ce1c93298fadc71ef3511c53d"
-            },
-            {
-              "bytes": 524,
-              "file": "nu-prompt-003.md",
-              "new": false,
-              "number": 3,
-              "path": "nu/version-0006/nu-prompt-003.md",
-              "sha256": "579fed5dd7813a1355e62921e84f5060c802790fc7a20bfa0c6e7940e2fcbff4"
-            },
-            {
-              "bytes": 99,
-              "file": "nu-prompt-004.md",
-              "new": false,
-              "number": 4,
-              "path": "nu/version-0006/nu-prompt-004.md",
-              "sha256": "1ea933beb578fed7d1f3a5274ed8f05fb2357fd8f6ee71cde5bda9af08136f8d"
-            },
-            {
-              "bytes": 162,
-              "file": "nu-prompt-005.md",
-              "new": false,
-              "number": 5,
-              "path": "nu/version-0006/nu-prompt-005.md",
-              "sha256": "f94031cf4dfb7f47533db6df04cfa534892461f57fc1d4a700c405652a4ae3a1"
-            },
-            {
-              "bytes": 150,
-              "file": "nu-prompt-006.md",
-              "new": true,
-              "number": 6,
-              "path": "nu/version-0006/nu-prompt-006.md",
-              "sha256": "750acd16db5c806deea5f0660c2c78ecc903ce5545750b6ab98dd306f8b66331"
-            }
-          ]
-        },
-        {
-          "code": [
-            {
-              "bytes": 5090,
-              "file": "nu-generate.py",
-              "language": "python",
-              "path": "nu/version-0005/code/nu-generate.py"
-            }
-          ],
-          "csd": {
-            "bytes": 2873,
-            "file": "nu.csd",
-            "path": "nu/version-0005/nu.csd"
-          },
-          "derived": [],
-          "id": "version-0005",
-          "info": {
-            "ai_agent": "studio-serve",
-            "ai_model": "viewer",
-            "browser_checked": true,
-            "browser_engine": "@csound/browser 7.0.0",
-            "browser_playable": true,
-            "browser_realtime_factor": 63.2,
-            "channels": 2,
-            "created_at": "2026-11-15T18:38:45Z",
-            "csound": "Csound version 7.0 (double samples) Oct 28 2026",
-            "duration_seconds": 18.0,
-            "generator": "python-csoundac",
-            "new_prompts": [
-              "nu-prompt-005.md"
-            ],
-            "node": "v26.13.1",
-            "notes": "Submitted through the studio compose API (viewer).",
-            "ordinal": 5,
-            "peak_dbfs": -4.31,
-            "python": "3.15.2",
-            "rms_dbfs": -20.93,
-            "sample_rate": 48000
-          },
-          "is_current": false,
-          "logs": [],
-          "manifest": {
-            "bytes": 6440,
-            "file": "nu-manifest.json",
-            "path": "nu/version-0005/nu-manifest.json"
-          },
-          "ordinal": 5,
-          "path": "nu/version-0005/",
-          "prompts": [
-            {
-              "bytes": 517,
-              "file": "nu-prompt-001.md",
-              "new": false,
-              "number": 1,
-              "path": "nu/version-0005/nu-prompt-001.md",
-              "sha256": "9541e095bf039cc2a82a02f4d3b80b4f3a218fc4288c83a2b3caf97d8d903054"
-            },
-            {
-              "bytes": 624,
-              "file": "nu-prompt-002.md",
-              "new": false,
-              "number": 2,
-              "path": "nu/version-0005/nu-prompt-002.md",
-              "sha256": "ca4c3922c0f22aba2f7b10c6a4b4959091a87b1ce1c93298fadc71ef3511c53d"
-            },
-            {
-              "bytes": 524,
-              "file": "nu-prompt-003.md",
-              "new": false,
-              "number": 3,
-              "path": "nu/version-0005/nu-prompt-003.md",
-              "sha256": "579fed5dd7813a1355e62921e84f5060c802790fc7a20bfa0c6e7940e2fcbff4"
-            },
-            {
-              "bytes": 99,
-              "file": "nu-prompt-004.md",
-              "new": false,
-              "number": 4,
-              "path": "nu/version-0005/nu-prompt-004.md",
-              "sha256": "1ea933beb578fed7d1f3a5274ed8f05fb2357fd8f6ee71cde5bda9af08136f8d"
-            },
-            {
-              "bytes": 162,
-              "file": "nu-prompt-005.md",
-              "new": true,
-              "number": 5,
-              "path": "nu/version-0005/nu-prompt-005.md",
-              "sha256": "f94031cf4dfb7f47533db6df04cfa534892461f57fc1d4a700c405652a4ae3a1"
-            }
-          ]
-        },
-        {
-          "code": [
-            {
-              "bytes": 5090,
-              "file": "nu-generate.py",
-              "language": "python",
-              "path": "nu/version-0004/code/nu-generate.py"
-            }
-          ],
-          "csd": {
-            "bytes": 2873,
-            "file": "nu.csd",
-            "path": "nu/version-0004/nu.csd"
-          },
-          "derived": [],
-          "id": "version-0004",
-          "info": {
-            "ai_agent": "studio-serve",
-            "ai_model": "viewer",
-            "browser_checked": true,
-            "browser_engine": "@csound/browser 7.0.0",
-            "browser_playable": true,
-            "browser_realtime_factor": 62.7,
-            "channels": 2,
-            "created_at": "2026-11-15T18:33:14Z",
-            "csound": "Csound version 7.0 (double samples) Oct 28 2026",
-            "duration_seconds": 18.0,
-            "generator": "python-csoundac",
-            "new_prompts": [
-              "nu-prompt-004.md"
-            ],
-            "node": "v26.13.1",
-            "notes": "Submitted through the studio compose API (viewer).",
-            "ordinal": 4,
-            "peak_dbfs": -4.31,
-            "python": "3.15.2",
-            "rms_dbfs": -20.93,
-            "sample_rate": 48000
-          },
-          "is_current": false,
-          "logs": [],
-          "manifest": {
-            "bytes": 6081,
-            "file": "nu-manifest.json",
-            "path": "nu/version-0004/nu-manifest.json"
-          },
-          "ordinal": 4,
-          "path": "nu/version-0004/",
-          "prompts": [
-            {
-              "bytes": 517,
-              "file": "nu-prompt-001.md",
-              "new": false,
-              "number": 1,
-              "path": "nu/version-0004/nu-prompt-001.md",
-              "sha256": "9541e095bf039cc2a82a02f4d3b80b4f3a218fc4288c83a2b3caf97d8d903054"
-            },
-            {
-              "bytes": 624,
-              "file": "nu-prompt-002.md",
-              "new": false,
-              "number": 2,
-              "path": "nu/version-0004/nu-prompt-002.md",
-              "sha256": "ca4c3922c0f22aba2f7b10c6a4b4959091a87b1ce1c93298fadc71ef3511c53d"
-            },
-            {
-              "bytes": 524,
-              "file": "nu-prompt-003.md",
-              "new": false,
-              "number": 3,
-              "path": "nu/version-0004/nu-prompt-003.md",
-              "sha256": "579fed5dd7813a1355e62921e84f5060c802790fc7a20bfa0c6e7940e2fcbff4"
-            },
-            {
-              "bytes": 99,
-              "file": "nu-prompt-004.md",
-              "new": true,
-              "number": 4,
-              "path": "nu/version-0004/nu-prompt-004.md",
-              "sha256": "1ea933beb578fed7d1f3a5274ed8f05fb2357fd8f6ee71cde5bda9af08136f8d"
+              "sha256": "bcbc52ff3e465597480d404c214a02970a2512326ff364ceeabc044009cab8f3"
             }
           ]
         },
@@ -592,6 +292,6 @@
       ]
     }
   ],
-  "generated_at": "2026-11-15T18:58:31Z",
+  "generated_at": "2026-11-17T18:32:19Z",
   "schema": "ai-composition-studio/catalog/2"
 }

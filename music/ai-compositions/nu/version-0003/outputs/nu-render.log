@@ -1,0 +1,106 @@
+Render of nu started 2026-11-14T14:35:48Z
+
+$ csound --syntax-check-only nu.csd
+Reading CSD file:  nu.csd
+--Csound version 7.0 (double samples) Oct 28 2026
+[commit: f9434ffc51954b20314352e1620e19cc5ec67185]
+Compiling Csound code...
+	 ...done
+Elapsed time at end of code compilation: real: 0.010s, CPU: 0.009s
+Syntax check completed.
+		   overall amps:  0.00000  0.00000
+Elapsed time at end of performance: real: 0.010s, CPU: 0.009s
+--Csound version 7.0 (double samples) Oct 28 2026
+[commit: f9434ffc51954b20314352e1620e19cc5ec67185]
+
+[exit 0; 0.02 s]
+
+$ csound -d -W -3 -o <temporary>/nu.wav nu.csd
+Reading CSD file:  nu.csd
+--Csound version 7.0 (double samples) Oct 28 2026
+[commit: f9434ffc51954b20314352e1620e19cc5ec67185]
+Compiling Csound code...
+	 ...done
+Elapsed time at end of code compilation: real: 0.010s, CPU: 0.009s
+displays suppressed
+sr = 48000.0, kr = 3000.000, ksmps = 16
+0dBFS level = 1.0, A4 tuning = 440.0
+audio buffered in 128 sample-frame blocks
+writing 768-byte blks of 24bit ints to <temporary>/nu.wav (WAV)
+SECTION 1:
+new alloc for instr 2:
+warning: instr 2 uses 7 p-fields but is given 11
+new alloc for instr 99:
+B  0.000 ..  0.500 T  0.500 TT  0.500 M:  0.00556  0.00523
+new alloc for instr 1:
+warning: instr 1 uses 7 p-fields but is given 11
+B  0.500 ..  1.500 T  1.500 TT  1.500 M:  0.36274  0.20926
+new alloc for instr 1:
+warning: instr 1 uses 7 p-fields but is given 11
+B  1.500 ..  2.500 T  2.500 TT  2.500 M:  0.23075  0.34809
+new alloc for instr 1:
+warning: instr 1 uses 7 p-fields but is given 11
+new alloc for instr 1:
+warning: instr 1 uses 7 p-fields but is given 11
+B  2.500 ..  3.250 T  3.250 TT  3.250 M:  0.45546  0.46703
+new alloc for instr 1:
+warning: instr 1 uses 7 p-fields but is given 11
+B  3.250 ..  3.500 T  3.500 TT  3.500 M:  0.31369  0.46438
+new alloc for instr 1:
+warning: instr 1 uses 7 p-fields but is given 11
+B  3.500 ..  4.250 T  4.250 TT  4.250 M:  0.35349  0.45778
+new alloc for instr 1:
+warning: instr 1 uses 7 p-fields but is given 11
+B  4.250 ..  4.500 T  4.500 TT  4.500 M:  0.53426  0.32532
+warning: instr 1 uses 7 p-fields but is given 11
+B  4.500 ..  5.250 T  5.250 TT  5.250 M:  0.44433  0.40037
+warning: instr 1 uses 7 p-fields but is given 11
+B  5.250 ..  5.750 T  5.750 TT  5.750 M:  0.37278  0.23353
+warning: instr 1 uses 7 p-fields but is given 11
+B  5.750 ..  6.250 T  6.250 TT  6.250 M:  0.37292  0.38575
+warning: instr 1 uses 7 p-fields but is given 11
+B  6.250 ..  6.750 T  6.750 TT  6.750 M:  0.31849  0.41245
+warning: instr 1 uses 7 p-fields but is given 11
+B  6.750 ..  7.000 T  7.000 TT  7.000 M:  0.46499  0.41580
+new alloc for instr 2:
+warning: instr 2 uses 7 p-fields but is given 11
+B  7.000 ..  7.750 T  7.750 TT  7.750 M:  0.31271  0.32647
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B  7.750 ..  8.750 T  8.750 TT  8.750 M:  0.51625  0.46167
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B  8.750 ..  9.500 T  9.500 TT  9.500 M:  0.45105  0.60891
+warning: instr 1 uses 7 p-fields but is given 11
+B  9.500 ..  9.750 T  9.750 TT  9.750 M:  0.46351  0.37868
+warning: instr 1 uses 7 p-fields but is given 11
+B  9.750 .. 10.750 T 10.750 TT 10.750 M:  0.44821  0.38808
+warning: instr 1 uses 7 p-fields but is given 11
+B 10.750 .. 11.500 T 11.500 TT 11.500 M:  0.32229  0.23088
+warning: instr 1 uses 7 p-fields but is given 11
+B 11.500 .. 18.000 T 18.000 TT 18.000 M:  0.23544  0.34314
+end of Performance
+256 768 sample blks of 24bit ints written to <temporary>/nu.wav (WAV)
+inactive allocs returned to freespace
+		   overall amps:  0.53426  0.60891
+Elapsed time at end of performance: real: 0.165s, CPU: 0.161s
+
+[exit 0; 0.175 s]
+
+Audio: 18.0 s, 2 ch, 48000 Hz, 24-bit pcm; peak -4.31 dBFS, RMS -20.93 dBFS, 0 clipped samples
+
+Browser engine (@csound/browser 7.0.0): {"channels": 2, "checked": true, "compiled": true, "csound_version": "7.0", "duration_seconds": 18, "errors": [], "performed": true, "playable": true, "realtime_factor": 63.2, "runtime_errors": 0, "sample_rate": 48000, "seconds": 0.454, "started": true}
+warning: instr 1 uses 7 p-fields but is given 11
+B 10.750 .. 11.500 T 11.500 TT 11.500 M:  0.32229  0.23088
+warning: instr 1 uses 7 p-fields but is given 11
+B 11.500 .. 18.000 T 18.000 TT 18.000 M:  0.23544  0.34314
+end of Performance
+resetting Csound instance
+no sound written to disk
+inactive allocs returned to freespace
+		   overall amps:  0.53426  0.60891
+Elapsed time at end of performance: real: 1.000s, CPU: 0.296s
+		   overall amps:      0.0
+Elapsed time at end of performance: real: 0.000s, CPU: 0.000s
+
+Render finished 2026-11-14T14:35:49Z: ok

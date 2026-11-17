@@ -1,32 +1,32 @@
-Render of nu started 2026-11-15T18:58:24Z
+Render of nu started 2026-11-17T18:32:01Z
 
 $ csound --syntax-check-only nu.csd
 Reading CSD file:  nu.csd
---Csound version 7.0 (double samples) Oct 28 2026
-[commit: f9434ffc51954b20314352e1620e19cc5ec67185]
+--Csound version 7.0 (double samples) Nov 17 2026
+[commit: 45b233184491e1557c694d44861a2bbc692c502b]
 Compiling Csound code...
 	 ...done
-Elapsed time at end of code compilation: real: 0.017s, CPU: 0.014s
+Elapsed time at end of code compilation: real: 0.006s, CPU: 0.006s
 Syntax check completed.
 		   overall amps:  0.00000  0.00000
-Elapsed time at end of performance: real: 0.017s, CPU: 0.014s
---Csound version 7.0 (double samples) Oct 28 2026
-[commit: f9434ffc51954b20314352e1620e19cc5ec67185]
+Elapsed time at end of performance: real: 0.006s, CPU: 0.006s
+--Csound version 7.0 (double samples) Nov 17 2026
+[commit: 45b233184491e1557c694d44861a2bbc692c502b]
 
-[exit 0; 0.037 s]
+[exit 0; 0.014 s]
 
 $ csound -d -W -3 -o <temporary>/nu.wav nu.csd
 Reading CSD file:  nu.csd
---Csound version 7.0 (double samples) Oct 28 2026
-[commit: f9434ffc51954b20314352e1620e19cc5ec67185]
+--Csound version 7.0 (double samples) Nov 17 2026
+[commit: 45b233184491e1557c694d44861a2bbc692c502b]
 Compiling Csound code...
 	 ...done
-Elapsed time at end of code compilation: real: 0.011s, CPU: 0.010s
+Elapsed time at end of code compilation: real: 0.005s, CPU: 0.005s
 displays suppressed
 sr = 48000.0, kr = 3000.000, ksmps = 16
 0dBFS level = 1.0, A4 tuning = 440.0
-audio buffered in 128 sample-frame blocks
-writing 768-byte blks of 24bit ints to <temporary>/nu.wav (WAV)
+audio buffered in 256 sample-frame blocks
+writing 1536-byte blks of 24bit ints to <temporary>/nu.wav (WAV)
 SECTION 1:
 new alloc for instr 2:
 warning: instr 2 uses 7 p-fields but is given 11
@@ -256,16 +256,16 @@ B110.750 ..111.500 T111.500 TT111.500 M:  0.29465  0.23954
 warning: instr 1 uses 7 p-fields but is given 11
 B111.500 ..122.000 T122.000 TT122.000 M:  0.18228  0.33699
 end of Performance
-256 768 sample blks of 24bit ints written to <temporary>/nu.wav (WAV)
+512 1536 sample blks of 24bit ints written to <temporary>/nu.wav (WAV)
 inactive allocs returned to freespace
 		   overall amps:  0.56727  0.64592
-Elapsed time at end of performance: real: 1.716s, CPU: 1.709s
+Elapsed time at end of performance: real: 4.839s, CPU: 4.839s
 
-[exit 0; 1.727 s]
+[exit 0; 4.847 s]
 
 Audio: 122.0 s, 2 ch, 48000 Hz, 24-bit pcm; peak -3.8 dBFS, RMS -22.49 dBFS, 0 clipped samples
 
-Browser engine (@csound/browser 7.0.0): {"channels": 2, "checked": true, "compiled": true, "csound_version": "7.0", "duration_seconds": 122, "errors": [], "performed": true, "playable": true, "realtime_factor": 31.6, "runtime_errors": 0, "sample_rate": 48000, "seconds": 4.029, "started": true}
+Browser engine (@csound/browser 7.0.0): {"channels": 2, "checked": true, "compiled": true, "csound_version": "7.0", "duration_seconds": 122, "errors": [], "performed": true, "playable": true, "realtime_factor": 18.2, "runtime_errors": 0, "sample_rate": 48000, "seconds": 6.901, "started": true}
 warning: instr 1 uses 7 p-fields but is given 11
 B110.750 ..111.500 T111.500 TT111.500 M:  0.29465  0.23954
 warning: instr 1 uses 7 p-fields but is given 11
@@ -275,8 +275,8 @@ resetting Csound instance
 no sound written to disk
 inactive allocs returned to freespace
 		   overall amps:  0.56727  0.64592
-Elapsed time at end of performance: real: 4.000s, CPU: 3.875s
+Elapsed time at end of performance: real: 7.000s, CPU: 2.429s
 		   overall amps:      0.0
 Elapsed time at end of performance: real: 0.000s, CPU: 0.000s
 
-Render finished 2026-11-15T18:58:31Z: ok
+Render finished 2026-11-17T18:32:14Z: ok
