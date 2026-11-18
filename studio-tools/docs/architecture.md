@@ -90,7 +90,8 @@ relative, so they work under any site address and from `studio serve`.
 | `versioning.py` | Locks, the promotion transaction, recovery, verification. |
 | `publish.py` | Selection, planning, copying, conflict detection, pruning. |
 | `catalog.py` | `catalog.json`, generated from the published files. |
-| `serve.py` | A local static server with byte-range support, for the viewer. |
+| `compose.py` | Viewer compose path: stage → prompt → rewrite → render → accept → publish. |
+| `serve.py` | A local static server with byte-range support and `/api/v1` for compose. |
 | `cli.py` | The `studio` command. |
 
 ## Viewer modules
@@ -99,6 +100,9 @@ relative, so they work under any site address and from `studio serve`.
 | --- | --- |
 | `index.html` | The page; loads `studio.js` as a module. |
 | `studio.js` | Library, composition and version views; tabs for prompts, Csound, code, files, comparison and provenance; routing by URL fragment (`#nu/version-0001/csound`). |
+| `compose.js` | Discover `/api/v1` (or a hosted `composeApi` from `config.json`) and submit compose requests. |
+| `messages.js` | Docked Csound message pane used while a piece performs. |
+| `config.json` | Optional viewer settings; `composeApi` for a hosted compose endpoint on Pages. |
 | `catalog.js` | Loading the catalog, resolving published paths, fetching text. |
 | `diff.js` | Line comparison of two versions of a text. |
 | `dom.js` | Element construction and formatting helpers. All text is inserted as text, never as HTML. |
