@@ -1,5 +1,40 @@
 {
   "files": {
+    "big_bell/big_bell-manifest.json": {
+      "kind": "manifest",
+      "sha256": "05f2e0cf06569de2e817a21f7f20e769baef245c71a6ed5ef91ddfce8f2003bb",
+      "source": "music/ai-compositions/big_bell/big_bell-manifest.json"
+    },
+    "big_bell/big_bell-prompt-001.md": {
+      "kind": "prompts",
+      "sha256": "776861008f933c79ea2f4841da6c43c61089f577fb83091b2b4ea6f1090b4076",
+      "source": "music/ai-compositions/big_bell/big_bell-prompt-001.md"
+    },
+    "big_bell/big_bell-prompt-002.md": {
+      "kind": "prompts",
+      "sha256": "9357a925226f7252faddcd5c2f20deb7fe32243dfc1d12ae04a5d07400c50196",
+      "source": "music/ai-compositions/big_bell/big_bell-prompt-002.md"
+    },
+    "big_bell/big_bell.csd": {
+      "kind": "csd",
+      "sha256": "ee643d9b11fdf60454e1f0f15a5db1c5d2e84c7324815a361cc3462f63ee26d3",
+      "source": "music/ai-compositions/big_bell/big_bell.csd"
+    },
+    "big_bell/version-0001/big_bell-manifest.json": {
+      "kind": "manifest",
+      "sha256": "66095494397a63fdeba562e5573c4a80cfe138f251f7aa1e57fe94123d9e4f3e",
+      "source": "music/ai-compositions/big_bell/version-0001/big_bell-manifest.json"
+    },
+    "big_bell/version-0001/big_bell-prompt-001.md": {
+      "kind": "prompts",
+      "sha256": "776861008f933c79ea2f4841da6c43c61089f577fb83091b2b4ea6f1090b4076",
+      "source": "music/ai-compositions/big_bell/version-0001/big_bell-prompt-001.md"
+    },
+    "big_bell/version-0001/big_bell.csd": {
+      "kind": "csd",
+      "sha256": "ddcd94f2814274a7c79b55ad2c5e83d3702fc56f59c7af53499a41076c58c4de",
+      "source": "music/ai-compositions/big_bell/version-0001/big_bell.csd"
+    },
     "nu/code/nu-generate.py": {
       "kind": "code",
       "sha256": "49687c86a722a31940d4c24da739e8241e705416774f10e0f341be6bb6a9d6fa",

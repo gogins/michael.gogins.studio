@@ -1,6 +1,130 @@
 {
   "compositions": [
     {
+      "name": "big_bell",
+      "path": "big_bell/",
+      "prompt_texts": {
+        "776861008f933c79ea2f4841da6c43c61089f577fb83091b2b4ea6f1090b4076": "# big_bell - prompt 001\n\n<!-- recorded: 2026-11-16T10:49:33Z; source: user -->\n\nCreate a piece that is one stroke of a giant bronze bell that decays for 2 minutes. There should be many inharmonic partials, combination tones, and phasing; feed through reverbsc. Fix the following error: the render clips: 1369 samples out of range. Lower the output level (or pass --allow-clipping if it is intended) (log: /Users/michaelgogins/michael.gogins.studio/music/ai-compositions/.staging/big_bell-20261116T104721Z-fd3165/outputs/big_bell-render.log)\n\nAlso fix:Compiling Csound code... syntax error, Unable to find opcode entry for 'expon' with matching argument types, line 17 columns 8-12 Found: a expon c, k, c Candidates: k expon i, i, i a expon i, i, i Line: 17 columns 8-12 from file big_bell.csd (1) Parsing failed due to syntax errors\n",
+        "9357a925226f7252faddcd5c2f20deb7fe32243dfc1d12ae04a5d07400c50196": "# big_bell - prompt 002\n\n<!-- recorded: 2026-11-16T10:51:56Z; source: user -->\n\nMore of a \"clank\" or \"clang\" at the stroke of the bell.\n"
+      },
+      "title": "Big Bell",
+      "updated_at": "2026-11-16T10:52:15Z",
+      "versions": [
+        {
+          "code": [],
+          "csd": {
+            "bytes": 3712,
+            "file": "big_bell.csd",
+            "path": "big_bell/big_bell.csd"
+          },
+          "derived": [],
+          "id": "current",
+          "info": {
+            "ai_agent": "studio-compose-ai",
+            "ai_model": "claude-sonnet-4-5",
+            "browser_checked": true,
+            "browser_engine": "@csound/browser 7.0.0",
+            "browser_playable": true,
+            "browser_realtime_factor": 322,
+            "channels": 2,
+            "created_at": "2026-11-16T10:52:15Z",
+            "csound": "Csound version 7.0 (double samples) Oct 28 2026",
+            "duration_seconds": 121.0,
+            "generator": "direct-csd",
+            "new_prompts": [
+              "big_bell-prompt-002.md"
+            ],
+            "node": "v26.13.1",
+            "notes": "Submitted through the studio compose API (viewer).",
+            "ordinal": 2,
+            "peak_dbfs": -18.55,
+            "python": "3.15.2",
+            "rms_dbfs": -41.13,
+            "sample_rate": 48000
+          },
+          "is_current": true,
+          "logs": [],
+          "manifest": {
+            "bytes": 5262,
+            "file": "big_bell-manifest.json",
+            "path": "big_bell/big_bell-manifest.json"
+          },
+          "ordinal": 2,
+          "path": "big_bell/",
+          "prompts": [
+            {
+              "bytes": 833,
+              "file": "big_bell-prompt-001.md",
+              "new": false,
+              "number": 1,
+              "path": "big_bell/big_bell-prompt-001.md",
+              "sha256": "776861008f933c79ea2f4841da6c43c61089f577fb83091b2b4ea6f1090b4076"
+            },
+            {
+              "bytes": 136,
+              "file": "big_bell-prompt-002.md",
+              "new": true,
+              "number": 2,
+              "path": "big_bell/big_bell-prompt-002.md",
+              "sha256": "9357a925226f7252faddcd5c2f20deb7fe32243dfc1d12ae04a5d07400c50196"
+            }
+          ]
+        },
+        {
+          "code": [],
+          "csd": {
+            "bytes": 2870,
+            "file": "big_bell.csd",
+            "path": "big_bell/version-0001/big_bell.csd"
+          },
+          "derived": [],
+          "id": "version-0001",
+          "info": {
+            "ai_agent": "studio-compose-ai",
+            "ai_model": "claude-sonnet-4-5",
+            "browser_checked": true,
+            "browser_engine": "@csound/browser 7.0.0",
+            "browser_playable": true,
+            "browser_realtime_factor": 377.5,
+            "channels": 2,
+            "created_at": "2026-11-16T10:49:54Z",
+            "csound": "Csound version 7.0 (double samples) Oct 28 2026",
+            "duration_seconds": 121.0,
+            "generator": "direct-csd",
+            "new_prompts": [
+              "big_bell-prompt-001.md"
+            ],
+            "node": "v26.13.1",
+            "notes": "Submitted through the studio compose API (viewer).",
+            "ordinal": 1,
+            "peak_dbfs": -8.1,
+            "python": "3.15.2",
+            "rms_dbfs": -29.11,
+            "sample_rate": 48000
+          },
+          "is_current": false,
+          "logs": [],
+          "manifest": {
+            "bytes": 4887,
+            "file": "big_bell-manifest.json",
+            "path": "big_bell/version-0001/big_bell-manifest.json"
+          },
+          "ordinal": 1,
+          "path": "big_bell/version-0001/",
+          "prompts": [
+            {
+              "bytes": 833,
+              "file": "big_bell-prompt-001.md",
+              "new": true,
+              "number": 1,
+              "path": "big_bell/version-0001/big_bell-prompt-001.md",
+              "sha256": "776861008f933c79ea2f4841da6c43c61089f577fb83091b2b4ea6f1090b4076"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "name": "nu",
       "path": "nu/",
       "prompt_texts": {
@@ -592,6 +716,6 @@
       ]
     }
   ],
-  "generated_at": "2026-11-15T18:58:31Z",
+  "generated_at": "2026-11-16T10:52:15Z",
   "schema": "ai-composition-studio/catalog/2"
 }
