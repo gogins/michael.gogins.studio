@@ -16,6 +16,7 @@
 import { fetchText } from './catalog.js';
 import { h, replaceChildren, formatDuration } from './dom.js';
 import { appendMessages, clearMessages, revealMessages } from './messages.js';
+import { setStatus } from './status.js';
 
 const ENGINE_URL = new URL('./csound/csound.js', import.meta.url);
 const TICK_MS = 100;
@@ -115,6 +116,7 @@ export function createPlayer({ id, csd, info }) {
     stopButton.disabled = !(next === 'playing' || next === 'paused' || next === 'loading');
     status.className = next === 'error' ? 'player-status error' : 'player-status';
     replaceChildren(status, message || '');
+    if (message) setStatus(message);
   }
 
   function note(message) {
@@ -132,9 +134,12 @@ export function createPlayer({ id, csd, info }) {
   }
 
   function setLevel(value) {
-    // -60 dB .. 0 dB across the width of the meter.
-    const shown = value > 0 ? Math.max(0, Math.min(1, 1 + (20 * Math.log10(value)) / 60)) : 0;
-    level.style.width = `${Math.round(shown * 100)}%`;
+    // -60 dBFS at the left, 0 dBFS (peak) at the right. The scale paints
+    // green, then yellow from -12 dBFS, then red at peak and above.
+    const over = value >= 1;
+    const clamped = over ? 1 : Math.max(0, value);
+    const shown = clamped > 0 ? Math.max(0, Math.min(1, 1 + (20 * Math.log10(clamped)) / 60)) : 0;
+    level.style.width = over ? '100%' : `${Math.round(shown * 1000) / 10}%`;
   }
 
   async function tick(current, mine) {
@@ -225,7 +230,8 @@ export function createPlayer({ id, csd, info }) {
       node.connect(current.analyser);
       root.dataset.sampleRate = String(current.context.sampleRate);
       setState('playing', offset > 0
-        ? `Playing from ${clock(offset)}. Notes that began before this point are not heard.` : '');
+        ? `Playing from ${clock(offset)}. Notes that began before this point are not heard.`
+        : 'Playing.');
       current.timer = setInterval(() => tick(current, mine), TICK_MS);
     } catch (error) {
       if (mine !== token) { await release(current); return; }
@@ -240,6 +246,7 @@ export function createPlayer({ id, csd, info }) {
   }
 
   async function stop() {
+    const wasRunning = state === 'playing' || state === 'paused' || state === 'loading';
     token += 1;
     const current = session;
     session = null;
@@ -247,7 +254,7 @@ export function createPlayer({ id, csd, info }) {
     position = 0;
     showTime(0);
     setLevel(0);
-    setState('idle', '');
+    setState('idle', wasRunning ? 'Stopped.' : '');
     await release(current);
   }
 
@@ -259,7 +266,7 @@ export function createPlayer({ id, csd, info }) {
     } else if (state === 'paused') {
       const mine = token;
       try { await session.csound.resume(); } catch (error) { return; }
-      if (mine === token) setState('playing', '');
+      if (mine === token) setState('playing', 'Playing.');
     } else if (state !== 'loading') {
       await start(position);
     }

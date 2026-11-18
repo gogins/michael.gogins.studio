@@ -41,14 +41,16 @@ Cursor Cloud Agents alike. The human-readable documentation is in
   in Git: listening is real-time performance of the published `.csd` in the
   viewer.
 
-## One catalog, two ways in
+## One way in
 
-A new piece may be created in Cursor (these commands) or in the viewer
-prompt field (`studio serve` → `/api/v1/compose`). Both paths must finish
-with `accept` and `publish` so the piece lands in the same archive
-(`music/ai-compositions/`) and the same catalog (`docs/compositions/catalog.json`).
-Do not leave a finished piece accepted but unpublished: the viewer only
-lists what has been published.
+Create and revise pieces only with these commands, from a Cursor prompt on
+the computer or from a Cursor cloud agent on the phone. The studio page
+does not take prompts. It only plays what `studio publish` has copied to
+`docs/compositions/` on the branch GitHub Pages serves (`master`).
+
+When the user asks you to push (the usual sentence ends with “push to
+`master`”), commit the studio directories and push to `master`. Do not
+push unless they asked. One agent at a time on a given piece.
 
 ## Workflow
 
@@ -81,9 +83,8 @@ Use `studio-tools/bin/studio`. Run `studio env` first in a new environment.
    the staged one becomes current. State your model truthfully.
 6. Check: `studio verify NAME`.
 7. Publish: `studio publish NAME` (try `--dry-run` first). Always publish
-   after a successful accept when the piece should appear in the viewer,
-   the same as a viewer-submitted composition. Published files become
-   public once the branch is deployed.
+   after a successful accept when the piece should appear in the viewer.
+   The page shows it after that commit is on `master`.
 8. Commit only the studio's directories, and say what you committed:
    `git add -- music/ai-compositions docs/compositions docs/studio studio-tools`.
    Never use `git add -A` or `git add .` in this repository.

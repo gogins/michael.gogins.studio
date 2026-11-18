@@ -3,31 +3,28 @@
 ## Purpose
 
 The studio is a way of composing by conversation. The composer prompts in
-Cursor (desktop or Cloud Agent) or in the viewer prompt field. Either path
-writes or revises a complete Csound piece, renders it, accepts it into the
-archive, and publishes it. Both paths share one archive and one catalog:
-a piece created in Cursor and a piece created in the viewer appear the same
-way in `docs/compositions/catalog.json`. The composer listens, compares and
-prompts again. It is not a digital audio workstation.
+Cursor, on the desktop or in a Cloud Agent. That writes or revises a
+complete Csound piece, renders it, accepts it into the archive, and
+publishes it. The page at `docs/studio/` only plays, compares, and seeks.
+It does not take a prompt. The composer listens there and prompts again
+in Cursor. It is not a digital audio workstation.
 
 ## Parts
 
 ```
-                 prompt                         prompt
-  composer ───────────────► Cursor agent          viewer (/api/v1/compose via studio serve)
-     ▲                    │ studio new/stage/…    │ same: stage → prompt → render → accept
-     │                    └──────────┬────────────┘
-     │                               ▼
-     │               music/ai-compositions/         the archive (authoritative)
-     │                 nu/  nu.csd, prompts, manifest, code/, outputs/
-     │                 nu/version-0001/ ...          earlier versions, never changed
-     │                            │  studio publish (copies; never changes the archive)
-     │                            ▼
-     │               docs/compositions/             published copies + catalog.json
-     │                            │  catalog is the same for every entry path
-     │                            ▼
-     └──────────────  docs/studio/                  the viewer (static + local compose API)
-        listen, read, compare; submit new / revise when serve provides /api/v1
+  composer ──► Cursor (desktop or Cloud Agent)
+     ▲              │  "Create a composition named …"  →  studio new
+     │              │  "Revise …"                       →  studio stage
+     │              ▼
+     │         music/ai-compositions/            the archive (authoritative)
+     │           nu/  nu.csd, prompts, manifest, code/, outputs/
+     │           nu/version-0001/ ...             earlier versions, never changed
+     │                      │  studio publish (copies; never changes the archive)
+     │                      ▼
+     │         docs/compositions/                published copies + catalog.json
+     │                      │  git push to master
+     │                      ▼
+     └──────── docs/studio/                      plays the .csd in the browser
 ```
 
 1. **Archive**, `music/ai-compositions/`. One directory per composition. The
@@ -72,8 +69,8 @@ relative, so they work under any site address and from `studio serve`.
   selected files and never writes to the archive. What has not been
   published is not in `docs/` and is not served.
 - **No database.** The catalog is a generated JSON file. The viewer is
-  static on GitHub Pages; locally, `studio serve` may also expose `/api/v1`
-  so the same prompt field can create and revise pieces into that catalog.
+  static. `studio serve` only serves it locally. Creating and revising
+  stay in Cursor; the commands are in [cheatsheet.md](cheatsheet.md).
 
 ## Tools package
 
@@ -90,7 +87,7 @@ relative, so they work under any site address and from `studio serve`.
 | `versioning.py` | Locks, the promotion transaction, recovery, verification. |
 | `publish.py` | Selection, planning, copying, conflict detection, pruning. |
 | `catalog.py` | `catalog.json`, generated from the published files. |
-| `serve.py` | A local static server with byte-range support, for the viewer. |
+| `serve.py` | A local static server with byte-range support, so the page can be played on this machine. |
 | `cli.py` | The `studio` command. |
 
 ## Viewer modules
@@ -99,6 +96,10 @@ relative, so they work under any site address and from `studio serve`.
 | --- | --- |
 | `index.html` | The page; loads `studio.js` as a module. |
 | `studio.js` | Library, composition and version views; tabs for prompts, Csound, code, files, comparison and provenance; routing by URL fragment (`#nu/version-0001/csound`). |
+| `player.js` | Performs the published `.csd` in the browser and draws the level meter. |
+| `messages.js` | The Csound message dock. |
+| `status.js` | The one-line status bar. |
+| `commands.js` | The command sheet opened from the header. Same text as [cheatsheet.md](cheatsheet.md). |
 | `catalog.js` | Loading the catalog, resolving published paths, fetching text. |
 | `diff.js` | Line comparison of two versions of a text. |
 | `dom.js` | Element construction and formatting helpers. All text is inserted as text, never as HTML. |

@@ -374,9 +374,7 @@ def cmd_catalog(studio: Studio, args: argparse.Namespace) -> int:
 
 
 def cmd_serve(studio: Studio, args: argparse.Namespace) -> int:
-    # Pass the Studio so /api/v1 can stage, render, accept and publish from
-    # the viewer's prompt field. Static hosting (GitHub Pages) has no API;
-    # there the same viewer uses config.json's composeApi when one exists.
+    # The page only plays. /api/v1 remains for tests; the page does not call it.
     serve_module.serve(studio.docs, args.host, args.port, studio=studio)
     return 0
 

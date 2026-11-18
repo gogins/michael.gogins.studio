@@ -75,14 +75,15 @@ async function run() {
   result.catalogError = text('#catalog-error');
   result.emptyLibrary = text('#empty-library');
   result.composeFormNew = Boolean(doc().getElementById('compose-form-new'));
-  result.composePromptNewDisabled = (() => {
-    const field = doc().getElementById('compose-prompt-new');
-    return field ? field.disabled : null;
-  })();
-  result.composeSubmitNewDisabled = (() => {
-    const button = doc().getElementById('compose-submit-new');
-    return button ? button.disabled : null;
-  })();
+  result.statusBar = text('#site-readiness');
+  result.commandsButton = Boolean(doc().getElementById('commands-open'));
+  if (result.commandsButton) {
+    doc().getElementById('commands-open').click();
+    await until('command sheet', () => doc().getElementById('command-sheet').open);
+    result.commandSheet = text('#command-sheet');
+    doc().querySelector('#command-sheet .command-sheet-close').click();
+    await until('command sheet closed', () => !doc().getElementById('command-sheet').open);
+  }
   // Messages dock is always on screen (windowshade), never a disclosure arrow.
   result.csoundMessages = Boolean(doc().getElementById('csound-messages'));
   result.csoundMessagesShade = Boolean(doc().getElementById('csound-messages-shade'));
@@ -95,7 +96,7 @@ async function run() {
   result.libraryText = text('.library');
   result.overflow.library = overflow();
 
-  // A composition: versions, prompts, and the revision prompt field.
+  // A composition: versions, prompts, and the player. Creating a version is Cursor's job.
   await show('#nu', 'version selector', () => doc().getElementById('version-select'));
   result.title = text('#composition-title');
   result.versions = all('#version-select option').map((option) => option.value);
@@ -378,11 +379,14 @@ class BrowserTests(Browser, StudioTestCase):
         result = self.browse("empty")
         self.assertEqual(result["state"], "ready")
         self.assertIn("No compositions have been published yet", result["emptyLibrary"])
-        self.assertIn("same catalog", result["emptyLibrary"])
-        # Prompt and Submit stay usable; Submit retries API discovery on click.
-        self.assertTrue(result["composeFormNew"])
-        self.assertFalse(result["composePromptNewDisabled"])
-        self.assertFalse(result["composeSubmitNewDisabled"])
+        self.assertIn("Cursor", result["emptyLibrary"])
+        self.assertFalse(result["composeFormNew"])
+        self.assertIn("Create and revise pieces in Cursor", result["statusBar"])
+        self.assertTrue(result["commandsButton"])
+        self.assertIn("Create a composition named NAME", result["commandSheet"])
+        self.assertIn("Revise NAME", result["commandSheet"])
+        self.assertIn("studio new NAME", result["commandSheet"])
+        self.assertIn("studio stage NAME", result["commandSheet"])
         self.assertTrue(result["csoundMessages"])
         self.assertTrue(result["csoundMessagesShade"])
         self.assertFalse(result["csoundMessagesDetails"])
@@ -404,11 +408,9 @@ class BrowserTests(Browser, StudioTestCase):
         self.assertEqual(result["state"], "ready")
         self.assertEqual(result["library"], ["nu", "xi"])
         self.assertNotIn("hidden", json.dumps(result))
-        self.assertTrue(result["composeFormNew"])  # library form
-        self.assertTrue(result["composeForm"])  # revision form on the composition page
-        self.assertTrue(result["composePrompt"])
-        self.assertFalse(result["composePromptDisabled"])
-        self.assertFalse(result["composeSubmitDisabled"])
+        self.assertFalse(result["composeFormNew"])
+        self.assertFalse(result["composeForm"])
+        self.assertFalse(result["composePrompt"])
         self.assertTrue(result["csoundMessages"])
         self.assertTrue(result["csoundMessagesShade"])
         self.assertFalse(result["csoundMessagesDetails"])

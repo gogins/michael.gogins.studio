@@ -1,5 +1,8 @@
 # Using the studio
 
+Create and revise in Cursor. The page only plays. The sentences and the
+command list are in [cheatsheet.md](cheatsheet.md).
+
 ## On the MacBook (Cursor desktop)
 
 Set up once: see [dependencies.md](dependencies.md). Then, in Cursor with
@@ -12,10 +15,11 @@ Examples:
 > Follow studio-tools/AGENT_INSTRUCTIONS.md. Create a composition named
 > `xi`: three minutes, slow bowed-string drones in just intonation with
 > occasional plucked figures. Write the score with a Python program using
-> CsoundAC. Render it and accept it.
+> CsoundAC. Render, accept, publish, and push to `master`.
 
 > Follow studio-tools/AGENT_INSTRUCTIONS.md. Revise `xi`: the plucked
-> figures are too loud and too regular. Then publish it.
+> figures are too loud and too regular. Render, accept, publish, and push
+> to `master`.
 
 What the agent does, and what you can do yourself in a terminal:
 
@@ -65,7 +69,7 @@ studio serve --host 0.0.0.0 --port 8000
 and open `http://<the MacBook's address>:8000/studio/` on the phone. This
 exposes `docs/` to the local network while it runs.
 
-In the viewer:
+**Commands** in the header opens the cheat sheet. The rest of the page:
 
 - The first page lists the published compositions.
 - A composition's page has a version selector (and Older and Newer
@@ -87,11 +91,10 @@ Once the cloud environment exists (see [cloud-agents.md](cloud-agents.md)):
 
 1. In Chrome, open `cursor.com/agents`, choose the repository, and prompt
    as on the desktop.
-2. When the agent reports that it has accepted and pushed a version, look
-   at its branch on GitHub, or, after the branch has been merged and
-   deployed, open the viewer at the site's `/studio/` address.
-3. Prompt again. Each accepted prompt becomes a new version; the previous
-   ones stay available in the viewer's version selector.
+2. Ask it to push to `master`. Open the viewer at the site's `/studio/`
+   address after GitHub Pages rebuilds. One agent at a time on a piece.
+3. Prompt again, with `Revise`. Each accepted prompt becomes a new
+   version; the previous ones stay in the version selector.
 
 The phone needs nothing but a browser. The MacBook can be off.
 

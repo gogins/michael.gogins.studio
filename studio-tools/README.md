@@ -37,17 +37,16 @@ Everything belonging to the studio is in four directories of this repository:
 
 ## Getting started
 
-Listening is the same on every device: the viewer performs the published
-`.csd` with official Csound 7 for WebAssembly (`@csound/browser`). No
-soundfile is stored. The work is always compose → render → accept →
-publish. You can start a new piece in Cursor or in the viewer prompt field;
-both use the same archive and the same `catalog.json`, so either path lists
-the piece the same way in the library.
+The page plays the published `.csd` with official Csound 7 for WebAssembly
+(`@csound/browser`). No soundfile is stored. Creating and revising happen
+in Cursor, with the same sentences on the computer and on the phone. The
+page does not take a prompt. The sentences and every command are in
+[docs/cheatsheet.md](docs/cheatsheet.md).
 
-Use the branch that has the studio (today: `feature/ai-composition-studio`).
-Begin agent prompts with “Follow studio-tools/AGENT_INSTRUCTIONS.md”
-unless the Cursor templates under `studio-tools/cursor/` have been
-installed (see [cursor/INSTALL.md](cursor/INSTALL.md)).
+The page plays `master`. Begin agent prompts with “Follow
+studio-tools/AGENT_INSTRUCTIONS.md” unless the Cursor templates under
+`studio-tools/cursor/` have been installed (see
+[cursor/INSTALL.md](cursor/INSTALL.md)).
 
 ### Desktop Cursor IDE (MacBook)
 
@@ -65,33 +64,18 @@ installed (see [cursor/INSTALL.md](cursor/INSTALL.md)).
 
    > Follow studio-tools/AGENT_INSTRUCTIONS.md. Create a composition named
    > `xi`: three minutes, slow bowed-string drones in just intonation.
-   > Write the score with Python and CsoundAC. Render, accept, and publish it.
+   > Write the score with Python and CsoundAC. Render, accept, publish,
+   > and push to `master`.
 
-4. Listen and prompt in the viewer. In the **same** terminal that will run
-   the server, export an Anthropic key so Submit can rewrite the `.csd`:
+4. Listen at
+   [gogins.github.io/michael.gogins.studio/studio/](https://gogins.github.io/michael.gogins.studio/studio/)
+   after the push reaches `master` and GitHub Pages rebuilds. On this
+   machine, `studio serve` plays the local catalog at
+   `http://127.0.0.1:8000/studio/`.
 
-   ```sh
-   export ANTHROPIC_API_KEY="…"          # required for viewer Submit to change the music
-   export PATH="$PWD/studio-tools/bin:$PATH"
-   studio serve
-   ```
-
-   Open `http://127.0.0.1:8000/studio/` in Chrome or Safari. **Submit new
-   version** records the prompt, calls the model to rewrite the staged
-   `.csd`, then renders, accepts and publishes. Alternatively set
-   `STUDIO_COMPOSE_HOOK` to a command that writes the `.csd` yourself.
-   Without a key or hook, Submit refuses rather than republishing the same music.
-
-The same viewer on GitHub Pages shows the field but cannot compose until
-`docs/studio/config.json` sets `composeApi` to a hosted service that
-implements that API (Pages alone is static). Until then, use local
-`studio serve` or Cursor for compose.
-
-You can still drive the same commands in the terminal without the agent
-(`studio new` / `stage` / `prompt` / `run` / `render` / `accept` /
-`publish`). Nothing enters the archive until `accept`, and `accept`
-refuses a staging area that has not rendered successfully. More detail:
-[docs/usage.md](docs/usage.md).
+The same commands can be typed in a terminal. Nothing enters the archive
+until `accept`, and `accept` refuses a staging area that has not rendered
+successfully. A session is written out in [docs/usage.md](docs/usage.md).
 
 ### Phone (Chrome on Android)
 
@@ -123,24 +107,21 @@ Agent (Ubuntu in Cursor’s cloud); the MacBook can be off.
 2. Prompt, for example:
 
    > Follow studio-tools/AGENT_INSTRUCTIONS.md. Revise `nu`: make the bells
-   > sparser in the second half. Render, accept, publish, commit, and push.
+   > sparser in the second half. Render, accept, publish, and push to `master`.
 
-3. When the agent has pushed, review the branch on GitHub. After that branch
-   is merged to the deployed branch, open the site’s `/studio/` address and
-   Play — the `.csd` performs in the phone’s browser.
+3. Ask it to push to `master`. Then open the site’s `/studio/` address and
+   Play. The `.csd` performs in the phone’s browser after GitHub Pages
+   rebuilds. One agent at a time on a given piece.
 
-Until the cloud environment works, you can still listen on the phone to a
-viewer the Mac is serving (`studio serve --host 0.0.0.0`) while prompting
-in desktop Cursor; see [docs/usage.md](docs/usage.md).
+Until the cloud environment works, listen on the phone to a viewer the Mac
+is serving (`studio serve --host 0.0.0.0`) while prompting in desktop
+Cursor; see [docs/usage.md](docs/usage.md).
 
 ### Cloud Agents from desktop Cursor
 
 Same cloud environment as on the phone. In desktop Cursor you can start a
-Cloud Agent (instead of a local agent) so the work runs on Ubuntu and
-pushes a branch; useful when the Mac should not do the render. Prompting
-and the `studio` cycle are the same as above; listening is again the
-viewer after publish (local `studio serve` on a machine that has the
-branch, or `/studio/` on the site after merge).
+Cloud Agent so the work runs on Ubuntu. The sentences are the same. The
+page plays the result after it is on `master`.
 
 ### A simple example
 
@@ -178,9 +159,9 @@ studio serve
 ```
 
 Open `http://127.0.0.1:8000/studio/`, choose **bells**, press **Play**. The
-browser runs the published `.csd`; there is no MP3. On the phone, after a
-Cloud Agent has published and the branch is on the deployed site, use the
-site’s `/studio/` address the same way.
+browser runs the published `.csd`; there is no MP3. On the phone, after
+the agent has pushed to `master` and Pages has rebuilt, use the site’s
+`/studio/` address the same way.
 
 **3. Revise.** A second prompt; the previous version is kept as
 `version-0001/`:
@@ -216,32 +197,16 @@ studio serve
 
 ## Commands
 
-| Command | Purpose |
-| --- | --- |
-| `studio env [--json] [--require-csoundac]` | Tools found in this environment, and what is missing. |
-| `studio new NAME [--title T]` | Start a new composition; prints its staging directory. |
-| `studio stage NAME` | Start a revision: a working copy of the current `.csd`, prompts and code. |
-| `studio adopt NAME --from DIR [--version N] [--list]` | Stage a revision made in another copy (Git branch) of the composition. |
-| `studio prompt STAGING (--text T \| --file F) [--source user\|agent]` | Save a prompt, verbatim, as the next numbered prompt file. |
-| `studio run STAGING [--seed N] [--param K=V]... -- PROGRAM ARGS...` | Run a generating program in the staging directory and record it. |
-| `studio render STAGING [--wav FILE] [--allow-clipping] [--allow-silence] [--allow-unplayable]` | Validate and render with Csound; measure; check in `@csound/browser`. |
-| `studio accept STAGING [--model M] [--agent A] [--title T] [--notes N]` | Archive the current version under the next number; promote the staged one. |
-| `studio discard STAGING` | Delete a staging directory. |
-| `studio list` | Compositions and staging directories. |
-| `studio show NAME [--version N] [--json]` | Provenance of a version. |
-| `studio verify [NAME...]` | Check naming, manifests, and that archived versions are unmodified. |
-| `studio recover NAME [--rollback] [--break-lock]` | Finish or undo an interrupted `accept`. |
-| `studio rerender NAME [--version N] [--regenerate] [--wav FILE]` | Render a stored version again and compare with the recorded render. |
-| `studio publish NAME... [--versions V] [--kinds K] [--dry-run] [--prune] [--force]` | Publish selected files. |
-| `studio unpublish NAME [--versions V] [--dry-run] [--force]` | Remove published files (never the archive). |
-| `studio catalog` | Regenerate `docs/compositions/catalog.json`. |
-| `studio serve [--host H] [--port P]` | Serve `docs/` locally to use the viewer. |
+The sentences and the command list are in
+[docs/cheatsheet.md](docs/cheatsheet.md). `studio --help` and
+`studio COMMAND --help` print the flags.
 
 `studio --root DIR` (or `STUDIO_ROOT`) points the tools at another repository
 root; the tests and `cloud/check.sh` use it to work in temporary directories.
 
 ## Documentation
 
+- [docs/cheatsheet.md](docs/cheatsheet.md): the sentences and the commands.
 - [docs/architecture.md](docs/architecture.md): how the parts fit together.
 - [docs/versioning.md](docs/versioning.md): naming, versions, manifests, and the recovery protocol.
 - [docs/csound-conventions.md](docs/csound-conventions.md): p-fields, and what was verified about CsoundAC.

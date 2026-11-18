@@ -8,11 +8,9 @@ are no soundfiles. HTTP Range requests are supported (for large files such
 as PDF scores). Files are served exactly as they are: Jekyll processing is
 not emulated.
 
-When a Studio instance is passed, ``/api/v1`` accepts compose requests from
-the viewer (stage → prompt → render → accept → publish). That is what makes
-the prompt field work locally. On GitHub Pages the same viewer looks for a
-compose API via ``docs/studio/config.json``; until one is configured, the
-field explains that compose is unavailable on the static site alone.
+When a Studio instance is passed, ``/api/v1`` can stage, render, accept and
+publish. The studio page does not call it. Pieces are created and revised
+in Cursor, with ``studio new`` or ``studio stage``.
 """
 from __future__ import annotations
 
@@ -134,8 +132,8 @@ class StaticHandler(SimpleHTTPRequestHandler):
         return None
 
     def _cors_headers(self) -> None:
-        # Same-origin for local serve; allow a future Pages→API host to call us
-        # when someone tunnels or points composeApi here during development.
+        # Same-origin for local serve. Echo Origin so a test client on another
+        # port can call the API. The studio page does not.
         origin = self.headers.get("Origin")
         if origin:
             self.send_header("Access-Control-Allow-Origin", origin)

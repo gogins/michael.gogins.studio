@@ -89,21 +89,15 @@ in a file in the repository.
    app from Chrome's menu). Choose the repository.
 2. Prompt, for example:
 
-   > Follow studio-tools/AGENT_INSTRUCTIONS.md. Revise the composition
-   > `nu`: make the bells sparser in the second half and end on D. Render
-   > it, accept it as a new version, publish it, commit, and report the
-   > levels.
+   > Follow studio-tools/AGENT_INSTRUCTIONS.md. Revise `nu`: make the bells
+   > sparser in the second half and end on D. Render, accept, publish, and
+   > push to `master`.
 
 3. The agent stages a revision, saves the prompt, edits or regenerates the
-   `.csd`, renders, accepts, publishes, commits, and pushes its branch.
-4. Review the result. The agent's branch is on GitHub, where the `.csd`
-   and the prompts can be opened from the phone. The viewer at `/studio/`
-   shows a version only after its branch has been merged into the branch
-   that GitHub Pages deploys; Play then performs the `.csd` in the browser
-   (no soundfile).
-
-How merging and deployment are to be authorized is an open decision; see
-[deployment.md](deployment.md).
+   `.csd`, renders, accepts, publishes, and pushes to `master`. The page
+   plays that version after GitHub Pages rebuilds. One agent at a time on
+   a given piece. Two agents revising the same piece at once is the case
+   in [Several agents](#several-agents-several-branches).
 
 ## Several agents, several branches
 

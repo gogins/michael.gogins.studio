@@ -12,15 +12,19 @@
 <header class="site-header">
   <div class="site-header-row">
     <a class="site-title" href="#">AI Composition Studio</a>
-    <a class="site-home" href="../">Michael Gogins</a>
+    <span class="site-header-actions">
+      <button type="button" class="commands-open" id="commands-open">Commands</button>
+      <a class="site-home" href="../">Michael Gogins</a>
+    </span>
   </div>
-  <p class="site-readiness" id="site-readiness" role="status">Checking compose…</p>
 </header>
+<dialog id="command-sheet" class="command-sheet" aria-labelledby="command-sheet-title"></dialog>
 <main id="app" aria-live="polite">
   <p class="status">Loading the catalog…</p>
 </main>
 <footer class="site-footer" id="footer"></footer>
 <div id="csound-messages-host"></div>
+<p class="status-bar" id="site-readiness" role="status">Play a published piece here. Create and revise pieces in Cursor.</p>
 <noscript>
   <p class="status">This viewer needs JavaScript. The published files are in
   <a href="../compositions/">../compositions/</a>.</p>

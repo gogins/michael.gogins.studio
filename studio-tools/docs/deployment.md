@@ -65,11 +65,11 @@ studio-tools/bin/studio serve      # http://127.0.0.1:8000/studio/
 
    The viewer then shows an empty library, and the tests that read the
    real archive accept an empty one.
-5. **How Cloud Agent work reaches the site.** A Cloud Agent pushes a
-   branch. Something has to merge it into the deployed branch: the
-   composer, from the phone, through a pull request, is the conservative
-   choice. Letting agents push to `master` directly is faster and removes
-   the review. See [cloud-agents.md](cloud-agents.md).
+5. **How a new version reaches the site.** The usual prompt asks the agent
+   to push to `master`. That is what GitHub Pages serves, so the page
+   updates on the next rebuild, with no separate merge. One agent at a
+   time on a given piece. The cloud environment itself is still unverified;
+   see [cloud-agents.md](cloud-agents.md).
 6. **Cursor configuration.** Whether to install `AGENTS.md` and the files
    under `.cursor/` from `studio-tools/cursor/`; see
    [`../cursor/INSTALL.md`](../cursor/INSTALL.md).
