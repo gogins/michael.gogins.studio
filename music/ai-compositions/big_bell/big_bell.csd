@@ -54,38 +54,41 @@ a_clang_env = a_attack * a_decay
 a_clang_attack linseg 0, 0.002, 1
 a_body_attack linseg 0, 0.008, 1
 
+; A partial at or above Nyquist would fold back. Silence it instead.
+i_nyquist = sr / 2
+
 ; More prominent high metallic partials for clank
 a_partial1 oscili k_amplitude * a_clang_env * 0.4, i_frequency * 1.0, gi_sine
 a_partial2 oscili k_amplitude * a_clang_env * 0.35, i_frequency * 1.89, gi_sine, i_phase * 0.1
 a_partial3 oscili k_amplitude * a_clang_env * 0.32, i_frequency * 2.67, gi_sine, i_phase * 0.2
 a_partial4 oscili k_amplitude * a_clang_env * 0.28, i_frequency * 3.47, gi_sine, i_phase * 0.3
 a_partial5 oscili k_amplitude * a_clang_env * 0.24, i_frequency * 4.21, gi_sine, i_phase * 0.4
-a_partial6 oscili k_amplitude * a_clang_env * 0.20, i_frequency * 5.09, gi_sine, i_phase * 0.5
-a_partial7 oscili k_amplitude * a_clang_env * 0.18, i_frequency * 5.93, gi_sine, i_phase * 0.6
-a_partial8 oscili k_amplitude * a_clang_env * 0.15, i_frequency * 6.71, gi_sine, i_phase * 0.7
+a_partial6 oscili k_amplitude * a_clang_env * ((i_frequency * 5.09) < i_nyquist ? 0.20 : 0), i_frequency * 5.09, gi_sine, i_phase * 0.5
+a_partial7 oscili k_amplitude * a_clang_env * ((i_frequency * 5.93) < i_nyquist ? 0.18 : 0), i_frequency * 5.93, gi_sine, i_phase * 0.6
+a_partial8 oscili k_amplitude * a_clang_env * ((i_frequency * 6.71) < i_nyquist ? 0.15 : 0), i_frequency * 6.71, gi_sine, i_phase * 0.7
 
 ; Very fast decaying metallic clang partials, faded in from silence
 a_decay_fast expon 1, 0.3, 0.0001
 a_clang_gain = a_decay_fast * a_clang_attack
-a_clang1 oscili k_amplitude * a_clang_gain * 0.4, i_frequency * 8.23, gi_sine, i_phase * 0.11
-a_clang2 oscili k_amplitude * a_clang_gain * 0.35, i_frequency * 9.87, gi_sine, i_phase * 0.22
-a_clang3 oscili k_amplitude * a_clang_gain * 0.3, i_frequency * 11.44, gi_sine, i_phase * 0.33
-a_clang4 oscili k_amplitude * a_clang_gain * 0.25, i_frequency * 13.17, gi_sine, i_phase * 0.44
-a_clang5 oscili k_amplitude * a_clang_gain * 0.22, i_frequency * 15.63, gi_sine, i_phase * 0.55
+a_clang1 oscili k_amplitude * a_clang_gain * ((i_frequency * 8.23) < i_nyquist ? 0.4 : 0), i_frequency * 8.23, gi_sine, i_phase * 0.11
+a_clang2 oscili k_amplitude * a_clang_gain * ((i_frequency * 9.87) < i_nyquist ? 0.35 : 0), i_frequency * 9.87, gi_sine, i_phase * 0.22
+a_clang3 oscili k_amplitude * a_clang_gain * ((i_frequency * 11.44) < i_nyquist ? 0.3 : 0), i_frequency * 11.44, gi_sine, i_phase * 0.33
+a_clang4 oscili k_amplitude * a_clang_gain * ((i_frequency * 13.17) < i_nyquist ? 0.25 : 0), i_frequency * 13.17, gi_sine, i_phase * 0.44
+a_clang5 oscili k_amplitude * a_clang_gain * ((i_frequency * 15.63) < i_nyquist ? 0.22 : 0), i_frequency * 15.63, gi_sine, i_phase * 0.55
 
 ; Slower decaying bell body, also faded in from silence
 a_decay_slow expon 1, i_duration, 0.001
 a_body_gain = a_decay_slow * a_body_attack
-a_partial9 oscili k_amplitude * a_body_gain * 0.08, i_frequency * 7.58, gi_sine, i_phase * 0.8
-a_partial10 oscili k_amplitude * a_body_gain * 0.06, i_frequency * 8.34, gi_sine, i_phase * 0.9
-a_partial11 oscili k_amplitude * a_body_gain * 0.05, i_frequency * 9.21, gi_sine, i_phase * 0.15
-a_partial12 oscili k_amplitude * a_body_gain * 0.04, i_frequency * 10.07, gi_sine, i_phase * 0.25
+a_partial9 oscili k_amplitude * a_body_gain * ((i_frequency * 7.58) < i_nyquist ? 0.08 : 0), i_frequency * 7.58, gi_sine, i_phase * 0.8
+a_partial10 oscili k_amplitude * a_body_gain * ((i_frequency * 8.34) < i_nyquist ? 0.06 : 0), i_frequency * 8.34, gi_sine, i_phase * 0.9
+a_partial11 oscili k_amplitude * a_body_gain * ((i_frequency * 9.21) < i_nyquist ? 0.05 : 0), i_frequency * 9.21, gi_sine, i_phase * 0.15
+a_partial12 oscili k_amplitude * a_body_gain * ((i_frequency * 10.07) < i_nyquist ? 0.04 : 0), i_frequency * 10.07, gi_sine, i_phase * 0.25
 
 ; Slower phasing partials
 k_lfo1 oscil 0.02, 0.07, gi_sine
 k_lfo2 oscil 0.03, 0.11, gi_sine
-a_partial13 oscili k_amplitude * a_body_gain * 0.03, i_frequency * 11.23 * (1 + k_lfo1), gi_sine
-a_partial14 oscili k_amplitude * a_body_gain * 0.02, i_frequency * 12.51 * (1 + k_lfo2), gi_sine
+a_partial13 oscili k_amplitude * a_body_gain * ((i_frequency * 11.23 * 1.02) < i_nyquist ? 0.03 : 0), i_frequency * 11.23 * (1 + k_lfo1), gi_sine
+a_partial14 oscili k_amplitude * a_body_gain * ((i_frequency * 12.51 * 1.03) < i_nyquist ? 0.02 : 0), i_frequency * 12.51 * (1 + k_lfo2), gi_sine
 
 ; Sum partials
 a_bell = a_partial1 + a_partial2 + a_partial3 + a_partial4 + a_partial5 + a_partial6 + a_partial7 + a_partial8 + a_partial9 + a_partial10 + a_partial11 + a_partial12 + a_partial13 + a_partial14
@@ -93,9 +96,9 @@ a_clang_sum = a_clang1 + a_clang2 + a_clang3 + a_clang4 + a_clang5
 
 ; More prominent ring modulation for metallic clang
 a_ring1 = a_partial1 * a_partial3
-a_ring2 = a_partial2 * a_partial5
-a_ring3 = a_partial4 * a_partial7
-a_ring4 = a_clang1 * a_clang3
+a_ring2 = a_partial2 * a_partial5 * ((i_frequency * (1.89 + 4.21)) < i_nyquist ? 1 : 0)
+a_ring3 = a_partial4 * a_partial7 * ((i_frequency * (3.47 + 5.93)) < i_nyquist ? 1 : 0)
+a_ring4 = a_clang1 * a_clang3 * ((i_frequency * (8.23 + 11.44)) < i_nyquist ? 1 : 0)
 a_bell = a_bell + a_clang_sum + (a_ring1 + a_ring2 + a_ring3 + a_ring4) * 0.15
 
 ; Apply reverb
@@ -137,6 +140,10 @@ i 1 79 120 33.980437 110 0.5 0.5 0.5 0.31 3797 0.5
 i 1 80 120 49.843574 110 0.5 0.5 0.5 0.44 3797 0.5
 i 1 81 120 65.706711 110 0.5 0.5 0.5 0.57 3797 0.5
 i 1 82 120 81.569849 110 0.5 0.5 0.5 0.70 3797 0.5
-e 203
+; Two more steps of the same third-plus-octave. Partials at or above
+; Nyquist are silent, so these notes do not fold over.
+i 1 83 120 97.432986 110 0.5 0.5 0.5 0.83 3831 0.5
+i 1 84 120 113.296123 110 0.5 0.5 0.5 0.96 3831 0.5
+e 205
 </CsScore>
 </CsoundSynthesizer>
