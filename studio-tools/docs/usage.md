@@ -48,7 +48,7 @@ studio rerender xi --version 1       # does it still render the same?
 
 Abandoning work: `studio discard "$S"`. The composition is unaffected.
 
-## The viewer, locally
+## The player, locally
 
 ```sh
 studio publish xi                    # copy to docs/compositions/, update the catalog
@@ -56,11 +56,11 @@ studio serve                         # http://127.0.0.1:8000/studio/
 ```
 
 `studio serve` is a small static server for `docs/`. Any static server that
-serves `docs/` will do. The viewer performs each published `.csd` with the
+serves `docs/` will do. The player performs each published `.csd` with the
 official Csound 7 for WebAssembly (`@csound/browser`) in this browser; the
 same player is used on the deployed site.
 
-To use the local viewer from the phone on the same network:
+To use the local player from the phone on the same network:
 
 ```sh
 studio serve --host 0.0.0.0 --port 8000
@@ -69,7 +69,7 @@ studio serve --host 0.0.0.0 --port 8000
 and open `http://<the MacBook's address>:8000/studio/` on the phone. This
 exposes `docs/` to the local network while it runs.
 
-**Commands** in the header opens the cheat sheet. The rest of the page:
+**Cheat sheet** in the header opens the command list. That page links back to the Player. The rest of the Player:
 
 - The first page lists the published compositions.
 - A composition's page has a version selector (and Older and Newer
@@ -91,7 +91,7 @@ Once the cloud environment exists (see [cloud-agents.md](cloud-agents.md)):
 
 1. In Chrome, open `cursor.com/agents`, choose the repository, and prompt
    as on the desktop.
-2. Ask it to push to `master`. Open the viewer at the site's `/studio/`
+2. Ask it to push to `master`. Open the player at the site's `/studio/`
    address after GitHub Pages rebuilds. One agent at a time on a piece.
 3. Prompt again, with `Revise`. Each accepted prompt becomes a new
    version; the previous ones stay in the version selector.
@@ -99,14 +99,14 @@ Once the cloud environment exists (see [cloud-agents.md](cloud-agents.md)):
 The phone needs nothing but a browser. The MacBook can be off.
 
 Until the cloud environment has been set up and checked, the phone can be
-used with the MacBook as the machine that does the work: the viewer served
+used with the MacBook as the machine that does the work: the player served
 with `studio serve --host 0.0.0.0` is the listening side; prompting still
 happens in Cursor on the MacBook.
 
 ## Listening levels and length
 
 `studio render` prints the duration, the peak and the RMS level. It refuses
-silence and clipping, and checks that the piece performs in the viewer's
+silence and clipping, and checks that the piece performs in the player's
 Csound engine. A peak around -6 to -3 dBFS leaves headroom when that engine
 plays the piece in the browser.
 

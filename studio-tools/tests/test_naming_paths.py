@@ -115,7 +115,7 @@ class PathSafetyTests(StudioTestCase):
             set(AUTHORIZED_RELS),
             {"music/ai-compositions", "docs/compositions", "docs/studio", "studio-tools"},
         )
-        for path in (self.studio.archive, self.studio.published, self.studio.viewer,
+        for path in (self.studio.archive, self.studio.published, self.studio.player,
                      self.studio.tools, self.studio.staging_root, self.studio.locks_root):
             relative = path.relative_to(self.root).as_posix()
             self.assertTrue(any(relative == a or relative.startswith(a + "/") for a in AUTHORIZED_RELS))

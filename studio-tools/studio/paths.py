@@ -12,12 +12,12 @@ from typing import Optional, Union
 
 ARCHIVE_REL = "music/ai-compositions"
 PUBLISHED_REL = "docs/compositions"
-VIEWER_REL = "docs/studio"
+PLAYER_REL = "docs/studio"
 TOOLS_REL = "studio-tools"
 
 #: The only directory trees (relative to the repository root) the studio may
 #: create files in.
-AUTHORIZED_RELS = (ARCHIVE_REL, PUBLISHED_REL, VIEWER_REL, TOOLS_REL)
+AUTHORIZED_RELS = (ARCHIVE_REL, PUBLISHED_REL, PLAYER_REL, TOOLS_REL)
 
 
 class StudioError(Exception):
@@ -42,7 +42,7 @@ class Studio:
         self.root = Path(root).resolve()
         self.archive = self.root / ARCHIVE_REL
         self.published = self.root / PUBLISHED_REL
-        self.viewer = self.root / VIEWER_REL
+        self.player = self.root / PLAYER_REL
         self.tools = self.root / TOOLS_REL
         self.docs = self.root / "docs"
         self.staging_root = self.archive / ".staging"

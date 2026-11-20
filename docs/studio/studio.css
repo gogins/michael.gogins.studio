@@ -1,4 +1,4 @@
-/* AI Composition Studio viewer. Plain CSS, small screens first. */
+/* Player. Plain CSS, small screens first. */
 
 :root {
   color-scheme: light dark;
@@ -100,14 +100,10 @@ main,
   margin-left: auto;
 }
 
-.commands-open {
-  font: inherit;
-  font-size: 0.9rem;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: var(--accent);
-  cursor: pointer;
+.site-header a[aria-current="page"] {
+  color: var(--text);
+  font-weight: 650;
+  text-decoration: none;
 }
 
 .site-title {
@@ -503,46 +499,14 @@ pre.prose {
 
 .code { flex: 1 0 auto; padding: 0.7rem 0.9rem; tab-size: 4; }
 
-/* Command sheet. Same text as studio-tools/docs/cheatsheet.md. */
+/* Cheat sheet page. Same text as studio-tools/docs/cheatsheet.md. */
 
-.command-sheet {
-  width: min(42rem, calc(100% - 2rem));
-  max-height: calc(100% - 2rem);
-  margin: auto;
-  padding: 0;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--surface);
-  color: var(--text);
-}
-
-.command-sheet::backdrop { background: rgba(0, 0, 0, 0.45); }
-
-.command-sheet form {
-  max-height: calc(100vh - 3rem);
-  padding: 0.9rem 1rem 1.1rem;
-  overflow: auto;
-}
-
-.command-sheet-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 1rem;
-  position: sticky;
-  top: -0.9rem;
-  margin: -0.9rem -1rem 0.6rem;
-  padding: 0.7rem 1rem;
-  background: var(--surface);
-  border-bottom: 1px solid var(--line);
-}
-
-.command-sheet h2 { margin: 0; font-size: 1.1rem; }
-.command-sheet h3 { margin: 1rem 0 0.3rem; font-size: 0.95rem; }
-.command-sheet p { margin: 0.45rem 0; }
-.command-sheet .meta { color: var(--muted); font-size: 0.88rem; }
-
-.command-sheet blockquote {
+main.sheet { padding-bottom: 2.5rem; }
+main.sheet h1 { font-size: 1.45rem; margin: 1rem 0 0.4rem; }
+main.sheet h2 { font-size: 1.05rem; margin: 1.2rem 0 0.3rem; }
+main.sheet p { margin: 0.45rem 0; }
+main.sheet .meta { color: var(--muted); font-size: 0.88rem; }
+main.sheet blockquote {
   margin: 0.45rem 0;
   padding: 0.4rem 0.7rem;
   background: var(--code-bg);
@@ -556,16 +520,6 @@ pre.prose {
 }
 
 .command-sentence { margin: 0.15rem 0 0; }
-
-.command-sheet-close {
-  font: inherit;
-  font-size: 0.9rem;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: var(--accent);
-  cursor: pointer;
-}
 
 table.commands { border-collapse: collapse; width: 100%; font-size: 0.88rem; }
 .commands th, .commands td {

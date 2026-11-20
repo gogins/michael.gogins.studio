@@ -6,7 +6,7 @@ work on macOS, in a Cursor Cloud Agent, and in the test suite:
     STUDIO_CSOUND   csound executable            (default: csound)
     STUDIO_PYTHON   Python that can import CsoundAC (default: this Python)
     STUDIO_NODE     node executable              (default: node)
-    STUDIO_CSOUND_WASM    the @csound/browser module the viewer plays with,
+    STUDIO_CSOUND_WASM    the @csound/browser module the player plays with,
                           or "none" (default: docs/studio/csound/csound.js)
     CSOUNDAC_WASM_DIR     directory holding CsoundAC.js and CsoundAC.wasm
     CSOUNDAC_SOURCE_DIR   CsoundAC source checkout, to record its revision
@@ -187,13 +187,13 @@ def node_info() -> Dict[str, Any]:
     return info
 
 
-#: Where the viewer's Csound engine lives, relative to the repository root.
+#: Where the player's Csound engine lives, relative to the repository root.
 BROWSER_ENGINE_REL = "docs/studio/csound/csound.js"
 BROWSER_CHECK_SCRIPT = Path(__file__).resolve().parents[1] / "js" / "csound-browser-check.mjs"
 
 
 def browser_engine_path() -> Optional[Path]:
-    """The @csound/browser module used to check that a piece plays in the viewer."""
+    """The @csound/browser module used to check that a piece plays in the player."""
     value = os.environ.get("STUDIO_CSOUND_WASM")
     if value is not None:
         if not value or value.lower() == "none":
@@ -205,7 +205,7 @@ def browser_engine_path() -> Optional[Path]:
 
 
 def browser_engine_info() -> Dict[str, Any]:
-    """The Csound WebAssembly engine of the viewer, as installed in this checkout."""
+    """The Csound WebAssembly engine of the player, as installed in this checkout."""
     if "browser_csound" in _CACHE:
         return _CACHE["browser_csound"]
     info: Dict[str, Any] = {"available": False}
@@ -250,7 +250,7 @@ def problems(require_csoundac: bool = False) -> List[str]:
     if os.environ.get("STUDIO_CSOUND_WASM", "").lower() != "none":
         if not browser_engine_info().get("available"):
             found.append(
-                "the viewer's Csound engine was not found (docs/studio/csound/csound.js, or set "
+                "the player's Csound engine was not found (docs/studio/csound/csound.js, or set "
                 "STUDIO_CSOUND_WASM): renders cannot be checked for playing in the browser"
             )
         elif not node_info().get("available"):

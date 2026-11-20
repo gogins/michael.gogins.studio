@@ -1,7 +1,7 @@
 // Access to the published catalog and files.
 //
 // Everything is addressed relative to ../compositions/catalog.json, so the
-// viewer works wherever the docs/ directory is served from.
+// player works wherever the docs/ directory is served from.
 
 export const CATALOG_URL = new URL('../compositions/catalog.json', import.meta.url);
 const BASE_URL = new URL('./', CATALOG_URL);

@@ -80,7 +80,7 @@ in a file in the repository.
   reason the `studio` command loads `studio-env.sh` itself, every time.
 - A run's working files are not kept after the run. Whatever matters must be
   committed and pushed: the composition, its versions, prompts, code and
-  manifests (not soundfiles — listening is the viewer). Staging directories
+  manifests (not soundfiles — listening is the player). Staging directories
   and `/tmp` are scratch space.
 
 ## Working from a phone

@@ -7,7 +7,7 @@ alwaysApply: false
 # AI composition studio
 
 Read and follow `studio-tools/AGENT_INSTRUCTIONS.md` before creating or
-revising a composition, publishing, or changing the studio's tools or viewer.
+revising a composition, publishing, or changing the studio's tools or player.
 
 - Work only in `music/ai-compositions/`, `docs/compositions/`, `docs/studio/`
   and `studio-tools/`. Do not modify anything else in this repository.

@@ -1,4 +1,4 @@
-// The one status line for the viewer. Compose, validation, and playback
+// The one status line for the player. Compose, validation, and playback
 // messages all land here: a single line fixed to the bottom of the screen.
 
 const BAR_ID = 'site-readiness';

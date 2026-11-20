@@ -27,8 +27,8 @@ real tools use them when present and are reported as skipped otherwise:
 | `test_render.RealCsoundTests` | `csound` on the PATH | skipped |
 | `test_render.BrowserEngineTests` | `@csound/browser` installed and Node.js on the PATH | skipped |
 | `test_generators` | `STUDIO_PYTHON` with CsoundAC; Node.js with `CSOUNDAC_WASM_DIR`; `STUDIO_CSOUNDAC_CXXFLAGS`/`LDFLAGS` | each skipped separately |
-| `test_viewer.BrowserTests`, `test_viewer.PublishedSiteTests` | Chrome or Chromium (`STUDIO_CHROME` to name it) | skipped |
-| `test_viewer.DiffModuleTests` | Node.js | skipped |
+| `test_player.BrowserTests`, `test_player.PublishedSiteTests` | Chrome or Chromium (`STUDIO_CHROME` to name it) | skipped |
+| `test_player.DiffModuleTests` | Node.js | skipped |
 | `test_branches` | Git | skipped |
 | `test_repository.PreexistingFilesTests` | A Git checkout with the base branch (`STUDIO_BASE_BRANCH`, default `master` or `main`) | skipped |
 
@@ -56,9 +56,9 @@ run the suite outside the sandbox; those tests fail there, they do not skip.
 | Dry run | `test_publish.PublishTests.test_dry_run_writes_nothing`. |
 | No publication outside `docs/compositions/` | `test_publish.PublishSafetyTests`: symbolic links in and at the destination, a tampered state file, and a check that everything published is inside the directory. |
 | The archive is not modified by publishing | `test_publish`: the archive's tree hash is compared before and after. |
-| Browser loading of the catalog; audio playback | `test_viewer.BrowserTests`: headless Chrome loads the viewer in a 412 x 915 frame against a site published by the tools; checks the library, version selection, prompts, `.csd`, code, files, provenance, comparison, real-time performance and seeking of the published `.csd` with `@csound/browser`, an archived version, missing optional artifacts, an unknown composition, an empty library, a missing catalog, and that no view is wider than the frame. |
-| The published site | `test_viewer.PublishedSiteTests`: the real `docs/` is served read-only and every published version of every composition is opened in headless Chrome: the `.csd` shown equals the published file, the prompts are those of the catalog, the player performs the published `.csd` in real time, and nothing overflows a phone-sized frame. |
-| Viewer code | `test_viewer.DiffModuleTests` (the diff reproduces both texts for 300 random cases); `test_repository.StudioFilesTests`: no absolute URLs, no `innerHTML`, all references resolve. |
+| Browser loading of the catalog; audio playback | `test_player.BrowserTests`: headless Chrome loads the player in a 412 x 915 frame against a site published by the tools; checks the library, version selection, prompts, `.csd`, code, files, provenance, comparison, real-time performance and seeking of the published `.csd` with `@csound/browser`, an archived version, missing optional artifacts, an unknown composition, an empty library, a missing catalog, and that no view is wider than the frame. |
+| The published site | `test_player.PublishedSiteTests`: the real `docs/` is served read-only and every published version of every composition is opened in headless Chrome: the `.csd` shown equals the published file, the prompts are those of the catalog, the player performs the published `.csd` in real time, and nothing overflows a phone-sized frame. |
+| Player code | `test_player.DiffModuleTests` (the diff reproduces both texts for 300 random cases); `test_repository.StudioFilesTests`: no absolute URLs, no `innerHTML`, all references resolve. |
 | Command line and local server | `test_cli_serve`: a complete session through `bin/studio`; exit status on errors; `publish`, `catalog`, `recover`; whole files, content types, byte ranges and refusal of escapes by the server. |
 | Generating programs | `test_generators`: Python, JavaScript (WebAssembly) and C++ programs using the real CsoundAC write the same score with the studio's p-field layout, are recorded in the manifest, and regenerate the identical `.csd`. |
 | No modification of pre-existing files | `test_repository.PreexistingFilesTests`: against the base branch, every committed and every working-tree change is an added file inside the four directories; nothing under `music/` or `docs/` outside the studio's directories differs; no root `AGENTS.md`, `.cursor/`, `.github/`, `CNAME` or `.nojekyll` was added; the tools contain no push, merge or deploy command. |
@@ -84,9 +84,9 @@ and the three CsoundAC routes were reported as not configured; with
 Not run anywhere: the suite and `check.sh` on Linux, and
 `cloud/install.sh`.
 
-Test counts by module: `test_naming_paths` 14, `test_versioning` 25, `test_recovery` 9, `test_render` 30, `test_publish` 30, `test_cli_serve` 7, `test_generators` 3, `test_branches` 4, `test_viewer` 5, `test_repository` 12 (plus browser-engine cases inside `test_render`).
+Test counts by module: `test_naming_paths` 14, `test_versioning` 25, `test_recovery` 9, `test_render` 30, `test_publish` 30, `test_cli_serve` 7, `test_generators` 3, `test_branches` 4, `test_player` 5, `test_repository` 12 (plus browser-engine cases inside `test_render`).
 `test_recovery` 9, `test_render` 22, `test_publish` 30, `test_cli_serve` 7,
-`test_generators` 3, `test_branches` 4, `test_viewer` 5,
+`test_generators` 3, `test_branches` 4, `test_player` 5,
 `test_repository` 12.
 
 ## Manual checks
@@ -94,7 +94,7 @@ Test counts by module: `test_naming_paths` 14, `test_versioning` 25, `test_recov
 Things the suite does not cover and that were checked by hand while
 building the studio:
 
-- The viewer in Cursor's built-in browser against the published `nu`:
+- The player in Cursor's built-in browser against the published `nu`:
   catalog loaded, three versions listed, the `.csd` performed in real time and seeked,
   comparison shown.
 - `studio rerender` of all three versions of `nu`, with `--regenerate` for
@@ -102,6 +102,6 @@ building the studio:
 
 Things not checked at all:
 
-- The viewer on a physical Android phone. The browser test uses a
+- The player on a physical Android phone. The browser test uses a
   phone-sized frame in desktop Chrome.
 - The deployed site: how GitHub Pages (Jekyll) serves the new files.

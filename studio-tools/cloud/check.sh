@@ -8,7 +8,7 @@
 #   studio-tools/cloud/check.sh --tests    also run the automated tests
 #
 # Works on macOS and Linux. Exits non-zero when a required part fails.
-# Csound 7 is required; the viewer's @csound/browser engine, CsoundAC
+# Csound 7 is required; the player's @csound/browser engine, CsoundAC
 # (Python / WebAssembly / C++) are each checked when configured and reported
 # as missing otherwise.
 
@@ -91,9 +91,9 @@ else
             bad "a soundfile was written into the archive"
         fi
         if "$STUDIO" env --json | python3 -c 'import json,sys; raise SystemExit(0 if json.load(sys.stdin).get("browser_csound",{}).get("available") else 1)'; then
-            ok "viewer engine (@csound/browser) is installed"
+            ok "player engine (@csound/browser) is installed"
         else
-            skip "viewer engine (@csound/browser) not installed under docs/studio/csound/"
+            skip "player engine (@csound/browser) not installed under docs/studio/csound/"
         fi
     else
         bad "the first version was not accepted, so no revision could be staged"

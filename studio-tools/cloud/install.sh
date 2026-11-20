@@ -85,7 +85,7 @@ step_packages() {
     export DEBIAN_FRONTEND=noninteractive
     as_root apt-get update
     # The list of the CsoundAC Linux build, plus what the studio itself uses:
-    # Node.js (JavaScript generators and the viewer-engine check), unzip and curl
+    # Node.js (JavaScript generators and the player-engine check), unzip and curl
     # (the WebAssembly release), libsamplerate and gettext (csound/BUILD.md).
     as_root apt-get install -y --no-install-recommends \
         git ca-certificates curl unzip \

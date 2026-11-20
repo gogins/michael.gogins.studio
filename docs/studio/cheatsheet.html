@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Cheat sheet</title>
+<link rel="stylesheet" href="studio.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="site-header-row">
+    <a class="site-title" id="player-link" href="index.html">Player</a>
+    <span class="site-header-actions">
+      <a href="cheatsheet.html" aria-current="page">Cheat sheet</a>
+      <a class="site-home" href="../">Michael Gogins</a>
+    </span>
+  </div>
+</header>
+<main class="sheet">
+  <h1>Cheat sheet</h1>
+  <p>Create and revise pieces in Cursor. The Player only plays them.</p>
+  <p>Say the same sentences in Cursor chat on the computer and at cursor.com/agents on the phone, on this repository. Begin with <code>Follow studio-tools/AGENT_INSTRUCTIONS.md</code> unless that file is already the Cursor rule.</p>
+  <blockquote>
+    <p class="command-label">New piece</p>
+    <p>Follow studio-tools/AGENT_INSTRUCTIONS.md. Create a composition named NAME: …. Render, accept, publish, and push to master.</p>
+  </blockquote>
+  <blockquote>
+    <p class="command-label">Next version</p>
+    <p>Follow studio-tools/AGENT_INSTRUCTIONS.md. Revise NAME: …. Render, accept, publish, and push to master.</p>
+  </blockquote>
+  <p>Create a composition named NAME runs <code>studio new NAME</code>. That command stops if the name already exists. Revise NAME runs <code>studio stage NAME</code>. That command stops if the name does not exist. The name is the context.</p>
+  <p>On the computer the agent pushes from the local checkout. On the phone the cloud agent clones the repository, runs the same commands, and pushes to master. The Player plays the version after GitHub Pages rebuilds.</p>
+  <h2>Listen</h2>
+  <p>The Player. On the MacBook, <code>studio serve</code>, then 127.0.0.1:8000/studio/.</p>
+  <h2>Commands</h2>
+  <p>From the repository root, with <code>studio-tools/bin</code> on PATH. Replace NAME with the piece's name: <code>studio new MyName</code>.</p>
+  <p><code>studio new</code> and <code>studio stage</code> print a staging directory. Save it for the next commands: <code>S=$(studio new MyName)</code>, then <code>studio prompt "$S" --file request.txt</code>.</p>
+  <div class="table-wrap">
+    <table class="commands">
+      <thead><tr><th>You want</th><th>Command</th></tr></thead>
+      <tbody>
+        <tr><td>See what is installed</td><td><code>studio env</code></td></tr>
+        <tr><td>New piece</td><td><code>studio new NAME</code></td></tr>
+        <tr><td>Next version</td><td><code>studio stage NAME</code></td></tr>
+        <tr><td>Save the prompt, word for word</td><td><code>studio prompt "$S" --file FILE</code></td></tr>
+        <tr><td>Run a generator</td><td><code>studio run "$S" --seed N -- python code/NAME-generate.py</code></td></tr>
+        <tr><td>Check, render, measure</td><td><code>studio render "$S"</code></td></tr>
+        <tr><td>Keep this version</td><td><code>studio accept "$S" --model "…" --agent "…"</code></td></tr>
+        <tr><td>Throw away the staging area</td><td><code>studio discard "$S"</code></td></tr>
+        <tr><td>Copy it to the Player</td><td><code>studio publish NAME</code></td></tr>
+        <tr><td>Put it on GitHub</td><td><code>git push</code></td></tr>
+        <tr><td>What exists</td><td><code>studio list</code></td></tr>
+        <tr><td>One version's record</td><td><code>studio show NAME</code></td></tr>
+        <tr><td>Check the archive</td><td><code>studio verify</code></td></tr>
+        <tr><td>Finish a broken accept</td><td><code>studio recover NAME</code></td></tr>
+        <tr><td>Play locally</td><td><code>studio serve</code></td></tr>
+        <tr><td>Take a version from another branch</td><td><code>studio adopt NAME --from DIR</code></td></tr>
+        <tr><td>Remove it from the Player</td><td><code>studio unpublish NAME</code></td></tr>
+        <tr><td>Render a stored version again</td><td><code>studio rerender NAME</code></td></tr>
+        <tr><td>Rebuild the catalog</td><td><code>studio catalog</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="meta">accept refuses a staging area that has not rendered successfully. publish never writes soundfiles. discard does not touch the current version. studio COMMAND --help prints the flags. Useful flags: render --wav FILE (a soundfile outside the repository), publish --dry-run, recover --rollback.</p>
+</main>
+</body>
+</html>

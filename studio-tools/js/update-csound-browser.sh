@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Install or update the Csound WebAssembly engine the viewer plays with.
+# Install or update the Csound WebAssembly engine the player plays with.
 #
 #   studio-tools/js/update-csound-browser.sh [VERSION]      (default 7.0.0)
 #

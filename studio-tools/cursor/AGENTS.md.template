@@ -3,7 +3,7 @@
 ## AI composition studio
 
 When a task concerns compositions under `music/ai-compositions/`, the
-published copies under `docs/compositions/`, the viewer under `docs/studio/`,
+published copies under `docs/compositions/`, the player under `docs/studio/`,
 or the tools under `studio-tools/`, read and follow
 `studio-tools/AGENT_INSTRUCTIONS.md` before doing anything else.
 

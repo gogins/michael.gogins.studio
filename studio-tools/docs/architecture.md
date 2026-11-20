@@ -37,14 +37,14 @@ in Cursor. It is not a digital audio workstation.
 3. **Published files**, `docs/compositions/`. Copies of selected files from
    the archive, at the same relative paths, plus `catalog.json`, which the
    tools generate by scanning this directory.
-4. **Viewer**, `docs/studio/`. Plain HTML, CSS and native JavaScript modules.
+4. **Player**, `docs/studio/`. Plain HTML, CSS and native JavaScript modules.
    It reads `../compositions/catalog.json` and the published files. No build
    step, no framework, no server-side code.
 
 GitHub Pages already publishes `docs/`. The studio adds two directories
 beneath it and changes nothing else, so after approval and deployment the
-viewer and the published compositions appear at `/studio/` and
-`/compositions/` of the site. All URLs in the viewer and the catalog are
+player and the published compositions appear at `/studio/` and
+`/compositions/` of the site. All URLs in the player and the catalog are
 relative, so they work under any site address and from `studio serve`.
 
 ## Design decisions
@@ -68,7 +68,7 @@ relative, so they work under any site address and from `studio serve`.
 - **The archive and the published copies are separate.** Publishing copies
   selected files and never writes to the archive. What has not been
   published is not in `docs/` and is not served.
-- **No database.** The catalog is a generated JSON file. The viewer is
+- **No database.** The catalog is a generated JSON file. The player is
   static. `studio serve` only serves it locally. Creating and revising
   stay in Cursor; the commands are in [cheatsheet.md](cheatsheet.md).
 
@@ -90,7 +90,7 @@ relative, so they work under any site address and from `studio serve`.
 | `serve.py` | A local static server with byte-range support, so the page can be played on this machine. |
 | `cli.py` | The `studio` command. |
 
-## Viewer modules
+## Player modules
 
 | File | Responsibility |
 | --- | --- |
@@ -99,7 +99,7 @@ relative, so they work under any site address and from `studio serve`.
 | `player.js` | Performs the published `.csd` in the browser and draws the level meter. |
 | `messages.js` | The Csound message dock. |
 | `status.js` | The one-line status bar. |
-| `commands.js` | The command sheet opened from the header. Same text as [cheatsheet.md](cheatsheet.md). |
+| `cheatsheet.html` | The command list. The Player links to it, and it links back to the Player. Same text as [cheatsheet.md](cheatsheet.md). |
 | `catalog.js` | Loading the catalog, resolving published paths, fetching text. |
 | `diff.js` | Line comparison of two versions of a text. |
 | `dom.js` | Element construction and formatting helpers. All text is inserted as text, never as HTML. |

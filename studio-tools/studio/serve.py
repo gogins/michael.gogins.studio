@@ -1,15 +1,15 @@
-"""Local static web server for trying the viewer, with an optional compose API.
+"""Local static web server for trying the player, with an optional compose API.
 
 Serves the repository's docs/ directory as GitHub Pages would lay it out,
-so the viewer is at /studio/ and the published files at /compositions/.
-The viewer performs the published .csd files itself, with Csound for
-WebAssembly, so what is served is text and the viewer's own files; there
+so the player is at /studio/ and the published files at /compositions/.
+The player performs the published .csd files itself, with Csound for
+WebAssembly, so what is served is text and the player's own files; there
 are no soundfiles. HTTP Range requests are supported (for large files such
 as PDF scores). Files are served exactly as they are: Jekyll processing is
 not emulated.
 
 When a Studio instance is passed, ``/api/v1`` can stage, render, accept and
-publish. The studio page does not call it. Pieces are created and revised
+publish. The Player does not call it. Pieces are created and revised
 in Cursor, with ``studio new`` or ``studio stage``.
 """
 from __future__ import annotations
@@ -133,7 +133,7 @@ class StaticHandler(SimpleHTTPRequestHandler):
 
     def _cors_headers(self) -> None:
         # Same-origin for local serve. Echo Origin so a test client on another
-        # port can call the API. The studio page does not.
+        # port can call the API. The Player does not.
         origin = self.headers.get("Origin")
         if origin:
             self.send_header("Access-Control-Allow-Origin", origin)
@@ -225,7 +225,7 @@ class StaticHandler(SimpleHTTPRequestHandler):
             self._send_json(HTTPStatus.BAD_REQUEST, {"ok": False, "error": str(error)})
         except StudioError as error:
             self._send_json(HTTPStatus.CONFLICT, {"ok": False, "error": str(error)})
-        except Exception as error:  # noqa: BLE001 - surface unexpected failures to the viewer
+        except Exception as error:  # noqa: BLE001 - surface unexpected failures to the player
             self._send_json(
                 HTTPStatus.INTERNAL_SERVER_ERROR,
                 {"ok": False, "error": f"compose failed: {error}"},
@@ -265,7 +265,7 @@ def serve(
     server = make_server(directory, host, port, studio=studio)
     shown = "localhost" if host in ("127.0.0.1", "") else host
     print(f"Serving {directory} at http://{shown}:{server.server_address[1]}/")
-    print(f"Viewer: http://{shown}:{server.server_address[1]}/studio/")
+    print(f"Player: http://{shown}:{server.server_address[1]}/studio/")
     if studio is not None:
         print(f"Compose API: http://{shown}:{server.server_address[1]}/api/v1/")
     print("Press Ctrl-C to stop.")

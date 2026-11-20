@@ -23,7 +23,7 @@ The files directly in `nu/` are the **current** version. There is no
 version with its own `.csd`, prompts, manifest, `code/` and `outputs/`.
 
 Soundfiles are never part of a composition. A version is heard by performing
-its `.csd`: in the viewer with the official Csound 7 for WebAssembly
+its `.csd`: in the player with the official Csound 7 for WebAssembly
 (`@csound/browser`), or anywhere else with Csound. A temporary WAV may be
 kept outside the archive with `studio render --wav` or `studio rerender --wav`.
 
@@ -85,8 +85,8 @@ nothing else:
 | `history` | For each archived version: its directory, ordinal, tree hash and archival time. |
 | `ai` | Model and agent, as given to `accept`. |
 | `generator` | `kind` (`direct-csd`, `python-csoundac`, `javascript-csoundac-wasm`, `cpp-csoundac`, ...), source files, the commands that were run, seeds and parameters. |
-| `environment` | Csound version and commit, CsoundAC revision and p-field layout, Python, Node.js, the viewer's `@csound/browser` version, platform. |
-| `render` | The Csound commands, times, measurements (duration, peak, RMS, clipped samples), a hash of the rendered samples, the check in the viewer's engine, and the log. |
+| `environment` | Csound version and commit, CsoundAC revision and p-field layout, Python, Node.js, the player's `@csound/browser` version, platform. |
+| `render` | The Csound commands, times, measurements (duration, peak, RMS, clipped samples), a hash of the rendered samples, the check in the player's engine, and the log. |
 | `validation` | The checks that passed, and warnings. |
 | `dependencies` | `#include`d files, sample files and plugins referred to by the `.csd`, and any given with `--dependency`. |
 | `adopted_from` | Present when the revision was made on another branch; see [cloud-agents.md](cloud-agents.md). |
@@ -102,7 +102,7 @@ the `.csd` lacks `<CsoundSynthesizer>`, `<CsInstruments>` or `<CsScore>`;
 `csound --syntax-check-only` fails; Csound exits with an error; the log
 reports errors in performance, `INIT ERROR` or `PERF ERROR`; no audio was
 rendered; the audio is silent (peak below -80 dBFS); samples are out of
-range; or the piece does not perform in the viewer's Csound engine. The
+range; or the piece does not perform in the player's Csound engine. The
 silence, clipping and browser-playability checks can be overridden
 deliberately with `--allow-silence`, `--allow-clipping` and
 `--allow-unplayable`.
@@ -215,4 +215,4 @@ git commit -m "nu: version 4"
 
 `.staging/` and `.locks/` are ignored. Soundfiles are refused by the naming
 rules and by `music/ai-compositions/.gitignore`. Listening is always the
-published `.csd` performed in the viewer.
+published `.csd` performed in the player.

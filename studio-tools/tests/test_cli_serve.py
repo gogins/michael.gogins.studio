@@ -235,7 +235,7 @@ class ComposeApiTests(StudioTestCase):
         response, result = self.request("POST", "/api/v1/compose", {
             "name": "xi",
             "title": "Xi",
-            "prompt": "A short stub piece for the viewer field.",
+            "prompt": "A short stub piece for the player field.",
         })
         self.assertEqual(response.status, 200, result)
         self.assertTrue(result["ok"])
@@ -252,7 +252,7 @@ class ComposeApiTests(StudioTestCase):
         before = (self.studio.composition_dir("nu") / "nu.csd").read_text(encoding="utf-8")
         response, result = self.request("POST", "/api/v1/compose", {
             "composition": "nu",
-            "prompt": "Revision from the viewer; keep the music.",
+            "prompt": "Revision from the player; keep the music.",
         })
         self.assertEqual(response.status, 200, result)
         self.assertEqual(result["kind"], "revision")
@@ -305,20 +305,20 @@ class ComposeApiTests(StudioTestCase):
         self.assertTrue(result["ok"])
         self.assertEqual(versioning.describe(self.studio, "direct")["ordinal"], 1)
 
-    def test_cursor_and_viewer_new_pieces_share_catalog_shape(self):
+    def test_cursor_and_player_new_pieces_share_catalog_shape(self):
         # Cursor path: new → prompt → csd → render → accept → publish.
         staging_dir = self.prepare(name="from_cursor", prompt="Made in Cursor.")
         versioning.accept(self.studio, staging_dir, ai_model="cursor-test", ai_agent="Cursor desktop")
         from studio import publish
         publish.publish(self.studio, ["from_cursor"])
 
-        # Viewer path: compose API (same accept + publish).
-        api.compose(self.studio, name="from_viewer", prompt="Made in the viewer.", title="From Viewer")
+        # Player path: compose API (same accept + publish).
+        api.compose(self.studio, name="from_player", prompt="Made in the player.", title="From Player")
 
         catalog = json.loads((self.studio.published / "catalog.json").read_text(encoding="utf-8"))
         by_name = {c["name"]: c for c in catalog["compositions"]}
-        self.assertEqual(set(by_name), {"from_cursor", "from_viewer"})
-        for name, expected_title in (("from_cursor", "from_cursor"), ("from_viewer", "From Viewer")):
+        self.assertEqual(set(by_name), {"from_cursor", "from_player"})
+        for name, expected_title in (("from_cursor", "from_cursor"), ("from_player", "From Player")):
             composition = by_name[name]
             self.assertEqual(composition["title"], expected_title)
             self.assertTrue(composition["versions"])

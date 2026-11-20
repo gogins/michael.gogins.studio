@@ -2,7 +2,7 @@
 // the official Csound for WebAssembly (@csound/browser, in ./csound/).
 //
 // No soundfile is involved anywhere. The same player is used wherever the
-// viewer is served from, so listening is the same locally and on the site.
+// player is served from, so listening is the same locally and on the site.
 //
 // One piece plays at a time. Each performance gets a fresh Csound instance
 // and audio context, and both are released when it stops or ends.
@@ -182,7 +182,7 @@ export function createPlayer({ id, csd, info }) {
     setState('loading', 'Loading Csound…');
     if (!window.isSecureContext) {
       active = null;
-      setState('error', 'Playing needs a secure page (HTTPS, or the local viewer on this machine). '
+      setState('error', 'Playing needs a secure page (HTTPS, or the local player on this machine). '
         + 'This page was opened over plain HTTP from another host.');
       await release(previous);
       return;

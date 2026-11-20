@@ -24,7 +24,7 @@ studio-tools/bin/studio verify
 studio-tools/bin/studio show nu
 studio-tools/bin/studio rerender nu --version 1
 
-# The viewer:
+# The player:
 studio-tools/bin/studio serve      # http://127.0.0.1:8000/studio/
 ```
 
@@ -36,8 +36,8 @@ studio-tools/bin/studio serve      # http://127.0.0.1:8000/studio/
    DNS, the repository has no `CNAME` file, and `docs/_config.yml` gives
    the address as `https://gogins.github.io/michael.gogins.studio`, which
    is where GitHub Pages was serving the site. With the configuration as
-   it is, the viewer would appear at
-   `https://gogins.github.io/michael.gogins.studio/studio/`. The viewer
+   it is, the player would appear at
+   `https://gogins.github.io/michael.gogins.studio/studio/`. The player
    and the catalog use only relative addresses and work under either.
    Setting up the custom domain is a change to DNS and to the GitHub Pages
    settings, which the studio does not make.
@@ -49,7 +49,7 @@ studio-tools/bin/studio serve      # http://127.0.0.1:8000/studio/
    but it is in the repository, and the repository is public on GitHub;
    "unpublished" means not on the website, not secret.
 3. **No soundfiles in Git.** Versions are heard by performing their `.csd`
-   in the viewer with `@csound/browser`, locally or on the site. The
+   in the player with `@csound/browser`, locally or on the site. The
    archive and `docs/compositions/` refuse soundfiles. A temporary WAV
    can be written outside them with `studio render --wav` or
    `studio rerender --wav`. The tools still warn about any other file
@@ -63,7 +63,7 @@ studio-tools/bin/studio serve      # http://127.0.0.1:8000/studio/
    chmod -R u+w music/ai-compositions/nu && rm -r music/ai-compositions/nu
    ```
 
-   The viewer then shows an empty library, and the tests that read the
+   The player then shows an empty library, and the tests that read the
    real archive accept an empty one.
 5. **How a new version reaches the site.** The usual prompt asks the agent
    to push to `master`. That is what GitHub Pages serves, so the page
@@ -103,13 +103,13 @@ step 4 and run `studio-tools/cloud/check.sh --tests` in the first agent.
   observation in its favour: on 12 November 2026 the existing
   `docs/README.md` was served unconverted, as Markdown, at
   `https://gogins.github.io/michael.gogins.studio/README.md`, so published
-  prompt files will probably be reachable as they are. The viewer does not
+  prompt files will probably be reachable as they are. The player does not
   depend on that; it takes prompt texts from the catalog. Jekyll does not
   publish files whose names begin with a dot, which is intended for
   `.publish-state.json`.
 - **Linux and the Cloud Agent environment.** `cloud/install.sh` has not
   been run; see [dependencies.md](dependencies.md).
-- **A physical Android phone.** The viewer was tested in a phone-sized
+- **A physical Android phone.** The player was tested in a phone-sized
   frame in desktop Chrome and in Cursor's browser, not on a phone.
 - **Identical audio across machines.** Re-rendering reproduces the stored
   samples exactly on the MacBook. Whether Csound on Linux produces the
@@ -127,7 +127,7 @@ step 4 and run `studio-tools/cloud/check.sh --tests` in the first agent.
 - For `nu` version 3 the manifest's recorded parameters `canon_delay` and
   `canon_steps` describe constants in the generating program; the program
   does not read them from the command line.
-- The viewer compares text files line by line. It does not compare audio
+- The player compares text files line by line. It does not compare audio
   other than by offering both players side by side.
 - MIDI, MusicXML and PDF are listed and downloadable when a composition
   publishes them in `outputs/`; the studio does not produce them itself.

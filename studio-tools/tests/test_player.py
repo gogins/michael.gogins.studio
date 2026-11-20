@@ -1,9 +1,9 @@
-"""The static viewer, in a real browser.
+"""The static player, in a real browser.
 
 A temporary site is assembled (the real docs/studio/ plus compositions
 published by the tools), served by the studio's own static server, and
 driven in headless Chrome by a small harness page. The harness loads the
-viewer in a phone-sized frame, exercises it, and posts what it saw back to
+player in a phone-sized frame, exercises it, and posts what it saw back to
 the test.
 
 Skipped when no Chrome/Chromium is found (set STUDIO_CHROME to its path).
@@ -40,7 +40,7 @@ def find_chrome():
 
 HARNESS = r"""<!DOCTYPE html>
 <meta charset="utf-8">
-<title>studio viewer test harness</title>
+<title>studio player test harness</title>
 <iframe id="frame" src="/studio/" style="width:412px;height:915px;border:0"></iframe>
 <script type="module">
 const mode = new URLSearchParams(location.search).get('mode');
@@ -70,19 +70,18 @@ async function show(hash, what, condition) {
 
 async function run() {
   const result = { mode, overflow: {} };
-  await until('viewer to settle', () => state() === 'ready' || state() === 'error');
+  await until('player to settle', () => state() === 'ready' || state() === 'error');
   result.state = state();
   result.catalogError = text('#catalog-error');
   result.emptyLibrary = text('#empty-library');
   result.composeFormNew = Boolean(doc().getElementById('compose-form-new'));
   result.statusBar = text('#site-readiness');
-  result.commandsButton = Boolean(doc().getElementById('commands-open'));
-  if (result.commandsButton) {
-    doc().getElementById('commands-open').click();
-    await until('command sheet', () => doc().getElementById('command-sheet').open);
-    result.commandSheet = text('#command-sheet');
-    doc().querySelector('#command-sheet .command-sheet-close').click();
-    await until('command sheet closed', () => !doc().getElementById('command-sheet').open);
+  const cheatSheet = doc().getElementById('cheat-sheet');
+  result.cheatSheetHref = cheatSheet ? cheatSheet.getAttribute('href') : null;
+  result.cheatSheetLabel = cheatSheet ? cheatSheet.textContent : null;
+  if (cheatSheet) {
+    const response = await fetch(cheatSheet.href);
+    result.commandSheet = await response.text();
   }
   // Messages dock is always on screen (windowshade), never a disclosure arrow.
   result.csoundMessages = Boolean(doc().getElementById('csound-messages'));
@@ -361,8 +360,8 @@ class BrowserTests(Browser, StudioTestCase):
     def setUp(self):
         super().setUp()
         self.profiles = self.tmp
-        # The real viewer, including its @csound/browser engine.
-        shutil.copytree(REPO / "docs" / "studio", self.studio.viewer)
+        # The real player, including its @csound/browser engine.
+        shutil.copytree(REPO / "docs" / "studio", self.studio.player)
         self.start_site(self.root / "docs")
 
     def tearDown(self):
@@ -382,7 +381,10 @@ class BrowserTests(Browser, StudioTestCase):
         self.assertIn("Cursor", result["emptyLibrary"])
         self.assertFalse(result["composeFormNew"])
         self.assertIn("Create and revise pieces in Cursor", result["statusBar"])
-        self.assertTrue(result["commandsButton"])
+        self.assertEqual(result["cheatSheetHref"], "cheatsheet.html")
+        self.assertEqual(result["cheatSheetLabel"], "Cheat sheet")
+        self.assertIn('href="index.html"', result["commandSheet"])
+        self.assertIn(">Player<", result["commandSheet"])
         self.assertIn("Create a composition named NAME", result["commandSheet"])
         self.assertIn("Revise NAME", result["commandSheet"])
         self.assertIn("studio new NAME", result["commandSheet"])
@@ -474,7 +476,7 @@ class BrowserTests(Browser, StudioTestCase):
 
 @unittest.skipUnless(find_chrome(), "Chrome or Chromium not found")
 class PublishedSiteTests(Browser, unittest.TestCase):
-    """The files really published in this repository, in the real viewer.
+    """The files really published in this repository, in the real player.
 
     docs/ is served as it is and only read.
     """

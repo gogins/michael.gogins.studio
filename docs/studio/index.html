@@ -4,21 +4,20 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
-<title>AI Composition Studio</title>
+<title>Player</title>
 <link rel="stylesheet" href="studio.css">
 <script type="module" src="studio.js"></script>
 </head>
 <body>
 <header class="site-header">
   <div class="site-header-row">
-    <a class="site-title" href="#">AI Composition Studio</a>
+    <a class="site-title" href="index.html" aria-current="page">Player</a>
     <span class="site-header-actions">
-      <button type="button" class="commands-open" id="commands-open">Commands</button>
+      <a id="cheat-sheet" href="cheatsheet.html">Cheat sheet</a>
       <a class="site-home" href="../">Michael Gogins</a>
     </span>
   </div>
 </header>
-<dialog id="command-sheet" class="command-sheet" aria-labelledby="command-sheet-title"></dialog>
 <main id="app" aria-live="polite">
   <p class="status">Loading the catalog…</p>
 </main>
@@ -26,7 +25,7 @@
 <div id="csound-messages-host"></div>
 <p class="status-bar" id="site-readiness" role="status">Play a published piece here. Create and revise pieces in Cursor.</p>
 <noscript>
-  <p class="status">This viewer needs JavaScript. The published files are in
+  <p class="status">The Player needs JavaScript. The published files are in
   <a href="../compositions/">../compositions/</a>.</p>
 </noscript>
 </body>

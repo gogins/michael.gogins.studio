@@ -1,5 +1,5 @@
 """Validation and rendering, including failures, real Csound, and the
-viewer's Csound engine. No soundfile may be left anywhere."""
+player's Csound engine. No soundfile may be left anywhere."""
 import math
 import os
 import shutil
@@ -309,9 +309,9 @@ BROKEN_FOR_BROWSER = csd_text("FREQ=440").replace(
     "  a1 poscil", "  aNone opcode_missing_in_the_browser 1\n  a1 poscil")
 
 
-@unittest.skipUnless(browser_engine_available(), "node or the viewer's Csound engine is not available")
+@unittest.skipUnless(browser_engine_available(), "node or the player's Csound engine is not available")
 class BrowserEngineTests(StudioTestCase):
-    """The check in the Csound WebAssembly engine the viewer plays with.
+    """The check in the Csound WebAssembly engine the player plays with.
 
     Native Csound is the fake one here, so only the engine's verdict varies.
     """
@@ -334,7 +334,7 @@ class BrowserEngineTests(StudioTestCase):
         self.assertEqual(browser["sample_rate"], 48000)
         self.assertGreater(browser["realtime_factor"], 1)
         self.assertEqual(record["warnings"], [])
-        self.assertTrue(any("viewer's Csound engine" in c["check"] and c["passed"] for c in record["checks"]))
+        self.assertTrue(any("player's Csound engine" in c["check"] and c["passed"] for c in record["checks"]))
         self.assertIn("Browser engine (@csound/browser", (directory / "outputs" / "nu-render.log").read_text())
         versioning.accept(self.studio, directory, ai_model="test")
         stored = manifest.load(self.comp(), "nu")
@@ -349,7 +349,7 @@ class BrowserEngineTests(StudioTestCase):
         with self.assertRaises(render.RenderError) as caught:
             render.render(directory)
         message = str(caught.exception)
-        self.assertIn("does not perform in the viewer's Csound engine", message)
+        self.assertIn("does not perform in the player's Csound engine", message)
         self.assertIn("opcode_missing_in_the_browser", message)
         self.assertEqual(staging.load_render(directory)["status"], "failed")
         with self.assertRaises(staging.StagingError):
@@ -372,7 +372,7 @@ class BrowserEngineTests(StudioTestCase):
             "  a1 poscil", "  kNone tablei 5, 999\n  a1 poscil"))
         with self.assertRaises(render.RenderError) as caught:
             render.render(directory)
-        self.assertIn("does not perform in the viewer's Csound engine", str(caught.exception))
+        self.assertIn("does not perform in the player's Csound engine", str(caught.exception))
 
     def test_an_output_file_named_in_csoptions_is_not_written(self):
         directory = self.prepare(do_render=False)
@@ -389,7 +389,7 @@ class BrowserEngineTests(StudioTestCase):
         record = render.render(directory)
         self.assertEqual(record["status"], "ok")
         self.assertFalse(record["browser"]["checked"])
-        self.assertTrue(any("not checked in the viewer's Csound engine" in w for w in record["warnings"]))
+        self.assertTrue(any("not checked in the player's Csound engine" in w for w in record["warnings"]))
 
     def test_without_the_engine_the_check_is_skipped_with_a_warning(self):
         os.environ["STUDIO_CSOUND_WASM"] = str(self.tmp / "no-such-engine.js")
@@ -397,7 +397,7 @@ class BrowserEngineTests(StudioTestCase):
         directory = self.prepare(do_render=False)
         record = render.render(directory)
         self.assertFalse(record["browser"]["checked"])
-        self.assertTrue(any("not checked in the viewer's Csound engine" in w for w in record["warnings"]))
+        self.assertTrue(any("not checked in the player's Csound engine" in w for w in record["warnings"]))
         self.assertTrue(any("engine" in problem for problem in environment.problems()))
 
     def test_the_installed_engine_matches_its_version_record(self):
@@ -411,7 +411,7 @@ class BrowserEngineTests(StudioTestCase):
 
 @unittest.skipUnless(real_csound_available(), "csound is not installed")
 class RealCsoundTests(StudioTestCase):
-    """The same pipeline with the real Csound, and the viewer's engine when present."""
+    """The same pipeline with the real Csound, and the player's engine when present."""
 
     use_fake_tools = False
 
@@ -437,7 +437,7 @@ class RealCsoundTests(StudioTestCase):
         self.assertTrue(any("names an audio output" in w for w in record["warnings"]))
         self.assertEqual(soundfiles(self.root), [])
         if browser_engine_available():
-            # Native Csound and the viewer's engine agree about the piece.
+            # Native Csound and the player's engine agree about the piece.
             self.assertTrue(record["browser"]["playable"])
             self.assertAlmostEqual(record["browser"]["duration_seconds"], analysis["duration_seconds"], delta=0.01)
             self.assertEqual(record["browser"]["sample_rate"], analysis["sample_rate"])

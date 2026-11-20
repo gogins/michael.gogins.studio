@@ -30,7 +30,7 @@ Typical session:
   studio render "$S"                      # validate, render, measure, check
   studio accept "$S" --model "<AI model>" # archive the old version, promote
   studio publish nu                       # copy to docs/compositions/
-  studio serve                            # listen: the viewer performs the .csd
+  studio serve                            # listen: the player performs the .csd
 No soundfiles are stored. See studio-tools/README.md.
 """
 
@@ -65,10 +65,10 @@ def cmd_env(studio: Studio, args: argparse.Namespace) -> int:
         _out(f"node         {node.get('version', 'NOT FOUND')}; CsoundAC WASM: "
              f"{'present in ' + str(node.get('csoundac_wasm_dir')) if node.get('csoundac_wasm_present') else 'not configured (CSOUNDAC_WASM_DIR)'}")
         if browser.get("available"):
-            _out(f"viewer engine {browser.get('package') or browser.get('file')} {browser.get('version') or ''}"
+            _out(f"player engine {browser.get('package') or browser.get('file')} {browser.get('version') or ''}"
                  f"  [{environment.BROWSER_ENGINE_REL}]")
         else:
-            _out("viewer engine NOT FOUND (renders cannot be checked for playing in the browser)")
+            _out("player engine NOT FOUND (renders cannot be checked for playing in the browser)")
     problems = environment.problems(require_csoundac=args.require_csoundac)
     for problem in problems:
         _note(f"problem: {problem}")
@@ -158,9 +158,9 @@ def _describe_browser(record: dict) -> Optional[str]:
     engine = browser.get("engine") or {}
     label = f"{engine.get('package') or 'Csound WebAssembly'} {engine.get('version') or ''}".strip()
     if browser.get("playable"):
-        return (f"viewer engine ({label}): performed {browser.get('duration_seconds')} s, "
+        return (f"player engine ({label}): performed {browser.get('duration_seconds')} s, "
                 f"{browser.get('realtime_factor')} times faster than real time on this machine")
-    return f"viewer engine ({label}): DOES NOT PERFORM"
+    return f"player engine ({label}): DOES NOT PERFORM"
 
 
 def cmd_render(studio: Studio, args: argparse.Namespace) -> int:
@@ -180,7 +180,7 @@ def cmd_render(studio: Studio, args: argparse.Namespace) -> int:
     if browser:
         _out(browser)
     _out(f"audio: measured and discarded; wrote {wav_to}" if wav_to
-         else "audio: measured and discarded (no soundfile is kept; listen in the viewer)")
+         else "audio: measured and discarded (no soundfile is kept; listen in the player)")
     for warning in record["warnings"]:
         _note(f"warning: {warning}")
     return 0
@@ -444,7 +444,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--allow-clipping", action="store_true")
     p.add_argument("--allow-silence", action="store_true")
     p.add_argument("--allow-unplayable", action="store_true",
-                   help="keep a piece that does not perform in the viewer's Csound engine")
+                   help="keep a piece that does not perform in the player's Csound engine")
     p.add_argument("--timeout", type=int, default=3600, help="seconds (default 3600)")
 
     p = add("accept", cmd_accept, "archive the current version and promote the staged one")
@@ -504,7 +504,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     add("catalog", cmd_catalog, "regenerate docs/compositions/catalog.json")
 
-    p = add("serve", cmd_serve, "serve docs/ locally: the viewer, which performs the published .csd files")
+    p = add("serve", cmd_serve, "serve docs/ locally: the player, which performs the published .csd files")
     p.add_argument("--host", default="127.0.0.1", help="use 0.0.0.0 to reach it from a phone on the LAN")
     p.add_argument("--port", type=int, default=8000)
     return parser

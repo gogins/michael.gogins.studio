@@ -1,7 +1,7 @@
 # AI composition studio
 
 Tools for composing Csound pieces by prompting an AI agent, keeping every
-version, and publishing selected versions to a small web viewer.
+version, and publishing selected versions to a small web player.
 
 A composition is a complete Csound `.csd` file. The agent writes it directly
 or writes a program (Python, JavaScript or C++, usually with CsoundAC) that
@@ -9,7 +9,7 @@ writes it. The studio validates it, renders it with Csound (to a temporary
 file that is measured and discarded), keeps the `.csd`, the prompts, the
 program and a provenance manifest together, and archives the previous version
 under a number before a new one takes its place. No soundfile is stored:
-listening is real-time performance of the published `.csd` in the viewer,
+listening is real-time performance of the published `.csd` in the player,
 with the official Csound 7 for WebAssembly (`@csound/browser`).
 
 Everything belonging to the studio is in four directories of this repository:
@@ -18,14 +18,14 @@ Everything belonging to the studio is in four directories of this repository:
 | --- | --- |
 | `music/ai-compositions/` | The archive: every composition and all of its versions. Authoritative. |
 | `docs/compositions/` | Published copies of selected files, and `catalog.json`. Derived from the archive. |
-| `docs/studio/` | The viewer: static HTML, CSS and JavaScript modules. |
+| `docs/studio/` | The player: static HTML, CSS and JavaScript modules. |
 | `studio-tools/` | These tools, their tests, documentation, Cursor templates and cloud setup. |
 
 ## Requirements
 
 - Python 3.9 or later (standard library only) for the tools themselves.
 - Csound 7 to render.
-- The viewer's Csound engine under `docs/studio/csound/` (`@csound/browser`;
+- The player's Csound engine under `docs/studio/csound/` (`@csound/browser`;
   install or update with `studio-tools/js/update-csound-browser.sh`).
 - Node.js to check, at render time, that a piece performs in that engine
   (and for optional JavaScript generators).
@@ -113,7 +113,7 @@ Agent (Ubuntu in Cursor’s cloud); the MacBook can be off.
    Play. The `.csd` performs in the phone’s browser after GitHub Pages
    rebuilds. One agent at a time on a given piece.
 
-Until the cloud environment works, listen on the phone to a viewer the Mac
+Until the cloud environment works, listen on the phone to a player the Mac
 is serving (`studio serve --host 0.0.0.0`) while prompting in desktop
 Cursor; see [docs/usage.md](docs/usage.md).
 
@@ -149,7 +149,7 @@ What each part asks for:
 | `studio p-field conventions` | p4 key, p5 velocity, p6–p8 space, etc. (see `docs/csound-conventions.md`). |
 | `Render it` | `studio render` — Csound offline measure + `@csound/browser` check. |
 | `accept it` | `studio accept` — becomes the current version (ordinal 1). |
-| `publish it` | `studio publish bells` — copy into `docs/compositions/` for the viewer. |
+| `publish it` | `studio publish bells` — copy into `docs/compositions/` for the player. |
 | `duration and peak level` | So you can confirm the render without opening files. |
 
 **2. Listen.** In a terminal (or ask the agent):
@@ -176,7 +176,7 @@ the agent has pushed to `master` and Pages has rebuilt, use the site’s
 | `make the drone…` | New instructions; saved as `bells-prompt-002.md` (prompt 1 kept). |
 | `Render, accept, publish` | Same pipeline; current becomes version 2, old current → `version-0001/`. |
 
-**4. Compare.** In the viewer, open **bells** → **Compare**, pick version 1,
+**4. Compare.** In the player, open **bells** → **Compare**, pick version 1,
 and play either version (only one plays at a time). The **Prompts** tab
 shows both briefs; the new one is marked.
 
@@ -211,7 +211,7 @@ root; the tests and `cloud/check.sh` use it to work in temporary directories.
 - [docs/versioning.md](docs/versioning.md): naming, versions, manifests, and the recovery protocol.
 - [docs/csound-conventions.md](docs/csound-conventions.md): p-fields, and what was verified about CsoundAC.
 - [docs/publishing.md](docs/publishing.md): what is published, and the safeguards.
-- [docs/usage.md](docs/usage.md): working from the MacBook and from Android; running the viewer locally.
+- [docs/usage.md](docs/usage.md): working from the MacBook and from Android; running the player locally.
 - [docs/cloud-agents.md](docs/cloud-agents.md): Cursor Cloud Agents, and integrating work from several branches.
 - [docs/dependencies.md](docs/dependencies.md): what has to be installed, on macOS and on Linux.
 - [docs/testing.md](docs/testing.md): the automated tests and how to run them.

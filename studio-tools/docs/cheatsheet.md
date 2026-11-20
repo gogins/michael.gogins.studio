@@ -1,9 +1,11 @@
 # Cheat sheet
 
-The studio page shows this sheet from **Commands** in the header. Keep that
-dialog (`docs/studio/commands.js`) the same as the text below.
+[Player](https://gogins.github.io/michael.gogins.studio/studio/)
 
-Create and revise pieces in Cursor. The studio page only plays them.
+The Player links back to this sheet at `docs/studio/cheatsheet.html`. Keep
+that page the same as the text below.
+
+Create and revise pieces in Cursor. The Player only plays them.
 
 Say the same sentences on the computer (Cursor chat) and on the phone
 (`cursor.com/agents`, this repository). Begin with

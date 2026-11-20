@@ -22,7 +22,7 @@ STATE_NAME = ".publish-state.json"
 STATE_SCHEMA = "ai-composition-studio/publish-state/1"
 ALL_KINDS = ("csd", "prompts", "code", "manifest", "derived", "logs")
 #: Logs (machine details) are published only on request. There is no audio
-#: to publish: the viewer performs the published .csd.
+#: to publish: the player performs the published .csd.
 DEFAULT_KINDS = ("csd", "prompts", "code", "manifest", "derived")
 _FRONT_MATTER = re.compile(rb"\A(?:\xef\xbb\xbf)?---[ \t]*\r?\n")
 

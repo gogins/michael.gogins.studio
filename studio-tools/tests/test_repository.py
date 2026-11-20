@@ -153,30 +153,30 @@ class StudioFilesTests(unittest.TestCase):
                 with open(os.path.join(root, name), "rb") as handle:
                     self.assertFalse(handle.read(4).startswith(b"---"), name)
 
-    def test_viewer_uses_only_relative_local_resources(self):
-        viewer = REPO / "docs" / "studio"
-        if not viewer.is_dir():
-            self.skipTest("viewer not present")
-        names = sorted(p.name for p in viewer.iterdir() if p.is_file())
+    def test_player_uses_only_relative_local_resources(self):
+        player = REPO / "docs" / "studio"
+        if not player.is_dir():
+            self.skipTest("player not present")
+        names = sorted(p.name for p in player.iterdir() if p.is_file())
         self.assertIn("index.html", names)
         self.assertIn("config.json", names)
         for name in names:
             self.assertTrue(name.endswith((".html", ".js", ".css", ".json")), name)
-            text = (viewer / name).read_text(encoding="utf-8")
+            text = (player / name).read_text(encoding="utf-8")
             self.assertFalse(text.startswith("---"), f"{name} would be processed by Jekyll")
             if name.endswith((".html", ".js", ".css")):
                 self.assertIsNone(re.search(r"https?://", text), f"{name} refers to an absolute URL")
                 self.assertNotIn("innerHTML", text, name)
                 self.assertNotIn("eval(", text, name)
-        html = (viewer / "index.html").read_text(encoding="utf-8")
+        html = (player / "index.html").read_text(encoding="utf-8")
         for reference in re.findall(r'(?:src|href)="([^"#]+)"', html):
             if reference.startswith("../"):
                 continue
-            self.assertTrue((viewer / reference).is_file(), reference)
+            self.assertTrue((player / reference).is_file(), reference)
         for name in names:
             if name.endswith(".js"):
-                for imported in re.findall(r"from '(\./[^']+)'", (viewer / name).read_text()):
-                    self.assertTrue((viewer / imported).is_file(), f"{name} imports {imported}")
+                for imported in re.findall(r"from '(\./[^']+)'", (player / name).read_text()):
+                    self.assertTrue((player / imported).is_file(), f"{name} imports {imported}")
 
 
 if __name__ == "__main__":

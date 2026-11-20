@@ -3,7 +3,7 @@
 Every test works in a temporary directory that stands in for the
 repository root, so nothing in the real repository is touched. Csound is
 replaced by a small fake program (so the suite runs anywhere and can inject
-failures), and the check in the viewer's Csound engine is switched off;
+failures), and the check in the player's Csound engine is switched off;
 tests that need the real tools say so and are skipped when the tools are
 missing.
 """
@@ -103,7 +103,7 @@ class StudioTestCase(unittest.TestCase):
             os.environ.pop(variable, None)
         if self.use_fake_tools:
             os.environ["STUDIO_CSOUND"] = str(write_executable(self.bin / "csound", FAKE_CSOUND))
-        # Tests that exercise the viewer's engine turn this on themselves.
+        # Tests that exercise the player's engine turn this on themselves.
         os.environ["STUDIO_CSOUND_WASM"] = "none"
         os.environ["STUDIO_PYTHON"] = sys.executable
         # Tests keep the prior/stub .csd unless they set a compose hook or AI key.
@@ -165,12 +165,12 @@ def real_csound_available() -> bool:
     return shutil.which(os.environ.get("STUDIO_CSOUND", "csound")) is not None
 
 
-#: The Csound WebAssembly engine installed in this repository's viewer.
+#: The Csound WebAssembly engine installed in this repository's player.
 BROWSER_ENGINE = REPO / "docs" / "studio" / "csound" / "csound.js"
 
 
 def browser_engine_available() -> bool:
-    """The viewer's engine is installed and there is a Node.js to run it."""
+    """The player's engine is installed and there is a Node.js to run it."""
     return BROWSER_ENGINE.is_file() and shutil.which(os.environ.get("STUDIO_NODE", "node")) is not None
 
 

@@ -39,12 +39,12 @@ Cursor Cloud Agents alike. The human-readable documentation is in
 - Set `0dbfs = 1`. Do not rely on real-time output; the studio renders to a file.
 - Keep demonstration and test pieces short. No soundfiles in the archive or
   in Git: listening is real-time performance of the published `.csd` in the
-  viewer.
+  player.
 
 ## One way in
 
 Create and revise pieces only with these commands, from a Cursor prompt on
-the computer or from a Cursor cloud agent on the phone. The studio page
+the computer or from a Cursor cloud agent on the phone. The Player
 does not take prompts. It only plays what `studio publish` has copied to
 `docs/compositions/` on the branch GitHub Pages serves (`master`).
 
@@ -72,7 +72,7 @@ Use `studio-tools/bin/studio`. Run `studio env` first in a new environment.
    that the same seed reproduces the same file.
 4. Render: `studio render "$S"`. This checks the structure and the syntax,
    renders to a temporary file, measures the audio, discards it, and checks
-   that the piece performs in the viewer's Csound engine (`@csound/browser`).
+   that the piece performs in the player's Csound engine (`@csound/browser`).
    Do not write soundfiles into the archive.
    If it fails, read the message and `$S/outputs/NAME-render.log`, correct
    the `.csd` or the program, and render again. Do not pass
@@ -83,7 +83,7 @@ Use `studio-tools/bin/studio`. Run `studio env` first in a new environment.
    the staged one becomes current. State your model truthfully.
 6. Check: `studio verify NAME`.
 7. Publish: `studio publish NAME` (try `--dry-run` first). Always publish
-   after a successful accept when the piece should appear in the viewer.
+   after a successful accept when the piece should appear in the player.
    The page shows it after that commit is on `master`.
 8. Commit only the studio's directories, and say what you committed:
    `git add -- music/ai-compositions docs/compositions docs/studio studio-tools`.

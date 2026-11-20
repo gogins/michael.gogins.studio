@@ -1,6 +1,6 @@
 # Example environment for the AI composition studio on macOS.
 #
-# The studio finds Csound and Node.js on the PATH by itself, and the viewer's
+# The studio finds Csound and Node.js on the PATH by itself, and the player's
 # @csound/browser engine under docs/studio/csound/. This file
 # tells it where the optional parts are. Adjust the paths, then either source
 # it in your shell:

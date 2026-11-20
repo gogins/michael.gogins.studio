@@ -5,7 +5,7 @@
     3. csound render to a temporary 24-bit WAV, outside the repository
     4. scan of the Csound log for run-time errors
     5. measurement of the audio (silence, clipping, levels)
-    6. a performance in the viewer's Csound engine (WebAssembly, under Node)
+    6. a performance in the player's Csound engine (WebAssembly, under Node)
 
 No soundfile is kept: the temporary WAV is measured and deleted (or, on
 request, copied to a path outside the archive). What a version sounds like
@@ -115,7 +115,7 @@ def _display_argv(argv: List[str], scratch: Optional[Path]) -> List[str]:
 
 
 def browser_check(csd: Path, timeout: int = 3600) -> Dict[str, Any]:
-    """Perform a .csd in the viewer's Csound engine (WebAssembly, under Node).
+    """Perform a .csd in the player's Csound engine (WebAssembly, under Node).
 
     Returns a record with ``checked``; when the check ran, also ``playable``
     and what the engine reported.
@@ -124,7 +124,7 @@ def browser_check(csd: Path, timeout: int = 3600) -> Dict[str, Any]:
         return {"checked": False, "reason": "disabled (STUDIO_CSOUND_WASM=none)", "silent": True}
     engine = environment.browser_engine_path()
     if not engine:
-        return {"checked": False, "reason": "the viewer's Csound engine is not installed "
+        return {"checked": False, "reason": "the player's Csound engine is not installed "
                 f"({environment.BROWSER_ENGINE_REL})"}
     node = environment.find_tool("STUDIO_NODE", "node")
     if not node:
@@ -269,7 +269,7 @@ def _render(
     if _FILE_OUTPUT.search(options) or _REALTIME_OUTPUT.search(options):
         record["warnings"].append(
             "<CsOptions> names an audio output; it is ignored: the studio renders to a temporary "
-            "file and the viewer plays in real time. Leave the output out of <CsOptions>"
+            "file and the player plays in real time. Leave the output out of <CsOptions>"
         )
 
     # 2. Syntax check.
@@ -326,7 +326,7 @@ def _render(
     if overs:
         record["warnings"].append(f"{overs} samples out of range (accepted with --allow-clipping)")
 
-    # 6. The viewer's engine: the piece is heard by performing the .csd there.
+    # 6. The player's engine: the piece is heard by performing the .csd there.
     if check_browser:
         browser = browser_check(csd, timeout)
         silent_skip = browser.pop("silent", False)
@@ -343,7 +343,7 @@ def _render(
             detail = "; ".join(browser["errors"][:2]) if not browser["playable"] else (
                 f"{browser.get('duration_seconds')} s at {browser.get('realtime_factor')} times real time here"
             )
-            check(f"performs in the viewer's Csound engine ({label})", browser["playable"], detail)
+            check(f"performs in the player's Csound engine ({label})", browser["playable"], detail)
             if not browser["playable"]:
                 reason = (
                     "; ".join(browser["errors"][:3])
@@ -351,8 +351,8 @@ def _render(
                     or "no error message was given"
                 )
                 message = (
-                    f"the piece does not perform in the viewer's Csound engine ({label}): {reason}. "
-                    "The viewer is how a version is heard, so use only what that engine provides"
+                    f"the piece does not perform in the player's Csound engine ({label}): {reason}. "
+                    "The player is how a version is heard, so use only what that engine provides"
                 )
                 if not allow_unplayable:
                     fail(message + " (or pass --allow-unplayable to keep a piece that cannot be heard there)")
@@ -361,7 +361,7 @@ def _render(
                 duration = browser.get("duration_seconds")
                 if duration is not None and abs(duration - analysis["duration_seconds"]) > 0.5:
                     record["warnings"].append(
-                        f"the viewer's engine performed {duration} s but native Csound rendered "
+                        f"the player's engine performed {duration} s but native Csound rendered "
                         f"{analysis['duration_seconds']} s"
                     )
                 factor = browser.get("realtime_factor")
@@ -372,7 +372,7 @@ def _render(
                     )
         elif not silent_skip:
             record["warnings"].append(
-                f"not checked in the viewer's Csound engine: {browser['reason']}"
+                f"not checked in the player's Csound engine: {browser['reason']}"
             )
 
     # Keep a copy of the audio only where the caller asked for one.

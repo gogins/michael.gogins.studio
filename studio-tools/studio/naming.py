@@ -11,7 +11,7 @@ For a composition called ``nu``:
     version-0001/          archived versions, same layout inside
 
 Nothing else is allowed in a composition state. In particular there are no
-soundfiles: a version is heard by performing its .csd, in the viewer with
+soundfiles: a version is heard by performing its .csd, in the player with
 Csound for WebAssembly or anywhere else with Csound.
 """
 from __future__ import annotations

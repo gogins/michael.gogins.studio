@@ -1,4 +1,4 @@
-// AI Composition Studio viewer.
+// Player.
 //
 // A static page: it reads ../compositions/catalog.json and shows the
 // published compositions, their versions, prompts, Csound files and
@@ -14,7 +14,6 @@ import { diffLines, hunks, summarize } from './diff.js';
 import { h, replaceChildren, formatBytes, formatDate, formatDuration } from './dom.js';
 import { clearMessages, mountMessagesPanel } from './messages.js';
 import { createPlayer, stopAllPlayers } from './player.js';
-import { mountCommandSheet } from './commands.js';
 import { setStatus } from './status.js';
 
 const TABS = [
@@ -59,7 +58,7 @@ function go(name, version, tab) {
 // ---------------------------------------------------------------- library
 
 function renderLibrary() {
-  document.title = 'AI Composition Studio';
+  document.title = 'Player';
   clearMessages();
   if (catalog.compositions.length === 0) {
     replaceChildren(app,
@@ -67,7 +66,7 @@ function renderLibrary() {
       h('p', { class: 'status', id: 'empty-library' },
         'No compositions have been published yet. Create one in Cursor with ',
         h('code', {}, 'studio new'), ', then ', h('code', {}, 'studio publish'),
-        '. This page only plays what has been published.'));
+        '. The Player only plays what has been published.'));
     return;
   }
   const items = catalog.compositions.map((composition) => {
@@ -118,7 +117,7 @@ function renderComposition(composition, version, tab) {
 
 function buildComposition(composition, version) {
   stopAllPlayers(); // another version: what was playing belongs to the page being replaced
-  document.title = `${composition.title || composition.name} · AI Composition Studio`;
+  document.title = `${composition.title || composition.name} · Player`;
   const versions = composition.versions; // newest first
   const index = versions.indexOf(version);
   const older = versions[index + 1] || null;
@@ -325,7 +324,7 @@ function infoPanel(panel, composition, version) {
 // the same Csound engine that the player uses.
 function browserVerdict(info) {
   if (info.browser_checked === undefined) return '';
-  const engine = info.browser_engine || 'the Csound engine of this viewer';
+  const engine = info.browser_engine || 'the Csound engine of this player';
   if (!info.browser_checked) return `Not checked in ${engine} when this version was made.`;
   if (!info.browser_playable) return `Did not perform in ${engine} when this version was made.`;
   const speed = info.browser_realtime_factor
@@ -481,7 +480,6 @@ function render() {
 
 async function main() {
   setState('loading');
-  mountCommandSheet();
   mountMessagesPanel();
   setStatus('Play a published piece here. Create and revise pieces in Cursor.');
   try {

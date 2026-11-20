@@ -88,7 +88,7 @@ class PublishTests(PublishTestCase):
         self.assertIn("nu/outputs/nu-render.log", self.published())
         with self.assertRaises(StudioError):
             publish.parse_kinds("csd,everything")
-        # There is no audio to select: the viewer performs the .csd.
+        # There is no audio to select: the player performs the .csd.
         for gone in ("audio", "master", "csd,audio"):
             with self.assertRaises(StudioError):
                 publish.parse_kinds(gone)

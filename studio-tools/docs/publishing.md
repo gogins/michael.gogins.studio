@@ -3,7 +3,7 @@
 The archive, `music/ai-compositions/`, is private working material until
 something is published. Publishing copies selected files to
 `docs/compositions/`, at the same relative paths, and regenerates
-`docs/compositions/catalog.json`. The viewer in `docs/studio/` shows what
+`docs/compositions/catalog.json`. The player in `docs/studio/` shows what
 the catalog lists.
 
 Publishing never writes to the archive. On this repository, whatever is in
@@ -35,14 +35,14 @@ studio catalog                         # regenerate catalog.json only
 
   | Kind | Files | Default |
   | --- | --- | --- |
-  | `csd` | `<name>.csd` (required for listening in the viewer) | yes |
+  | `csd` | `<name>.csd` (required for listening in the player) | yes |
   | `prompts` | `<name>-prompt-NNN.md` | yes |
   | `code` | `code/...` | yes |
   | `manifest` | `<name>-manifest.json` | yes |
   | `derived` | MIDI, MusicXML, PDF, images and other outputs | yes |
   | `logs` | render and generation logs | no |
 
-  There is no audio kind: the viewer performs the published `.csd` with
+  There is no audio kind: the player performs the published `.csd` with
   the official Csound 7 for WebAssembly (`@csound/browser`). Soundfiles
   are never published. Logs describe the machine, so they are published
   only when asked for (`--kinds all`, or by name).
@@ -95,15 +95,15 @@ rewritten only when its content changes.
 The text of every published prompt is also embedded in the catalog. GitHub
 Pages builds this site with Jekyll, which converts Markdown files into HTML
 pages; whether the raw `.md` files remain reachable on the deployed site
-has not been verified. The viewer therefore shows and offers prompts for
+has not been verified. The player therefore shows and offers prompts for
 download from the catalog and does not depend on fetching the `.md` files.
 
 ## Optional artifacts
 
 A version may be published without audio, without code or without its
-manifest. The catalog simply omits what is absent and the viewer says so
+manifest. The catalog simply omits what is absent and the player says so
 ("No audio was published for this version", and so on). MIDI, MusicXML
-and PDF files in `outputs/` are listed in the viewer's Files tab when
+and PDF files in `outputs/` are listed in the player's Files tab when
 published.
 
 ## Public exposure

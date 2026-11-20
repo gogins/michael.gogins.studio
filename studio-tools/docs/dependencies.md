@@ -8,16 +8,16 @@ small piece in a temporary directory.
 | --- | --- | --- |
 | Python 3.9 or later, standard library | The tools themselves | yes |
 | Csound 7 (`csound` command) | Validation and rendering | yes, to render |
-| `@csound/browser` under `docs/studio/csound/` | Listening in the viewer, and the render-time playability check | yes for listening; install with `studio-tools/js/update-csound-browser.sh` |
+| `@csound/browser` under `docs/studio/csound/` | Listening in the player, and the render-time playability check | yes for listening; install with `studio-tools/js/update-csound-browser.sh` |
 | Python 3.12 with the CsoundAC module | Python generating programs | no |
 | Node.js | Render-time check that a piece performs in `@csound/browser`; JavaScript generators | recommended for the check; required for JS generators |
 | `CsoundAC.js` and `CsoundAC.wasm` | JavaScript generating programs that use CsoundAC | no |
 | C++17 compiler, CsoundAC headers and library, Boost, Eigen | C++ generating programs | no |
 | Git | Committing; the repository tests | no |
-| Chrome or Chromium | The browser test of the viewer | no |
+| Chrome or Chromium | The browser test of the player | no |
 
 The tools use no Python packages outside the standard library, and the
-viewer uses no JavaScript libraries.
+player uses no JavaScript libraries.
 
 ## Configuration
 
