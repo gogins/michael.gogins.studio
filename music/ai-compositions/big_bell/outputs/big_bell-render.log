@@ -1,4 +1,4 @@
-Render of big_bell started 2026-11-20T19:04:19Z
+Render of big_bell started 2026-11-20T19:38:02Z
 
 $ csound --syntax-check-only big_bell.csd
 Reading CSD file:  big_bell.csd
@@ -25,7 +25,7 @@ Compiling Csound code...
 warning: opcode outs is deprecated; use out instead, line 110
 warning: opcode outs is deprecated; use out instead, line 110
 	 ...done
-Elapsed time at end of code compilation: real: 0.010s, CPU: 0.009s
+Elapsed time at end of code compilation: real: 0.011s, CPU: 0.010s
 displays suppressed
 sr = 48000.0, kr = 1500.000, ksmps = 32
 0dBFS level = 1.0, A4 tuning = 440.0
@@ -62,29 +62,44 @@ warning: instr 1 uses 9 p-fields but is given 11
 B 46.000 .. 48.000 T 48.000 TT 48.000 M:  0.11986  0.12152
 new alloc for instr 1:
 warning: instr 1 uses 9 p-fields but is given 11
-B 48.000 ..169.000 T169.000 TT169.000 M:  0.16557  0.16586
+B 48.000 .. 78.000 T 78.000 TT 78.000 M:  0.16557  0.16586
+new alloc for instr 1:
+warning: instr 1 uses 9 p-fields but is given 11
+B 78.000 .. 79.000 T 79.000 TT 79.000 M:  0.08288  0.08479
+new alloc for instr 1:
+warning: instr 1 uses 9 p-fields but is given 11
+B 79.000 .. 80.000 T 80.000 TT 80.000 M:  0.12442  0.14274
+new alloc for instr 1:
+warning: instr 1 uses 9 p-fields but is given 11
+B 80.000 .. 81.000 T 81.000 TT 81.000 M:  0.16994  0.14984
+new alloc for instr 1:
+warning: instr 1 uses 9 p-fields but is given 11
+B 81.000 .. 82.000 T 82.000 TT 82.000 M:  0.16239  0.15974
+new alloc for instr 1:
+warning: instr 1 uses 9 p-fields but is given 11
+B 82.000 ..203.000 T203.000 TT203.000 M:  0.18519  0.17345
 end of Performance
 256 768 sample blks of 24bit ints written to <temporary>/big_bell.wav (WAV)
 inactive allocs returned to freespace
-		   overall amps:  0.17091  0.18371
-Elapsed time at end of performance: real: 3.635s, CPU: 3.629s
+		   overall amps:  0.18519  0.18371
+Elapsed time at end of performance: real: 5.570s, CPU: 5.560s
 
-[exit 0; 3.646 s]
+[exit 0; 5.58 s]
 
-Audio: 169.0 s, 2 ch, 48000 Hz, 24-bit pcm; peak -14.72 dBFS, RMS -36.19 dBFS, 0 clipped samples
+Audio: 203.0 s, 2 ch, 48000 Hz, 24-bit pcm; peak -14.65 dBFS, RMS -35.15 dBFS, 0 clipped samples
 
-Browser engine (@csound/browser 7.0.0): {"channels": 2, "checked": true, "compiled": true, "csound_version": "7.0", "duration_seconds": 169, "errors": [], "performed": true, "playable": true, "realtime_factor": 35, "runtime_errors": 0, "sample_rate": 48000, "seconds": 4.993, "started": true}
-B 46.000 .. 48.000 T 48.000 TT 48.000 M:  0.11986  0.12152
+Browser engine (@csound/browser 7.0.0): {"channels": 2, "checked": true, "compiled": true, "csound_version": "7.0", "duration_seconds": 203, "errors": [], "performed": true, "playable": true, "realtime_factor": 28, "runtime_errors": 0, "sample_rate": 48000, "seconds": 7.432, "started": true}
+B 81.000 .. 82.000 T 82.000 TT 82.000 M:  0.16239  0.15974
 new alloc for instr 1:
 warning: instr 1 uses 9 p-fields but is given 11
-B 48.000 ..169.000 T169.000 TT169.000 M:  0.16557  0.16586
+B 82.000 ..203.000 T203.000 TT203.000 M:  0.18519  0.17345
 end of Performance
 resetting Csound instance
 no sound written to disk
 inactive allocs returned to freespace
-		   overall amps:  0.17091  0.18371
-Elapsed time at end of performance: real: 5.000s, CPU: 0.541s
+		   overall amps:  0.18519  0.18371
+Elapsed time at end of performance: real: 8.000s, CPU: 2.977s
 		   overall amps:      0.0
 Elapsed time at end of performance: real: 0.000s, CPU: 0.000s
 
-Render finished 2026-11-20T19:04:28Z: ok
+Render finished 2026-11-20T19:38:16Z: ok

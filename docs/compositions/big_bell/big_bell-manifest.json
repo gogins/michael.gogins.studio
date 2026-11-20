@@ -4,7 +4,7 @@
     "model": "Grok 4.7"
   },
   "composition": "big_bell",
-  "created_at": "2026-11-20T19:04:32Z",
+  "created_at": "2026-11-20T19:38:19Z",
   "dependencies": {
     "includes": [],
     "plugins": [],
@@ -73,13 +73,17 @@
       "bytes": 220,
       "sha256": "7235d173bf7e1cb2334bdd8a0d3fc3f7b7c8d59b950a792688c5f234d7cde221"
     },
+    "big_bell-prompt-008.md": {
+      "bytes": 182,
+      "sha256": "d86587d65a7c23e8cdb9b75a1ffc363dd9b48996b9b6b7763113cda38cf83bd1"
+    },
     "big_bell.csd": {
-      "bytes": 5555,
-      "sha256": "b5cfee7f6d0c8264dfaaa4935062febd64a43ccf6ee4c948ee7d6300afb5b47d"
+      "bytes": 5999,
+      "sha256": "28188401abb42d37bd63bc60fd60a86dc184fd4a892c141f783d993ac9992539"
     },
     "outputs/big_bell-render.log": {
-      "bytes": 3826,
-      "sha256": "86fdfb95df982c299144d213c4b91d9fb25b0bb02670943afb48bc10a88c6a86"
+      "bytes": 4480,
+      "sha256": "e7883b77e9c1bbdaebc0912f4fd9e4a063af7631ffa8b4857954c04446603827"
     }
   },
   "generator": {
@@ -118,13 +122,18 @@
       "ordinal": 5,
       "tree_sha256": "15538821c2268609b0dd319d2741076b37056b63d49101b2ca2350512c163a0c",
       "version": "version-0005"
+    },
+    {
+      "archived_at": "2026-11-20T19:38:19Z",
+      "ordinal": 6,
+      "tree_sha256": "71658494382f40a53b8874a959706252db990f2dce7d7303ae56375dc8e4ed25",
+      "version": "version-0006"
     }
   ],
   "new_prompts": [
-    "big_bell-prompt-006.md",
-    "big_bell-prompt-007.md"
+    "big_bell-prompt-008.md"
   ],
-  "ordinal": 6,
+  "ordinal": 7,
   "prompts": [
     "big_bell-prompt-001.md",
     "big_bell-prompt-002.md",
@@ -132,22 +141,23 @@
     "big_bell-prompt-004.md",
     "big_bell-prompt-005.md",
     "big_bell-prompt-006.md",
-    "big_bell-prompt-007.md"
+    "big_bell-prompt-007.md",
+    "big_bell-prompt-008.md"
   ],
   "render": {
     "analysis": {
       "bits": 24,
       "channel_peaks_dbfs": [
-        -15.34,
+        -14.65,
         -14.72
       ],
       "channels": 2,
       "clipped_samples": 0,
-      "duration_seconds": 169.0,
-      "frames": 8112000,
-      "peak": 0.183707,
-      "peak_dbfs": -14.72,
-      "rms_dbfs": -36.19,
+      "duration_seconds": 203.0,
+      "frames": 9744000,
+      "peak": 0.185186,
+      "peak_dbfs": -14.65,
+      "rms_dbfs": -35.15,
       "sample_format": "pcm",
       "sample_rate": 48000
     },
@@ -156,7 +166,7 @@
       "checked": true,
       "compiled": true,
       "csound_version": "7.0",
-      "duration_seconds": 169,
+      "duration_seconds": 203,
       "engine": {
         "package": "@csound/browser",
         "sha256": "c86c69291326fa3d64872f430ca9a06324a94c96db373d6bd207fdd4e5a3fc9e",
@@ -165,10 +175,10 @@
       "errors": [],
       "performed": true,
       "playable": true,
-      "realtime_factor": 35,
+      "realtime_factor": 28,
       "runtime_errors": 0,
       "sample_rate": 48000,
-      "seconds": 4.993,
+      "seconds": 7.432,
       "started": true
     },
     "commands": [
@@ -193,14 +203,14 @@
           "big_bell.csd"
         ],
         "exit_code": 0,
-        "seconds": 3.646,
+        "seconds": 5.58,
         "step": "render"
       }
     ],
-    "finished_at": "2026-11-20T19:04:28Z",
+    "finished_at": "2026-11-20T19:38:16Z",
     "log": "outputs/big_bell-render.log",
-    "started_at": "2026-11-20T19:04:19Z",
-    "wav_sha256": "c57da5a31394a1b4d96b4ef9af9c889c7283e70aade03b8886a2a13ce79ebf92"
+    "started_at": "2026-11-20T19:38:02Z",
+    "wav_sha256": "b460f4909d527ea64ff9adb35160cf2bccba5e28a28adf5006a50a93e05b688c"
   },
   "schema": "ai-composition-studio/manifest/1",
   "title": "Big Bell",
@@ -238,7 +248,7 @@
       },
       {
         "check": "audio is not silent",
-        "detail": "peak -14.72 dBFS",
+        "detail": "peak -14.65 dBFS",
         "passed": true
       },
       {
@@ -248,7 +258,7 @@
       },
       {
         "check": "performs in the player's Csound engine (@csound/browser 7.0.0)",
-        "detail": "169 s at 35 times real time here",
+        "detail": "203 s at 28 times real time here",
         "passed": true
       }
     ],
