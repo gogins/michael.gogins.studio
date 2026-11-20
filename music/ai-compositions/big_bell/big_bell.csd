@@ -23,8 +23,21 @@ i_phase = p9
 k_amplitude = ampdbfs(-6) * (i_midi_velocity / 127)
 a_decay expon 1, i_duration, 0.0001
 
-; Base frequency from MIDI key
-i_frequency = cpsmidinn(i_midi_key)
+; Just CM7 above the C of this octave: C 1/1, E 5/4, G 3/2, B 15/8.
+; Any other pitch class stays in twelve-tone equal temperament.
+i_pc = i_midi_key % 12
+i_fundamental = cpsmidinn(i_midi_key - i_pc)
+if i_pc == 0 then
+  i_frequency = i_fundamental
+elseif i_pc == 4 then
+  i_frequency = i_fundamental * 5 / 4
+elseif i_pc == 7 then
+  i_frequency = i_fundamental * 3 / 2
+elseif i_pc == 11 then
+  i_frequency = i_fundamental * 15 / 8
+else
+  i_frequency = cpsmidinn(i_midi_key)
+endif
 
 ; Sharp attack for clank/clang, at audio rate. A k-rate linseg steps once
 ; per ksmps (0.67 ms here), so a 1 ms rise was one jump. The clang and
@@ -97,8 +110,12 @@ endin
 
 </CsInstruments>
 <CsScore>
-; One stroke of a giant bell with clank: MIDI key 36 (C2), duration 120 seconds
-i 1 0 120 36 110 0.5 0.5 0.5 0.3 0 0.5
-e 121
+; Just CM7, one stroke every 2 seconds: C2, E2, G2, B2, each ringing 120 seconds.
+; p10 is the pitch-class set {0, 4, 7, 11}.
+i 1 0 120 36 110 0.5 0.5 0.5 0.30 2193 0.5
+i 1 2 120 40 110 0.5 0.5 0.5 0.45 2193 0.5
+i 1 4 120 43 110 0.5 0.5 0.5 0.60 2193 0.5
+i 1 6 120 47 110 0.5 0.5 0.5 0.75 2193 0.5
+e 127
 </CsScore>
 </CsoundSynthesizer>

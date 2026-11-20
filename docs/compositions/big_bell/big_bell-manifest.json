@@ -4,7 +4,7 @@
     "model": "Grok 4.7"
   },
   "composition": "big_bell",
-  "created_at": "2026-11-20T18:07:22Z",
+  "created_at": "2026-11-20T18:11:11Z",
   "dependencies": {
     "includes": [],
     "plugins": [],
@@ -57,13 +57,17 @@
       "bytes": 290,
       "sha256": "b5a30c29d160a656cdf9830973d7fc5ef7567b5d3f1e93f79ae84989c1de1f17"
     },
+    "big_bell-prompt-004.md": {
+      "bytes": 182,
+      "sha256": "22e954c7cc6f0d6d0a74d988e08e81af361191f78952723574e48bafb57afb60"
+    },
     "big_bell.csd": {
-      "bytes": 4259,
-      "sha256": "ccfa1b4a6195b0a020b41a480fc680b78c07f157b0c69807315507a4d4c6c331"
+      "bytes": 4850,
+      "sha256": "31277aa023e977642b55f99f55af22216fdfb6b9f9cdb9655a2e56e8cb2f6593"
     },
     "outputs/big_bell-render.log": {
-      "bytes": 2596,
-      "sha256": "a3ea4d715dbca7e6be50c1ed528085c680fe1f0ce44c70ecbf4ce29831787f3a"
+      "bytes": 3042,
+      "sha256": "c27f0c611eb3fff6d4b07e0c07dabd5c3ac3de03dcd13fad08dfb061b94f62db"
     }
   },
   "generator": {
@@ -84,31 +88,38 @@
       "ordinal": 2,
       "tree_sha256": "9d06b10e4c26439d0a9bf272f0ce18ffa9d67c01f35a7a14aa2fe63a386fd0cd",
       "version": "version-0002"
+    },
+    {
+      "archived_at": "2026-11-20T18:11:11Z",
+      "ordinal": 3,
+      "tree_sha256": "802860dd2c03a9fdc89aa15628702a8618b5adbff7e164b138e3e5d1cec17da6",
+      "version": "version-0003"
     }
   ],
   "new_prompts": [
-    "big_bell-prompt-003.md"
+    "big_bell-prompt-004.md"
   ],
-  "ordinal": 3,
+  "ordinal": 4,
   "prompts": [
     "big_bell-prompt-001.md",
     "big_bell-prompt-002.md",
-    "big_bell-prompt-003.md"
+    "big_bell-prompt-003.md",
+    "big_bell-prompt-004.md"
   ],
   "render": {
     "analysis": {
       "bits": 24,
       "channel_peaks_dbfs": [
-        -18.52,
-        -18.9
+        -15.39,
+        -15.05
       ],
       "channels": 2,
       "clipped_samples": 0,
-      "duration_seconds": 121.0,
-      "frames": 5808000,
-      "peak": 0.118518,
-      "peak_dbfs": -18.52,
-      "rms_dbfs": -41.14,
+      "duration_seconds": 127.0,
+      "frames": 6096000,
+      "peak": 0.176884,
+      "peak_dbfs": -15.05,
+      "rms_dbfs": -37.35,
       "sample_format": "pcm",
       "sample_rate": 48000
     },
@@ -117,7 +128,7 @@
       "checked": true,
       "compiled": true,
       "csound_version": "7.0",
-      "duration_seconds": 121,
+      "duration_seconds": 127,
       "engine": {
         "package": "@csound/browser",
         "sha256": "c86c69291326fa3d64872f430ca9a06324a94c96db373d6bd207fdd4e5a3fc9e",
@@ -126,10 +137,10 @@
       "errors": [],
       "performed": true,
       "playable": true,
-      "realtime_factor": 266.9,
+      "realtime_factor": 68.8,
       "runtime_errors": 0,
       "sample_rate": 48000,
-      "seconds": 0.675,
+      "seconds": 2.015,
       "started": true
     },
     "commands": [
@@ -140,7 +151,7 @@
           "big_bell.csd"
         ],
         "exit_code": 0,
-        "seconds": 0.05,
+        "seconds": 0.027,
         "step": "syntax-check"
       },
       {
@@ -154,14 +165,14 @@
           "big_bell.csd"
         ],
         "exit_code": 0,
-        "seconds": 0.43,
+        "seconds": 1.477,
         "step": "render"
       }
     ],
-    "finished_at": "2026-11-20T18:07:08Z",
+    "finished_at": "2026-11-20T18:10:59Z",
     "log": "outputs/big_bell-render.log",
-    "started_at": "2026-11-20T18:07:06Z",
-    "wav_sha256": "b1bf71cdca80b5372bf7b8f8800c4e2c7b999d37f6eda5aeab5f14a8b1336c2b"
+    "started_at": "2026-11-20T18:10:55Z",
+    "wav_sha256": "68af68b60f39ef8d01653dabb77075b5decda712c1333e3248b132923e9edb93"
   },
   "schema": "ai-composition-studio/manifest/1",
   "title": "Big Bell",
@@ -199,7 +210,7 @@
       },
       {
         "check": "audio is not silent",
-        "detail": "peak -18.52 dBFS",
+        "detail": "peak -15.05 dBFS",
         "passed": true
       },
       {
@@ -209,7 +220,7 @@
       },
       {
         "check": "performs in the player's Csound engine (@csound/browser 7.0.0)",
-        "detail": "121 s at 266.9 times real time here",
+        "detail": "127 s at 68.8 times real time here",
         "passed": true
       }
     ],
