@@ -4,7 +4,7 @@
     "model": "Grok 4.7"
   },
   "composition": "big_bell",
-  "created_at": "2026-11-20T18:14:35Z",
+  "created_at": "2026-11-20T19:04:32Z",
   "dependencies": {
     "includes": [],
     "plugins": [],
@@ -65,13 +65,21 @@
       "bytes": 130,
       "sha256": "10a84d4d05822c4cb9ff3cfa298480d025bd4edf37d51371bbcc247cb48b1a3e"
     },
+    "big_bell-prompt-006.md": {
+      "bytes": 135,
+      "sha256": "a7afc19da9824573c08222074ff0d12e364f44fecb4b9a6d478e143c94563a76"
+    },
+    "big_bell-prompt-007.md": {
+      "bytes": 220,
+      "sha256": "7235d173bf7e1cb2334bdd8a0d3fc3f7b7c8d59b950a792688c5f234d7cde221"
+    },
     "big_bell.csd": {
-      "bytes": 5089,
-      "sha256": "d60d6f64415ad490fc12771bc2a2e8fe0afcf6db06b793cd149d6287dc26a81c"
+      "bytes": 5555,
+      "sha256": "b5cfee7f6d0c8264dfaaa4935062febd64a43ccf6ee4c948ee7d6300afb5b47d"
     },
     "outputs/big_bell-render.log": {
-      "bytes": 3173,
-      "sha256": "b2336e85ce66f0fccdc6da812f8dda505d0e3a24392846df1b876b6fa0c422a7"
+      "bytes": 3826,
+      "sha256": "86fdfb95df982c299144d213c4b91d9fb25b0bb02670943afb48bc10a88c6a86"
     }
   },
   "generator": {
@@ -104,18 +112,27 @@
       "ordinal": 4,
       "tree_sha256": "75189511ae02097c93a0bc7515d8a05f369d04067822985e1013f0361eda2a11",
       "version": "version-0004"
+    },
+    {
+      "archived_at": "2026-11-20T19:04:32Z",
+      "ordinal": 5,
+      "tree_sha256": "15538821c2268609b0dd319d2741076b37056b63d49101b2ca2350512c163a0c",
+      "version": "version-0005"
     }
   ],
   "new_prompts": [
-    "big_bell-prompt-005.md"
+    "big_bell-prompt-006.md",
+    "big_bell-prompt-007.md"
   ],
-  "ordinal": 5,
+  "ordinal": 6,
   "prompts": [
     "big_bell-prompt-001.md",
     "big_bell-prompt-002.md",
     "big_bell-prompt-003.md",
     "big_bell-prompt-004.md",
-    "big_bell-prompt-005.md"
+    "big_bell-prompt-005.md",
+    "big_bell-prompt-006.md",
+    "big_bell-prompt-007.md"
   ],
   "render": {
     "analysis": {
@@ -126,11 +143,11 @@
       ],
       "channels": 2,
       "clipped_samples": 0,
-      "duration_seconds": 129.0,
-      "frames": 6192000,
+      "duration_seconds": 169.0,
+      "frames": 8112000,
       "peak": 0.183707,
       "peak_dbfs": -14.72,
-      "rms_dbfs": -37.23,
+      "rms_dbfs": -36.19,
       "sample_format": "pcm",
       "sample_rate": 48000
     },
@@ -139,7 +156,7 @@
       "checked": true,
       "compiled": true,
       "csound_version": "7.0",
-      "duration_seconds": 129,
+      "duration_seconds": 169,
       "engine": {
         "package": "@csound/browser",
         "sha256": "c86c69291326fa3d64872f430ca9a06324a94c96db373d6bd207fdd4e5a3fc9e",
@@ -148,10 +165,10 @@
       "errors": [],
       "performed": true,
       "playable": true,
-      "realtime_factor": 53.2,
+      "realtime_factor": 35,
       "runtime_errors": 0,
       "sample_rate": 48000,
-      "seconds": 2.601,
+      "seconds": 4.993,
       "started": true
     },
     "commands": [
@@ -176,14 +193,14 @@
           "big_bell.csd"
         ],
         "exit_code": 0,
-        "seconds": 1.856,
+        "seconds": 3.646,
         "step": "render"
       }
     ],
-    "finished_at": "2026-11-20T18:14:31Z",
+    "finished_at": "2026-11-20T19:04:28Z",
     "log": "outputs/big_bell-render.log",
-    "started_at": "2026-11-20T18:14:26Z",
-    "wav_sha256": "20143ff9484431e2aa3ecd46b69e3c8706cb85d2e7b292dc146409db49698199"
+    "started_at": "2026-11-20T19:04:19Z",
+    "wav_sha256": "c57da5a31394a1b4d96b4ef9af9c889c7283e70aade03b8886a2a13ce79ebf92"
   },
   "schema": "ai-composition-studio/manifest/1",
   "title": "Big Bell",
@@ -231,7 +248,7 @@
       },
       {
         "check": "performs in the player's Csound engine (@csound/browser 7.0.0)",
-        "detail": "129 s at 53.2 times real time here",
+        "detail": "169 s at 35 times real time here",
         "passed": true
       }
     ],

@@ -121,6 +121,14 @@ i 1 2 120 40 110 0.5 0.5 0.5 0.42 2197 0.5
 i 1 4 120 55 110 0.5 0.5 0.5 0.54 2197 0.5
 i 1 6 120 71 110 0.5 0.5 0.5 0.66 2197 0.5
 i 1 8 120 86 110 0.5 0.5 0.5 0.78 2197 0.5
-e 129
+; At 40 seconds, five strokes, two seconds apart, mirroring the ascent.
+; Start on D6, then each stroke is a just fourth and an octave lower (* 3/8).
+; Fractional keys are that chain. p10 adds A and F# to the CM9 set.
+i 1 40 120 86 110 0.5 0.5 0.5 0.16 2773 0.5
+i 1 42 120 69.058650 110 0.5 0.5 0.5 0.32 2773 0.5
+i 1 44 120 52.078200 110 0.5 0.5 0.5 0.48 2773 0.5
+i 1 46 120 35.097750 110 0.5 0.5 0.5 0.64 2773 0.5
+i 1 48 120 18.117300 110 0.5 0.5 0.5 0.80 2773 0.5
+e 169
 </CsScore>
 </CsoundSynthesizer>

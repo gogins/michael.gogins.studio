@@ -1,0 +1,75 @@
+Render of big_bell started 2026-11-20T18:14:26Z
+
+$ csound --syntax-check-only big_bell.csd
+Reading CSD file:  big_bell.csd
+--Csound version 7.0 (double samples) Oct 28 2026
+[commit: f9434ffc51954b20314352e1620e19cc5ec67185]
+Compiling Csound code...
+warning: opcode outs is deprecated; use out instead, line 110
+warning: opcode outs is deprecated; use out instead, line 110
+	 ...done
+Elapsed time at end of code compilation: real: 0.012s, CPU: 0.010s
+Syntax check completed.
+		   overall amps:  0.00000  0.00000
+Elapsed time at end of performance: real: 0.012s, CPU: 0.010s
+--Csound version 7.0 (double samples) Oct 28 2026
+[commit: f9434ffc51954b20314352e1620e19cc5ec67185]
+
+[exit 0; 0.022 s]
+
+$ csound -d -W -3 -o <temporary>/big_bell.wav big_bell.csd
+Reading CSD file:  big_bell.csd
+--Csound version 7.0 (double samples) Oct 28 2026
+[commit: f9434ffc51954b20314352e1620e19cc5ec67185]
+Compiling Csound code...
+warning: opcode outs is deprecated; use out instead, line 110
+warning: opcode outs is deprecated; use out instead, line 110
+	 ...done
+Elapsed time at end of code compilation: real: 0.010s, CPU: 0.009s
+displays suppressed
+sr = 48000.0, kr = 1500.000, ksmps = 32
+0dBFS level = 1.0, A4 tuning = 440.0
+ftable 101:
+audio buffered in 128 sample-frame blocks
+writing 768-byte blks of 24bit ints to <temporary>/big_bell.wav (WAV)
+SECTION 1:
+new alloc for instr 1:
+warning: instr 1 uses 9 p-fields but is given 11
+B  0.000 ..  2.000 T  2.000 TT  2.000 M:  0.12606  0.10373
+new alloc for instr 1:
+warning: instr 1 uses 9 p-fields but is given 11
+B  2.000 ..  4.000 T  4.000 TT  4.000 M:  0.16171  0.15044
+new alloc for instr 1:
+warning: instr 1 uses 9 p-fields but is given 11
+B  4.000 ..  6.000 T  6.000 TT  6.000 M:  0.15332  0.17282
+new alloc for instr 1:
+warning: instr 1 uses 9 p-fields but is given 11
+B  6.000 ..  8.000 T  8.000 TT  8.000 M:  0.16634  0.15769
+new alloc for instr 1:
+warning: instr 1 uses 9 p-fields but is given 11
+B  8.000 ..129.000 T129.000 TT129.000 M:  0.17091  0.18371
+end of Performance
+256 768 sample blks of 24bit ints written to <temporary>/big_bell.wav (WAV)
+inactive allocs returned to freespace
+		   overall amps:  0.17091  0.18371
+Elapsed time at end of performance: real: 1.845s, CPU: 1.839s
+
+[exit 0; 1.856 s]
+
+Audio: 129.0 s, 2 ch, 48000 Hz, 24-bit pcm; peak -14.72 dBFS, RMS -37.23 dBFS, 0 clipped samples
+
+Browser engine (@csound/browser 7.0.0): {"channels": 2, "checked": true, "compiled": true, "csound_version": "7.0", "duration_seconds": 129, "errors": [], "performed": true, "playable": true, "realtime_factor": 53.2, "runtime_errors": 0, "sample_rate": 48000, "seconds": 2.601, "started": true}
+B  6.000 ..  8.000 T  8.000 TT  8.000 M:  0.16634  0.15769
+new alloc for instr 1:
+warning: instr 1 uses 9 p-fields but is given 11
+B  8.000 ..129.000 T129.000 TT129.000 M:  0.17091  0.18371
+end of Performance
+resetting Csound instance
+no sound written to disk
+inactive allocs returned to freespace
+		   overall amps:  0.17091  0.18371
+Elapsed time at end of performance: real: 2.000s, CPU: 2.438s
+		   overall amps:      0.0
+Elapsed time at end of performance: real: 0.000s, CPU: 0.000s
+
+Render finished 2026-11-20T18:14:31Z: ok
