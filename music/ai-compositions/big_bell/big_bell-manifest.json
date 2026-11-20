@@ -1,0 +1,219 @@
+{
+  "ai": {
+    "agent": "Cursor desktop (macOS)",
+    "model": "Grok 4.7"
+  },
+  "composition": "big_bell",
+  "created_at": "2026-11-20T18:07:22Z",
+  "dependencies": {
+    "includes": [],
+    "plugins": [],
+    "samples": []
+  },
+  "environment": {
+    "browser_csound": {
+      "available": true,
+      "file": "csound.js",
+      "package": "@csound/browser",
+      "sha256": "c86c69291326fa3d64872f430ca9a06324a94c96db373d6bd207fdd4e5a3fc9e",
+      "version": "7.0.0"
+    },
+    "csound": {
+      "available": true,
+      "banner": "Csound version 7.0 (double samples) Oct 28 2026",
+      "commit": "f9434ffc51954b20314352e1620e19cc5ec67185",
+      "major": 7,
+      "path": "/usr/local/bin/csound",
+      "version": "7.0"
+    },
+    "machine": "arm64",
+    "node": {
+      "available": true,
+      "csoundac_wasm_dir": null,
+      "csoundac_wasm_present": false,
+      "path": "/opt/homebrew/bin/node",
+      "version": "v26.13.1"
+    },
+    "platform": "macOS-27.2.1-arm64-arm-64bit-Mach-O",
+    "python": {
+      "csoundac": false,
+      "csoundac_error": "ModuleNotFoundError(\"No module named 'CsoundAC'\", name='CsoundAC')",
+      "csoundac_revision": null,
+      "path": "/opt/homebrew/opt/python@3.15/bin/python3.15",
+      "version": "3.15.2"
+    },
+    "studio_python": "3.15.2"
+  },
+  "files": {
+    "big_bell-prompt-001.md": {
+      "bytes": 833,
+      "sha256": "776861008f933c79ea2f4841da6c43c61089f577fb83091b2b4ea6f1090b4076"
+    },
+    "big_bell-prompt-002.md": {
+      "bytes": 136,
+      "sha256": "9357a925226f7252faddcd5c2f20deb7fe32243dfc1d12ae04a5d07400c50196"
+    },
+    "big_bell-prompt-003.md": {
+      "bytes": 290,
+      "sha256": "b5a30c29d160a656cdf9830973d7fc5ef7567b5d3f1e93f79ae84989c1de1f17"
+    },
+    "big_bell.csd": {
+      "bytes": 4259,
+      "sha256": "ccfa1b4a6195b0a020b41a480fc680b78c07f157b0c69807315507a4d4c6c331"
+    },
+    "outputs/big_bell-render.log": {
+      "bytes": 2596,
+      "sha256": "a3ea4d715dbca7e6be50c1ed528085c680fe1f0ce44c70ecbf4ce29831787f3a"
+    }
+  },
+  "generator": {
+    "kind": "direct-csd",
+    "runs": [],
+    "seeds": [],
+    "sources": []
+  },
+  "history": [
+    {
+      "archived_at": "2026-11-16T10:52:15Z",
+      "ordinal": 1,
+      "tree_sha256": "8baf43df87a40cd541ae6aae171f694e787d6f5ffae3e310e18f668607700f59",
+      "version": "version-0001"
+    },
+    {
+      "archived_at": "2026-11-20T18:07:22Z",
+      "ordinal": 2,
+      "tree_sha256": "9d06b10e4c26439d0a9bf272f0ce18ffa9d67c01f35a7a14aa2fe63a386fd0cd",
+      "version": "version-0002"
+    }
+  ],
+  "new_prompts": [
+    "big_bell-prompt-003.md"
+  ],
+  "ordinal": 3,
+  "prompts": [
+    "big_bell-prompt-001.md",
+    "big_bell-prompt-002.md",
+    "big_bell-prompt-003.md"
+  ],
+  "render": {
+    "analysis": {
+      "bits": 24,
+      "channel_peaks_dbfs": [
+        -18.52,
+        -18.9
+      ],
+      "channels": 2,
+      "clipped_samples": 0,
+      "duration_seconds": 121.0,
+      "frames": 5808000,
+      "peak": 0.118518,
+      "peak_dbfs": -18.52,
+      "rms_dbfs": -41.14,
+      "sample_format": "pcm",
+      "sample_rate": 48000
+    },
+    "browser": {
+      "channels": 2,
+      "checked": true,
+      "compiled": true,
+      "csound_version": "7.0",
+      "duration_seconds": 121,
+      "engine": {
+        "package": "@csound/browser",
+        "sha256": "c86c69291326fa3d64872f430ca9a06324a94c96db373d6bd207fdd4e5a3fc9e",
+        "version": "7.0.0"
+      },
+      "errors": [],
+      "performed": true,
+      "playable": true,
+      "realtime_factor": 266.9,
+      "runtime_errors": 0,
+      "sample_rate": 48000,
+      "seconds": 0.675,
+      "started": true
+    },
+    "commands": [
+      {
+        "argv": [
+          "csound",
+          "--syntax-check-only",
+          "big_bell.csd"
+        ],
+        "exit_code": 0,
+        "seconds": 0.05,
+        "step": "syntax-check"
+      },
+      {
+        "argv": [
+          "csound",
+          "-d",
+          "-W",
+          "-3",
+          "-o",
+          "<temporary>/big_bell.wav",
+          "big_bell.csd"
+        ],
+        "exit_code": 0,
+        "seconds": 0.43,
+        "step": "render"
+      }
+    ],
+    "finished_at": "2026-11-20T18:07:08Z",
+    "log": "outputs/big_bell-render.log",
+    "started_at": "2026-11-20T18:07:06Z",
+    "wav_sha256": "b1bf71cdca80b5372bf7b8f8800c4e2c7b999d37f6eda5aeab5f14a8b1336c2b"
+  },
+  "schema": "ai-composition-studio/manifest/1",
+  "title": "Big Bell",
+  "validation": {
+    "checks": [
+      {
+        "check": "naming conventions",
+        "detail": "",
+        "passed": true
+      },
+      {
+        "check": "complete .csd structure",
+        "detail": "",
+        "passed": true
+      },
+      {
+        "check": "csound --syntax-check-only",
+        "detail": "",
+        "passed": true
+      },
+      {
+        "check": "csound render",
+        "detail": "",
+        "passed": true
+      },
+      {
+        "check": "no run-time errors in the Csound log",
+        "detail": "",
+        "passed": true
+      },
+      {
+        "check": "audio rendered",
+        "detail": "temporary file, measured and deleted",
+        "passed": true
+      },
+      {
+        "check": "audio is not silent",
+        "detail": "peak -18.52 dBFS",
+        "passed": true
+      },
+      {
+        "check": "no clipping",
+        "detail": "0 samples out of range",
+        "passed": true
+      },
+      {
+        "check": "performs in the player's Csound engine (@csound/browser 7.0.0)",
+        "detail": "121 s at 266.9 times real time here",
+        "passed": true
+      }
+    ],
+    "status": "passed",
+    "warnings": []
+  }
+}

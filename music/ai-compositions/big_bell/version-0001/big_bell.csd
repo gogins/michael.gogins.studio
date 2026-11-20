@@ -1,0 +1,79 @@
+<CsoundSynthesizer>
+<CsOptions>
+-d
+</CsOptions>
+<CsInstruments>
+sr = 48000
+ksmps = 32
+nchnls = 2
+0dbfs = 1
+
+gi_sine ftgen 0, 0, 65536, 10, 1
+
+instr 1
+i_time = p2
+i_duration = p3
+i_midi_key = p4
+i_midi_velocity = p5
+i_depth = p6
+i_pan = p7
+i_height = p8
+i_phase = p9
+
+k_amplitude = ampdbfs(-6) * (i_midi_velocity / 127)
+k_decay expon 1, i_duration, 0.0001
+
+; Base frequency from MIDI key
+i_frequency = cpsmidinn(i_midi_key)
+
+; Generate many inharmonic partials with different decay rates
+a_partial1 oscili k_amplitude * k_decay * 0.35, i_frequency * 1.0, gi_sine
+a_partial2 oscili k_amplitude * k_decay * 0.28, i_frequency * 1.89, gi_sine, i_phase * 0.1
+a_partial3 oscili k_amplitude * k_decay * 0.22, i_frequency * 2.67, gi_sine, i_phase * 0.2
+a_partial4 oscili k_amplitude * k_decay * 0.18, i_frequency * 3.47, gi_sine, i_phase * 0.3
+a_partial5 oscili k_amplitude * k_decay * 0.15, i_frequency * 4.21, gi_sine, i_phase * 0.4
+a_partial6 oscili k_amplitude * k_decay * 0.12, i_frequency * 5.09, gi_sine, i_phase * 0.5
+a_partial7 oscili k_amplitude * k_decay * 0.10, i_frequency * 5.93, gi_sine, i_phase * 0.6
+a_partial8 oscili k_amplitude * k_decay * 0.08, i_frequency * 6.71, gi_sine, i_phase * 0.7
+
+; Slower decaying partials
+k_decay_slow expon 1, i_duration, 0.001
+a_partial9 oscili k_amplitude * k_decay_slow * 0.06, i_frequency * 7.58, gi_sine, i_phase * 0.8
+a_partial10 oscili k_amplitude * k_decay_slow * 0.05, i_frequency * 8.34, gi_sine, i_phase * 0.9
+a_partial11 oscili k_amplitude * k_decay_slow * 0.04, i_frequency * 9.21, gi_sine, i_phase * 0.15
+a_partial12 oscili k_amplitude * k_decay_slow * 0.03, i_frequency * 10.07, gi_sine, i_phase * 0.25
+
+; Slower phasing partials
+k_lfo1 oscil 0.02, 0.07, gi_sine
+k_lfo2 oscil 0.03, 0.11, gi_sine
+a_partial13 oscili k_amplitude * k_decay_slow * 0.03, i_frequency * 11.23 * (1 + k_lfo1), gi_sine
+a_partial14 oscili k_amplitude * k_decay_slow * 0.02, i_frequency * 12.51 * (1 + k_lfo2), gi_sine
+
+; Sum partials
+a_bell = a_partial1 + a_partial2 + a_partial3 + a_partial4 + a_partial5 + a_partial6 + a_partial7 + a_partial8 + a_partial9 + a_partial10 + a_partial11 + a_partial12 + a_partial13 + a_partial14
+
+; Create combination tones (sum and difference frequencies)
+a_ring1 = a_partial1 * a_partial3
+a_ring2 = a_partial2 * a_partial5
+a_ring3 = a_partial4 * a_partial7
+a_bell = a_bell + (a_ring1 + a_ring2 + a_ring3) * 0.08
+
+; Apply reverb
+a_reverb_left, a_reverb_right reverbsc a_bell, a_bell, 0.97, 12000
+a_mix_left = a_bell * 0.2 + a_reverb_left * 0.8
+a_mix_right = a_bell * 0.2 + a_reverb_right * 0.8
+
+; Pan and output with reduced level
+a_left = a_mix_left * i_pan
+a_right = a_mix_right * (1 - i_pan)
+
+outs a_left * 0.4, a_right * 0.4
+endin
+
+</CsInstruments>
+<CsScore>
+; One stroke of a giant bell: MIDI key 36 (C2), duration 120 seconds
+i 1 0 120 36 110 0.5 0.5 0.5 0.3 0 0.5
+e 121
+</CsScore>
+</CsoundSynthesizer>
