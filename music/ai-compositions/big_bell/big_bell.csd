@@ -23,12 +23,14 @@ i_phase = p9
 k_amplitude = ampdbfs(-6) * (i_midi_velocity / 127)
 a_decay expon 1, i_duration, 0.0001
 
-; Just CM7 above the C of this octave: C 1/1, E 5/4, G 3/2, B 15/8.
+; Just CM9 above the C of this octave: C 1/1, D 9/8, E 5/4, G 3/2, B 15/8.
 ; Any other pitch class stays in twelve-tone equal temperament.
 i_pc = i_midi_key % 12
 i_fundamental = cpsmidinn(i_midi_key - i_pc)
 if i_pc == 0 then
   i_frequency = i_fundamental
+elseif i_pc == 2 then
+  i_frequency = i_fundamental * 9 / 8
 elseif i_pc == 4 then
   i_frequency = i_fundamental * 5 / 4
 elseif i_pc == 7 then
@@ -110,12 +112,15 @@ endin
 
 </CsInstruments>
 <CsScore>
-; Just CM7, one stroke every 2 seconds: C2, E2, G2, B2, each ringing 120 seconds.
-; p10 is the pitch-class set {0, 4, 7, 11}.
-i 1 0 120 36 110 0.5 0.5 0.5 0.30 2193 0.5
-i 1 2 120 40 110 0.5 0.5 0.5 0.45 2193 0.5
-i 1 4 120 43 110 0.5 0.5 0.5 0.60 2193 0.5
-i 1 6 120 47 110 0.5 0.5 0.5 0.75 2193 0.5
-e 127
+; Just CM9, one stroke every 2 seconds, each an octave higher:
+; C1 1/1, E2 5/4, G3 3/2, B4 15/8, D6 9/8. Each rings 120 seconds.
+; The sequence starts on C1 so the highest clang partial stays under Nyquist.
+; p10 is the pitch-class set {0, 2, 4, 7, 11}.
+i 1 0 120 24 110 0.5 0.5 0.5 0.30 2197 0.5
+i 1 2 120 40 110 0.5 0.5 0.5 0.42 2197 0.5
+i 1 4 120 55 110 0.5 0.5 0.5 0.54 2197 0.5
+i 1 6 120 71 110 0.5 0.5 0.5 0.66 2197 0.5
+i 1 8 120 86 110 0.5 0.5 0.5 0.78 2197 0.5
+e 129
 </CsScore>
 </CsoundSynthesizer>
