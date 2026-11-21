@@ -1392,8 +1392,87 @@
           ]
         }
       ]
+    },
+    {
+      "name": "nu_canon",
+      "path": "nu_canon/",
+      "prompt_texts": {
+        "c90379ce3d6c68c41caababa578f85fcd7bb8e85eacf8ad6b84f409d851dfdf2": "# nu_canon - prompt 001\n\n<!-- recorded: 2026-11-21T13:16:13Z; source: user -->\n\nFollow studio-tools/AGENT_INSTRUCTIONS.md.  Create a new piece that is a copy of Nu, and make a canon at the sixth start after 23 seconds.\n"
+      },
+      "title": "Nu, canon at the sixth",
+      "updated_at": "2026-11-21T13:21:28Z",
+      "versions": [
+        {
+          "code": [
+            {
+              "bytes": 4441,
+              "file": "nu_canon-generate.py",
+              "language": "python",
+              "path": "nu_canon/code/nu_canon-generate.py"
+            },
+            {
+              "bytes": 7336,
+              "file": "nu_canon-source.csd",
+              "language": "text",
+              "path": "nu_canon/code/nu_canon-source.csd"
+            }
+          ],
+          "csd": {
+            "bytes": 12321,
+            "file": "nu_canon.csd",
+            "path": "nu_canon/nu_canon.csd"
+          },
+          "derived": [],
+          "id": "current",
+          "info": {
+            "ai_agent": "Cursor desktop (macOS)",
+            "ai_model": "Grok 4.7",
+            "browser_checked": true,
+            "browser_engine": "@csound/browser 7.0.0",
+            "browser_playable": true,
+            "browser_realtime_factor": 18.8,
+            "channels": 2,
+            "created_at": "2026-11-21T13:21:28Z",
+            "csound": "Csound version 7.0 (double samples) Oct 28 2026",
+            "duration_seconds": 145.0,
+            "generator": "python",
+            "new_prompts": [
+              "nu_canon-prompt-001.md"
+            ],
+            "node": "v26.13.1",
+            "notes": "The leader is Nu. After 23 seconds the same music enters a major sixth higher, panned to the other side.",
+            "ordinal": 1,
+            "peak_dbfs": -1.2,
+            "python": "3.15.2",
+            "rms_dbfs": -20.27,
+            "sample_rate": 48000,
+            "seeds": [
+              1
+            ]
+          },
+          "is_current": true,
+          "logs": [],
+          "manifest": {
+            "bytes": 5695,
+            "file": "nu_canon-manifest.json",
+            "path": "nu_canon/nu_canon-manifest.json"
+          },
+          "ordinal": 1,
+          "path": "nu_canon/",
+          "prompts": [
+            {
+              "bytes": 219,
+              "file": "nu_canon-prompt-001.md",
+              "new": true,
+              "number": 1,
+              "path": "nu_canon/nu_canon-prompt-001.md",
+              "sha256": "c90379ce3d6c68c41caababa578f85fcd7bb8e85eacf8ad6b84f409d851dfdf2"
+            }
+          ]
+        }
+      ]
     }
   ],
-  "generated_at": "2026-11-20T19:53:16Z",
+  "generated_at": "2026-11-21T13:21:35Z",
   "schema": "ai-composition-studio/catalog/2"
 }
