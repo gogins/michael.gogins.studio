@@ -172,7 +172,18 @@ class StudioFilesTests(unittest.TestCase):
         for reference in re.findall(r'(?:src|href)="([^"#]+)"', html):
             if reference.startswith("../"):
                 continue
+            if reference.startswith("cursor://anysphere.cursor-deeplink/prompt?"):
+                continue
             self.assertTrue((player / reference).is_file(), reference)
+        self.assertIn('id="cursor-prompt"', html)
+        self.assertIn(
+            'href="cursor://anysphere.cursor-deeplink/prompt?text=Follow%20studio-tools%2FAGENT_INSTRUCTIONS.md.%20"',
+            html,
+        )
+        sheet = (player / "cheatsheet.html").read_text(encoding="utf-8")
+        self.assertIn("Click the microphone in the Cursor chat", sheet)
+        self.assertIn("Cmd+Shift+Space", sheet)
+        self.assertIn("Ctrl+M", sheet)
         for name in names:
             if name.endswith(".js"):
                 for imported in re.findall(r"from '(\./[^']+)'", (player / name).read_text()):

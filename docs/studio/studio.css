@@ -14,6 +14,7 @@
   --remove-bg: #fbe5e3;
   --add: #1a7f37;
   --remove: #b3261e;
+  --command: #9a4d12;
   --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
   --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
@@ -32,6 +33,7 @@
     --remove-bg: #4a1f1c;
     --add: #6fd08a;
     --remove: #f2928a;
+    --command: #e3b07a;
   }
 }
 
@@ -100,19 +102,14 @@ main,
   margin-left: auto;
 }
 
-.site-header a[aria-current="page"] {
-  color: var(--text);
-  font-weight: 650;
-  text-decoration: none;
-}
-
-.site-title {
-  font-weight: 650;
+.site-header a {
+  font-family: var(--sans);
+  font-weight: 700;
   text-decoration: none;
   color: var(--text);
 }
 
-.site-home { font-size: 0.9rem; white-space: nowrap; }
+.site-home { white-space: nowrap; }
 
 /* One line, always on screen. Every status message is written here. */
 .status-bar {
@@ -505,6 +502,7 @@ main.sheet { padding-bottom: 2.5rem; }
 main.sheet h1 { font-size: 1.45rem; margin: 1rem 0 0.4rem; }
 main.sheet h2 { font-size: 1.05rem; margin: 1.2rem 0 0.3rem; }
 main.sheet p { margin: 0.45rem 0; }
+main.sheet code { color: var(--command); }
 main.sheet .meta { color: var(--muted); font-size: 0.88rem; }
 main.sheet blockquote {
   margin: 0.45rem 0;
