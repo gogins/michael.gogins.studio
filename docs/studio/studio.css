@@ -99,7 +99,6 @@ main,
   display: flex;
   align-items: baseline;
   gap: 0.9rem;
-  margin-left: auto;
 }
 
 .site-header a {
@@ -109,7 +108,7 @@ main,
   color: var(--text);
 }
 
-.site-home { white-space: nowrap; }
+.site-home { margin-left: auto; white-space: nowrap; }
 
 /* One line, always on screen. Every status message is written here. */
 .status-bar {
