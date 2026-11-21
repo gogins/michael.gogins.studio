@@ -165,7 +165,11 @@ class StudioFilesTests(unittest.TestCase):
             text = (player / name).read_text(encoding="utf-8")
             self.assertFalse(text.startswith("---"), f"{name} would be processed by Jekyll")
             if name.endswith((".html", ".js", ".css")):
-                self.assertIsNone(re.search(r"https?://", text), f"{name} refers to an absolute URL")
+                for absolute in re.findall(r"https?://[^\"'\s)<]+", text):
+                    self.assertTrue(
+                        absolute.startswith("https://cursor.com/agents"),
+                        f"{name} refers to an absolute URL: {absolute}",
+                    )
                 self.assertNotIn("innerHTML", text, name)
                 self.assertNotIn("eval(", text, name)
         html = (player / "index.html").read_text(encoding="utf-8")
@@ -180,6 +184,10 @@ class StudioFilesTests(unittest.TestCase):
             'href="cursor://anysphere.cursor-deeplink/prompt?text=Follow%20studio-tools%2FAGENT_INSTRUCTIONS.md.%20"',
             html,
         )
+        self.assertIn('src="prompt-link.js"', html)
+        script = (player / "prompt-link.js").read_text(encoding="utf-8")
+        self.assertIn("https://cursor.com/agents", script)
+        self.assertIn('a[href^="cursor://anysphere.cursor-deeplink/prompt"]', script)
         sheet = (player / "cheatsheet.html").read_text(encoding="utf-8")
         self.assertIn("Click the microphone in the Cursor chat", sheet)
         self.assertIn("Cmd+Shift+Space", sheet)

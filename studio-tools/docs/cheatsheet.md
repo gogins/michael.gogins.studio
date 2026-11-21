@@ -39,13 +39,14 @@ the sentence, read the text, then send it. In the Agents window, hold
 Ctrl+M while you talk. On the phone, use the microphone in the prompt box
 at `cursor.com/agents`.
 
-The Player header link Prompt opens the Cursor app with this already in
-the chat:
+The Player header link Prompt opens the Cursor app on the computer with
+this already in the chat:
 
 [Prompt](cursor://anysphere.cursor-deeplink/prompt?text=Follow%20studio-tools%2FAGENT_INSTRUCTIONS.md.%20)
 
-Finish the sentence and send it. On a phone that has the Cursor app, the
-same link opens that app.
+Finish the sentence and send it. On a phone, Prompt opens
+[cursor.com/agents](https://cursor.com/agents). The Cursor app opens that
+address when the app is installed.
 
 ## Listen
 
