@@ -17,6 +17,7 @@ from . import (
     render as render_module,
     serve as serve_module,
     staging,
+    template_export,
     versioning,
 )
 from .paths import Studio, StudioError, is_within
@@ -366,6 +367,15 @@ def cmd_unpublish(studio: Studio, args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_export_template(studio: Studio, args: argparse.Namespace) -> int:
+    result = template_export.export_template(studio, Path(args.destination))
+    _out(f"starter: {result['destination']}")
+    _out(f"catalog: {result['compositions']} composition(s)")
+    _out("next: make this directory its own git repository and a GitHub template.")
+    _out("see studio-tools/docs/sharing.md")
+    return 0
+
+
 def cmd_catalog(studio: Studio, args: argparse.Namespace) -> int:
     result = catalog.write(studio)
     _out(f"{studio.relative(result['path'])}: {result['compositions']} composition(s), "
@@ -501,6 +511,10 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--versions")
     p.add_argument("--dry-run", action="store_true")
     p.add_argument("--force", action="store_true")
+
+    p = add("export-template", cmd_export_template,
+            "write a starter repository outside this one: tools, player, patches, empty library")
+    p.add_argument("destination", help="a new directory outside this repository")
 
     add("catalog", cmd_catalog, "regenerate docs/compositions/catalog.json")
 

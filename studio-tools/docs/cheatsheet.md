@@ -88,6 +88,7 @@ studio prompt "$S" --file request.txt
 | Remove it from the page | `studio unpublish NAME` |
 | Render a stored version again | `studio rerender NAME` |
 | Rebuild the catalog | `studio catalog` |
+| Starter for someone else | `studio export-template DIR` |
 
 `accept` refuses a staging area that has not rendered successfully.
 `publish` never writes soundfiles. `discard` does not touch the current version.

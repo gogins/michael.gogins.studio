@@ -8,7 +8,8 @@ Cursor Cloud Agents alike. The human-readable documentation is in
 ## What you may touch
 
 - Create and change files only in `music/ai-compositions/`, `docs/compositions/`,
-  `docs/studio/` and `studio-tools/`.
+  `docs/studio/` and `studio-tools/`. When this repository has a `patches/`
+  directory, edit a file there only if the user asked to change a patch.
 - Do not modify, rename, move or delete anything else in the repository: not
   the existing website, not other files under `music/` or `docs/`, not
   workflows or settings.
@@ -26,6 +27,8 @@ Cursor Cloud Agents alike. The human-readable documentation is in
   `<CsInstruments>` and `<CsScore>`. Do not introduce another score
   representation. MIDI, MusicXML or notation, if wanted, are derived outputs
   written to `outputs/`.
+- When `patches/` is present, an orchestra may `#include` those instrument
+  and effect definitions. They are a library, not a composition.
 - Names: letters, digits and underscores, starting with a letter or digit.
   Every file of a composition starts with its name: `nu.csd`, `nu-prompt-001.md`,
   `nu-manifest.json`, `code/nu-generate.py`, `outputs/nu-render.log` (no soundfiles).

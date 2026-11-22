@@ -11,6 +11,8 @@ revising a composition, publishing, or changing the studio's tools or player.
 
 - Work only in `music/ai-compositions/`, `docs/compositions/`, `docs/studio/`
   and `studio-tools/`. Do not modify anything else in this repository.
+  Edit `patches/` only when the user asked to change a patch. An orchestra
+  may `#include` those definitions.
 - Use `studio-tools/bin/studio` for every change to the archive and the
   published files: `new` or `stage`, `prompt`, `run`, `render`, `accept`,
   `publish`. Never edit `version-NNNN/` directories, accepted prompts or

@@ -1,0 +1,23 @@
+.DS_Store
+__pycache__/
+*.pyc
+
+# Soundfiles stay out of the repository. The player performs the .csd.
+*.wav
+*.flac
+*.aif
+*.aiff
+*.aifc
+*.w64
+*.caf
+*.rf64
+*.au
+*.snd
+*.mp3
+*.opus
+*.ogg
+*.oga
+*.m4a
+*.aac
+*.wma
+*.mp4

@@ -33,7 +33,8 @@ In short:
   is not found, run `bash studio-tools/cloud/install.sh` and then
   `studio-tools/cloud/check.sh`, and report the result before composing.
 - Nothing outside the repository survives the run. Commit and push every
-  accepted version, with its audio, before finishing.
+  accepted version before finishing. Do not add soundfiles. When `patches/`
+  is present, an orchestra may `#include` those definitions.
 - If another branch has revised the same composition, integrate with
   `studio adopt` as described in `studio-tools/docs/cloud-agents.md`. Do
   not resolve conflicts in `music/ai-compositions/` by hand.

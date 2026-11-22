@@ -216,6 +216,7 @@ root; the tests and `cloud/check.sh` use it to work in temporary directories.
 - [docs/dependencies.md](docs/dependencies.md): what has to be installed, on macOS and on Linux.
 - [docs/testing.md](docs/testing.md): the automated tests and how to run them.
 - [docs/deployment.md](docs/deployment.md): reviewing, approving and deploying; open questions.
+- [docs/sharing.md](docs/sharing.md): a starter repository for someone else, without this catalog.
 - [AGENT_INSTRUCTIONS.md](AGENT_INSTRUCTIONS.md): the rules an AI agent follows when composing here.
 - [cursor/INSTALL.md](cursor/INSTALL.md): Cursor configuration templates. Nothing is installed outside `studio-tools/` without approval.
 

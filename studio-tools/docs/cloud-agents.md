@@ -27,30 +27,28 @@ composer's decision and are not done by the studio.
    need a plan that includes them, and asks for a spend limit on first use.
 2. **Connect GitHub.** In Cursor (web: `cursor.com/agents`, or the Cloud
    Agents dashboard), connect the GitHub account and give Cursor read and
-   write access to `gogins/michael.gogins.studio`. The agent pushes
-   branches to that repository.
-3. **Put the studio on the default branch.** A Cloud Agent starts from the
-   repository on GitHub, and Cursor builds environments from the default
-   branch (`master`). Until `feature/ai-composition-studio` is pushed and
-   merged, the studio's tools do not exist where the agent can see them.
-   See [deployment.md](deployment.md).
+   write access to this repository. The agent pushes branches here. A new
+   user does this for their own copy; they do not use anyone else's agent
+   or repository.
+3. **The studio is on the default branch.** A Cloud Agent clones the
+   repository from GitHub, and Cursor builds environments from the default
+   branch (`master`). The tools have to be on that branch.
 4. **Create the environment.** In the Cloud Agents dashboard, create an
-   environment for the repository and give it this install script:
+   environment for this repository and give it this install script:
 
    ```sh
    if [ -f studio-tools/cloud/install.sh ]; then bash studio-tools/cloud/install.sh; fi
    ```
 
-   That is all the configuration the studio needs, and it lives in the
-   dashboard, not in the repository. Cursor runs the install script when it
-   builds the environment, and agents then start from the finished build.
-   The script must be safe to run repeatedly; `install.sh` is written to be.
+   Cursor runs the install script when it builds the environment, and
+   agents then start from the finished build. The script must be safe to
+   run repeatedly; `install.sh` is written to be.
 
-   Alternatively, the same setting can be committed as
-   `.cursor/environment.json`; a template is in
-   `studio-tools/cursor/environment.json.template`. That file is outside
-   the studio's directories and is not installed without approval; see
-   [`cursor/INSTALL.md`](../cursor/INSTALL.md).
+   The same command is in `.cursor/environment.json` in a starter
+   repository, and as `studio-tools/cursor/environment.json.template` here.
+   A dashboard environment uses that file only when its configuration
+   location points at it. Pasting the command into the dashboard has the
+   same effect. See [`cursor/INSTALL.md`](../cursor/INSTALL.md).
 5. **Check the first build.** Start an agent and ask it to run
 
    ```sh
