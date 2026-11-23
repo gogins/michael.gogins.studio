@@ -3,8 +3,10 @@
 `studio render` writes `outputs/NAME.mid` from the Csound score at the same
 time as it checks that score. Accept keeps the file with the version, and
 publish copies it. The Player then shows two play buttons: **Csound**
-performs the `.csd`, and **MIDI** plays the file. The same page does this
-on a computer and on a phone, locally and on the site.
+performs the `.csd`, and **MIDI** previews the file in the browser. On that
+same panel, **Open MIDI file** hands the sequence to the computer or the
+phone, which asks which application to use. The same page does this on a
+computer and on a phone, locally and on the site.
 
 `studio midi` rewrites that file without rendering. Use it for the current
 version, or for a staging directory, when you want the MIDI file before the
@@ -41,6 +43,7 @@ anywhere in the `.csd` overrides it. The program is the musician's number,
 remaining 15 channels, in the order their notes begin. An instrument with no
 usable program is skipped, and the command says so.
 
-The preview is not a General MIDI sample player. Each program is a simple
-voice chosen so the instruments can be told apart, and channel 10 is a short
-noise hit. Notes that began before the seek point are not heard.
+The browser preview is not a sample player. Each program is a simple voice
+chosen so the instruments can be told apart, and channel 10 is a short noise
+hit. Another application plays the opened file with its own sounds. Notes
+that began before the seek point are not heard in the browser preview.

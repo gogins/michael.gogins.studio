@@ -317,6 +317,18 @@ button:not(:disabled) { cursor: pointer; }
   transition: width 80ms linear;
 }
 .player-caption { margin: 0.45rem 0 0; color: var(--muted); font-size: 0.875rem; }
+.midi-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+.midi-heading .player-kind { margin: 0 0 0.35rem; }
+.midi-open {
+  margin: 0 0 0.35rem;
+  font-weight: 650;
+  white-space: nowrap;
+}
 .player-status { display: none; }
 .player-warning { margin: 0.3rem 0 0; font-size: 0.875rem; color: var(--remove); }
 .no-player { margin: 0.9rem 0 0.4rem; }

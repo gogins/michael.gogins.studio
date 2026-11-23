@@ -37,9 +37,18 @@ export function createMidiPlayer({ id, composition, version }) {
   });
   const status = h('p', { class: 'player-status', role: 'status' });
   const caption = h('p', { class: 'player-caption' },
-    `General MIDI preview in this browser · ${file.file}`);
+    'Preview in this browser. Open the General MIDI file to play it in another application.');
+  const openFile = h('a', {
+    class: 'midi-open',
+    href: fileUrl(file.path),
+    target: '_blank',
+    rel: 'noopener',
+  }, 'Open MIDI file');
+  openFile.addEventListener('click', (event) => { openInAnotherApplication(event, file); });
   const root = h('div', { class: 'player midi-player', id },
-    h('p', { class: 'player-kind' }, 'MIDI'),
+    h('div', { class: 'midi-heading' },
+      h('p', { class: 'player-kind' }, 'MIDI'),
+      openFile),
     h('div', { class: 'player-controls' }, playButton, stopButton, time),
     seek,
     caption,
@@ -264,6 +273,26 @@ function noiseSource(context, note) {
   source.buffer = buffer;
   source.playbackRate.value = Math.pow(2, (note.key - 60) / 24);
   return source;
+}
+
+async function openInAnotherApplication(event, file) {
+  // Hand the file to the device when it can offer a choice of applications.
+  // Otherwise the link opens the file and the device decides.
+  if (!navigator.canShare) return;
+  event.preventDefault();
+  try {
+    const response = await fetch(fileUrl(file.path));
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const midiFile = new File([await response.blob()], file.file, { type: 'audio/midi' });
+    if (!navigator.canShare({ files: [midiFile] })) {
+      window.open(fileUrl(file.path), '_blank', 'noopener');
+      return;
+    }
+    await navigator.share({ files: [midiFile] });
+  } catch (error) {
+    if (error && error.name === 'AbortError') return;
+    window.open(fileUrl(file.path), '_blank', 'noopener');
+  }
 }
 
 async function fetchBytes(path) {
