@@ -511,7 +511,7 @@ class BrowserTests(Browser, StudioTestCase):
         result = self.browse("midi", timeout=60)
         self.assertTrue(result["midiPresent"])
         self.assertTrue(result["csoundPresent"])
-        self.assertIn("folder", result["caption"])
+        self.assertIn("downloads", result["caption"])
         self.assertEqual(result["playLabel"], "Play MIDI")
         self.assertEqual(result["openLabel"], "Open MIDI")
         self.assertEqual(result["stateMidi"], "playing")

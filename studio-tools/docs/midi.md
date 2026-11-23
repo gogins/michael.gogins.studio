@@ -4,10 +4,10 @@
 time as it checks that score. Accept keeps the file with the version, and
 publish copies it. The Player then shows two play buttons: **Csound**
 performs the `.csd`, and **Play MIDI** previews the file in the browser.
-**Open MIDI**, beside it, shows the file selected in its folder when the
-Player is served on this Mac. The Mac's own menu then chooses the
-application. The same page does this on a computer and on a phone, locally
-and on the site.
+**Open MIDI**, beside it, downloads the file on the website. When the
+Player is served on this Mac, it shows the file selected in its folder
+instead, and the Mac's own menu chooses the application. The same page
+does this on a computer and on a phone, locally and on the site.
 
 `studio midi` rewrites that file without rendering. Use it for the current
 version, or for a staging directory, when you want the MIDI file before the

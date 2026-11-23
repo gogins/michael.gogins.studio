@@ -38,7 +38,7 @@ export function createMidiPlayer({ id, composition, version }) {
   });
   const status = h('p', { class: 'player-status', role: 'status' });
   const caption = h('p', { class: 'player-caption' },
-    'Play MIDI previews the file in this browser. Open MIDI shows it in its folder.');
+    'Play MIDI previews the file in this browser. Open MIDI downloads it, or shows it in its folder on this Mac.');
   openButton.addEventListener('click', () => { showInFolder(file, status); });
   const root = h('div', { class: 'player midi-player', id },
     h('p', { class: 'player-kind' }, 'MIDI'),
@@ -268,11 +268,23 @@ function noiseSource(context, note) {
   return source;
 }
 
+function downloadMidiFile(file) {
+  const link = h('a', {
+    href: fileUrl(file.path),
+    download: file.file || 'piece.mid',
+  });
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+}
+
 async function showInFolder(file, status) {
   const local = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
   if (!local) {
-    replaceChildren(status, 'Open MIDI shows the file in its folder from the Player on this Mac.');
-    setStatus('Open MIDI shows the file in its folder from the Player on this Mac.');
+    downloadMidiFile(file);
+    const message = 'The MIDI file is downloading.';
+    replaceChildren(status, message);
+    setStatus(message);
     return;
   }
   try {
