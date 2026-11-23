@@ -211,6 +211,7 @@ root; the tests and `cloud/check.sh` use it to work in temporary directories.
 - [docs/versioning.md](docs/versioning.md): naming, versions, manifests, and the recovery protocol.
 - [docs/csound-conventions.md](docs/csound-conventions.md): p-fields, and what was verified about CsoundAC.
 - [docs/publishing.md](docs/publishing.md): what is published, and the safeguards.
+- [docs/midi.md](docs/midi.md): General MIDI files, and the player's preview.
 - [docs/usage.md](docs/usage.md): working from the MacBook and from Android; running the player locally.
 - [docs/cloud-agents.md](docs/cloud-agents.md): Cursor Cloud Agents, and integrating work from several branches.
 - [docs/dependencies.md](docs/dependencies.md): what has to be installed, on macOS and on Linux.

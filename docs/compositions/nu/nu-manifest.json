@@ -84,6 +84,10 @@
     "outputs/nu-render.log": {
       "bytes": 13996,
       "sha256": "87a7b5cb5006209c1ce7cb7535f1154af724b0981c2f364a955956e968dc8fcd"
+    },
+    "outputs/nu.mid": {
+      "bytes": 1657,
+      "sha256": "215f43ffa160c4e35f27e9e8e405f03b6f01c5c4c41a0a67ff874926169d7a11"
     }
   },
   "generator": {

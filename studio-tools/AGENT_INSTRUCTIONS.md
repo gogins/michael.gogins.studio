@@ -74,8 +74,11 @@ Use `studio-tools/bin/studio`. Run `studio env` first in a new environment.
    complete `NAME.csd` there. Take the random seed from `STUDIO_SEED`, so
    that the same seed reproduces the same file.
 4. Render: `studio render "$S"`. This checks the structure and the syntax,
-   renders to a temporary file, measures the audio, discards it, and checks
-   that the piece performs in the player's Csound engine (`@csound/browser`).
+   renders to a temporary file, measures the audio, discards it, and writes
+   `outputs/NAME.mid` from the same score. It also checks that the piece
+   performs in the player's Csound engine (`@csound/browser`). The player
+   then shows two play buttons, Csound and MIDI. `studio midi` only rewrites
+   the MIDI file without rendering. See `studio-tools/docs/midi.md`.
    Do not write soundfiles into the archive.
    If it fails, read the message and `$S/outputs/NAME-render.log`, correct
    the `.csd` or the program, and render again. Do not pass

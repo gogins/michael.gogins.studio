@@ -2,7 +2,7 @@
   "files": {
     "big_bell/big_bell-manifest.json": {
       "kind": "manifest",
-      "sha256": "0a6e1bf2b310d4fe8f75e75ee352393d7abf0734d9ad5f102ac0b0df1f860798",
+      "sha256": "860c9bda4a4b3e0a0b6c4dd1273051cc809c705872ebd1e9b6ee54f70dbe10e9",
       "source": "music/ai-compositions/big_bell/big_bell-manifest.json"
     },
     "big_bell/big_bell-prompt-001.md": {
@@ -59,6 +59,11 @@
       "kind": "csd",
       "sha256": "ac24360903a0eaf2ddcc7f74a051c6055b483fd0eef30c18ab0aaf0627b2225a",
       "source": "music/ai-compositions/big_bell/big_bell.csd"
+    },
+    "big_bell/outputs/big_bell.mid": {
+      "kind": "derived",
+      "sha256": "4f3174500f6c759687e25b68b80c6793b02070a829aabadbd49bb2698389db71",
+      "source": "music/ai-compositions/big_bell/outputs/big_bell.mid"
     },
     "big_bell/version-0001/big_bell-manifest.json": {
       "kind": "manifest",
@@ -342,7 +347,7 @@
     },
     "nu/nu-manifest.json": {
       "kind": "manifest",
-      "sha256": "4ff336c5248977b55ab629d82629c755721b00cb834d1ee3b55c97d09dc6c1cf",
+      "sha256": "593a35e173552cb481845ac317bfb02e7534814fbaf5e56f4a8471c45d3354c1",
       "source": "music/ai-compositions/nu/nu-manifest.json"
     },
     "nu/nu-prompt-001.md": {
@@ -384,6 +389,11 @@
       "kind": "csd",
       "sha256": "3f67a2e6d4c0884e6a9c3192c135f182fb8a0055ed92e630ce71a42ab85ae76f",
       "source": "music/ai-compositions/nu/nu.csd"
+    },
+    "nu/outputs/nu.mid": {
+      "kind": "derived",
+      "sha256": "215f43ffa160c4e35f27e9e8e405f03b6f01c5c4c41a0a67ff874926169d7a11",
+      "source": "music/ai-compositions/nu/outputs/nu.mid"
     },
     "nu/version-0001/nu-manifest.json": {
       "kind": "manifest",
@@ -587,7 +597,7 @@
     },
     "nu_canon/nu_canon-manifest.json": {
       "kind": "manifest",
-      "sha256": "74eca38bc6740f2f95cd27993bbf7e5e1997772ad8ff94360041155a6fc3a97a",
+      "sha256": "cb7a0faf294d9407723a4179b52a35df1f0b9b55ba4ea34046a2033bdf9a51b3",
       "source": "music/ai-compositions/nu_canon/nu_canon-manifest.json"
     },
     "nu_canon/nu_canon-prompt-001.md": {
@@ -599,6 +609,11 @@
       "kind": "csd",
       "sha256": "2a747175e1ffb2c3f3f129607ab087c24456d20f306626732701feed095fe484",
       "source": "music/ai-compositions/nu_canon/nu_canon.csd"
+    },
+    "nu_canon/outputs/nu_canon.mid": {
+      "kind": "derived",
+      "sha256": "0fdf1d43005b332de4a7c710b839433a31431c265ed7e0f981d973edd671bd33",
+      "source": "music/ai-compositions/nu_canon/outputs/nu_canon.mid"
     }
   },
   "schema": "ai-composition-studio/publish-state/1"

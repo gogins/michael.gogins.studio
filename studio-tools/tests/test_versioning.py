@@ -19,7 +19,7 @@ class VersioningTests(StudioTestCase):
         self.assertEqual(versioning.list_versions(self.comp()), [])
         self.assertEqual(
             fsutil.list_files(self.comp()),
-            ["nu-manifest.json", "nu-prompt-001.md", "nu.csd", "outputs/nu-render.log"],
+            ["nu-manifest.json", "nu-prompt-001.md", "nu.csd", "outputs/nu-render.log", "outputs/nu.mid"],
         )
         self.assertFalse((self.comp() / "current").exists())
         self.assertVerified()

@@ -68,6 +68,10 @@
     "outputs/nu_canon-render.log": {
       "bytes": 24614,
       "sha256": "a651c85c323cc023d3095ce5be74bdb0c666859205926f6486dcd1212a2c6129"
+    },
+    "outputs/nu_canon.mid": {
+      "bytes": 3216,
+      "sha256": "0fdf1d43005b332de4a7c710b839433a31431c265ed7e0f981d973edd671bd33"
     }
   },
   "generator": {

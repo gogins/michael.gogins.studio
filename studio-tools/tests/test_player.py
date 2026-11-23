@@ -88,6 +88,28 @@ async function run() {
   result.csoundMessagesShade = Boolean(doc().getElementById('csound-messages-shade'));
   result.csoundMessagesDetails = Boolean(doc().querySelector('#csound-messages summary'));
   if (mode === 'real') return realSite(result);
+  if (mode === 'midi') {
+    await show('#nu', 'version selector', () => doc().getElementById('version-select'));
+    const midiPlayer = doc().getElementById('midi-player');
+    result.midiPresent = Boolean(midiPlayer);
+    result.caption = text('#midi-player .player-caption');
+    result.csoundPresent = Boolean(doc().getElementById('player'));
+    if (!midiPlayer) return result;
+    midiPlayer.querySelector('.play').click();
+    await until('midi loading', () => ['loading', 'playing', 'error'].includes(midiPlayer.dataset.state), 20000);
+    if (midiPlayer.dataset.state === 'error') {
+      throw new Error('midi preview error: ' + (text('#midi-player .player-status') || ''));
+    }
+    await until('midi playing', () => midiPlayer.dataset.state === 'playing', 20000);
+    await until('midi time', () => Number(midiPlayer.dataset.time) > 0.05, 20000);
+    result.stateMidi = midiPlayer.dataset.state;
+    result.time = Number(midiPlayer.dataset.time);
+    result.csoundState = doc().getElementById('player').dataset.state;
+    result.overflow = overflow();
+    await show('#nu/current/files', 'file table', tab('files', 'table.files'));
+    result.files = all('table.files tbody tr').map((row) => row.children[1].textContent);
+    return result;
+  }
   if (mode !== 'full') return result;
 
   // Library.
@@ -98,6 +120,9 @@ async function run() {
   // A composition: versions, prompts, and the player. Creating a version is Cursor's job.
   await show('#nu', 'version selector', () => doc().getElementById('version-select'));
   result.title = text('#composition-title');
+  result.midiPlayer = Boolean(doc().getElementById('midi-player'));
+  result.csoundPlay = text('#player .play');
+  result.midiPlay = text('#midi-player .play');
   result.versions = all('#version-select option').map((option) => option.value);
   result.selected = doc().getElementById('version-select').value;
   result.prompts = all('.prompt pre').map((pre) => pre.textContent);
@@ -418,6 +443,9 @@ class BrowserTests(Browser, StudioTestCase):
         self.assertFalse(result["csoundMessagesDetails"])
         self.assertTrue(result["csoundMessagesOutsidePlayer"])
         self.assertEqual(result["title"], "nu")
+        self.assertTrue(result["midiPlayer"])
+        self.assertIn("Csound", result["csoundPlay"])
+        self.assertIn("MIDI", result["midiPlay"])
         self.assertEqual(result["versions"], ["current", "version-0002", "version-0001"])
         self.assertEqual(result["selected"], "current")
 
@@ -472,6 +500,21 @@ class BrowserTests(Browser, StudioTestCase):
         # Phone-sized layout: nothing is wider than the 412 px frame.
         for view, extra in result["overflow"].items():
             self.assertLessEqual(extra, 0, f"the {view} view is {extra}px wider than a phone screen")
+
+    def test_midi_preview_plays_beside_csound(self):
+        self.make_version()
+        from studio import midi
+        midi.generate(self.studio, "nu")
+        publish.publish(self.studio, ["nu"])
+        result = self.browse("midi", timeout=60)
+        self.assertTrue(result["midiPresent"])
+        self.assertTrue(result["csoundPresent"])
+        self.assertIn("General MIDI", result["caption"])
+        self.assertEqual(result["stateMidi"], "playing")
+        self.assertGreater(result["time"], 0.05)
+        self.assertIn(result["csoundState"], ("idle", None))
+        self.assertLessEqual(result["overflow"], 0)
+        self.assertIn("nu.mid", result["files"])
 
 
 @unittest.skipUnless(find_chrome(), "Chrome or Chromium not found")

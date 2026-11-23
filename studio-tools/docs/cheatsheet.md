@@ -52,6 +52,10 @@ address when the app is installed.
 
 [https://gogins.github.io/michael.gogins.studio/studio/](https://gogins.github.io/michael.gogins.studio/studio/)
 
+The Player performs the published .csd and, beside it, the General MIDI file
+written by `studio render`. Two play buttons are labeled Csound and MIDI.
+Both play in the browser, on a computer and on a phone.
+
 On the MacBook, `studio serve` then [http://127.0.0.1:8000/studio/](http://127.0.0.1:8000/studio/).
 
 ## Commands
@@ -74,7 +78,8 @@ studio prompt "$S" --file request.txt
 | Next version | `studio stage NAME` |
 | Save the prompt, word for word | `studio prompt "$S" --file FILE` |
 | Run a generator | `studio run "$S" --seed N -- python code/NAME-generate.py` |
-| Check, render, measure | `studio render "$S"` |
+| Check, render, write MIDI | `studio render "$S"` |
+| Rewrite the MIDI file only | `studio midi "$S"` or `studio midi NAME` |
 | Keep this version | `studio accept "$S" --model "…" --agent "…"` |
 | Throw away the staging area | `studio discard "$S"` |
 | Copy it to the page | `studio publish NAME` |

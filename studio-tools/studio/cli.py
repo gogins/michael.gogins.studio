@@ -14,6 +14,7 @@ from . import (
     environment,
     naming,
     publish as publish_module,
+    midi as midi_module,
     render as render_module,
     serve as serve_module,
     staging,
@@ -28,7 +29,7 @@ Typical session:
   studio prompt "$S" --file request.txt   # save the instructions, verbatim
   ... write $S/nu.csd, or $S/code/nu-generate.py and:
   studio run "$S" -- python code/nu-generate.py
-  studio render "$S"                      # validate, render, measure, check
+  studio render "$S"                      # validate, render, and write General MIDI
   studio accept "$S" --model "<AI model>" # archive the old version, promote
   studio publish nu                       # copy to docs/compositions/
   studio serve                            # listen: the player performs the .csd
@@ -180,9 +181,28 @@ def cmd_render(studio: Studio, args: argparse.Namespace) -> int:
     browser = _describe_browser(record)
     if browser:
         _out(browser)
+    midi_report = record.get("midi") or {}
+    if midi_report.get("file"):
+        _out(f"midi: {midi_report['file']} ({midi_report['notes']} notes, "
+             f"{midi_report['duration_seconds']} s)")
     _out(f"audio: measured and discarded; wrote {wav_to}" if wav_to
          else "audio: measured and discarded (no soundfile is kept; listen in the player)")
     for warning in record["warnings"]:
+        _note(f"warning: {warning}")
+    return 0
+
+
+def cmd_midi(studio: Studio, args: argparse.Namespace) -> int:
+    report = midi_module.generate(studio, args.target)
+    _out(f"wrote {report['file']}: {report['notes']} notes, {report['duration_seconds']} s, "
+         f"{report['tempo_bpm']} bpm")
+    for instrument in report["instruments"]:
+        program = instrument["program"]
+        label = "drums, channel 10" if program == "drums" else f"program {program}, channel {instrument['channel']}"
+        _out(f"  instrument {instrument['instrument']}: {label}, {instrument['notes']} notes")
+    if report["manifest_updated"]:
+        _out("manifest: updated so the current version still verifies")
+    for warning in report["warnings"]:
         _note(f"warning: {warning}")
     return 0
 
@@ -447,7 +467,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--timeout", type=int, default=3600)
     p.epilog = "Put the program and its arguments after '--':  studio run DIR --seed 7 -- python code/nu-generate.py"
 
-    p = add("render", cmd_render, "validate and render the staged .csd with Csound")
+    p = add("render", cmd_render, "validate and render the staged .csd, and write its General MIDI file")
     p.add_argument("staging")
     p.add_argument("--wav", metavar="FILE",
                    help="also keep the rendered WAV in FILE, outside the archive and docs/")
@@ -456,6 +476,10 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--allow-unplayable", action="store_true",
                    help="keep a piece that does not perform in the player's Csound engine")
     p.add_argument("--timeout", type=int, default=3600, help="seconds (default 3600)")
+
+    p = add("midi", cmd_midi, "rewrite outputs/NAME.mid from the score without rendering")
+    p.add_argument("target", metavar="STAGING|NAME",
+                   help="a staging directory, or a composition name for its current version")
 
     p = add("accept", cmd_accept, "archive the current version and promote the staged one")
     p.add_argument("staging")

@@ -102,6 +102,9 @@ class RenderTests(StudioTestCase):
         self.assertTrue(all(check["passed"] for check in record["checks"]))
         self.assertEqual([c["step"] for c in record["commands"]], ["syntax-check", "render"])
         self.assertEqual(record["warnings"], [])
+        self.assertEqual(record["midi"]["file"], "outputs/nu.mid")
+        self.assertEqual(record["midi"]["notes"], 1)
+        self.assertTrue((directory / "outputs" / "nu.mid").is_file())
         self.assertAlmostEqual(record["analysis"]["duration_seconds"], 2.0)
         self.assertEqual(len(record["wav_sha256"]), 64)
         log = (directory / "outputs" / "nu-render.log").read_text()
@@ -122,7 +125,9 @@ class RenderTests(StudioTestCase):
         versioning.accept(self.studio, directory, ai_model="test")
         self.assertEqual(soundfiles(self.root), [])
         stored = manifest.load(self.comp(), "nu")
-        self.assertEqual(sorted(stored["files"]), ["nu-prompt-001.md", "nu.csd", "outputs/nu-render.log"])
+        self.assertEqual(sorted(stored["files"]), [
+            "nu-prompt-001.md", "nu.csd", "outputs/nu-render.log", "outputs/nu.mid",
+        ])
         self.assertNotIn("outputs", stored["render"])
         self.assertEqual(stored["render"]["wav_sha256"], record["wav_sha256"])
         self.assertAlmostEqual(stored["render"]["analysis"]["duration_seconds"], 2.0)

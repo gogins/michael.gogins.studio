@@ -25,7 +25,14 @@
             "file": "big_bell.csd",
             "path": "big_bell/big_bell.csd"
           },
-          "derived": [],
+          "derived": [
+            {
+              "bytes": 286,
+              "file": "big_bell.mid",
+              "kind": "midi",
+              "path": "big_bell/outputs/big_bell.mid"
+            }
+          ],
           "id": "current",
           "info": {
             "ai_agent": "Cursor desktop (macOS)",
@@ -52,7 +59,7 @@
           "is_current": true,
           "logs": [],
           "manifest": {
-            "bytes": 7965,
+            "bytes": 8105,
             "file": "big_bell-manifest.json",
             "path": "big_bell/big_bell-manifest.json"
           },
@@ -831,7 +838,14 @@
             "file": "nu.csd",
             "path": "nu/nu.csd"
           },
-          "derived": [],
+          "derived": [
+            {
+              "bytes": 1657,
+              "file": "nu.mid",
+              "kind": "midi",
+              "path": "nu/outputs/nu.mid"
+            }
+          ],
           "id": "current",
           "info": {
             "ai_agent": "studio-compose-ai",
@@ -859,7 +873,7 @@
           "is_current": true,
           "logs": [],
           "manifest": {
-            "bytes": 7176,
+            "bytes": 7311,
             "file": "nu-manifest.json",
             "path": "nu/nu-manifest.json"
           },
@@ -1422,7 +1436,14 @@
             "file": "nu_canon.csd",
             "path": "nu_canon/nu_canon.csd"
           },
-          "derived": [],
+          "derived": [
+            {
+              "bytes": 3216,
+              "file": "nu_canon.mid",
+              "kind": "midi",
+              "path": "nu_canon/outputs/nu_canon.mid"
+            }
+          ],
           "id": "current",
           "info": {
             "ai_agent": "Cursor desktop (macOS)",
@@ -1453,7 +1474,7 @@
           "is_current": true,
           "logs": [],
           "manifest": {
-            "bytes": 5695,
+            "bytes": 5836,
             "file": "nu_canon-manifest.json",
             "path": "nu_canon/nu_canon-manifest.json"
           },
@@ -1473,6 +1494,6 @@
       ]
     }
   ],
-  "generated_at": "2026-11-21T13:21:35Z",
+  "generated_at": "2026-11-23T18:54:53Z",
   "schema": "ai-composition-studio/catalog/2"
 }

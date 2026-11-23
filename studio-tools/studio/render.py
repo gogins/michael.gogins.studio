@@ -25,7 +25,7 @@ import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-from . import audio, environment, fsutil, naming, staging
+from . import audio, environment, fsutil, midi as midi_module, naming, staging
 from .paths import StudioError, safe_join
 
 LOG_LIMIT = 400_000
@@ -265,6 +265,21 @@ def _render(
     check("complete .csd structure", not structure, "; ".join(structure))
     if structure:
         fail("the .csd is not a complete Csound file: " + "; ".join(structure))
+    # The General MIDI file is produced with the .csd, including when a later
+    # check fails, so the notes on disk match this score.
+    midi_report = midi_module.write_alongside(staging_dir, name)
+    if midi_report.get("file"):
+        record["midi"] = {
+            "file": midi_report["file"],
+            "notes": midi_report["notes"],
+            "duration_seconds": midi_report["duration_seconds"],
+        }
+        log_parts.append(
+            f"\nMIDI: {midi_report['file']} ({midi_report['notes']} notes, "
+            f"{midi_report['duration_seconds']} s)\n"
+        )
+    for warning in midi_report.get("warnings") or []:
+        record["warnings"].append(warning)
     options = csd_text.split("<CsOptions>", 1)[1].split("</CsOptions>", 1)[0] if "<CsOptions>" in csd_text else ""
     if _FILE_OUTPUT.search(options) or _REALTIME_OUTPUT.search(options):
         record["warnings"].append(

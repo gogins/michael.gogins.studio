@@ -3,8 +3,9 @@
 // A static page: it reads ../compositions/catalog.json and shows the
 // published compositions, their versions, prompts, Csound files and
 // generating programs. A version is heard by performing its .csd here, in
-// the browser, with Csound for WebAssembly (player.js); no soundfiles are
-// published. Location: #<composition>/<version>/<tab>.
+// the browser, with Csound for WebAssembly (player.js). A published
+// General MIDI file is previewed beside that performance (midi.js).
+// Location: #<composition>/<version>/<tab>.
 
 import {
   CATALOG_URL, fetchText, fileUrl, findComposition, findVersion, loadCatalog, promptParts,
@@ -13,6 +14,7 @@ import {
 import { diffLines, hunks, summarize } from './diff.js';
 import { h, replaceChildren, formatBytes, formatDate, formatDuration } from './dom.js';
 import { clearMessages, mountMessagesPanel } from './messages.js';
+import { createMidiPlayer } from './midi.js';
 import { createPlayer, stopAllPlayers } from './player.js';
 import { setStatus } from './status.js';
 
@@ -154,11 +156,13 @@ function buildComposition(composition, version) {
   // Messages dock is mounted once at the bottom of the window; clear it when
   // the composition or version changes (or a new piece is created).
   clearMessages();
+  const csoundPlayer = createPlayer({ id: 'player', csd: version.csd, info: version.info });
+  const midiPlayer = createMidiPlayer({ id: 'midi-player', composition, version });
   replaceChildren(app,
     h('p', { class: 'back' }, h('a', { href: '#' }, '← All compositions')),
     h('h1', { id: 'composition-title' }, composition.title || composition.name),
     versionBar,
-    createPlayer({ id: 'player', csd: version.csd, info: version.info }),
+    h('div', { class: midiPlayer ? 'listen both' : 'listen' }, csoundPlayer, midiPlayer),
     tabBar,
     panel);
   view = { composition, version, tabBar, panel };

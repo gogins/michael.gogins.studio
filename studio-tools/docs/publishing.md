@@ -102,9 +102,11 @@ download from the catalog and does not depend on fetching the `.md` files.
 
 A version may be published without audio, without code or without its
 manifest. The catalog simply omits what is absent and the player says so
-("No audio was published for this version", and so on). MIDI, MusicXML
+("No audio was published for this version", and so on). MusicXML
 and PDF files in `outputs/` are listed in the player's Files tab when
-published.
+published. `studio render` writes `NAME.mid` with the `.csd`. A published
+copy is played by the MIDI button next to the Csound button, in the
+browser, on a computer or a phone. See [midi.md](midi.md).
 
 ## Public exposure
 

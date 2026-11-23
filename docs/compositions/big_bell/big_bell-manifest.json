@@ -92,6 +92,10 @@
     "outputs/big_bell-render.log": {
       "bytes": 4749,
       "sha256": "0e24efe58bae0b8718feb41b6809558e1ea5eed8de23e08781c40cbe7eceb18a"
+    },
+    "outputs/big_bell.mid": {
+      "bytes": 286,
+      "sha256": "4f3174500f6c759687e25b68b80c6793b02070a829aabadbd49bb2698389db71"
     }
   },
   "generator": {

@@ -41,6 +41,7 @@ class PublishTests(PublishTestCase):
         expected = []
         for prefix, prompts in (("nu/", 3), ("nu/version-0001/", 1), ("nu/version-0002/", 2)):
             expected += [prefix + "nu.csd", prefix + "nu-manifest.json", prefix + "code/nu-generate.py"]
+            expected += [prefix + "outputs/nu.mid"]
             expected += [f"{prefix}nu-prompt-00{n}.md" for n in range(1, prompts + 1)]
         self.assertEqual(self.published(), sorted(expected))
         for rel in self.published():
@@ -115,7 +116,7 @@ class PublishTests(PublishTestCase):
         result = publish.publish(self.studio, ["nu"], dry_run=True)
         self.assertFalse(result["written"])
         self.assertEqual({a["action"] for a in result["actions"]}, {"copy"})
-        self.assertEqual(len(result["actions"]), 15)
+        self.assertEqual(len(result["actions"]), 18)
         self.assertFalse(self.studio.published.exists())
         publish.publish(self.studio, ["nu"])
         before = tree_snapshot(self.studio.published)
@@ -218,7 +219,7 @@ class PublishTests(PublishTestCase):
         note = self.studio.published / "nu" / "README.txt"
         note.write_text("hand-written")
         result = publish.unpublish(self.studio, "nu", versions=[1], dry_run=True)
-        self.assertEqual(len(result["removed"]), 4)
+        self.assertEqual(len(result["removed"]), 5)
         self.assertTrue((self.studio.published / "nu" / "version-0001").exists())
         publish.unpublish(self.studio, "nu", versions=[1])
         self.assertFalse((self.studio.published / "nu" / "version-0001").exists())

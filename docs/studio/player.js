@@ -1,8 +1,10 @@
 // The player: performs a published .csd in real time, in this browser, with
 // the official Csound for WebAssembly (@csound/browser, in ./csound/).
 //
-// No soundfile is involved anywhere. The same player is used wherever the
-// player is served from, so listening is the same locally and on the site.
+// No soundfile is involved in the Csound performance. The same player is
+// used wherever the player is served from, so listening is the same locally
+// and on the site. A published General MIDI file is previewed beside it
+// (midi.js), also in this browser.
 //
 // One piece plays at a time. Each performance gets a fresh Csound instance
 // and audio context, and both are released when it stops or ends.
@@ -23,6 +25,15 @@ const TICK_MS = 100;
 
 let enginePromise = null;
 let active = null; // the player that is loading, playing or paused
+let extraStop = null; // the General MIDI preview, stopped together with Csound
+
+export function setExtraStop(stop) {
+  extraStop = stop;
+}
+
+function stopExtra() {
+  if (extraStop) extraStop();
+}
 
 // The engine is several megabytes, so it is fetched only when first needed.
 function loadEngine() {
@@ -57,6 +68,7 @@ function clock(seconds) {
 
 export function stopAllPlayers() {
   if (active) active.stop();
+  stopExtra();
 }
 
 // csd: the catalog entry of the version's .csd, or null if not published.
@@ -69,7 +81,7 @@ export function createPlayer({ id, csd, info }) {
   const duration = typeof info.duration_seconds === 'number' && info.duration_seconds > 0
     ? info.duration_seconds : null;
 
-  const playButton = h('button', { type: 'button', class: 'play' }, '▶ Play');
+  const playButton = h('button', { type: 'button', class: 'play', 'aria-label': 'Play with Csound' }, '▶ Csound');
   const stopButton = h('button', { type: 'button', class: 'stop', disabled: true }, '■ Stop');
   const time = h('span', { class: 'player-time' });
   const seek = h('input', {
@@ -85,6 +97,7 @@ export function createPlayer({ id, csd, info }) {
       info.peak_dbfs !== undefined ? `peak ${info.peak_dbfs} dBFS` : null]
       .filter(Boolean).join(' · '));
   const root = h('div', { class: 'player', id },
+    h('p', { class: 'player-kind' }, 'Csound'),
     h('div', { class: 'player-controls' }, playButton, stopButton, time),
     duration ? seek : null,
     h('div', { class: 'meter', 'aria-hidden': 'true' }, level),
@@ -111,7 +124,7 @@ export function createPlayer({ id, csd, info }) {
   function setState(next, message) {
     state = next;
     root.dataset.state = next;
-    replaceChildren(playButton, { loading: '… Loading', playing: '❚❚ Pause', paused: '▶ Resume' }[next] || '▶ Play');
+    replaceChildren(playButton, { loading: '… Loading', playing: '❚❚ Pause', paused: '▶ Csound' }[next] || '▶ Csound');
     playButton.disabled = next === 'loading';
     stopButton.disabled = !(next === 'playing' || next === 'paused' || next === 'loading');
     status.className = next === 'error' ? 'player-status error' : 'player-status';
@@ -169,6 +182,7 @@ export function createPlayer({ id, csd, info }) {
     const mine = ++token;
     const previous = session;
     session = null;
+    stopExtra();
     if (active && active !== api) active.stop();
     active = api;
     const offset = duration ? Math.max(0, Math.min(from, duration - 0.1)) : Math.max(0, from);
