@@ -27,7 +27,8 @@ export function createMidiPlayer({ id, composition, version }) {
     return null;
   }
 
-  const playButton = h('button', { type: 'button', class: 'play', 'aria-label': 'Play the MIDI file' }, '▶ MIDI');
+  const playButton = h('button', { type: 'button', class: 'play', 'aria-label': 'Play MIDI' }, 'Play MIDI');
+  const openButton = h('button', { type: 'button', class: 'midi-open' }, 'Open MIDI');
   const stopButton = h('button', { type: 'button', class: 'stop', disabled: true }, '■ Stop');
   const time = h('span', { class: 'player-time' });
   const seek = h('input', {
@@ -37,19 +38,11 @@ export function createMidiPlayer({ id, composition, version }) {
   });
   const status = h('p', { class: 'player-status', role: 'status' });
   const caption = h('p', { class: 'player-caption' },
-    'Preview in this browser. Open the General MIDI file to play it in another application.');
-  const openFile = h('a', {
-    class: 'midi-open',
-    href: fileUrl(file.path),
-    target: '_blank',
-    rel: 'noopener',
-  }, 'Open MIDI file');
-  openFile.addEventListener('click', (event) => { openInAnotherApplication(event, file); });
+    'Play MIDI previews the file in this browser. Open MIDI shows it in its folder.');
+  openButton.addEventListener('click', () => { showInFolder(file, status); });
   const root = h('div', { class: 'player midi-player', id },
-    h('div', { class: 'midi-heading' },
-      h('p', { class: 'player-kind' }, 'MIDI'),
-      openFile),
-    h('div', { class: 'player-controls' }, playButton, stopButton, time),
+    h('p', { class: 'player-kind' }, 'MIDI'),
+    h('div', { class: 'player-controls' }, playButton, openButton, stopButton, time),
     seek,
     caption,
     status);
@@ -74,7 +67,7 @@ export function createMidiPlayer({ id, composition, version }) {
   function setState(next, message) {
     state = next;
     root.dataset.state = next;
-    replaceChildren(playButton, { loading: '… Loading', playing: '❚❚ Pause', paused: '▶ MIDI' }[next] || '▶ MIDI');
+    replaceChildren(playButton, { loading: '… Loading', playing: '❚❚ Pause', paused: 'Play MIDI' }[next] || 'Play MIDI');
     playButton.disabled = next === 'loading';
     stopButton.disabled = !(next === 'playing' || next === 'paused' || next === 'loading');
     status.className = next === 'error' ? 'player-status error' : 'player-status';
@@ -275,23 +268,33 @@ function noiseSource(context, note) {
   return source;
 }
 
-async function openInAnotherApplication(event, file) {
-  // Hand the file to the device when it can offer a choice of applications.
-  // Otherwise the link opens the file and the device decides.
-  if (!navigator.canShare) return;
-  event.preventDefault();
+async function showInFolder(file, status) {
+  const local = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+  if (!local) {
+    replaceChildren(status, 'Open MIDI shows the file in its folder from the Player on this Mac.');
+    setStatus('Open MIDI shows the file in its folder from the Player on this Mac.');
+    return;
+  }
   try {
-    const response = await fetch(fileUrl(file.path));
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const midiFile = new File([await response.blob()], file.file, { type: 'audio/midi' });
-    if (!navigator.canShare({ files: [midiFile] })) {
-      window.open(fileUrl(file.path), '_blank', 'noopener');
-      return;
+    const response = await fetch('/api/v1/reveal', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path: file.path }),
+    });
+    const body = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      throw new Error(body.error || (
+        response.status === 501
+          ? 'Open MIDI needs studio serve. This server cannot show the folder.'
+          : `HTTP ${response.status}`
+      ));
     }
-    await navigator.share({ files: [midiFile] });
+    replaceChildren(status, 'Finder is showing the file in its folder.');
+    setStatus('Finder is showing the file in its folder.');
   } catch (error) {
-    if (error && error.name === 'AbortError') return;
-    window.open(fileUrl(file.path), '_blank', 'noopener');
+    const message = error && error.message ? error.message : String(error);
+    replaceChildren(status, message);
+    setStatus(message);
   }
 }
 

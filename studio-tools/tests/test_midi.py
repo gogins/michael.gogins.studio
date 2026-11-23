@@ -1,10 +1,14 @@
 """General MIDI files written from a Csound score."""
+import os
+import subprocess
+import sys
 import unittest
 
 from support import StudioTestCase
 
-from studio import fsutil, midi, versioning
+from studio import fsutil, midi, serve, versioning
 from studio.cli import main as cli_main
+from studio.paths import StudioError
 
 
 CSD = """\
@@ -124,6 +128,38 @@ class CommandTests(StudioTestCase):
 
     def test_unknown_target_is_an_error(self):
         self.assertEqual(cli_main(["--root", str(self.root), "midi", "missing"]), 1)
+
+
+class RevealTests(StudioTestCase):
+    def test_reveal_selects_the_file_in_its_folder(self):
+        destination = self.studio.published / "nu" / "outputs" / "nu.mid"
+        destination.parent.mkdir(parents=True)
+        destination.write_bytes(b"MThd")
+        calls = []
+
+        def fake(argv, check=False):
+            calls.append(list(argv))
+            return subprocess.CompletedProcess(argv, 0)
+
+        original = serve.subprocess.run
+        serve.subprocess.run = fake
+        try:
+            if sys.platform == "darwin":
+                shown = serve.reveal_published_midi(self.studio, "nu/outputs/nu.mid")
+                self.assertEqual(calls, [["open", "-R", os.fspath(shown)]])
+                self.assertEqual(shown, destination.resolve())
+            else:
+                with self.assertRaises(StudioError):
+                    serve.reveal_published_midi(self.studio, "nu/outputs/nu.mid")
+                self.assertEqual(calls, [])
+        finally:
+            serve.subprocess.run = original
+
+    def test_reveal_refuses_anything_except_a_published_midi_file(self):
+        with self.assertRaises(StudioError):
+            serve.reveal_published_midi(self.studio, "nu/nu.csd")
+        with self.assertRaises(StudioError):
+            serve.reveal_published_midi(self.studio, "../secret.mid")
 
 
 if __name__ == "__main__":

@@ -9,14 +9,18 @@ as PDF scores). Files are served exactly as they are: Jekyll processing is
 not emulated.
 
 When a Studio instance is passed, ``/api/v1`` can stage, render, accept and
-publish. The Player does not call it. Pieces are created and revised
-in Cursor, with ``studio new`` or ``studio stage``.
+publish. The Player does not create pieces through it. On this Mac, Open MIDI
+asks ``/api/v1/reveal`` to show the file selected in its folder.
 """
 from __future__ import annotations
 
 import json
 import os
 import re
+import socket
+import subprocess
+import sys
+import threading
 from http import HTTPStatus
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -24,7 +28,7 @@ from typing import Any, Optional, Tuple
 from urllib.parse import urlparse
 
 from . import api as compose_api
-from .paths import Studio, StudioError
+from .paths import Studio, StudioError, safe_join
 
 _RANGE = re.compile(r"^bytes=(\d*)-(\d*)$")
 _TYPES = {
@@ -217,6 +221,13 @@ class StaticHandler(SimpleHTTPRequestHandler):
                 )
                 self._send_json(HTTPStatus.OK, result)
                 return
+            if route == "reveal" and method == "POST":
+                body = self._read_json()
+                if not isinstance(body, dict):
+                    raise ComposeRequestError("JSON object required")
+                shown = reveal_published_midi(self.studio, str(body.get("path") or ""))
+                self._send_json(HTTPStatus.OK, {"ok": True, "path": str(shown)})
+                return
             if method == "POST":
                 self._send_json(HTTPStatus.NOT_FOUND, {"ok": False, "error": f"unknown API route: {route}"})
                 return
@@ -236,6 +247,26 @@ class ComposeRequestError(ValueError):
     """Malformed compose HTTP request."""
 
 
+def reveal_published_midi(studio: Studio, relative: str) -> Path:
+    """Select a published MIDI file in Finder, in the folder that holds it.
+
+    macOS then supplies the context menu for choosing an application.
+    ``relative`` is a path under docs/compositions/, such as ``nu/outputs/nu.mid``.
+    """
+    text = str(relative or "").strip().replace("\\", "/")
+    if not text or Path(text).suffix.lower() not in (".mid", ".midi"):
+        raise StudioError("not a published MIDI file")
+    full = safe_join(studio.published, text)
+    if not full.is_file():
+        raise StudioError("that MIDI file is not in the published folder")
+    if sys.platform != "darwin":
+        raise StudioError("showing the file in its folder is available on macOS")
+    completed = subprocess.run(["open", "-R", os.fspath(full)], check=False)
+    if completed.returncode != 0:
+        raise StudioError("Finder did not show the file")
+    return full
+
+
 def make_server(
     directory: Path,
     host: str = "127.0.0.1",
@@ -251,7 +282,11 @@ def make_server(
 
     Handler.quiet = quiet
     Handler.studio = studio
-    server = ThreadingHTTPServer((host, port), Handler)
+
+    class Server(ThreadingHTTPServer):
+        address_family = socket.AF_INET6 if ":" in host else socket.AF_INET
+
+    server = Server((host, port), Handler)
     server.daemon_threads = True
     return server
 
@@ -262,16 +297,31 @@ def serve(
     port: int = 8000,
     studio: Optional[Studio] = None,
 ) -> None:
-    server = make_server(directory, host, port, studio=studio)
-    shown = "localhost" if host in ("127.0.0.1", "") else host
-    print(f"Serving {directory} at http://{shown}:{server.server_address[1]}/")
-    print(f"Player: http://{shown}:{server.server_address[1]}/studio/")
+    primary = "127.0.0.1" if host in ("127.0.0.1", "localhost", "") else host
+    server = make_server(directory, primary, port, studio=studio)
+    bound = server.server_address[1]
+    others = []
+    # `localhost` is ::1 on this Mac. A server bound only to 127.0.0.1 never
+    # sees that request, and a plain file server on ::1 answers POST with 501.
+    if primary == "127.0.0.1":
+        try:
+            ipv6 = make_server(directory, "::1", bound, studio=studio)
+            threading.Thread(target=ipv6.serve_forever, name="studio-serve-ipv6", daemon=True).start()
+            others.append(ipv6)
+        except OSError as error:
+            print(f"http://localhost:{bound}/ is not this server ({error}).")
+    shown = "localhost" if primary == "127.0.0.1" else primary
+    print(f"Serving {directory} at http://{shown}:{bound}/")
+    print(f"Player: http://{shown}:{bound}/studio/")
     if studio is not None:
-        print(f"Compose API: http://{shown}:{server.server_address[1]}/api/v1/")
+        print(f"Compose API: http://{shown}:{bound}/api/v1/")
     print("Press Ctrl-C to stop.")
     try:
         server.serve_forever()
     except KeyboardInterrupt:
         print()
     finally:
+        for extra in others:
+            extra.shutdown()
+            extra.server_close()
         server.server_close()

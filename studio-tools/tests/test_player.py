@@ -93,10 +93,8 @@ async function run() {
     const midiPlayer = doc().getElementById('midi-player');
     result.midiPresent = Boolean(midiPlayer);
     result.caption = text('#midi-player .player-caption');
-    const openMidi = doc().querySelector('#midi-player .midi-open');
-    result.save = openMidi ? openMidi.textContent : null;
-    result.saveHref = openMidi ? openMidi.getAttribute('href') : null;
-    result.saveDownload = openMidi ? openMidi.hasAttribute('download') : null;
+    result.playLabel = midiPlayer.querySelector('.play').textContent;
+    result.openLabel = midiPlayer.querySelector('.midi-open').textContent;
     result.csoundPresent = Boolean(doc().getElementById('player'));
     if (!midiPlayer) return result;
     midiPlayer.querySelector('.play').click();
@@ -513,11 +511,9 @@ class BrowserTests(Browser, StudioTestCase):
         result = self.browse("midi", timeout=60)
         self.assertTrue(result["midiPresent"])
         self.assertTrue(result["csoundPresent"])
-        self.assertIn("General MIDI", result["caption"])
-        self.assertIn("another application", result["caption"])
-        self.assertEqual(result["save"], "Open MIDI file")
-        self.assertTrue(result["saveHref"].endswith("/nu.mid"), result["saveHref"])
-        self.assertFalse(result["saveDownload"])
+        self.assertIn("folder", result["caption"])
+        self.assertEqual(result["playLabel"], "Play MIDI")
+        self.assertEqual(result["openLabel"], "Open MIDI")
         self.assertEqual(result["stateMidi"], "playing")
         self.assertGreater(result["time"], 0.05)
         self.assertIn(result["csoundState"], ("idle", None))

@@ -52,10 +52,8 @@ address when the app is installed.
 
 [https://gogins.github.io/michael.gogins.studio/studio/](https://gogins.github.io/michael.gogins.studio/studio/)
 
-The Player performs the published .csd and previews the General MIDI file
-written by `studio render`. Two play buttons are labeled Csound and MIDI.
-Open MIDI file hands that file to the computer or the phone, which asks
-which application to use.
+The Player performs the published .csd. Play MIDI previews the General MIDI
+file in the browser. Open MIDI shows that file in its folder on this Mac.
 
 On the MacBook, `studio serve` then [http://127.0.0.1:8000/studio/](http://127.0.0.1:8000/studio/).
 
