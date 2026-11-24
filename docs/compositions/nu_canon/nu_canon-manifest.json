@@ -1,10 +1,10 @@
 {
   "ai": {
-    "agent": "Cursor desktop (macOS)",
-    "model": "Grok 4.7"
+    "agent": "Cursor Cloud Agent",
+    "model": "Composer"
   },
   "composition": "nu_canon",
-  "created_at": "2026-11-21T13:21:28Z",
+  "created_at": "2026-11-24T09:16:57Z",
   "dependencies": {
     "includes": [],
     "plugins": [],
@@ -20,34 +20,43 @@
     },
     "csound": {
       "available": true,
-      "banner": "Csound version 7.0 (double samples) Oct 28 2026",
-      "commit": "f9434ffc51954b20314352e1620e19cc5ec67185",
+      "banner": "Csound version 7.0 (double samples) Nov 23 2026",
+      "commit": "723e3e1b9d12733ab4d4c9e57b516f4a97bcb052",
       "major": 7,
-      "path": "/usr/local/bin/csound",
+      "path": "~/.local/ai-composition-studio/bin/csound",
       "version": "7.0"
     },
-    "machine": "arm64",
+    "machine": "x86_64",
     "node": {
       "available": true,
-      "csoundac_wasm_dir": null,
-      "csoundac_wasm_present": false,
-      "path": "/opt/homebrew/bin/node",
-      "version": "v26.13.1"
+      "csoundac_wasm_dir": "~/.local/ai-composition-studio/csound-wasm",
+      "csoundac_wasm_present": true,
+      "path": "/exec-daemon/node",
+      "version": "v22.23.4"
     },
-    "platform": "macOS-27.2.1-arm64-arm-64bit-Mach-O",
+    "platform": "Linux-6.12.113+-x86_64-with-glibc2.39",
     "python": {
-      "csoundac": false,
-      "csoundac_error": "ModuleNotFoundError(\"No module named 'CsoundAC'\", name='CsoundAC')",
-      "csoundac_revision": null,
-      "path": "/opt/homebrew/opt/python@3.15/bin/python3.15",
-      "version": "3.15.2"
+      "csoundac": true,
+      "csoundac_default_event_nan": false,
+      "csoundac_event_csound_methods": [
+        "toBlueIStatement",
+        "toCsoundIStatement",
+        "toCsoundIStatementHeld",
+        "toCsoundIStatementRelease"
+      ],
+      "csoundac_module": "~/.local/ai-composition-studio/lib/python3.12/site-packages/CsoundAC.py",
+      "csoundac_pfield_layout": "gogins",
+      "csoundac_probe_istatement": "i 3 1.5 2.5 61 71 0.33 0.22 0.44 0.11 4095 1",
+      "csoundac_revision": "v9.1.1-beta-26-gd884dea62",
+      "path": "/usr/bin/python3",
+      "version": "3.12.3"
     },
-    "studio_python": "3.15.2"
+    "studio_python": "3.12.3"
   },
   "files": {
     "code/nu_canon-generate.py": {
-      "bytes": 4441,
-      "sha256": "a50de2c3df4177adf3bc7de5b8804b6eba1ceef1e3d33b019e0351996873b648"
+      "bytes": 7407,
+      "sha256": "0a748efde045b27ef159bd682cb4f1de9b23aa52f01199e91f7da28ffd31fa69"
     },
     "code/nu_canon-source.csd": {
       "bytes": 7336,
@@ -57,21 +66,29 @@
       "bytes": 219,
       "sha256": "c90379ce3d6c68c41caababa578f85fcd7bb8e85eacf8ad6b84f409d851dfdf2"
     },
+    "nu_canon-prompt-002.md": {
+      "bytes": 280,
+      "sha256": "b0acc134564fabbbf12754ef204a2887949ac157cc10bdf433dcf34b077b4dde"
+    },
+    "nu_canon-prompt-003.md": {
+      "bytes": 91,
+      "sha256": "1fe490621f28191f2eae78e8335de2aa20697df6df511347243944d1f9962755"
+    },
     "nu_canon.csd": {
-      "bytes": 12321,
-      "sha256": "2a747175e1ffb2c3f3f129607ab087c24456d20f306626732701feed095fe484"
+      "bytes": 10229,
+      "sha256": "c115a6699636444deb9e3a30fe67c11329fe88ca8726eb513760306bbd077b96"
     },
     "outputs/nu_canon-generate.log": {
-      "bytes": 202,
-      "sha256": "63f12394a34cb040b37457f011f32a579c7ea389b12816fb4a513edfb9ac2cc5"
+      "bytes": 262,
+      "sha256": "6832c87d072150d079de602ff2767e13c38f723a30c366270d969944491988f4"
     },
     "outputs/nu_canon-render.log": {
-      "bytes": 24614,
-      "sha256": "a651c85c323cc023d3095ce5be74bdb0c666859205926f6486dcd1212a2c6129"
+      "bytes": 19779,
+      "sha256": "55b628a51e4a476b8b3e44897146844ff25b9cc26adbc8c532f622c3a270f96c"
     },
     "outputs/nu_canon.mid": {
-      "bytes": 3216,
-      "sha256": "0fdf1d43005b332de4a7c710b839433a31431c265ed7e0f981d973edd671bd33"
+      "bytes": 2440,
+      "sha256": "49f4dc034ca78a0da2a9d09cb7118723f1ba8ca6811d9a137e442584ddd0f70d"
     }
   },
   "generator": {
@@ -79,13 +96,13 @@
     "runs": [
       {
         "argv": [
-          "python3",
+          "python",
           "code/nu_canon-generate.py"
         ],
         "exit_code": 0,
-        "seconds": 0.019,
+        "seconds": 0.02,
         "seed": 1,
-        "started_at": "2026-11-21T13:21:16Z"
+        "started_at": "2026-11-24T09:16:08Z"
       }
     ],
     "seeds": [
@@ -96,14 +113,23 @@
       "code/nu_canon-source.csd"
     ]
   },
-  "history": [],
-  "new_prompts": [
-    "nu_canon-prompt-001.md"
+  "history": [
+    {
+      "archived_at": "2026-11-24T09:16:57Z",
+      "ordinal": 1,
+      "tree_sha256": "bd9a5095070b47d8c3ea025b269591e74e2f52365ea0c8f3ab10ca66f22c26a6",
+      "version": "version-0001"
+    }
   ],
-  "notes": "The leader is Nu. After 23 seconds the same music enters a major sixth higher, panned to the other side.",
-  "ordinal": 1,
+  "new_prompts": [
+    "nu_canon-prompt-002.md",
+    "nu_canon-prompt-003.md"
+  ],
+  "ordinal": 2,
   "prompts": [
-    "nu_canon-prompt-001.md"
+    "nu_canon-prompt-001.md",
+    "nu_canon-prompt-002.md",
+    "nu_canon-prompt-003.md"
   ],
   "render": {
     "analysis": {
@@ -118,7 +144,7 @@
       "frames": 6960000,
       "peak": 0.870971,
       "peak_dbfs": -1.2,
-      "rms_dbfs": -20.27,
+      "rms_dbfs": -21.62,
       "sample_format": "pcm",
       "sample_rate": 48000
     },
@@ -136,10 +162,10 @@
       "errors": [],
       "performed": true,
       "playable": true,
-      "realtime_factor": 18.8,
+      "realtime_factor": 15.1,
       "runtime_errors": 0,
       "sample_rate": 48000,
-      "seconds": 7.897,
+      "seconds": 9.832,
       "started": true
     },
     "commands": [
@@ -150,7 +176,7 @@
           "nu_canon.csd"
         ],
         "exit_code": 0,
-        "seconds": 0.02,
+        "seconds": 0.049,
         "step": "syntax-check"
       },
       {
@@ -164,14 +190,14 @@
           "nu_canon.csd"
         ],
         "exit_code": 0,
-        "seconds": 3.295,
+        "seconds": 7.188,
         "step": "render"
       }
     ],
-    "finished_at": "2026-11-21T13:21:28Z",
+    "finished_at": "2026-11-24T09:16:51Z",
     "log": "outputs/nu_canon-render.log",
-    "started_at": "2026-11-21T13:21:16Z",
-    "wav_sha256": "24e5e9b3e15de56e452ff1ba571713385c3790e6dc6465efef20694c1b34942d"
+    "started_at": "2026-11-24T09:16:33Z",
+    "wav_sha256": "b9c6c8bc3face474b1f57e2b51759799bc9fc17f3bae977b883b7926754aab9f"
   },
   "schema": "ai-composition-studio/manifest/1",
   "title": "Nu, canon at the sixth",
@@ -219,7 +245,7 @@
       },
       {
         "check": "performs in the player's Csound engine (@csound/browser 7.0.0)",
-        "detail": "145 s at 18.8 times real time here",
+        "detail": "145 s at 15.1 times real time here",
         "passed": true
       }
     ],

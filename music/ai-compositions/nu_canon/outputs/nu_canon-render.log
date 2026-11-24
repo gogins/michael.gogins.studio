@@ -1,32 +1,34 @@
-Render of nu_canon started 2026-11-21T13:21:16Z
+Render of nu_canon started 2026-11-24T09:16:33Z
+
+MIDI: outputs/nu_canon.mid (180 notes, 145.0 s)
 
 $ csound --syntax-check-only nu_canon.csd
 Reading CSD file:  nu_canon.csd
---Csound version 7.0 (double samples) Oct 28 2026
-[commit: f9434ffc51954b20314352e1620e19cc5ec67185]
+--Csound version 7.0 (double samples) Nov 23 2026
+[commit: 723e3e1b9d12733ab4d4c9e57b516f4a97bcb052]
 Compiling Csound code...
 	 ...done
-Elapsed time at end of code compilation: real: 0.010s, CPU: 0.009s
+Elapsed time at end of code compilation: real: 0.038s, CPU: 0.010s
 Syntax check completed.
 		   overall amps:  0.00000  0.00000
-Elapsed time at end of performance: real: 0.010s, CPU: 0.009s
---Csound version 7.0 (double samples) Oct 28 2026
-[commit: f9434ffc51954b20314352e1620e19cc5ec67185]
+Elapsed time at end of performance: real: 0.038s, CPU: 0.010s
+--Csound version 7.0 (double samples) Nov 23 2026
+[commit: 723e3e1b9d12733ab4d4c9e57b516f4a97bcb052]
 
-[exit 0; 0.02 s]
+[exit 0; 0.049 s]
 
 $ csound -d -W -3 -o <temporary>/nu_canon.wav nu_canon.csd
 Reading CSD file:  nu_canon.csd
---Csound version 7.0 (double samples) Oct 28 2026
-[commit: f9434ffc51954b20314352e1620e19cc5ec67185]
+--Csound version 7.0 (double samples) Nov 23 2026
+[commit: 723e3e1b9d12733ab4d4c9e57b516f4a97bcb052]
 Compiling Csound code...
 	 ...done
-Elapsed time at end of code compilation: real: 0.010s, CPU: 0.008s
+Elapsed time at end of code compilation: real: 0.010s, CPU: 0.010s
 displays suppressed
 sr = 48000.0, kr = 3000.000, ksmps = 16
 0dBFS level = 1.0, A4 tuning = 440.0
-audio buffered in 128 sample-frame blocks
-writing 768-byte blks of 24bit ints to <temporary>/nu_canon.wav (WAV)
+audio buffered in 256 sample-frame blocks
+writing 1536-byte blks of 24bit ints to <temporary>/nu_canon.wav (WAV)
 SECTION 1:
 new alloc for instr 2:
 warning: instr 2 uses 7 p-fields but is given 11
@@ -248,240 +250,147 @@ warning: instr 1 uses 7 p-fields but is given 11
 B 56.750 .. 57.500 T 57.500 TT 57.500 M:  0.30970  0.26137
 warning: instr 1 uses 7 p-fields but is given 11
 B 57.500 .. 62.000 T 62.000 TT 62.000 M:  0.22147  0.35897
-warning: instr 2 uses 7 p-fields but is given 11
 warning: instr 3 uses 7 p-fields but is given 11
-B 62.000 .. 62.500 T 62.500 TT 62.500 M:  0.03195  0.03682
+B 62.000 .. 63.500 T 63.500 TT 63.500 M:  0.03200  0.03644
 warning: instr 1 uses 7 p-fields but is given 11
-B 62.500 .. 63.500 T 63.500 TT 63.500 M:  0.21401  0.35720
+B 63.500 .. 64.500 T 64.500 TT 64.500 M:  0.31860  0.17075
 warning: instr 1 uses 7 p-fields but is given 11
-B 63.500 .. 64.500 T 64.500 TT 64.500 M:  0.33841  0.28807
-warning: instr 1 uses 7 p-fields but is given 11
-warning: instr 1 uses 7 p-fields but is given 11
-B 64.500 .. 65.000 T 65.000 TT 65.000 M:  0.43932  0.42349
+B 64.500 .. 65.000 T 65.000 TT 65.000 M:  0.28415  0.15680
 warning: instr 2 uses 7 p-fields but is given 11
+B 65.000 .. 65.500 T 65.500 TT 65.500 M:  0.16600  0.09140
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B 65.500 .. 66.500 T 66.500 TT 66.500 M:  0.48679  0.37521
+warning: instr 1 uses 7 p-fields but is given 11
+B 66.500 .. 67.500 T 67.500 TT 67.500 M:  0.32005  0.17599
+warning: instr 1 uses 7 p-fields but is given 11
+B 67.500 .. 67.750 T 67.750 TT 67.750 M:  0.33233  0.22276
+warning: instr 1 uses 7 p-fields but is given 11
+B 67.750 .. 68.250 T 68.250 TT 68.250 M:  0.46925  0.38556
+warning: instr 1 uses 7 p-fields but is given 11
+B 68.250 .. 68.750 T 68.750 TT 68.750 M:  0.35238  0.50356
+warning: instr 1 uses 7 p-fields but is given 11
+B 68.750 .. 69.250 T 69.250 TT 69.250 M:  0.38499  0.50499
+warning: instr 1 uses 7 p-fields but is given 11
+B 69.250 .. 70.250 T 70.250 TT 70.250 M:  0.57836  0.41643
+warning: instr 1 uses 7 p-fields but is given 11
+B 70.250 .. 71.250 T 71.250 TT 71.250 M:  0.35065  0.20845
+warning: instr 1 uses 7 p-fields but is given 11
+B 71.250 .. 76.000 T 76.000 TT 76.000 M:  0.24798  0.36651
 warning: instr 3 uses 7 p-fields but is given 11
-B 65.000 .. 65.250 T 65.250 TT 65.250 M:  0.22525  0.21694
+B 76.000 .. 76.750 T 76.750 TT 76.750 M:  0.05263  0.05405
 warning: instr 1 uses 7 p-fields but is given 11
-B 65.250 .. 65.500 T 65.500 TT 65.500 M:  0.43694  0.29409
+B 76.750 .. 77.750 T 77.750 TT 77.750 M:  0.18260  0.22220
 warning: instr 1 uses 7 p-fields but is given 11
+B 77.750 .. 78.750 T 78.750 TT 78.750 M:  0.27178  0.24294
 warning: instr 1 uses 7 p-fields but is given 11
-B 65.500 .. 66.250 T 66.250 TT 66.250 M:  0.64837  0.53874
-warning: instr 1 uses 7 p-fields but is given 11
-B 66.250 .. 66.500 T 66.500 TT 66.500 M:  0.41455  0.50400
-warning: instr 1 uses 7 p-fields but is given 11
-warning: instr 1 uses 7 p-fields but is given 11
-B 66.500 .. 67.250 T 67.250 TT 67.250 M:  0.50211  0.69829
-warning: instr 1 uses 7 p-fields but is given 11
-B 67.250 .. 67.500 T 67.500 TT 67.500 M:  0.25244  0.37032
-warning: instr 1 uses 7 p-fields but is given 11
-warning: instr 1 uses 7 p-fields but is given 11
-B 67.500 .. 67.750 T 67.750 TT 67.750 M:  0.49911  0.58572
-warning: instr 1 uses 7 p-fields but is given 11
-B 67.750 .. 68.250 T 68.250 TT 68.250 M:  0.57128  0.52224
-warning: instr 1 uses 7 p-fields but is given 11
-warning: instr 1 uses 7 p-fields but is given 11
-B 68.250 .. 68.500 T 68.500 TT 68.500 M:  0.61589  0.68190
-warning: instr 1 uses 7 p-fields but is given 11
-B 68.500 .. 68.750 T 68.750 TT 68.750 M:  0.58471  0.50719
-warning: instr 1 uses 7 p-fields but is given 11
-B 68.750 .. 69.250 T 69.250 TT 69.250 M:  0.62903  0.63832
-warning: instr 1 uses 7 p-fields but is given 11
-B 69.250 .. 69.500 T 69.500 TT 69.500 M:  0.64662  0.47688
-warning: instr 1 uses 7 p-fields but is given 11
-B 69.500 .. 70.250 T 70.250 TT 70.250 M:  0.43413  0.45523
-warning: instr 1 uses 7 p-fields but is given 11
-B 70.250 .. 70.750 T 70.750 TT 70.750 M:  0.37043  0.24954
-warning: instr 1 uses 7 p-fields but is given 11
-B 70.750 .. 71.250 T 71.250 TT 71.250 M:  0.31060  0.40732
-warning: instr 1 uses 7 p-fields but is given 11
-B 71.250 .. 71.750 T 71.750 TT 71.750 M:  0.33194  0.49777
-warning: instr 1 uses 7 p-fields but is given 11
-B 71.750 .. 76.000 T 76.000 TT 76.000 M:  0.42680  0.44416
+B 78.750 .. 80.000 T 80.000 TT 80.000 M:  0.24159  0.23131
 warning: instr 2 uses 7 p-fields but is given 11
+B 80.000 .. 80.500 T 80.500 TT 80.500 M:  0.02207  0.02363
+warning: instr 1 uses 7 p-fields but is given 11
+B 80.500 .. 80.750 T 80.750 TT 80.750 M:  0.24064  0.14750
+warning: instr 1 uses 7 p-fields but is given 11
+B 80.750 .. 81.750 T 81.750 TT 81.750 M:  0.41079  0.35350
+warning: instr 1 uses 7 p-fields but is given 11
+B 81.750 .. 82.500 T 82.500 TT 82.500 M:  0.22612  0.35299
+warning: instr 1 uses 7 p-fields but is given 11
+B 82.500 .. 83.750 T 83.750 TT 83.750 M:  0.38268  0.26354
+warning: instr 1 uses 7 p-fields but is given 11
+B 83.750 .. 88.000 T 88.000 TT 88.000 M:  0.25323  0.17999
 warning: instr 3 uses 7 p-fields but is given 11
-B 76.000 .. 76.750 T 76.750 TT 76.750 M:  0.05433  0.05716
+B 88.000 .. 89.500 T 89.500 TT 89.500 M:  0.04972  0.04730
 warning: instr 1 uses 7 p-fields but is given 11
+B 89.500 .. 90.500 T 90.500 TT 90.500 M:  0.32772  0.16562
 warning: instr 1 uses 7 p-fields but is given 11
-B 76.750 .. 77.750 T 77.750 TT 77.750 M:  0.40928  0.48354
+B 90.500 .. 91.500 T 91.500 TT 91.500 M:  0.29736  0.20009
 warning: instr 1 uses 7 p-fields but is given 11
+B 91.500 .. 92.500 T 92.500 TT 92.500 M:  0.18759  0.26632
 warning: instr 1 uses 7 p-fields but is given 11
-B 77.750 .. 78.500 T 78.500 TT 78.500 M:  0.59095  0.44264
-warning: instr 1 uses 7 p-fields but is given 11
-B 78.500 .. 78.750 T 78.750 TT 78.750 M:  0.30081  0.43867
-warning: instr 1 uses 7 p-fields but is given 11
-B 78.750 .. 79.750 T 79.750 TT 79.750 M:  0.35551  0.44405
-warning: instr 1 uses 7 p-fields but is given 11
-B 79.750 .. 80.000 T 80.000 TT 80.000 M:  0.17815  0.29170
+B 92.500 .. 93.000 T 93.000 TT 93.000 M:  0.21085  0.12537
 warning: instr 2 uses 7 p-fields but is given 11
+B 93.000 .. 93.500 T 93.500 TT 93.500 M:  0.09486  0.06699
+warning: instr 1 uses 7 p-fields but is given 11
+B 93.500 .. 93.750 T 93.750 TT 93.750 M:  0.36979  0.23199
+warning: instr 1 uses 7 p-fields but is given 11
+B 93.750 .. 94.750 T 94.750 TT 94.750 M:  0.54195  0.41128
+warning: instr 1 uses 7 p-fields but is given 11
+B 94.750 .. 95.500 T 95.500 TT 95.500 M:  0.34836  0.37720
+warning: instr 1 uses 7 p-fields but is given 11
+B 95.500 .. 96.250 T 96.250 TT 96.250 M:  0.35454  0.22917
+warning: instr 1 uses 7 p-fields but is given 11
+B 96.250 .. 97.250 T 97.250 TT 97.250 M:  0.27272  0.37669
+warning: instr 1 uses 7 p-fields but is given 11
+B 97.250 .. 98.250 T 98.250 TT 98.250 M:  0.44711  0.34261
+warning: instr 1 uses 7 p-fields but is given 11
+B 98.250 .. 99.250 T 99.250 TT 99.250 M:  0.32933  0.22121
+warning: instr 1 uses 7 p-fields but is given 11
+B 99.250 ..103.000 T103.000 TT103.000 M:  0.23398  0.31794
 warning: instr 3 uses 7 p-fields but is given 11
-B 80.000 .. 80.500 T 80.500 TT 80.500 M:  0.13322  0.22249
+B103.000 ..103.750 T103.750 TT103.750 M:  0.04022  0.04315
 warning: instr 1 uses 7 p-fields but is given 11
-B 80.500 .. 80.750 T 80.750 TT 80.750 M:  0.27764  0.21261
+B103.750 ..104.750 T104.750 TT104.750 M:  0.20051  0.21111
 warning: instr 1 uses 7 p-fields but is given 11
+B104.750 ..105.750 T105.750 TT105.750 M:  0.26775  0.21602
 warning: instr 1 uses 7 p-fields but is given 11
-B 80.750 .. 81.750 T 81.750 TT 81.750 M:  0.58272  0.52722
-warning: instr 1 uses 7 p-fields but is given 11
-warning: instr 1 uses 7 p-fields but is given 11
-B 81.750 .. 82.500 T 82.500 TT 82.500 M:  0.39146  0.61855
-warning: instr 1 uses 7 p-fields but is given 11
-B 82.500 .. 82.750 T 82.750 TT 82.750 M:  0.42132  0.33423
-warning: instr 1 uses 7 p-fields but is given 11
-B 82.750 .. 83.750 T 83.750 TT 83.750 M:  0.38866  0.34144
-warning: instr 1 uses 7 p-fields but is given 11
-B 83.750 .. 84.500 T 84.500 TT 84.500 M:  0.27049  0.24533
-warning: instr 1 uses 7 p-fields but is given 11
-B 84.500 .. 88.000 T 88.000 TT 88.000 M:  0.21974  0.31755
+B105.750 ..107.000 T107.000 TT107.000 M:  0.23199  0.21368
 warning: instr 2 uses 7 p-fields but is given 11
+B107.000 ..107.500 T107.500 TT107.500 M:  0.03015  0.02255
+warning: instr 1 uses 7 p-fields but is given 11
+B107.500 ..107.750 T107.750 TT107.750 M:  0.24570  0.14415
+warning: instr 1 uses 7 p-fields but is given 11
+B107.750 ..108.750 T108.750 TT108.750 M:  0.41848  0.37780
+warning: instr 1 uses 7 p-fields but is given 11
+B108.750 ..109.500 T109.500 TT109.500 M:  0.22383  0.38928
+warning: instr 1 uses 7 p-fields but is given 11
+B109.500 ..110.750 T110.750 TT110.750 M:  0.42209  0.30399
+warning: instr 1 uses 7 p-fields but is given 11
+B110.750 ..116.000 T116.000 TT116.000 M:  0.29711  0.22974
 warning: instr 3 uses 7 p-fields but is given 11
-B 88.000 .. 88.500 T 88.500 TT 88.500 M:  0.05355  0.04992
+B116.000 ..117.500 T117.500 TT117.500 M:  0.07577  0.07094
 warning: instr 1 uses 7 p-fields but is given 11
-B 88.500 .. 89.500 T 89.500 TT 89.500 M:  0.22395  0.38037
+B117.500 ..118.500 T118.500 TT118.500 M:  0.36828  0.22178
 warning: instr 1 uses 7 p-fields but is given 11
-B 89.500 .. 90.500 T 90.500 TT 90.500 M:  0.35715  0.23056
+B118.500 ..119.500 T119.500 TT119.500 M:  0.35545  0.18046
 warning: instr 1 uses 7 p-fields but is given 11
+B119.500 ..120.500 T120.500 TT120.500 M:  0.21943  0.26892
 warning: instr 1 uses 7 p-fields but is given 11
-B 90.500 .. 91.250 T 91.250 TT 91.250 M:  0.44627  0.45983
+B120.500 ..121.750 T121.750 TT121.750 M:  0.22905  0.16202
 warning: instr 1 uses 7 p-fields but is given 11
-B 91.250 .. 91.500 T 91.500 TT 91.500 M:  0.49662  0.30748
+B121.750 ..122.750 T122.750 TT122.750 M:  0.28770  0.27294
 warning: instr 1 uses 7 p-fields but is given 11
-B 91.500 .. 92.250 T 92.250 TT 92.250 M:  0.36143  0.39016
-warning: instr 1 uses 7 p-fields but is given 11
-B 92.250 .. 92.500 T 92.500 TT 92.500 M:  0.34720  0.53274
-warning: instr 1 uses 7 p-fields but is given 11
-B 92.500 .. 93.000 T 93.000 TT 93.000 M:  0.37424  0.42093
-warning: instr 2 uses 7 p-fields but is given 11
+B122.750 ..130.000 T130.000 TT130.000 M:  0.30313  0.41834
 warning: instr 3 uses 7 p-fields but is given 11
-B 93.000 .. 93.250 T 93.250 TT 93.250 M:  0.15042  0.17649
+B130.000 ..130.750 T130.750 TT130.750 M:  0.00172  0.00149
 warning: instr 1 uses 7 p-fields but is given 11
-B 93.250 .. 93.500 T 93.500 TT 93.500 M:  0.19846  0.33853
+B130.750 ..131.750 T131.750 TT131.750 M:  0.18839  0.18568
 warning: instr 1 uses 7 p-fields but is given 11
-B 93.500 .. 93.750 T 93.750 TT 93.750 M:  0.43753  0.45361
+B131.750 ..132.750 T132.750 TT132.750 M:  0.27992  0.22637
 warning: instr 1 uses 7 p-fields but is given 11
-B 93.750 .. 94.250 T 94.250 TT 94.250 M:  0.59709  0.51315
+B132.750 ..134.500 T134.500 TT134.500 M:  0.26908  0.20102
 warning: instr 1 uses 7 p-fields but is given 11
-B 94.250 .. 94.500 T 94.500 TT 94.500 M:  0.53905  0.41654
-warning: instr 1 uses 7 p-fields but is given 11
-B 94.500 .. 94.750 T 94.750 TT 94.750 M:  0.48082  0.57592
-warning: instr 1 uses 7 p-fields but is given 11
-B 94.750 .. 95.500 T 95.500 TT 95.500 M:  0.55427  0.61235
-warning: instr 1 uses 7 p-fields but is given 11
-warning: instr 1 uses 7 p-fields but is given 11
-B 95.500 .. 96.250 T 96.250 TT 96.250 M:  0.45821  0.50691
-warning: instr 1 uses 7 p-fields but is given 11
-B 96.250 .. 96.500 T 96.500 TT 96.500 M:  0.29942  0.46328
-warning: instr 1 uses 7 p-fields but is given 11
-B 96.500 .. 97.250 T 97.250 TT 97.250 M:  0.39378  0.48362
-warning: instr 1 uses 7 p-fields but is given 11
-B 97.250 .. 97.500 T 97.500 TT 97.500 M:  0.50083  0.42710
-warning: instr 1 uses 7 p-fields but is given 11
-B 97.500 .. 98.250 T 98.250 TT 98.250 M:  0.41509  0.45575
-warning: instr 1 uses 7 p-fields but is given 11
-B 98.250 .. 98.750 T 98.750 TT 98.750 M:  0.35061  0.31031
-warning: instr 1 uses 7 p-fields but is given 11
-B 98.750 .. 99.250 T 99.250 TT 99.250 M:  0.39798  0.38536
-warning: instr 1 uses 7 p-fields but is given 11
-B 99.250 .. 99.750 T 99.750 TT 99.750 M:  0.32935  0.43685
-warning: instr 1 uses 7 p-fields but is given 11
-B 99.750 ..103.000 T103.000 TT103.000 M:  0.50242  0.46084
-warning: instr 2 uses 7 p-fields but is given 11
-warning: instr 3 uses 7 p-fields but is given 11
-B103.000 ..103.750 T103.750 TT103.750 M:  0.04707  0.04851
-warning: instr 1 uses 7 p-fields but is given 11
-warning: instr 1 uses 7 p-fields but is given 11
-B103.750 ..104.750 T104.750 TT104.750 M:  0.34205  0.52693
-warning: instr 1 uses 7 p-fields but is given 11
-warning: instr 1 uses 7 p-fields but is given 11
-B104.750 ..105.500 T105.500 TT105.500 M:  0.57724  0.38988
-warning: instr 1 uses 7 p-fields but is given 11
-B105.500 ..105.750 T105.750 TT105.750 M:  0.27440  0.42265
-warning: instr 1 uses 7 p-fields but is given 11
-B105.750 ..106.750 T106.750 TT106.750 M:  0.34388  0.39406
-warning: instr 1 uses 7 p-fields but is given 11
-B106.750 ..107.000 T107.000 TT107.000 M:  0.17951  0.26299
-warning: instr 2 uses 7 p-fields but is given 11
-warning: instr 3 uses 7 p-fields but is given 11
-B107.000 ..107.500 T107.500 TT107.500 M:  0.14519  0.20199
-warning: instr 1 uses 7 p-fields but is given 11
-B107.500 ..107.750 T107.750 TT107.750 M:  0.27682  0.19299
-warning: instr 1 uses 7 p-fields but is given 11
-warning: instr 1 uses 7 p-fields but is given 11
-B107.750 ..108.750 T108.750 TT108.750 M:  0.62428  0.59258
-warning: instr 1 uses 7 p-fields but is given 11
-warning: instr 1 uses 7 p-fields but is given 11
-B108.750 ..109.500 T109.500 TT109.500 M:  0.43767  0.67932
-warning: instr 1 uses 7 p-fields but is given 11
-B109.500 ..109.750 T109.750 TT109.750 M:  0.46043  0.39225
-warning: instr 1 uses 7 p-fields but is given 11
-B109.750 ..110.750 T110.750 TT110.750 M:  0.41856  0.46810
-warning: instr 1 uses 7 p-fields but is given 11
-B110.750 ..111.500 T111.500 TT111.500 M:  0.29377  0.26918
-warning: instr 1 uses 7 p-fields but is given 11
-B111.500 ..116.000 T116.000 TT116.000 M:  0.19315  0.36368
-warning: instr 2 uses 7 p-fields but is given 11
-warning: instr 3 uses 7 p-fields but is given 11
-B116.000 ..116.500 T116.500 TT116.500 M:  0.06912  0.07028
-warning: instr 1 uses 7 p-fields but is given 11
-B116.500 ..117.500 T117.500 TT117.500 M:  0.28606  0.43083
-warning: instr 1 uses 7 p-fields but is given 11
-B117.500 ..118.500 T118.500 TT118.500 M:  0.39009  0.29782
-warning: instr 1 uses 7 p-fields but is given 11
-warning: instr 1 uses 7 p-fields but is given 11
-B118.500 ..119.250 T119.250 TT119.250 M:  0.47761  0.41713
-warning: instr 1 uses 7 p-fields but is given 11
-B119.250 ..119.500 T119.500 TT119.500 M:  0.44699  0.32612
-warning: instr 1 uses 7 p-fields but is given 11
-B119.500 ..120.250 T120.250 TT120.250 M:  0.42129  0.42307
-warning: instr 1 uses 7 p-fields but is given 11
-B120.250 ..120.500 T120.500 TT120.500 M:  0.36581  0.47079
-warning: instr 1 uses 7 p-fields but is given 11
-B120.500 ..121.250 T121.250 TT121.250 M:  0.39546  0.38125
-warning: instr 1 uses 7 p-fields but is given 11
-B121.250 ..121.750 T121.750 TT121.750 M:  0.23386  0.34914
-warning: instr 1 uses 7 p-fields but is given 11
-B121.750 ..122.250 T122.250 TT122.250 M:  0.35864  0.38683
-warning: instr 1 uses 7 p-fields but is given 11
-B122.250 ..122.750 T122.750 TT122.750 M:  0.40961  0.34895
-warning: instr 1 uses 7 p-fields but is given 11
-B122.750 ..130.000 T130.000 TT130.000 M:  0.39926  0.51209
-warning: instr 2 uses 7 p-fields but is given 11
-warning: instr 3 uses 7 p-fields but is given 11
-B130.000 ..130.750 T130.750 TT130.750 M:  0.00489  0.01046
-warning: instr 1 uses 7 p-fields but is given 11
-warning: instr 1 uses 7 p-fields but is given 11
-B130.750 ..131.750 T131.750 TT131.750 M:  0.48542  0.46415
-warning: instr 1 uses 7 p-fields but is given 11
-warning: instr 1 uses 7 p-fields but is given 11
-B131.750 ..132.500 T132.500 TT132.500 M:  0.65363  0.42070
-warning: instr 1 uses 7 p-fields but is given 11
-B132.500 ..132.750 T132.750 TT132.750 M:  0.33040  0.42790
-warning: instr 1 uses 7 p-fields but is given 11
-B132.750 ..133.750 T133.750 TT133.750 M:  0.39515  0.43182
-warning: instr 1 uses 7 p-fields but is given 11
-B133.750 ..134.500 T134.500 TT134.500 M:  0.20964  0.28863
-warning: instr 1 uses 7 p-fields but is given 11
-B134.500 ..145.000 T145.000 TT145.000 M:  0.31104  0.20773
+B134.500 ..145.000 T145.000 TT145.000 M:  0.27752  0.12707
 end of Performance
-256 768 sample blks of 24bit ints written to <temporary>/nu_canon.wav (WAV)
+512 1536 sample blks of 24bit ints written to <temporary>/nu_canon.wav (WAV)
 inactive allocs returned to freespace
 		   overall amps:  0.81124  0.87097
-Elapsed time at end of performance: real: 3.285s, CPU: 3.279s
+Elapsed time at end of performance: real: 7.177s, CPU: 7.174s
 
-[exit 0; 3.295 s]
+[exit 0; 7.188 s]
 
-Audio: 145.0 s, 2 ch, 48000 Hz, 24-bit pcm; peak -1.2 dBFS, RMS -20.27 dBFS, 0 clipped samples
+Audio: 145.0 s, 2 ch, 48000 Hz, 24-bit pcm; peak -1.2 dBFS, RMS -21.62 dBFS, 0 clipped samples
 
-Browser engine (@csound/browser 7.0.0): {"channels": 2, "checked": true, "compiled": true, "csound_version": "7.0", "duration_seconds": 145, "errors": [], "performed": true, "playable": true, "realtime_factor": 18.8, "runtime_errors": 0, "sample_rate": 48000, "seconds": 7.897, "started": true}
+Browser engine (@csound/browser 7.0.0): {"channels": 2, "checked": true, "compiled": true, "csound_version": "7.0", "duration_seconds": 145, "errors": [], "performed": true, "playable": true, "realtime_factor": 15.1, "runtime_errors": 0, "sample_rate": 48000, "seconds": 9.832, "started": true}
 warning: instr 1 uses 7 p-fields but is given 11
-B133.750 ..134.500 T134.500 TT134.500 M:  0.20964  0.28863
+B132.750 ..134.500 T134.500 TT134.500 M:  0.26908  0.20102
 warning: instr 1 uses 7 p-fields but is given 11
-B134.500 ..145.000 T145.000 TT145.000 M:  0.31104  0.20773
+B134.500 ..145.000 T145.000 TT145.000 M:  0.27752  0.12707
 end of Performance
 resetting Csound instance
 no sound written to disk
 inactive allocs returned to freespace
 		   overall amps:  0.81124  0.87097
-Elapsed time at end of performance: real: 7.000s, CPU: 3.445s
+Elapsed time at end of performance: real: 9.000s, CPU: 1.043s
 		   overall amps:      0.0
 Elapsed time at end of performance: real: 0.000s, CPU: 0.000s
 
-Render finished 2026-11-21T13:21:28Z: ok
+Render finished 2026-11-24T09:16:51Z: ok
