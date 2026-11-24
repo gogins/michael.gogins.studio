@@ -1,0 +1,229 @@
+{
+  "ai": {
+    "agent": "Cursor desktop (macOS)",
+    "model": "Grok 4.7"
+  },
+  "composition": "nu_canon",
+  "created_at": "2026-11-21T13:21:28Z",
+  "dependencies": {
+    "includes": [],
+    "plugins": [],
+    "samples": []
+  },
+  "environment": {
+    "browser_csound": {
+      "available": true,
+      "file": "csound.js",
+      "package": "@csound/browser",
+      "sha256": "c86c69291326fa3d64872f430ca9a06324a94c96db373d6bd207fdd4e5a3fc9e",
+      "version": "7.0.0"
+    },
+    "csound": {
+      "available": true,
+      "banner": "Csound version 7.0 (double samples) Oct 28 2026",
+      "commit": "f9434ffc51954b20314352e1620e19cc5ec67185",
+      "major": 7,
+      "path": "/usr/local/bin/csound",
+      "version": "7.0"
+    },
+    "machine": "arm64",
+    "node": {
+      "available": true,
+      "csoundac_wasm_dir": null,
+      "csoundac_wasm_present": false,
+      "path": "/opt/homebrew/bin/node",
+      "version": "v26.13.1"
+    },
+    "platform": "macOS-27.2.1-arm64-arm-64bit-Mach-O",
+    "python": {
+      "csoundac": false,
+      "csoundac_error": "ModuleNotFoundError(\"No module named 'CsoundAC'\", name='CsoundAC')",
+      "csoundac_revision": null,
+      "path": "/opt/homebrew/opt/python@3.15/bin/python3.15",
+      "version": "3.15.2"
+    },
+    "studio_python": "3.15.2"
+  },
+  "files": {
+    "code/nu_canon-generate.py": {
+      "bytes": 4441,
+      "sha256": "a50de2c3df4177adf3bc7de5b8804b6eba1ceef1e3d33b019e0351996873b648"
+    },
+    "code/nu_canon-source.csd": {
+      "bytes": 7336,
+      "sha256": "3f67a2e6d4c0884e6a9c3192c135f182fb8a0055ed92e630ce71a42ab85ae76f"
+    },
+    "nu_canon-prompt-001.md": {
+      "bytes": 219,
+      "sha256": "c90379ce3d6c68c41caababa578f85fcd7bb8e85eacf8ad6b84f409d851dfdf2"
+    },
+    "nu_canon.csd": {
+      "bytes": 12321,
+      "sha256": "2a747175e1ffb2c3f3f129607ab087c24456d20f306626732701feed095fe484"
+    },
+    "outputs/nu_canon-generate.log": {
+      "bytes": 202,
+      "sha256": "63f12394a34cb040b37457f011f32a579c7ea389b12816fb4a513edfb9ac2cc5"
+    },
+    "outputs/nu_canon-render.log": {
+      "bytes": 24614,
+      "sha256": "a651c85c323cc023d3095ce5be74bdb0c666859205926f6486dcd1212a2c6129"
+    },
+    "outputs/nu_canon.mid": {
+      "bytes": 3216,
+      "sha256": "0fdf1d43005b332de4a7c710b839433a31431c265ed7e0f981d973edd671bd33"
+    }
+  },
+  "generator": {
+    "kind": "python",
+    "runs": [
+      {
+        "argv": [
+          "python3",
+          "code/nu_canon-generate.py"
+        ],
+        "exit_code": 0,
+        "seconds": 0.019,
+        "seed": 1,
+        "started_at": "2026-11-21T13:21:16Z"
+      }
+    ],
+    "seeds": [
+      1
+    ],
+    "sources": [
+      "code/nu_canon-generate.py",
+      "code/nu_canon-source.csd"
+    ]
+  },
+  "history": [],
+  "new_prompts": [
+    "nu_canon-prompt-001.md"
+  ],
+  "notes": "The leader is Nu. After 23 seconds the same music enters a major sixth higher, panned to the other side.",
+  "ordinal": 1,
+  "prompts": [
+    "nu_canon-prompt-001.md"
+  ],
+  "render": {
+    "analysis": {
+      "bits": 24,
+      "channel_peaks_dbfs": [
+        -1.82,
+        -1.2
+      ],
+      "channels": 2,
+      "clipped_samples": 0,
+      "duration_seconds": 145.0,
+      "frames": 6960000,
+      "peak": 0.870971,
+      "peak_dbfs": -1.2,
+      "rms_dbfs": -20.27,
+      "sample_format": "pcm",
+      "sample_rate": 48000
+    },
+    "browser": {
+      "channels": 2,
+      "checked": true,
+      "compiled": true,
+      "csound_version": "7.0",
+      "duration_seconds": 145,
+      "engine": {
+        "package": "@csound/browser",
+        "sha256": "c86c69291326fa3d64872f430ca9a06324a94c96db373d6bd207fdd4e5a3fc9e",
+        "version": "7.0.0"
+      },
+      "errors": [],
+      "performed": true,
+      "playable": true,
+      "realtime_factor": 18.8,
+      "runtime_errors": 0,
+      "sample_rate": 48000,
+      "seconds": 7.897,
+      "started": true
+    },
+    "commands": [
+      {
+        "argv": [
+          "csound",
+          "--syntax-check-only",
+          "nu_canon.csd"
+        ],
+        "exit_code": 0,
+        "seconds": 0.02,
+        "step": "syntax-check"
+      },
+      {
+        "argv": [
+          "csound",
+          "-d",
+          "-W",
+          "-3",
+          "-o",
+          "<temporary>/nu_canon.wav",
+          "nu_canon.csd"
+        ],
+        "exit_code": 0,
+        "seconds": 3.295,
+        "step": "render"
+      }
+    ],
+    "finished_at": "2026-11-21T13:21:28Z",
+    "log": "outputs/nu_canon-render.log",
+    "started_at": "2026-11-21T13:21:16Z",
+    "wav_sha256": "24e5e9b3e15de56e452ff1ba571713385c3790e6dc6465efef20694c1b34942d"
+  },
+  "schema": "ai-composition-studio/manifest/1",
+  "title": "Nu, canon at the sixth",
+  "validation": {
+    "checks": [
+      {
+        "check": "naming conventions",
+        "detail": "",
+        "passed": true
+      },
+      {
+        "check": "complete .csd structure",
+        "detail": "",
+        "passed": true
+      },
+      {
+        "check": "csound --syntax-check-only",
+        "detail": "",
+        "passed": true
+      },
+      {
+        "check": "csound render",
+        "detail": "",
+        "passed": true
+      },
+      {
+        "check": "no run-time errors in the Csound log",
+        "detail": "",
+        "passed": true
+      },
+      {
+        "check": "audio rendered",
+        "detail": "temporary file, measured and deleted",
+        "passed": true
+      },
+      {
+        "check": "audio is not silent",
+        "detail": "peak -1.2 dBFS",
+        "passed": true
+      },
+      {
+        "check": "no clipping",
+        "detail": "0 samples out of range",
+        "passed": true
+      },
+      {
+        "check": "performs in the player's Csound engine (@csound/browser 7.0.0)",
+        "detail": "145 s at 18.8 times real time here",
+        "passed": true
+      }
+    ],
+    "status": "passed",
+    "warnings": []
+  }
+}

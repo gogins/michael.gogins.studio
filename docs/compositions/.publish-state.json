@@ -587,7 +587,7 @@
     },
     "nu_canon/code/nu_canon-generate.py": {
       "kind": "code",
-      "sha256": "a50de2c3df4177adf3bc7de5b8804b6eba1ceef1e3d33b019e0351996873b648",
+      "sha256": "0a748efde045b27ef159bd682cb4f1de9b23aa52f01199e91f7da28ffd31fa69",
       "source": "music/ai-compositions/nu_canon/code/nu_canon-generate.py"
     },
     "nu_canon/code/nu_canon-source.csd": {
@@ -597,7 +597,7 @@
     },
     "nu_canon/nu_canon-manifest.json": {
       "kind": "manifest",
-      "sha256": "cb7a0faf294d9407723a4179b52a35df1f0b9b55ba4ea34046a2033bdf9a51b3",
+      "sha256": "764724bb34913747c9c10dafac06a2dc18f3dbc4bbf01932c12b0171a78d42bb",
       "source": "music/ai-compositions/nu_canon/nu_canon-manifest.json"
     },
     "nu_canon/nu_canon-prompt-001.md": {
@@ -605,15 +605,55 @@
       "sha256": "c90379ce3d6c68c41caababa578f85fcd7bb8e85eacf8ad6b84f409d851dfdf2",
       "source": "music/ai-compositions/nu_canon/nu_canon-prompt-001.md"
     },
+    "nu_canon/nu_canon-prompt-002.md": {
+      "kind": "prompts",
+      "sha256": "b0acc134564fabbbf12754ef204a2887949ac157cc10bdf433dcf34b077b4dde",
+      "source": "music/ai-compositions/nu_canon/nu_canon-prompt-002.md"
+    },
+    "nu_canon/nu_canon-prompt-003.md": {
+      "kind": "prompts",
+      "sha256": "1fe490621f28191f2eae78e8335de2aa20697df6df511347243944d1f9962755",
+      "source": "music/ai-compositions/nu_canon/nu_canon-prompt-003.md"
+    },
     "nu_canon/nu_canon.csd": {
       "kind": "csd",
-      "sha256": "2a747175e1ffb2c3f3f129607ab087c24456d20f306626732701feed095fe484",
+      "sha256": "c115a6699636444deb9e3a30fe67c11329fe88ca8726eb513760306bbd077b96",
       "source": "music/ai-compositions/nu_canon/nu_canon.csd"
     },
     "nu_canon/outputs/nu_canon.mid": {
       "kind": "derived",
-      "sha256": "0fdf1d43005b332de4a7c710b839433a31431c265ed7e0f981d973edd671bd33",
+      "sha256": "49f4dc034ca78a0da2a9d09cb7118723f1ba8ca6811d9a137e442584ddd0f70d",
       "source": "music/ai-compositions/nu_canon/outputs/nu_canon.mid"
+    },
+    "nu_canon/version-0001/code/nu_canon-generate.py": {
+      "kind": "code",
+      "sha256": "a50de2c3df4177adf3bc7de5b8804b6eba1ceef1e3d33b019e0351996873b648",
+      "source": "music/ai-compositions/nu_canon/version-0001/code/nu_canon-generate.py"
+    },
+    "nu_canon/version-0001/code/nu_canon-source.csd": {
+      "kind": "code",
+      "sha256": "3f67a2e6d4c0884e6a9c3192c135f182fb8a0055ed92e630ce71a42ab85ae76f",
+      "source": "music/ai-compositions/nu_canon/version-0001/code/nu_canon-source.csd"
+    },
+    "nu_canon/version-0001/nu_canon-manifest.json": {
+      "kind": "manifest",
+      "sha256": "cb7a0faf294d9407723a4179b52a35df1f0b9b55ba4ea34046a2033bdf9a51b3",
+      "source": "music/ai-compositions/nu_canon/version-0001/nu_canon-manifest.json"
+    },
+    "nu_canon/version-0001/nu_canon-prompt-001.md": {
+      "kind": "prompts",
+      "sha256": "c90379ce3d6c68c41caababa578f85fcd7bb8e85eacf8ad6b84f409d851dfdf2",
+      "source": "music/ai-compositions/nu_canon/version-0001/nu_canon-prompt-001.md"
+    },
+    "nu_canon/version-0001/nu_canon.csd": {
+      "kind": "csd",
+      "sha256": "2a747175e1ffb2c3f3f129607ab087c24456d20f306626732701feed095fe484",
+      "source": "music/ai-compositions/nu_canon/version-0001/nu_canon.csd"
+    },
+    "nu_canon/version-0001/outputs/nu_canon.mid": {
+      "kind": "derived",
+      "sha256": "0fdf1d43005b332de4a7c710b839433a31431c265ed7e0f981d973edd671bd33",
+      "source": "music/ai-compositions/nu_canon/version-0001/outputs/nu_canon.mid"
     }
   },
   "schema": "ai-composition-studio/publish-state/1"
