@@ -25,6 +25,10 @@ Hocket (onset >= HOCKET_START):
   of kept notes are unchanged. Pitch, velocity, pan and depth of kept notes
   are unchanged (aside from modulation above). Instrument 99 (reverb) is
   never hocketed. Pre-hocket continuous music and DELAY stay unchanged.
+
+After all pitch transforms, MIDI keys of sounding notes (instruments 1, 2, 3)
+are reflected into [24, 96] inclusive: above 96 fold down about 96, below 24
+fold up about 24, iterating until in range. Instrument 99 is unchanged.
 """
 
 import os
@@ -62,7 +66,10 @@ CANON_COMMENT = (
     "; post-60 sequence satisfies (i % N) == (v % N), so the voices interlock\n"
     "; offset by one note. Dropped notes are rests; kept post-hocket onsets are\n"
     "; then retimed so consecutive kept IOIs are halved (hocket rests cut in\n"
-    "; half, increasing tempo). Reverb (i 99) is untouched."
+    "; half, increasing tempo). Reverb (i 99) is untouched.\n"
+    ";\n"
+    "; After tiling, comes interval, dissonance modulation, and hocket, MIDI\n"
+    "; keys of sounding notes (i 1, 2, 3) are reflected into [24, 96]."
 )
 
 
@@ -71,6 +78,32 @@ def fmt(value):
     if abs(rounded - round(rounded)) < 1e-9:
         return str(int(round(rounded)))
     return f"{rounded:.6f}".rstrip("0").rstrip(".")
+
+
+def reflect_key(key, low=24.0, high=96.0):
+    """Reflect a MIDI key into [low, high] about the nearer bound until in range.
+
+    Above high: key := high - (key - high) = 2*high - key.
+    Below low:  key := low + (low - key) = 2*low - key.
+    """
+    reflected = float(key)
+    while reflected > high or reflected < low:
+        if reflected > high:
+            reflected = high - (reflected - high)
+        else:
+            reflected = low + (low - reflected)
+    return reflected
+
+
+def reflect_midi_keys(notes, low=24.0, high=96.0):
+    """Reflect p4 of sounding notes into [low, high]; skip instrument 99."""
+    out = []
+    for fields in notes:
+        note = list(fields)
+        if int(round(note[0])) != 99:
+            note[3] = reflect_key(note[3], low, high)
+        out.append(note)
+    return out
 
 
 def canon_pan(pan):
@@ -343,6 +376,10 @@ def build(source_text):
         if tile_count > 64:
             sys.exit("unable to reach target duration with tiling")
 
+    # Final MIDI-key clamp: reflect outliers into [24, 96] (instr 1–3 only).
+    leader_kept = reflect_midi_keys(leader_kept)
+    comes_kept = reflect_midi_keys(comes_kept)
+
     score_lines = []
     score_lines.extend(header_lines)
     score_lines.append(f"i 99 0 {fmt(new_end)}\n")
@@ -398,6 +435,7 @@ def main():
         f"leader {leader_hocket}/{leader_post} kept, "
         f"comes {comes_hocket}/{comes_post} kept), "
         f"{modulation_count} bar-wise tonic shift(s), "
+        f"MIDI keys reflected into [24, 96], "
         f"end {fmt(end_time)} s (~6 min target {fmt(TARGET_DURATION)})"
     )
 

@@ -1,0 +1,4 @@
+$ python code/nu_canon-generate.py
+[started 2026-11-24T15:33:23Z; exit 0]
+wrote nu_canon.csd from nu_canon-source.csd: seed 1, 120 source notes x 6 tiles, major sixth +9, delay 23 s, hocket from 60 s (N=2; rests halved; leader 324/648 kept, comes 336/672 kept), 48 bar-wise tonic shift(s), end 416 s (~6 min target 360)
+

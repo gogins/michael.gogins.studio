@@ -1,0 +1,1572 @@
+Render of nu_canon started 2026-11-24T15:33:45Z
+
+MIDI: outputs/nu_canon.mid (780 notes, 416.0 s)
+
+$ csound --syntax-check-only nu_canon.csd
+Reading CSD file:  nu_canon.csd
+--Csound version 7.0 (double samples) Nov 24 2026
+[commit: cafd6e7f40bc29706bd4bbf7ffb8608cf8ef96f4]
+Compiling Csound code...
+	 ...done
+Elapsed time at end of code compilation: real: 0.057s, CPU: 0.013s
+Syntax check completed.
+		   overall amps:  0.00000  0.00000
+Elapsed time at end of performance: real: 0.058s, CPU: 0.015s
+--Csound version 7.0 (double samples) Nov 24 2026
+[commit: cafd6e7f40bc29706bd4bbf7ffb8608cf8ef96f4]
+
+[exit 0; 0.077 s]
+
+$ csound -d -W -3 -o <temporary>/nu_canon.wav nu_canon.csd
+Reading CSD file:  nu_canon.csd
+--Csound version 7.0 (double samples) Nov 24 2026
+[commit: cafd6e7f40bc29706bd4bbf7ffb8608cf8ef96f4]
+Compiling Csound code...
+	 ...done
+Elapsed time at end of code compilation: real: 0.008s, CPU: 0.008s
+displays suppressed
+sr = 48000.0, kr = 3000.000, ksmps = 16
+0dBFS level = 1.0, A4 tuning = 440.0
+audio buffered in 256 sample-frame blocks
+writing 1536-byte blks of 24bit ints to <temporary>/nu_canon.wav (WAV)
+SECTION 1:
+new alloc for instr 2:
+warning: instr 2 uses 7 p-fields but is given 11
+new alloc for instr 3:
+warning: instr 3 uses 7 p-fields but is given 11
+new alloc for instr 99:
+B  0.000 ..  0.500 T  0.500 TT  0.500 M:  0.00543  0.00521
+new alloc for instr 1:
+warning: instr 1 uses 7 p-fields but is given 11
+B  0.500 ..  1.500 T  1.500 TT  1.500 M:  0.36291  0.20887
+new alloc for instr 1:
+warning: instr 1 uses 7 p-fields but is given 11
+B  1.500 ..  2.500 T  2.500 TT  2.500 M:  0.23039  0.34887
+new alloc for instr 1:
+warning: instr 1 uses 7 p-fields but is given 11
+new alloc for instr 1:
+warning: instr 1 uses 7 p-fields but is given 11
+B  2.500 ..  3.250 T  3.250 TT  3.250 M:  0.45576  0.46561
+new alloc for instr 1:
+warning: instr 1 uses 7 p-fields but is given 11
+B  3.250 ..  3.500 T  3.500 TT  3.500 M:  0.31613  0.46342
+new alloc for instr 1:
+warning: instr 1 uses 7 p-fields but is given 11
+B  3.500 ..  4.250 T  4.250 TT  4.250 M:  0.35407  0.45848
+new alloc for instr 1:
+warning: instr 1 uses 7 p-fields but is given 11
+B  4.250 ..  4.500 T  4.500 TT  4.500 M:  0.53402  0.32631
+warning: instr 1 uses 7 p-fields but is given 11
+B  4.500 ..  5.250 T  5.250 TT  5.250 M:  0.44720  0.40032
+warning: instr 1 uses 7 p-fields but is given 11
+B  5.250 ..  5.750 T  5.750 TT  5.750 M:  0.37166  0.23666
+warning: instr 1 uses 7 p-fields but is given 11
+B  5.750 ..  6.250 T  6.250 TT  6.250 M:  0.37360  0.38510
+warning: instr 1 uses 7 p-fields but is given 11
+B  6.250 ..  6.750 T  6.750 TT  6.750 M:  0.31870  0.41791
+warning: instr 1 uses 7 p-fields but is given 11
+B  6.750 ..  7.000 T  7.000 TT  7.000 M:  0.46525  0.41337
+new alloc for instr 2:
+warning: instr 2 uses 7 p-fields but is given 11
+new alloc for instr 3:
+warning: instr 3 uses 7 p-fields but is given 11
+B  7.000 ..  7.750 T  7.750 TT  7.750 M:  0.31372  0.32067
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B  7.750 ..  8.750 T  8.750 TT  8.750 M:  0.51680  0.46256
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B  8.750 ..  9.500 T  9.500 TT  9.500 M:  0.44868  0.60817
+warning: instr 1 uses 7 p-fields but is given 11
+B  9.500 ..  9.750 T  9.750 TT  9.750 M:  0.46397  0.37795
+warning: instr 1 uses 7 p-fields but is given 11
+B  9.750 .. 10.750 T 10.750 TT 10.750 M:  0.45630  0.39222
+warning: instr 1 uses 7 p-fields but is given 11
+B 10.750 .. 11.500 T 11.500 TT 11.500 M:  0.32255  0.23310
+warning: instr 1 uses 7 p-fields but is given 11
+B 11.500 .. 15.000 T 15.000 TT 15.000 M:  0.23767  0.34214
+warning: instr 2 uses 7 p-fields but is given 11
+warning: instr 3 uses 7 p-fields but is given 11
+B 15.000 .. 15.500 T 15.500 TT 15.500 M:  0.00562  0.00609
+warning: instr 1 uses 7 p-fields but is given 11
+B 15.500 .. 16.500 T 16.500 TT 16.500 M:  0.34593  0.22962
+warning: instr 1 uses 7 p-fields but is given 11
+B 16.500 .. 17.500 T 17.500 TT 17.500 M:  0.24335  0.31765
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B 17.500 .. 18.250 T 18.250 TT 18.250 M:  0.40209  0.46422
+warning: instr 1 uses 7 p-fields but is given 11
+B 18.250 .. 18.500 T 18.500 TT 18.500 M:  0.23918  0.43102
+warning: instr 1 uses 7 p-fields but is given 11
+B 18.500 .. 19.250 T 19.250 TT 19.250 M:  0.37482  0.35174
+warning: instr 1 uses 7 p-fields but is given 11
+B 19.250 .. 19.500 T 19.500 TT 19.500 M:  0.42807  0.34221
+warning: instr 1 uses 7 p-fields but is given 11
+B 19.500 .. 20.250 T 20.250 TT 20.250 M:  0.37447  0.36804
+warning: instr 1 uses 7 p-fields but is given 11
+B 20.250 .. 20.750 T 20.750 TT 20.750 M:  0.34081  0.22608
+warning: instr 1 uses 7 p-fields but is given 11
+B 20.750 .. 21.250 T 21.250 TT 21.250 M:  0.29584  0.35773
+warning: instr 1 uses 7 p-fields but is given 11
+B 21.250 .. 21.750 T 21.750 TT 21.750 M:  0.29843  0.39462
+warning: instr 1 uses 7 p-fields but is given 11
+B 21.750 .. 23.000 T 23.000 TT 23.000 M:  0.39936  0.40654
+warning: instr 2 uses 7 p-fields but is given 11
+warning: instr 3 uses 7 p-fields but is given 11
+B 23.000 .. 23.500 T 23.500 TT 23.500 M:  0.07351  0.07562
+warning: instr 1 uses 7 p-fields but is given 11
+B 23.500 .. 24.500 T 24.500 TT 24.500 M:  0.25796  0.40634
+warning: instr 1 uses 7 p-fields but is given 11
+B 24.500 .. 25.500 T 25.500 TT 25.500 M:  0.35882  0.28644
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B 25.500 .. 26.250 T 26.250 TT 26.250 M:  0.47932  0.46587
+warning: instr 1 uses 7 p-fields but is given 11
+B 26.250 .. 26.500 T 26.500 TT 26.500 M:  0.49885  0.31219
+warning: instr 1 uses 7 p-fields but is given 11
+B 26.500 .. 27.250 T 27.250 TT 27.250 M:  0.38375  0.38869
+warning: instr 1 uses 7 p-fields but is given 11
+B 27.250 .. 27.500 T 27.500 TT 27.500 M:  0.31533  0.48878
+warning: instr 1 uses 7 p-fields but is given 11
+B 27.500 .. 28.000 T 28.000 TT 28.000 M:  0.37011  0.43032
+warning: instr 2 uses 7 p-fields but is given 11
+warning: instr 3 uses 7 p-fields but is given 11
+B 28.000 .. 28.250 T 28.250 TT 28.250 M:  0.14907  0.18295
+warning: instr 1 uses 7 p-fields but is given 11
+B 28.250 .. 28.750 T 28.750 TT 28.750 M:  0.22838  0.34518
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+new alloc for instr 1:
+warning: instr 1 uses 7 p-fields but is given 11
+B 28.750 .. 29.250 T 29.250 TT 29.250 M:  0.71396  0.65961
+new alloc for instr 1:
+warning: instr 1 uses 7 p-fields but is given 11
+B 29.250 .. 29.750 T 29.750 TT 29.750 M:  0.48024  0.42565
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+new alloc for instr 1:
+warning: instr 1 uses 7 p-fields but is given 11
+B 29.750 .. 30.000 T 30.000 TT 30.000 M:  0.66389  0.90988
+new alloc for instr 2:
+warning: instr 2 uses 7 p-fields but is given 11
+new alloc for instr 3:
+warning: instr 3 uses 7 p-fields but is given 11
+B 30.000 .. 30.500 T 30.500 TT 30.500 M:  0.42049  0.50011
+warning: instr 1 uses 7 p-fields but is given 11
+B 30.500 .. 30.750 T 30.750 TT 30.750 M:  0.44515  0.37163
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+new alloc for instr 1:
+warning: instr 1 uses 7 p-fields but is given 11
+B 30.750 .. 31.750 T 31.750 TT 31.750 M:  0.66558  0.75308
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B 31.750 .. 32.500 T 32.500 TT 32.500 M:  0.78864  0.62674
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B 32.500 .. 32.750 T 32.750 TT 32.750 M:  0.44938  0.71866
+warning: instr 1 uses 7 p-fields but is given 11
+B 32.750 .. 33.750 T 33.750 TT 33.750 M:  0.41818  0.53999
+warning: instr 1 uses 7 p-fields but is given 11
+B 33.750 .. 34.500 T 34.500 TT 34.500 M:  0.21586  0.33154
+warning: instr 1 uses 7 p-fields but is given 11
+B 34.500 .. 38.000 T 38.000 TT 38.000 M:  0.32877  0.30596
+warning: instr 2 uses 7 p-fields but is given 11
+warning: instr 3 uses 7 p-fields but is given 11
+B 38.000 .. 38.500 T 38.500 TT 38.500 M:  0.01548  0.01559
+warning: instr 1 uses 7 p-fields but is given 11
+B 38.500 .. 39.000 T 39.000 TT 39.000 M:  0.20131  0.35184
+warning: instr 2 uses 7 p-fields but is given 11
+warning: instr 3 uses 7 p-fields but is given 11
+B 39.000 .. 39.500 T 39.500 TT 39.500 M:  0.12943  0.20738
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B 39.500 .. 40.500 T 40.500 TT 40.500 M:  0.58619  0.35501
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B 40.500 .. 41.250 T 41.250 TT 41.250 M:  0.60077  0.67998
+warning: instr 1 uses 7 p-fields but is given 11
+B 41.250 .. 41.500 T 41.500 TT 41.500 M:  0.46384  0.36110
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B 41.500 .. 42.250 T 42.250 TT 42.250 M:  0.73404  0.70112
+warning: instr 1 uses 7 p-fields but is given 11
+new alloc for instr 1:
+warning: instr 1 uses 7 p-fields but is given 11
+B 42.250 .. 42.500 T 42.500 TT 42.500 M:  0.54468  0.74709
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B 42.500 .. 43.250 T 43.250 TT 43.250 M:  0.68397  0.63751
+new alloc for instr 1:
+warning: instr 1 uses 7 p-fields but is given 11
+new alloc for instr 1:
+warning: instr 1 uses 7 p-fields but is given 11
+B 43.250 .. 43.500 T 43.500 TT 43.500 M:  0.58618  0.60588
+warning: instr 1 uses 7 p-fields but is given 11
+B 43.500 .. 43.750 T 43.750 TT 43.750 M:  0.48923  0.54415
+warning: instr 1 uses 7 p-fields but is given 11
+B 43.750 .. 44.250 T 44.250 TT 44.250 M:  0.59909  0.50569
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B 44.250 .. 44.750 T 44.750 TT 44.750 M:  0.71390  0.49888
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B 44.750 .. 45.250 T 45.250 TT 45.250 M:  0.68173  0.70685
+warning: instr 1 uses 7 p-fields but is given 11
+B 45.250 .. 45.750 T 45.750 TT 45.750 M:  0.43294  0.50632
+warning: instr 1 uses 7 p-fields but is given 11
+B 45.750 .. 51.000 T 51.000 TT 51.000 M:  0.50376  0.47629
+warning: instr 2 uses 7 p-fields but is given 11
+warning: instr 3 uses 7 p-fields but is given 11
+B 51.000 .. 51.750 T 51.750 TT 51.750 M:  0.02723  0.02534
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B 51.750 .. 52.750 T 52.750 TT 52.750 M:  0.39183  0.41400
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B 52.750 .. 53.000 T 53.000 TT 53.000 M:  0.54007  0.39969
+warning: instr 2 uses 7 p-fields but is given 11
+warning: instr 3 uses 7 p-fields but is given 11
+B 53.000 .. 53.500 T 53.500 TT 53.500 M:  0.35488  0.25880
+warning: instr 1 uses 7 p-fields but is given 11
+B 53.500 .. 53.750 T 53.750 TT 53.750 M:  0.28319  0.42511
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B 53.750 .. 54.750 T 54.750 TT 54.750 M:  0.72870  0.64272
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B 54.750 .. 55.500 T 55.500 TT 55.500 M:  0.59241  0.78565
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B 55.500 .. 55.750 T 55.750 TT 55.750 M:  0.64075  0.43965
+warning: instr 1 uses 7 p-fields but is given 11
+B 55.750 .. 56.750 T 56.750 TT 56.750 M:  0.53263  0.45754
+warning: instr 1 uses 7 p-fields but is given 11
+B 56.750 .. 57.500 T 57.500 TT 57.500 M:  0.30970  0.26137
+warning: instr 1 uses 7 p-fields but is given 11
+B 57.500 .. 62.000 T 62.000 TT 62.000 M:  0.22147  0.35897
+warning: instr 3 uses 7 p-fields but is given 11
+B 62.000 .. 62.750 T 62.750 TT 62.750 M:  0.03200  0.03644
+warning: instr 1 uses 7 p-fields but is given 11
+B 62.750 .. 63.250 T 63.250 TT 63.250 M:  0.32763  0.17928
+warning: instr 1 uses 7 p-fields but is given 11
+B 63.250 .. 63.750 T 63.750 TT 63.750 M:  0.36416  0.21283
+warning: instr 1 uses 7 p-fields but is given 11
+B 63.750 .. 64.250 T 64.250 TT 64.250 M:  0.32739  0.30068
+warning: instr 1 uses 7 p-fields but is given 11
+B 64.250 .. 64.875 T 64.875 TT 64.875 M:  0.34542  0.25636
+warning: instr 1 uses 7 p-fields but is given 11
+B 64.875 .. 65.000 T 65.000 TT 65.000 M:  0.37804  0.30968
+warning: instr 2 uses 7 p-fields but is given 11
+B 65.000 .. 65.250 T 65.250 TT 65.250 M:  0.31899  0.27246
+warning: instr 1 uses 7 p-fields but is given 11
+B 65.250 .. 65.375 T 65.375 TT 65.375 M:  0.49125  0.29741
+warning: instr 1 uses 7 p-fields but is given 11
+B 65.375 .. 66.250 T 66.250 TT 66.250 M:  0.64959  0.64103
+warning: instr 1 uses 7 p-fields but is given 11
+B 66.250 .. 66.625 T 66.625 TT 66.625 M:  0.38774  0.28510
+warning: instr 1 uses 7 p-fields but is given 11
+B 66.625 .. 67.125 T 67.125 TT 67.125 M:  0.32808  0.47627
+warning: instr 1 uses 7 p-fields but is given 11
+B 67.125 .. 67.625 T 67.625 TT 67.625 M:  0.57553  0.43956
+warning: instr 1 uses 7 p-fields but is given 11
+B 67.625 .. 68.125 T 68.125 TT 68.125 M:  0.48315  0.28778
+warning: instr 1 uses 7 p-fields but is given 11
+B 68.125 .. 69.000 T 69.000 TT 69.000 M:  0.36154  0.43760
+warning: instr 3 uses 7 p-fields but is given 11
+B 69.000 .. 69.375 T 69.375 TT 69.375 M:  0.09368  0.12334
+warning: instr 1 uses 7 p-fields but is given 11
+B 69.375 .. 69.875 T 69.875 TT 69.875 M:  0.22372  0.26965
+warning: instr 1 uses 7 p-fields but is given 11
+B 69.875 .. 70.375 T 70.375 TT 70.375 M:  0.33875  0.31917
+warning: instr 1 uses 7 p-fields but is given 11
+B 70.375 .. 71.250 T 71.250 TT 71.250 M:  0.35548  0.33256
+warning: instr 1 uses 7 p-fields but is given 11
+B 71.250 .. 72.500 T 72.500 TT 72.500 M:  0.31314  0.21569
+warning: instr 2 uses 7 p-fields but is given 11
+B 72.500 .. 72.875 T 72.875 TT 72.875 M:  0.06448  0.05650
+warning: instr 1 uses 7 p-fields but is given 11
+B 72.875 .. 73.375 T 73.375 TT 73.375 M:  0.30733  0.30088
+warning: instr 1 uses 7 p-fields but is given 11
+B 73.375 .. 73.750 T 73.750 TT 73.750 M:  0.28040  0.41692
+warning: instr 1 uses 7 p-fields but is given 11
+B 73.750 .. 74.375 T 74.375 TT 74.375 M:  0.44638  0.36052
+warning: instr 1 uses 7 p-fields but is given 11
+B 74.375 .. 75.000 T 75.000 TT 75.000 M:  0.29448  0.25351
+warning: instr 3 uses 7 p-fields but is given 11
+B 75.000 .. 75.750 T 75.750 TT 75.750 M:  0.13191  0.10835
+warning: instr 1 uses 7 p-fields but is given 11
+B 75.750 .. 76.250 T 76.250 TT 76.250 M:  0.35810  0.19062
+warning: instr 1 uses 7 p-fields but is given 11
+B 76.250 .. 76.750 T 76.750 TT 76.750 M:  0.39757  0.26818
+warning: instr 1 uses 7 p-fields but is given 11
+B 76.750 .. 77.250 T 77.250 TT 77.250 M:  0.34117  0.38055
+warning: instr 1 uses 7 p-fields but is given 11
+B 77.250 .. 77.875 T 77.875 TT 77.875 M:  0.33599  0.27468
+warning: instr 1 uses 7 p-fields but is given 11
+B 77.875 .. 78.375 T 78.375 TT 78.375 M:  0.38004  0.30309
+warning: instr 1 uses 7 p-fields but is given 11
+B 78.375 .. 79.000 T 79.000 TT 79.000 M:  0.42496  0.42912
+warning: instr 2 uses 7 p-fields but is given 11
+B 79.000 .. 79.250 T 79.250 TT 79.250 M:  0.13780  0.16058
+warning: instr 1 uses 7 p-fields but is given 11
+B 79.250 .. 80.250 T 80.250 TT 80.250 M:  0.41093  0.29727
+warning: instr 1 uses 7 p-fields but is given 11
+B 80.250 .. 80.625 T 80.625 TT 80.625 M:  0.39007  0.22101
+warning: instr 1 uses 7 p-fields but is given 11
+B 80.625 .. 81.125 T 81.125 TT 81.125 M:  0.37211  0.42386
+warning: instr 1 uses 7 p-fields but is given 11
+B 81.125 .. 81.625 T 81.625 TT 81.625 M:  0.50278  0.43839
+warning: instr 1 uses 7 p-fields but is given 11
+B 81.625 .. 82.125 T 82.125 TT 82.125 M:  0.41093  0.29733
+warning: instr 1 uses 7 p-fields but is given 11
+B 82.125 .. 82.500 T 82.500 TT 82.500 M:  0.37093  0.45490
+warning: instr 3 uses 7 p-fields but is given 11
+B 82.500 .. 82.875 T 82.875 TT 82.875 M:  0.23929  0.21633
+warning: instr 1 uses 7 p-fields but is given 11
+B 82.875 .. 83.375 T 83.375 TT 83.375 M:  0.25462  0.29506
+warning: instr 1 uses 7 p-fields but is given 11
+B 83.375 .. 83.875 T 83.875 TT 83.875 M:  0.34716  0.28229
+warning: instr 1 uses 7 p-fields but is given 11
+B 83.875 .. 84.750 T 84.750 TT 84.750 M:  0.33436  0.27340
+warning: instr 1 uses 7 p-fields but is given 11
+B 84.750 .. 86.000 T 86.000 TT 86.000 M:  0.31270  0.18965
+warning: instr 2 uses 7 p-fields but is given 11
+B 86.000 .. 86.375 T 86.375 TT 86.375 M:  0.05848  0.05401
+warning: instr 1 uses 7 p-fields but is given 11
+B 86.375 .. 86.875 T 86.875 TT 86.875 M:  0.33494  0.35379
+warning: instr 1 uses 7 p-fields but is given 11
+B 86.875 .. 87.250 T 87.250 TT 87.250 M:  0.31542  0.48833
+warning: instr 1 uses 7 p-fields but is given 11
+B 87.250 .. 87.875 T 87.875 TT 87.875 M:  0.48401  0.41489
+warning: instr 1 uses 7 p-fields but is given 11
+B 87.875 .. 89.000 T 89.000 TT 89.000 M:  0.34300  0.29952
+warning: instr 3 uses 7 p-fields but is given 11
+B 89.000 .. 89.750 T 89.750 TT 89.750 M:  0.10482  0.09770
+warning: instr 1 uses 7 p-fields but is given 11
+B 89.750 .. 90.250 T 90.250 TT 90.250 M:  0.35224  0.23236
+warning: instr 1 uses 7 p-fields but is given 11
+B 90.250 .. 90.750 T 90.750 TT 90.750 M:  0.42435  0.25036
+warning: instr 1 uses 7 p-fields but is given 11
+B 90.750 .. 91.250 T 91.250 TT 91.250 M:  0.33797  0.35066
+warning: instr 1 uses 7 p-fields but is given 11
+B 91.250 .. 91.875 T 91.875 TT 91.875 M:  0.39418  0.26493
+warning: instr 1 uses 7 p-fields but is given 11
+B 91.875 .. 92.375 T 92.375 TT 92.375 M:  0.41187  0.37827
+warning: instr 1 uses 7 p-fields but is given 11
+B 92.375 .. 93.500 T 93.500 TT 93.500 M:  0.44299  0.53048
+warning: instr 2 uses 7 p-fields but is given 11
+B 93.500 .. 93.750 T 93.750 TT 93.750 M:  0.07840  0.09342
+warning: instr 1 uses 7 p-fields but is given 11
+B 93.750 .. 94.750 T 94.750 TT 94.750 M:  0.38718  0.23737
+warning: instr 1 uses 7 p-fields but is given 11
+B 94.750 .. 95.125 T 95.125 TT 95.125 M:  0.40123  0.29383
+warning: instr 1 uses 7 p-fields but is given 11
+B 95.125 .. 95.625 T 95.625 TT 95.625 M:  0.36300  0.44179
+warning: instr 1 uses 7 p-fields but is given 11
+B 95.625 .. 96.000 T 96.000 TT 96.000 M:  0.51934  0.39512
+warning: instr 3 uses 7 p-fields but is given 11
+B 96.000 .. 96.125 T 96.125 TT 96.125 M:  0.24042  0.19495
+warning: instr 1 uses 7 p-fields but is given 11
+B 96.125 .. 96.375 T 96.375 TT 96.375 M:  0.43448  0.29417
+warning: instr 1 uses 7 p-fields but is given 11
+B 96.375 .. 96.625 T 96.625 TT 96.625 M:  0.46788  0.40276
+warning: instr 1 uses 7 p-fields but is given 11
+B 96.625 .. 96.875 T 96.875 TT 96.875 M:  0.46201  0.47459
+warning: instr 1 uses 7 p-fields but is given 11
+B 96.875 .. 97.000 T 97.000 TT 97.000 M:  0.51782  0.47384
+warning: instr 2 uses 7 p-fields but is given 11
+B 97.000 .. 97.375 T 97.375 TT 97.375 M:  0.40682  0.42187
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B 97.375 .. 97.875 T 97.875 TT 97.875 M:  0.63438  0.57060
+warning: instr 1 uses 7 p-fields but is given 11
+B 97.875 .. 98.250 T 98.250 TT 98.250 M:  0.40038  0.50577
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B 98.250 .. 98.875 T 98.875 TT 98.875 M:  0.72134  0.48094
+warning: instr 1 uses 7 p-fields but is given 11
+B 98.875 ..101.000 T101.000 TT101.000 M:  0.46527  0.30070
+warning: instr 2 uses 7 p-fields but is given 11
+B101.000 ..101.250 T101.250 TT101.250 M:  0.10427  0.10325
+warning: instr 1 uses 7 p-fields but is given 11
+B101.250 ..102.250 T102.250 TT102.250 M:  0.38141  0.29002
+warning: instr 1 uses 7 p-fields but is given 11
+B102.250 ..102.625 T102.625 TT102.625 M:  0.36227  0.28310
+warning: instr 1 uses 7 p-fields but is given 11
+B102.625 ..103.125 T103.125 TT103.125 M:  0.33440  0.45152
+warning: instr 1 uses 7 p-fields but is given 11
+B103.125 ..103.500 T103.500 TT103.500 M:  0.44617  0.43222
+warning: instr 3 uses 7 p-fields but is given 11
+B103.500 ..103.625 T103.625 TT103.625 M:  0.22097  0.21780
+warning: instr 1 uses 7 p-fields but is given 11
+B103.625 ..104.125 T104.125 TT104.125 M:  0.34808  0.29195
+warning: instr 1 uses 7 p-fields but is given 11
+B104.125 ..104.250 T104.250 TT104.250 M:  0.31305  0.37193
+warning: instr 1 uses 7 p-fields but is given 11
+B104.250 ..104.750 T104.750 TT104.750 M:  0.48182  0.46104
+warning: instr 1 uses 7 p-fields but is given 11
+B104.750 ..105.250 T105.250 TT105.250 M:  0.41760  0.27624
+warning: instr 1 uses 7 p-fields but is given 11
+B105.250 ..105.750 T105.750 TT105.750 M:  0.30443  0.38634
+warning: instr 1 uses 7 p-fields but is given 11
+B105.750 ..106.375 T106.375 TT106.375 M:  0.36519  0.32507
+warning: instr 1 uses 7 p-fields but is given 11
+B106.375 ..106.875 T106.875 TT106.875 M:  0.40532  0.32486
+warning: instr 1 uses 7 p-fields but is given 11
+B106.875 ..107.000 T107.000 TT107.000 M:  0.40859  0.48332
+warning: instr 3 uses 7 p-fields but is given 11
+B107.000 ..107.375 T107.375 TT107.375 M:  0.33528  0.35674
+warning: instr 1 uses 7 p-fields but is given 11
+B107.375 ..107.500 T107.500 TT107.500 M:  0.30002  0.35891
+warning: instr 2 uses 7 p-fields but is given 11
+B107.500 ..107.875 T107.875 TT107.875 M:  0.29341  0.29847
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B107.875 ..108.375 T108.375 TT108.375 M:  0.58000  0.54901
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B108.375 ..108.750 T108.750 TT108.750 M:  0.51413  0.65367
+warning: instr 1 uses 7 p-fields but is given 11
+B108.750 ..109.250 T109.250 TT109.250 M:  0.55830  0.41810
+warning: instr 1 uses 7 p-fields but is given 11
+B109.250 ..109.375 T109.375 TT109.375 M:  0.45408  0.30799
+warning: instr 1 uses 7 p-fields but is given 11
+B109.375 ..111.000 T111.000 TT111.000 M:  0.56646  0.38147
+warning: instr 3 uses 7 p-fields but is given 11
+B111.000 ..111.750 T111.750 TT111.750 M:  0.08160  0.07949
+warning: instr 1 uses 7 p-fields but is given 11
+B111.750 ..112.250 T112.250 TT112.250 M:  0.31863  0.20018
+warning: instr 1 uses 7 p-fields but is given 11
+B112.250 ..112.750 T112.750 TT112.750 M:  0.38365  0.29094
+warning: instr 1 uses 7 p-fields but is given 11
+B112.750 ..113.000 T113.000 TT113.000 M:  0.35452  0.32360
+warning: instr 2 uses 7 p-fields but is given 11
+B113.000 ..113.250 T113.250 TT113.250 M:  0.21097  0.24828
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B113.250 ..113.875 T113.875 TT113.875 M:  0.58187  0.38564
+warning: instr 1 uses 7 p-fields but is given 11
+B113.875 ..114.250 T114.250 TT114.250 M:  0.47406  0.33105
+warning: instr 1 uses 7 p-fields but is given 11
+B114.250 ..114.375 T114.375 TT114.375 M:  0.56412  0.38158
+warning: instr 1 uses 7 p-fields but is given 11
+B114.375 ..114.625 T114.625 TT114.625 M:  0.62606  0.56854
+warning: instr 1 uses 7 p-fields but is given 11
+B114.625 ..115.125 T115.125 TT115.125 M:  0.52840  0.68445
+warning: instr 1 uses 7 p-fields but is given 11
+B115.125 ..115.625 T115.625 TT115.625 M:  0.53379  0.48231
+warning: instr 1 uses 7 p-fields but is given 11
+B115.625 ..116.125 T116.125 TT116.125 M:  0.37603  0.28343
+warning: instr 1 uses 7 p-fields but is given 11
+B116.125 ..117.500 T117.500 TT117.500 M:  0.31654  0.43246
+warning: instr 3 uses 7 p-fields but is given 11
+B117.500 ..117.875 T117.875 TT117.875 M:  0.08949  0.09172
+warning: instr 1 uses 7 p-fields but is given 11
+B117.875 ..118.375 T118.375 TT118.375 M:  0.23790  0.25288
+warning: instr 1 uses 7 p-fields but is given 11
+B118.375 ..118.875 T118.875 TT118.875 M:  0.33308  0.28718
+warning: instr 1 uses 7 p-fields but is given 11
+B118.875 ..119.750 T119.750 TT119.750 M:  0.32390  0.24019
+warning: instr 1 uses 7 p-fields but is given 11
+B119.750 ..120.000 T120.000 TT120.000 M:  0.32712  0.18951
+warning: instr 2 uses 7 p-fields but is given 11
+B120.000 ..120.375 T120.375 TT120.375 M:  0.25190  0.15586
+warning: instr 1 uses 7 p-fields but is given 11
+B120.375 ..120.875 T120.875 TT120.875 M:  0.40178  0.33528
+warning: instr 1 uses 7 p-fields but is given 11
+B120.875 ..121.250 T121.250 TT121.250 M:  0.35734  0.41543
+warning: instr 1 uses 7 p-fields but is given 11
+B121.250 ..121.875 T121.875 TT121.875 M:  0.51050  0.35838
+warning: instr 1 uses 7 p-fields but is given 11
+B121.875 ..123.000 T123.000 TT123.000 M:  0.36753  0.26285
+warning: instr 3 uses 7 p-fields but is given 11
+B123.000 ..123.750 T123.750 TT123.750 M:  0.10832  0.10047
+warning: instr 1 uses 7 p-fields but is given 11
+B123.750 ..124.250 T124.250 TT124.250 M:  0.36522  0.23467
+warning: instr 1 uses 7 p-fields but is given 11
+B124.250 ..124.750 T124.750 TT124.750 M:  0.42448  0.25994
+warning: instr 1 uses 7 p-fields but is given 11
+B124.750 ..125.250 T125.250 TT125.250 M:  0.40492  0.33794
+warning: instr 1 uses 7 p-fields but is given 11
+B125.250 ..125.875 T125.875 TT125.875 M:  0.34771  0.28808
+warning: instr 1 uses 7 p-fields but is given 11
+B125.875 ..126.000 T126.000 TT126.000 M:  0.37684  0.34592
+warning: instr 2 uses 7 p-fields but is given 11
+B126.000 ..126.250 T126.250 TT126.250 M:  0.34505  0.27190
+warning: instr 1 uses 7 p-fields but is given 11
+B126.250 ..126.375 T126.375 TT126.375 M:  0.51909  0.37057
+warning: instr 1 uses 7 p-fields but is given 11
+B126.375 ..127.250 T127.250 TT127.250 M:  0.67762  0.61339
+warning: instr 1 uses 7 p-fields but is given 11
+B127.250 ..127.625 T127.625 TT127.625 M:  0.39828  0.27898
+warning: instr 1 uses 7 p-fields but is given 11
+B127.625 ..128.125 T128.125 TT128.125 M:  0.35834  0.48511
+warning: instr 1 uses 7 p-fields but is given 11
+B128.125 ..128.625 T128.625 TT128.625 M:  0.57017  0.44898
+warning: instr 1 uses 7 p-fields but is given 11
+B128.625 ..129.125 T129.125 TT129.125 M:  0.44894  0.28958
+warning: instr 1 uses 7 p-fields but is given 11
+B129.125 ..130.000 T130.000 TT130.000 M:  0.35117  0.46106
+warning: instr 3 uses 7 p-fields but is given 11
+B130.000 ..130.375 T130.375 TT130.375 M:  0.11148  0.10796
+warning: instr 1 uses 7 p-fields but is given 11
+B130.375 ..130.875 T130.875 TT130.875 M:  0.22399  0.24620
+warning: instr 1 uses 7 p-fields but is given 11
+B130.875 ..131.375 T131.375 TT131.375 M:  0.35719  0.32872
+warning: instr 1 uses 7 p-fields but is given 11
+B131.375 ..132.250 T132.250 TT132.250 M:  0.32614  0.33527
+warning: instr 1 uses 7 p-fields but is given 11
+B132.250 ..133.500 T133.500 TT133.500 M:  0.33204  0.22438
+warning: instr 2 uses 7 p-fields but is given 11
+B133.500 ..133.875 T133.875 TT133.875 M:  0.09633  0.07698
+warning: instr 1 uses 7 p-fields but is given 11
+B133.875 ..134.375 T134.375 TT134.375 M:  0.32331  0.32078
+warning: instr 1 uses 7 p-fields but is given 11
+B134.375 ..134.750 T134.750 TT134.750 M:  0.32940  0.46238
+warning: instr 1 uses 7 p-fields but is given 11
+B134.750 ..135.375 T135.375 TT135.375 M:  0.48194  0.37738
+warning: instr 1 uses 7 p-fields but is given 11
+B135.375 ..136.000 T136.000 TT136.000 M:  0.31340  0.24025
+warning: instr 3 uses 7 p-fields but is given 11
+B136.000 ..136.750 T136.750 TT136.750 M:  0.12641  0.10366
+warning: instr 1 uses 7 p-fields but is given 11
+B136.750 ..137.250 T137.250 TT137.250 M:  0.36334  0.19739
+warning: instr 1 uses 7 p-fields but is given 11
+B137.250 ..137.750 T137.750 TT137.750 M:  0.42224  0.27245
+warning: instr 1 uses 7 p-fields but is given 11
+B137.750 ..138.250 T138.250 TT138.250 M:  0.37862  0.38030
+warning: instr 1 uses 7 p-fields but is given 11
+B138.250 ..138.875 T138.875 TT138.875 M:  0.36223  0.29818
+warning: instr 1 uses 7 p-fields but is given 11
+B138.875 ..139.375 T139.375 TT139.375 M:  0.37833  0.29485
+warning: instr 1 uses 7 p-fields but is given 11
+B139.375 ..140.000 T140.000 TT140.000 M:  0.44750  0.46781
+warning: instr 2 uses 7 p-fields but is given 11
+B140.000 ..140.250 T140.250 TT140.250 M:  0.13797  0.14829
+warning: instr 1 uses 7 p-fields but is given 11
+B140.250 ..141.250 T141.250 TT141.250 M:  0.44816  0.30993
+warning: instr 1 uses 7 p-fields but is given 11
+B141.250 ..141.625 T141.625 TT141.625 M:  0.39246  0.25266
+warning: instr 1 uses 7 p-fields but is given 11
+B141.625 ..142.125 T142.125 TT142.125 M:  0.35749  0.42437
+warning: instr 1 uses 7 p-fields but is given 11
+B142.125 ..142.625 T142.625 TT142.625 M:  0.52604  0.39676
+warning: instr 1 uses 7 p-fields but is given 11
+B142.625 ..143.125 T143.125 TT143.125 M:  0.43211  0.31381
+warning: instr 1 uses 7 p-fields but is given 11
+B143.125 ..143.500 T143.500 TT143.500 M:  0.35205  0.42281
+warning: instr 3 uses 7 p-fields but is given 11
+B143.500 ..143.875 T143.875 TT143.875 M:  0.19420  0.23681
+warning: instr 1 uses 7 p-fields but is given 11
+B143.875 ..144.375 T144.375 TT144.375 M:  0.27242  0.29042
+warning: instr 1 uses 7 p-fields but is given 11
+B144.375 ..144.875 T144.875 TT144.875 M:  0.35868  0.26632
+warning: instr 1 uses 7 p-fields but is given 11
+B144.875 ..145.750 T145.750 TT145.750 M:  0.34111  0.28972
+warning: instr 1 uses 7 p-fields but is given 11
+B145.750 ..147.000 T147.000 TT147.000 M:  0.31405  0.19236
+warning: instr 2 uses 7 p-fields but is given 11
+B147.000 ..147.375 T147.375 TT147.375 M:  0.06466  0.06103
+warning: instr 1 uses 7 p-fields but is given 11
+B147.375 ..147.875 T147.875 TT147.875 M:  0.32747  0.35437
+warning: instr 1 uses 7 p-fields but is given 11
+B147.875 ..148.250 T148.250 TT148.250 M:  0.33199  0.47679
+warning: instr 1 uses 7 p-fields but is given 11
+B148.250 ..148.875 T148.875 TT148.875 M:  0.48752  0.44163
+warning: instr 1 uses 7 p-fields but is given 11
+B148.875 ..150.000 T150.000 TT150.000 M:  0.36588  0.29907
+warning: instr 3 uses 7 p-fields but is given 11
+B150.000 ..150.750 T150.750 TT150.750 M:  0.10552  0.10219
+warning: instr 1 uses 7 p-fields but is given 11
+B150.750 ..151.250 T151.250 TT151.250 M:  0.37803  0.22084
+warning: instr 1 uses 7 p-fields but is given 11
+B151.250 ..151.750 T151.750 TT151.750 M:  0.49298  0.24460
+warning: instr 1 uses 7 p-fields but is given 11
+B151.750 ..152.250 T152.250 TT152.250 M:  0.33422  0.34016
+warning: instr 1 uses 7 p-fields but is given 11
+B152.250 ..152.875 T152.875 TT152.875 M:  0.35135  0.30284
+warning: instr 1 uses 7 p-fields but is given 11
+B152.875 ..153.375 T153.375 TT153.375 M:  0.39201  0.37169
+warning: instr 1 uses 7 p-fields but is given 11
+B153.375 ..154.500 T154.500 TT154.500 M:  0.43006  0.52863
+warning: instr 2 uses 7 p-fields but is given 11
+B154.500 ..154.750 T154.750 TT154.750 M:  0.09870  0.09200
+warning: instr 1 uses 7 p-fields but is given 11
+B154.750 ..155.750 T155.750 TT155.750 M:  0.42899  0.26679
+warning: instr 1 uses 7 p-fields but is given 11
+B155.750 ..156.125 T156.125 TT156.125 M:  0.42067  0.24604
+warning: instr 1 uses 7 p-fields but is given 11
+B156.125 ..156.625 T156.625 TT156.625 M:  0.40341  0.47756
+warning: instr 1 uses 7 p-fields but is given 11
+B156.625 ..157.000 T157.000 TT157.000 M:  0.51960  0.38181
+warning: instr 3 uses 7 p-fields but is given 11
+B157.000 ..157.125 T157.125 TT157.125 M:  0.26492  0.22213
+warning: instr 1 uses 7 p-fields but is given 11
+B157.125 ..157.375 T157.375 TT157.375 M:  0.44111  0.27042
+warning: instr 1 uses 7 p-fields but is given 11
+B157.375 ..157.625 T157.625 TT157.625 M:  0.49755  0.36748
+warning: instr 1 uses 7 p-fields but is given 11
+B157.625 ..157.875 T157.875 TT157.875 M:  0.42966  0.48842
+warning: instr 1 uses 7 p-fields but is given 11
+B157.875 ..158.000 T158.000 TT158.000 M:  0.49716  0.49667
+warning: instr 2 uses 7 p-fields but is given 11
+B158.000 ..158.375 T158.375 TT158.375 M:  0.39516  0.42355
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B158.375 ..158.875 T158.875 TT158.875 M:  0.62623  0.53345
+warning: instr 1 uses 7 p-fields but is given 11
+B158.875 ..159.250 T159.250 TT159.250 M:  0.36536  0.46108
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B159.250 ..159.875 T159.875 TT159.875 M:  0.71865  0.47176
+warning: instr 1 uses 7 p-fields but is given 11
+B159.875 ..162.000 T162.000 TT162.000 M:  0.43551  0.27380
+warning: instr 2 uses 7 p-fields but is given 11
+B162.000 ..162.250 T162.250 TT162.250 M:  0.11911  0.13052
+warning: instr 1 uses 7 p-fields but is given 11
+B162.250 ..163.250 T163.250 TT163.250 M:  0.39015  0.29142
+warning: instr 1 uses 7 p-fields but is given 11
+B163.250 ..163.625 T163.625 TT163.625 M:  0.38111  0.28838
+warning: instr 1 uses 7 p-fields but is given 11
+B163.625 ..164.125 T164.125 TT164.125 M:  0.38117  0.49750
+warning: instr 1 uses 7 p-fields but is given 11
+B164.125 ..164.500 T164.500 TT164.500 M:  0.49816  0.44078
+warning: instr 3 uses 7 p-fields but is given 11
+B164.500 ..164.625 T164.625 TT164.625 M:  0.28677  0.22546
+warning: instr 1 uses 7 p-fields but is given 11
+B164.625 ..165.125 T165.125 TT165.125 M:  0.41199  0.31034
+warning: instr 1 uses 7 p-fields but is given 11
+B165.125 ..165.250 T165.250 TT165.250 M:  0.37853  0.41815
+warning: instr 1 uses 7 p-fields but is given 11
+B165.250 ..165.750 T165.750 TT165.750 M:  0.57123  0.46126
+warning: instr 1 uses 7 p-fields but is given 11
+B165.750 ..166.250 T166.250 TT166.250 M:  0.47953  0.32699
+warning: instr 1 uses 7 p-fields but is given 11
+B166.250 ..166.750 T166.750 TT166.750 M:  0.39447  0.37640
+warning: instr 1 uses 7 p-fields but is given 11
+B166.750 ..167.375 T167.375 TT167.375 M:  0.36241  0.29160
+warning: instr 1 uses 7 p-fields but is given 11
+B167.375 ..167.875 T167.875 TT167.875 M:  0.41223  0.29837
+warning: instr 1 uses 7 p-fields but is given 11
+B167.875 ..168.000 T168.000 TT168.000 M:  0.43694  0.45888
+warning: instr 3 uses 7 p-fields but is given 11
+B168.000 ..168.375 T168.375 TT168.375 M:  0.34473  0.36763
+warning: instr 1 uses 7 p-fields but is given 11
+B168.375 ..168.500 T168.500 TT168.500 M:  0.33386  0.34517
+warning: instr 2 uses 7 p-fields but is given 11
+B168.500 ..168.875 T168.875 TT168.875 M:  0.33551  0.30570
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B168.875 ..169.375 T169.375 TT169.375 M:  0.60372  0.55888
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B169.375 ..169.750 T169.750 TT169.750 M:  0.58219  0.65728
+warning: instr 1 uses 7 p-fields but is given 11
+B169.750 ..170.250 T170.250 TT170.250 M:  0.54053  0.43783
+warning: instr 1 uses 7 p-fields but is given 11
+B170.250 ..170.375 T170.375 TT170.375 M:  0.36802  0.29011
+warning: instr 1 uses 7 p-fields but is given 11
+B170.375 ..172.000 T172.000 TT172.000 M:  0.55205  0.36511
+warning: instr 3 uses 7 p-fields but is given 11
+B172.000 ..172.750 T172.750 TT172.750 M:  0.08974  0.09758
+warning: instr 1 uses 7 p-fields but is given 11
+B172.750 ..173.250 T173.250 TT173.250 M:  0.31557  0.19038
+warning: instr 1 uses 7 p-fields but is given 11
+B173.250 ..173.750 T173.750 TT173.750 M:  0.41010  0.25245
+warning: instr 1 uses 7 p-fields but is given 11
+B173.750 ..174.000 T174.000 TT174.000 M:  0.32190  0.31505
+warning: instr 2 uses 7 p-fields but is given 11
+B174.000 ..174.250 T174.250 TT174.250 M:  0.20538  0.22557
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B174.250 ..174.875 T174.875 TT174.875 M:  0.61302  0.42437
+warning: instr 1 uses 7 p-fields but is given 11
+B174.875 ..175.250 T175.250 TT175.250 M:  0.43960  0.35575
+warning: instr 1 uses 7 p-fields but is given 11
+B175.250 ..175.375 T175.375 TT175.375 M:  0.46818  0.32218
+warning: instr 1 uses 7 p-fields but is given 11
+B175.375 ..175.625 T175.625 TT175.625 M:  0.56549  0.52369
+warning: instr 1 uses 7 p-fields but is given 11
+B175.625 ..176.125 T176.125 TT176.125 M:  0.50422  0.60467
+warning: instr 1 uses 7 p-fields but is given 11
+B176.125 ..176.625 T176.625 TT176.625 M:  0.49133  0.44927
+warning: instr 1 uses 7 p-fields but is given 11
+B176.625 ..177.125 T177.125 TT177.125 M:  0.39913  0.28033
+warning: instr 1 uses 7 p-fields but is given 11
+B177.125 ..178.500 T178.500 TT178.500 M:  0.34042  0.40435
+warning: instr 3 uses 7 p-fields but is given 11
+B178.500 ..178.875 T178.875 TT178.875 M:  0.08269  0.09138
+warning: instr 1 uses 7 p-fields but is given 11
+B178.875 ..179.375 T179.375 TT179.375 M:  0.23323  0.24660
+warning: instr 1 uses 7 p-fields but is given 11
+B179.375 ..179.875 T179.875 TT179.875 M:  0.33805  0.28574
+warning: instr 1 uses 7 p-fields but is given 11
+B179.875 ..180.750 T180.750 TT180.750 M:  0.32624  0.26463
+warning: instr 1 uses 7 p-fields but is given 11
+B180.750 ..181.000 T181.000 TT181.000 M:  0.33346  0.18404
+warning: instr 2 uses 7 p-fields but is given 11
+B181.000 ..181.375 T181.375 TT181.375 M:  0.24554  0.14895
+warning: instr 1 uses 7 p-fields but is given 11
+B181.375 ..181.875 T181.875 TT181.875 M:  0.38910  0.31646
+warning: instr 1 uses 7 p-fields but is given 11
+B181.875 ..182.250 T182.250 TT182.250 M:  0.38548  0.41779
+warning: instr 1 uses 7 p-fields but is given 11
+B182.250 ..182.875 T182.875 TT182.875 M:  0.50055  0.39165
+warning: instr 1 uses 7 p-fields but is given 11
+B182.875 ..184.000 T184.000 TT184.000 M:  0.37865  0.22617
+warning: instr 3 uses 7 p-fields but is given 11
+B184.000 ..184.750 T184.750 TT184.750 M:  0.10849  0.09996
+warning: instr 1 uses 7 p-fields but is given 11
+B184.750 ..185.250 T185.250 TT185.250 M:  0.38118  0.23735
+warning: instr 1 uses 7 p-fields but is given 11
+B185.250 ..185.750 T185.750 TT185.750 M:  0.40875  0.26265
+warning: instr 1 uses 7 p-fields but is given 11
+B185.750 ..186.250 T186.250 TT186.250 M:  0.31916  0.31803
+warning: instr 1 uses 7 p-fields but is given 11
+B186.250 ..186.875 T186.875 TT186.875 M:  0.35315  0.26093
+warning: instr 1 uses 7 p-fields but is given 11
+B186.875 ..187.000 T187.000 TT187.000 M:  0.37658  0.35011
+warning: instr 2 uses 7 p-fields but is given 11
+B187.000 ..187.250 T187.250 TT187.250 M:  0.31129  0.28336
+warning: instr 1 uses 7 p-fields but is given 11
+B187.250 ..187.375 T187.375 TT187.375 M:  0.52971  0.36831
+warning: instr 1 uses 7 p-fields but is given 11
+B187.375 ..188.250 T188.250 TT188.250 M:  0.69415  0.52215
+warning: instr 1 uses 7 p-fields but is given 11
+B188.250 ..188.625 T188.625 TT188.625 M:  0.43944  0.31749
+warning: instr 1 uses 7 p-fields but is given 11
+B188.625 ..189.125 T189.125 TT189.125 M:  0.35654  0.48188
+warning: instr 1 uses 7 p-fields but is given 11
+B189.125 ..189.625 T189.625 TT189.625 M:  0.55409  0.38935
+warning: instr 1 uses 7 p-fields but is given 11
+B189.625 ..190.125 T190.125 TT190.125 M:  0.44846  0.26781
+warning: instr 1 uses 7 p-fields but is given 11
+B190.125 ..191.000 T191.000 TT191.000 M:  0.36992  0.43781
+warning: instr 3 uses 7 p-fields but is given 11
+B191.000 ..191.375 T191.375 TT191.375 M:  0.11033  0.11018
+warning: instr 1 uses 7 p-fields but is given 11
+B191.375 ..191.875 T191.875 TT191.875 M:  0.21631  0.24533
+warning: instr 1 uses 7 p-fields but is given 11
+B191.875 ..192.375 T192.375 TT192.375 M:  0.31242  0.32000
+warning: instr 1 uses 7 p-fields but is given 11
+B192.375 ..193.250 T193.250 TT193.250 M:  0.34949  0.31179
+warning: instr 1 uses 7 p-fields but is given 11
+B193.250 ..194.500 T194.500 TT194.500 M:  0.33375  0.24727
+warning: instr 2 uses 7 p-fields but is given 11
+B194.500 ..194.875 T194.875 TT194.875 M:  0.08203  0.07482
+warning: instr 1 uses 7 p-fields but is given 11
+B194.875 ..195.375 T195.375 TT195.375 M:  0.31439  0.31505
+warning: instr 1 uses 7 p-fields but is given 11
+B195.375 ..195.750 T195.750 TT195.750 M:  0.33321  0.46824
+warning: instr 1 uses 7 p-fields but is given 11
+B195.750 ..196.375 T196.375 TT196.375 M:  0.45728  0.36405
+warning: instr 1 uses 7 p-fields but is given 11
+B196.375 ..197.000 T197.000 TT197.000 M:  0.39036  0.28361
+warning: instr 3 uses 7 p-fields but is given 11
+B197.000 ..197.750 T197.750 TT197.750 M:  0.12508  0.11970
+warning: instr 1 uses 7 p-fields but is given 11
+B197.750 ..198.250 T198.250 TT198.250 M:  0.36067  0.20259
+warning: instr 1 uses 7 p-fields but is given 11
+B198.250 ..198.750 T198.750 TT198.750 M:  0.44955  0.31101
+warning: instr 1 uses 7 p-fields but is given 11
+B198.750 ..199.250 T199.250 TT199.250 M:  0.33869  0.38459
+warning: instr 1 uses 7 p-fields but is given 11
+B199.250 ..199.875 T199.875 TT199.875 M:  0.34026  0.25538
+warning: instr 1 uses 7 p-fields but is given 11
+B199.875 ..200.375 T200.375 TT200.375 M:  0.36187  0.28171
+warning: instr 1 uses 7 p-fields but is given 11
+B200.375 ..201.000 T201.000 TT201.000 M:  0.39863  0.41048
+warning: instr 2 uses 7 p-fields but is given 11
+B201.000 ..201.250 T201.250 TT201.250 M:  0.17551  0.17594
+warning: instr 1 uses 7 p-fields but is given 11
+B201.250 ..202.250 T202.250 TT202.250 M:  0.42998  0.32304
+warning: instr 1 uses 7 p-fields but is given 11
+B202.250 ..202.625 T202.625 TT202.625 M:  0.38615  0.21699
+warning: instr 1 uses 7 p-fields but is given 11
+B202.625 ..203.125 T203.125 TT203.125 M:  0.40714  0.41464
+warning: instr 1 uses 7 p-fields but is given 11
+B203.125 ..203.625 T203.625 TT203.625 M:  0.50802  0.46598
+warning: instr 1 uses 7 p-fields but is given 11
+B203.625 ..204.125 T204.125 TT204.125 M:  0.46390  0.30102
+warning: instr 1 uses 7 p-fields but is given 11
+B204.125 ..204.500 T204.500 TT204.500 M:  0.41147  0.43812
+warning: instr 3 uses 7 p-fields but is given 11
+B204.500 ..204.875 T204.875 TT204.875 M:  0.19131  0.23616
+warning: instr 1 uses 7 p-fields but is given 11
+B204.875 ..205.375 T205.375 TT205.375 M:  0.26623  0.29097
+warning: instr 1 uses 7 p-fields but is given 11
+B205.375 ..205.875 T205.875 TT205.875 M:  0.39643  0.28608
+warning: instr 1 uses 7 p-fields but is given 11
+B205.875 ..206.750 T206.750 TT206.750 M:  0.33135  0.33065
+warning: instr 1 uses 7 p-fields but is given 11
+B206.750 ..208.000 T208.000 TT208.000 M:  0.33865  0.20827
+warning: instr 2 uses 7 p-fields but is given 11
+B208.000 ..208.375 T208.375 TT208.375 M:  0.08055  0.08680
+warning: instr 1 uses 7 p-fields but is given 11
+B208.375 ..208.875 T208.875 TT208.875 M:  0.33945  0.34859
+warning: instr 1 uses 7 p-fields but is given 11
+B208.875 ..209.250 T209.250 TT209.250 M:  0.32962  0.47126
+warning: instr 1 uses 7 p-fields but is given 11
+B209.250 ..209.875 T209.875 TT209.875 M:  0.48969  0.42940
+warning: instr 1 uses 7 p-fields but is given 11
+B209.875 ..211.000 T211.000 TT211.000 M:  0.37875  0.29294
+warning: instr 3 uses 7 p-fields but is given 11
+B211.000 ..211.750 T211.750 TT211.750 M:  0.06949  0.07074
+warning: instr 1 uses 7 p-fields but is given 11
+B211.750 ..212.250 T212.250 TT212.250 M:  0.34838  0.22478
+warning: instr 1 uses 7 p-fields but is given 11
+B212.250 ..212.750 T212.750 TT212.750 M:  0.40678  0.25039
+warning: instr 1 uses 7 p-fields but is given 11
+B212.750 ..213.250 T213.250 TT213.250 M:  0.39373  0.38571
+warning: instr 1 uses 7 p-fields but is given 11
+B213.250 ..213.875 T213.875 TT213.875 M:  0.37142  0.26450
+warning: instr 1 uses 7 p-fields but is given 11
+B213.875 ..214.375 T214.375 TT214.375 M:  0.40120  0.38943
+warning: instr 1 uses 7 p-fields but is given 11
+B214.375 ..215.500 T215.500 TT215.500 M:  0.40787  0.52269
+warning: instr 2 uses 7 p-fields but is given 11
+B215.500 ..215.750 T215.750 TT215.750 M:  0.06626  0.08757
+warning: instr 1 uses 7 p-fields but is given 11
+B215.750 ..216.750 T216.750 TT216.750 M:  0.40053  0.24420
+warning: instr 1 uses 7 p-fields but is given 11
+B216.750 ..217.125 T217.125 TT217.125 M:  0.40248  0.24728
+warning: instr 1 uses 7 p-fields but is given 11
+B217.125 ..217.625 T217.625 TT217.625 M:  0.33746  0.44641
+warning: instr 1 uses 7 p-fields but is given 11
+B217.625 ..218.000 T218.000 TT218.000 M:  0.52032  0.40635
+warning: instr 3 uses 7 p-fields but is given 11
+B218.000 ..218.125 T218.125 TT218.125 M:  0.29173  0.18198
+warning: instr 1 uses 7 p-fields but is given 11
+B218.125 ..218.375 T218.375 TT218.375 M:  0.39429  0.26898
+warning: instr 1 uses 7 p-fields but is given 11
+B218.375 ..218.625 T218.625 TT218.625 M:  0.48062  0.37180
+warning: instr 1 uses 7 p-fields but is given 11
+B218.625 ..218.875 T218.875 TT218.875 M:  0.40786  0.49807
+warning: instr 1 uses 7 p-fields but is given 11
+B218.875 ..219.000 T219.000 TT219.000 M:  0.52947  0.47157
+warning: instr 2 uses 7 p-fields but is given 11
+B219.000 ..219.375 T219.375 TT219.375 M:  0.41654  0.39630
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B219.375 ..219.875 T219.875 TT219.875 M:  0.62485  0.54510
+warning: instr 1 uses 7 p-fields but is given 11
+B219.875 ..220.250 T220.250 TT220.250 M:  0.37404  0.43050
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B220.250 ..220.875 T220.875 TT220.875 M:  0.76410  0.49007
+warning: instr 1 uses 7 p-fields but is given 11
+B220.875 ..223.000 T223.000 TT223.000 M:  0.37294  0.30864
+warning: instr 2 uses 7 p-fields but is given 11
+B223.000 ..223.250 T223.250 TT223.250 M:  0.08383  0.09086
+warning: instr 1 uses 7 p-fields but is given 11
+B223.250 ..224.250 T224.250 TT224.250 M:  0.34776  0.24373
+warning: instr 1 uses 7 p-fields but is given 11
+B224.250 ..224.625 T224.625 TT224.625 M:  0.33444  0.25540
+warning: instr 1 uses 7 p-fields but is given 11
+B224.625 ..225.125 T225.125 TT225.125 M:  0.29640  0.44191
+warning: instr 1 uses 7 p-fields but is given 11
+B225.125 ..225.500 T225.500 TT225.500 M:  0.48136  0.40976
+warning: instr 3 uses 7 p-fields but is given 11
+B225.500 ..225.625 T225.625 TT225.625 M:  0.22651  0.21492
+warning: instr 1 uses 7 p-fields but is given 11
+B225.625 ..226.125 T226.125 TT226.125 M:  0.39390  0.29760
+warning: instr 1 uses 7 p-fields but is given 11
+B226.125 ..226.250 T226.250 TT226.250 M:  0.30046  0.38866
+warning: instr 1 uses 7 p-fields but is given 11
+B226.250 ..226.750 T226.750 TT226.750 M:  0.48207  0.45006
+warning: instr 1 uses 7 p-fields but is given 11
+B226.750 ..227.250 T227.250 TT227.250 M:  0.47159  0.30414
+warning: instr 1 uses 7 p-fields but is given 11
+B227.250 ..227.750 T227.750 TT227.750 M:  0.33319  0.35123
+warning: instr 1 uses 7 p-fields but is given 11
+B227.750 ..228.375 T228.375 TT228.375 M:  0.35145  0.25905
+warning: instr 1 uses 7 p-fields but is given 11
+B228.375 ..228.875 T228.875 TT228.875 M:  0.43700  0.33069
+warning: instr 1 uses 7 p-fields but is given 11
+B228.875 ..229.000 T229.000 TT229.000 M:  0.44597  0.48713
+warning: instr 3 uses 7 p-fields but is given 11
+B229.000 ..229.375 T229.375 TT229.375 M:  0.36629  0.38527
+warning: instr 1 uses 7 p-fields but is given 11
+B229.375 ..229.500 T229.500 TT229.500 M:  0.33410  0.40893
+warning: instr 2 uses 7 p-fields but is given 11
+B229.500 ..229.875 T229.875 TT229.875 M:  0.27832  0.31150
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B229.875 ..230.375 T230.375 TT230.375 M:  0.57695  0.55188
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B230.375 ..230.750 T230.750 TT230.750 M:  0.47640  0.56706
+warning: instr 1 uses 7 p-fields but is given 11
+B230.750 ..231.250 T231.250 TT231.250 M:  0.48753  0.40971
+warning: instr 1 uses 7 p-fields but is given 11
+B231.250 ..231.375 T231.375 TT231.375 M:  0.42309  0.29233
+warning: instr 1 uses 7 p-fields but is given 11
+B231.375 ..233.000 T233.000 TT233.000 M:  0.55479  0.35743
+warning: instr 3 uses 7 p-fields but is given 11
+B233.000 ..233.750 T233.750 TT233.750 M:  0.08461  0.08216
+warning: instr 1 uses 7 p-fields but is given 11
+B233.750 ..234.250 T234.250 TT234.250 M:  0.29772  0.18652
+warning: instr 1 uses 7 p-fields but is given 11
+B234.250 ..234.750 T234.750 TT234.750 M:  0.37604  0.25230
+warning: instr 1 uses 7 p-fields but is given 11
+B234.750 ..235.000 T235.000 TT235.000 M:  0.29330  0.34977
+warning: instr 2 uses 7 p-fields but is given 11
+B235.000 ..235.250 T235.250 TT235.250 M:  0.23715  0.26898
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B235.250 ..235.875 T235.875 TT235.875 M:  0.56268  0.39373
+warning: instr 1 uses 7 p-fields but is given 11
+B235.875 ..236.250 T236.250 TT236.250 M:  0.43447  0.38593
+warning: instr 1 uses 7 p-fields but is given 11
+B236.250 ..236.375 T236.375 TT236.375 M:  0.44653  0.36009
+warning: instr 1 uses 7 p-fields but is given 11
+B236.375 ..236.625 T236.625 TT236.625 M:  0.57664  0.48700
+warning: instr 1 uses 7 p-fields but is given 11
+B236.625 ..237.125 T237.125 TT237.125 M:  0.52676  0.58294
+warning: instr 1 uses 7 p-fields but is given 11
+B237.125 ..237.625 T237.625 TT237.625 M:  0.50546  0.45273
+warning: instr 1 uses 7 p-fields but is given 11
+B237.625 ..238.125 T238.125 TT238.125 M:  0.41325  0.25878
+warning: instr 1 uses 7 p-fields but is given 11
+B238.125 ..239.500 T239.500 TT239.500 M:  0.32530  0.38606
+warning: instr 3 uses 7 p-fields but is given 11
+B239.500 ..239.875 T239.875 TT239.875 M:  0.07040  0.07513
+warning: instr 1 uses 7 p-fields but is given 11
+B239.875 ..240.375 T240.375 TT240.375 M:  0.20793  0.25568
+warning: instr 1 uses 7 p-fields but is given 11
+B240.375 ..240.875 T240.875 TT240.875 M:  0.35687  0.27207
+warning: instr 1 uses 7 p-fields but is given 11
+B240.875 ..241.750 T241.750 TT241.750 M:  0.32316  0.26087
+warning: instr 1 uses 7 p-fields but is given 11
+B241.750 ..242.000 T242.000 TT242.000 M:  0.29735  0.22330
+warning: instr 2 uses 7 p-fields but is given 11
+B242.000 ..242.375 T242.375 TT242.375 M:  0.21519  0.14399
+warning: instr 1 uses 7 p-fields but is given 11
+B242.375 ..242.875 T242.875 TT242.875 M:  0.40244  0.33877
+warning: instr 1 uses 7 p-fields but is given 11
+B242.875 ..243.250 T243.250 TT243.250 M:  0.35515  0.46480
+warning: instr 1 uses 7 p-fields but is given 11
+B243.250 ..243.875 T243.875 TT243.875 M:  0.51092  0.35629
+warning: instr 1 uses 7 p-fields but is given 11
+B243.875 ..245.000 T245.000 TT245.000 M:  0.34708  0.24780
+warning: instr 3 uses 7 p-fields but is given 11
+B245.000 ..245.750 T245.750 TT245.750 M:  0.09576  0.09526
+warning: instr 1 uses 7 p-fields but is given 11
+B245.750 ..246.250 T246.250 TT246.250 M:  0.36856  0.20957
+warning: instr 1 uses 7 p-fields but is given 11
+B246.250 ..246.750 T246.750 TT246.750 M:  0.38232  0.22820
+warning: instr 1 uses 7 p-fields but is given 11
+B246.750 ..247.250 T247.250 TT247.250 M:  0.31956  0.34861
+warning: instr 1 uses 7 p-fields but is given 11
+B247.250 ..247.875 T247.875 TT247.875 M:  0.38265  0.28110
+warning: instr 1 uses 7 p-fields but is given 11
+B247.875 ..248.000 T248.000 TT248.000 M:  0.38778  0.32584
+warning: instr 2 uses 7 p-fields but is given 11
+B248.000 ..248.250 T248.250 TT248.250 M:  0.32637  0.29014
+warning: instr 1 uses 7 p-fields but is given 11
+B248.250 ..248.375 T248.375 TT248.375 M:  0.54134  0.32901
+warning: instr 1 uses 7 p-fields but is given 11
+B248.375 ..249.250 T249.250 TT249.250 M:  0.69262  0.59018
+warning: instr 1 uses 7 p-fields but is given 11
+B249.250 ..249.625 T249.625 TT249.625 M:  0.46483  0.32813
+warning: instr 1 uses 7 p-fields but is given 11
+B249.625 ..250.125 T250.125 TT250.125 M:  0.47243  0.53280
+warning: instr 1 uses 7 p-fields but is given 11
+B250.125 ..250.625 T250.625 TT250.625 M:  0.56051  0.43043
+warning: instr 1 uses 7 p-fields but is given 11
+B250.625 ..251.125 T251.125 TT251.125 M:  0.45918  0.25256
+warning: instr 1 uses 7 p-fields but is given 11
+B251.125 ..252.000 T252.000 TT252.000 M:  0.38385  0.46493
+warning: instr 3 uses 7 p-fields but is given 11
+B252.000 ..252.375 T252.375 TT252.375 M:  0.10851  0.11253
+warning: instr 1 uses 7 p-fields but is given 11
+B252.375 ..252.875 T252.875 TT252.875 M:  0.21584  0.24878
+warning: instr 1 uses 7 p-fields but is given 11
+B252.875 ..253.375 T253.375 TT253.375 M:  0.35698  0.33288
+warning: instr 1 uses 7 p-fields but is given 11
+B253.375 ..254.250 T254.250 TT254.250 M:  0.36718  0.35416
+warning: instr 1 uses 7 p-fields but is given 11
+B254.250 ..255.500 T255.500 TT255.500 M:  0.33196  0.23932
+warning: instr 2 uses 7 p-fields but is given 11
+B255.500 ..255.875 T255.875 TT255.875 M:  0.05414  0.06097
+warning: instr 1 uses 7 p-fields but is given 11
+B255.875 ..256.375 T256.375 TT256.375 M:  0.30837  0.30801
+warning: instr 1 uses 7 p-fields but is given 11
+B256.375 ..256.750 T256.750 TT256.750 M:  0.27231  0.42810
+warning: instr 1 uses 7 p-fields but is given 11
+B256.750 ..257.375 T257.375 TT257.375 M:  0.47646  0.37846
+warning: instr 1 uses 7 p-fields but is given 11
+B257.375 ..258.000 T258.000 TT258.000 M:  0.33238  0.23609
+warning: instr 3 uses 7 p-fields but is given 11
+B258.000 ..258.750 T258.750 TT258.750 M:  0.13374  0.11815
+warning: instr 1 uses 7 p-fields but is given 11
+B258.750 ..259.250 T259.250 TT259.250 M:  0.36644  0.20683
+warning: instr 1 uses 7 p-fields but is given 11
+B259.250 ..259.750 T259.750 TT259.750 M:  0.45591  0.28008
+warning: instr 1 uses 7 p-fields but is given 11
+B259.750 ..260.250 T260.250 TT260.250 M:  0.32302  0.38582
+warning: instr 1 uses 7 p-fields but is given 11
+B260.250 ..260.875 T260.875 TT260.875 M:  0.33877  0.27223
+warning: instr 1 uses 7 p-fields but is given 11
+B260.875 ..261.375 T261.375 TT261.375 M:  0.38378  0.28081
+warning: instr 1 uses 7 p-fields but is given 11
+B261.375 ..262.000 T262.000 TT262.000 M:  0.41020  0.43761
+warning: instr 2 uses 7 p-fields but is given 11
+B262.000 ..262.250 T262.250 TT262.250 M:  0.17059  0.16406
+warning: instr 1 uses 7 p-fields but is given 11
+B262.250 ..263.250 T263.250 TT263.250 M:  0.42149  0.32974
+warning: instr 1 uses 7 p-fields but is given 11
+B263.250 ..263.625 T263.625 TT263.625 M:  0.37403  0.27590
+warning: instr 1 uses 7 p-fields but is given 11
+B263.625 ..264.125 T264.125 TT264.125 M:  0.40399  0.41667
+warning: instr 1 uses 7 p-fields but is given 11
+B264.125 ..264.625 T264.625 TT264.625 M:  0.50832  0.38614
+warning: instr 1 uses 7 p-fields but is given 11
+B264.625 ..265.125 T265.125 TT265.125 M:  0.44244  0.28365
+warning: instr 1 uses 7 p-fields but is given 11
+B265.125 ..265.500 T265.500 TT265.500 M:  0.36953  0.43761
+warning: instr 3 uses 7 p-fields but is given 11
+B265.500 ..265.875 T265.875 TT265.875 M:  0.22739  0.21274
+warning: instr 1 uses 7 p-fields but is given 11
+B265.875 ..266.375 T266.375 TT266.375 M:  0.29692  0.30769
+warning: instr 1 uses 7 p-fields but is given 11
+B266.375 ..266.875 T266.875 TT266.875 M:  0.37024  0.35884
+warning: instr 1 uses 7 p-fields but is given 11
+B266.875 ..267.750 T267.750 TT267.750 M:  0.34283  0.28877
+warning: instr 1 uses 7 p-fields but is given 11
+B267.750 ..269.000 T269.000 TT269.000 M:  0.33486  0.19435
+warning: instr 2 uses 7 p-fields but is given 11
+B269.000 ..269.375 T269.375 TT269.375 M:  0.08511  0.07728
+warning: instr 1 uses 7 p-fields but is given 11
+B269.375 ..269.875 T269.875 TT269.875 M:  0.34021  0.36067
+warning: instr 1 uses 7 p-fields but is given 11
+B269.875 ..270.250 T270.250 TT270.250 M:  0.32059  0.52092
+warning: instr 1 uses 7 p-fields but is given 11
+B270.250 ..270.875 T270.875 TT270.875 M:  0.50926  0.40815
+warning: instr 1 uses 7 p-fields but is given 11
+B270.875 ..272.000 T272.000 TT272.000 M:  0.38503  0.28725
+warning: instr 3 uses 7 p-fields but is given 11
+B272.000 ..272.750 T272.750 TT272.750 M:  0.07450  0.08041
+warning: instr 1 uses 7 p-fields but is given 11
+B272.750 ..273.250 T273.250 TT273.250 M:  0.34781  0.21482
+warning: instr 1 uses 7 p-fields but is given 11
+B273.250 ..273.750 T273.750 TT273.750 M:  0.48674  0.23512
+warning: instr 1 uses 7 p-fields but is given 11
+B273.750 ..274.250 T274.250 TT274.250 M:  0.33602  0.36112
+warning: instr 1 uses 7 p-fields but is given 11
+B274.250 ..274.875 T274.875 TT274.875 M:  0.36019  0.28516
+warning: instr 1 uses 7 p-fields but is given 11
+B274.875 ..275.375 T275.375 TT275.375 M:  0.35756  0.34198
+warning: instr 1 uses 7 p-fields but is given 11
+B275.375 ..276.500 T276.500 TT276.500 M:  0.41736  0.49082
+warning: instr 2 uses 7 p-fields but is given 11
+B276.500 ..276.750 T276.750 TT276.750 M:  0.07117  0.07919
+warning: instr 1 uses 7 p-fields but is given 11
+B276.750 ..277.750 T277.750 TT277.750 M:  0.42034  0.24420
+warning: instr 1 uses 7 p-fields but is given 11
+B277.750 ..278.125 T278.125 TT278.125 M:  0.40429  0.22112
+warning: instr 1 uses 7 p-fields but is given 11
+B278.125 ..278.625 T278.625 TT278.625 M:  0.34352  0.44288
+warning: instr 1 uses 7 p-fields but is given 11
+B278.625 ..279.000 T279.000 TT279.000 M:  0.50611  0.42347
+warning: instr 3 uses 7 p-fields but is given 11
+B279.000 ..279.125 T279.125 TT279.125 M:  0.29879  0.23456
+warning: instr 1 uses 7 p-fields but is given 11
+B279.125 ..279.375 T279.375 TT279.375 M:  0.43215  0.27555
+warning: instr 1 uses 7 p-fields but is given 11
+B279.375 ..279.625 T279.625 TT279.625 M:  0.41399  0.34708
+warning: instr 1 uses 7 p-fields but is given 11
+B279.625 ..279.875 T279.875 TT279.875 M:  0.44902  0.48795
+warning: instr 1 uses 7 p-fields but is given 11
+B279.875 ..280.000 T280.000 TT280.000 M:  0.51221  0.55062
+warning: instr 2 uses 7 p-fields but is given 11
+B280.000 ..280.375 T280.375 TT280.375 M:  0.42931  0.39298
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B280.375 ..280.875 T280.875 TT280.875 M:  0.69746  0.57860
+warning: instr 1 uses 7 p-fields but is given 11
+B280.875 ..281.250 T281.250 TT281.250 M:  0.44194  0.45498
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B281.250 ..281.875 T281.875 TT281.875 M:  0.71723  0.49830
+warning: instr 1 uses 7 p-fields but is given 11
+B281.875 ..284.000 T284.000 TT284.000 M:  0.37082  0.27957
+warning: instr 2 uses 7 p-fields but is given 11
+B284.000 ..284.250 T284.250 TT284.250 M:  0.10429  0.11177
+warning: instr 1 uses 7 p-fields but is given 11
+B284.250 ..285.250 T285.250 TT285.250 M:  0.38672  0.29583
+warning: instr 1 uses 7 p-fields but is given 11
+B285.250 ..285.625 T285.625 TT285.625 M:  0.36305  0.28365
+warning: instr 1 uses 7 p-fields but is given 11
+B285.625 ..286.125 T286.125 TT286.125 M:  0.38255  0.46173
+warning: instr 1 uses 7 p-fields but is given 11
+B286.125 ..286.500 T286.500 TT286.500 M:  0.48486  0.42447
+warning: instr 3 uses 7 p-fields but is given 11
+B286.500 ..286.625 T286.625 TT286.625 M:  0.28003  0.20154
+warning: instr 1 uses 7 p-fields but is given 11
+B286.625 ..287.125 T287.125 TT287.125 M:  0.41543  0.33190
+warning: instr 1 uses 7 p-fields but is given 11
+B287.125 ..287.250 T287.250 TT287.250 M:  0.35942  0.40525
+warning: instr 1 uses 7 p-fields but is given 11
+B287.250 ..287.750 T287.750 TT287.750 M:  0.53915  0.44234
+warning: instr 1 uses 7 p-fields but is given 11
+B287.750 ..288.250 T288.250 TT288.250 M:  0.44070  0.32456
+warning: instr 1 uses 7 p-fields but is given 11
+B288.250 ..288.750 T288.750 TT288.750 M:  0.32972  0.32020
+warning: instr 1 uses 7 p-fields but is given 11
+B288.750 ..289.375 T289.375 TT289.375 M:  0.36480  0.28910
+warning: instr 1 uses 7 p-fields but is given 11
+B289.375 ..289.875 T289.875 TT289.875 M:  0.36739  0.33343
+warning: instr 1 uses 7 p-fields but is given 11
+B289.875 ..290.000 T290.000 TT290.000 M:  0.43869  0.45108
+warning: instr 3 uses 7 p-fields but is given 11
+B290.000 ..290.375 T290.375 TT290.375 M:  0.34914  0.36106
+warning: instr 1 uses 7 p-fields but is given 11
+B290.375 ..290.500 T290.500 TT290.500 M:  0.31621  0.32098
+warning: instr 2 uses 7 p-fields but is given 11
+B290.500 ..290.875 T290.875 TT290.875 M:  0.22350  0.28219
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B290.875 ..291.375 T291.375 TT291.375 M:  0.54165  0.48510
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B291.375 ..291.750 T291.750 TT291.750 M:  0.48284  0.59740
+warning: instr 1 uses 7 p-fields but is given 11
+B291.750 ..292.250 T292.250 TT292.250 M:  0.45760  0.39172
+warning: instr 1 uses 7 p-fields but is given 11
+B292.250 ..292.375 T292.375 TT292.375 M:  0.39223  0.28566
+warning: instr 1 uses 7 p-fields but is given 11
+B292.375 ..294.000 T294.000 TT294.000 M:  0.52229  0.33595
+warning: instr 3 uses 7 p-fields but is given 11
+B294.000 ..294.750 T294.750 TT294.750 M:  0.06667  0.06841
+warning: instr 1 uses 7 p-fields but is given 11
+B294.750 ..295.250 T295.250 TT295.250 M:  0.30922  0.24326
+warning: instr 1 uses 7 p-fields but is given 11
+B295.250 ..295.750 T295.750 TT295.750 M:  0.39121  0.25206
+warning: instr 1 uses 7 p-fields but is given 11
+B295.750 ..296.000 T296.000 TT296.000 M:  0.31131  0.29904
+warning: instr 2 uses 7 p-fields but is given 11
+B296.000 ..296.250 T296.250 TT296.250 M:  0.23635  0.24206
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B296.250 ..296.875 T296.875 TT296.875 M:  0.55466  0.36621
+warning: instr 1 uses 7 p-fields but is given 11
+B296.875 ..297.250 T297.250 TT297.250 M:  0.38756  0.37136
+warning: instr 1 uses 7 p-fields but is given 11
+B297.250 ..297.375 T297.375 TT297.375 M:  0.45023  0.37977
+warning: instr 1 uses 7 p-fields but is given 11
+B297.375 ..297.625 T297.625 TT297.625 M:  0.58745  0.55189
+warning: instr 1 uses 7 p-fields but is given 11
+B297.625 ..298.125 T298.125 TT298.125 M:  0.54448  0.65320
+warning: instr 1 uses 7 p-fields but is given 11
+B298.125 ..298.625 T298.625 TT298.625 M:  0.55594  0.43304
+warning: instr 1 uses 7 p-fields but is given 11
+B298.625 ..299.125 T299.125 TT299.125 M:  0.39667  0.28708
+warning: instr 1 uses 7 p-fields but is given 11
+B299.125 ..300.500 T300.500 TT300.500 M:  0.27964  0.39576
+warning: instr 3 uses 7 p-fields but is given 11
+B300.500 ..300.875 T300.875 TT300.875 M:  0.06936  0.05966
+warning: instr 1 uses 7 p-fields but is given 11
+B300.875 ..301.375 T301.375 TT301.375 M:  0.21136  0.22476
+warning: instr 1 uses 7 p-fields but is given 11
+B301.375 ..301.875 T301.875 TT301.875 M:  0.37220  0.29885
+warning: instr 1 uses 7 p-fields but is given 11
+B301.875 ..302.750 T302.750 TT302.750 M:  0.32838  0.27272
+warning: instr 1 uses 7 p-fields but is given 11
+B302.750 ..303.000 T303.000 TT303.000 M:  0.35570  0.18322
+warning: instr 2 uses 7 p-fields but is given 11
+B303.000 ..303.375 T303.375 TT303.375 M:  0.24323  0.16334
+warning: instr 1 uses 7 p-fields but is given 11
+B303.375 ..303.875 T303.875 TT303.875 M:  0.39539  0.31980
+warning: instr 1 uses 7 p-fields but is given 11
+B303.875 ..304.250 T304.250 TT304.250 M:  0.34351  0.43788
+warning: instr 1 uses 7 p-fields but is given 11
+B304.250 ..304.875 T304.875 TT304.875 M:  0.51703  0.34029
+warning: instr 1 uses 7 p-fields but is given 11
+B304.875 ..306.000 T306.000 TT306.000 M:  0.34908  0.23561
+warning: instr 3 uses 7 p-fields but is given 11
+B306.000 ..306.750 T306.750 TT306.750 M:  0.10361  0.10133
+warning: instr 1 uses 7 p-fields but is given 11
+B306.750 ..307.250 T307.250 TT307.250 M:  0.34654  0.21099
+warning: instr 1 uses 7 p-fields but is given 11
+B307.250 ..307.750 T307.750 TT307.750 M:  0.44765  0.24101
+warning: instr 1 uses 7 p-fields but is given 11
+B307.750 ..308.250 T308.250 TT308.250 M:  0.33778  0.35025
+warning: instr 1 uses 7 p-fields but is given 11
+B308.250 ..308.875 T308.875 TT308.875 M:  0.37649  0.27428
+warning: instr 1 uses 7 p-fields but is given 11
+B308.875 ..309.000 T309.000 TT309.000 M:  0.41782  0.32104
+warning: instr 2 uses 7 p-fields but is given 11
+B309.000 ..309.250 T309.250 TT309.250 M:  0.30547  0.27805
+warning: instr 1 uses 7 p-fields but is given 11
+B309.250 ..309.375 T309.375 TT309.375 M:  0.53800  0.37045
+warning: instr 1 uses 7 p-fields but is given 11
+B309.375 ..310.250 T310.250 TT310.250 M:  0.58249  0.58743
+warning: instr 1 uses 7 p-fields but is given 11
+B310.250 ..310.625 T310.625 TT310.625 M:  0.41881  0.29972
+warning: instr 1 uses 7 p-fields but is given 11
+B310.625 ..311.125 T311.125 TT311.125 M:  0.37733  0.49138
+warning: instr 1 uses 7 p-fields but is given 11
+B311.125 ..311.625 T311.625 TT311.625 M:  0.56886  0.42375
+warning: instr 1 uses 7 p-fields but is given 11
+B311.625 ..312.125 T312.125 TT312.125 M:  0.48263  0.27995
+warning: instr 1 uses 7 p-fields but is given 11
+B312.125 ..313.000 T313.000 TT313.000 M:  0.35725  0.41805
+warning: instr 3 uses 7 p-fields but is given 11
+B313.000 ..313.375 T313.375 TT313.375 M:  0.09122  0.09710
+warning: instr 1 uses 7 p-fields but is given 11
+B313.375 ..313.875 T313.875 TT313.875 M:  0.23365  0.26347
+warning: instr 1 uses 7 p-fields but is given 11
+B313.875 ..314.375 T314.375 TT314.375 M:  0.32770  0.35906
+warning: instr 1 uses 7 p-fields but is given 11
+B314.375 ..315.250 T315.250 TT315.250 M:  0.33753  0.31699
+warning: instr 1 uses 7 p-fields but is given 11
+B315.250 ..316.500 T316.500 TT316.500 M:  0.36788  0.22553
+warning: instr 2 uses 7 p-fields but is given 11
+B316.500 ..316.875 T316.875 TT316.875 M:  0.05545  0.06720
+warning: instr 1 uses 7 p-fields but is given 11
+B316.875 ..317.375 T317.375 TT317.375 M:  0.29915  0.31333
+warning: instr 1 uses 7 p-fields but is given 11
+B317.375 ..317.750 T317.750 TT317.750 M:  0.23272  0.39912
+warning: instr 1 uses 7 p-fields but is given 11
+B317.750 ..318.375 T318.375 TT318.375 M:  0.44675  0.36358
+warning: instr 1 uses 7 p-fields but is given 11
+B318.375 ..319.000 T319.000 TT319.000 M:  0.30290  0.21521
+warning: instr 3 uses 7 p-fields but is given 11
+B319.000 ..319.750 T319.750 TT319.750 M:  0.09017  0.09902
+warning: instr 1 uses 7 p-fields but is given 11
+B319.750 ..320.250 T320.250 TT320.250 M:  0.31072  0.15895
+warning: instr 1 uses 7 p-fields but is given 11
+B320.250 ..320.750 T320.750 TT320.750 M:  0.35523  0.23270
+warning: instr 1 uses 7 p-fields but is given 11
+B320.750 ..321.250 T321.250 TT321.250 M:  0.28512  0.33528
+warning: instr 1 uses 7 p-fields but is given 11
+B321.250 ..321.875 T321.875 TT321.875 M:  0.34092  0.30655
+warning: instr 1 uses 7 p-fields but is given 11
+B321.875 ..322.375 T322.375 TT322.375 M:  0.34734  0.28377
+warning: instr 1 uses 7 p-fields but is given 11
+B322.375 ..323.000 T323.000 TT323.000 M:  0.39990  0.41163
+warning: instr 2 uses 7 p-fields but is given 11
+B323.000 ..323.250 T323.250 TT323.250 M:  0.12798  0.11453
+warning: instr 1 uses 7 p-fields but is given 11
+B323.250 ..324.250 T324.250 TT324.250 M:  0.40866  0.27785
+warning: instr 1 uses 7 p-fields but is given 11
+B324.250 ..324.625 T324.625 TT324.625 M:  0.36311  0.23515
+warning: instr 1 uses 7 p-fields but is given 11
+B324.625 ..325.125 T325.125 TT325.125 M:  0.41393  0.43355
+warning: instr 1 uses 7 p-fields but is given 11
+B325.125 ..325.625 T325.625 TT325.625 M:  0.53135  0.42831
+warning: instr 1 uses 7 p-fields but is given 11
+B325.625 ..326.125 T326.125 TT326.125 M:  0.40747  0.30491
+warning: instr 1 uses 7 p-fields but is given 11
+B326.125 ..326.500 T326.500 TT326.500 M:  0.31414  0.38117
+warning: instr 3 uses 7 p-fields but is given 11
+B326.500 ..326.875 T326.875 TT326.875 M:  0.24014  0.20839
+warning: instr 1 uses 7 p-fields but is given 11
+B326.875 ..327.375 T327.375 TT327.375 M:  0.25408  0.28226
+warning: instr 1 uses 7 p-fields but is given 11
+B327.375 ..327.875 T327.875 TT327.875 M:  0.36466  0.29335
+warning: instr 1 uses 7 p-fields but is given 11
+B327.875 ..328.750 T328.750 TT328.750 M:  0.35415  0.31982
+warning: instr 1 uses 7 p-fields but is given 11
+B328.750 ..330.000 T330.000 TT330.000 M:  0.30996  0.21178
+warning: instr 2 uses 7 p-fields but is given 11
+B330.000 ..330.375 T330.375 TT330.375 M:  0.05826  0.05596
+warning: instr 1 uses 7 p-fields but is given 11
+B330.375 ..330.875 T330.875 TT330.875 M:  0.31406  0.33505
+warning: instr 1 uses 7 p-fields but is given 11
+B330.875 ..331.250 T331.250 TT331.250 M:  0.33038  0.46612
+warning: instr 1 uses 7 p-fields but is given 11
+B331.250 ..331.875 T331.875 TT331.875 M:  0.52078  0.45612
+warning: instr 1 uses 7 p-fields but is given 11
+B331.875 ..333.000 T333.000 TT333.000 M:  0.36172  0.26222
+warning: instr 3 uses 7 p-fields but is given 11
+B333.000 ..333.750 T333.750 TT333.750 M:  0.08575  0.09607
+warning: instr 1 uses 7 p-fields but is given 11
+B333.750 ..334.250 T334.250 TT334.250 M:  0.37065  0.23828
+warning: instr 1 uses 7 p-fields but is given 11
+B334.250 ..334.750 T334.750 TT334.750 M:  0.40789  0.26828
+warning: instr 1 uses 7 p-fields but is given 11
+B334.750 ..335.250 T335.250 TT335.250 M:  0.37623  0.39596
+warning: instr 1 uses 7 p-fields but is given 11
+B335.250 ..335.875 T335.875 TT335.875 M:  0.35289  0.31225
+warning: instr 1 uses 7 p-fields but is given 11
+B335.875 ..336.375 T336.375 TT336.375 M:  0.35816  0.32104
+warning: instr 1 uses 7 p-fields but is given 11
+B336.375 ..337.500 T337.500 TT337.500 M:  0.42109  0.54486
+warning: instr 2 uses 7 p-fields but is given 11
+B337.500 ..337.750 T337.750 TT337.750 M:  0.07466  0.07647
+warning: instr 1 uses 7 p-fields but is given 11
+B337.750 ..338.750 T338.750 TT338.750 M:  0.46020  0.25084
+warning: instr 1 uses 7 p-fields but is given 11
+B338.750 ..339.125 T339.125 TT339.125 M:  0.41936  0.24926
+warning: instr 1 uses 7 p-fields but is given 11
+B339.125 ..339.625 T339.625 TT339.625 M:  0.36800  0.43314
+warning: instr 1 uses 7 p-fields but is given 11
+B339.625 ..340.000 T340.000 TT340.000 M:  0.50217  0.43430
+warning: instr 3 uses 7 p-fields but is given 11
+B340.000 ..340.125 T340.125 TT340.125 M:  0.23538  0.22445
+warning: instr 1 uses 7 p-fields but is given 11
+B340.125 ..340.375 T340.375 TT340.375 M:  0.38908  0.24387
+warning: instr 1 uses 7 p-fields but is given 11
+B340.375 ..340.625 T340.625 TT340.625 M:  0.46653  0.38283
+warning: instr 1 uses 7 p-fields but is given 11
+B340.625 ..340.875 T340.875 TT340.875 M:  0.45152  0.53112
+warning: instr 1 uses 7 p-fields but is given 11
+B340.875 ..341.000 T341.000 TT341.000 M:  0.48000  0.52572
+warning: instr 2 uses 7 p-fields but is given 11
+B341.000 ..341.375 T341.375 TT341.375 M:  0.39191  0.35955
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B341.375 ..341.875 T341.875 TT341.875 M:  0.64077  0.59055
+warning: instr 1 uses 7 p-fields but is given 11
+B341.875 ..342.250 T342.250 TT342.250 M:  0.43134  0.46872
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B342.250 ..342.875 T342.875 TT342.875 M:  0.73605  0.51775
+warning: instr 1 uses 7 p-fields but is given 11
+B342.875 ..345.000 T345.000 TT345.000 M:  0.35085  0.24902
+warning: instr 2 uses 7 p-fields but is given 11
+B345.000 ..345.250 T345.250 TT345.250 M:  0.07780  0.07594
+warning: instr 1 uses 7 p-fields but is given 11
+B345.250 ..346.250 T346.250 TT346.250 M:  0.34335  0.22471
+warning: instr 1 uses 7 p-fields but is given 11
+B346.250 ..346.625 T346.625 TT346.625 M:  0.41976  0.30060
+warning: instr 1 uses 7 p-fields but is given 11
+B346.625 ..347.125 T347.125 TT347.125 M:  0.32108  0.42828
+warning: instr 1 uses 7 p-fields but is given 11
+B347.125 ..347.500 T347.500 TT347.500 M:  0.46515  0.39131
+warning: instr 3 uses 7 p-fields but is given 11
+B347.500 ..347.625 T347.625 TT347.625 M:  0.24574  0.26597
+warning: instr 1 uses 7 p-fields but is given 11
+B347.625 ..348.125 T348.125 TT348.125 M:  0.37352  0.30729
+warning: instr 1 uses 7 p-fields but is given 11
+B348.125 ..348.250 T348.250 TT348.250 M:  0.30288  0.34823
+warning: instr 1 uses 7 p-fields but is given 11
+B348.250 ..348.750 T348.750 TT348.750 M:  0.50691  0.36497
+warning: instr 1 uses 7 p-fields but is given 11
+B348.750 ..349.250 T349.250 TT349.250 M:  0.43120  0.29073
+warning: instr 1 uses 7 p-fields but is given 11
+B349.250 ..349.750 T349.750 TT349.750 M:  0.26380  0.33560
+warning: instr 1 uses 7 p-fields but is given 11
+B349.750 ..350.375 T350.375 TT350.375 M:  0.37271  0.27999
+warning: instr 1 uses 7 p-fields but is given 11
+B350.375 ..350.875 T350.875 TT350.875 M:  0.38125  0.30630
+warning: instr 1 uses 7 p-fields but is given 11
+B350.875 ..351.000 T351.000 TT351.000 M:  0.39189  0.46617
+warning: instr 3 uses 7 p-fields but is given 11
+B351.000 ..351.375 T351.375 TT351.375 M:  0.33486  0.37135
+warning: instr 1 uses 7 p-fields but is given 11
+B351.375 ..351.500 T351.500 TT351.500 M:  0.31756  0.36271
+warning: instr 2 uses 7 p-fields but is given 11
+B351.500 ..351.875 T351.875 TT351.875 M:  0.29145  0.30642
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B351.875 ..352.375 T352.375 TT352.375 M:  0.48245  0.48366
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B352.375 ..352.750 T352.750 TT352.750 M:  0.44556  0.53199
+warning: instr 1 uses 7 p-fields but is given 11
+B352.750 ..353.250 T353.250 TT353.250 M:  0.46277  0.39055
+warning: instr 1 uses 7 p-fields but is given 11
+B353.250 ..353.375 T353.375 TT353.375 M:  0.36991  0.25181
+warning: instr 1 uses 7 p-fields but is given 11
+B353.375 ..355.000 T355.000 TT355.000 M:  0.51132  0.38169
+warning: instr 3 uses 7 p-fields but is given 11
+B355.000 ..355.750 T355.750 TT355.750 M:  0.08975  0.08690
+warning: instr 1 uses 7 p-fields but is given 11
+B355.750 ..356.250 T356.250 TT356.250 M:  0.29658  0.18031
+warning: instr 1 uses 7 p-fields but is given 11
+B356.250 ..356.750 T356.750 TT356.750 M:  0.34444  0.24031
+warning: instr 1 uses 7 p-fields but is given 11
+B356.750 ..357.000 T357.000 TT357.000 M:  0.28583  0.33465
+warning: instr 2 uses 7 p-fields but is given 11
+B357.000 ..357.250 T357.250 TT357.250 M:  0.24225  0.28667
+warning: instr 1 uses 7 p-fields but is given 11
+warning: instr 1 uses 7 p-fields but is given 11
+B357.250 ..357.875 T357.875 TT357.875 M:  0.55679  0.36778
+warning: instr 1 uses 7 p-fields but is given 11
+B357.875 ..358.250 T358.250 TT358.250 M:  0.52237  0.30184
+warning: instr 1 uses 7 p-fields but is given 11
+B358.250 ..358.375 T358.375 TT358.375 M:  0.51787  0.32919
+warning: instr 1 uses 7 p-fields but is given 11
+B358.375 ..358.625 T358.625 TT358.625 M:  0.55484  0.47348
+warning: instr 1 uses 7 p-fields but is given 11
+B358.625 ..359.125 T359.125 TT359.125 M:  0.53160  0.59396
+warning: instr 1 uses 7 p-fields but is given 11
+B359.125 ..359.625 T359.625 TT359.625 M:  0.54072  0.42885
+warning: instr 1 uses 7 p-fields but is given 11
+B359.625 ..360.125 T360.125 TT360.125 M:  0.40226  0.28075
+warning: instr 1 uses 7 p-fields but is given 11
+B360.125 ..361.500 T361.500 TT361.500 M:  0.27260  0.40572
+warning: instr 3 uses 7 p-fields but is given 11
+B361.500 ..361.875 T361.875 TT361.875 M:  0.07218  0.08658
+warning: instr 1 uses 7 p-fields but is given 11
+B361.875 ..362.375 T362.375 TT362.375 M:  0.21403  0.21759
+warning: instr 1 uses 7 p-fields but is given 11
+B362.375 ..362.875 T362.875 TT362.875 M:  0.37133  0.25333
+warning: instr 1 uses 7 p-fields but is given 11
+B362.875 ..363.750 T363.750 TT363.750 M:  0.35760  0.27066
+warning: instr 1 uses 7 p-fields but is given 11
+B363.750 ..364.000 T364.000 TT364.000 M:  0.29061  0.20440
+warning: instr 2 uses 7 p-fields but is given 11
+B364.000 ..364.375 T364.375 TT364.375 M:  0.20117  0.14927
+warning: instr 1 uses 7 p-fields but is given 11
+B364.375 ..364.875 T364.875 TT364.875 M:  0.40230  0.33602
+warning: instr 1 uses 7 p-fields but is given 11
+B364.875 ..365.250 T365.250 TT365.250 M:  0.40128  0.46330
+warning: instr 1 uses 7 p-fields but is given 11
+B365.250 ..365.875 T365.875 TT365.875 M:  0.50259  0.34013
+warning: instr 1 uses 7 p-fields but is given 11
+B365.875 ..367.000 T367.000 TT367.000 M:  0.32260  0.23190
+warning: instr 3 uses 7 p-fields but is given 11
+B367.000 ..367.750 T367.750 TT367.750 M:  0.08001  0.08717
+warning: instr 1 uses 7 p-fields but is given 11
+B367.750 ..368.250 T368.250 TT368.250 M:  0.34481  0.20883
+warning: instr 1 uses 7 p-fields but is given 11
+B368.250 ..368.750 T368.750 TT368.750 M:  0.39636  0.23416
+warning: instr 1 uses 7 p-fields but is given 11
+B368.750 ..369.250 T369.250 TT369.250 M:  0.31834  0.32468
+warning: instr 1 uses 7 p-fields but is given 11
+B369.250 ..369.875 T369.875 TT369.875 M:  0.32147  0.31343
+warning: instr 1 uses 7 p-fields but is given 11
+B369.875 ..370.000 T370.000 TT370.000 M:  0.32439  0.32541
+warning: instr 2 uses 7 p-fields but is given 11
+B370.000 ..370.250 T370.250 TT370.250 M:  0.30030  0.27001
+warning: instr 1 uses 7 p-fields but is given 11
+B370.250 ..370.375 T370.375 TT370.375 M:  0.49927  0.34221
+warning: instr 1 uses 7 p-fields but is given 11
+B370.375 ..371.250 T371.250 TT371.250 M:  0.67637  0.53757
+warning: instr 1 uses 7 p-fields but is given 11
+B371.250 ..371.625 T371.625 TT371.625 M:  0.39511  0.27866
+warning: instr 1 uses 7 p-fields but is given 11
+B371.625 ..372.125 T372.125 TT372.125 M:  0.38374  0.53723
+warning: instr 1 uses 7 p-fields but is given 11
+B372.125 ..372.625 T372.625 TT372.625 M:  0.56969  0.47270
+warning: instr 1 uses 7 p-fields but is given 11
+B372.625 ..373.125 T373.125 TT373.125 M:  0.44154  0.26537
+warning: instr 1 uses 7 p-fields but is given 11
+B373.125 ..374.000 T374.000 TT374.000 M:  0.33947  0.46362
+warning: instr 3 uses 7 p-fields but is given 11
+B374.000 ..374.375 T374.375 TT374.375 M:  0.09383  0.11445
+warning: instr 1 uses 7 p-fields but is given 11
+B374.375 ..374.875 T374.875 TT374.875 M:  0.21830  0.26463
+warning: instr 1 uses 7 p-fields but is given 11
+B374.875 ..375.375 T375.375 TT375.375 M:  0.36295  0.30846
+warning: instr 1 uses 7 p-fields but is given 11
+B375.375 ..376.250 T376.250 TT376.250 M:  0.34548  0.31383
+warning: instr 1 uses 7 p-fields but is given 11
+B376.250 ..377.500 T377.500 TT377.500 M:  0.32805  0.22089
+warning: instr 2 uses 7 p-fields but is given 11
+B377.500 ..377.875 T377.875 TT377.875 M:  0.07003  0.05597
+warning: instr 1 uses 7 p-fields but is given 11
+B377.875 ..378.375 T378.375 TT378.375 M:  0.30784  0.30256
+warning: instr 1 uses 7 p-fields but is given 11
+B378.375 ..378.750 T378.750 TT378.750 M:  0.25890  0.41757
+warning: instr 1 uses 7 p-fields but is given 11
+B378.750 ..379.375 T379.375 TT379.375 M:  0.45928  0.38371
+warning: instr 1 uses 7 p-fields but is given 11
+B379.375 ..380.000 T380.000 TT380.000 M:  0.33535  0.23901
+warning: instr 3 uses 7 p-fields but is given 11
+B380.000 ..380.750 T380.750 TT380.750 M:  0.12240  0.09716
+warning: instr 1 uses 7 p-fields but is given 11
+B380.750 ..381.250 T381.250 TT381.250 M:  0.33399  0.18822
+warning: instr 1 uses 7 p-fields but is given 11
+B381.250 ..381.750 T381.750 TT381.750 M:  0.41848  0.29785
+warning: instr 1 uses 7 p-fields but is given 11
+B381.750 ..382.250 T382.250 TT382.250 M:  0.31413  0.38101
+warning: instr 1 uses 7 p-fields but is given 11
+B382.250 ..382.875 T382.875 TT382.875 M:  0.39360  0.29159
+warning: instr 1 uses 7 p-fields but is given 11
+B382.875 ..383.375 T383.375 TT383.375 M:  0.41456  0.29406
+warning: instr 1 uses 7 p-fields but is given 11
+B383.375 ..384.000 T384.000 TT384.000 M:  0.41712  0.41093
+warning: instr 2 uses 7 p-fields but is given 11
+B384.000 ..384.250 T384.250 TT384.250 M:  0.11870  0.15129
+warning: instr 1 uses 7 p-fields but is given 11
+B384.250 ..385.250 T385.250 TT385.250 M:  0.40813  0.31143
+warning: instr 1 uses 7 p-fields but is given 11
+B385.250 ..385.625 T385.625 TT385.625 M:  0.37307  0.23784
+warning: instr 1 uses 7 p-fields but is given 11
+B385.625 ..386.125 T386.125 TT386.125 M:  0.36800  0.39059
+warning: instr 1 uses 7 p-fields but is given 11
+B386.125 ..386.625 T386.625 TT386.625 M:  0.50886  0.45273
+warning: instr 1 uses 7 p-fields but is given 11
+B386.625 ..387.125 T387.125 TT387.125 M:  0.43760  0.27989
+warning: instr 1 uses 7 p-fields but is given 11
+B387.125 ..387.500 T387.500 TT387.500 M:  0.30778  0.40364
+warning: instr 3 uses 7 p-fields but is given 11
+B387.500 ..387.875 T387.875 TT387.875 M:  0.16705  0.23432
+warning: instr 1 uses 7 p-fields but is given 11
+B387.875 ..388.375 T388.375 TT388.375 M:  0.26585  0.29169
+warning: instr 1 uses 7 p-fields but is given 11
+B388.375 ..388.875 T388.875 TT388.875 M:  0.35081  0.31244
+warning: instr 1 uses 7 p-fields but is given 11
+B388.875 ..389.750 T389.750 TT389.750 M:  0.33497  0.30044
+warning: instr 1 uses 7 p-fields but is given 11
+B389.750 ..391.000 T391.000 TT391.000 M:  0.33082  0.19737
+warning: instr 2 uses 7 p-fields but is given 11
+B391.000 ..391.375 T391.375 TT391.375 M:  0.05101  0.04807
+warning: instr 1 uses 7 p-fields but is given 11
+B391.375 ..391.875 T391.875 TT391.875 M:  0.32148  0.33829
+warning: instr 1 uses 7 p-fields but is given 11
+B391.875 ..392.250 T392.250 TT392.250 M:  0.28352  0.47535
+warning: instr 1 uses 7 p-fields but is given 11
+B392.250 ..392.875 T392.875 TT392.875 M:  0.46527  0.39245
+warning: instr 1 uses 7 p-fields but is given 11
+B392.875 ..394.000 T394.000 TT394.000 M:  0.32786  0.26881
+warning: instr 3 uses 7 p-fields but is given 11
+B394.000 ..394.750 T394.750 TT394.750 M:  0.06659  0.07131
+warning: instr 1 uses 7 p-fields but is given 11
+B394.750 ..395.250 T395.250 TT395.250 M:  0.35319  0.20757
+warning: instr 1 uses 7 p-fields but is given 11
+B395.250 ..395.750 T395.750 TT395.750 M:  0.43507  0.28386
+warning: instr 1 uses 7 p-fields but is given 11
+B395.750 ..396.250 T396.250 TT396.250 M:  0.37253  0.35178
+warning: instr 1 uses 7 p-fields but is given 11
+B396.250 ..396.875 T396.875 TT396.875 M:  0.41563  0.33010
+warning: instr 1 uses 7 p-fields but is given 11
+B396.875 ..397.375 T397.375 TT397.375 M:  0.36675  0.35055
+warning: instr 1 uses 7 p-fields but is given 11
+B397.375 ..401.000 T401.000 TT401.000 M:  0.41491  0.50233
+warning: instr 3 uses 7 p-fields but is given 11
+B401.000 ..401.375 T401.375 TT401.375 M:  0.04584  0.04732
+warning: instr 1 uses 7 p-fields but is given 11
+B401.375 ..401.875 T401.875 TT401.875 M:  0.24075  0.24819
+warning: instr 1 uses 7 p-fields but is given 11
+B401.875 ..402.375 T402.375 TT402.375 M:  0.38315  0.30921
+warning: instr 1 uses 7 p-fields but is given 11
+B402.375 ..403.250 T403.250 TT403.250 M:  0.37543  0.30074
+warning: instr 1 uses 7 p-fields but is given 11
+B403.250 ..416.000 T416.000 TT416.000 M:  0.33866  0.20022
+end of Performance
+512 1536 sample blks of 24bit ints written to <temporary>/nu_canon.wav (WAV)
+inactive allocs returned to freespace
+		   overall amps:  0.78864  0.90988
+Elapsed time at end of performance: real: 30.795s, CPU: 30.788s
+
+[exit 0; 30.816 s]
+
+Audio: 416.0 s, 2 ch, 48000 Hz, 24-bit pcm; peak -0.82 dBFS, RMS -19.67 dBFS, 0 clipped samples
+
+Browser engine (@csound/browser 7.0.0): {"channels": 2, "checked": true, "compiled": true, "csound_version": "7.0", "duration_seconds": 416, "errors": [], "performed": true, "playable": true, "realtime_factor": 10, "runtime_errors": 0, "sample_rate": 48000, "seconds": 42.058, "started": true}
+warning: instr 1 uses 7 p-fields but is given 11
+B402.375 ..403.250 T403.250 TT403.250 M:  0.37543  0.30074
+warning: instr 1 uses 7 p-fields but is given 11
+B403.250 ..416.000 T416.000 TT416.000 M:  0.33866  0.20022
+end of Performance
+resetting Csound instance
+no sound written to disk
+inactive allocs returned to freespace
+		   overall amps:  0.78864  0.90988
+Elapsed time at end of performance: real: 42.000s, CPU: 3.172s
+		   overall amps:      0.0
+Elapsed time at end of performance: real: 0.000s, CPU: 0.000s
+
+Render finished 2026-11-24T15:35:02Z: ok

@@ -4,7 +4,7 @@
     "model": "Composer"
   },
   "composition": "nu_canon",
-  "created_at": "2026-11-24T15:35:05Z",
+  "created_at": "2026-11-24T17:32:08Z",
   "dependencies": {
     "includes": [],
     "plugins": [],
@@ -55,8 +55,8 @@
   },
   "files": {
     "code/nu_canon-generate.py": {
-      "bytes": 14145,
-      "sha256": "b8e6ae315d0284e44d40590da2d50d9ec350b366caee43f60c914e59d3131057"
+      "bytes": 15575,
+      "sha256": "094f8e3eb9e63b7d71d81d6b943feda5e423126c2ae483ddde7234a4dce04cdd"
     },
     "code/nu_canon-source.csd": {
       "bytes": 7336,
@@ -78,21 +78,25 @@
       "bytes": 304,
       "sha256": "4a3957044baf81d5f7f8e86c9a569b7ad1b1735de51d991ea3de878690a2d3a9"
     },
+    "nu_canon-prompt-005.md": {
+      "bytes": 158,
+      "sha256": "5eee6385cd1c63a3863f24109f9b5f315126c8bea81350f05681733b83af2fcb"
+    },
     "nu_canon.csd": {
-      "bytes": 34911,
-      "sha256": "81607c5728daa1b5f19c04adc4301c41986d74f0e7950f0dbea341685af38ab4"
+      "bytes": 35060,
+      "sha256": "7d5e42a2c669300de9cf43a01b0e6064d5d7eab6815cbac0d0e537700679b93c"
     },
     "outputs/nu_canon-generate.log": {
-      "bytes": 321,
-      "sha256": "abcfc12c377c82bc35b61b6685bc20227aa97a8f6f5e39ce078542d48355d7bd"
+      "bytes": 356,
+      "sha256": "d1ced44370cc82bbe33d97dc052b7169bfb76c6aae7cc779b832e98770a60ea1"
     },
     "outputs/nu_canon-render.log": {
-      "bytes": 83167,
-      "sha256": "6b1bb4597e91053902d36cd689158ed1927ebe426994a58e33437fd5eebac372"
+      "bytes": 83168,
+      "sha256": "9ff3b8f905c2721a513d49677373d9ebf65d32dff8797287c97c1bec25b5c55c"
     },
     "outputs/nu_canon.mid": {
       "bytes": 10308,
-      "sha256": "4f869d7c3a2e4884cf1d925773ed5b1f910c1db0c6866e1f857d8df046644c0b"
+      "sha256": "324dd873ccc4ca4cb5cd529ec71c9f97edc855184b3daa7ea35ac51949fe4d46"
     }
   },
   "generator": {
@@ -104,9 +108,9 @@
           "code/nu_canon-generate.py"
         ],
         "exit_code": 0,
-        "seconds": 2.679,
+        "seconds": 2.796,
         "seed": 1,
-        "started_at": "2026-11-24T15:33:23Z"
+        "started_at": "2026-11-24T17:30:02Z"
       }
     ],
     "seeds": [
@@ -129,17 +133,24 @@
       "ordinal": 2,
       "tree_sha256": "69e263a88babf483cba61a46dfecf29fdf8d1367b01d380eaaa99259a340609b",
       "version": "version-0002"
+    },
+    {
+      "archived_at": "2026-11-24T17:32:08Z",
+      "ordinal": 3,
+      "tree_sha256": "7d12b62419b88d4c9a1486f987413807093265a511d68d60f4acfcf1c9f8119b",
+      "version": "version-0003"
     }
   ],
   "new_prompts": [
-    "nu_canon-prompt-004.md"
+    "nu_canon-prompt-005.md"
   ],
-  "ordinal": 3,
+  "ordinal": 4,
   "prompts": [
     "nu_canon-prompt-001.md",
     "nu_canon-prompt-002.md",
     "nu_canon-prompt-003.md",
-    "nu_canon-prompt-004.md"
+    "nu_canon-prompt-004.md",
+    "nu_canon-prompt-005.md"
   ],
   "render": {
     "analysis": {
@@ -154,7 +165,7 @@
       "frames": 19968000,
       "peak": 0.909883,
       "peak_dbfs": -0.82,
-      "rms_dbfs": -19.67,
+      "rms_dbfs": -19.65,
       "sample_format": "pcm",
       "sample_rate": 48000
     },
@@ -172,10 +183,10 @@
       "errors": [],
       "performed": true,
       "playable": true,
-      "realtime_factor": 10,
+      "realtime_factor": 9.7,
       "runtime_errors": 0,
       "sample_rate": 48000,
-      "seconds": 42.058,
+      "seconds": 43.283,
       "started": true
     },
     "commands": [
@@ -186,7 +197,7 @@
           "nu_canon.csd"
         ],
         "exit_code": 0,
-        "seconds": 0.077,
+        "seconds": 0.059,
         "step": "syntax-check"
       },
       {
@@ -200,14 +211,14 @@
           "nu_canon.csd"
         ],
         "exit_code": 0,
-        "seconds": 30.816,
+        "seconds": 30.736,
         "step": "render"
       }
     ],
-    "finished_at": "2026-11-24T15:35:02Z",
+    "finished_at": "2026-11-24T17:31:53Z",
     "log": "outputs/nu_canon-render.log",
-    "started_at": "2026-11-24T15:33:45Z",
-    "wav_sha256": "79ccee85f249464c2ff91f423c3ccea86c0498f01947c15e5eb601d6d9c52d77"
+    "started_at": "2026-11-24T17:30:36Z",
+    "wav_sha256": "cdee29d8dd643c6b82d601f923af4de5951ecfe5b9b17cdd6239721f5ec96744"
   },
   "schema": "ai-composition-studio/manifest/1",
   "title": "Nu, canon at the sixth",
@@ -255,7 +266,7 @@
       },
       {
         "check": "performs in the player's Csound engine (@csound/browser 7.0.0)",
-        "detail": "416 s at 10 times real time here",
+        "detail": "416 s at 9.7 times real time here",
         "passed": true
       }
     ],
