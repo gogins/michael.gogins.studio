@@ -1028,16 +1028,17 @@
       "path": "nu_canon/",
       "prompt_texts": {
         "1fe490621f28191f2eae78e8335de2aa20697df6df511347243944d1f9962755": "# nu_canon - prompt 003\n\n<!-- recorded: 2026-11-24T09:15:33Z; source: user -->\n\nNu not new\n",
+        "4a3957044baf81d5f7f8e86c9a569b7ad1b1735de51d991ea3de878690a2d3a9": "# nu_canon - prompt 004\n\n<!-- recorded: 2026-11-24T15:32:27Z; source: user -->\n\nMake a new version. Cut hocket delay in half to increase tempo. Extend piece to 6 minutes. If there are dissonances in the next bar, modulate if possible to avoid them.\n\n(Clarification: Means reduce rests in hocket by half)\n",
         "b0acc134564fabbbf12754ef204a2887949ac157cc10bdf433dcf34b077b4dde": "# nu_canon - prompt 002\n\n<!-- recorded: 2026-11-24T09:15:33Z; source: user -->\n\nMake a new version of new canon at the sixth, where after one minute, the each voice becomes a hocket, with rests to the number of currently. Sounding voices. And each hocket is offset. By one. Note.\n",
         "c90379ce3d6c68c41caababa578f85fcd7bb8e85eacf8ad6b84f409d851dfdf2": "# nu_canon - prompt 001\n\n<!-- recorded: 2026-11-21T13:16:13Z; source: user -->\n\nFollow studio-tools/AGENT_INSTRUCTIONS.md.  Create a new piece that is a copy of Nu, and make a canon at the sixth start after 23 seconds.\n"
       },
       "title": "Nu, canon at the sixth",
-      "updated_at": "2026-11-24T09:16:57Z",
+      "updated_at": "2026-11-24T15:35:05Z",
       "versions": [
         {
           "code": [
             {
-              "bytes": 7407,
+              "bytes": 14145,
               "file": "nu_canon-generate.py",
               "language": "python",
               "path": "nu_canon/code/nu_canon-generate.py"
@@ -1050,19 +1051,118 @@
             }
           ],
           "csd": {
-            "bytes": 10229,
+            "bytes": 34911,
             "file": "nu_canon.csd",
             "path": "nu_canon/nu_canon.csd"
           },
           "derived": [
             {
-              "bytes": 2440,
+              "bytes": 10308,
               "file": "nu_canon.mid",
               "kind": "midi",
               "path": "nu_canon/outputs/nu_canon.mid"
             }
           ],
           "id": "current",
+          "info": {
+            "ai_agent": "Cursor Cloud Agent",
+            "ai_model": "Composer",
+            "browser_checked": true,
+            "browser_engine": "@csound/browser 7.0.0",
+            "browser_playable": true,
+            "browser_realtime_factor": 10,
+            "channels": 2,
+            "created_at": "2026-11-24T15:35:05Z",
+            "csound": "Csound version 7.0 (double samples) Nov 24 2026",
+            "csoundac_revision": "v9.1.1-beta-26-gd884dea62",
+            "duration_seconds": 416.0,
+            "generator": "python",
+            "new_prompts": [
+              "nu_canon-prompt-004.md"
+            ],
+            "node": "v22.23.4",
+            "ordinal": 3,
+            "peak_dbfs": -0.82,
+            "python": "3.12.3",
+            "rms_dbfs": -19.67,
+            "sample_rate": 48000,
+            "seeds": [
+              1
+            ]
+          },
+          "is_current": true,
+          "logs": [],
+          "manifest": {
+            "bytes": 7033,
+            "file": "nu_canon-manifest.json",
+            "path": "nu_canon/nu_canon-manifest.json"
+          },
+          "ordinal": 3,
+          "path": "nu_canon/",
+          "prompts": [
+            {
+              "bytes": 219,
+              "file": "nu_canon-prompt-001.md",
+              "new": false,
+              "number": 1,
+              "path": "nu_canon/nu_canon-prompt-001.md",
+              "sha256": "c90379ce3d6c68c41caababa578f85fcd7bb8e85eacf8ad6b84f409d851dfdf2"
+            },
+            {
+              "bytes": 280,
+              "file": "nu_canon-prompt-002.md",
+              "new": false,
+              "number": 2,
+              "path": "nu_canon/nu_canon-prompt-002.md",
+              "sha256": "b0acc134564fabbbf12754ef204a2887949ac157cc10bdf433dcf34b077b4dde"
+            },
+            {
+              "bytes": 91,
+              "file": "nu_canon-prompt-003.md",
+              "new": false,
+              "number": 3,
+              "path": "nu_canon/nu_canon-prompt-003.md",
+              "sha256": "1fe490621f28191f2eae78e8335de2aa20697df6df511347243944d1f9962755"
+            },
+            {
+              "bytes": 304,
+              "file": "nu_canon-prompt-004.md",
+              "new": true,
+              "number": 4,
+              "path": "nu_canon/nu_canon-prompt-004.md",
+              "sha256": "4a3957044baf81d5f7f8e86c9a569b7ad1b1735de51d991ea3de878690a2d3a9"
+            }
+          ]
+        },
+        {
+          "code": [
+            {
+              "bytes": 7407,
+              "file": "nu_canon-generate.py",
+              "language": "python",
+              "path": "nu_canon/version-0002/code/nu_canon-generate.py"
+            },
+            {
+              "bytes": 7336,
+              "file": "nu_canon-source.csd",
+              "language": "text",
+              "path": "nu_canon/version-0002/code/nu_canon-source.csd"
+            }
+          ],
+          "csd": {
+            "bytes": 10229,
+            "file": "nu_canon.csd",
+            "path": "nu_canon/version-0002/nu_canon.csd"
+          },
+          "derived": [
+            {
+              "bytes": 2440,
+              "file": "nu_canon.mid",
+              "kind": "midi",
+              "path": "nu_canon/version-0002/outputs/nu_canon.mid"
+            }
+          ],
+          "id": "version-0002",
           "info": {
             "ai_agent": "Cursor Cloud Agent",
             "ai_model": "Composer",
@@ -1090,22 +1190,22 @@
               1
             ]
           },
-          "is_current": true,
+          "is_current": false,
           "logs": [],
           "manifest": {
             "bytes": 6687,
             "file": "nu_canon-manifest.json",
-            "path": "nu_canon/nu_canon-manifest.json"
+            "path": "nu_canon/version-0002/nu_canon-manifest.json"
           },
           "ordinal": 2,
-          "path": "nu_canon/",
+          "path": "nu_canon/version-0002/",
           "prompts": [
             {
               "bytes": 219,
               "file": "nu_canon-prompt-001.md",
               "new": false,
               "number": 1,
-              "path": "nu_canon/nu_canon-prompt-001.md",
+              "path": "nu_canon/version-0002/nu_canon-prompt-001.md",
               "sha256": "c90379ce3d6c68c41caababa578f85fcd7bb8e85eacf8ad6b84f409d851dfdf2"
             },
             {
@@ -1113,7 +1213,7 @@
               "file": "nu_canon-prompt-002.md",
               "new": true,
               "number": 2,
-              "path": "nu_canon/nu_canon-prompt-002.md",
+              "path": "nu_canon/version-0002/nu_canon-prompt-002.md",
               "sha256": "b0acc134564fabbbf12754ef204a2887949ac157cc10bdf433dcf34b077b4dde"
             },
             {
@@ -1121,7 +1221,7 @@
               "file": "nu_canon-prompt-003.md",
               "new": true,
               "number": 3,
-              "path": "nu_canon/nu_canon-prompt-003.md",
+              "path": "nu_canon/version-0002/nu_canon-prompt-003.md",
               "sha256": "1fe490621f28191f2eae78e8335de2aa20697df6df511347243944d1f9962755"
             }
           ]
@@ -1204,6 +1304,6 @@
       ]
     }
   ],
-  "generated_at": "2026-11-24T09:16:57Z",
+  "generated_at": "2026-11-24T15:35:05Z",
   "schema": "ai-composition-studio/catalog/2"
 }
