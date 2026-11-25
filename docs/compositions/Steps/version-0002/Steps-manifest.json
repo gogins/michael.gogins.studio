@@ -1,0 +1,235 @@
+{
+  "ai": {
+    "agent": "Cursor desktop (macOS)",
+    "model": "Grok 4.7"
+  },
+  "composition": "Steps",
+  "created_at": "2026-11-24T20:24:33Z",
+  "dependencies": {
+    "includes": [],
+    "plugins": [],
+    "samples": []
+  },
+  "environment": {
+    "browser_csound": {
+      "available": true,
+      "file": "csound.js",
+      "package": "@csound/browser",
+      "sha256": "c86c69291326fa3d64872f430ca9a06324a94c96db373d6bd207fdd4e5a3fc9e",
+      "version": "7.0.0"
+    },
+    "csound": {
+      "available": true,
+      "banner": "Csound version 7.0 (double samples) Oct 28 2026",
+      "commit": "f9434ffc51954b20314352e1620e19cc5ec67185",
+      "major": 7,
+      "path": "/usr/local/bin/csound",
+      "version": "7.0"
+    },
+    "machine": "arm64",
+    "node": {
+      "available": true,
+      "csoundac_wasm_dir": null,
+      "csoundac_wasm_present": false,
+      "path": "/opt/homebrew/bin/node",
+      "version": "v26.13.1"
+    },
+    "platform": "macOS-27.2.1-arm64-arm-64bit-Mach-O",
+    "python": {
+      "csoundac": false,
+      "csoundac_error": "ModuleNotFoundError(\"No module named 'CsoundAC'\", name='CsoundAC')",
+      "csoundac_revision": null,
+      "path": "/opt/homebrew/opt/python@3.15/bin/python3.15",
+      "version": "3.15.2"
+    },
+    "studio_python": "3.15.2"
+  },
+  "files": {
+    "Steps-prompt-001.md": {
+      "bytes": 992,
+      "sha256": "50288552ae6fa25c011142eff9f60aed55155476d55327015fdae257a080550b"
+    },
+    "Steps-prompt-002.md": {
+      "bytes": 207,
+      "sha256": "bbc5df0c6af0e2fff414e7ef20da39acd9e55ee8df850c36409ccd8cf731df4a"
+    },
+    "Steps.csd": {
+      "bytes": 16749,
+      "sha256": "9df9dbb85ba18df088805869981f452f30b3a55bcad303600678ad2328733bf8"
+    },
+    "code/Steps-generate.py": {
+      "bytes": 5793,
+      "sha256": "8d7fec1a6d4b8be5879a485f012024b7dc3f68f0c0ce4737f616e06801f07d27"
+    },
+    "outputs/Steps-generate.log": {
+      "bytes": 385,
+      "sha256": "8d113a8cab7b8d3112ff98f089573b0cbbe798bf2257f8aee056b747f4a941c0"
+    },
+    "outputs/Steps-render.log": {
+      "bytes": 10973,
+      "sha256": "30c9b35d104114e99a7a2dd3058412435913acfe094330c80e0b657fb3644477"
+    },
+    "outputs/Steps.mid": {
+      "bytes": 4447,
+      "sha256": "77abb79c0767d93d1472227a23d9ad475a5d644f27cb58dd94341db71810be83"
+    }
+  },
+  "generator": {
+    "kind": "python",
+    "runs": [
+      {
+        "argv": [
+          "python",
+          "code/Steps-generate.py"
+        ],
+        "exit_code": 0,
+        "seconds": 0.014,
+        "seed": 7,
+        "started_at": "2026-11-24T20:24:20Z"
+      }
+    ],
+    "seeds": [
+      7
+    ],
+    "sources": [
+      "code/Steps-generate.py"
+    ]
+  },
+  "history": [
+    {
+      "archived_at": "2026-11-24T20:24:33Z",
+      "ordinal": 1,
+      "tree_sha256": "809cbb6cdecdcc9ca7013a7d51a6a2c6d1cb1adabd16bcf657f27e6938da176d",
+      "version": "version-0001"
+    }
+  ],
+  "new_prompts": [
+    "Steps-prompt-002.md"
+  ],
+  "ordinal": 2,
+  "prompts": [
+    "Steps-prompt-001.md",
+    "Steps-prompt-002.md"
+  ],
+  "render": {
+    "analysis": {
+      "bits": 24,
+      "channel_peaks_dbfs": [
+        -17.41,
+        -16.95
+      ],
+      "channels": 2,
+      "clipped_samples": 0,
+      "duration_seconds": 360.0,
+      "frames": 17280000,
+      "peak": 0.142045,
+      "peak_dbfs": -16.95,
+      "rms_dbfs": -43.82,
+      "sample_format": "pcm",
+      "sample_rate": 48000
+    },
+    "browser": {
+      "channels": 2,
+      "checked": true,
+      "compiled": true,
+      "csound_version": "7.0",
+      "duration_seconds": 360,
+      "engine": {
+        "package": "@csound/browser",
+        "sha256": "c86c69291326fa3d64872f430ca9a06324a94c96db373d6bd207fdd4e5a3fc9e",
+        "version": "7.0.0"
+      },
+      "errors": [],
+      "performed": true,
+      "playable": true,
+      "realtime_factor": 532.6,
+      "runtime_errors": 0,
+      "sample_rate": 48000,
+      "seconds": 0.853,
+      "started": true
+    },
+    "commands": [
+      {
+        "argv": [
+          "csound",
+          "--syntax-check-only",
+          "Steps.csd"
+        ],
+        "exit_code": 0,
+        "seconds": 0.02,
+        "step": "syntax-check"
+      },
+      {
+        "argv": [
+          "csound",
+          "-d",
+          "-W",
+          "-3",
+          "-o",
+          "<temporary>/Steps.wav",
+          "Steps.csd"
+        ],
+        "exit_code": 0,
+        "seconds": 0.775,
+        "step": "render"
+      }
+    ],
+    "finished_at": "2026-11-24T20:24:23Z",
+    "log": "outputs/Steps-render.log",
+    "started_at": "2026-11-24T20:24:20Z",
+    "wav_sha256": "9b43162e29a335cd9fc836decc4ac988fd1670c88bca357b275c89582562df01"
+  },
+  "schema": "ai-composition-studio/manifest/1",
+  "title": "Steps",
+  "validation": {
+    "checks": [
+      {
+        "check": "naming conventions",
+        "detail": "",
+        "passed": true
+      },
+      {
+        "check": "complete .csd structure",
+        "detail": "",
+        "passed": true
+      },
+      {
+        "check": "csound --syntax-check-only",
+        "detail": "",
+        "passed": true
+      },
+      {
+        "check": "csound render",
+        "detail": "",
+        "passed": true
+      },
+      {
+        "check": "no run-time errors in the Csound log",
+        "detail": "",
+        "passed": true
+      },
+      {
+        "check": "audio rendered",
+        "detail": "temporary file, measured and deleted",
+        "passed": true
+      },
+      {
+        "check": "audio is not silent",
+        "detail": "peak -16.95 dBFS",
+        "passed": true
+      },
+      {
+        "check": "no clipping",
+        "detail": "0 samples out of range",
+        "passed": true
+      },
+      {
+        "check": "performs in the player's Csound engine (@csound/browser 7.0.0)",
+        "detail": "360 s at 532.6 times real time here",
+        "passed": true
+      }
+    ],
+    "status": "passed",
+    "warnings": []
+  }
+}

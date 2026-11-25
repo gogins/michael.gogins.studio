@@ -1410,8 +1410,554 @@
           ]
         }
       ]
+    },
+    {
+      "name": "Steps",
+      "path": "Steps/",
+      "prompt_texts": {
+        "27098f02504005be9bbf942bdea0d7973c227796363527dcf300c8e3c55f0c2a": "# Steps - prompt 004\n\n<!-- recorded: 2026-11-25T19:30:22Z; source: user -->\n\nOK, keep the notes starting at their currrent times, but make them half notes.\n",
+        "50288552ae6fa25c011142eff9f60aed55155476d55327015fdae257a080550b": "# Steps - prompt 001\n\n<!-- recorded: 2026-11-24T20:15:15Z; source: user -->\n\nWrite a piece that consists of lines of notes reflecting between an upper and lower bound. \nThe lower bound is MIDI key 24 and the upper bound is MIDI key 96.\nEach line consists of a prime number of notes, starting with 13. There are N lines. Each line plays one eighth note followed by N-1 rests. \nThe lines all start at the same from key 24 and ascend by scale steps in the major scale, when they reach the upper bound they reflect back down. \nEach line is on a different MIDI channel/Csound instrument starting with 1 for Csound and 0 for MIDI. \nThe only other difference between the lines is that they ascend and descend at a different tempo (i.e. angle from time to pitch).\nMake a new piece like this that runs for 6 minutes. The shortest line has the longest notes, the longest line has the shortest notes, but the different durations must be integer multiples of the shortest note.\n\nName this piece \"Steps.\"\n",
+        "6228011982af59c1571c957f16d7957ce263ae26aedb516c9f554967ad033ec5": "# Steps - prompt 006\n\n<!-- recorded: 2026-11-25T19:50:26Z; source: user -->\n\nYou are correct. I want something more like a standard modulation.\n",
+        "bbc5df0c6af0e2fff414e7ef20da39acd9e55ee8df850c36409ccd8cf731df4a": "# Steps - prompt 002\n\n<!-- recorded: 2026-11-24T20:23:37Z; source: user -->\n\nEvery line does not fill the six minutes. The lines reflefdt and repeat at the requested tempos until the six minutes is reached.\n",
+        "be6c852499749fb243da4a9250c8c763a2786fa6f7402c73c6389ff011f096e8": "# Steps - prompt 005\n\n<!-- recorded: 2026-11-25T19:37:05Z; source: user -->\n\nOK, good. Now double the tempo and modulate after only two cycles of the \"sawtooths.\"\n",
+        "fc668da936bc6ecc2f400cf063c4c7964c455d99393e4497c5400fec0006344d": "# Steps - prompt 003\n\n<!-- recorded: 2026-11-25T19:12:06Z; source: user -->\n\nMake a new piece titled “Steps.”\n\nThis piece will be for 5 Csound instruments 1-5, or 5 MIDI channels 0-6. It should be six minutes long.\n\nThe piece will be constructed by bouncing arpeggios between the bass floor of MIDI 24 and treble ceiling of MIDI 96.\n\nEach voice will consist of 8th notes and rests. The first voice starts with an eighth note followed by 4 eighth rests. The second voice starts with a rest, then an eighth note, then 3 eighth rests. You can think of the meter as ⅝ or 10/8.\n\nAlthough each voice consists of the same durations of rests and notes, they in fact behave differently in that the notes are derived by quantizing a “sawtooth” path reflecting between the bass floor and treble ceiling. The “sawtooth” pattern is defined by a starting point and an angle\n\nThe starting point is a root position C major 9th chord, assigned to voices 1, 2, 3, 4, and 5 starting at MIDI 48. From each tone, a line is projected towards the treble ceiling. Whenever that line intersects a pitch class of the chord, a note (or rest) is generated. When the line intersects the treble ceiling, it reflects back down towards the bass floor, still generating eighth notes or rests as it intersects the pitch-classes of the chord.\n\nThe angles for voices are 7, 14, 21, 28, and 35 degrees. When voice 1 has been reflected to the bass floor 3 times, the chord progresses to D minor 9th. Following the same rule, to G 9th, A minor 9th, B half-diminished 9th, and (modulating) to E major 9th; the same pattern is followed to the end of the piece. Interest arises from the “sawtooth” arpeggios occurring at different rates, and thus creating various hocketting effects with the notes and rests.\n"
+      },
+      "title": "Steps",
+      "updated_at": "2026-11-25T19:53:28Z",
+      "versions": [
+        {
+          "code": [
+            {
+              "bytes": 8037,
+              "file": "Steps-generate.py",
+              "language": "python",
+              "path": "Steps/code/Steps-generate.py"
+            }
+          ],
+          "csd": {
+            "bytes": 160607,
+            "file": "Steps.csd",
+            "path": "Steps/Steps.csd"
+          },
+          "derived": [
+            {
+              "bytes": 43256,
+              "file": "Steps.mid",
+              "kind": "midi",
+              "path": "Steps/outputs/Steps.mid"
+            }
+          ],
+          "id": "current",
+          "info": {
+            "ai_agent": "Cursor desktop (macOS)",
+            "ai_model": "Grok 4.7",
+            "browser_checked": true,
+            "browser_engine": "@csound/browser 7.0.0",
+            "browser_playable": true,
+            "browser_realtime_factor": 280.4,
+            "channels": 2,
+            "created_at": "2026-11-25T19:53:28Z",
+            "csound": "Csound version 7.0 (double samples) Oct 28 2026",
+            "duration_seconds": 360.0,
+            "generator": "python",
+            "new_prompts": [
+              "Steps-prompt-006.md"
+            ],
+            "node": "v26.13.1",
+            "ordinal": 6,
+            "peak_dbfs": -14.75,
+            "python": "3.15.2",
+            "rms_dbfs": -29.06,
+            "sample_rate": 48000,
+            "seeds": [
+              7
+            ]
+          },
+          "is_current": true,
+          "logs": [],
+          "manifest": {
+            "bytes": 7318,
+            "file": "Steps-manifest.json",
+            "path": "Steps/Steps-manifest.json"
+          },
+          "ordinal": 6,
+          "path": "Steps/",
+          "prompts": [
+            {
+              "bytes": 992,
+              "file": "Steps-prompt-001.md",
+              "new": false,
+              "number": 1,
+              "path": "Steps/Steps-prompt-001.md",
+              "sha256": "50288552ae6fa25c011142eff9f60aed55155476d55327015fdae257a080550b"
+            },
+            {
+              "bytes": 207,
+              "file": "Steps-prompt-002.md",
+              "new": false,
+              "number": 2,
+              "path": "Steps/Steps-prompt-002.md",
+              "sha256": "bbc5df0c6af0e2fff414e7ef20da39acd9e55ee8df850c36409ccd8cf731df4a"
+            },
+            {
+              "bytes": 1785,
+              "file": "Steps-prompt-003.md",
+              "new": false,
+              "number": 3,
+              "path": "Steps/Steps-prompt-003.md",
+              "sha256": "fc668da936bc6ecc2f400cf063c4c7964c455d99393e4497c5400fec0006344d"
+            },
+            {
+              "bytes": 156,
+              "file": "Steps-prompt-004.md",
+              "new": false,
+              "number": 4,
+              "path": "Steps/Steps-prompt-004.md",
+              "sha256": "27098f02504005be9bbf942bdea0d7973c227796363527dcf300c8e3c55f0c2a"
+            },
+            {
+              "bytes": 163,
+              "file": "Steps-prompt-005.md",
+              "new": false,
+              "number": 5,
+              "path": "Steps/Steps-prompt-005.md",
+              "sha256": "be6c852499749fb243da4a9250c8c763a2786fa6f7402c73c6389ff011f096e8"
+            },
+            {
+              "bytes": 144,
+              "file": "Steps-prompt-006.md",
+              "new": true,
+              "number": 6,
+              "path": "Steps/Steps-prompt-006.md",
+              "sha256": "6228011982af59c1571c957f16d7957ce263ae26aedb516c9f554967ad033ec5"
+            }
+          ]
+        },
+        {
+          "code": [
+            {
+              "bytes": 7411,
+              "file": "Steps-generate.py",
+              "language": "python",
+              "path": "Steps/version-0005/code/Steps-generate.py"
+            }
+          ],
+          "csd": {
+            "bytes": 160643,
+            "file": "Steps.csd",
+            "path": "Steps/version-0005/Steps.csd"
+          },
+          "derived": [
+            {
+              "bytes": 43256,
+              "file": "Steps.mid",
+              "kind": "midi",
+              "path": "Steps/version-0005/outputs/Steps.mid"
+            }
+          ],
+          "id": "version-0005",
+          "info": {
+            "ai_agent": "Cursor desktop (macOS)",
+            "ai_model": "Grok 4.7",
+            "browser_checked": true,
+            "browser_engine": "@csound/browser 7.0.0",
+            "browser_playable": true,
+            "browser_realtime_factor": 281.4,
+            "channels": 2,
+            "created_at": "2026-11-25T19:37:41Z",
+            "csound": "Csound version 7.0 (double samples) Oct 28 2026",
+            "duration_seconds": 360.0,
+            "generator": "python",
+            "new_prompts": [
+              "Steps-prompt-005.md"
+            ],
+            "node": "v26.13.1",
+            "ordinal": 5,
+            "peak_dbfs": -14.72,
+            "python": "3.15.2",
+            "rms_dbfs": -29.06,
+            "sample_rate": 48000,
+            "seeds": [
+              7
+            ]
+          },
+          "is_current": false,
+          "logs": [],
+          "manifest": {
+            "bytes": 6952,
+            "file": "Steps-manifest.json",
+            "path": "Steps/version-0005/Steps-manifest.json"
+          },
+          "ordinal": 5,
+          "path": "Steps/version-0005/",
+          "prompts": [
+            {
+              "bytes": 992,
+              "file": "Steps-prompt-001.md",
+              "new": false,
+              "number": 1,
+              "path": "Steps/version-0005/Steps-prompt-001.md",
+              "sha256": "50288552ae6fa25c011142eff9f60aed55155476d55327015fdae257a080550b"
+            },
+            {
+              "bytes": 207,
+              "file": "Steps-prompt-002.md",
+              "new": false,
+              "number": 2,
+              "path": "Steps/version-0005/Steps-prompt-002.md",
+              "sha256": "bbc5df0c6af0e2fff414e7ef20da39acd9e55ee8df850c36409ccd8cf731df4a"
+            },
+            {
+              "bytes": 1785,
+              "file": "Steps-prompt-003.md",
+              "new": false,
+              "number": 3,
+              "path": "Steps/version-0005/Steps-prompt-003.md",
+              "sha256": "fc668da936bc6ecc2f400cf063c4c7964c455d99393e4497c5400fec0006344d"
+            },
+            {
+              "bytes": 156,
+              "file": "Steps-prompt-004.md",
+              "new": false,
+              "number": 4,
+              "path": "Steps/version-0005/Steps-prompt-004.md",
+              "sha256": "27098f02504005be9bbf942bdea0d7973c227796363527dcf300c8e3c55f0c2a"
+            },
+            {
+              "bytes": 163,
+              "file": "Steps-prompt-005.md",
+              "new": true,
+              "number": 5,
+              "path": "Steps/version-0005/Steps-prompt-005.md",
+              "sha256": "be6c852499749fb243da4a9250c8c763a2786fa6f7402c73c6389ff011f096e8"
+            }
+          ]
+        },
+        {
+          "code": [
+            {
+              "bytes": 7324,
+              "file": "Steps-generate.py",
+              "language": "python",
+              "path": "Steps/version-0004/code/Steps-generate.py"
+            }
+          ],
+          "csd": {
+            "bytes": 81736,
+            "file": "Steps.csd",
+            "path": "Steps/version-0004/Steps.csd"
+          },
+          "derived": [
+            {
+              "bytes": 23456,
+              "file": "Steps.mid",
+              "kind": "midi",
+              "path": "Steps/version-0004/outputs/Steps.mid"
+            }
+          ],
+          "id": "version-0004",
+          "info": {
+            "ai_agent": "Cursor desktop (macOS)",
+            "ai_model": "Grok 4.7",
+            "browser_checked": true,
+            "browser_engine": "@csound/browser 7.0.0",
+            "browser_playable": true,
+            "browser_realtime_factor": 285.9,
+            "channels": 2,
+            "created_at": "2026-11-25T19:31:54Z",
+            "csound": "Csound version 7.0 (double samples) Oct 28 2026",
+            "duration_seconds": 360.0,
+            "generator": "python",
+            "new_prompts": [
+              "Steps-prompt-004.md"
+            ],
+            "node": "v26.13.1",
+            "ordinal": 4,
+            "peak_dbfs": -14.54,
+            "python": "3.15.2",
+            "rms_dbfs": -28.9,
+            "sample_rate": 48000,
+            "seeds": [
+              7,
+              7
+            ]
+          },
+          "is_current": false,
+          "logs": [],
+          "manifest": {
+            "bytes": 6809,
+            "file": "Steps-manifest.json",
+            "path": "Steps/version-0004/Steps-manifest.json"
+          },
+          "ordinal": 4,
+          "path": "Steps/version-0004/",
+          "prompts": [
+            {
+              "bytes": 992,
+              "file": "Steps-prompt-001.md",
+              "new": false,
+              "number": 1,
+              "path": "Steps/version-0004/Steps-prompt-001.md",
+              "sha256": "50288552ae6fa25c011142eff9f60aed55155476d55327015fdae257a080550b"
+            },
+            {
+              "bytes": 207,
+              "file": "Steps-prompt-002.md",
+              "new": false,
+              "number": 2,
+              "path": "Steps/version-0004/Steps-prompt-002.md",
+              "sha256": "bbc5df0c6af0e2fff414e7ef20da39acd9e55ee8df850c36409ccd8cf731df4a"
+            },
+            {
+              "bytes": 1785,
+              "file": "Steps-prompt-003.md",
+              "new": false,
+              "number": 3,
+              "path": "Steps/version-0004/Steps-prompt-003.md",
+              "sha256": "fc668da936bc6ecc2f400cf063c4c7964c455d99393e4497c5400fec0006344d"
+            },
+            {
+              "bytes": 156,
+              "file": "Steps-prompt-004.md",
+              "new": true,
+              "number": 4,
+              "path": "Steps/version-0004/Steps-prompt-004.md",
+              "sha256": "27098f02504005be9bbf942bdea0d7973c227796363527dcf300c8e3c55f0c2a"
+            }
+          ]
+        },
+        {
+          "code": [
+            {
+              "bytes": 7061,
+              "file": "Steps-generate.py",
+              "language": "python",
+              "path": "Steps/version-0003/code/Steps-generate.py"
+            }
+          ],
+          "csd": {
+            "bytes": 81686,
+            "file": "Steps.csd",
+            "path": "Steps/version-0003/Steps.csd"
+          },
+          "derived": [
+            {
+              "bytes": 23456,
+              "file": "Steps.mid",
+              "kind": "midi",
+              "path": "Steps/version-0003/outputs/Steps.mid"
+            }
+          ],
+          "id": "version-0003",
+          "info": {
+            "ai_agent": "Cursor desktop (macOS)",
+            "ai_model": "Grok 4.7",
+            "browser_checked": true,
+            "browser_engine": "@csound/browser 7.0.0",
+            "browser_playable": true,
+            "browser_realtime_factor": 531,
+            "channels": 2,
+            "created_at": "2026-11-25T19:17:15Z",
+            "csound": "Csound version 7.0 (double samples) Oct 28 2026",
+            "duration_seconds": 360.0,
+            "generator": "python",
+            "new_prompts": [
+              "Steps-prompt-003.md"
+            ],
+            "node": "v26.13.1",
+            "ordinal": 3,
+            "peak_dbfs": -14.55,
+            "python": "3.15.2",
+            "rms_dbfs": -33.41,
+            "sample_rate": 48000,
+            "seeds": [
+              7
+            ]
+          },
+          "is_current": false,
+          "logs": [],
+          "manifest": {
+            "bytes": 6217,
+            "file": "Steps-manifest.json",
+            "path": "Steps/version-0003/Steps-manifest.json"
+          },
+          "ordinal": 3,
+          "path": "Steps/version-0003/",
+          "prompts": [
+            {
+              "bytes": 992,
+              "file": "Steps-prompt-001.md",
+              "new": false,
+              "number": 1,
+              "path": "Steps/version-0003/Steps-prompt-001.md",
+              "sha256": "50288552ae6fa25c011142eff9f60aed55155476d55327015fdae257a080550b"
+            },
+            {
+              "bytes": 207,
+              "file": "Steps-prompt-002.md",
+              "new": false,
+              "number": 2,
+              "path": "Steps/version-0003/Steps-prompt-002.md",
+              "sha256": "bbc5df0c6af0e2fff414e7ef20da39acd9e55ee8df850c36409ccd8cf731df4a"
+            },
+            {
+              "bytes": 1785,
+              "file": "Steps-prompt-003.md",
+              "new": true,
+              "number": 3,
+              "path": "Steps/version-0003/Steps-prompt-003.md",
+              "sha256": "fc668da936bc6ecc2f400cf063c4c7964c455d99393e4497c5400fec0006344d"
+            }
+          ]
+        },
+        {
+          "code": [
+            {
+              "bytes": 5793,
+              "file": "Steps-generate.py",
+              "language": "python",
+              "path": "Steps/version-0002/code/Steps-generate.py"
+            }
+          ],
+          "csd": {
+            "bytes": 16749,
+            "file": "Steps.csd",
+            "path": "Steps/version-0002/Steps.csd"
+          },
+          "derived": [
+            {
+              "bytes": 4447,
+              "file": "Steps.mid",
+              "kind": "midi",
+              "path": "Steps/version-0002/outputs/Steps.mid"
+            }
+          ],
+          "id": "version-0002",
+          "info": {
+            "ai_agent": "Cursor desktop (macOS)",
+            "ai_model": "Grok 4.7",
+            "browser_checked": true,
+            "browser_engine": "@csound/browser 7.0.0",
+            "browser_playable": true,
+            "browser_realtime_factor": 532.6,
+            "channels": 2,
+            "created_at": "2026-11-24T20:24:33Z",
+            "csound": "Csound version 7.0 (double samples) Oct 28 2026",
+            "duration_seconds": 360.0,
+            "generator": "python",
+            "new_prompts": [
+              "Steps-prompt-002.md"
+            ],
+            "node": "v26.13.1",
+            "ordinal": 2,
+            "peak_dbfs": -16.95,
+            "python": "3.15.2",
+            "rms_dbfs": -43.82,
+            "sample_rate": 48000,
+            "seeds": [
+              7
+            ]
+          },
+          "is_current": false,
+          "logs": [],
+          "manifest": {
+            "bytes": 5852,
+            "file": "Steps-manifest.json",
+            "path": "Steps/version-0002/Steps-manifest.json"
+          },
+          "ordinal": 2,
+          "path": "Steps/version-0002/",
+          "prompts": [
+            {
+              "bytes": 992,
+              "file": "Steps-prompt-001.md",
+              "new": false,
+              "number": 1,
+              "path": "Steps/version-0002/Steps-prompt-001.md",
+              "sha256": "50288552ae6fa25c011142eff9f60aed55155476d55327015fdae257a080550b"
+            },
+            {
+              "bytes": 207,
+              "file": "Steps-prompt-002.md",
+              "new": true,
+              "number": 2,
+              "path": "Steps/version-0002/Steps-prompt-002.md",
+              "sha256": "bbc5df0c6af0e2fff414e7ef20da39acd9e55ee8df850c36409ccd8cf731df4a"
+            }
+          ]
+        },
+        {
+          "code": [
+            {
+              "bytes": 4850,
+              "file": "Steps-generate.py",
+              "language": "python",
+              "path": "Steps/version-0001/code/Steps-generate.py"
+            }
+          ],
+          "csd": {
+            "bytes": 26120,
+            "file": "Steps.csd",
+            "path": "Steps/version-0001/Steps.csd"
+          },
+          "derived": [
+            {
+              "bytes": 7371,
+              "file": "Steps.mid",
+              "kind": "midi",
+              "path": "Steps/version-0001/outputs/Steps.mid"
+            }
+          ],
+          "id": "version-0001",
+          "info": {
+            "ai_agent": "Cursor desktop (macOS)",
+            "ai_model": "Grok 4.7",
+            "browser_checked": true,
+            "browser_engine": "@csound/browser 7.0.0",
+            "browser_playable": true,
+            "browser_realtime_factor": 518.5,
+            "channels": 2,
+            "created_at": "2026-11-24T20:17:47Z",
+            "csound": "Csound version 7.0 (double samples) Oct 28 2026",
+            "duration_seconds": 360.0,
+            "generator": "python",
+            "new_prompts": [
+              "Steps-prompt-001.md"
+            ],
+            "node": "v26.13.1",
+            "ordinal": 1,
+            "peak_dbfs": -17.38,
+            "python": "3.15.2",
+            "rms_dbfs": -43.99,
+            "sample_rate": 48000,
+            "seeds": [
+              7,
+              7
+            ]
+          },
+          "is_current": false,
+          "logs": [],
+          "manifest": {
+            "bytes": 5710,
+            "file": "Steps-manifest.json",
+            "path": "Steps/version-0001/Steps-manifest.json"
+          },
+          "ordinal": 1,
+          "path": "Steps/version-0001/",
+          "prompts": [
+            {
+              "bytes": 992,
+              "file": "Steps-prompt-001.md",
+              "new": true,
+              "number": 1,
+              "path": "Steps/version-0001/Steps-prompt-001.md",
+              "sha256": "50288552ae6fa25c011142eff9f60aed55155476d55327015fdae257a080550b"
+            }
+          ]
+        }
+      ]
     }
   ],
-  "generated_at": "2026-11-24T17:32:08Z",
+  "generated_at": "2026-11-25T19:53:28Z",
   "schema": "ai-composition-studio/catalog/2"
 }

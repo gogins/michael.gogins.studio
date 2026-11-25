@@ -1,0 +1,26 @@
+$ python code/Steps-generate.py
+[started 2026-11-25T19:50:54Z; exit 0]
+3600 notes, 21 chord regions
+  C major      Cmaj9  0.000s .. 17.918s
+  C major      G9     17.918s .. 35.360s
+  C major      Cmaj9  35.360s .. 53.278s
+  D minor      A9     53.278s .. 70.584s
+  D minor      Dm9    70.584s .. 88.366s
+  D minor      A9     88.366s .. 105.673s
+  D minor      Dm9    105.673s .. 123.455s
+  G major      D9     123.455s .. 141.237s
+  G major      Gmaj9  141.237s .. 158.679s
+  G major      D9     158.679s .. 176.461s
+  G major      Gmaj9  176.461s .. 193.903s
+  A minor      E9     193.903s .. 211.549s
+  A minor      Am9    211.549s .. 228.856s
+  A minor      E9     228.856s .. 246.502s
+  A minor      Am9    246.502s .. 263.809s
+  E major      B9     263.809s .. 280.980s
+  E major      Emaj9  280.980s .. 298.626s
+  E major      B9     298.626s .. 315.797s
+  E major      Emaj9  315.797s .. 333.443s
+  C major      G9     333.443s .. 350.886s
+  C major      Cmaj9  350.886s .. 360.000s (cut off at six minutes)
+seed 7 (the score does not use it)
+
