@@ -145,8 +145,62 @@ for eighth in range(EIGHTHS):
         raise SystemExit(f"note {key} is outside the chord at eighth {eighth}")
     events.append((voice, eighth, key, pitch_class_set(chord["pcs"])))
 
+# One Csound instrument and one stereo position per voice.
+# GM programs match those timbres: flute, guitar, clarinet, bells, horn.
+VOICES = (
+    {
+        "pan": "0.06",
+        "gm": 74,
+        "body": """
+  aRise linseg 0, 0.03, 1
+  aFall expon 1, p3, 0.001
+  aTone poscil3 0.92, iHz, giSine, iPhase
+  aHarmonic poscil3 0.06, iHz * 2, giSine, iPhase
+  aSignal = (aTone + aHarmonic) * aRise * aFall * iAmp""",
+    },
+    {
+        "pan": "0.28",
+        "gm": 25,
+        "body": """
+  aRise linseg 0, 0.002, 1
+  aFall expon 1, p3, 0.001
+  aString pluck 0.7, iHz, iHz, giSine, 1
+  aSignal = aString * aRise * aFall * iAmp""",
+    },
+    {
+        "pan": "0.50",
+        "gm": 72,
+        "body": """
+  aRise linseg 0, 0.02, 1
+  aFall expon 1, p3, 0.001
+  aFund poscil3 0.62, iHz, giSine, iPhase
+  aThird poscil3 0.28, iHz * 3, giSine, iPhase
+  aFifth poscil3 0.10, iHz * 5, giSine, iPhase
+  aSignal = (aFund + aThird + aFifth) * aRise * aFall * iAmp""",
+    },
+    {
+        "pan": "0.72",
+        "gm": 15,
+        "body": """
+  aRise linseg 0, 0.002, 1
+  aFall expon 1, p3, 0.001
+  aBell foscil 0.55, iHz, 1, 2.76, 1.8, giSine, iPhase
+  aSignal = aBell * aRise * aFall * iAmp""",
+    },
+    {
+        "pan": "0.94",
+        "gm": 61,
+        "body": """
+  aRise linseg 0, 0.04, 1
+  aFall expon 1, p3, 0.001
+  aSaw vco2 0.45, iHz
+  aHorn moogladder aSaw, iHz * 3.5, 0.18
+  aSignal = aHorn * aRise * aFall * iAmp""",
+    },
+)
+
 instruments = []
-for number in range(1, 6):
+for number, voice in enumerate(VOICES, start=1):
     instruments.append(
         f"""instr {number}
   iHz = cpsmidinn(p4)
@@ -155,20 +209,17 @@ for number in range(1, 6):
   iPhase = frac(p9)
   iPitches = p10
   iHomogeneity = p11
-  aRise linseg 0, 0.003, 1
-  aFall expon 1, p3, 0.001
-  aTone poscil3 0.78, iHz, giSine, iPhase
-  aBright poscil3 0.22, iHz * 2, giSine, iPhase
-  aLeft, aRight pan2 (aTone + aBright) * aRise * aFall * iAmp, iPan
+{voice["body"]}
+  aLeft, aRight pan2 aSignal, iPan
   out aLeft * 0.9, aRight * 0.9
   gaLeft += aLeft * 0.16
   gaRight += aRight * 0.16
 endin"""
     )
 
-pans = ("0.12", "0.31", "0.5", "0.69", "0.88")
+pans = tuple(voice["pan"] for voice in VOICES)
 phases = ("0", "0.2", "0.4", "0.6", "0.8")
-gm = "\n".join(f"; gm {number} 1" for number in range(1, 6))
+gm = "\n".join(f"; gm {number} {voice['gm']}" for number, voice in enumerate(VOICES, start=1))
 score = [f"i 99 0 {seconds(EIGHTHS)}"]
 for voice, eighth, key, pcs in events:
     duration = min(HALF, EIGHTHS - eighth)
@@ -192,9 +243,11 @@ nchnls = 2
 0dbfs = 1
 
 ; Steps. Five voices in 5/8, six minutes. An eighth note is 1/10 second.
-; Each note is a half note, four eighths. Voice n attacks on eighth n-1 of
-; each bar (MIDI channel n-1). One eighth on the time-pitch graph equals one
-; octave, so the angles 7, 14, 21, 28, and 35 degrees are the slopes.
+; Each note is a half note, four eighths. Voice n is instrument n, panned
+; from hard left to hard right: flute, guitar, clarinet, bells, horn.
+; Voice n attacks on eighth n-1 of each bar (MIDI channel n-1). One eighth
+; on the time-pitch graph equals one octave, so the angles 7, 14, 21, 28,
+; and 35 degrees are the slopes.
 ; Each line reflects between MIDI 24 and MIDI 96. The pitch at an attack is
 ; the nearest tone of the current chord. A chord lasts two reflecting cycles
 ; of voice 1. Each key is I–V–I, or i–V–i, and the next key is reached by

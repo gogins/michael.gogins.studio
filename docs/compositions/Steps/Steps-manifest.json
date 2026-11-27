@@ -4,7 +4,7 @@
     "model": "Grok 4.7"
   },
   "composition": "Steps",
-  "created_at": "2026-11-25T19:53:28Z",
+  "created_at": "2026-11-27T19:03:51Z",
   "dependencies": {
     "includes": [],
     "plugins": [],
@@ -69,25 +69,29 @@
       "bytes": 144,
       "sha256": "6228011982af59c1571c957f16d7957ce263ae26aedb516c9f554967ad033ec5"
     },
+    "Steps-prompt-007.md": {
+      "bytes": 176,
+      "sha256": "bc1072d6cd0e7b0930996a53c01f5c4b764c2a32d3d9390bcd91b2b8d639e7cd"
+    },
     "Steps.csd": {
-      "bytes": 160607,
-      "sha256": "f8f6b51bc3b3a7571c01ea9fc7ca7b3c7e696c42672a2320862176f46b39785c"
+      "bytes": 161451,
+      "sha256": "5ae6a490af8f4752caa09af8b28a6d69e75763db0fce020abec66b5c470ce442"
     },
     "code/Steps-generate.py": {
-      "bytes": 8037,
-      "sha256": "ffa9d860e5d743eb70cfb4a5d274710af83b6c7725fa81a1670ebd7e5ac6afd7"
+      "bytes": 9467,
+      "sha256": "703dbf29d41d86523f20de3c936fb1aa53343c1dc78f207d354897446135b45d"
     },
     "outputs/Steps-generate.log": {
       "bytes": 1052,
-      "sha256": "31dcff54dff463ed057e1dbf7de1dc464d4bc4068565f597d705fd299bf9d4a9"
+      "sha256": "8b86a099f97e33226522be230ab5e7f6fdbcc9efe9a6f52421764bd9c9a4d6d2"
     },
     "outputs/Steps-render.log": {
-      "bytes": 214879,
-      "sha256": "769a40e2ec3dd3788dc5b0fb02a823b3768c6cc163e31092879776c8d8f0c7ea"
+      "bytes": 214878,
+      "sha256": "bb2f7630628ff875cd2b547c8bc5e601e9fd5725b7047659c6877b2ed79c5d2a"
     },
     "outputs/Steps.mid": {
       "bytes": 43256,
-      "sha256": "f7143d39735554dc7f043e338e0d4cb26ac5419647e3c338990fa5305e7ffa96"
+      "sha256": "f92d4b4b2a1df05d3bb6afd637c257082881fc3e177e660418a21d0c2d7cdcfd"
     }
   },
   "generator": {
@@ -99,9 +103,9 @@
           "code/Steps-generate.py"
         ],
         "exit_code": 0,
-        "seconds": 0.043,
+        "seconds": 0.04,
         "seed": 7,
-        "started_at": "2026-11-25T19:50:54Z"
+        "started_at": "2026-11-27T19:03:23Z"
       }
     ],
     "seeds": [
@@ -141,34 +145,41 @@
       "ordinal": 5,
       "tree_sha256": "e098430a6fa6f711e53150eb14fca6b0219ed165be4b9fa575ba4c5b21b2aa64",
       "version": "version-0005"
+    },
+    {
+      "archived_at": "2026-11-27T19:03:51Z",
+      "ordinal": 6,
+      "tree_sha256": "5f8ac9a7a5a6bfc66cfdc978e7dcf401aebf72f3eee56f5978f567849ec94903",
+      "version": "version-0006"
     }
   ],
   "new_prompts": [
-    "Steps-prompt-006.md"
+    "Steps-prompt-007.md"
   ],
-  "ordinal": 6,
+  "ordinal": 7,
   "prompts": [
     "Steps-prompt-001.md",
     "Steps-prompt-002.md",
     "Steps-prompt-003.md",
     "Steps-prompt-004.md",
     "Steps-prompt-005.md",
-    "Steps-prompt-006.md"
+    "Steps-prompt-006.md",
+    "Steps-prompt-007.md"
   ],
   "render": {
     "analysis": {
       "bits": 24,
       "channel_peaks_dbfs": [
-        -15.56,
-        -14.75
+        -17.57,
+        -19.97
       ],
       "channels": 2,
       "clipped_samples": 0,
       "duration_seconds": 360.0,
       "frames": 17280000,
-      "peak": 0.182926,
-      "peak_dbfs": -14.75,
-      "rms_dbfs": -29.06,
+      "peak": 0.132286,
+      "peak_dbfs": -17.57,
+      "rms_dbfs": -32.09,
       "sample_format": "pcm",
       "sample_rate": 48000
     },
@@ -186,10 +197,10 @@
       "errors": [],
       "performed": true,
       "playable": true,
-      "realtime_factor": 280.4,
+      "realtime_factor": 93.5,
       "runtime_errors": 0,
       "sample_rate": 48000,
-      "seconds": 1.478,
+      "seconds": 4.287,
       "started": true
     },
     "commands": [
@@ -200,7 +211,7 @@
           "Steps.csd"
         ],
         "exit_code": 0,
-        "seconds": 0.026,
+        "seconds": 0.092,
         "step": "syntax-check"
       },
       {
@@ -214,14 +225,14 @@
           "Steps.csd"
         ],
         "exit_code": 0,
-        "seconds": 1.197,
+        "seconds": 2.292,
         "step": "render"
       }
     ],
-    "finished_at": "2026-11-25T19:50:58Z",
+    "finished_at": "2026-11-27T19:03:41Z",
     "log": "outputs/Steps-render.log",
-    "started_at": "2026-11-25T19:50:54Z",
-    "wav_sha256": "e8d44c0a44f0913130d853d942487372956ba80f33c06480de92b16c272f37e4"
+    "started_at": "2026-11-27T19:03:33Z",
+    "wav_sha256": "a2f1d83d33b97e7f52d14405be03965f4226ca2d797b19e333749d415a7b42fe"
   },
   "schema": "ai-composition-studio/manifest/1",
   "title": "Steps",
@@ -259,7 +270,7 @@
       },
       {
         "check": "audio is not silent",
-        "detail": "peak -14.75 dBFS",
+        "detail": "peak -17.57 dBFS",
         "passed": true
       },
       {
@@ -269,7 +280,7 @@
       },
       {
         "check": "performs in the player's Csound engine (@csound/browser 7.0.0)",
-        "detail": "360 s at 280.4 times real time here",
+        "detail": "360 s at 93.5 times real time here",
         "passed": true
       }
     ],

@@ -2,7 +2,7 @@
   "files": {
     "Steps/Steps-manifest.json": {
       "kind": "manifest",
-      "sha256": "cf32da3ed4be7963e7dbc256ef90fae3e89aa631877850ed311caccdefd7e2b3",
+      "sha256": "ef18884b742e056283db2cf259dd591f0997cc3f3fdc3590171748b12f1e0f80",
       "source": "music/ai-compositions/Steps/Steps-manifest.json"
     },
     "Steps/Steps-prompt-001.md": {
@@ -35,19 +35,24 @@
       "sha256": "6228011982af59c1571c957f16d7957ce263ae26aedb516c9f554967ad033ec5",
       "source": "music/ai-compositions/Steps/Steps-prompt-006.md"
     },
+    "Steps/Steps-prompt-007.md": {
+      "kind": "prompts",
+      "sha256": "bc1072d6cd0e7b0930996a53c01f5c4b764c2a32d3d9390bcd91b2b8d639e7cd",
+      "source": "music/ai-compositions/Steps/Steps-prompt-007.md"
+    },
     "Steps/Steps.csd": {
       "kind": "csd",
-      "sha256": "f8f6b51bc3b3a7571c01ea9fc7ca7b3c7e696c42672a2320862176f46b39785c",
+      "sha256": "5ae6a490af8f4752caa09af8b28a6d69e75763db0fce020abec66b5c470ce442",
       "source": "music/ai-compositions/Steps/Steps.csd"
     },
     "Steps/code/Steps-generate.py": {
       "kind": "code",
-      "sha256": "ffa9d860e5d743eb70cfb4a5d274710af83b6c7725fa81a1670ebd7e5ac6afd7",
+      "sha256": "703dbf29d41d86523f20de3c936fb1aa53343c1dc78f207d354897446135b45d",
       "source": "music/ai-compositions/Steps/code/Steps-generate.py"
     },
     "Steps/outputs/Steps.mid": {
       "kind": "derived",
-      "sha256": "f7143d39735554dc7f043e338e0d4cb26ac5419647e3c338990fa5305e7ffa96",
+      "sha256": "f92d4b4b2a1df05d3bb6afd637c257082881fc3e177e660418a21d0c2d7cdcfd",
       "source": "music/ai-compositions/Steps/outputs/Steps.mid"
     },
     "Steps/version-0001/Steps-manifest.json": {
@@ -224,6 +229,56 @@
       "kind": "derived",
       "sha256": "c630113f250610a5eb54ffff858fd229a73eb0634737c4f5e1400846dcfb630d",
       "source": "music/ai-compositions/Steps/version-0005/outputs/Steps.mid"
+    },
+    "Steps/version-0006/Steps-manifest.json": {
+      "kind": "manifest",
+      "sha256": "cf32da3ed4be7963e7dbc256ef90fae3e89aa631877850ed311caccdefd7e2b3",
+      "source": "music/ai-compositions/Steps/version-0006/Steps-manifest.json"
+    },
+    "Steps/version-0006/Steps-prompt-001.md": {
+      "kind": "prompts",
+      "sha256": "50288552ae6fa25c011142eff9f60aed55155476d55327015fdae257a080550b",
+      "source": "music/ai-compositions/Steps/version-0006/Steps-prompt-001.md"
+    },
+    "Steps/version-0006/Steps-prompt-002.md": {
+      "kind": "prompts",
+      "sha256": "bbc5df0c6af0e2fff414e7ef20da39acd9e55ee8df850c36409ccd8cf731df4a",
+      "source": "music/ai-compositions/Steps/version-0006/Steps-prompt-002.md"
+    },
+    "Steps/version-0006/Steps-prompt-003.md": {
+      "kind": "prompts",
+      "sha256": "fc668da936bc6ecc2f400cf063c4c7964c455d99393e4497c5400fec0006344d",
+      "source": "music/ai-compositions/Steps/version-0006/Steps-prompt-003.md"
+    },
+    "Steps/version-0006/Steps-prompt-004.md": {
+      "kind": "prompts",
+      "sha256": "27098f02504005be9bbf942bdea0d7973c227796363527dcf300c8e3c55f0c2a",
+      "source": "music/ai-compositions/Steps/version-0006/Steps-prompt-004.md"
+    },
+    "Steps/version-0006/Steps-prompt-005.md": {
+      "kind": "prompts",
+      "sha256": "be6c852499749fb243da4a9250c8c763a2786fa6f7402c73c6389ff011f096e8",
+      "source": "music/ai-compositions/Steps/version-0006/Steps-prompt-005.md"
+    },
+    "Steps/version-0006/Steps-prompt-006.md": {
+      "kind": "prompts",
+      "sha256": "6228011982af59c1571c957f16d7957ce263ae26aedb516c9f554967ad033ec5",
+      "source": "music/ai-compositions/Steps/version-0006/Steps-prompt-006.md"
+    },
+    "Steps/version-0006/Steps.csd": {
+      "kind": "csd",
+      "sha256": "f8f6b51bc3b3a7571c01ea9fc7ca7b3c7e696c42672a2320862176f46b39785c",
+      "source": "music/ai-compositions/Steps/version-0006/Steps.csd"
+    },
+    "Steps/version-0006/code/Steps-generate.py": {
+      "kind": "code",
+      "sha256": "ffa9d860e5d743eb70cfb4a5d274710af83b6c7725fa81a1670ebd7e5ac6afd7",
+      "source": "music/ai-compositions/Steps/version-0006/code/Steps-generate.py"
+    },
+    "Steps/version-0006/outputs/Steps.mid": {
+      "kind": "derived",
+      "sha256": "f7143d39735554dc7f043e338e0d4cb26ac5419647e3c338990fa5305e7ffa96",
+      "source": "music/ai-compositions/Steps/version-0006/outputs/Steps.mid"
     },
     "big_bell/big_bell-manifest.json": {
       "kind": "manifest",
