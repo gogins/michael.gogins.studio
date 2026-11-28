@@ -1,5 +1,0 @@
-$ python code/Steps-generate.py
-[started 2026-11-24T20:24:20Z; exit 0]
-Steps lines: instr 1 ch 0 13 notes x 2 at 5 eighths (29 attacks), instr 2 ch 1 17 notes x 2 at 4 eighths (36 attacks), instr 3 ch 2 19 notes x 2 at 3 eighths (48 attacks), instr 4 ch 3 23 notes x 3 at 2 eighths (72 attacks), instr 5 ch 4 29 notes x 4 at 1 eighths (144 attacks)
-seed 7 (the score does not use it)
-
